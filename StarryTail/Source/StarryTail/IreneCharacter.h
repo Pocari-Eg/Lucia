@@ -1,0 +1,88 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+
+// 추가하는 부분
+#include "PlayerCharacterDataStruct.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "IreneFSM.h"
+
+#include "IreneCharacter.generated.h"
+
+UCLASS()
+class STARRYTAIL_API AIreneCharacter : public ACharacter
+{
+	GENERATED_BODY()
+
+public:	
+
+protected:
+
+private:
+	// 카메라 암과 카메라
+	USpringArmComponent* SpringArmComp;
+	UCameraComponent* CameraComp;
+
+	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
+	UPROPERTY(EditAnywhere)
+	FPlayerCharacterDataStruct CharacterDataStruct;
+
+	// 캐릭터 상태
+	IreneFSM* CharacterState;
+
+public:
+	// Sets default values for this character's properties
+	AIreneCharacter();
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:	
+	// 캐릭터 이동 관련 함수
+	void MoveForward(float AxisValue);
+	void MoveRight(float AxisValue);
+	void StartJump();
+	void StopJump();
+
+	void MoveDoubleClickW();
+	void MoveDoubleClickA();
+	void MoveDoubleClickS();
+	void MoveDoubleClickD();
+	void MoveReleasedW();
+	void MoveReleasedA();
+	void MoveReleasedS();
+	void MoveReleasedD();
+
+	// 카메라 회전 관련 함수
+	void Turn(float Rate);
+	void LookUp(float Rate);
+
+	// 마우스 좌클릭
+	void LeftButton();
+
+	// 메인키워드, 보조키워드, 액션키워드
+	void MainKeyword();
+	void SubKeyword();
+	void ActionKeyword1();
+	void ActionKeyword2();
+	void ActionKeyword3();
+	// 대쉬
+	void DashKeyword();
+
+	// 상태 변화 후 로그 출력
+	void ChangeStateAndLog(State* newState);
+
+};

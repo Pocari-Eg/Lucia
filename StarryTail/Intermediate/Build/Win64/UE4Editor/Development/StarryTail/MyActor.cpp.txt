@@ -1,0 +1,5 @@
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\MyActor.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\PlayerCharacterDataStruct.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\PlayerCharacterDataStruct.generated.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\MyActor.generated.h
