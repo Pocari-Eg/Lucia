@@ -1,5 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+//
+//  
+// 누나랑 의논할 것: 카메라 위치나 값들, 이동속도(달리기), 구르기 속도와 시간, 공중에서 구르기 시 아래로 힘을 주는 방식
+// 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기, 연속공격 시스템 몽타주로 바꾸기
 
 #include "IreneCharacter.h"
 
@@ -10,11 +13,12 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Meshs/Walk_KeQing.Walk_KeQing"));
 	if(CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
+		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 
 		// 블루프린트 애니메이션 적용
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C"));
@@ -27,7 +31,8 @@ AIreneCharacter::AIreneCharacter()
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetMesh());
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 200.0f), FRotator(0.0f, 90.0f, 0.0f));
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(0.0f, 90.0f, 0.0f));
+	SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 3.0f;
@@ -52,6 +57,32 @@ AIreneCharacter::AIreneCharacter()
 	// 상태 클래스 메모리 할당 후 정지 상태 적용
 	CharacterState = new IreneFSM();
 	CharacterState->setState(StateEnum::Idle);
+
+	// IreneCharater.h의 변수 초기화
+
+	// WASD 키 입력 초기화
+	MoveKey.Add(0);
+	MoveKey.Add(0);
+	MoveKey.Add(0);
+	MoveKey.Add(0);
+
+	// 자동이동 방향 초기화
+	MoveAutoDirection.ZeroVector;
+	// 추락 중 구르기 입력 초기화
+	IsFallingRoll = false;
+
+	AttackQueue.Empty();
+	IsEnqueueTime = true;
+	
+	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
+
+	// 무적 아님
+	CharacterDataStruct.IsInvincibility = false;
+	// 초기 체력
+	CharacterDataStruct.HP = 100;
+	// 초기 이동속도
+	CharacterDataStruct.MoveSpeed = 1;
+
 }
 
 // Called when the game starts or when spawned
@@ -61,104 +92,237 @@ void AIreneCharacter::BeginPlay()
 	
 }
 
-void AIreneCharacter::MoveForward(float AxisValue)
+void AIreneCharacter::MoveForward()
 {
-	if ((Controller != nullptr) && (AxisValue != 0.0f))
+	// 0: 전진, 2: 후진
+	if (MoveKey[0] != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") != 0)
-			ChangeStateAndLog(IreneWalkState::getInstance());
-
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(Direction, AxisValue * CharacterDataStruct.MoveSpeed);
+		AddMovementInput(Direction, CharacterDataStruct.MoveSpeed);
+	}
+	if (MoveKey[2] != 0)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		AddMovementInput(Direction * -1, CharacterDataStruct.MoveSpeed);
 	}
 }
-void AIreneCharacter::MoveRight(float AxisValue)
+void AIreneCharacter::MoveRight()
 {
-	if ((Controller != nullptr) && (AxisValue != 0.0f))
+	// 1: 좌측, 3: 우측
+	if (MoveKey[1] != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") != 0)
-			ChangeStateAndLog(IreneWalkState::getInstance());
-
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
 
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(Direction, AxisValue * CharacterDataStruct.MoveSpeed);
+		AddMovementInput(Direction * -1, CharacterDataStruct.MoveSpeed);
 	}
+	if (MoveKey[3] != 0)
+	{
+		const FRotator Rotation = Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		AddMovementInput(Direction, CharacterDataStruct.MoveSpeed);
+	}
+}
+void AIreneCharacter::MoveStop()
+{
+	// 아무 키 입력이 없을 경우 정지 상태 지정
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") != 0 && 
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
+	{
+		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0) 
+		{
+			ChangeStateAndLog(IreneIdleState::getInstance());
+		}
+	}
+	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") == 0)
+	{
+		if (!GetCharacterMovement()->IsFalling())
+		{
+			if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
+			{
+				ChangeStateAndLog(IreneIdleState::getInstance());
+			}
+			else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
+			{
+				ChangeStateAndLog(IreneRunState::getInstance());
+			}
+			else
+			{
+				ChangeStateAndLog(IreneWalkState::getInstance());
+			}
+		}
+	}
+}
+void AIreneCharacter::MoveAuto()
+{
+	if(MoveAutoDirection == FVector(0,0,0))
+	{
+		// w키나 아무방향 없으면 정면으로 이동
+		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+		{
+			MoveAutoDirection += GetActorForwardVector();
+		}
+		if (MoveKey[1] != 0)
+		{
+			MoveAutoDirection += GetActorRightVector() * -1;
+		}
+		if (MoveKey[2] != 0)
+		{
+			MoveAutoDirection += GetActorForwardVector() * -2;
+		}
+		if (MoveKey[3] != 0)
+		{
+			MoveAutoDirection += GetActorRightVector();
+		}
+		MoveAutoDirection.Normalize();
+	}
+
+	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
+	if(GetMovementComponent()->IsFalling())
+	{
+		CharacterDataStruct.MoveSpeed = 1.0f;
+		MoveAutoDirection = FVector(0, 0, 0);
+		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
+		CharacterState->setState(StateEnum::Jump);
+	}
+
+	if(strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
+		AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
 }
 
 void AIreneCharacter::StartJump()
 {
-	bPressedJump = true;
-	UE_LOG(LogTemp, Warning, TEXT("StartJump"));
+	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
+	{
+		bPressedJump = true;
+		ChangeStateAndLog(IreneJumpState::getInstance());
+	}
 }
 void AIreneCharacter::StopJump()
 {
 	bPressedJump = false;
 }
 
+void AIreneCharacter::MovePressedW()
+{
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		ChangeStateAndLog(IreneWalkState::getInstance());
+	MoveKey[0] = 1;
+	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
+}
+void AIreneCharacter::MovePressedA()
+{
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		ChangeStateAndLog(IreneWalkState::getInstance());
+	MoveKey[1] = 1;
+	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
+}
+void AIreneCharacter::MovePressedS()
+{
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		ChangeStateAndLog(IreneWalkState::getInstance());
+	MoveKey[2] = 1;
+	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
+}
+void AIreneCharacter::MovePressedD()
+{
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		ChangeStateAndLog(IreneWalkState::getInstance());
+	MoveKey[3] = 1;
+	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
+}
+
 void AIreneCharacter::MoveDoubleClickW()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveDoubleClickW"));
-	CharacterDataStruct.MoveSpeed = 2;
+	MoveKey[0] = 2;
+
+	// 점프 중 달리기 금지
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	{
+		ChangeStateAndLog(IreneRunState::getInstance());
+		CharacterDataStruct.MoveSpeed = 2;
+	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickA()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveDoubleClickA"));
-	CharacterDataStruct.MoveSpeed = 2;
+	MoveKey[1] = 2;
+
+	// 점프 중 달리기 금지
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	{
+		ChangeStateAndLog(IreneRunState::getInstance());
+		CharacterDataStruct.MoveSpeed = 2;
+	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickS()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveDoubleClickS"));
-	CharacterDataStruct.MoveSpeed = 2;
+	MoveKey[2] = 2;
+
+	// 점프 중 달리기 금지
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	{
+		ChangeStateAndLog(IreneRunState::getInstance());
+		CharacterDataStruct.MoveSpeed = 2;
+	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickD()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveDoubleClickD"));
-	CharacterDataStruct.MoveSpeed = 2;
+	MoveKey[3] = 2;
+
+	// 점프 중 달리기 금지
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	{
+		ChangeStateAndLog(IreneRunState::getInstance());
+		CharacterDataStruct.MoveSpeed = 2;
+	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 
 void AIreneCharacter::MoveReleasedW()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveReleasedW"));
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") == 0)
-		ChangeStateAndLog(IreneIdleState::getInstance());
-
-	CharacterDataStruct.MoveSpeed = 1;
+	MoveKey[0] = 0;
+	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
+	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
+		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveReleasedA()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveReleasedA"));
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") == 0)
-		ChangeStateAndLog(IreneIdleState::getInstance());
-
-	CharacterDataStruct.MoveSpeed = 1;
+	MoveKey[1] = 0;
+	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
+	if (MoveKey[0] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
+		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveReleasedS()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveReleasedS"));
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") == 0)
-		ChangeStateAndLog(IreneIdleState::getInstance());
-
-	CharacterDataStruct.MoveSpeed = 1;
+	MoveKey[2] = 0;
+	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
+	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[3] != 2)
+		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveReleasedD()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MoveReleasedD"));
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") == 0)
-		ChangeStateAndLog(IreneIdleState::getInstance());
-
-	CharacterDataStruct.MoveSpeed = 1;
+	MoveKey[3] = 0;
+	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
+	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[2] != 2)
+		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 
@@ -171,10 +335,61 @@ void AIreneCharacter::LookUp(float Rate)
 	AddControllerPitchInput(Rate);
 }
 
+// 로그 출력용 더미
+// UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
 
 void AIreneCharacter::LeftButton()
 {
-	UE_LOG(LogTemp, Warning, TEXT("LeftButton"));
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 && !NormalAttackEndWaitHandle.IsValid())
+	{
+		if (AttackCount < 3) 
+		{
+			AttackCount++;
+			AttackQueue.Enqueue(AttackCount);
+			StartNormalAttackAnim();
+		}
+	}
+	else if(IsEnqueueTime)
+	{
+		if (AttackCount < 3)
+		{
+			AttackCount++;
+			AttackQueue.Enqueue(AttackCount);
+		}
+	}
+}
+
+void AIreneCharacter::StartNormalAttackAnim()
+{
+	ChangeStateAndLog(IreneAttackState::getInstance());
+	UE_LOG(LogTemp, Warning, TEXT("%d Start NormalAttack"), AttackCount);
+
+	float WaitTime = 0.5f; // 다시 공격할 시간을 설정
+
+	// 0.5초 안에 다시 공격을 하는지 체크한다.
+	GetWorld()->GetTimerManager().SetTimer(NormalAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			IsEnqueueTime = false;
+		}), WaitTime, false);
+
+	WaitTime = 2.0f; // 에니메이션이 끝나는 시간
+
+	GetWorld()->GetTimerManager().SetTimer(NormalAttackEndWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			uint8 Outqueue = 0;
+			IsEnqueueTime = true;
+			AttackQueue.Dequeue(Outqueue);		
+			UE_LOG(LogTemp, Warning, TEXT("%d End NormalAttack"), Outqueue);
+			if (AttackQueue.IsEmpty())
+			{
+				AttackCount = 0;
+				ChangeStateAndLog(IreneIdleState::getInstance());
+			}
+			else
+			{
+				StartNormalAttackAnim();
+			}
+		}), WaitTime, false);
 }
 
 void AIreneCharacter::MainKeyword()
@@ -200,22 +415,101 @@ void AIreneCharacter::ActionKeyword3()
 
 void AIreneCharacter::DashKeyword()
 {
-	//if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Walk") != 0)
+	if (!GetMovementComponent()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	{
+		ChangeStateAndLog(IreneDashState::getInstance());
 
-	// 공중에 있을 때 대쉬 불가
+		float WaitTime = 1.5f; //시간을 설정
+		CharacterDataStruct.MoveSpeed = 3.0f; // 대쉬 속도 설정
 
-	ChangeStateAndLog(IreneDashState::getInstance());
+		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				// 도중에 추락 안하고 정상적으로 진행됬을 때
+				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
+				{
+					CharacterDataStruct.MoveSpeed = 1.0f;
+					MoveAutoDirection = FVector(0, 0, 0);
 
-	const FVector ForwardDir = this->GetActorRotation().Vector();
-	LaunchCharacter(ForwardDir * CharacterDataStruct.DashDistance, true, true);
+					CharacterState->setState(StateEnum::Idle);
+					if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
+					{
+						ChangeStateAndLog(IreneIdleState::getInstance());
+					}
+					else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
+					{
+						ChangeStateAndLog(IreneRunState::getInstance());
+					}
+					else
+					{
+						ChangeStateAndLog(IreneWalkState::getInstance());
+					}
+				}
+			}), WaitTime, false);
+	}
+	if(GetMovementComponent()->IsFalling())
+	{
+		if (!IsFallingRoll)
+		{
+			IsFallingRoll = true;
+			int32 FallingPower = 50000;
+			GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
 
-	ChangeStateAndLog(IreneIdleState::getInstance());
+			MoveAutoDirection.ZeroVector;
+			// w키나 아무방향 없으면 정면으로 이동
+			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			{
+				MoveAutoDirection += GetActorForwardVector();
+			}
+			if (MoveKey[1] != 0)
+			{
+				MoveAutoDirection += GetActorRightVector() * -1;
+			}
+			if (MoveKey[2] != 0)
+			{
+				MoveAutoDirection += GetActorForwardVector() * -2;
+			}
+			if (MoveKey[3] != 0)
+			{
+				MoveAutoDirection += GetActorRightVector();
+			}
+			MoveAutoDirection.Normalize();
+		}
+	}
 }
 
 // Called every frame
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	// PlayerCharacterDataStruct.h의 상단 public에 할당 된 변수들로 인게임 수정 가능하게 해주는 기능
+	// 앞의 "//" 부분을 지워주고 에디터의 컴파일을 진행하고 플레이를 하고 인게임에서 값을 수정하면 바로 적용 됨
+	// 
+	// SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+	// CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
+
+	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0) 
+	{
+		MoveForward();
+		MoveRight();
+	}
+	else
+	{
+		MoveAuto();
+	}
+	if (IsFallingRoll && !GetMovementComponent()->IsFalling())
+	{
+		//땅에 도착
+		IsFallingRoll = false;
+		DashKeyword();
+	}
+	MoveStop();
+
+	// 공격종료 핸들 초기화
+	if(AttackCount == 0)
+	{
+		NormalAttackEndWaitHandle.Invalidate();
+	}
 }
 
 // Called to bind functionality to input
@@ -224,11 +518,13 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	// 움직임 관련 키보드 입력
-	PlayerInputComponent->BindAxis("MoveForward", this, &AIreneCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AIreneCharacter::MoveRight);
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AIreneCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AIreneCharacter::StopJump);
 
+	PlayerInputComponent->BindAction("MoveW", IE_Pressed, this, &AIreneCharacter::MovePressedW);
+	PlayerInputComponent->BindAction("MoveA", IE_Pressed, this, &AIreneCharacter::MovePressedA);
+	PlayerInputComponent->BindAction("MoveS", IE_Pressed, this, &AIreneCharacter::MovePressedS);
+	PlayerInputComponent->BindAction("MoveD", IE_Pressed, this, &AIreneCharacter::MovePressedD);
 	PlayerInputComponent->BindAction("MoveW", IE_DoubleClick, this, &AIreneCharacter::MoveDoubleClickW);
 	PlayerInputComponent->BindAction("MoveA", IE_DoubleClick, this, &AIreneCharacter::MoveDoubleClickA);
 	PlayerInputComponent->BindAction("MoveS", IE_DoubleClick, this, &AIreneCharacter::MoveDoubleClickS);
@@ -254,8 +550,11 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 void AIreneCharacter::ChangeStateAndLog(State* newState)
 {
-	CharacterState->ChangeState(newState);
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	{
+		CharacterState->ChangeState(newState);
 
-	FString str = CharacterState->StateEnumToString(CharacterState->getState());
-	UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+		FString str = CharacterState->StateEnumToString(CharacterState->getState());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+	}
 }

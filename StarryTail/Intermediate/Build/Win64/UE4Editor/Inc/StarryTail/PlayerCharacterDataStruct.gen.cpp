@@ -53,6 +53,11 @@ static struct FScriptStruct_StarryTail_StaticRegisterNativesFPlayerCharacterData
 #endif
 		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_FieldofView;
 #if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_IsInvincibility_MetaData[];
+#endif
+		static void NewProp_IsInvincibility_SetBit(void* Obj);
+		static const UE4CodeGen_Private::FBoolPropertyParams NewProp_IsInvincibility;
+#if WITH_METADATA
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_HP_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_HP;
@@ -60,10 +65,6 @@ static struct FScriptStruct_StarryTail_StaticRegisterNativesFPlayerCharacterData
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_MoveSpeed_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_MoveSpeed;
-#if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_DashDistance_MetaData[];
-#endif
-		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_DashDistance;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const UE4CodeGen_Private::FStructParams ReturnStructParams;
 	};
@@ -96,6 +97,18 @@ static struct FScriptStruct_StarryTail_StaticRegisterNativesFPlayerCharacterData
 #endif
 	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_FieldofView = { "FieldofView", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FPlayerCharacterDataStruct, FieldofView), METADATA_PARAMS(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_FieldofView_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_FieldofView_MetaData)) };
 #if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility_MetaData[] = {
+		{ "Category", "PlayerCharacterDataStruct" },
+		{ "Comment", "// ????????\n" },
+		{ "ModuleRelativePath", "PlayerCharacterDataStruct.h" },
+	};
+#endif
+	void Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility_SetBit(void* Obj)
+	{
+		((FPlayerCharacterDataStruct*)Obj)->IsInvincibility = 1;
+	}
+	const UE4CodeGen_Private::FBoolPropertyParams Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility = { "IsInvincibility", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Bool | UE4CodeGen_Private::EPropertyGenFlags::NativeBool, RF_Public|RF_Transient|RF_MarkAsNative, 1, sizeof(bool), sizeof(FPlayerCharacterDataStruct), &Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility_SetBit, METADATA_PARAMS(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility_MetaData)) };
+#if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_HP_MetaData[] = {
 		{ "Category", "PlayerCharacterDataStruct" },
 		{ "Comment", "// \xc3\xbc??\n" },
@@ -113,21 +126,12 @@ static struct FScriptStruct_StarryTail_StaticRegisterNativesFPlayerCharacterData
 	};
 #endif
 	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_MoveSpeed = { "MoveSpeed", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FPlayerCharacterDataStruct, MoveSpeed), METADATA_PARAMS(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_MoveSpeed_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_MoveSpeed_MetaData)) };
-#if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_DashDistance_MetaData[] = {
-		{ "Category", "PlayerCharacterDataStruct" },
-		{ "Comment", "// ?\xcc\xb5??\xd3\xb5? 1?? ?????? 0.1?\xcc\xb5?\n" },
-		{ "ModuleRelativePath", "PlayerCharacterDataStruct.h" },
-		{ "ToolTip", "?\xcc\xb5??\xd3\xb5? 1?? ?????? 0.1?\xcc\xb5?" },
-	};
-#endif
-	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_DashDistance = { "DashDistance", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(FPlayerCharacterDataStruct, DashDistance), METADATA_PARAMS(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_DashDistance_MetaData, UE_ARRAY_COUNT(Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_DashDistance_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::PropPointers[] = {
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_FollowCameraZPosition,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_FieldofView,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_IsInvincibility,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_HP,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_MoveSpeed,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::NewProp_DashDistance,
 	};
 	const UE4CodeGen_Private::FStructParams Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Statics::ReturnStructParams = {
 		(UObject* (*)())Z_Construct_UPackage__Script_StarryTail,
@@ -157,7 +161,7 @@ static struct FScriptStruct_StarryTail_StaticRegisterNativesFPlayerCharacterData
 		}
 		return ReturnStruct;
 	}
-	uint32 Get_Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Hash() { return 4157026121U; }
+	uint32 Get_Z_Construct_UScriptStruct_FPlayerCharacterDataStruct_Hash() { return 3529503829U; }
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 #ifdef _MSC_VER
 #pragma warning (pop)

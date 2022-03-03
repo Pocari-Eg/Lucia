@@ -59,6 +59,9 @@ public: \
 
 
 #define StarryTail_Source_StarryTail_IreneCharacter_h_21_PRIVATE_PROPERTY_OFFSET \
+	FORCEINLINE static uint32 __PPO__SpringArmComp() { return STRUCT_OFFSET(AIreneCharacter, SpringArmComp); } \
+	FORCEINLINE static uint32 __PPO__CameraComp() { return STRUCT_OFFSET(AIreneCharacter, CameraComp); } \
+	FORCEINLINE static uint32 __PPO__MoveKey() { return STRUCT_OFFSET(AIreneCharacter, MoveKey); } \
 	FORCEINLINE static uint32 __PPO__CharacterDataStruct() { return STRUCT_OFFSET(AIreneCharacter, CharacterDataStruct); }
 
 

@@ -26,15 +26,41 @@ protected:
 
 private:
 	// 카메라 암과 카메라
+	UPROPERTY(EditAnywhere)
 	USpringArmComponent* SpringArmComp;
+	UPROPERTY(EditAnywhere)
 	UCameraComponent* CameraComp;
 
+	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기
+	UPROPERTY(EditAnywhere)
+	TArray<uint8> MoveKey;
+	
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
 
 	// 캐릭터 상태
 	IreneFSM* CharacterState;
+
+
+	// 구르기 같은 자동이동 방향
+	FVector MoveAutoDirection;
+	// 자동이동용 핸들
+	FTimerHandle MoveAutoWaitHandle;
+	// 추락중 구르기 시 빠르게 떨어지는 지 확인
+	bool IsFallingRoll;
+
+
+	// 기본공격용 핸들
+	FTimerHandle NormalAttackWaitHandle;
+	// 기본종료용 핸들
+	FTimerHandle NormalAttackEndWaitHandle;
+	// 현재 공격 횟수를 의미하지만 나중에는 애니메이션으로 바꿀 예정
+	TQueue<uint8> AttackQueue;
+	// 큐에 값을 넣을 수 있는 시간
+	bool IsEnqueueTime;
+	// 공격 횟수
+	uint8 AttackCount;
 
 public:
 	// Sets default values for this character's properties
@@ -52,11 +78,18 @@ protected:
 
 private:	
 	// 캐릭터 이동 관련 함수
-	void MoveForward(float AxisValue);
-	void MoveRight(float AxisValue);
+	void MoveForward();
+	void MoveRight();
+	void MoveStop();
+	void MoveAuto();
+
 	void StartJump();
 	void StopJump();
 
+	void MovePressedW();
+	void MovePressedA();
+	void MovePressedS();
+	void MovePressedD();
 	void MoveDoubleClickW();
 	void MoveDoubleClickA();
 	void MoveDoubleClickS();
@@ -72,6 +105,7 @@ private:
 
 	// 마우스 좌클릭
 	void LeftButton();
+	void StartNormalAttackAnim();
 
 	// 메인키워드, 보조키워드, 액션키워드
 	void MainKeyword();
@@ -79,6 +113,7 @@ private:
 	void ActionKeyword1();
 	void ActionKeyword2();
 	void ActionKeyword3();
+
 	// 대쉬
 	void DashKeyword();
 
