@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <None Include="..\..\StarryTail.uproject" />
+    <Filter Include="Source">
+      <UniqueIdentifier>{31B1729C-EC0A-4305-8C2A-1495CF54D36A}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Source\StarryTail.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\..\Source\StarryTailEditor.Target.cs">
+      <Filter>Source</Filter>
+    </None>
+    <Filter Include="Config">
+      <UniqueIdentifier>{73AB66BE-73A0-427E-9B1E-DFCDBF0A8904}</UniqueIdentifier>
+    </Filter>
+    <None Include="..\..\Config\DefaultEditor.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEditorPerProjectUserSettings.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultEngine.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultGame.ini">
+      <Filter>Config</Filter>
+    </None>
+    <None Include="..\..\Config\DefaultInput.ini">
+      <Filter>Config</Filter>
+    </None>
+    <Filter Include="Source\StarryTail">
+      <UniqueIdentifier>{23121502-02F9-40C7-9DBA-041D13E7D256}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneCharacter.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneFSM.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneFSM.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StarryTail\PlayerCharacterDataStruct.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <None Include="..\..\Source\StarryTail\StarryTail.Build.cs">
+      <Filter>Source\StarryTail</Filter>
+    </None>
+    <ClCompile Include="..\..\Source\StarryTail\StarryTail.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\StarryTail.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\StarryTailCharacter.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\StarryTailCharacter.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\StarryTailGameMode.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\StarryTailGameMode.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <Filter Include="Source\StarryTail\IreneStates">
+      <UniqueIdentifier>{9E275972-A66A-4DF4-9D4F-0306DF672C91}</UniqueIdentifier>
+    </Filter>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneAttackIdleState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneAttackIdleState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneAttackState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneAttackState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneDashState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneDashState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneDeathState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneDeathState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneHitState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneHitState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneIdleState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneIdleState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneJumpState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneJumpState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneRunState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneRunState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneStates\IreneWalkState.cpp">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\IreneWalkState.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Source\StarryTail\IreneStates\State.h">
+      <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
