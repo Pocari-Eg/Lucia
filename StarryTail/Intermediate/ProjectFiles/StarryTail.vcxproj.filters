@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{343248FE-D3F3-4B9F-978A-36A9B9FA08D4}</UniqueIdentifier>
+      <UniqueIdentifier>{E621151F-9B76-4E1F-962A-CA081B962107}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{45BEFCEE-68F8-46F2-B05D-E17D11D4EC7D}</UniqueIdentifier>
+      <UniqueIdentifier>{FE622BD2-8E4E-4096-A2CD-48B6E6736883}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{7723983F-F062-4AED-9B64-BC81AEAAD3EB}</UniqueIdentifier>
+      <UniqueIdentifier>{B90C0EED-0C5F-4DBC-85F6-8CFD173191B6}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -74,8 +74,14 @@
     <ClInclude Include="..\..\Source\StarryTail\StarryTailGameMode.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\StopWatch.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\StopWatch.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{0FAE957D-62C5-4CFB-9E3E-E960084F0521}</UniqueIdentifier>
+      <UniqueIdentifier>{DB640EA7-CDD7-4B43-B96A-9AF27C6EA3CD}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -136,6 +142,21 @@
     </ClInclude>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\State.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
+    </ClInclude>
+    <Filter Include="Source\StarryTail\UI">
+      <UniqueIdentifier>{6A465C5D-41A3-4C05-BF3B-D4282BE4F600}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\StarryTail\UI\IreneAttributeWidget.cpp">
+      <Filter>Source\StarryTail\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\UI\IreneAttributeWidget.h">
+      <Filter>Source\StarryTail\UI</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\UI\StopWatchWidget.cpp">
+      <Filter>Source\StarryTail\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\UI\StopWatchWidget.h">
+      <Filter>Source\StarryTail\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

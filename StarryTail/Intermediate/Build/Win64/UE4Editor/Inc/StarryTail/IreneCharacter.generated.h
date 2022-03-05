@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define STARRYTAIL_IreneCharacter_generated_h
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_SPARSE_DATA
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_RPC_WRAPPERS
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_RPC_WRAPPERS_NO_PURE_DECLS
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_INCLASS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_SPARSE_DATA
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS_NO_PURE_DECLS
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAIreneCharacter(); \
 	friend struct Z_Construct_UClass_AIreneCharacter_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(AIreneCharacter)
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_INCLASS \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_INCLASS \
 private: \
 	static void StaticRegisterNativesAIreneCharacter(); \
 	friend struct Z_Construct_UClass_AIreneCharacter_Statics; \
@@ -34,7 +34,7 @@ public: \
 	DECLARE_SERIALIZER(AIreneCharacter)
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_STANDARD_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API AIreneCharacter(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(AIreneCharacter) \
@@ -47,7 +47,7 @@ private: \
 public:
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_ENHANCED_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API AIreneCharacter(AIreneCharacter&&); \
@@ -58,35 +58,37 @@ public: \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(AIreneCharacter)
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_PRIVATE_PROPERTY_OFFSET \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__SpringArmComp() { return STRUCT_OFFSET(AIreneCharacter, SpringArmComp); } \
 	FORCEINLINE static uint32 __PPO__CameraComp() { return STRUCT_OFFSET(AIreneCharacter, CameraComp); } \
 	FORCEINLINE static uint32 __PPO__MoveKey() { return STRUCT_OFFSET(AIreneCharacter, MoveKey); } \
 	FORCEINLINE static uint32 __PPO__CharacterDataStruct() { return STRUCT_OFFSET(AIreneCharacter, CharacterDataStruct); } \
-	FORCEINLINE static uint32 __PPO__Weapon() { return STRUCT_OFFSET(AIreneCharacter, Weapon); }
+	FORCEINLINE static uint32 __PPO__Weapon() { return STRUCT_OFFSET(AIreneCharacter, Weapon); } \
+	FORCEINLINE static uint32 __PPO__Type() { return STRUCT_OFFSET(AIreneCharacter, Type); } \
+	FORCEINLINE static uint32 __PPO__AttributeWidget() { return STRUCT_OFFSET(AIreneCharacter, AttributeWidget); }
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_18_PROLOG
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_GENERATED_BODY_LEGACY \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_23_PROLOG
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_SPARSE_DATA \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_RPC_WRAPPERS \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_INCLASS \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_STANDARD_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_SPARSE_DATA \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_INCLASS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define StarryTail_Source_StarryTail_IreneCharacter_h_21_GENERATED_BODY \
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_SPARSE_DATA \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_RPC_WRAPPERS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_INCLASS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_IreneCharacter_h_21_ENHANCED_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_SPARSE_DATA \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_INCLASS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_IreneCharacter_h_26_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

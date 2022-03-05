@@ -102,12 +102,32 @@ AIreneCharacter::AIreneCharacter()
 	// 초기 이동속도
 	CharacterDataStruct.MoveSpeed = 1;
 
+
+	//박찬영
+	Type = EAttributeKeyword::e_None;
+
+	//ui 설정
+	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
+	AttributeWidget->SetupAttachment(GetMesh());
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 21.0f));
+	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
+	if (UI_HUD.Succeeded()) {
+		AttributeWidget->SetWidgetClass(UI_HUD.Class);
+		AttributeWidget->SetDrawSize(FVector2D(2.0f, 2.0f));
+	}
 }
 
 // Called when the game starts or when spawned
 void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//박찬영
+	//스탑워치 생성 
+	StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
+	StopWatch->InitStopWatch();
 }
 
 void AIreneCharacter::MoveForward()
@@ -634,6 +654,15 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAction("LeftButton", IE_Pressed, this, &AIreneCharacter::LeftButton);
+
+
+	//박찬영
+	//스탑워치 컨트롤
+	PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
+	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);
+
+	// 속성 변환 테스트
+	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
 }
 
 void AIreneCharacter::ChangeStateAndLog(State* newState)
@@ -644,5 +673,47 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+	}
+}
+
+//박찬영
+//스탑워치 컨트롤 함수
+void AIreneCharacter::WatchContorl()
+{
+	StopWatch->WatchControl();
+}
+
+void AIreneCharacter::WatchReset()
+{
+	StopWatch->WatchReset();
+}
+
+void AIreneCharacter::AttributeChange()
+{
+
+	switch (Type)
+	{
+	case EAttributeKeyword::e_None:
+		Type = EAttributeKeyword::e_Fire;
+		break;
+	case EAttributeKeyword::e_Fire:
+		Type = EAttributeKeyword::e_Water;
+
+		break;
+	case EAttributeKeyword::e_Water:
+		Type = EAttributeKeyword::e_Thunder;
+
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Type = EAttributeKeyword::e_None;
+
+		break;
+	default:
+		break;
+	}
+	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != Widget)
+	{
+		Widget->BindCharacterAttribute(Type);
 	}
 }

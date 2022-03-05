@@ -21,6 +21,8 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 	ENGINE_API UClass* Z_Construct_UClass_UCameraComponent_NoRegister();
 	STARRYTAIL_API UScriptStruct* Z_Construct_UScriptStruct_FPlayerCharacterDataStruct();
 	ENGINE_API UClass* Z_Construct_UClass_USkeletalMeshComponent_NoRegister();
+	STARRYTAIL_API UEnum* Z_Construct_UEnum_StarryTail_EAttributeKeyword();
+	UMG_API UClass* Z_Construct_UClass_UWidgetComponent_NoRegister();
 // End Cross Module References
 	void AIreneCharacter::StaticRegisterNativesAIreneCharacter()
 	{
@@ -56,6 +58,15 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Weapon_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_Weapon;
+		static const UE4CodeGen_Private::FBytePropertyParams NewProp_Type_Underlying;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Type_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FEnumPropertyParams NewProp_Type;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_AttributeWidget_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_AttributeWidget;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
@@ -116,6 +127,26 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 	};
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Weapon = { "Weapon", nullptr, (EPropertyFlags)0x0040000000080009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AIreneCharacter, Weapon), Z_Construct_UClass_USkeletalMeshComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Weapon_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Weapon_MetaData)) };
+	const UE4CodeGen_Private::FBytePropertyParams Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type_Underlying = { "UnderlyingType", nullptr, (EPropertyFlags)0x0000000000000000, UE4CodeGen_Private::EPropertyGenFlags::Byte, RF_Public|RF_Transient|RF_MarkAsNative, 1, 0, nullptr, METADATA_PARAMS(nullptr, 0) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type_MetaData[] = {
+		{ "Category", "IreneCharacter" },
+		{ "Comment", "//\xc4\xb3???? ?\xd3\xbc?\n" },
+		{ "ModuleRelativePath", "IreneCharacter.h" },
+		{ "ToolTip", "\xc4\xb3???? ?\xd3\xbc?" },
+	};
+#endif
+	const UE4CodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type = { "Type", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AIreneCharacter, Type), Z_Construct_UEnum_StarryTail_EAttributeKeyword, METADATA_PARAMS(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AIreneCharacter_Statics::NewProp_AttributeWidget_MetaData[] = {
+		{ "Category", "UI" },
+		{ "Comment", "//?\xd3\xbc? ui\n" },
+		{ "EditInline", "true" },
+		{ "ModuleRelativePath", "IreneCharacter.h" },
+		{ "ToolTip", "?\xd3\xbc? ui" },
+	};
+#endif
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_AIreneCharacter_Statics::NewProp_AttributeWidget = { "AttributeWidget", nullptr, (EPropertyFlags)0x00400000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AIreneCharacter, AttributeWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_AttributeWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_AttributeWidget_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_AIreneCharacter_Statics::PropPointers[] = {
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_SpringArmComp,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_CameraComp,
@@ -123,6 +154,9 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_MoveKey,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_CharacterDataStruct,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Weapon,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type_Underlying,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Type,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_AIreneCharacter_Statics::NewProp_AttributeWidget,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_AIreneCharacter_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<AIreneCharacter>::IsAbstract,
@@ -151,7 +185,7 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AIreneCharacter, 4045669359);
+	IMPLEMENT_CLASS(AIreneCharacter, 4234497134);
 	template<> STARRYTAIL_API UClass* StaticClass<AIreneCharacter>()
 	{
 		return AIreneCharacter::StaticClass();

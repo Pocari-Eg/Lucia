@@ -13,6 +13,11 @@
 #include "Components/CapsuleComponent.h"
 #include "IreneFSM.h"
 
+//박찬영
+#include "StopWatch.h"
+#include "UI/IreneAttributeWidget.h"
+#include "Components/WidgetComponent.h"
+
 #include "IreneCharacter.generated.h"
 
 UCLASS()
@@ -68,6 +73,16 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Weapon;
+
+	// 박찬영 ***************************************
+//스탑워치
+	AStopWatch* StopWatch;
+	//캐릭터 속성
+	UPROPERTY(EditAnywhere)
+	EAttributeKeyword Type;
+	//속성 ui
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* AttributeWidget;
 
 public:
 	// Sets default values for this character's properties
@@ -129,4 +144,11 @@ private:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(State* newState);
 
+
+	//박찬영 ============
+//스탑워치 
+	void WatchContorl();
+	void WatchReset();
+	//속성 변환
+	void AttributeChange();
 };
