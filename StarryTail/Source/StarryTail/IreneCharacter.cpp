@@ -5,7 +5,7 @@
 // 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기, 연속공격 시스템 몽타주로 바꾸기
 
 #include "IreneCharacter.h"
-
+#include "UI/CharacterAttributeWidget.h"
 // Sets default values
 AIreneCharacter::AIreneCharacter()
 {
@@ -83,12 +83,33 @@ AIreneCharacter::AIreneCharacter()
 	// 초기 이동속도
 	CharacterDataStruct.MoveSpeed = 1;
 
+
+	//속성 초기화
+	Type = EAttributeKeyword::e_None;
+	
+	//ui 설정
+	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
+	AttributeWidget->SetupAttachment(GetMesh());
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 25.0f));
+	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f,0.0f ));
+	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
+	if (UI_HUD.Succeeded()) {
+		AttributeWidget->SetWidgetClass(UI_HUD.Class);
+		AttributeWidget->SetDrawSize(FVector2D(5.0f, 5.0f));
+	}
 }
 
 // Called when the game starts or when spawned
 void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	//스탑워치 생성 
+	StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
+	StopWatch->InitStopWatch();
+	//속성 변환 바인딩
+	
+
 	
 }
 
@@ -206,7 +227,7 @@ void AIreneCharacter::StartJump()
 	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
-		bPressedJump = true;
+		bPressedJump = true;	    
 		ChangeStateAndLog(IreneJumpState::getInstance());
 	}
 }
@@ -487,6 +508,9 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	// CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
+
+	
+
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0) 
 	{
@@ -509,6 +533,47 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if(AttackCount == 0)
 	{
 		NormalAttackEndWaitHandle.Invalidate();
+	}
+}
+
+//스탑워치 컨트롤 함수
+void AIreneCharacter::WatchContorl()
+{
+	StopWatch->WatchControl();
+}
+
+void AIreneCharacter::WatchReset()
+{
+	StopWatch->WatchReset();
+}
+
+void AIreneCharacter::AttributeChange()
+{
+
+	switch (Type)
+	{
+	case EAttributeKeyword::e_None:
+		Type = EAttributeKeyword::e_Fire;
+		break;
+	case EAttributeKeyword::e_Fire:
+		Type = EAttributeKeyword::e_Water;
+
+		break;
+	case EAttributeKeyword::e_Water:
+		Type = EAttributeKeyword::e_Thunder;
+
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Type = EAttributeKeyword::e_None;
+
+		break;
+	default:
+		break;
+	}
+	auto Widget = Cast<UCharacterAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != Widget)
+	{
+		Widget->BindCharacterAttribute(Type);
 	}
 }
 
@@ -546,6 +611,14 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAction("LeftButton", IE_Pressed, this, &AIreneCharacter::LeftButton);
+
+	//스탑워치 컨트롤
+	PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
+	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);
+
+	// 속성 변환 테스트
+	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
+
 }
 
 void AIreneCharacter::ChangeStateAndLog(State* newState)

@@ -1,0 +1,1279 @@
+﻿Log file open, 03/03/22 22:57:16
+LogWindows: Failed to load 'aqProf.dll' (GetLastError=126)
+LogWindows: File 'aqProf.dll' does not exist
+LogWindows: Failed to load 'VtuneApi.dll' (GetLastError=126)
+LogWindows: File 'VtuneApi.dll' does not exist
+LogWindows: Failed to load 'VtuneApi32e.dll' (GetLastError=126)
+LogWindows: File 'VtuneApi32e.dll' does not exist
+LogConsoleResponse: Display: Failed to find resolution value strings in scalability ini. Falling back to default.
+LogConsoleResponse: Display: Failed to find resolution value strings in scalability ini. Falling back to default.
+LogInit: Display: Running engine for game: StarryTail
+LogPlatformFile: Not using cached read wrapper
+LogTaskGraph: Started task graph with 5 named threads and 35 total threads with 3 sets of task threads.
+LogStats: Stats thread started at 0.555264
+LogICUInternationalization: ICU TimeZone Detection - Raw Offset: +9:00, Platform Override: ''
+LogInit: Display: Loading text-based GConfig....
+LogPluginManager: Mounting plugin MeshPainting
+LogPluginManager: Mounting plugin XGEController
+LogPluginManager: Mounting plugin Paper2D
+LogPluginManager: Mounting plugin AISupport
+LogPluginManager: Mounting plugin LightPropagationVolume
+LogPluginManager: Mounting plugin LiveLink
+LogPluginManager: Mounting plugin EnvironmentQueryEditor
+LogPluginManager: Mounting plugin OodleData
+LogPluginManager: Mounting plugin OodleNetwork
+LogPluginManager: Mounting plugin AnimationSharing
+LogPluginManager: Mounting plugin CLionSourceCodeAccess
+LogPluginManager: Mounting plugin CodeLiteSourceCodeAccess
+LogPluginManager: Mounting plugin KDevelopSourceCodeAccess
+LogPluginManager: Mounting plugin NullSourceCodeAccess
+LogPluginManager: Mounting plugin GitSourceControl
+LogPluginManager: Mounting plugin PixWinPlugin
+LogPluginManager: Mounting plugin PerforceSourceControl
+LogPluginManager: Mounting plugin PropertyAccessNode
+LogPluginManager: Mounting plugin PluginUtils
+LogPluginManager: Mounting plugin RiderSourceCodeAccess
+LogPluginManager: Mounting plugin PlasticSourceControl
+LogPluginManager: Mounting plugin SubversionSourceControl
+LogPluginManager: Mounting plugin TextureFormatOodle
+LogPluginManager: Mounting plugin UObjectPlugin
+LogPluginManager: Mounting plugin VisualStudioSourceCodeAccess
+LogPluginManager: Mounting plugin VisualStudioCodeSourceCodeAccess
+LogPluginManager: Mounting plugin DatasmithContent
+LogPluginManager: Mounting plugin VariantManagerContent
+LogPluginManager: Mounting plugin Niagara
+LogPluginManager: Mounting plugin AssetManagerEditor
+LogPluginManager: Mounting plugin XCodeSourceCodeAccess
+LogPluginManager: Mounting plugin CurveEditorTools
+LogPluginManager: Mounting plugin DataValidation
+LogPluginManager: Mounting plugin GameplayTagsEditor
+LogPluginManager: Mounting plugin MacGraphicsSwitching
+LogPluginManager: Mounting plugin MobileLauncherProfileWizard
+LogPluginManager: Mounting plugin GeometryMode
+LogPluginManager: Mounting plugin PluginBrowser
+LogPluginManager: Mounting plugin CryptoKeys
+LogPluginManager: Mounting plugin SpeedTreeImporter
+LogPluginManager: Mounting plugin AutomationUtils
+LogPluginManager: Mounting plugin BackChannel
+LogPluginManager: Mounting plugin MaterialAnalyzer
+LogPluginManager: Mounting plugin ChaosCloth
+LogPluginManager: Mounting plugin ChaosClothEditor
+LogPluginManager: Mounting plugin FacialAnimation
+LogPluginManager: Mounting plugin ChaosEditor
+LogPluginManager: Mounting plugin ChaosNiagara
+LogPluginManager: Mounting plugin ChaosSolverPlugin
+LogPluginManager: Mounting plugin CharacterAI
+LogPluginManager: Mounting plugin AlembicImporter
+LogPluginManager: Mounting plugin GeometryCache
+LogPluginManager: Mounting plugin GeometryCollectionPlugin
+LogPluginManager: Mounting plugin LuminPlatformFeatures
+LogPluginManager: Mounting plugin MagicLeap
+LogPluginManager: Mounting plugin MagicLeapLightEstimation
+LogPluginManager: Mounting plugin MagicLeapMedia
+LogPluginManager: Mounting plugin OpenImageDenoise
+LogPluginManager: Mounting plugin MotoSynth
+LogPluginManager: Mounting plugin GeometryProcessing
+LogPluginManager: Mounting plugin AndroidMedia
+LogPluginManager: Mounting plugin PlanarCut
+LogPluginManager: Mounting plugin PlatformCrypto
+LogPluginManager: Mounting plugin ProxyLODPlugin
+LogPluginManager: Mounting plugin PythonScriptPlugin
+LogPluginManager: Mounting plugin AvfMedia
+LogPluginManager: Mounting plugin MagicLeapPassableWorld
+LogPluginManager: Mounting plugin SkeletalReduction
+LogPluginManager: Mounting plugin MLSDK
+LogPluginManager: Mounting plugin ImgMedia
+LogPluginManager: Mounting plugin MediaCompositing
+LogPluginManager: Mounting plugin MediaPlayerEditor
+LogPluginManager: Mounting plugin WmfMedia
+LogPluginManager: Mounting plugin WebMMedia
+LogPluginManager: Mounting plugin TcpMessaging
+LogPluginManager: Mounting plugin ActorSequence
+LogPluginManager: Mounting plugin LevelSequenceEditor
+LogPluginManager: Mounting plugin MatineeToLevelSequence
+LogPluginManager: Mounting plugin TemplateSequence
+LogPluginManager: Mounting plugin OnlineSubsystem
+LogPluginManager: Mounting plugin OnlineSubsystemNull
+LogPluginManager: Mounting plugin UdpMessaging
+LogPluginManager: Mounting plugin OnlineSubsystemUtils
+LogPluginManager: Mounting plugin LauncherChunkInstaller
+LogPluginManager: Mounting plugin ScreenshotTools
+LogPluginManager: Mounting plugin ActorLayerUtilities
+LogPluginManager: Mounting plugin AndroidDeviceProfileSelector
+LogPluginManager: Mounting plugin AndroidPermission
+LogPluginManager: Mounting plugin AppleImageUtils
+LogPluginManager: Mounting plugin AppleMoviePlayer
+LogPluginManager: Mounting plugin ArchVisCharacter
+LogPluginManager: Mounting plugin AssetTags
+LogPluginManager: Mounting plugin AudioCapture
+LogPluginManager: Mounting plugin AudioSynesthesia
+LogPluginManager: Mounting plugin ChunkDownloader
+LogPluginManager: Mounting plugin CustomMeshComponent
+LogPluginManager: Mounting plugin EditableMesh
+LogPluginManager: Mounting plugin ExampleDeviceProfileSelector
+LogPluginManager: Mounting plugin GoogleCloudMessaging
+LogPluginManager: Mounting plugin AndroidMoviePlayer
+LogPluginManager: Mounting plugin GooglePAD
+LogPluginManager: Mounting plugin CableComponent
+LogPluginManager: Mounting plugin Takes
+LogPluginManager: Mounting plugin IOSDeviceProfileSelector
+LogPluginManager: Mounting plugin LinuxDeviceProfileSelector
+LogPluginManager: Mounting plugin LocationServicesBPLibrary
+LogPluginManager: Mounting plugin MobilePatchingUtils
+LogPluginManager: Mounting plugin OpenXR
+LogPluginManager: Mounting plugin OpenXREyeTracker
+LogPluginManager: Mounting plugin OpenXRHandTracking
+LogPluginManager: Mounting plugin PostSplashScreen
+LogPluginManager: Mounting plugin PhysXVehicles
+LogPluginManager: Mounting plugin ProceduralMeshComponent
+LogPluginManager: Mounting plugin PropertyAccessEditor
+LogPluginManager: Mounting plugin RuntimePhysXCooking
+LogPluginManager: Mounting plugin SignificanceManager
+LogPluginManager: Mounting plugin SoundFields
+LogPluginManager: Mounting plugin Synthesis
+LogPluginManager: Mounting plugin WebMMoviePlayer
+LogPluginManager: Mounting plugin WindowsMoviePlayer
+LogPluginManager: Mounting plugin CameraShakePreviewer
+LogPluginManager: Mounting plugin GameplayCameras
+LogPluginManager: Mounting plugin ContentBrowserAssetDataSource
+LogPluginManager: Mounting plugin ContentBrowserClassDataSource
+LogPluginManager: Mounting plugin ContentBrowserFileDataSource
+LogPluginManager: Mounting plugin OnlineSubsystemGooglePlay
+LogPluginManager: Mounting plugin OnlineSubsystemIOS
+LogPluginManager: Mounting plugin OculusVR
+LogPluginManager: Mounting plugin SteamVR
+LogInit: Warning: Incompatible or missing module: StarryTail
+Running C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe Development Win64 -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" -TargetType=Editor -Progress -NoEngineChanges -NoHotReloadFromIDE
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+Creating makefile for StarryTailEditor (no existing makefile)
+@progress push 5%
+Parsing headers for StarryTailEditor
+  Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+LogInit: Display: Loading text-based GConfig....
+Reflection code generated for StarryTailEditor in 6.6367347 seconds
+@progress pop
+Building StarryTailEditor...
+Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+Building 24 actions with 12 processes...
+  @progress 'Compiling C++ source code...' 0%
+  @progress 'Compiling C++ source code...' 4%
+  [1/24] Default.rc2
+  @progress 'Compiling C++ source code...' 8%
+  [2/24] SharedPCH.Engine.ShadowErrors.cpp
+  @progress 'Compiling C++ source code...' 12%
+  [3/24] IreneJumpState.cpp
+  @progress 'Compiling C++ source code...' 17%
+  [4/24] IreneAttackIdleState.cpp
+  @progress 'Compiling C++ source code...' 21%
+  [5/24] IreneAttackState.cpp
+  @progress 'Compiling C++ source code...' 25%
+  [6/24] StarryTail.cpp
+  @progress 'Compiling C++ source code...' 29%
+  [7/24] IreneFSM.cpp
+  @progress 'Compiling C++ source code...' 33%
+  [8/24] IreneDashState.cpp
+  @progress 'Compiling C++ source code...' 38%
+  [9/24] IreneRunState.cpp
+  @progress 'Compiling C++ source code...' 42%
+  [10/24] StarryTail.init.gen.cpp
+  @progress 'Compiling C++ source code...' 46%
+  [11/24] IreneDeathState.cpp
+  @progress 'Compiling C++ source code...' 50%
+  [12/24] IreneWalkState.cpp
+  @progress 'Compiling C++ source code...' 54%
+  [13/24] IreneIdleState.cpp
+  @progress 'Compiling C++ source code...' 58%
+  [14/24] StarryTailGameMode.cpp
+  @progress 'Compiling C++ source code...' 62%
+  [15/24] StarryTailCharacter.gen.cpp
+  @progress 'Compiling C++ source code...' 67%
+  [16/24] IreneHitState.cpp
+  @progress 'Compiling C++ source code...' 71%
+  [17/24] PlayerCharacterDataStruct.gen.cpp
+  @progress 'Compiling C++ source code...' 75%
+  [18/24] StarryTailGameMode.gen.cpp
+  @progress 'Compiling C++ source code...' 79%
+  [19/24] StarryTailCharacter.cpp
+  @progress 'Compiling C++ source code...' 83%
+  [20/24] IreneCharacter.cpp
+  @progress 'Compiling C++ source code...' 88%
+  [21/24] IreneCharacter.gen.cpp
+  @progress 'Compiling C++ source code...' 92%
+  [22/24] UE4Editor-StarryTail.lib
+     C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+  @progress 'Compiling C++ source code...' 96%
+  [23/24] UE4Editor-StarryTail.dll
+     C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+  @progress 'Compiling C++ source code...' 100%
+  [24/24] StarryTailEditor.target
+Total time in Parallel executor: 17.91 seconds
+Total execution time: 32.78 seconds
+PixWinPlugin: PIX capture plugin failed to initialize! Check that the process is launched from PIX.
+LogInit: Using libcurl 7.55.1-DEV
+LogInit:  - built for x86_64-pc-win32
+LogInit:  - supports SSL with OpenSSL/1.1.1
+LogInit:  - supports HTTP deflate (compression) using libz 1.2.8
+LogInit:  - other features:
+LogInit:      CURL_VERSION_SSL
+LogInit:      CURL_VERSION_LIBZ
+LogInit:      CURL_VERSION_IPV6
+LogInit:      CURL_VERSION_ASYNCHDNS
+LogInit:      CURL_VERSION_LARGEFILE
+LogInit:      CURL_VERSION_IDN
+LogInit:  CurlRequestOptions (configurable via config and command line):
+LogInit:  - bVerifyPeer = true  - Libcurl will verify peer certificate
+LogInit:  - bUseHttpProxy = false  - Libcurl will NOT use HTTP proxy
+LogInit:  - bDontReuseConnections = false  - Libcurl will reuse connections
+LogInit:  - MaxHostConnections = 16  - Libcurl will limit the number of connections to a host
+LogInit:  - LocalHostAddr = Default
+LogInit:  - BufferSize = 65536
+LogOnline: OSS: Creating online subsystem instance for: NULL
+LogInit: WinSock: version 1.1 (2.2), MaxSocks=32767, MaxUdp=65467
+LogOnline: OSS: TryLoadSubsystemAndSetDefault: Loaded subsystem for module [NULL]
+LogOculusPluginWrapper: OculusPlugin initialized successfully
+LogHMD: Failed initializing OVRPlugin 1.59.0
+LogInit: Build: ++UE4+Release-4.27-CL-18319896
+LogInit: Engine Version: 4.27.2-18319896+++UE4+Release-4.27
+LogInit: Compatible Engine Version: 4.27.0-17155196+++UE4+Release-4.27
+LogInit: Net CL: 17155196
+LogInit: OS: Windows 10 (Release 2009) (), CPU: AMD Ryzen 5 5600X 6-Core Processor             , GPU: NVIDIA GeForce RTX 3060 Ti
+LogInit: Compiled (64-bit): Nov 30 2021 07:12:08
+LogInit: Compiled with Visual C++: 19.24.28315.00
+LogInit: Build Configuration: Development
+LogInit: Branch Name: ++UE4+Release-4.27
+LogInit: Command Line: 
+LogInit: Base Directory: C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/Win64/
+LogInit: Allocator: TBB
+LogInit: Installed Engine Build: 1
+LogDevObjectVersion: Number of dev versions registered: 29
+LogDevObjectVersion:   Dev-Blueprints (B0D832E4-1F89-4F0D-ACCF-7EB736FD4AA2): 10
+LogDevObjectVersion:   Dev-Build (E1C64328-A22C-4D53-A36C-8E866417BD8C): 0
+LogDevObjectVersion:   Dev-Core (375EC13C-06E4-48FB-B500-84F0262A717E): 4
+LogDevObjectVersion:   Dev-Editor (E4B068ED-F494-42E9-A231-DA0B2E46BB41): 40
+LogDevObjectVersion:   Dev-Framework (CFFC743F-43B0-4480-9391-14DF171D2073): 37
+LogDevObjectVersion:   Dev-Mobile (B02B49B5-BB20-44E9-A304-32B752E40360): 3
+LogDevObjectVersion:   Dev-Networking (A4E4105C-59A1-49B5-A7C5-40C4547EDFEE): 0
+LogDevObjectVersion:   Dev-Online (39C831C9-5AE6-47DC-9A44-9C173E1C8E7C): 0
+LogDevObjectVersion:   Dev-Physics (78F01B33-EBEA-4F98-B9B4-84EACCB95AA2): 14
+LogDevObjectVersion:   Dev-Platform (6631380F-2D4D-43E0-8009-CF276956A95A): 0
+LogDevObjectVersion:   Dev-Rendering (12F88B9F-8875-4AFC-A67C-D90C383ABD29): 45
+LogDevObjectVersion:   Dev-Sequencer (7B5AE74C-D270-4C10-A958-57980B212A5A): 13
+LogDevObjectVersion:   Dev-VR (D7296918-1DD6-4BDD-9DE2-64A83CC13884): 3
+LogDevObjectVersion:   Dev-LoadTimes (C2A15278-BFE7-4AFE-6C17-90FF531DF755): 1
+LogDevObjectVersion:   Private-Geometry (6EACA3D4-40EC-4CC1-B786-8BED09428FC5): 3
+LogDevObjectVersion:   Dev-AnimPhys (29E575DD-E0A3-4627-9D10-D276232CDCEA): 17
+LogDevObjectVersion:   Dev-Anim (AF43A65D-7FD3-4947-9873-3E8ED9C1BB05): 15
+LogDevObjectVersion:   Dev-ReflectionCapture (6B266CEC-1EC7-4B8F-A30B-E4D90942FC07): 1
+LogDevObjectVersion:   Dev-Automation (0DF73D61-A23F-47EA-B727-89E90C41499A): 1
+LogDevObjectVersion:   FortniteMain (601D1886-AC64-4F84-AA16-D3DE0DEAC7D6): 47
+LogDevObjectVersion:   FortniteRelease (E7086368-6B23-4C58-8439-1B7016265E91): 1
+LogDevObjectVersion:   Dev-Enterprise (9DFFBCD6-494F-0158-E221-12823C92A888): 10
+LogDevObjectVersion:   Dev-Niagara (F2AED0AC-9AFE-416F-8664-AA7FFA26D6FC): 1
+LogDevObjectVersion:   Dev-Destruction (174F1F0B-B4C6-45A5-B13F-2EE8D0FB917D): 10
+LogDevObjectVersion:   Dev-Physics-Ext (35F94A83-E258-406C-A318-09F59610247C): 41
+LogDevObjectVersion:   Dev-PhysicsMaterial-Chaos (B68FC16E-8B1B-42E2-B453-215C058844FE): 1
+LogDevObjectVersion:   Dev-CineCamera (B2E18506-4273-CFC2-A54E-F4BB758BBA07): 1
+LogDevObjectVersion:   Dev-VirtualProduction (64F58936-FD1B-42BA-BA96-7289D5D0FA4E): 1
+LogDevObjectVersion:   Dev-MediaFramework (6F0ED827-A609-4895-9C91-998D90180EA4): 2
+LogInit: Presizing for max 25165824 objects, including 0 objects not considered by GC, pre-allocating 0 bytes for permanent pool.
+LogConfig: Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+LogConfig: Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+LogConfig: Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+LogConfig: Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+LogConfig: Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+LogConfig: Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+LogConfig: Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+LogConfig: Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+LogConfig: Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+LogConfig: Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+LogConfig: Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+LogConfig: Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+LogConfig: Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+LogConfig: Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+LogConfig: Setting CVar [[s.FlushStreamingOnExit:1]]
+LogInit: Object subsystem initialized
+LogConfig: Setting CVar [[con.DebugEarlyDefault:1]]
+LogConfig: Setting CVar [[r.setres:1280x720]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[r.VSync:0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[r.RHICmdBypass:0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.RendererSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[r.GPUCrashDebugging:0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.RendererOverrideSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:509][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+[2022.03.03-13.57.53:509][  0]LogConfig: Setting CVar [[s.FlushStreamingOnExit:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.GarbageCollectionSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.MaxObjectsNotConsideredByGC:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.SizeOfPermanentObjectPool:0]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.FlushStreamingOnGC:0]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.NumRetriesBeforeForcingGC:10]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.AllowParallelGC:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.TimeBetweenPurgingPendingKillObjects:61.1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.MaxObjectsInEditor:25165824]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.IncrementalBeginDestroyEnabled:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.CreateGCClusters:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.MinGCClusterSize:5]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.ActorClusteringEnabled:0]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.BlueprintClusteringEnabled:0]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.UseDisregardForGCOnDedicatedServers:0]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Setting CVar [[gc.MultithreadedDestructionEnabled:1]]
+[2022.03.03-13.57.53:510][  0]LogConfig: Applying CVar settings from Section [/Script/Engine.NetworkSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:510][  0]LogConfig: Applying CVar settings from Section [/Script/UnrealEd.CookerSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:523][  0]LogConfig: Applying CVar settings from Section [ViewDistanceQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.SkeletalMeshLODBias:0]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.ViewDistanceScale:1.0]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Applying CVar settings from Section [AntiAliasingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.PostProcessAAQuality:4]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Applying CVar settings from Section [ShadowQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.LightFunctionQuality:1]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.ShadowQuality:5]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.MaxResolution:2048]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.DistanceScale:1.0]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.DistanceFieldShadowing:1]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.DistanceFieldAO:1]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.AOQuality:2]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.VolumetricFog:1]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+[2022.03.03-13.57.53:523][  0]LogConfig: Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.CapsuleShadows:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Applying CVar settings from Section [PostProcessQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.MotionBlurQuality:4]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.AmbientOcclusionLevels:-1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DepthOfFieldQuality:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.RenderTargetPoolMin:400]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.LensFlareQuality:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SceneColorFringeQuality:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.EyeAdaptationQuality:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.BloomQuality:5]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.FastBlurThreshold:100]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Upscale.Quality:3]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.LightShaftQuality:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Filter.SizeScale:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Tonemapper.Quality:5]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Applying CVar settings from Section [TextureQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.MipBias:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.Boost:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.MaxAnisotropy:8]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.VT.MaxAnisotropy:8]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.PoolSize:1000]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Applying CVar settings from Section [EffectsQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.RefractionQuality:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSR.Quality:3]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSR.HalfResSceneColor:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SceneColorFormat:4]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.DetailMode:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.TranslucencyVolumeBlur:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.AnisotropicMaterials:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSS.Scale:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSS.SampleSet:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSS.Quality:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSS.HalfRes:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SSGI.Quality:3]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.ParticleLightQuality:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.SkyLight.RealTimeReflectionCapture:1]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Applying CVar settings from Section [FoliageQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[foliage.DensityScale:1.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[grass.DensityScale:1.0]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Applying CVar settings from Section [ShadingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+[2022.03.03-13.57.53:524][  0]LogConfig: Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+[2022.03.03-13.57.53:524][  0]LogInit: Selected Device Profile: [Windows]
+[2022.03.03-13.57.53:525][  0]LogInit: Applying CVar settings loaded from the selected device profile: [Windows]
+[2022.03.03-13.57.53:525][  0]LogHAL: Display: Platform has ~ 16 GB [17080684544 / 17179869184 / 16], which maps to Larger [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+[2022.03.03-13.57.53:525][  0]LogInit: Going up to parent DeviceProfile []
+[2022.03.03-13.57.53:525][  0]LogConfig: Applying CVar settings from Section [ViewDistanceQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.SkeletalMeshLODBias:0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.ViewDistanceScale:1.0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Applying CVar settings from Section [AntiAliasingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.PostProcessAAQuality:4]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Applying CVar settings from Section [ShadowQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.LightFunctionQuality:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.ShadowQuality:5]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.MaxResolution:2048]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.DistanceScale:1.0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DistanceFieldShadowing:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DistanceFieldAO:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.AOQuality:2]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.VolumetricFog:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.CapsuleShadows:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Applying CVar settings from Section [PostProcessQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.MotionBlurQuality:4]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.AmbientOcclusionLevels:-1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DepthOfFieldQuality:2]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.RenderTargetPoolMin:400]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.LensFlareQuality:2]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.SceneColorFringeQuality:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.EyeAdaptationQuality:2]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.BloomQuality:5]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.FastBlurThreshold:100]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Upscale.Quality:3]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.LightShaftQuality:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Filter.SizeScale:1]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.Tonemapper.Quality:5]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+[2022.03.03-13.57.53:525][  0]LogConfig: Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [TextureQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.MipBias:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.Boost:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.MaxAnisotropy:8]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.VT.MaxAnisotropy:8]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.PoolSize:1000]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [EffectsQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.RefractionQuality:2]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSR.Quality:3]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSR.HalfResSceneColor:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SceneColorFormat:4]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.DetailMode:2]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.TranslucencyVolumeBlur:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.AnisotropicMaterials:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSS.Scale:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSS.SampleSet:2]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSS.Quality:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSS.HalfRes:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SSGI.Quality:3]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.ParticleLightQuality:2]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.SkyLight.RealTimeReflectionCapture:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [FoliageQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[foliage.DensityScale:1.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[grass.DensityScale:1.0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [ShadingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [Startup] File [../../../Engine/Config/ConsoleVariables.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[net.UseAdaptiveNetUpdateFrequency:0]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[p.chaos.AllowCreatePhysxBodies:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Setting CVar [[fx.SkipVectorVMBackendOptimizations:1]]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [ConsoleVariables] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+[2022.03.03-13.57.53:526][  0]LogConfig: Applying CVar settings from Section [ConsoleVariables] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Editor.ini]
+[2022.03.03-13.57.53:526][  0]LogInit: Computer: DESKTOP-JDOR4MB
+[2022.03.03-13.57.53:526][  0]LogInit: User: Pocari
+[2022.03.03-13.57.53:526][  0]LogInit: CPU Page size=4096, Cores=6
+[2022.03.03-13.57.53:526][  0]LogInit: High frequency timer resolution =10.000000 MHz
+[2022.03.03-13.57.53:527][  0]LogMemory: Memory total: Physical=15.9GB (16GB approx)
+[2022.03.03-13.57.53:527][  0]LogMemory: Platform Memory Stats for Windows
+[2022.03.03-13.57.53:527][  0]LogMemory: Process Physical Memory: 155.93 MB used, 155.93 MB peak
+[2022.03.03-13.57.53:527][  0]LogMemory: Process Virtual Memory: 128.84 MB used, 128.84 MB peak
+[2022.03.03-13.57.53:527][  0]LogMemory: Physical Memory: 6875.74 MB used,  9413.67 MB free, 16289.41 MB total
+[2022.03.03-13.57.53:527][  0]LogMemory: Virtual Memory: 134202704.00 MB used,  15027.38 MB free, 134217728.00 MB total
+[2022.03.03-13.57.53:542][  0]LogWindows: WindowsPlatformFeatures enabled
+[2022.03.03-13.57.53:750][  0]LogInit: Physics initialised using underlying interface: PhysX
+[2022.03.03-13.57.53:752][  0]LogInit: Overriding language with editor language configuration option (ko).
+[2022.03.03-13.57.53:752][  0]LogInit: Using OS detected locale (ko-KR).
+[2022.03.03-13.57.53:933][  0]LogInit: Setting process to per monitor DPI aware
+[2022.03.03-13.57.53:965][  0]LogWindowsTextInputMethodSystem: Display: IME system deactivated.
+[2022.03.03-13.57.54:045][  0]LogSlate: New Slate User Created.  User Index 0, Is Virtual User: 0
+[2022.03.03-13.57.54:045][  0]LogSlate: Slate User Registered.  User Index 0, Is Virtual User: 0
+[2022.03.03-13.57.56:262][  0]LogD3D11RHI: Loaded GFSDK_Aftermath_Lib.x64.dll
+[2022.03.03-13.57.56:407][  0]LogHMD: Failed to initialize OpenVR with code 126
+[2022.03.03-13.57.56:407][  0]LogD3D11RHI: D3D11 min allowed feature level: 11_0
+[2022.03.03-13.57.56:407][  0]LogD3D11RHI: D3D11 max allowed feature level: 11_0
+[2022.03.03-13.57.56:407][  0]LogD3D11RHI: D3D11 adapters:
+[2022.03.03-13.57.56:510][  0]LogD3D11RHI:    0. 'NVIDIA GeForce RTX 3060 Ti' (Feature Level 11_0)
+[2022.03.03-13.57.56:510][  0]LogD3D11RHI:       8050/0/8144 MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:2, VendorId:0x10de
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:    1. 'Microsoft Basic Render Driver' (Feature Level 11_0)
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:       0/0/8144 MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:0, VendorId:0x1414
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI: Chosen D3D11 Adapter:
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     Description : NVIDIA GeForce RTX 3060 Ti
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     VendorId    : 10de
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     DeviceId    : 2489
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     SubSysId    : 40771458
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     Revision    : 00a1
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     DedicatedVideoMemory : 8441036800 bytes
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     DedicatedSystemMemory : 0 bytes
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     SharedSystemMemory : 8540342272 bytes
+[2022.03.03-13.57.56:513][  0]LogD3D11RHI:     AdapterLuid : 0 64162
+[2022.03.03-13.57.56:518][  0]LogD3D11RHI: Creating new Direct3DDevice
+[2022.03.03-13.57.56:518][  0]LogD3D11RHI:     GPU DeviceId: 0x2489 (for the marketing name, search the web for "GPU Device Id")
+[2022.03.03-13.57.56:518][  0]LogWindows: EnumDisplayDevices:
+[2022.03.03-13.57.56:518][  0]LogWindows:    0. 'NVIDIA GeForce RTX 3060 Ti' (P:1 D:1)
+[2022.03.03-13.57.56:518][  0]LogWindows:    1. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:1)
+[2022.03.03-13.57.56:518][  0]LogWindows:    2. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:0)
+[2022.03.03-13.57.56:519][  0]LogWindows:    3. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:0)
+[2022.03.03-13.57.56:519][  0]LogWindows: DebugString: FoundDriverCount:4 
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     Adapter Name: NVIDIA GeForce RTX 3060 Ti
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:   Driver Version: 497.09 (internal:30.0.14.9709, unified:497.09)
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:      Driver Date: 11-26-2021
+[2022.03.03-13.57.56:519][  0]LogRHI: Texture pool is 5635 MB (70% of 8050 MB)
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI: Creating D3DDevice using adapter:
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     Description : NVIDIA GeForce RTX 3060 Ti
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     VendorId    : 10de
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     DeviceId    : 2489
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     SubSysId    : 40771458
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     Revision    : 00a1
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     DedicatedVideoMemory : 8441036800 bytes
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     DedicatedSystemMemory : 0 bytes
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     SharedSystemMemory : 8540342272 bytes
+[2022.03.03-13.57.56:519][  0]LogD3D11RHI:     AdapterLuid : 0 64162
+[2022.03.03-13.57.56:557][  0]LogD3D11RHI: RHI has support for 64 bit atomics
+[2022.03.03-13.57.56:557][  0]LogD3D11RHI: Async texture creation enabled
+[2022.03.03-13.57.56:557][  0]LogD3D11RHI: Array index from any shader is supported
+[2022.03.03-13.57.56:611][  0]LogD3D11RHI: GPU Timing Frequency: 1000.000000 (Debug: 2 1)
+[2022.03.03-13.57.56:666][  0]LogRHI: GeForceNow SDK initialized: 1
+[2022.03.03-13.57.56:889][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'AllDesktop'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ASTC'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_DXT'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ETC2'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'AndroidClient'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ASTCClient'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_DXTClient'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_ETC2Client'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_Multi'
+[2022.03.03-13.57.56:919][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Android_MultiClient'
+[2022.03.03-13.57.56:974][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOSClient'
+[2022.03.03-13.57.56:974][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'IOS'
+[2022.03.03-13.57.57:003][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Linux'
+[2022.03.03-13.57.57:020][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxNoEditor'
+[2022.03.03-13.57.57:036][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxClient'
+[2022.03.03-13.57.57:052][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxServer'
+[2022.03.03-13.57.57:076][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxAArch64NoEditor'
+[2022.03.03-13.57.57:092][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxAArch64Client'
+[2022.03.03-13.57.57:108][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LinuxAArch64Server'
+[2022.03.03-13.57.57:143][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Lumin'
+[2022.03.03-13.57.57:143][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'LuminClient'
+[2022.03.03-13.57.57:175][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacNoEditor'
+[2022.03.03-13.57.57:192][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Mac'
+[2022.03.03-13.57.57:207][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacClient'
+[2022.03.03-13.57.57:222][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'MacServer'
+[2022.03.03-13.57.57:244][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOSClient'
+[2022.03.03-13.57.57:244][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'TVOS'
+[2022.03.03-13.57.57:265][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsNoEditor'
+[2022.03.03-13.57.57:283][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'Windows'
+[2022.03.03-13.57.57:302][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsClient'
+[2022.03.03-13.57.57:319][  0]LogTargetPlatformManager: Display: Loaded TargetPlatform 'WindowsServer'
+[2022.03.03-13.57.57:319][  0]LogTargetPlatformManager: Display: Building Assets For Windows
+[2022.03.03-13.57.57:380][  0]LogAudioDebug: Display: Lib vorbis DLL was dynamically loaded.
+[2022.03.03-13.57.57:551][  0]LogTextureFormatOodle: Display: Oodle Texture 2.9.0 init RDO Off
+[2022.03.03-13.57.57:776][  0]LogRendererCore: Ray tracing is disabled. Reason: r.RayTracing=0.
+[2022.03.03-13.57.57:777][  0]LogShaderCompilers: Guid format shader working directory is -14 characters bigger than the processId version (../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Intermediate/Shaders/WorkingDirectory/4220/).
+[2022.03.03-13.57.57:777][  0]LogShaderCompilers: Cleaned the shader compiler working directory 'C:/Users/Pocari/AppData/Local/Temp/UnrealShaderWorkingDir/980B78354E56F85B93F2D1A54F2DF7AA/'.
+[2022.03.03-13.57.57:778][  0]LogXGEController: Cannot use XGE Controller as Incredibuild is not installed on this machine.
+[2022.03.03-13.57.57:778][  0]LogShaderCompilers: Cannot use XGE Shader Compiler as Incredibuild is not installed on this machine.
+[2022.03.03-13.57.57:778][  0]LogShaderCompilers: Display: Using Local Shader Compiler.
+[2022.03.03-13.58.00:237][  0]LogDerivedDataCache: Display: Max Cache Size: 512 MB
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: Loaded boot cache 0.05s 98MB C:/Users/Pocari/AppData/Local/UnrealEngine/4.27/DerivedDataCache/Boot.ddc.
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: Display: Loaded Boot cache: C:/Users/Pocari/AppData/Local/UnrealEngine/4.27/DerivedDataCache/Boot.ddc
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: FDerivedDataBackendGraph:  Pak pak cache file ../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/DerivedDataCache/DDC.ddp not found, will not use a pak cache.
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: Unable to find inner node Pak for hierarchical cache Hierarchy.
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: FDerivedDataBackendGraph:  CompressedPak pak cache file ../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/DerivedDataCache/Compressed.ddp not found, will not use a pak cache.
+[2022.03.03-13.58.00:288][  0]LogDerivedDataCache: Unable to find inner node CompressedPak for hierarchical cache Hierarchy.
+[2022.03.03-13.58.00:310][  0]LogDerivedDataCache: Display: Pak cache opened for reading ../../../Engine/DerivedDataCache/Compressed.ddp.
+[2022.03.03-13.58.00:310][  0]LogDerivedDataCache: FDerivedDataBackendGraph:  EnterprisePak pak cache file ../../../Enterprise/DerivedDataCache/Compressed.ddp not found, will not use a pak cache.
+[2022.03.03-13.58.00:310][  0]LogDerivedDataCache: Unable to find inner node EnterprisePak for hierarchical cache Hierarchy.
+[2022.03.03-13.58.00:359][  0]LogDerivedDataCache: Speed tests for C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache took 0.05 seconds
+[2022.03.03-13.58.00:359][  0]LogDerivedDataCache: Display: Performance to C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache: Latency=0.20ms. RandomReadSpeed=23.35MBs, RandomWriteSpeed=140.41MBs. Assigned SpeedClass 'Local'
+[2022.03.03-13.58.00:360][  0]LogDerivedDataCache: Using Local data cache path C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache: Writable
+[2022.03.03-13.58.00:360][  0]LogDerivedDataCache: Shared data cache path not found in *engine.ini, will not use an Shared cache.
+[2022.03.03-13.58.00:360][  0]LogDerivedDataCache: Unable to find inner node Shared for hierarchical cache Hierarchy.
+[2022.03.03-13.58.00:401][  0]LogSlate: Using FreeType 2.10.0
+[2022.03.03-13.58.00:412][  0]LogSlate: SlateFontServices - WITH_FREETYPE: 1, WITH_HARFBUZZ: 1
+[2022.03.03-13.58.00:545][  0]LogAssetRegistry: FAssetRegistry took 0.0044 seconds to start up
+[2022.03.03-13.58.00:901][  0]LogInit: Selected Device Profile: [Windows]
+[2022.03.03-13.58.00:901][  0]LogInit: Active device profile: [000001C3B9018900][000001C3B9718740 49] Windows
+[2022.03.03-13.58.00:901][  0]LogInit: Profiles: [000001C3B9018900][000001C3B9718740 49] Windows, [000001C3B8FCB300][000001C3B753C880 49] WindowsNoEditor, [000001C3B901B500][000001C3B971C9C0 49] WindowsServer, [000001C3B8FCBD00][000001C3B9720B00 49] WindowsClient, [000001C3B901B800][000001C3B9728C80 49] IOS, [000001C3B8FCA300][000001C3B972CE00 49] iPadAir, [000001C3B901A000][000001C3B9730F80 49] iPadAir2, [000001C3B8F6CA00][000001C3B9739240 49] IPadPro, [000001C3B8F6CB00][000001C3B9735280 49] iPadAir3, [000001C3B8FC9300][000001C3B973D400 49] iPadAir4, [000001C3B8F6F400][000001C3B9741580 49] iPadMini2, [000001C3B8FCA500][000001C3B9745700 49] iPadMini3, [000001C3B8F6D700][000001C3B9749880 49] iPadMini4, [000001C3B9019000][000001C3B974DA00 49] iPadMini5, [000001C3B8F98300][000001C3B9754140 49] iPhone6, [000001C3B8F98400][000001C3B9750180 49] iPodTouch6, [000001C3B8F6F600][000001C3B975C440 49] iPhone7, [000001C3B8F6D800][000001C3B9758480 49] iPodTouch7, [000001C3B8F9BF00][000001C3B9760600 49] iPhone5S, [000001C3B8FC9E00][000001C3B9764780 49] iPhone6Plus, [000001C3B8F6C200][000001C3B9768900 49] iPhone6S, [000001C3B8FC9D00][000001C3B9724A40 49] iPhone6SPlus, [000001C3B8F6FC00][000001C3B976CB80 49] iPhone7Plus, [000001C3B8FC8100][000001C3B9770CC0 49] iPhoneSE, [000001C3B8F6F500][000001C3B9778E40 49] iPhone8, [000001C3B8FC9900][000001C3B977CFC0 49] iPhone8Plus, [000001C3B8F6D000][000001C3B9781140 49] iPhoneX, [000001C3B8FC8A00][000001C3B97852C0 49] iPhoneXS, [000001C3B8F6D200][000001C3B9789440 49] iPhoneXSMax, [000001C3B8FC9000][000001C3B978D5C0 49] iPhoneXR, [000001C3B8F6F700][000001C3B9791740 49] iPhone11, [000001C3B8FCBE00][000001C3B97958C0 49] iPhone11Pro, [000001C3B8F6F800][000001C3B9799A40 49] iPhone11ProMax, [000001C3B8FCBC00][000001C3B979DBC0 49] iPhoneSE2, [000001C3B8F6EE00][000001C3B97A01C0 49] iPhone12Mini, [000001C3B8FCAC00][000001C3B97A4340 49] iPhone12, [000001C3B8F6EB00][000001C3B97A84C0 49] iPhone12Pro, [000001C3B8FC8800][000001C3B97AC640 49] iPhone12ProMax, [000001C3B8F6E300][000001C3B97B07C0 49] iPadPro105, [000001C3B8FCAA00][000001C3B97B4940 49] iPadPro129, [000001C3B8F6E000][000001C3B97B8AC0 49] iPadPro97, [000001C3B8FC8E00][000001C3B9774C00 49] iPadPro2_129, [000001C3B8F6DA00][000001C3B97BCD40 49] iPad5, [000001C3B8FC9500][000001C3B97C0E80 49] iPad6, [000001C3B8F6E800][000001C3B97C4FC0 49] iPad7, [000001C3B8FCBF00][000001C3B97CD140 49] iPad8, [000001C3B8F6F200][000001C3B97D12C0 49] iPadPro11, [000001C3B8FC9100][000001C3B97D5440 49] iPadPro2_11, [000001C3B8F6DC00][000001C3B97D95C0 49] iPadPro3_129, [000001C3B8FCB400][000001C3B97DD740 49] iPadPro4_129, [000001C3B8F6D500][000001C3B97E18C0 49] AppleTV, [000001C3B8FC8300][000001C3B97E5A40 49] AppleTV4K, [000001C3B8F6C100][000001C3B97E9BC0 49] TVOS, [000001C3B8FC9F00][000001C3B97EC1C0 49] Mac, [000001C3B8F6E100][000001C3B97F0340 49] MacClient, [000001C3B8FCAF00][000001C3B97F44C0 49] MacNoEditor, [000001C3B8F6DF00][000001C3B97F8640 49] MacServer, [000001C3B8FC8600][000001C3B97FC7C0 49] Linux, [000001C3B8F6E200][000001C3B9800940 49] LinuxAArch64, [000001C3B8FCB100][000001C3B9804AC0 49] LinuxNoEditor, [000001C3B8F6DD00][000001C3B9808C40 49] LinuxAArch64NoEditor, [000001C3B8FC8F00][000001C3B97C8D80 49] LinuxClient, [000001C3B8F6F100][000001C3B980CEC0 49] LinuxAArch64Client, [000001C3B8FC9400][000001C3B9811000 49] LinuxServer, [000001C3B8F6F000][000001C3B9815140 49] LinuxAArch64Server, [000001C3B8FCA100][000001C3B981D2C0 49] Android, [000001C3B8F6C700][000001C3B9821440 49] Android_Low, [000001C3B8FC9600][000001C3B98255C0 49] Android_Mid, [000001C3B901BA00][000001C3B9829740 49] Android_High, [000001C3B8F99C00][000001C3B982D8C0 49] Android_Default, [000001C3B901A100][000001C3B9831A40 49] Android_Adreno4xx, [000001C3B8F9A700][000001C3B9835BC0 49] Android_Adreno5xx_Low, [000001C3B9018B00][000001C3B98381C0 49] Android_Adreno5xx, [000001C3B8F9AD00][000001C3B983C340 49] Android_Adreno6xx, [000001C3B9019200][000001C3B98404C0 49] Android_Adreno6xx_Vulkan, [000001C3B8F9A800][000001C3B9844640 49] Android_Mali_T6xx, [000001C3B901B200][000001C3B98487C0 49] Android_Mali_T7xx, [000001C3B8F9AE00][000001C3B984C940 49] Android_Mali_T8xx, [000001C3B901A500][000001C3B9850AC0 49] Android_Mali_G71, [000001C3B8F9BE00][000001C3B9854C40 49] Android_Mali_G72, [000001C3B901AA00][000001C3B9858DC0 49] Android_Mali_G72_Vulkan, [000001C3B8F99B00][000001C3B985CF40 49] Android_Mali_G76, [000001C3B9019B00][000001C3B9819080 49] Android_Mali_G76_Vulkan, [000001C3B8F9BD00][000001C3B98611C0 49] Android_Mali_G77, [000001C3B901AD00][000001C3B9865300 49] Android_Mali_G77_Vulkan, [000001C3B8F9B900][000001C3B986D480 49] Android_Mali_G78, [000001C3B9018D00][000001C3B9871600 49] Android_Mali_G78_Vulkan, [000001C3B8F98500][000001C3B9875780 49] Android_Mali_G710, [000001C3B901AB00][000001C3B9879900 49] Android_Mali_G710_Vulkan, [000001C3B8F9B500][000001C3B987DA80 49] Android_Vulkan_SM5, [000001C3B901B400][000001C3B9881C00 49] Android_PowerVR_G6xxx, [000001C3B8F9A400][000001C3B9884200 49] Android_PowerVR_GT7xxx, [000001C3B901BC00][000001C3B9888380 49] Android_PowerVR_GE8xxx, [000001C3B8F9A200][000001C3B988C500 49] Android_PowerVR_GM9xxx, [000001C3B901B000][000001C3B9890680 49] Android_PowerVR_GM9xxx_Vulkan, [000001C3B8F99500][000001C3B9894800 49] Android_TegraK1, [000001C3B9019100][000001C3B9898980 49] Android_Unknown_Vulkan, [000001C3B8FCB800][000001C3B989CB00 49] Lumin, [000001C3B901A900][000001C3B98A0C80 49] Lumin_Desktop, [000001C3B8FCB900][000001C3B98A4E00 49] HoloLens, 
+[2022.03.03-13.58.01:413][  0]LogMeshReduction: Using QuadricMeshReduction for automatic static mesh reduction
+[2022.03.03-13.58.01:413][  0]LogMeshReduction: Using SimplygonMeshReduction for automatic skeletal mesh reduction
+[2022.03.03-13.58.01:413][  0]LogMeshReduction: Using ProxyLODMeshReduction for automatic mesh merging
+[2022.03.03-13.58.01:413][  0]LogMeshReduction: No distributed automatic mesh merging module available
+[2022.03.03-13.58.01:413][  0]LogMeshMerging: No distributed automatic mesh merging module available
+[2022.03.03-13.58.01:468][  0]LogNetVersion: StarryTail 1.0.0, NetCL: 17155196, EngineNetVer: 17, GameNetVer: 0 (Checksum: 4214679525)
+[2022.03.03-13.58.03:683][  0]LogTexture: Default maximum texture size for cubemaps generated from long-lat sources has been changed from 512 to unlimited. In order to preserve old behaiour for '/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap', its maximum texture size has been explicitly set to 512.
+[2022.03.03-13.58.03:743][  0]LogHMD: PokeAHoleMaterial loaded successfully
+[2022.03.03-13.58.03:749][  0]LogUObjectArray: 17178 objects as part of root set at end of initial load.
+[2022.03.03-13.58.03:749][  0]LogUObjectAllocator: 4302048 out of 0 bytes used by permanent object pool.
+[2022.03.03-13.58.03:749][  0]LogUObjectArray: CloseDisregardForGC: 0/0 objects in disregard for GC pool
+[2022.03.03-13.58.04:535][  0]LogNiagaraDebuggerClient: Niagara Debugger Client Initialized | Session: 347BA0184A5834DD6F2383BDBCCF5A99 | Instance: 99688AB2415ED350B2E2DE944CCAA95E (DESKTOP-JDOR4MB-4220).
+[2022.03.03-13.58.05:280][  0]LogPython: Using Python 3.7.7
+[2022.03.03-13.58.05:865][  0]LogTcpMessaging: Initializing TcpMessaging bridge
+[2022.03.03-13.58.05:908][  0]LogUdpMessaging: Initializing bridge on interface 0.0.0.0:0 to multicast group 230.0.0.1:6666.
+[2022.03.03-13.58.06:989][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.06:989][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.07:012][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.07:067][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.07:085][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.07:120][  0]LogUProjectInfo: Found projects:
+[2022.03.03-13.58.07:949][  0]LogOpenImageDenoise: OIDN starting up
+[2022.03.03-13.58.08:155][  0]LogAndroidPermission: UAndroidPermissionCallbackProxy::GetInstance
+[2022.03.03-13.58.08:252][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2022.03.03-13.58.08:252][  0]LogAudioCaptureCore: Display: No Audio Capture implementations found. Audio input will be silent.
+[2022.03.03-13.58.08:544][  0]LogCollectionManager: Loaded 0 collections in 0.001878 seconds
+[2022.03.03-13.58.08:615][  0]LogFileCache: Scanning file cache for directory 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Collections/' took 0.00s
+[2022.03.03-13.58.08:615][  0]LogFileCache: Scanning file cache for directory 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Developers/Pocari/Collections/' took 0.00s
+[2022.03.03-13.58.08:615][  0]LogFileCache: Scanning file cache for directory 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Collections/' took 0.00s
+[2022.03.03-13.58.08:615][  0]LogOcInput: OculusInput pre-init called
+[2022.03.03-13.58.08:915][  0]LogClass: Display: BoolProperty FPlayerCharacterDataStruct::IsInvincibility is not initialized properly. Module:StarryTail File:PlayerCharacterDataStruct.h
+[2022.03.03-13.58.08:916][  0]LogClass: Display: FloatProperty FPlayerCharacterDataStruct::HP is not initialized properly. Module:StarryTail File:PlayerCharacterDataStruct.h
+[2022.03.03-13.58.08:916][  0]LogClass: Display: FloatProperty FPlayerCharacterDataStruct::MoveSpeed is not initialized properly. Module:StarryTail File:PlayerCharacterDataStruct.h
+[2022.03.03-13.58.08:916][  0]LogClass: Display: 3 Uninitialized script struct members found including 0 object properties
+[2022.03.03-13.58.08:919][  0]LogEngine: Initializing Engine...
+[2022.03.03-13.58.08:974][  0]LogHMD: Failed to initialize OpenVR with code 108
+[2022.03.03-13.58.09:030][  0]LogHMD: Optional extension XR_VARJO_quad_views is not available
+[2022.03.03-13.58.09:031][  0]LogHMD: Warning: Required extension XR_EXT_eye_gaze_interaction is not available
+[2022.03.03-13.58.09:031][  0]LogHMD: Could not enable all required OpenXR extensions for OpenXREyeTracker on current system. This plugin will be loaded but ignored, but will be enabled on a target platform that supports the required extension.
+[2022.03.03-13.58.09:534][  0]LogHMD: Failed to get an OpenXR system, result is XR_ERROR_FORM_FACTOR_UNAVAILABLE. Please check that your runtime supports VR headsets.
+[2022.03.03-13.58.09:534][  0]LogMagicLeap: Warning: VR disabled because ZI is not enabled.  To enable, in the editor, Edit -> Project Settings -> Plugins -> Magic Leap Plugin -> Enable Zero Iteration
+[2022.03.03-13.58.09:536][  0]LogStats: UGameplayTagsManager::InitializeManager -  0.001 s
+[2022.03.03-13.58.09:636][  0]LogInit: Initializing FReadOnlyCVARCache
+[2022.03.03-13.58.09:676][  0]LogAIModule: Creating AISystem for world Untitled
+[2022.03.03-13.58.09:681][  0]LogAudio: Display: Initializing Audio Device Manager...
+[2022.03.03-13.58.09:698][  0]LogAudio: Display: Loading Default Audio Settings Objects...
+[2022.03.03-13.58.09:699][  0]LogAudio: Display: No default SoundConcurrencyObject specified (or failed to load).
+[2022.03.03-13.58.09:700][  0]LogAudio: Display: Audio Device Manager Initialized
+[2022.03.03-13.58.09:700][  0]LogAudio: Display: Creating Audio Device:                 Id: 1, Scope: Shared, Realtime: True
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: Audio Mixer Platform Settings:
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Sample Rate:						  48000
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Callback Buffer Frame Size Requested: 1024
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Callback Buffer Frame Size To Use:	  1024
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Number of buffers to queue:			  2
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Max Channels (voices):				  32
+[2022.03.03-13.58.09:701][  0]LogAudioMixer: Display: 	Number of Async Source Workers:		  0
+[2022.03.03-13.58.09:701][  0]LogAudio: Display: AudioDevice MaxSources: 32
+[2022.03.03-13.58.09:702][  0]LogAudio: Display: Audio Spatialization Plugin: None (built-in).
+[2022.03.03-13.58.09:702][  0]LogAudio: Display: Audio Reverb Plugin: None (built-in).
+[2022.03.03-13.58.09:702][  0]LogAudio: Display: Audio Occlusion Plugin: None (built-in).
+[2022.03.03-13.58.09:702][  0]LogAudioMixer: Display: Initializing audio mixer.
+[2022.03.03-13.58.09:751][  0]LogAudioMixer: Display: 0: FrontLeft
+[2022.03.03-13.58.09:751][  0]LogAudioMixer: Display: 1: FrontRight
+[2022.03.03-13.58.09:760][  0]LogAudioMixer: Display: Using Audio Device FxSound Speakers(FxSound Audio Enhancer)
+[2022.03.03-13.58.09:765][  0]LogAudioMixer: Display: Initializing Sound Submixes...
+[2022.03.03-13.58.09:767][  0]LogAudioMixer: Display: Creating Master Submix 'MasterSubmixDefault'
+[2022.03.03-13.58.09:767][  0]LogAudioMixer: Display: Creating Master Submix 'MasterReverbSubmixDefault'
+[2022.03.03-13.58.09:768][  0]LogAudioMixer: Display: Creating Master Submix 'MasterEQSubmixDefault'
+[2022.03.03-13.58.09:768][  0]LogAudioMixer: FMixerPlatformXAudio2::StartAudioStream() called
+[2022.03.03-13.58.09:768][  0]LogAudioMixer: Display: Output buffers initialized: Frames=1024, Channels=2, Samples=2048
+[2022.03.03-13.58.09:769][  0]LogAudioMixer: Display: Starting AudioMixerPlatformInterface::RunInternal()
+[2022.03.03-13.58.09:769][  0]LogAudioMixer: Display: FMixerPlatformXAudio2::SubmitBuffer() called for the first time
+[2022.03.03-13.58.09:769][  0]LogInit: FAudioDevice initialized.
+[2022.03.03-13.58.09:770][  0]LogAudio: Display: Audio Device (ID: 1) registered with world 'Untitled'.
+[2022.03.03-13.58.09:771][  0]LogNetVersion: Set ProjectVersion to 1.0.0.0. Version Checksum will be recalculated on next use.
+[2022.03.03-13.58.09:805][  0]LogDerivedDataCache: Saved boot cache 0.03s 98MB C:/Users/Pocari/AppData/Local/UnrealEngine/4.27/DerivedDataCache/Boot.ddc.
+[2022.03.03-13.58.09:806][  0]LogInit: Texture streaming: Enabled
+[2022.03.03-13.58.09:856][  0]LogAnalytics: Display: [UEEditor.Rocket.Release] APIServer = https://datarouter.ol.epicgames.com/. AppVersion = 4.27.2-18319896+++UE4+Release-4.27
+[2022.03.03-13.58.09:871][  0]LogEngineSessionManager: EngineSessionManager initialized
+[2022.03.03-13.58.09:871][  0]LogEditorSessionSummary: Verbose: Initializing EditorSessionSummaryWriter for editor session tracking
+[2022.03.03-13.58.09:874][  0]LogEditorSessionSummary: EditorSessionSummaryWriter initialized
+[2022.03.03-13.58.10:050][  0]LogInit: Transaction tracking system initialized
+[2022.03.03-13.58.10:159][  0]BlueprintLog: New page: 에디터 로드
+[2022.03.03-13.58.10:457][  0]LocalizationService: 현지화 서비스가 비활성화되었습니다.
+[2022.03.03-13.58.10:580][  0]TimingProfiler: Initialize
+[2022.03.03-13.58.10:581][  0]TimingProfiler: OnSessionChanged
+[2022.03.03-13.58.10:581][  0]LoadingProfiler: Initialize
+[2022.03.03-13.58.10:581][  0]LoadingProfiler: OnSessionChanged
+[2022.03.03-13.58.10:582][  0]NetworkingProfiler: Initialize
+[2022.03.03-13.58.10:582][  0]NetworkingProfiler: OnSessionChanged
+[2022.03.03-13.58.10:582][  0]MemoryProfiler: Initialize
+[2022.03.03-13.58.10:582][  0]MemoryProfiler: OnSessionChanged
+[2022.03.03-13.58.10:904][  0]LogCook: Display: CookSettings for Memory: MemoryMaxUsedVirtual 0MiB, MemoryMaxUsedPhysical 16384MiB, MemoryMinFreeVirtual 0MiB, MemoryMinFreePhysical 1024MiB
+[2022.03.03-13.58.10:904][  0]LogCook: Display: Mobile HDR setting 1
+[2022.03.03-13.58.11:732][  0]LogFileCache: Scanning file cache for directory 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/' took 0.01s
+[2022.03.03-13.58.11:912][  0]LogInit: Display: Engine is initialized. Leaving FEngineLoop::Init()
+[2022.03.03-13.58.11:919][  0]SourceControl: 소스 컨트롤이 꺼졌습니다.
+[2022.03.03-13.58.11:920][  0]LogUnrealEdMisc: Loading editor; pre map load, took 56.621
+[2022.03.03-13.58.11:921][  0]Cmd: MAP LOAD FILE="../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/ThirdPersonCPP/Maps/ThirdPersonExampleMap.umap" TEMPLATE=0 SHOWPROGRESS=1 FEATURELEVEL=3
+[2022.03.03-13.58.11:922][  0]LightingResults: New page: 라이팅 빌드
+[2022.03.03-13.58.11:928][  0]LogWorld: UWorld::CleanupWorld for Untitled, bSessionEnded=true, bCleanupResources=true
+[2022.03.03-13.58.11:930][  0]LogSlate: InvalidateAllWidgets triggered.  All widgets were invalidated
+[2022.03.03-13.58.11:932][  0]MapCheck: New page: 맵 체크
+[2022.03.03-13.58.11:932][  0]LightingResults: New page: 라이팅 빌드
+[2022.03.03-13.58.11:940][  0]LogAudio: Display: Audio Device unregistered from world 'None'.
+[2022.03.03-13.58.11:952][  0]LogUObjectHash: Compacting FUObjectHashTables data took   0.75ms
+[2022.03.03-13.58.11:993][  0]LogLinker: Warning: [AssetLog] C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Content\ThirdPersonCPP\Maps\ThirdPersonExampleMap.umap: '{FileName}': 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.11:993][  0]LogLinker: Warning: [AssetLog] C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Content\ThirdPersonCPP\Maps\ThirdPersonExampleMap.umap: '{FileName}': 에셋에 대한 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.12:000][  0]LogLinker: Warning: [AssetLog] C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Content\ThirdPersonCPP\Maps\ThirdPersonExampleMap.umap: '{FileName}': 에셋에 대한 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.12:001][  0]LogLinker: Warning: '{FileName}': 에셋에 대한 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.12:001][  0]LogLinker: Warning: '{FileName}': 에셋에 대한 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.12:021][  0]LogLinker: Warning: [AssetLog] C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Content\ThirdPersonCPP\Maps\ThirdPersonExampleMap.umap: '{FileName}': 에셋에 대한 파일을 찾을 수 없습니다. 로드에 실패했습니다.
+[2022.03.03-13.58.12:021][  0]LoadErrors: 로드에 실패했습니다. /Game/ThirdPersonCPP/Maps/ThirdPersonExampleMap_BuiltData.ThirdPersonExampleMap_BuiltData 참조한 것: PersistentLevel
+[2022.03.03-13.58.12:253][  0]LogAudio: Display: Audio Device (ID: 1) registered with world 'ThirdPersonExampleMap'.
+[2022.03.03-13.58.12:254][  0]LogAIModule: Creating AISystem for world ThirdPersonExampleMap
+[2022.03.03-13.58.12:287][  0]LogEditorServer: Finished looking for orphan Actors (0.000 secs)
+[2022.03.03-13.58.12:302][  0]LogUObjectHash: Compacting FUObjectHashTables data took   0.85ms
+[2022.03.03-13.58.12:304][  0]Cmd: MAP CHECKDEP NOCLEARLOG
+[2022.03.03-13.58.12:305][  0]MapCheck: 맵 체크 완료: 오류 0 회, 경고 0 회, 소요 시간 0.276ms.
+[2022.03.03-13.58.12:305][  0]LogFileHelpers: Loading map 'ThirdPersonExampleMap' took 0.385
+[2022.03.03-13.58.12:325][  0]LogUnrealEdMisc: Total Editor Startup Time, took 57.027
+[2022.03.03-13.58.12:490][  0]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2022.03.03-13.58.12:495][  0]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2022.03.03-13.58.12:499][  0]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2022.03.03-13.58.12:503][  0]LogSlate: Updating window title bar state: overlay mode, drag disabled, window buttons hidden, title bar hidden
+[2022.03.03-13.58.12:590][  0]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0090 seconds. Added 3825 classes and 930 folders.
+[2022.03.03-13.58.12:595][  0]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'WidgetCarousel' in 0.0002 seconds. Added 0 classes and 0 folders.
+[2022.03.03-13.58.12:610][  0]LogPakFile: PakFile PrimaryIndexSize=187
+[2022.03.03-13.58.12:610][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:610][  0]LogPakFile: PakFile FullDirectoryIndexSize=148
+[2022.03.03-13.58.12:610][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/FP_FirstPerson.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:610][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/FP_FirstPerson.upack)
+[2022.03.03-13.58.12:610][  0]LogPakFile: OnPakFileMounted2Time == 0.000698
+[2022.03.03-13.58.12:617][  0]LogPakFile: PakFile PrimaryIndexSize=189
+[2022.03.03-13.58.12:617][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:617][  0]LogPakFile: PakFile FullDirectoryIndexSize=152
+[2022.03.03-13.58.12:617][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/FP_FirstPersonBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:617][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/FP_FirstPersonBP.upack)
+[2022.03.03-13.58.12:617][  0]LogPakFile: OnPakFileMounted2Time == 0.000026
+[2022.03.03-13.58.12:622][  0]LogPakFile: PakFile PrimaryIndexSize=191
+[2022.03.03-13.58.12:622][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:622][  0]LogPakFile: PakFile FullDirectoryIndexSize=160
+[2022.03.03-13.58.12:622][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/MobileStarterContent.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:622][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/MobileStarterContent.upack)
+[2022.03.03-13.58.12:622][  0]LogPakFile: OnPakFileMounted2Time == 0.000027
+[2022.03.03-13.58.12:626][  0]LogPakFile: PakFile PrimaryIndexSize=185
+[2022.03.03-13.58.12:626][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:626][  0]LogPakFile: PakFile FullDirectoryIndexSize=148
+[2022.03.03-13.58.12:626][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/StarterContent.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:626][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/StarterContent.upack)
+[2022.03.03-13.58.12:626][  0]LogPakFile: OnPakFileMounted2Time == 0.000034
+[2022.03.03-13.58.12:631][  0]LogPakFile: PakFile PrimaryIndexSize=190
+[2022.03.03-13.58.12:631][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:631][  0]LogPakFile: PakFile FullDirectoryIndexSize=154
+[2022.03.03-13.58.12:631][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_2DSideScroller.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:631][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_2DSideScroller.upack)
+[2022.03.03-13.58.12:631][  0]LogPakFile: OnPakFileMounted2Time == 0.000031
+[2022.03.03-13.58.12:635][  0]LogPakFile: PakFile PrimaryIndexSize=192
+[2022.03.03-13.58.12:635][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:635][  0]LogPakFile: PakFile FullDirectoryIndexSize=158
+[2022.03.03-13.58.12:635][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_2DSideScrollerBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:635][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_2DSideScrollerBP.upack)
+[2022.03.03-13.58.12:635][  0]LogPakFile: OnPakFileMounted2Time == 0.000049
+[2022.03.03-13.58.12:640][  0]LogPakFile: PakFile PrimaryIndexSize=182
+[2022.03.03-13.58.12:640][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:640][  0]LogPakFile: PakFile FullDirectoryIndexSize=138
+[2022.03.03-13.58.12:640][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Flying.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:640][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Flying.upack)
+[2022.03.03-13.58.12:640][  0]LogPakFile: OnPakFileMounted2Time == 0.000029
+[2022.03.03-13.58.12:645][  0]LogPakFile: PakFile PrimaryIndexSize=184
+[2022.03.03-13.58.12:645][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:645][  0]LogPakFile: PakFile FullDirectoryIndexSize=142
+[2022.03.03-13.58.12:645][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_FlyingBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:645][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_FlyingBP.upack)
+[2022.03.03-13.58.12:645][  0]LogPakFile: OnPakFileMounted2Time == 0.000026
+[2022.03.03-13.58.12:650][  0]LogPakFile: PakFile PrimaryIndexSize=188
+[2022.03.03-13.58.12:650][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:650][  0]LogPakFile: PakFile FullDirectoryIndexSize=150
+[2022.03.03-13.58.12:650][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_HandheldARBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:650][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_HandheldARBP.upack)
+[2022.03.03-13.58.12:650][  0]LogPakFile: OnPakFileMounted2Time == 0.000027
+[2022.03.03-13.58.12:656][  0]LogPakFile: PakFile PrimaryIndexSize=182
+[2022.03.03-13.58.12:656][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:656][  0]LogPakFile: PakFile FullDirectoryIndexSize=138
+[2022.03.03-13.58.12:656][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Puzzle.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:656][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Puzzle.upack)
+[2022.03.03-13.58.12:656][  0]LogPakFile: OnPakFileMounted2Time == 0.000032
+[2022.03.03-13.58.12:660][  0]LogPakFile: PakFile PrimaryIndexSize=184
+[2022.03.03-13.58.12:660][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:660][  0]LogPakFile: PakFile FullDirectoryIndexSize=142
+[2022.03.03-13.58.12:660][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_PuzzleBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:660][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_PuzzleBP.upack)
+[2022.03.03-13.58.12:660][  0]LogPakFile: OnPakFileMounted2Time == 0.000024
+[2022.03.03-13.58.12:665][  0]LogPakFile: PakFile PrimaryIndexSize=183
+[2022.03.03-13.58.12:665][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:665][  0]LogPakFile: PakFile FullDirectoryIndexSize=140
+[2022.03.03-13.58.12:665][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Rolling.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:665][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Rolling.upack)
+[2022.03.03-13.58.12:665][  0]LogPakFile: OnPakFileMounted2Time == 0.000029
+[2022.03.03-13.58.12:669][  0]LogPakFile: PakFile PrimaryIndexSize=185
+[2022.03.03-13.58.12:669][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:669][  0]LogPakFile: PakFile FullDirectoryIndexSize=144
+[2022.03.03-13.58.12:669][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_RollingBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:669][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_RollingBP.upack)
+[2022.03.03-13.58.12:669][  0]LogPakFile: OnPakFileMounted2Time == 0.000025
+[2022.03.03-13.58.12:674][  0]LogPakFile: PakFile PrimaryIndexSize=188
+[2022.03.03-13.58.12:674][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:674][  0]LogPakFile: PakFile FullDirectoryIndexSize=150
+[2022.03.03-13.58.12:674][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_SideScroller.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:674][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_SideScroller.upack)
+[2022.03.03-13.58.12:674][  0]LogPakFile: OnPakFileMounted2Time == 0.000025
+[2022.03.03-13.58.12:678][  0]LogPakFile: PakFile PrimaryIndexSize=190
+[2022.03.03-13.58.12:678][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:678][  0]LogPakFile: PakFile FullDirectoryIndexSize=154
+[2022.03.03-13.58.12:678][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_SideScrollerBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:678][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_SideScrollerBP.upack)
+[2022.03.03-13.58.12:678][  0]LogPakFile: OnPakFileMounted2Time == 0.000028
+[2022.03.03-13.58.12:683][  0]LogPakFile: PakFile PrimaryIndexSize=187
+[2022.03.03-13.58.12:683][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:683][  0]LogPakFile: PakFile FullDirectoryIndexSize=148
+[2022.03.03-13.58.12:683][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_ThirdPerson.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:683][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_ThirdPerson.upack)
+[2022.03.03-13.58.12:683][  0]LogPakFile: OnPakFileMounted2Time == 0.000022
+[2022.03.03-13.58.12:687][  0]LogPakFile: PakFile PrimaryIndexSize=189
+[2022.03.03-13.58.12:687][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:687][  0]LogPakFile: PakFile FullDirectoryIndexSize=152
+[2022.03.03-13.58.12:687][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_ThirdPersonBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:687][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_ThirdPersonBP.upack)
+[2022.03.03-13.58.12:688][  0]LogPakFile: OnPakFileMounted2Time == 0.000032
+[2022.03.03-13.58.12:693][  0]LogPakFile: PakFile PrimaryIndexSize=183
+[2022.03.03-13.58.12:693][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:693][  0]LogPakFile: PakFile FullDirectoryIndexSize=140
+[2022.03.03-13.58.12:693][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TopDown.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:693][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TopDown.upack)
+[2022.03.03-13.58.12:693][  0]LogPakFile: OnPakFileMounted2Time == 0.000041
+[2022.03.03-13.58.12:697][  0]LogPakFile: PakFile PrimaryIndexSize=185
+[2022.03.03-13.58.12:697][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:697][  0]LogPakFile: PakFile FullDirectoryIndexSize=144
+[2022.03.03-13.58.12:697][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TopDownBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:697][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TopDownBP.upack)
+[2022.03.03-13.58.12:697][  0]LogPakFile: OnPakFileMounted2Time == 0.000024
+[2022.03.03-13.58.12:704][  0]LogPakFile: PakFile PrimaryIndexSize=185
+[2022.03.03-13.58.12:705][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:705][  0]LogPakFile: PakFile FullDirectoryIndexSize=144
+[2022.03.03-13.58.12:705][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TwinStick.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:705][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TwinStick.upack)
+[2022.03.03-13.58.12:705][  0]LogPakFile: OnPakFileMounted2Time == 0.000028
+[2022.03.03-13.58.12:709][  0]LogPakFile: PakFile PrimaryIndexSize=187
+[2022.03.03-13.58.12:709][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:709][  0]LogPakFile: PakFile FullDirectoryIndexSize=148
+[2022.03.03-13.58.12:709][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TwinStickBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:709][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_TwinStickBP.upack)
+[2022.03.03-13.58.12:709][  0]LogPakFile: OnPakFileMounted2Time == 0.000024
+[2022.03.03-13.58.12:713][  0]LogPakFile: PakFile PrimaryIndexSize=183
+[2022.03.03-13.58.12:713][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:713][  0]LogPakFile: PakFile FullDirectoryIndexSize=140
+[2022.03.03-13.58.12:713][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Vehicle.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:713][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_Vehicle.upack)
+[2022.03.03-13.58.12:713][  0]LogPakFile: OnPakFileMounted2Time == 0.000023
+[2022.03.03-13.58.12:718][  0]LogPakFile: PakFile PrimaryIndexSize=186
+[2022.03.03-13.58.12:718][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:718][  0]LogPakFile: PakFile FullDirectoryIndexSize=146
+[2022.03.03-13.58.12:718][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleAdv.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:718][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleAdv.upack)
+[2022.03.03-13.58.12:718][  0]LogPakFile: OnPakFileMounted2Time == 0.000026
+[2022.03.03-13.58.12:723][  0]LogPakFile: PakFile PrimaryIndexSize=188
+[2022.03.03-13.58.12:723][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:723][  0]LogPakFile: PakFile FullDirectoryIndexSize=150
+[2022.03.03-13.58.12:723][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleAdvBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:723][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleAdvBP.upack)
+[2022.03.03-13.58.12:723][  0]LogPakFile: OnPakFileMounted2Time == 0.000033
+[2022.03.03-13.58.12:727][  0]LogPakFile: PakFile PrimaryIndexSize=185
+[2022.03.03-13.58.12:727][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:727][  0]LogPakFile: PakFile FullDirectoryIndexSize=144
+[2022.03.03-13.58.12:727][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:727][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VehicleBP.upack)
+[2022.03.03-13.58.12:727][  0]LogPakFile: OnPakFileMounted2Time == 0.000024
+[2022.03.03-13.58.12:732][  0]LogPakFile: PakFile PrimaryIndexSize=192
+[2022.03.03-13.58.12:732][  0]LogPakFile: PakFile PathHashIndexSize=101
+[2022.03.03-13.58.12:732][  0]LogPakFile: PakFile FullDirectoryIndexSize=158
+[2022.03.03-13.58.12:732][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: PakFile 'C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VirtualRealityBP.upack' (chunk index -1, root 'root:/') mounted
+[2022.03.03-13.58.12:732][  0]LogShaderLibrary: Display: ShaderCodeLibraryPakFileMountedCallback: pending pak file info (ChunkID:-1 Root:root:/ File:C:/Program Files/Epic Games/UE_4.27/FeaturePacks/TP_VirtualRealityBP.upack)
+[2022.03.03-13.58.12:732][  0]LogPakFile: OnPakFileMounted2Time == 0.000039
+[2022.03.03-13.58.13:072][  0]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'AddContentDialog' in 0.0002 seconds. Added 0 classes and 0 folders.
+[2022.03.03-13.58.13:080][  0]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'SceneOutliner' in 0.0002 seconds. Added 2 classes and 0 folders.
+[2022.03.03-13.58.13:143][  0]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'HierarchicalLODOutliner' in 0.0002 seconds. Added 0 classes and 0 folders.
+[2022.03.03-13.58.13:143][  0]LogInput: Warning: Action Jump uses invalid key OculusGo_Left_Trigger_Click.
+[2022.03.03-13.58.13:143][  0]LogInput: Warning: Action ResetVR uses invalid key OculusGo_Left_Trackpad_Click.
+[2022.03.03-13.58.13:143][  0]LogInput: Warning: Use -RemoveInvalidKeys to remove instances of these keys from the action mapping.
+[2022.03.03-13.58.13:143][  0]LogLoad: (Engine Initialization) Total time: 57.85 seconds
+[2022.03.03-13.58.13:143][  0]LogLoad: (Engine Initialization) Total Blueprint compile time: 0.00 seconds
+[2022.03.03-13.58.13:183][  0]LogAssetRegistry: Asset discovery search completed in 12.6393 seconds
+[2022.03.03-13.58.13:190][  0]LogCollectionManager: Fixed up redirectors for 0 collections in 0.000005 seconds (updated 0 objects)
+[2022.03.03-13.58.13:195][  0]LogContentStreaming: Texture pool size now 1000 MB
+[2022.03.03-13.58.13:266][  0]LogSlate: Took 0.005137 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Regular.ttf' (155K)
+[2022.03.03-13.58.13:272][  0]LogSlate: Took 0.004763 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/FontAwesome.ttf' (139K)
+[2022.03.03-13.58.13:279][  0]LogSlate: Took 0.005977 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/NanumGothic.ttf' (4243K)
+[2022.03.03-13.58.13:285][  0]LogSlate: Took 0.005839 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/NanumGothicBold.ttf' (4188K)
+[2022.03.03-13.58.13:289][  0]LogSlate: Took 0.004023 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Bold.ttf' (160K)
+[2022.03.03-13.58.13:428][  0]LogSlate: Took 0.003990 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Light.ttf' (167K)
+[2022.03.03-13.58.13:444][  0]LogRenderer: Reallocating scene render targets to support 928x540 Format 10 NumSamples 1 (Frame:1).
+[2022.03.03-13.58.13:444][  0]LogSlate: Took 0.005679 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/DroidSansMono.ttf' (77K)
+[2022.03.03-13.58.13:449][  0]LogSlate: Took 0.005769 seconds to synchronously load lazily loaded font '../../../Engine/Content/Editor/Slate/Fonts/NanumGothicExtraBold.ttf' (4074K)
+[2022.03.03-13.58.14:163][ 76]LogSlate: Took 0.000186 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-Light.ttf' (167K)
+[2022.03.03-13.58.16:442][290]LogSlate: Window '메시지 로그' being destroyed
+[2022.03.03-13.58.16:447][290]LogSlate: Window '메시지 로그' being destroyed
+[2022.03.03-13.58.44:260][672]LogEditorClassViewer: Warning: Class /Engine/Tutorial/InWorldBlueprintEditing/TutorialAssets/IWBE_Blutility.IWBE_Blutility_C has parent /Script/Blutility.PlacedEditorUtilityBase, but this parent is not found. The Class will not be shown in ClassViewer.
+[2022.03.03-13.58.44:367][672]LogSlate: Took 0.005933 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/Roboto-BoldCondensed.ttf' (158K)
+[2022.03.03-13.58.46:956][912]LogSlate: Window 'C++ 클래스 추가' being destroyed
+[2022.03.03-13.59.16:063][727]Running C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -projectfiles -project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" -game -rocket -progress
+[2022.03.03-13.59.16:368][727]Discovering modules, targets and source code for project...
+[2022.03.03-13.59.17:973][727]Binding IntelliSense data...
+[2022.03.03-13.59.20:192][727]Binding IntelliSense data... 100%
+[2022.03.03-13.59.20:192][727]Writing project files...
+[2022.03.03-13.59.23:507][727]Writing project files... 100%
+[2022.03.03-13.59.23:625][727]Candidate modules for hot reload:
+[2022.03.03-13.59.23:625][727]  StarryTail
+[2022.03.03-13.59.23:625][727]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,6997 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-13.59.35:182][727]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 7:59:35
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Creating makefile for StarryTailEditor (no existing makefile)
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Parsing headers for StarryTailEditor
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: LogInit: Display: Loading text-based GConfig....
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Reflection code generated for StarryTailEditor in 5.0580478 seconds
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Building 6 actions with 12 processes...
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [1/6] StarryTail.init.gen.cpp
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [2/6] StopWatchWidget.cpp
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [3/6] StopWatchWidget.gen.cpp
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [4/6] UE4Editor-StarryTail-6997.lib
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6997.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6997.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [5/6] UE4Editor-StarryTail-6997.dll
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6997.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6997.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-13.59.35:183][727]CompilerResultsLog:   [6/6] StarryTailEditor.target
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Total time in Parallel executor: 4.67 seconds
+[2022.03.03-13.59.35:183][727]CompilerResultsLog: Total execution time: 11.49 seconds
+[2022.03.03-13.59.35:183][727]LogMainFrame: MainFrame: Module compiling took 11.567 seconds
+[2022.03.03-13.59.36:108][727]LogClass: Could not find existing class StopWatchWidget in package /Script/StarryTail for HotReload, assuming new class
+[2022.03.03-13.59.36:108][727]LogClass: PlayerCharacterDataStruct HotReload.
+[2022.03.03-13.59.36:110][727]LogHotReload: Re-instancing IreneCharacter after hot-reload.
+[2022.03.03-13.59.36:123][727]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0002 seconds. Added 4 classes and 2 folders.
+[2022.03.03-13.59.36:125][727]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-13.59.36:167][727]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0071 seconds. Added 3826 classes and 930 folders.
+[2022.03.03-13.59.36:167][727]Display: HotReload took 12.6s.
+[2022.03.03-13.59.36:184][727]Warning: HotReload operation took 12.6s.
+[2022.03.03-13.59.36:386][727]LogVSAccessor: Warning: Couldn't goto line number '1' in 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Source/StarryTail/StopWatchWidget.h'
+[2022.03.03-13.59.36:388][727]LogVSAccessor: Warning: Couldn't open file 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Source/StarryTail/StopWatchWidget.cpp'.
+[2022.03.03-13.59.36:392][727]LogSlate: Window 'C++ 클래스 추가' being destroyed
+[2022.03.03-13.59.36:404][727]LogHotReload: New module detected: UE4Editor-StarryTail-6997.dll
+[2022.03.03-13.59.36:449][728]LogHotReload: Starting Hot-Reload from IDE
+[2022.03.03-13.59.36:571][728]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0003 seconds. Added 4 classes and 2 folders.
+[2022.03.03-13.59.36:572][728]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-13.59.36:581][728]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0074 seconds. Added 3826 classes and 930 folders.
+[2022.03.03-13.59.36:584][728]Display: HotReload took  0.1s.
+[2022.03.03-13.59.40:634][822]Candidate modules for hot reload:
+[2022.03.03-13.59.40:634][822]  StarryTail
+[2022.03.03-13.59.40:634][822]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,6255 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-13.59.40:636][822]Warning: Starting HotReload took  0.0s.
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 7:59:42
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Building 3 actions with 12 processes...
+[2022.03.03-13.59.42:619][980]CompilerResultsLog:   [1/3] UE4Editor-StarryTail-6255.lib
+[2022.03.03-13.59.42:619][980]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6255.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6255.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-13.59.42:619][980]CompilerResultsLog:   [2/3] UE4Editor-StarryTail-6255.dll
+[2022.03.03-13.59.42:619][980]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6255.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6255.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-13.59.42:619][980]CompilerResultsLog:   [3/3] StarryTailEditor.target
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Total time in Parallel executor: 1.12 seconds
+[2022.03.03-13.59.42:619][980]CompilerResultsLog: Total execution time: 1.90 seconds
+[2022.03.03-13.59.42:619][980]LogMainFrame: MainFrame: Module compiling took 1.989 seconds
+[2022.03.03-13.59.43:103][980]LogClass: PlayerCharacterDataStruct HotReload.
+[2022.03.03-13.59.43:105][980]LogHotReload: Re-instancing IreneCharacter after hot-reload.
+[2022.03.03-13.59.43:114][980]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0002 seconds. Added 4 classes and 2 folders.
+[2022.03.03-13.59.43:116][980]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-13.59.43:151][980]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0082 seconds. Added 3826 classes and 930 folders.
+[2022.03.03-13.59.43:151][980]Display: HotReload took  2.5s.
+[2022.03.03-13.59.47:982][412]LogContentBrowser: Deferred new asset folder creation: NewFolder
+[2022.03.03-13.59.47:995][412]LogContentBrowser: Creating deferred item: NewFolder
+[2022.03.03-13.59.49:615][607]LogContentBrowser: Attempting asset rename: NewFolder -> Widget
+[2022.03.03-13.59.49:616][607]LogContentBrowser: End creating deferred item NewFolder
+[2022.03.03-13.59.53:678][ 35]LogContentBrowser: Deferred new asset file creation: NewWidgetBlueprint
+[2022.03.03-13.59.53:684][ 35]LogContentBrowser: Creating deferred item: NewWidgetBlueprint
+[2022.03.03-14.00.07:959][655]LogContentBrowser: Attempting asset rename: NewWidgetBlueprint -> BP_Stop
+[2022.03.03-14.00.07:967][655]LogContentBrowser: End creating deferred item NewWidgetBlueprint
+[2022.03.03-14.00.10:377][882]LogContentBrowser: Attempting asset rename: BP_Stop -> BP_StopWatchWidget
+[2022.03.03-14.00.10:396][882]LogMetaData: Removing '/Game/Widget/BP_StopWatchWidget.SKEL_BP_StopWatchWidget_C' ref from Metadata '/Game/Widget/BP_Stop.PackageMetaData'
+[2022.03.03-14.00.10:396][882]LogMetaData: Removing '/Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C' ref from Metadata '/Game/Widget/BP_Stop.PackageMetaData'
+[2022.03.03-14.00.10:396][882]LogMetaData: Removing '/Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget:EventGraph.K2Node_Event_0' ref from Metadata '/Game/Widget/BP_Stop.PackageMetaData'
+[2022.03.03-14.00.10:396][882]LogMetaData: Removing '/Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget:EventGraph.K2Node_Event_1' ref from Metadata '/Game/Widget/BP_Stop.PackageMetaData'
+[2022.03.03-14.00.10:396][882]LogMetaData: Removing '/Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget:EventGraph.K2Node_Event_2' ref from Metadata '/Game/Widget/BP_Stop.PackageMetaData'
+[2022.03.03-14.00.10:425][882]Cmd: OBJ SAVEPACKAGE PACKAGE="/Game/Widget/BP_StopWatchWidget" FILE="../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Widget/BP_StopWatchWidget.uasset" SILENT=true
+[2022.03.03-14.00.10:436][882]LogSavePackage: Moving '../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/BP_StopWatchWidgetEEF62B9F43FED945039347B04D470115.tmp' to '../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Widget/BP_StopWatchWidget.uasset'
+[2022.03.03-14.00.10:625][882]LogUObjectHash: Compacting FUObjectHashTables data took   0.59ms
+[2022.03.03-14.00.10:690][882]LogUObjectHash: Compacting FUObjectHashTables data took   0.54ms
+[2022.03.03-14.00.10:693][882]LogUObjectHash: Compacting FUObjectHashTables data took   0.19ms
+[2022.03.03-14.00.10:714][882]AssetCheck: New page: 에셋 저장:  BP_StopWatchWidget
+[2022.03.03-14.00.10:714][882]LogContentValidation: Display: WidgetBlueprint /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget 유효성 검사 중
+[2022.03.03-14.00.12:667][ 56]LogAssetEditorSubsystem: Opening Asset editor for WidgetBlueprint /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget
+[2022.03.03-14.00.12:891][ 56]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'BlueprintGraph' in 0.0005 seconds. Added 126 classes and 0 folders.
+[2022.03.03-14.00.16:810][357]LogSlate: Prevented a slow task dialog from being summoned while a context menu was open
+[2022.03.03-14.00.16:826][357]LogEditorClassViewer: Warning: Class /Engine/Tutorial/InWorldBlueprintEditing/TutorialAssets/IWBE_Blutility.IWBE_Blutility_C has parent /Script/Blutility.PlacedEditorUtilityBase, but this parent is not found. The Class will not be shown in ClassViewer.
+[2022.03.03-14.00.18:039][469]LogBlueprint: Warning: Reparenting blueprint WidgetBlueprint /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget from UserWidget to StopWatchWidget...
+[2022.03.03-14.00.18:044][469]BlueprintLog: New page: BP_StopWatchWidget 컴파일
+[2022.03.03-14.00.18:091][469]LogUObjectHash: Compacting FUObjectHashTables data took   2.67ms
+[2022.03.03-14.00.20:281][706]Cmd: OBJ SAVEPACKAGE PACKAGE="/Game/Widget/BP_StopWatchWidget" FILE="../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Widget/BP_StopWatchWidget.uasset" SILENT=true
+[2022.03.03-14.00.20:285][706]LogSavePackage: Moving '../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/BP_StopWatchWidget02A365414EB8674381A72F966111E7BF.tmp' to '../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Content/Widget/BP_StopWatchWidget.uasset'
+[2022.03.03-14.00.20:324][706]AssetCheck: New page: 에셋 저장:  BP_StopWatchWidget
+[2022.03.03-14.00.20:325][706]LogContentValidation: Display: WidgetBlueprint /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget 유효성 검사 중
+[2022.03.03-14.00.24:521][139]LogEditorClassViewer: Warning: Class /Engine/Tutorial/InWorldBlueprintEditing/TutorialAssets/IWBE_Blutility.IWBE_Blutility_C has parent /Script/Blutility.PlacedEditorUtilityBase, but this parent is not found. The Class will not be shown in ClassViewer.
+[2022.03.03-14.00.24:522][139]LogSlate: Warning: Slate: Had to block on waiting for a draw buffer
+[2022.03.03-14.00.46:091][781]Running C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -projectfiles -project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" -game -rocket -progress
+[2022.03.03-14.00.46:394][781]Discovering modules, targets and source code for project...
+[2022.03.03-14.00.47:899][781]Binding IntelliSense data...
+[2022.03.03-14.00.49:620][781]Binding IntelliSense data... 100%
+[2022.03.03-14.00.49:620][781]Writing project files...
+[2022.03.03-14.00.52:731][781]Writing project files... 100%
+[2022.03.03-14.00.52:840][781]Candidate modules for hot reload:
+[2022.03.03-14.00.52:840][781]  StarryTail
+[2022.03.03-14.00.52:841][781]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,1737 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:00:59
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Creating makefile for StarryTailEditor (no existing makefile)
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Parsing headers for StarryTailEditor
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: LogInit: Display: Loading text-based GConfig....
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Reflection code generated for StarryTailEditor in 3.2854899 seconds
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Building 6 actions with 12 processes...
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [1/6] StopWatch.cpp
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [2/6] StarryTail.init.gen.cpp
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [3/6] StopWatch.gen.cpp
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [4/6] UE4Editor-StarryTail-1737.lib
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-1737.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-1737.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [5/6] UE4Editor-StarryTail-1737.dll
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-1737.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-1737.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.00.59:158][781]CompilerResultsLog:   [6/6] StarryTailEditor.target
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Total time in Parallel executor: 1.17 seconds
+[2022.03.03-14.00.59:158][781]CompilerResultsLog: Total execution time: 6.24 seconds
+[2022.03.03-14.00.59:158][781]LogMainFrame: MainFrame: Module compiling took 6.321 seconds
+[2022.03.03-14.01.00:004][781]LogClass: Could not find existing class StopWatch in package /Script/StarryTail for HotReload, assuming new class
+[2022.03.03-14.01.00:006][781]LogClass: PlayerCharacterDataStruct HotReload.
+[2022.03.03-14.01.00:009][781]LogHotReload: Re-instancing IreneCharacter after hot-reload.
+[2022.03.03-14.01.00:034][781]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0003 seconds. Added 5 classes and 2 folders.
+[2022.03.03-14.01.00:038][781]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-14.01.00:105][781]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0088 seconds. Added 3827 classes and 930 folders.
+[2022.03.03-14.01.00:106][781]Display: HotReload took  7.3s.
+[2022.03.03-14.01.00:117][781]Warning: HotReload operation took  7.3s.
+[2022.03.03-14.01.00:840][781]LogVSAccessor: Warning: Couldn't goto line number '1' in 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Source/StarryTail/StopWatch.h'
+[2022.03.03-14.01.00:842][781]LogVSAccessor: Warning: Couldn't open file 'C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Source/StarryTail/StopWatch.cpp'.
+[2022.03.03-14.01.00:858][781]LogSlate: Window 'C++ 클래스 추가' being destroyed
+[2022.03.03-14.01.01:116][781]LogHotReload: New module detected: UE4Editor-StarryTail-1737.dll
+[2022.03.03-14.01.01:167][782]LogHotReload: Starting Hot-Reload from IDE
+[2022.03.03-14.01.01:197][782]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0003 seconds. Added 5 classes and 2 folders.
+[2022.03.03-14.01.01:203][782]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-14.01.01:216][782]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0090 seconds. Added 3827 classes and 930 folders.
+[2022.03.03-14.01.01:223][782]Display: HotReload took  0.1s.
+[2022.03.03-14.01.54:374][945]Candidate modules for hot reload:
+[2022.03.03-14.01.54:374][945]  StarryTail
+[2022.03.03-14.01.54:374][945]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,9247 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.01.54:376][945]Warning: Starting HotReload took  0.0s.
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:02:00
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Parsing headers for StarryTailEditor
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:   Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: LogInit: Display: Loading text-based GConfig....
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Reflection code generated for StarryTailEditor in 3.2346109 seconds
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.02.00:891][156]CompilerResultsLog: Building 8 actions with 12 processes...
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:   [1/8] StarryTail.init.gen.cpp
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:   [2/8] StopWatch.gen.cpp
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:   [3/8] StopWatch.cpp
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(7) : error C2039: 'AStopWaatch': 'AStopWatch'?? ?????? ?ƴմϴ?.
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:   C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.h(19): note: 'AStopWatch' ?????? ?????Ͻʽÿ?.
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(8) : error C4430: ???? ?????ڰ? ?????ϴ?. int?? ?????մϴ?. ????: C++?????? ?⺻ int?? ???????? ?ʽ??ϴ?.
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(10) : error C2065: 'PrimaryActorTick': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.02.00:891][156]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(15) : error C2065: 'TimerWidgetClass': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.02.00:892][156]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(17) : error C4508: 'AStopWaatch': ?Լ??? ???? ??ȯ?ؾ? ?ϹǷ? 'void' ??ȯ ???????? ???ֵ˴ϴ?.
+[2022.03.03-14.02.00:892][156]CompilerResultsLog:   [4/8] StopWatchWidget.cpp
+[2022.03.03-14.02.00:892][156]CompilerResultsLog:   [5/8] StopWatchWidget.gen.cpp
+[2022.03.03-14.02.00:892][156]LogMainFrame: MainFrame: Module compiling took 6.520 seconds
+[2022.03.03-14.02.00:896][156]Warning: HotReload failed, recompile failed
+[2022.03.03-14.02.02:937][161]LogSlate: Took 0.006429 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf' (3848K)
+[2022.03.03-14.02.02:938][161]LogSlate: Last resort fallback font was requested. Font: '../../../Engine/Content/Slate/Fonts/DroidSansFallback.ttf', Character: 'ƴ (U+01b4)'
+[2022.03.03-14.02.02:946][161]LogSlate: Took 0.006974 seconds to synchronously load lazily loaded font '../../../Engine/Content/SlateDebug/Fonts/LastResort.ttf' (5269K)
+[2022.03.03-14.02.02:952][161]LogSlate: Took 0.005304 seconds to synchronously load lazily loaded font '../../../Engine/Content/Slate/Fonts/NotoNaskhArabicUI-Regular.ttf' (144K)
+[2022.03.03-14.02.10:877][ 70]LogVSAccessor: Couldn't get item operations. Visual Studio may still be initializing.
+[2022.03.03-14.02.17:868][530]LogSlate: Window '메시지 로그' being destroyed
+[2022.03.03-14.02.17:872][530]LogSlate: Window '메시지 로그' being destroyed
+[2022.03.03-14.02.34:231][326]Candidate modules for hot reload:
+[2022.03.03-14.02.34:231][326]  StarryTail
+[2022.03.03-14.02.34:231][326]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,0576 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.02.34:233][326]Warning: Starting HotReload took  0.0s.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:02:36
+[2022.03.03-14.02.36:676][473]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.02.36:676][473]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.02.36:676][473]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.02.36:676][473]CompilerResultsLog: Building 4 actions with 12 processes...
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:   [1/4] StopWatch.cpp
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(7) : error C2039: 'AStopWaatch': 'AStopWatch'?? ?????? ?ƴմϴ?.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:   C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.h(19): note: 'AStopWatch' ?????? ?????Ͻʽÿ?.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(8) : error C4430: ???? ?????ڰ? ?????ϴ?. int?? ?????մϴ?. ????: C++?????? ?⺻ int?? ???????? ?ʽ??ϴ?.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(10) : error C2065: 'PrimaryActorTick': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(15) : error C2065: 'TimerWidgetClass': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.02.36:676][473]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\StopWatch.cpp(17) : error C4508: 'AStopWaatch': ?Լ??? ???? ??ȯ?ؾ? ?ϹǷ? 'void' ??ȯ ???????? ???ֵ˴ϴ?.
+[2022.03.03-14.02.36:676][473]LogMainFrame: MainFrame: Module compiling took 2.448 seconds
+[2022.03.03-14.02.36:677][473]Warning: HotReload failed, recompile failed
+[2022.03.03-14.03.00:722][568]Candidate modules for hot reload:
+[2022.03.03-14.03.00:722][568]  StarryTail
+[2022.03.03-14.03.00:722][568]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,3979 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.03.00:724][568]Warning: Starting HotReload took  0.0s.
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:03:04
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Building 4 actions with 12 processes...
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:   [1/4] StopWatch.cpp
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:   [2/4] UE4Editor-StarryTail-3979.lib
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-3979.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-3979.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:   [3/4] UE4Editor-StarryTail-3979.dll
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-3979.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-3979.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.03.04:442][952]CompilerResultsLog:   [4/4] StarryTailEditor.target
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Total time in Parallel executor: 3.03 seconds
+[2022.03.03-14.03.04:442][952]CompilerResultsLog: Total execution time: 3.66 seconds
+[2022.03.03-14.03.04:442][952]LogMainFrame: MainFrame: Module compiling took 3.723 seconds
+[2022.03.03-14.03.05:703][952]LogClass: Could not find existing class StopWatch in package /Script/StarryTail for HotReload, assuming new class
+[2022.03.03-14.03.05:703][952]LogClass: Could not find existing class StopWatchWidget in package /Script/StarryTail for HotReload, assuming new class
+[2022.03.03-14.03.05:703][952]LogClass: Could not find existing type WatchState for HotReload. Assuming new
+[2022.03.03-14.03.05:703][952]LogClass: PlayerCharacterDataStruct HotReload.
+[2022.03.03-14.03.05:703][952]LogUObjectGlobals: Warning: WidgetBlueprintGeneratedClass /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C 클래스는 Class /Script/StarryTail.StopWatchWidget 의 자손 클래스가 아닙니다.
+[2022.03.03-14.03.05:703][952]Error: CDO Constructor (StopWatch): Failed to find /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C
+
+[2022.03.03-14.03.05:703][952]LogUObjectBase: Warning: -------------- Default Property warnings and errors:
+[2022.03.03-14.03.05:703][952]LogUObjectBase: Warning: Error: CDO Constructor (StopWatch): Failed to find /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C
+
+[2022.03.03-14.03.08:519][952]LogSlate: Window '메시지' being destroyed
+[2022.03.03-14.03.08:526][952]Message dialog closed, result: Cancel, title: 메시지, text: 디폴트 프로퍼티 경고 및 오류:
+Error: CDO Constructor (StopWatch): Failed to find /Game/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C
+
+
+[2022.03.03-14.03.08:530][952]LogHotReload: Re-instancing IreneCharacter after hot-reload.
+[2022.03.03-14.03.08:553][952]LogHotReload: Re-instancing StopWatch after hot-reload.
+[2022.03.03-14.03.08:569][952]LogHotReload: Re-instancing StopWatchWidget after hot-reload.
+[2022.03.03-14.03.08:597][952]LogNativeClassHierarchy: Verbose: Native class hierarchy updated for 'StarryTail' in 0.0003 seconds. Added 5 classes and 2 folders.
+[2022.03.03-14.03.08:602][952]Display: HotReload successful (0 functions remapped  1 scriptstructs remapped)
+[2022.03.03-14.03.08:681][952]LogNativeClassHierarchy: Verbose: Native class hierarchy populated in 0.0075 seconds. Added 3827 classes and 930 folders.
+[2022.03.03-14.03.08:681][952]Display: HotReload took  8.0s.
+[2022.03.03-14.03.15:362][628]LogRenderer: Reallocating scene render targets to support 1008x564 Format 10 NumSamples 1 (Frame:8610).
+[2022.03.03-14.05.43:029][361]Candidate modules for hot reload:
+[2022.03.03-14.05.43:029][361]  StarryTail
+[2022.03.03-14.05.43:029][361]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,8318 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.05.43:031][361]Warning: Starting HotReload took  0.0s.
+[2022.03.03-14.05.47:912][828]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:05:47
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Parsing headers for StarryTailEditor
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:   Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: LogInit: Display: Loading text-based GConfig....
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Reflection code generated for StarryTailEditor in 3.3758676 seconds
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.05.47:913][828]CompilerResultsLog: Building 5 actions with 12 processes...
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:   [1/5] IreneCharacter.gen.cpp
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail/IreneCharacter.h(67) : error C2143: ???? ????: ';'??(??) '*' ?տ? ?????ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail/IreneCharacter.h(67) : error C4430: ???? ?????ڰ? ?????ϴ?. int?? ?????մϴ?. ????: C++?????? ?⺻ int?? ???????? ?ʽ??ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail/IreneCharacter.h(67) : error C2238: ';' ?տ? ????ġ ???? ??ū?? ?ֽ??ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:   [2/5] IreneCharacter.cpp
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.h(67) : error C2143: ???? ????: ';'??(??) '*' ?տ? ?????ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.h(67) : error C4430: ???? ?????ڰ? ?????ϴ?. int?? ?????մϴ?. ????: C++?????? ?⺻ int?? ???????? ?ʽ??ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.h(67) : error C2238: ';' ?տ? ????ġ ???? ??ū?? ?ֽ??ϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.cpp(93) : error C2065: 'StopWatch': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.cpp(94) : error C2065: 'StopWatch': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.cpp(520) : error C2065: 'StopWatch': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.05.47:913][828]CompilerResultsLog:    C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneCharacter.cpp(525) : error C2065: 'StopWatch': ???????? ???? ?ĺ????Դϴ?.
+[2022.03.03-14.05.47:913][828]LogMainFrame: MainFrame: Module compiling took 4.887 seconds
+[2022.03.03-14.05.47:913][828]Warning: HotReload failed, recompile failed
+[2022.03.03-14.06.11:332][343]Candidate modules for hot reload:
+[2022.03.03-14.06.11:332][343]  StarryTail
+[2022.03.03-14.06.11:332][343]Launching UnrealBuildTool... [C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe  -ModuleWithSuffix=StarryTail,6946 StarryTailEditor Win64 Development -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject"  -IgnoreJunk]
+[2022.03.03-14.06.11:334][343]Warning: Starting HotReload took  0.0s.
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: New page: 컴파일 - 2022. 3. 4. 오전 8:06:17
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Parsing headers for StarryTailEditor
+[2022.03.03-14.06.17:658][954]CompilerResultsLog:   Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: LogInit: Display: Loading text-based GConfig....
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Reflection code generated for StarryTailEditor in 3.4441431 seconds
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Building StarryTailEditor...
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+[2022.03.03-14.06.17:658][954]CompilerResultsLog: Building 6 actions with 12 processes...
+[2022.03.03-14.06.17:658][954]CompilerResultsLog:   [1/6] StarryTail.init.gen.cpp
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:   [2/6] IreneCharacter.gen.cpp
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:   [3/6] IreneCharacter.cpp
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:   [4/6] UE4Editor-StarryTail-6946.lib
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6946.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6946.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:   [5/6] UE4Editor-StarryTail-6946.dll
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:      C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6946.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-6946.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+[2022.03.03-14.06.17:659][954]CompilerResultsLog:   [6/6] StarryTailEditor.target
+[2022.03.03-14.06.17:659][954]CompilerResultsLog: Total time in Parallel executor: 2.02 seconds
+[2022.03.03-14.06.17:659][954]CompilerResultsLog: Total execution time: 6.26 seconds
+[2022.03.03-14.06.17:659][954]LogMainFrame: MainFrame: Module compiling took 6.332 seconds
+[2022.03.03-14.06.18:506][954]LogOutputDevice: Warning: 
+
+Script Stack (0 frames):
+
+[2022.03.03-14.06.18:506][954]LogWindows: Windows GetLastError: 작업을 완료했습니다. (0)
