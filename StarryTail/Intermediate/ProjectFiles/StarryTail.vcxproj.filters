@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{31B1729C-EC0A-4305-8C2A-1495CF54D36A}</UniqueIdentifier>
+      <UniqueIdentifier>{343248FE-D3F3-4B9F-978A-36A9B9FA08D4}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{73AB66BE-73A0-427E-9B1E-DFCDBF0A8904}</UniqueIdentifier>
+      <UniqueIdentifier>{45BEFCEE-68F8-46F2-B05D-E17D11D4EC7D}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{23121502-02F9-40C7-9DBA-041D13E7D256}</UniqueIdentifier>
+      <UniqueIdentifier>{7723983F-F062-4AED-9B64-BC81AEAAD3EB}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -42,6 +42,12 @@
       <Filter>Source\StarryTail</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\StarryTail\IreneFSM.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\MyAnimInstance.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\MyAnimInstance.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Source\StarryTail\PlayerCharacterDataStruct.h">
@@ -69,7 +75,7 @@
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{9E275972-A66A-4DF4-9D4F-0306DF672C91}</UniqueIdentifier>
+      <UniqueIdentifier>{0FAE957D-62C5-4CFB-9E3E-E960084F0521}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>

@@ -13,7 +13,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Meshs/Walk_KeQing.Walk_KeQing"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Walk.Walk_KeQing"));
 	if(CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -21,21 +21,22 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 
 		// 블루프린트 애니메이션 적용
-		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Mannequin/Animations/ThirdPerson_AnimBP.ThirdPerson_AnimBP_C"));
-		if (CharacterAnimInstance.Succeeded()) 
+		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
+
+		if (CharacterAnimInstance.Succeeded())
 		{			
-			GetMesh()->SetAnimInstanceClass(CharacterAnimInstance.Class);
+			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 		}
 	}
 
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetMesh());
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(0.0f, 90.0f, 0.0f));
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(-20.0f, 90.0f, 0.0f));
 	SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->CameraLagSpeed = 3.0f;
+	SpringArmComp->CameraLagSpeed = 0.0f;
 
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
@@ -45,8 +46,10 @@ AIreneCharacter::AIreneCharacter()
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
 	//bUseControllerRotationYaw = false;
 	//GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->JumpZVelocity = 600.0f;
 	//SpringArmComp->bUsePawnControlRotation = true;
+
+	// 점프 높이
+	GetCharacterMovement()->JumpZVelocity = 800.0f;
 
 	// 캡슐 사이즈 설정
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
@@ -89,7 +92,6 @@ AIreneCharacter::AIreneCharacter()
 void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
 }
 
 void AIreneCharacter::MoveForward()
@@ -203,9 +205,30 @@ void AIreneCharacter::MoveAuto()
 
 void AIreneCharacter::StartJump()
 {
-	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
+	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
+		// 키 입력을 바탕으로 점프 방향을 얻는다.
+		FVector Direction = FVector(0, 0, 0);
+		if (MoveKey[0] != 0)
+		{
+			Direction += GetActorForwardVector();
+		}
+		if (MoveKey[1] != 0)
+		{
+			Direction += GetActorRightVector() * -1;
+		}
+		if (MoveKey[2] != 0)
+		{
+			Direction += GetActorForwardVector() * -1;
+		}
+		if (MoveKey[3] != 0)
+		{
+			Direction += GetActorRightVector();
+		}
+		MoveAutoDirection.Normalize();
+		// 구한 방향의 반대 방향으로 힘을 가해서 점프 거리를 줄인다.
+		
+		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() /GetMovementComponent()->GetMaxSpeed()));
 		bPressedJump = true;
 		ChangeStateAndLog(IreneJumpState::getInstance());
 	}
@@ -340,21 +363,23 @@ void AIreneCharacter::LookUp(float Rate)
 
 void AIreneCharacter::LeftButton()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 && !NormalAttackEndWaitHandle.IsValid())
-	{
-		if (AttackCount < 3) 
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0) {
+		if (!NormalAttackEndWaitHandle.IsValid())
 		{
-			AttackCount++;
-			AttackQueue.Enqueue(AttackCount);
-			StartNormalAttackAnim();
+			if (AttackCount < 3)
+			{
+				AttackCount++;
+				AttackQueue.Enqueue(AttackCount);
+				StartNormalAttackAnim();
+			}
 		}
-	}
-	else if(IsEnqueueTime)
-	{
-		if (AttackCount < 3)
+		else if (IsEnqueueTime)
 		{
-			AttackCount++;
-			AttackQueue.Enqueue(AttackCount);
+			if (AttackCount < 3)
+			{
+				AttackCount++;
+				AttackQueue.Enqueue(AttackCount);
+			}
 		}
 	}
 }
@@ -362,9 +387,12 @@ void AIreneCharacter::LeftButton()
 void AIreneCharacter::StartNormalAttackAnim()
 {
 	ChangeStateAndLog(IreneAttackState::getInstance());
-	UE_LOG(LogTemp, Warning, TEXT("%d Start NormalAttack"), AttackCount);
+	AttackCountAnim++;
 
-	float WaitTime = 0.5f; // 다시 공격할 시간을 설정
+	UE_LOG(LogTemp, Warning, TEXT("%d"), AttackCountAnim);
+	UE_LOG(LogTemp, Warning, TEXT("%d Start NormalAttack"), AttackCountAnim);
+
+	float WaitTime = 0.3f; // 다시 공격할 시간을 설정
 
 	// 0.5초 안에 다시 공격을 하는지 체크한다.
 	GetWorld()->GetTimerManager().SetTimer(NormalAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -372,7 +400,12 @@ void AIreneCharacter::StartNormalAttackAnim()
 			IsEnqueueTime = false;
 		}), WaitTime, false);
 
-	WaitTime = 2.0f; // 에니메이션이 끝나는 시간
+	if(AttackCountAnim == 1)
+		WaitTime = 0.471f; // 에니메이션이 끝나는 시간
+	else if(AttackCountAnim == 2)
+		WaitTime = 0.479f; // 에니메이션이 끝나는 시간
+	else if (AttackCountAnim == 3)
+		WaitTime = 0.700f; // 에니메이션이 끝나는 시간
 
 	GetWorld()->GetTimerManager().SetTimer(NormalAttackEndWaitHandle, FTimerDelegate::CreateLambda([&]()
 		{
@@ -383,6 +416,7 @@ void AIreneCharacter::StartNormalAttackAnim()
 			if (AttackQueue.IsEmpty())
 			{
 				AttackCount = 0;
+				AttackCountAnim = 0;
 				ChangeStateAndLog(IreneIdleState::getInstance());
 			}
 			else
@@ -420,7 +454,7 @@ void AIreneCharacter::DashKeyword()
 		ChangeStateAndLog(IreneDashState::getInstance());
 
 		float WaitTime = 1.5f; //시간을 설정
-		CharacterDataStruct.MoveSpeed = 3.0f; // 대쉬 속도 설정
+		CharacterDataStruct.MoveSpeed = 30.0f; // 대쉬 속도 설정
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
@@ -451,7 +485,7 @@ void AIreneCharacter::DashKeyword()
 		if (!IsFallingRoll)
 		{
 			IsFallingRoll = true;
-			int32 FallingPower = 50000;
+			int32 FallingPower = 500000;
 			GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
 
 			MoveAutoDirection.ZeroVector;
@@ -484,14 +518,16 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// PlayerCharacterDataStruct.h의 상단 public에 할당 된 변수들로 인게임 수정 가능하게 해주는 기능
 	// 앞의 "//" 부분을 지워주고 에디터의 컴파일을 진행하고 플레이를 하고 인게임에서 값을 수정하면 바로 적용 됨
 	// 
-	// SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-	// CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
+	//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0) 
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
-		MoveForward();
-		MoveRight();
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
+			MoveForward();
+			MoveRight();
+		}
 	}
 	else
 	{
@@ -499,17 +535,22 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 	if (IsFallingRoll && !GetMovementComponent()->IsFalling())
 	{
-		//땅에 도착
+		//구르다가 땅에 도착
 		IsFallingRoll = false;
 		DashKeyword();
 	}
 	MoveStop();
 
 	// 공격종료 핸들 초기화
-	if(AttackCount == 0)
+	if (AttackCount == 0)
 	{
+		if (AttackCount > 3) {
+			AttackCount = 0;
+			AttackCountAnim = 0;
+		}
 		NormalAttackEndWaitHandle.Invalidate();
 	}
+	
 }
 
 // Called to bind functionality to input

@@ -42,7 +42,6 @@ private:
 	// 캐릭터 상태
 	IreneFSM* CharacterState;
 
-
 	// 구르기 같은 자동이동 방향
 	FVector MoveAutoDirection;
 	// 자동이동용 핸들
@@ -61,6 +60,7 @@ private:
 	bool IsEnqueueTime;
 	// 공격 횟수
 	uint8 AttackCount;
+	uint8 AttackCountAnim;
 
 public:
 	// Sets default values for this character's properties
@@ -71,6 +71,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	uint8 GetAttackCountAnim() { return AttackCountAnim; }
 
 protected:
 	// Called when the game starts or when spawned
