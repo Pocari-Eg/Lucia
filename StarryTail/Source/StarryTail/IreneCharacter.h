@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "StarryTail.h"
+#include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
 // 추가하는 부분
@@ -13,14 +13,7 @@
 #include "Components/CapsuleComponent.h"
 #include "IreneFSM.h"
 
-//박찬영
-#include "StopWatch.h"
-#include "UI/CharacterAttributeWidget.h"
-#include "Components/WidgetComponent.h"
-
 #include "IreneCharacter.generated.h"
-
-
 
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
@@ -76,17 +69,6 @@ private:
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Weapon;
 
-	// 박찬영 ***************************************
-	//스탑워치
-	AStopWatch* StopWatch;
-	//캐릭터 속성
-	UPROPERTY(EditAnywhere)
-	EAttributeKeyword Type;
-	//속성 ui
-	UPROPERTY(VisibleAnywhere,Category=UI)
-	class UWidgetComponent* AttributeWidget;
-
-	
 public:
 	// Sets default values for this character's properties
 	AIreneCharacter();
@@ -147,10 +129,4 @@ private:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(State* newState);
 
-	//박찬영 ============
-	//스탑워치 
-	void WatchContorl();
-	void WatchReset();
-	//속성 변환
-	void AttributeChange();
 };

@@ -1,18 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 //
 //  
-// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½Ø¾ï¿½ï¿½ï¿½ ï¿½ï¿½: FSMï¿½ï¿½ UE4 FSMï¿½ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ù²Ù±ï¿½, ï¿½ï¿½ï¿½Ó°ï¿½ï¿½ï¿½ ï¿½Ã½ï¿½ï¿½ï¿½ ï¿½ï¿½Å¸ï¿½Ö·ï¿½ ï¿½Ù²Ù±ï¿½
-// ï¿½Ï¹ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ó¼ï¿½ ï¿½ï¿½ï¿½Ìºï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Ð±ï¿½, 
+// ³ªÁß¿¡ ÇØ¾ßÇÒ °Í: FSMÀ» UE4 FSM»ó¼Ó ½ºÅ©¸³Æ®·Î ¹Ù²Ù±â, ¿¬¼Ó°ø°Ý ½Ã½ºÅÛ ¸ùÅ¸ÁÖ·Î ¹Ù²Ù±â
+// ÀÏ¹Ý °ø°Ý ¼Ó¼º Å×ÀÌºí µû¶ó °ª ÀÐ±â, 
 
 #include "IreneCharacter.h"
-#include "UI/CharacterAttributeWidget.h"
+
 // Sets default values
 AIreneCharacter::AIreneCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// ï¿½ï¿½ï¿½Ì·ï¿½ï¿½ï¿½ ï¿½Þ½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ½ºÄÌ·¹Åæ ¸Þ½¬ ¼³Á¤
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Walk.Walk_KeQing"));
 	if(CharacterMesh.Succeeded())
 	{
@@ -33,7 +33,7 @@ AIreneCharacter::AIreneCharacter()
 		}
 
 
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ® ï¿½Ö´Ï¸ï¿½ï¿½Ì¼ï¿½ ï¿½ï¿½ï¿½ï¿½
+		// ºí·çÇÁ¸°Æ® ¾Ö´Ï¸ÞÀÌ¼Ç Àû¿ë
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
 
 		if (CharacterAnimInstance.Succeeded())
@@ -42,7 +42,7 @@ AIreneCharacter::AIreneCharacter()
 		}
 	}
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ½ºÇÁ¸µ¾Ï ¼³Á¤
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetMesh());
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(-20.0f, 90.0f, 0.0f));
@@ -51,40 +51,40 @@ AIreneCharacter::AIreneCharacter()
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 0.0f;
 
-	// Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Ä«¸Þ¶ó ¼³Á¤
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
 	CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
-	// Ä«ï¿½Þ¶ï¿½ È¸ï¿½ï¿½ï¿½ï¿½ Ä³ï¿½ï¿½ï¿½ï¿½ È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ÈµÇµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Ä«¸Þ¶ó È¸Àü°ú Ä³¸¯ÅÍ È¸Àü ¿¬µ¿ ¾ÈµÇµµ·Ï ¼³Á¤
 	//bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
 	//GetCharacterMovement()->bOrientRotationToMovement = true;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ ³ôÀÌ
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
 
-	// Ä¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Ä¸½¶ »çÀÌÁî ¼³Á¤
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
-	// ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½âº» ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ÇÃ·¹ÀÌ¾î ½ºÆù ½Ã ±âº» Á¦¾î ¼³Á¤
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	// ï¿½ï¿½ï¿½ï¿½ Å¬ï¿½ï¿½ï¿½ï¿½ ï¿½Þ¸ï¿½ ï¿½Ò´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// »óÅÂ Å¬·¡½º ¸Þ¸ð¸® ÇÒ´ç ÈÄ Á¤Áö »óÅÂ Àû¿ë
 	CharacterState = new IreneFSM();
 	CharacterState->setState(StateEnum::Idle);
 
-	// IreneCharater.hï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+	// IreneCharater.hÀÇ º¯¼ö ÃÊ±âÈ­
 
-	// WASD Å° ï¿½Ô·ï¿½ ï¿½Ê±ï¿½È­
+	// WASD Å° ÀÔ·Â ÃÊ±âÈ­
 	MoveKey.Add(0);
 	MoveKey.Add(0);
 	MoveKey.Add(0);
 	MoveKey.Add(0);
 
-	// ï¿½Úµï¿½ï¿½Ìµï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+	// ÀÚµ¿ÀÌµ¿ ¹æÇâ ÃÊ±âÈ­
 	MoveAutoDirection.ZeroVector;
-	// ï¿½ß¶ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½ ï¿½Ê±ï¿½È­
+	// Ãß¶ô Áß ±¸¸£±â ÀÔ·Â ÃÊ±âÈ­
 	IsFallingRoll = false;
 
 	AttackQueue.Empty();
@@ -93,50 +93,26 @@ AIreneCharacter::AIreneCharacter()
 	MainKeywordType = 0;
 	SubKeywordType = 0;
 
-	// PlayerCharacterDataStruct.hï¿½ï¿½ ï¿½Ï´ï¿½ public ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ê±ï¿½È­
+	// PlayerCharacterDataStruct.hÀÇ ÇÏ´Ü public º¯¼öµé ÃÊ±âÈ­
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½Æ´ï¿½
+	// ¹«Àû ¾Æ´Ô
 	CharacterDataStruct.IsInvincibility = false;
-	// ï¿½Ê±ï¿½ Ã¼ï¿½ï¿½
+	// ÃÊ±â Ã¼·Â
 	CharacterDataStruct.HP = 100;
-	// ï¿½Ê±ï¿½ ï¿½Ìµï¿½ï¿½Óµï¿½
+	// ÃÊ±â ÀÌµ¿¼Óµµ
 	CharacterDataStruct.MoveSpeed = 1;
 
-
-	//ï¿½Ó¼ï¿½ ï¿½Ê±ï¿½È­
-	Type = EAttributeKeyword::e_None;
-	
-	//ui ï¿½ï¿½ï¿½ï¿½
-	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
-	AttributeWidget->SetupAttachment(GetMesh());
-	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 25.0f));
-	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f,0.0f ));
-	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
-	if (UI_HUD.Succeeded()) {
-		AttributeWidget->SetWidgetClass(UI_HUD.Class);
-		AttributeWidget->SetDrawSize(FVector2D(5.0f, 5.0f));
-	}
 }
 
 // Called when the game starts or when spawned
 void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-	//ï¿½ï¿½Å¾ï¿½ï¿½Ä¡ ï¿½ï¿½ï¿½ï¿½ 
-	StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
-	StopWatch->InitStopWatch();
-	//ï¿½Ó¼ï¿½ ï¿½ï¿½È¯ ï¿½ï¿½ï¿½Îµï¿½
-	
-
-	
-
 }
 
 void AIreneCharacter::MoveForward()
 {
-	// 0: ï¿½ï¿½ï¿½ï¿½, 2: ï¿½ï¿½ï¿½ï¿½
+	// 0: ÀüÁø, 2: ÈÄÁø
 	if (MoveKey[0] != 0)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -156,7 +132,7 @@ void AIreneCharacter::MoveForward()
 }
 void AIreneCharacter::MoveRight()
 {
-	// 1: ï¿½ï¿½ï¿½ï¿½, 3: ï¿½ï¿½ï¿½ï¿½
+	// 1: ÁÂÃø, 3: ¿ìÃø
 	if (MoveKey[1] != 0)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
@@ -176,7 +152,7 @@ void AIreneCharacter::MoveRight()
 }
 void AIreneCharacter::MoveStop()
 {
-	// ï¿½Æ¹ï¿½ Å° ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// ¾Æ¹« Å° ÀÔ·ÂÀÌ ¾øÀ» °æ¿ì Á¤Áö »óÅÂ ÁöÁ¤
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") != 0 && 
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
@@ -186,7 +162,7 @@ void AIreneCharacter::MoveStop()
 			ChangeStateAndLog(IreneIdleState::getInstance());
 		}
 	}
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å°ï¿½Ô·Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ù´Ú¿ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½, ï¿½È±ï¿½, ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ »óÅÂ Áß Å°ÀÔ·Â¿¡ µû¶ó ¹Ù´Ú¿¡ µµÂøÇÒ °æ¿ì Á¤Áö, °È±â, ´Þ¸®±â »óÅÂ ÁöÁ¤
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") == 0)
 	{
 		if (!GetCharacterMovement()->IsFalling())
@@ -210,7 +186,7 @@ void AIreneCharacter::MoveAuto()
 {
 	if(MoveAutoDirection == FVector(0,0,0))
 	{
-		// wÅ°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+		// wÅ°³ª ¾Æ¹«¹æÇâ ¾øÀ¸¸é Á¤¸éÀ¸·Î ÀÌµ¿
 		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 		{
 			MoveAutoDirection += GetActorForwardVector();
@@ -230,7 +206,7 @@ void AIreneCharacter::MoveAuto()
 		MoveAutoDirection.Normalize();
 	}
 
-	// ï¿½ë½¬ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Â·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½È­
+	// ´ë½¬ µµÁß ¶³¾îÁö¸é Á¡ÇÁ »óÅÂ·Î °­Á¦ º¯È­
 	if(GetMovementComponent()->IsFalling())
 	{
 		CharacterDataStruct.MoveSpeed = 1.0f;
@@ -247,8 +223,7 @@ void AIreneCharacter::StartJump()
 {
 	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
-
-		// Å° ï¿½Ô·ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½Â´ï¿½.
+		// Å° ÀÔ·ÂÀ» ¹ÙÅÁÀ¸·Î Á¡ÇÁ ¹æÇâÀ» ¾ò´Â´Ù.
 		FVector Direction = FVector(0, 0, 0);
 		if (MoveKey[0] != 0)
 		{
@@ -267,11 +242,10 @@ void AIreneCharacter::StartJump()
 			Direction += GetActorRightVector();
 		}
 		MoveAutoDirection.Normalize();
-		// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ý´ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Å¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½Î´ï¿½.
+		// ±¸ÇÑ ¹æÇâÀÇ ¹Ý´ë ¹æÇâÀ¸·Î ÈûÀ» °¡ÇØ¼­ Á¡ÇÁ °Å¸®¸¦ ÁÙÀÎ´Ù.
 		
 		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() /GetMovementComponent()->GetMaxSpeed()));
 		bPressedJump = true;
-
 		ChangeStateAndLog(IreneJumpState::getInstance());
 	}
 }
@@ -313,7 +287,7 @@ void AIreneCharacter::MoveDoubleClickW()
 {
 	MoveKey[0] = 2;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ Áß ´Þ¸®±â ±ÝÁö
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		ChangeStateAndLog(IreneRunState::getInstance());
@@ -325,7 +299,7 @@ void AIreneCharacter::MoveDoubleClickA()
 {
 	MoveKey[1] = 2;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ Áß ´Þ¸®±â ±ÝÁö
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		ChangeStateAndLog(IreneRunState::getInstance());
@@ -337,7 +311,7 @@ void AIreneCharacter::MoveDoubleClickS()
 {
 	MoveKey[2] = 2;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ Áß ´Þ¸®±â ±ÝÁö
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		ChangeStateAndLog(IreneRunState::getInstance());
@@ -349,7 +323,7 @@ void AIreneCharacter::MoveDoubleClickD()
 {
 	MoveKey[3] = 2;
 
-	// ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	// Á¡ÇÁ Áß ´Þ¸®±â ±ÝÁö
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		ChangeStateAndLog(IreneRunState::getInstance());
@@ -361,7 +335,7 @@ void AIreneCharacter::MoveDoubleClickD()
 void AIreneCharacter::MoveReleasedW()
 {
 	MoveKey[0] = 0;
-	// ï¿½Ù¸ï¿½ Å° ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½.
+	// ´Ù¸¥ Å° Áß ´Þ¸®±â°¡ ¾ø¾î¾ß °È±â ¼Óµµ·Î ¿òÁ÷ÀÎ´Ù.
 	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -369,7 +343,7 @@ void AIreneCharacter::MoveReleasedW()
 void AIreneCharacter::MoveReleasedA()
 {
 	MoveKey[1] = 0;
-	// ï¿½Ù¸ï¿½ Å° ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½.
+	// ´Ù¸¥ Å° Áß ´Þ¸®±â°¡ ¾ø¾î¾ß °È±â ¼Óµµ·Î ¿òÁ÷ÀÎ´Ù.
 	if (MoveKey[0] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -377,7 +351,7 @@ void AIreneCharacter::MoveReleasedA()
 void AIreneCharacter::MoveReleasedS()
 {
 	MoveKey[2] = 0;
-	// ï¿½Ù¸ï¿½ Å° ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½.
+	// ´Ù¸¥ Å° Áß ´Þ¸®±â°¡ ¾ø¾î¾ß °È±â ¼Óµµ·Î ¿òÁ÷ÀÎ´Ù.
 	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[3] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -385,7 +359,7 @@ void AIreneCharacter::MoveReleasedS()
 void AIreneCharacter::MoveReleasedD()
 {
 	MoveKey[3] = 0;
-	// ï¿½Ù¸ï¿½ Å° ï¿½ï¿½ ï¿½Þ¸ï¿½ï¿½â°¡ ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½È±ï¿½ ï¿½Óµï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Î´ï¿½.
+	// ´Ù¸¥ Å° Áß ´Þ¸®±â°¡ ¾ø¾î¾ß °È±â ¼Óµµ·Î ¿òÁ÷ÀÎ´Ù.
 	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[2] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -400,7 +374,7 @@ void AIreneCharacter::LookUp(float Rate)
 	AddControllerPitchInput(Rate);
 }
 
-// ï¿½Î±ï¿½ ï¿½ï¿½Â¿ï¿½ ï¿½ï¿½ï¿½ï¿½
+// ·Î±× Ãâ·Â¿ë ´õ¹Ì
 // UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
 
 void AIreneCharacter::LeftButton()
@@ -434,20 +408,20 @@ void AIreneCharacter::StartNormalAttackAnim()
 	UE_LOG(LogTemp, Warning, TEXT("%d"), AttackCountAnim);
 	UE_LOG(LogTemp, Warning, TEXT("%d Start NormalAttack"), AttackCountAnim);
 
-	float WaitTime = 0.3f; // ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+	float WaitTime = 0.3f; // ´Ù½Ã °ø°ÝÇÒ ½Ã°£À» ¼³Á¤
 
-	// 0.5ï¿½ï¿½ ï¿½È¿ï¿½ ï¿½Ù½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ï´ï¿½ï¿½ï¿½ Ã¼Å©ï¿½Ñ´ï¿½.
+	// 0.5ÃÊ ¾È¿¡ ´Ù½Ã °ø°ÝÀ» ÇÏ´ÂÁö Ã¼Å©ÇÑ´Ù.
 	GetWorld()->GetTimerManager().SetTimer(NormalAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 		{
 			IsEnqueueTime = false;
 		}), WaitTime, false);
 
 	if(AttackCountAnim == 1)
-		WaitTime = 0.471f; // ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+		WaitTime = 0.471f; // ¿¡´Ï¸ÞÀÌ¼ÇÀÌ ³¡³ª´Â ½Ã°£
 	else if(AttackCountAnim == 2)
-		WaitTime = 0.479f; // ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+		WaitTime = 0.479f; // ¿¡´Ï¸ÞÀÌ¼ÇÀÌ ³¡³ª´Â ½Ã°£
 	else if (AttackCountAnim == 3)
-		WaitTime = 0.700f; // ï¿½ï¿½ï¿½Ï¸ï¿½ï¿½Ì¼ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ã°ï¿½
+		WaitTime = 0.700f; // ¿¡´Ï¸ÞÀÌ¼ÇÀÌ ³¡³ª´Â ½Ã°£
 
 	GetWorld()->GetTimerManager().SetTimer(NormalAttackEndWaitHandle, FTimerDelegate::CreateLambda([&]()
 		{
@@ -526,12 +500,12 @@ void AIreneCharacter::DashKeyword()
 	{
 		ChangeStateAndLog(IreneDashState::getInstance());
 
-		float WaitTime = 1.5f; //ï¿½Ã°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
-		CharacterDataStruct.MoveSpeed = 30.0f; // ï¿½ë½¬ ï¿½Óµï¿½ ï¿½ï¿½ï¿½ï¿½
+		float WaitTime = 1.5f; //½Ã°£À» ¼³Á¤
+		CharacterDataStruct.MoveSpeed = 30.0f; // ´ë½¬ ¼Óµµ ¼³Á¤
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
-				// ï¿½ï¿½ï¿½ß¿ï¿½ ï¿½ß¶ï¿½ ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+				// µµÁß¿¡ Ãß¶ô ¾ÈÇÏ°í Á¤»óÀûÀ¸·Î ÁøÇà‰çÀ» ¶§
 				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
 				{
 					CharacterDataStruct.MoveSpeed = 1.0f;
@@ -562,7 +536,7 @@ void AIreneCharacter::DashKeyword()
 			GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
 
 			MoveAutoDirection.ZeroVector;
-			// wÅ°ï¿½ï¿½ ï¿½Æ¹ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½
+			// wÅ°³ª ¾Æ¹«¹æÇâ ¾øÀ¸¸é Á¤¸éÀ¸·Î ÀÌµ¿
 			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
 				MoveAutoDirection += GetActorForwardVector();
@@ -588,16 +562,13 @@ void AIreneCharacter::DashKeyword()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// PlayerCharacterDataStruct.hï¿½ï¿½ ï¿½ï¿½ï¿½ publicï¿½ï¿½ ï¿½Ò´ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Î°ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½ï¿½ï¿½Ö´ï¿½ ï¿½ï¿½ï¿½
-	// ï¿½ï¿½ï¿½ï¿½ "//" ï¿½Îºï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ö°ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï°ï¿½ ï¿½Ã·ï¿½ï¿½Ì¸ï¿½ ï¿½Ï°ï¿½ ï¿½Î°ï¿½ï¿½Ó¿ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ù·ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+	// PlayerCharacterDataStruct.hÀÇ »ó´Ü public¿¡ ÇÒ´ç µÈ º¯¼öµé·Î ÀÎ°ÔÀÓ ¼öÁ¤ °¡´ÉÇÏ°Ô ÇØÁÖ´Â ±â´É
+	// ¾ÕÀÇ "//" ºÎºÐÀ» Áö¿öÁÖ°í ¿¡µðÅÍÀÇ ÄÄÆÄÀÏÀ» ÁøÇàÇÏ°í ÇÃ·¹ÀÌ¸¦ ÇÏ°í ÀÎ°ÔÀÓ¿¡¼­ °ªÀ» ¼öÁ¤ÇÏ¸é ¹Ù·Î Àû¿ë µÊ
 	// 
 	//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
-
-	
-
-	// ï¿½ë½¬ï¿½ï¿½ï¿½ï¿½ï¿½Ï¶ï¿½ MoveAutoï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ìµï¿½ï¿½ï¿½ ï¿½ï¿½Å´
+	// ´ë½¬»óÅÂÀÏ¶© MoveAuto·Î °­Á¦ ÀÌµ¿À» ½ÃÅ´
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
@@ -611,13 +582,13 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 	if (IsFallingRoll && !GetMovementComponent()->IsFalling())
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Ù°ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+		//±¸¸£´Ù°¡ ¶¥¿¡ µµÂø
 		IsFallingRoll = false;
 		DashKeyword();
 	}
 	MoveStop();
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Úµï¿½ ï¿½Ê±ï¿½È­
+	// °ø°ÝÁ¾·á ÇÚµé ÃÊ±âÈ­
 	if (AttackCount == 0)
 	{
 		if (AttackCount > 3) {
@@ -629,53 +600,12 @@ void AIreneCharacter::Tick(float DeltaTime)
 	
 }
 
-//ï¿½ï¿½Å¾ï¿½ï¿½Ä¡ ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ô¼ï¿½
-void AIreneCharacter::WatchContorl()
-{
-	StopWatch->WatchControl();
-}
-
-void AIreneCharacter::WatchReset()
-{
-	StopWatch->WatchReset();
-}
-
-void AIreneCharacter::AttributeChange()
-{
-
-	switch (Type)
-	{
-	case EAttributeKeyword::e_None:
-		Type = EAttributeKeyword::e_Fire;
-		break;
-	case EAttributeKeyword::e_Fire:
-		Type = EAttributeKeyword::e_Water;
-
-		break;
-	case EAttributeKeyword::e_Water:
-		Type = EAttributeKeyword::e_Thunder;
-
-		break;
-	case EAttributeKeyword::e_Thunder:
-		Type = EAttributeKeyword::e_None;
-
-		break;
-	default:
-		break;
-	}
-	auto Widget = Cast<UCharacterAttributeWidget>(AttributeWidget->GetUserWidgetObject());
-	if (nullptr != Widget)
-	{
-		Widget->BindCharacterAttribute(Type);
-	}
-}
-
 // Called to bind functionality to input
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
+	// ¿òÁ÷ÀÓ °ü·Ã Å°º¸µå ÀÔ·Â
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &AIreneCharacter::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &AIreneCharacter::StopJump);
 
@@ -692,7 +622,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("MoveS", IE_Released, this, &AIreneCharacter::MoveReleasedS);
 	PlayerInputComponent->BindAction("MoveD", IE_Released, this, &AIreneCharacter::MoveReleasedD);
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Å°ï¿½ï¿½ï¿½ï¿½ ï¿½Ô·ï¿½
+	// ¿òÁ÷ÀÓ ¿Ü Å°º¸µå ÀÔ·Â
 	PlayerInputComponent->BindAction("MainKeyword", IE_Pressed, this, &AIreneCharacter::MainKeyword);
 	PlayerInputComponent->BindAction("SubKeyword", IE_Pressed, this, &AIreneCharacter::SubKeyword);
 	PlayerInputComponent->BindAction("ActionKeyword1", IE_Pressed, this, &AIreneCharacter::ActionKeyword1);
@@ -700,18 +630,10 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("ActionKeyword3", IE_Pressed, this, &AIreneCharacter::ActionKeyword3);
 	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AIreneCharacter::DashKeyword);
 
-	// ï¿½ï¿½ï¿½ì½º
+	// ¸¶¿ì½º
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAction("LeftButton", IE_Pressed, this, &AIreneCharacter::LeftButton);
-
-	//ï¿½ï¿½Å¾ï¿½ï¿½Ä¡ ï¿½ï¿½Æ®ï¿½ï¿½
-	PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
-	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);
-
-	// ï¿½Ó¼ï¿½ ï¿½ï¿½È¯ ï¿½×½ï¿½Æ®
-	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
-
 }
 
 void AIreneCharacter::ChangeStateAndLog(State* newState)
