@@ -49,7 +49,6 @@ private:
 	// 캐릭터 상태
 	IreneFSM* CharacterState;
 
-
 	// 구르기 같은 자동이동 방향
 	FVector MoveAutoDirection;
 	// 자동이동용 핸들
@@ -68,6 +67,14 @@ private:
 	bool IsEnqueueTime;
 	// 공격 횟수
 	uint8 AttackCount;
+	uint8 AttackCountAnim;
+
+	// 키워드 출력용
+	uint8 MainKeywordType;
+	uint8 SubKeywordType;
+
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* Weapon;
 
 	// 박찬영 ***************************************
 	//스탑워치
@@ -89,6 +96,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	uint8 GetAttackCountAnim() { return AttackCountAnim; }
 
 protected:
 	// Called when the game starts or when spawned
