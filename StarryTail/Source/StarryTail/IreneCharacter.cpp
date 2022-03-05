@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 //
 //  
-// 누나랑 의논할 것: 카메라 위치나 값들, 이동속도(달리기), 구르기 속도와 시간, 공중에서 구르기 시 아래로 힘을 주는 방식
 // 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기, 연속공격 시스템 몽타주로 바꾸기
+// 일반 공격 속성 테이블 따라 값 읽기, 
 
 #include "IreneCharacter.h"
 
@@ -19,6 +19,19 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
 		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
+
+		FName WeaponSocket(TEXT("hand_rSocket"));
+		if(GetMesh()->DoesSocketExist(WeaponSocket))
+		{
+			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Developers/syhwms/Collections/Move.Move_Weapon"));
+			if (SK_WEAPON.Succeeded())
+			{
+				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+			}
+			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+		}
+
 
 		// 블루프린트 애니메이션 적용
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
@@ -45,8 +58,8 @@ AIreneCharacter::AIreneCharacter()
 
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
 	//bUseControllerRotationYaw = false;
+	SpringArmComp->bUsePawnControlRotation = true;
 	//GetCharacterMovement()->bOrientRotationToMovement = true;
-	//SpringArmComp->bUsePawnControlRotation = true;
 
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
@@ -76,7 +89,10 @@ AIreneCharacter::AIreneCharacter()
 
 	AttackQueue.Empty();
 	IsEnqueueTime = true;
-	
+
+	MainKeywordType = 0;
+	SubKeywordType = 0;
+
 	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
 
 	// 무적 아님
@@ -428,11 +444,42 @@ void AIreneCharacter::StartNormalAttackAnim()
 
 void AIreneCharacter::MainKeyword()
 {
-	UE_LOG(LogTemp, Warning, TEXT("MainKeyword"));
+	MainKeywordType++;
+	if (MainKeywordType >= 3)
+		MainKeywordType = 0;
+	switch(MainKeywordType)
+	{
+	case 0:
+		UE_LOG(LogTemp, Warning, TEXT("MainFire"));
+		break;
+	case 1:
+		UE_LOG(LogTemp, Warning, TEXT("MainWater"));
+		break; 
+	case 2:
+		UE_LOG(LogTemp, Warning, TEXT("MainLightning"));
+		break;
+	}
 }
 void AIreneCharacter::SubKeyword()
 {
-	UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
+	SubKeywordType++;
+	if (SubKeywordType >= 4)
+		SubKeywordType = 0;
+	switch (SubKeywordType)
+	{
+	case 0:
+		UE_LOG(LogTemp, Warning, TEXT("SubNone"));
+		break;
+	case 1:
+		UE_LOG(LogTemp, Warning, TEXT("SubFire"));
+		break;
+	case 2:
+		UE_LOG(LogTemp, Warning, TEXT("SubWater"));
+		break;
+	case 3:
+		UE_LOG(LogTemp, Warning, TEXT("SubLightning"));
+		break;
+	}
 }
 void AIreneCharacter::ActionKeyword1()
 {

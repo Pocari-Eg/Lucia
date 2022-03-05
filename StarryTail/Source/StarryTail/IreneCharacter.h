@@ -62,6 +62,13 @@ private:
 	uint8 AttackCount;
 	uint8 AttackCountAnim;
 
+	// 키워드 출력용
+	uint8 MainKeywordType;
+	uint8 SubKeywordType;
+
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* Weapon;
+
 public:
 	// Sets default values for this character's properties
 	AIreneCharacter();
