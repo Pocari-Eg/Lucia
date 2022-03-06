@@ -64,6 +64,9 @@ AIreneCharacter::AIreneCharacter()
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
 
+	// 기본 최대 이동속도
+	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
+
 	// 캡슐 사이즈 설정
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
 
@@ -277,28 +280,40 @@ void AIreneCharacter::StopJump()
 void AIreneCharacter::MovePressedW()
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
 		ChangeStateAndLog(IreneWalkState::getInstance());
+	}
 	MoveKey[0] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedA()
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
 		ChangeStateAndLog(IreneWalkState::getInstance());
+	}
 	MoveKey[1] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedS()
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
 		ChangeStateAndLog(IreneWalkState::getInstance());
+	}
 	MoveKey[2] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedD()
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
 		ChangeStateAndLog(IreneWalkState::getInstance());
+	}
 	MoveKey[3] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
@@ -310,6 +325,7 @@ void AIreneCharacter::MoveDoubleClickW()
 	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
 		ChangeStateAndLog(IreneRunState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
@@ -322,6 +338,7 @@ void AIreneCharacter::MoveDoubleClickA()
 	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
 		ChangeStateAndLog(IreneRunState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
@@ -334,6 +351,7 @@ void AIreneCharacter::MoveDoubleClickS()
 	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
 		ChangeStateAndLog(IreneRunState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
@@ -346,6 +364,7 @@ void AIreneCharacter::MoveDoubleClickD()
 	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
 		ChangeStateAndLog(IreneRunState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
@@ -356,7 +375,7 @@ void AIreneCharacter::MoveReleasedW()
 {
 	MoveKey[0] = 0;
 	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
+	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2) 
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }

@@ -1,20 +1,12 @@
 ﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\UnrealProjects\STARRY-TAIL).
-  Parsing headers for StarryTailEditor
-    Running UnrealHeaderTool "C:\UnrealProjects\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\syhwms\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
-  LogInit: Display: Loading text-based GConfig....
-  Reflection code generated for StarryTailEditor in 2.7770523 seconds
   Building StarryTailEditor...
   Using Visual Studio 2019 14.29.30133 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 8 actions with 24 processes...
-    [1/8] StarryTail.init.gen.cpp
-    [2/8] MyAnimInstance.cpp
-    [3/8] IreneCharacter.gen.cpp
-    [4/8] MyAnimInstance.gen.cpp
-    [5/8] IreneCharacter.cpp
-    [6/8] UE4Editor-StarryTail-0002.lib
-       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0002.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0002.exp 개체를 생성하고 있습니다.
-    [7/8] UE4Editor-StarryTail-0002.dll
-       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0002.suppressed.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0002.suppressed.exp 개체를 생성하고 있습니다.
-    [8/8] StarryTailEditor.target
-  Total time in Parallel executor: 1.46 seconds
-  Total execution time: 4.80 seconds
+  Building 4 actions with 24 processes...
+    [1/4] IreneCharacter.cpp
+    [2/4] UE4Editor-StarryTail-0004.lib
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0004.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0004.exp 개체를 생성하고 있습니다.
+    [3/4] UE4Editor-StarryTail-0004.dll
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0004.suppressed.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0004.suppressed.exp 개체를 생성하고 있습니다.
+    [4/4] StarryTailEditor.target
+  Total time in Parallel executor: 1.54 seconds
+  Total execution time: 2.06 seconds
