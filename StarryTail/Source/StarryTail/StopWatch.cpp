@@ -12,7 +12,6 @@ AStopWatch::AStopWatch()
 	static ConstructorHelpers::FClassFinder<UStopWatchWidget>UI_TIMERWIDGET_C(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C"));
 	if (UI_TIMERWIDGET_C.Succeeded())
 	{
-		UE_LOG(LogTemp, Error, TEXT("TimerWidgetSet"));
 		TimerWidgetClass = UI_TIMERWIDGET_C.Class;
 	}
 }

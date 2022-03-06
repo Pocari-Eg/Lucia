@@ -16,18 +16,18 @@ struct FHitResult;
 #endif
 #define STARRYTAIL_TestObject_generated_h
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_SPARSE_DATA
-#define StarryTail_Source_StarryTail_TestObject_h_19_RPC_WRAPPERS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_SPARSE_DATA
+#define StarryTail_Source_StarryTail_TestObject_h_23_RPC_WRAPPERS \
  \
 	DECLARE_FUNCTION(execOnAttackedOverlap);
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_RPC_WRAPPERS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_RPC_WRAPPERS_NO_PURE_DECLS \
  \
 	DECLARE_FUNCTION(execOnAttackedOverlap);
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_INCLASS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesATestObject(); \
 	friend struct Z_Construct_UClass_ATestObject_Statics; \
@@ -36,7 +36,7 @@ public: \
 	DECLARE_SERIALIZER(ATestObject)
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_INCLASS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_INCLASS \
 private: \
 	static void StaticRegisterNativesATestObject(); \
 	friend struct Z_Construct_UClass_ATestObject_Statics; \
@@ -45,7 +45,7 @@ public: \
 	DECLARE_SERIALIZER(ATestObject)
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_STANDARD_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API ATestObject(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(ATestObject) \
@@ -58,7 +58,7 @@ private: \
 public:
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_ENHANCED_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_TestObject_h_23_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API ATestObject(ATestObject&&); \
@@ -69,31 +69,31 @@ public: \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(ATestObject)
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_PRIVATE_PROPERTY_OFFSET \
-	FORCEINLINE static uint32 __PPO__Hp() { return STRUCT_OFFSET(ATestObject, Hp); }
+#define StarryTail_Source_StarryTail_TestObject_h_23_PRIVATE_PROPERTY_OFFSET \
+	FORCEINLINE static uint32 __PPO__MaxHP() { return STRUCT_OFFSET(ATestObject, MaxHP); }
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_16_PROLOG
-#define StarryTail_Source_StarryTail_TestObject_h_19_GENERATED_BODY_LEGACY \
+#define StarryTail_Source_StarryTail_TestObject_h_20_PROLOG
+#define StarryTail_Source_StarryTail_TestObject_h_23_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_TestObject_h_19_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_TestObject_h_19_SPARSE_DATA \
-	StarryTail_Source_StarryTail_TestObject_h_19_RPC_WRAPPERS \
-	StarryTail_Source_StarryTail_TestObject_h_19_INCLASS \
-	StarryTail_Source_StarryTail_TestObject_h_19_STANDARD_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_TestObject_h_23_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_TestObject_h_23_SPARSE_DATA \
+	StarryTail_Source_StarryTail_TestObject_h_23_RPC_WRAPPERS \
+	StarryTail_Source_StarryTail_TestObject_h_23_INCLASS \
+	StarryTail_Source_StarryTail_TestObject_h_23_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_GENERATED_BODY \
+#define StarryTail_Source_StarryTail_TestObject_h_23_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_TestObject_h_19_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_TestObject_h_19_SPARSE_DATA \
-	StarryTail_Source_StarryTail_TestObject_h_19_RPC_WRAPPERS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_TestObject_h_19_INCLASS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_TestObject_h_19_ENHANCED_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_TestObject_h_23_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_TestObject_h_23_SPARSE_DATA \
+	StarryTail_Source_StarryTail_TestObject_h_23_RPC_WRAPPERS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_TestObject_h_23_INCLASS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_TestObject_h_23_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

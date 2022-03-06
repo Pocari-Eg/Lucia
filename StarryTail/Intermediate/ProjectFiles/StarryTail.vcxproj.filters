@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{43564C5D-B2E9-4231-8109-88C71FF78FB4}</UniqueIdentifier>
+      <UniqueIdentifier>{D3998942-DFA9-4BC1-8E1E-FE07EE993D67}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{48682100-6898-47FE-B01B-5D8A9B1E58CA}</UniqueIdentifier>
+      <UniqueIdentifier>{F3257F61-3BF4-4BEE-ACD8-B62C6B94F4F8}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{C7A770D4-75D6-48E4-A78A-E0A3BCCC38A5}</UniqueIdentifier>
+      <UniqueIdentifier>{D0C59888-163C-4B02-AFCC-358F991CE070}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -87,7 +87,7 @@
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{229CBE4D-68E4-4EC2-8099-1F8BB1671E26}</UniqueIdentifier>
+      <UniqueIdentifier>{DEE60649-3171-41C8-BCAD-24F996E45699}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -150,8 +150,14 @@
       <Filter>Source\StarryTail\IreneStates</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\UI">
-      <UniqueIdentifier>{5508DA81-23B4-4AC7-93B7-EE2D056BFDC0}</UniqueIdentifier>
+      <UniqueIdentifier>{78E2DD1C-AE73-4B0F-882D-72EEC68F35C7}</UniqueIdentifier>
     </Filter>
+    <ClCompile Include="..\..\Source\StarryTail\UI\HPBarWidget.cpp">
+      <Filter>Source\StarryTail\UI</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\UI\HPBarWidget.h">
+      <Filter>Source\StarryTail\UI</Filter>
+    </ClInclude>
     <ClCompile Include="..\..\Source\StarryTail\UI\IreneAttributeWidget.cpp">
       <Filter>Source\StarryTail\UI</Filter>
     </ClCompile>

@@ -4,6 +4,8 @@
 #include "TestObject.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
+#include "Components/SceneComponent.h"
+
 
 // Sets default values
 ATestObject::ATestObject()
@@ -36,45 +38,53 @@ ATestObject::ATestObject()
 
 	
 
-	//ui 설정
+	//속성 UI 설정
 	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
 	AttributeWidget->SetupAttachment(Mesh);
-	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 95.0f));
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 120.0f));
 	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
 
-	//ui 뒷면
-	//AttributeWidget2 = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET2"));
-	//AttributeWidget2->SetupAttachment(Mesh);
-	//AttributeWidget2->SetRelativeLocation(FVector(0.0f, 0.0f, 95.0f));
-	//AttributeWidget2->SetRelativeRotation(FRotator(0.0f, 90.0f, 0.0f));
-	//AttributeWidget2->SetWidgetSpace(EWidgetSpace::World);
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_ATTRIBUTEWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
 
-	if (UI_HUD.Succeeded()) {
+	if (UI_ATTRIBUTEWIDGET.Succeeded()) {
 
-		AttributeWidget->SetWidgetClass(UI_HUD.Class);
+		AttributeWidget->SetWidgetClass(UI_ATTRIBUTEWIDGET.Class);
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
-		//AttributeWidget2->SetWidgetClass(UI_HUD.Class);
-		//AttributeWidget2->SetDrawSize(FVector2D(20.0f, 20.0f));
+	
 	}
 
 	//초기 HP 설정
-	Hp = 300.0f;
-
+	MaxHP = 300.0f;
+	CurrentHP = MaxHP;
+	//HP Bar UI 설정 
+	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+	HpBarWidget->SetupAttachment(Mesh);
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 	
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_HPBar.BP_HPBar_C"));
+
+	if (UI_HPBARWIDGET.Succeeded()) {
+
+		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
+		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+
+	}
 }
 
 void ATestObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//AttributeWidget->AddLocalRotation(FRotator(0.0f, 100.0f * DeltaTime, 0.0f));
-	//AttributeWidget2->AddLocalRotation(FRotator(0.0f, 100.0f * DeltaTime, 0.0f));
+  
+	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
+	FRotator CameraRot=UKismetMathLibrary::FindLookAtRotation(AttributeWidget->GetComponentTransform().GetLocation(), 
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation());
 
-	//AttributeWidget->
-    
-   
-
+	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
+	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw,0.0f));
+	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 }
 
 // Called when the game starts or when spawned
@@ -83,16 +93,19 @@ void ATestObject::BeginPlay()
 	Super::BeginPlay();
 
 	//위젯에 속성에 따른 색 설정
-	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
-	if (nullptr != Widget)
+	auto AttributeUI = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != AttributeUI)
 	{
-		Widget->BindCharacterAttribute(Attribute);
+		AttributeUI->BindCharacterAttribute(Attribute);
 	}
-	/*auto Widget2 = Cast<UIreneAttributeWidget>(AttributeWidget2->GetUserWidgetObject());
-	if (nullptr != Widget2)
+	//Hp bar 위젯 초기 세팅
+	auto HPBarUI = Cast<UHPBarWidget>(HpBarWidget->GetUserWidgetObject());
+	if (nullptr != HPBarUI)
 	{
-		Widget2->BindCharacterAttribute(Attribute);
-	}*/
+		HPBarUI->BindObjectHp(this);
+	}
+
+	STARRYLOG_S(Error);
 }
 
 void ATestObject::PostInitializeComponents()
@@ -107,9 +120,11 @@ void ATestObject::PostInitializeComponents()
 void ATestObject::SetHp(float ATK)
 {
 
-	Hp -= ATK;
-	UE_LOG(LogTemp, Error, TEXT("HP : %f"), Hp);
-	if (Hp <= 0.0f)
+	CurrentHP -= ATK;
+	//HP변화 델리게이트를 호출 
+	OnHpChanged.Broadcast();
+	STARRYLOG(Error, TEXT("HP : %f"), CurrentHP);
+	if (CurrentHP <= 0.0f)
 	{
 		//hp가 0 미만이되면 파괴
 		Destroy();
@@ -119,7 +134,7 @@ void ATestObject::SetHp(float ATK)
 
 void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Hit"));
+	STARRYLOG(Warning, TEXT("Hit"));
 
 	auto Player = Cast<AIreneCharacter>(OtherActor);  // 부딫힌 오브젝트를 해당 캐릭터로 캐스팅 
 
@@ -172,6 +187,12 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	default:
 		break;
 	}
+}
+
+float ATestObject::GetHpRatio()
+{
+	//현재 HP를 0.0~1.0의 비율로 변환하여 반환
+	return (CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CurrentHP / MaxHP;
 }
 
 // Called every frame
