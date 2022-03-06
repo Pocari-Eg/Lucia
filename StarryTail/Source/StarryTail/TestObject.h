@@ -10,9 +10,13 @@
 
 #include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
+#include "UI/HPBarWidget.h"
+
 
 #include "TestObject.generated.h"
 
+
+DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
 UCLASS()
 class STARRYTAIL_API ATestObject : public AActor
 {
@@ -30,16 +34,21 @@ public:
 
 
 	// 속성 표시 위젯 
-	UPROPERTY(EditAnywhere, Category = UI)
+	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
 
+	//Hp Bar 위젯
 	UPROPERTY(VisibleAnywhere, Category = UI)
-	class UWidgetComponent* AttributeWidget2;
+	class UWidgetComponent* HpBarWidget;
 
+	//HP 변화 델리게이트
+	FOnHpChangeDelegate OnHpChanged;
 private:
-	// 오브젝트 hp
+	// 오브젝트 MaxHp
 	UPROPERTY(EditAnywhere,Category=INFO, meta = (AllowPrivateAccess = "true"))
-	float Hp;
+	float MaxHP;
+	//오브젝트 CurrentHp
+	float CurrentHP;
 
 
 public:
@@ -47,6 +56,9 @@ public:
 	ATestObject();
 
 	virtual void Tick(float DeltaTime) override;
+
+	//현재 HP를 UI로 넘기기
+	float GetHpRatio();
 
 protected:
 	// Called when the game starts or when spawned
@@ -61,5 +73,7 @@ private:
 	UFUNCTION()
 	void OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
 };
 

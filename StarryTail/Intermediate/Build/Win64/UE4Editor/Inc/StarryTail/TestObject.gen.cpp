@@ -158,13 +158,13 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 #endif
 		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_AttributeWidget;
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_AttributeWidget2_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_HpBarWidget_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_AttributeWidget2;
+		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_HpBarWidget;
 #if WITH_METADATA
-		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Hp_MetaData[];
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_MaxHP_MetaData[];
 #endif
-		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_Hp;
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_MaxHP;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
@@ -219,33 +219,35 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		{ "ToolTip", "?\xd3\xbc? \xc7\xa5?? ????" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget = { "AttributeWidget", nullptr, (EPropertyFlags)0x0010000000080009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData)) };
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget = { "AttributeWidget", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData)) };
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData[] = {
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_HpBarWidget_MetaData[] = {
 		{ "Category", "UI" },
+		{ "Comment", "//Hp Bar ????\n" },
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "TestObject.h" },
+		{ "ToolTip", "Hp Bar ????" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2 = { "AttributeWidget2", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget2), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData)) };
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_HpBarWidget = { "HpBarWidget", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, HpBarWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_HpBarWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_HpBarWidget_MetaData)) };
 #if WITH_METADATA
-	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData[] = {
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_MaxHP_MetaData[] = {
 		{ "AllowPrivateAccess", "true" },
 		{ "Category", "INFO" },
-		{ "Comment", "// ??????\xc6\xae hp\n" },
+		{ "Comment", "// ??????\xc6\xae MaxHp\n" },
 		{ "ModuleRelativePath", "TestObject.h" },
-		{ "ToolTip", "??????\xc6\xae hp" },
+		{ "ToolTip", "??????\xc6\xae MaxHp" },
 	};
 #endif
-	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_Hp = { "Hp", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, Hp), METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData)) };
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_MaxHP = { "MaxHP", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, MaxHP), METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_MaxHP_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_MaxHP_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ATestObject_Statics::PropPointers[] = {
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Trigger,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Mesh,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute_Underlying,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2,
-		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Hp,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_HpBarWidget,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_MaxHP,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ATestObject_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ATestObject>::IsAbstract,
@@ -274,7 +276,7 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(ATestObject, 3184171299);
+	IMPLEMENT_CLASS(ATestObject, 1155595970);
 	template<> STARRYTAIL_API UClass* StaticClass<ATestObject>()
 	{
 		return ATestObject::StaticClass();
