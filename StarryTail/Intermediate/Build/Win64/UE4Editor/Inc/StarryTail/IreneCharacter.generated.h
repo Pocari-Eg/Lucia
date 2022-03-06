@@ -64,7 +64,7 @@ public: \
 	FORCEINLINE static uint32 __PPO__MoveKey() { return STRUCT_OFFSET(AIreneCharacter, MoveKey); } \
 	FORCEINLINE static uint32 __PPO__CharacterDataStruct() { return STRUCT_OFFSET(AIreneCharacter, CharacterDataStruct); } \
 	FORCEINLINE static uint32 __PPO__Weapon() { return STRUCT_OFFSET(AIreneCharacter, Weapon); } \
-	FORCEINLINE static uint32 __PPO__Type() { return STRUCT_OFFSET(AIreneCharacter, Type); } \
+	FORCEINLINE static uint32 __PPO__Attribute() { return STRUCT_OFFSET(AIreneCharacter, Attribute); } \
 	FORCEINLINE static uint32 __PPO__AttributeWidget() { return STRUCT_OFFSET(AIreneCharacter, AttributeWidget); }
 
 

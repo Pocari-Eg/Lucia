@@ -79,7 +79,7 @@ private:
 	AStopWatch* StopWatch;
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
-	EAttributeKeyword Type;
+	EAttributeKeyword Attribute;
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
@@ -96,10 +96,15 @@ public:
 
 	uint8 GetAttackCountAnim() { return AttackCountAnim; }
 
+	EAttributeKeyword GetAttribute();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 private:	
 	// 캐릭터 이동 관련 함수
 	void MoveForward();

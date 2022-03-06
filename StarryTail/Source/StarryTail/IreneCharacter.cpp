@@ -32,6 +32,8 @@ AIreneCharacter::AIreneCharacter()
 			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 		}
 
+		//콜리전 적용
+		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 
 		// 블루프린트 애니메이션 적용
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
@@ -107,7 +109,7 @@ AIreneCharacter::AIreneCharacter()
 
 
 	//박찬영
-	Type = EAttributeKeyword::e_None;
+	Attribute = EAttributeKeyword::e_None;
 
 	//ui 설정
 	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
@@ -694,6 +696,11 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
 }
 
+EAttributeKeyword AIreneCharacter::GetAttribute()
+{
+	return Attribute;
+}
+
 void AIreneCharacter::ChangeStateAndLog(State* newState)
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
@@ -720,21 +727,21 @@ void AIreneCharacter::WatchReset()
 void AIreneCharacter::AttributeChange()
 {
 
-	switch (Type)
+	switch (Attribute)
 	{
 	case EAttributeKeyword::e_None:
-		Type = EAttributeKeyword::e_Fire;
+		Attribute = EAttributeKeyword::e_Fire;
 		break;
 	case EAttributeKeyword::e_Fire:
-		Type = EAttributeKeyword::e_Water;
+		Attribute = EAttributeKeyword::e_Water;
 
 		break;
 	case EAttributeKeyword::e_Water:
-		Type = EAttributeKeyword::e_Thunder;
+		Attribute = EAttributeKeyword::e_Thunder;
 
 		break;
 	case EAttributeKeyword::e_Thunder:
-		Type = EAttributeKeyword::e_None;
+		Attribute = EAttributeKeyword::e_None;
 
 		break;
 	default:
@@ -743,6 +750,6 @@ void AIreneCharacter::AttributeChange()
 	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
 	if (nullptr != Widget)
 	{
-		Widget->BindCharacterAttribute(Type);
+		Widget->BindCharacterAttribute(Attribute);
 	}
 }

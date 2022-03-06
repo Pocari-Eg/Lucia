@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{D75985B2-99EA-4DDE-A39C-707DA5B3E30F}</UniqueIdentifier>
+      <UniqueIdentifier>{C4BC1322-A371-430D-BD35-5E768408A13F}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{C218FACA-1E98-4C8E-804F-5C7A0D432A0A}</UniqueIdentifier>
+      <UniqueIdentifier>{0FF18118-0E6E-401B-8763-D4DFE61B3860}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{B1BA3834-CC61-46DA-8C45-E2498C9F1AEC}</UniqueIdentifier>
+      <UniqueIdentifier>{93AE597E-5350-463B-9189-A0B8E9B4C71D}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -80,8 +80,14 @@
     <ClInclude Include="..\..\Source\StarryTail\StopWatch.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\TestObject.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\TestObject.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{4B75DCFD-9C5F-4AB0-811E-9E8773A0A9F9}</UniqueIdentifier>
+      <UniqueIdentifier>{521E511B-C222-4673-A557-D545534B1876}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -144,7 +150,7 @@
       <Filter>Source\StarryTail\IreneStates</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\UI">
-      <UniqueIdentifier>{1FD179BC-BF69-4C41-8C68-7F52B97C32A8}</UniqueIdentifier>
+      <UniqueIdentifier>{F4CF81B1-AEAD-4083-961C-192331BA0677}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\UI\IreneAttributeWidget.cpp">
       <Filter>Source\StarryTail\UI</Filter>
