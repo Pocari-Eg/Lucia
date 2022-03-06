@@ -106,10 +106,12 @@ AIreneCharacter::AIreneCharacter()
 	CharacterDataStruct.HP = 100;
 	// 초기 이동속도
 	CharacterDataStruct.MoveSpeed = 1;
-
+	// 초기 공격력
+	CharacterDataStruct.ATK = 20.0f;
 
 	//박찬영
-	Attribute = EAttributeKeyword::e_None;
+	//초기 속성
+	Attribute = EAttributeKeyword::e_Fire;
 
 	//ui 설정
 	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
@@ -141,8 +143,15 @@ void AIreneCharacter::BeginPlay()
 
 	//박찬영
 	//스탑워치 생성 
-	StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
-	StopWatch->InitStopWatch();
+	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
+	//StopWatch->InitStopWatch();
+	// 속성 위젯에 속성값 설정
+	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != Widget)
+	{
+		Widget->BindCharacterAttribute(Attribute);
+	}
+	
 }
 
 void AIreneCharacter::MoveForward()
@@ -689,8 +698,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	//박찬영
 	//스탑워치 컨트롤
-	PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
-	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);
+	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
+	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);*/
 
 	// 속성 변환 테스트
 	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
@@ -699,6 +708,11 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 EAttributeKeyword AIreneCharacter::GetAttribute()
 {
 	return Attribute;
+}
+
+float AIreneCharacter::GetATK()
+{
+	return CharacterDataStruct.ATK;
 }
 
 void AIreneCharacter::ChangeStateAndLog(State* newState)
@@ -714,24 +728,23 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 
 //박찬영
 //스탑워치 컨트롤 함수
-void AIreneCharacter::WatchContorl()
-{
-	StopWatch->WatchControl();
-}
-
-void AIreneCharacter::WatchReset()
-{
-	StopWatch->WatchReset();
-}
+//void AIreneCharacter::WatchContorl()
+//{
+//	StopWatch->WatchControl();
+//}
+//
+//void AIreneCharacter::WatchReset()
+//{
+//	StopWatch->WatchReset();
+//}
 
 void AIreneCharacter::AttributeChange()
 {
+	//속셩변환 차례대로 속성이 변환
 
 	switch (Attribute)
 	{
-	case EAttributeKeyword::e_None:
-		Attribute = EAttributeKeyword::e_Fire;
-		break;
+	
 	case EAttributeKeyword::e_Fire:
 		Attribute = EAttributeKeyword::e_Water;
 
@@ -741,7 +754,7 @@ void AIreneCharacter::AttributeChange()
 
 		break;
 	case EAttributeKeyword::e_Thunder:
-		Attribute = EAttributeKeyword::e_None;
+		Attribute = EAttributeKeyword::e_Fire;
 
 		break;
 	default:

@@ -114,10 +114,12 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::Function_MetaDataParams[] = {
+		{ "Comment", "//?\xe6\xb5\xb9 \xc3\xb3??\n" },
 		{ "ModuleRelativePath", "TestObject.h" },
+		{ "ToolTip", "?\xe6\xb5\xb9 \xc3\xb3??" },
 	};
 #endif
-	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_ATestObject, nullptr, "OnAttackedOverlap", nullptr, nullptr, sizeof(TestObject_eventOnAttackedOverlap_Parms), Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00420401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::Function_MetaDataParams)) };
+	const UE4CodeGen_Private::FFunctionParams Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::FuncParams = { (UObject*(*)())Z_Construct_UClass_ATestObject, nullptr, "OnAttackedOverlap", nullptr, nullptr, sizeof(TestObject_eventOnAttackedOverlap_Parms), Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::PropPointers, UE_ARRAY_COUNT(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::PropPointers), RF_Public|RF_Transient|RF_MarkAsNative, (EFunctionFlags)0x00440401, 0, 0, METADATA_PARAMS(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::Function_MetaDataParams, UE_ARRAY_COUNT(Z_Construct_UFunction_ATestObject_OnAttackedOverlap_Statics::Function_MetaDataParams)) };
 	UFunction* Z_Construct_UFunction_ATestObject_OnAttackedOverlap()
 	{
 		static UFunction* ReturnFunction = nullptr;
@@ -159,6 +161,10 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_AttributeWidget2_MetaData[];
 #endif
 		static const UE4CodeGen_Private::FObjectPropertyParams NewProp_AttributeWidget2;
+#if WITH_METADATA
+		static const UE4CodeGen_Private::FMetaDataPairParam NewProp_Hp_MetaData[];
+#endif
+		static const UE4CodeGen_Private::FFloatPropertyParams NewProp_Hp;
 		static const UE4CodeGen_Private::FPropertyParamsBase* const PropPointers[];
 		static const FCppClassTypeInfoStatic StaticCppClassTypeInfo;
 		static const UE4CodeGen_Private::FClassParams ClassParams;
@@ -168,7 +174,7 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		(UObject* (*)())Z_Construct_UPackage__Script_StarryTail,
 	};
 	const FClassFunctionLinkInfo Z_Construct_UClass_ATestObject_Statics::FuncInfo[] = {
-		{ &Z_Construct_UFunction_ATestObject_OnAttackedOverlap, "OnAttackedOverlap" }, // 1757655269
+		{ &Z_Construct_UFunction_ATestObject_OnAttackedOverlap, "OnAttackedOverlap" }, // 775150905
 	};
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::Class_MetaDataParams[] = {
@@ -198,20 +204,22 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute_MetaData[] = {
 		{ "Category", "TYPE" },
-		{ "Comment", "// ?\xde\xbd? \n//???? \xc5\xb8?? \n" },
+		{ "Comment", "//??????\xc6\xae ?\xd3\xbc?\n" },
 		{ "ModuleRelativePath", "TestObject.h" },
-		{ "ToolTip", "?\xde\xbd?\n???? \xc5\xb8??" },
+		{ "ToolTip", "??????\xc6\xae ?\xd3\xbc?" },
 	};
 #endif
 	const UE4CodeGen_Private::FEnumPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute = { "Attribute", nullptr, (EPropertyFlags)0x0010000000000005, UE4CodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, Attribute), Z_Construct_UEnum_StarryTail_EAttributeKeyword, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData[] = {
 		{ "Category", "UI" },
+		{ "Comment", "// ?\xd3\xbc? \xc7\xa5?? ???? \n" },
 		{ "EditInline", "true" },
 		{ "ModuleRelativePath", "TestObject.h" },
+		{ "ToolTip", "?\xd3\xbc? \xc7\xa5?? ????" },
 	};
 #endif
-	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget = { "AttributeWidget", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData)) };
+	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget = { "AttributeWidget", nullptr, (EPropertyFlags)0x0010000000080009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget_MetaData)) };
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData[] = {
 		{ "Category", "UI" },
@@ -220,6 +228,16 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 	};
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2 = { "AttributeWidget2", nullptr, (EPropertyFlags)0x00100000000a0009, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, AttributeWidget2), Z_Construct_UClass_UWidgetComponent_NoRegister, METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2_MetaData)) };
+#if WITH_METADATA
+	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData[] = {
+		{ "AllowPrivateAccess", "true" },
+		{ "Category", "INFO" },
+		{ "Comment", "// ??????\xc6\xae hp\n" },
+		{ "ModuleRelativePath", "TestObject.h" },
+		{ "ToolTip", "??????\xc6\xae hp" },
+	};
+#endif
+	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_ATestObject_Statics::NewProp_Hp = { "Hp", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(ATestObject, Hp), METADATA_PARAMS(Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_ATestObject_Statics::NewProp_Hp_MetaData)) };
 	const UE4CodeGen_Private::FPropertyParamsBase* const Z_Construct_UClass_ATestObject_Statics::PropPointers[] = {
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Trigger,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Mesh,
@@ -227,6 +245,7 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Attribute,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget,
 		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_AttributeWidget2,
+		(const UE4CodeGen_Private::FPropertyParamsBase*)&Z_Construct_UClass_ATestObject_Statics::NewProp_Hp,
 	};
 	const FCppClassTypeInfoStatic Z_Construct_UClass_ATestObject_Statics::StaticCppClassTypeInfo = {
 		TCppClassTypeTraits<ATestObject>::IsAbstract,
@@ -255,7 +274,7 @@ void EmptyLinkFunctionForGeneratedCodeTestObject() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(ATestObject, 319259672);
+	IMPLEMENT_CLASS(ATestObject, 3184171299);
 	template<> STARRYTAIL_API UClass* StaticClass<ATestObject>()
 	{
 		return ATestObject::StaticClass();

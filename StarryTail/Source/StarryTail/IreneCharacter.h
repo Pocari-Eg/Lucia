@@ -76,7 +76,7 @@ private:
 
 	// 박찬영 ***************************************
 //스탑워치
-	AStopWatch* StopWatch;
+	//AStopWatch* StopWatch;
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
@@ -96,7 +96,11 @@ public:
 
 	uint8 GetAttackCountAnim() { return AttackCountAnim; }
 
+	///박찬영 ==================
+	//속성 반환
 	EAttributeKeyword GetAttribute();
+	//공격력 반환
+	float GetATK();
 
 protected:
 	// Called when the game starts or when spawned
@@ -152,8 +156,8 @@ private:
 
 	//박찬영 ============
 //스탑워치 
-	void WatchContorl();
-	void WatchReset();
+	//void WatchContorl();
+	//void WatchReset();
 	//속성 변환
 	void AttributeChange();
 };

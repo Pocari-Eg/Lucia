@@ -69,7 +69,10 @@ public: \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(ATestObject)
 
 
-#define StarryTail_Source_StarryTail_TestObject_h_19_PRIVATE_PROPERTY_OFFSET
+#define StarryTail_Source_StarryTail_TestObject_h_19_PRIVATE_PROPERTY_OFFSET \
+	FORCEINLINE static uint32 __PPO__Hp() { return STRUCT_OFFSET(ATestObject, Hp); }
+
+
 #define StarryTail_Source_StarryTail_TestObject_h_16_PROLOG
 #define StarryTail_Source_StarryTail_TestObject_h_19_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \

@@ -131,9 +131,9 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Attribute_MetaData[] = {
 		{ "Category", "IreneCharacter" },
-		{ "Comment", "//\xc4\xb3???? ?\xd3\xbc?\n" },
+		{ "Comment", "// ?????? ***************************************\n//??\xc5\xbe??\xc4\xa1\n//AStopWatch* StopWatch;\n//\xc4\xb3???? ?\xd3\xbc?\n" },
 		{ "ModuleRelativePath", "IreneCharacter.h" },
-		{ "ToolTip", "\xc4\xb3???? ?\xd3\xbc?" },
+		{ "ToolTip", "?????? ***************************************\n??\xc5\xbe??\xc4\xa1\nAStopWatch* StopWatch;\n\xc4\xb3???? ?\xd3\xbc?" },
 	};
 #endif
 	const UE4CodeGen_Private::FEnumPropertyParams Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Attribute = { "Attribute", nullptr, (EPropertyFlags)0x0040000000000001, UE4CodeGen_Private::EPropertyGenFlags::Enum, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(AIreneCharacter, Attribute), Z_Construct_UEnum_StarryTail_EAttributeKeyword, METADATA_PARAMS(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Attribute_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_AIreneCharacter_Statics::NewProp_Attribute_MetaData)) };
@@ -185,7 +185,7 @@ void EmptyLinkFunctionForGeneratedCodeIreneCharacter() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(AIreneCharacter, 2230192624);
+	IMPLEMENT_CLASS(AIreneCharacter, 2124217449);
 	template<> STARRYTAIL_API UClass* StaticClass<AIreneCharacter>()
 	{
 		return AIreneCharacter::StaticClass();
