@@ -69,6 +69,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Weapon;
 
+
 public:
 	// Sets default values for this character's properties
 	AIreneCharacter();
@@ -84,6 +85,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override; 
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 private:	
 	// 캐릭터 이동 관련 함수
