@@ -9,19 +9,19 @@
 // Sets default values
 AIreneCharacter::AIreneCharacter()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	// ½ºÄÌ·¹Åæ ¸Þ½¬ ¼³Á¤
 	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Walk.Walk_KeQing"));
-	if(CharacterMesh.Succeeded())
+	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
 		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 
 		FName WeaponSocket(TEXT("hand_rSocket"));
-		if(GetMesh()->DoesSocketExist(WeaponSocket))
+		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
 			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Developers/syhwms/Collections/Move.Move_Weapon"));
@@ -37,7 +37,7 @@ AIreneCharacter::AIreneCharacter()
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
 
 		if (CharacterAnimInstance.Succeeded())
-		{			
+		{
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 		}
 	}
@@ -121,6 +121,16 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetDrawSize(FVector2D(2.0f, 2.0f));
 	}
 }
+
+void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("NotifyActorBeginOverlap")); 
+}
+void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	UE_LOG(LogTemp, Warning, TEXT("NotifyActorEndOverlap"));
+}
+
 
 // Called when the game starts or when spawned
 void AIreneCharacter::BeginPlay()
