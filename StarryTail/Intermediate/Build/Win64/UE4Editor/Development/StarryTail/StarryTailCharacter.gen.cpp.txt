@@ -1,11 +1,11 @@
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
-D:\EpicGames\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-D:\EpicGames\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/StarryTailCharacter.h
-D:\EpicGames\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Character.h
-D:\EpicGames\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/CharacterMovementReplication.h
-D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CharacterMovementReplication.generated.h
-D:\EpicGames\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/RootMotionSource.h
-D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\RootMotionSource.generated.h
-D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Character.generated.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\StarryTailCharacter.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail/StarryTailCharacter.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Character.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/CharacterMovementReplication.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CharacterMovementReplication.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/RootMotionSource.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\RootMotionSource.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Character.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\StarryTailCharacter.generated.h

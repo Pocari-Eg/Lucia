@@ -1,48 +1,7 @@
-﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\UnrealProjects\STARRY-TAIL).
-  Creating makefile for StarryTailEditor (no existing makefile)
-  Parsing headers for StarryTailEditor
-    Running UnrealHeaderTool "C:\UnrealProjects\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\syhwms\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
-  LogInit: Display: Loading text-based GConfig....
-  Reflection code generated for StarryTailEditor in 2.8660301 seconds
+﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
   Building StarryTailEditor...
-  Using Visual Studio 2019 14.29.30133 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 35 actions with 24 processes...
-    [1/35] Default.rc2
-    [2/35] SharedPCH.Engine.ShadowErrors.cpp
-    [3/35] IreneRunState.cpp
-    [4/35] IreneIdleState.cpp
-    [5/35] IreneWalkState.cpp
-    [6/35] IreneDeathState.cpp
-    [7/35] IreneAttackIdleState.cpp
-    [8/35] IreneHitState.cpp
-    [9/35] IreneDashState.cpp
-    [10/35] IreneJumpState.cpp
-    [11/35] StarryTailGameMode.cpp
-    [12/35] StarryTail.init.gen.cpp
-    [13/35] PlayerCharacterDataStruct.gen.cpp
-    [14/35] StarryTail.cpp
-    [15/35] IreneFSM.cpp
-    [16/35] StarryTail.gen.cpp
-    [17/35] IreneAttackState.cpp
-    [18/35] StarryTailGameMode.gen.cpp
-    [19/35] StarryTailCharacter.gen.cpp
-    [20/35] StarryTailCharacter.cpp
-    [21/35] StopWatchWidget.cpp
-    [22/35] IreneAttributeWidget.cpp
-    [23/35] IreneAttributeWidget.gen.cpp
-    [24/35] StopWatch.gen.cpp
-    [25/35] StopWatch.cpp
-    [26/35] MyAnimInstance.cpp
-    [27/35] TestObject.cpp
-    [28/35] IreneCharacter.gen.cpp
-    [29/35] MyAnimInstance.gen.cpp
-    [30/35] StopWatchWidget.gen.cpp
-    [31/35] TestObject.gen.cpp
-    [32/35] IreneCharacter.cpp
-    [33/35] UE4Editor-StarryTail.lib
-       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.exp 개체를 생성하고 있습니다.
-    [34/35] UE4Editor-StarryTail.dll
-       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.exp 개체를 생성하고 있습니다.
-    [35/35] StarryTailEditor.target
-  Total time in Parallel executor: 20.97 seconds
-  Total execution time: 30.33 seconds
+  Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  Building 1 action with 12 processes...
+    [1/1] StarryTailEditor.target
+  Total time in Parallel executor: 0.15 seconds
+  Total execution time: 0.72 seconds
