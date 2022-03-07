@@ -1,3 +1,3 @@
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
+D:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+D:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
