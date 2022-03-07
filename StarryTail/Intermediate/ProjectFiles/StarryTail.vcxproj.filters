@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{7D02C568-E338-4EE6-8F5C-52C789E02481}</UniqueIdentifier>
+      <UniqueIdentifier>{E94C3957-A541-47AA-9D94-9A132FC7E581}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{86932612-C844-4AAC-BBFF-BBC9B9354FB8}</UniqueIdentifier>
+      <UniqueIdentifier>{EAA21B64-7365-4F7E-B7CB-F48061C9E0F6}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,54 +30,12 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{7673B282-D87F-4FA2-96DD-0C4CD935CF81}</UniqueIdentifier>
+      <UniqueIdentifier>{6B878014-B4F9-4C16-9700-3C09598FB29F}</UniqueIdentifier>
     </Filter>
-    <ClCompile Include="..\..\Source\StarryTail\CheckCanRangedAttack.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\CheckCanRangedAttack.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\DetectPlayer.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\DetectPlayer.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
     <ClCompile Include="..\..\Source\StarryTail\Enemy.cpp">
       <Filter>Source\StarryTail</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\StarryTail\Enemy.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\EnemyAnimInstance.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\EnemyAnimInstance.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\EnemyController.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\EnemyController.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\EnemyMeleeAttack.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\EnemyMeleeAttack.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\EnemyRangedAttack.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\EnemyRangedAttack.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\EnemyRushAttack.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\EnemyRushAttack.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
@@ -90,30 +48,6 @@
       <Filter>Source\StarryTail</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\StarryTail\IreneFSM.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\IsCanRushAttack.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\IsCanRushAttack.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\IsInMeleeAttackRange.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\IsInMeleeAttackRange.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\IsInRangedAttackRange.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\IsInRangedAttackRange.h">
-      <Filter>Source\StarryTail</Filter>
-    </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\MoveToPlayer.cpp">
-      <Filter>Source\StarryTail</Filter>
-    </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\MoveToPlayer.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\StarryTail\MyAnimInstance.cpp">
@@ -158,14 +92,83 @@
     <ClInclude Include="..\..\Source\StarryTail\TestObject.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
-    <ClCompile Include="..\..\Source\StarryTail\TurnToPlayer.cpp">
-      <Filter>Source\StarryTail</Filter>
+    <Filter Include="Source\StarryTail\EnemySource">
+      <UniqueIdentifier>{10AED50C-2619-4503-9510-44C9A7DBD5DF}</UniqueIdentifier>
+    </Filter>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\CheckCanRangedAttack.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
     </ClCompile>
-    <ClInclude Include="..\..\Source\StarryTail\TurnToPlayer.h">
-      <Filter>Source\StarryTail</Filter>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\CheckCanRangedAttack.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\DetectPlayer.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\DetectPlayer.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\EnemyAnimInstance.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\EnemyAnimInstance.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\EnemyController.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\EnemyController.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\EnemyMeleeAttack.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\EnemyMeleeAttack.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\EnemyRangedAttack.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\EnemyRangedAttack.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\EnemyRushAttack.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\EnemyRushAttack.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\IsCanRushAttack.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\IsCanRushAttack.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\IsInMeleeAttackRange.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\IsInMeleeAttackRange.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\IsInRangedAttackRange.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\IsInRangedAttackRange.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\MoveToPlayer.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\MoveToPlayer.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\EnemySource\TurnToPlayer.cpp">
+      <Filter>Source\StarryTail\EnemySource</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\EnemySource\TurnToPlayer.h">
+      <Filter>Source\StarryTail\EnemySource</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{8442A182-E26D-4A3D-A326-010A468898C0}</UniqueIdentifier>
+      <UniqueIdentifier>{639340ED-F684-45F5-966D-4ED7DE95F192}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -228,7 +231,7 @@
       <Filter>Source\StarryTail\IreneStates</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\UI">
-      <UniqueIdentifier>{538CAD57-EA22-4ABF-AA48-4D4FD39B4411}</UniqueIdentifier>
+      <UniqueIdentifier>{85C8B0E4-A45F-4396-8708-BD5B082C6264}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\UI\HPBarWidget.cpp">
       <Filter>Source\StarryTail\UI</Filter>

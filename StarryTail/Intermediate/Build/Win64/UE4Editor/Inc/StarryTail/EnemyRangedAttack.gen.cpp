@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/EnemyRangedAttack.h"
+#include "StarryTail/EnemySource/EnemyRangedAttack.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeEnemyRangedAttack() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyRangedAttack_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "EnemyRangedAttack.h" },
-		{ "ModuleRelativePath", "EnemyRangedAttack.h" },
+		{ "IncludePath", "EnemySource/EnemyRangedAttack.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyRangedAttack.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UEnemyRangedAttack_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyRangedAttack() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UEnemyRangedAttack, 1794778114);
+	IMPLEMENT_CLASS(UEnemyRangedAttack, 4097958042);
 	template<> STARRYTAIL_API UClass* StaticClass<UEnemyRangedAttack>()
 	{
 		return UEnemyRangedAttack::StaticClass();

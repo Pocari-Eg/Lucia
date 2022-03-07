@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/EnemyMeleeAttack.h"
+#include "StarryTail/EnemySource/EnemyMeleeAttack.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeEnemyMeleeAttack() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyMeleeAttack_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "EnemyMeleeAttack.h" },
-		{ "ModuleRelativePath", "EnemyMeleeAttack.h" },
+		{ "IncludePath", "EnemySource/EnemyMeleeAttack.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyMeleeAttack.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UEnemyMeleeAttack_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyMeleeAttack() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UEnemyMeleeAttack, 3377591321);
+	IMPLEMENT_CLASS(UEnemyMeleeAttack, 507384362);
 	template<> STARRYTAIL_API UClass* StaticClass<UEnemyMeleeAttack>()
 	{
 		return UEnemyMeleeAttack::StaticClass();

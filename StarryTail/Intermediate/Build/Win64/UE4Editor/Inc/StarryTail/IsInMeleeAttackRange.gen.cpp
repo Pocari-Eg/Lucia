@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/IsInMeleeAttackRange.h"
+#include "StarryTail/EnemySource/IsInMeleeAttackRange.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeIsInMeleeAttackRange() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UIsInMeleeAttackRange_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "IsInMeleeAttackRange.h" },
-		{ "ModuleRelativePath", "IsInMeleeAttackRange.h" },
+		{ "IncludePath", "EnemySource/IsInMeleeAttackRange.h" },
+		{ "ModuleRelativePath", "EnemySource/IsInMeleeAttackRange.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UIsInMeleeAttackRange_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeIsInMeleeAttackRange() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UIsInMeleeAttackRange, 3119975218);
+	IMPLEMENT_CLASS(UIsInMeleeAttackRange, 3845460908);
 	template<> STARRYTAIL_API UClass* StaticClass<UIsInMeleeAttackRange>()
 	{
 		return UIsInMeleeAttackRange::StaticClass();

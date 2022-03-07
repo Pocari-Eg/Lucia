@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/EnemyAnimInstance.h"
+#include "StarryTail/EnemySource/EnemyAnimInstance.h"
 #include "Engine/Classes/Components/SkeletalMeshComponent.h"
 #ifdef _MSC_VER
 #pragma warning (push)
@@ -75,15 +75,15 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
 		{ "HideCategories", "AnimInstance" },
-		{ "IncludePath", "EnemyAnimInstance.h" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "IncludePath", "EnemySource/EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_CurrentPawnSpeed_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Pawn" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FFloatPropertyParams Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_CurrentPawnSpeed = { "CurrentPawnSpeed", nullptr, (EPropertyFlags)0x0040000000000015, UE4CodeGen_Private::EPropertyGenFlags::Float, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UEnemyAnimInstance, CurrentPawnSpeed), METADATA_PARAMS(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_CurrentPawnSpeed_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_CurrentPawnSpeed_MetaData)) };
@@ -91,7 +91,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_bCanRangedAttack_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Pawn" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	void Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_bCanRangedAttack_SetBit(void* Obj)
@@ -103,7 +103,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackCount_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Pawn" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FUnsizedIntPropertyParams Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackCount = { "RangedAttackCount", nullptr, (EPropertyFlags)0x0040000000000015, UE4CodeGen_Private::EPropertyGenFlags::Int, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UEnemyAnimInstance, RangedAttackCount), METADATA_PARAMS(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackCount_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackCount_MetaData)) };
@@ -111,7 +111,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_bCanMeleeAttack_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Pawn" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	void Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_bCanMeleeAttack_SetBit(void* Obj)
@@ -123,7 +123,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackMontage_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Attack" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackMontage = { "RangedAttackMontage", nullptr, (EPropertyFlags)0x0040000000030015, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UEnemyAnimInstance, RangedAttackMontage), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackMontage_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RangedAttackMontage_MetaData)) };
@@ -131,7 +131,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_MeleeAttackMontage_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Attack" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_MeleeAttackMontage = { "MeleeAttackMontage", nullptr, (EPropertyFlags)0x0040000000030015, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UEnemyAnimInstance, MeleeAttackMontage), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_MeleeAttackMontage_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_MeleeAttackMontage_MetaData)) };
@@ -139,7 +139,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RushAttackMontage_MetaData[] = {
 		{ "AllowPrivateAccess", "TRUE" },
 		{ "Category", "Attack" },
-		{ "ModuleRelativePath", "EnemyAnimInstance.h" },
+		{ "ModuleRelativePath", "EnemySource/EnemyAnimInstance.h" },
 	};
 #endif
 	const UE4CodeGen_Private::FObjectPropertyParams Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RushAttackMontage = { "RushAttackMontage", nullptr, (EPropertyFlags)0x0040000000030015, UE4CodeGen_Private::EPropertyGenFlags::Object, RF_Public|RF_Transient|RF_MarkAsNative, 1, STRUCT_OFFSET(UEnemyAnimInstance, RushAttackMontage), Z_Construct_UClass_UAnimMontage_NoRegister, METADATA_PARAMS(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RushAttackMontage_MetaData, UE_ARRAY_COUNT(Z_Construct_UClass_UEnemyAnimInstance_Statics::NewProp_RushAttackMontage_MetaData)) };
@@ -179,7 +179,7 @@ void EmptyLinkFunctionForGeneratedCodeEnemyAnimInstance() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UEnemyAnimInstance, 2099472700);
+	IMPLEMENT_CLASS(UEnemyAnimInstance, 3973727331);
 	template<> STARRYTAIL_API UClass* StaticClass<UEnemyAnimInstance>()
 	{
 		return UEnemyAnimInstance::StaticClass();

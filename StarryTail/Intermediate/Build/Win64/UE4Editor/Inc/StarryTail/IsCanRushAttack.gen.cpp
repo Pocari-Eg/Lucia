@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/IsCanRushAttack.h"
+#include "StarryTail/EnemySource/IsCanRushAttack.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeIsCanRushAttack() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UIsCanRushAttack_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "IsCanRushAttack.h" },
-		{ "ModuleRelativePath", "IsCanRushAttack.h" },
+		{ "IncludePath", "EnemySource/IsCanRushAttack.h" },
+		{ "ModuleRelativePath", "EnemySource/IsCanRushAttack.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UIsCanRushAttack_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeIsCanRushAttack() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UIsCanRushAttack, 1624304790);
+	IMPLEMENT_CLASS(UIsCanRushAttack, 1380540812);
 	template<> STARRYTAIL_API UClass* StaticClass<UIsCanRushAttack>()
 	{
 		return UIsCanRushAttack::StaticClass();

@@ -2,8 +2,8 @@
 
 
 #include "Enemy.h"
-#include "EnemyAnimInstance.h"
-#include "EnemyController.h"
+#include "./EnemySource/EnemyAnimInstance.h"
+#include "./EnemySource/EnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "StarryTail.h"
@@ -66,7 +66,7 @@ void AEnemy::SetEnemyType(EEnemyType EnemyType)
 		bUseControllerRotationYaw = false;
 		GetCharacterMovement()->bUseControllerDesiredRotation = false;
 		GetCharacterMovement()->bOrientRotationToMovement = true;
-		GetCharacterMovement()->RotationRate = FRotator(0.0f, 0.0f, 0.0f);
+		GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 		break;
 	}
 }

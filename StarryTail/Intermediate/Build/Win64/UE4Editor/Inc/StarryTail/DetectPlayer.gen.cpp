@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/DetectPlayer.h"
+#include "StarryTail/EnemySource/DetectPlayer.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeDetectPlayer() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UDetectPlayer_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "DetectPlayer.h" },
-		{ "ModuleRelativePath", "DetectPlayer.h" },
+		{ "IncludePath", "EnemySource/DetectPlayer.h" },
+		{ "ModuleRelativePath", "EnemySource/DetectPlayer.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UDetectPlayer_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeDetectPlayer() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UDetectPlayer, 1914000816);
+	IMPLEMENT_CLASS(UDetectPlayer, 2232199223);
 	template<> STARRYTAIL_API UClass* StaticClass<UDetectPlayer>()
 	{
 		return UDetectPlayer::StaticClass();

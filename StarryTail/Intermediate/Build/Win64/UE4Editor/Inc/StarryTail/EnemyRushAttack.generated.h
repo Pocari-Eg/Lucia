@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define STARRYTAIL_EnemyRushAttack_generated_h
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_SPARSE_DATA
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_RPC_WRAPPERS
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_RPC_WRAPPERS_NO_PURE_DECLS
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_INCLASS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_SPARSE_DATA
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_RPC_WRAPPERS
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_RPC_WRAPPERS_NO_PURE_DECLS
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUEnemyRushAttack(); \
 	friend struct Z_Construct_UClass_UEnemyRushAttack_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(UEnemyRushAttack)
 
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_INCLASS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_INCLASS \
 private: \
 	static void StaticRegisterNativesUEnemyRushAttack(); \
 	friend struct Z_Construct_UClass_UEnemyRushAttack_Statics; \
@@ -34,7 +34,7 @@ public: \
 	DECLARE_SERIALIZER(UEnemyRushAttack)
 
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_STANDARD_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UEnemyRushAttack(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UEnemyRushAttack) \
@@ -47,7 +47,7 @@ private: \
 public:
 
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_ENHANCED_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API UEnemyRushAttack(UEnemyRushAttack&&); \
@@ -58,28 +58,28 @@ public: \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(UEnemyRushAttack)
 
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_12_PROLOG
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_GENERATED_BODY_LEGACY \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_12_PROLOG
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_SPARSE_DATA \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_RPC_WRAPPERS \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_INCLASS \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_STANDARD_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_SPARSE_DATA \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_RPC_WRAPPERS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_INCLASS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define StarryTail_Source_StarryTail_EnemyRushAttack_h_15_GENERATED_BODY \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_SPARSE_DATA \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_INCLASS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_EnemyRushAttack_h_15_ENHANCED_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_SPARSE_DATA \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_RPC_WRAPPERS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_INCLASS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h_15_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -87,7 +87,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> STARRYTAIL_API UClass* StaticClass<class UEnemyRushAttack>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID StarryTail_Source_StarryTail_EnemyRushAttack_h
+#define CURRENT_FILE_ID StarryTail_Source_StarryTail_EnemySource_EnemyRushAttack_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

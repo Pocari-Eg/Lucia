@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define STARRYTAIL_EnemyAnimInstance_generated_h
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_SPARSE_DATA
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_RPC_WRAPPERS
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_SPARSE_DATA
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_RPC_WRAPPERS
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUEnemyAnimInstance(); \
 	friend struct Z_Construct_UClass_UEnemyAnimInstance_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(UEnemyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_INCLASS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_INCLASS \
 private: \
 	static void StaticRegisterNativesUEnemyAnimInstance(); \
 	friend struct Z_Construct_UClass_UEnemyAnimInstance_Statics; \
@@ -34,7 +34,7 @@ public: \
 	DECLARE_SERIALIZER(UEnemyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UEnemyAnimInstance(const FObjectInitializer& ObjectInitializer); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UEnemyAnimInstance) \
@@ -47,7 +47,7 @@ private: \
 public:
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API UEnemyAnimInstance(UEnemyAnimInstance&&); \
@@ -58,7 +58,7 @@ public: \
 	DEFINE_DEFAULT_CONSTRUCTOR_CALL(UEnemyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
 	FORCEINLINE static uint32 __PPO__CurrentPawnSpeed() { return STRUCT_OFFSET(UEnemyAnimInstance, CurrentPawnSpeed); } \
 	FORCEINLINE static uint32 __PPO__bCanRangedAttack() { return STRUCT_OFFSET(UEnemyAnimInstance, bCanRangedAttack); } \
 	FORCEINLINE static uint32 __PPO__RangedAttackCount() { return STRUCT_OFFSET(UEnemyAnimInstance, RangedAttackCount); } \
@@ -68,27 +68,27 @@ public: \
 	FORCEINLINE static uint32 __PPO__RushAttackMontage() { return STRUCT_OFFSET(UEnemyAnimInstance, RushAttackMontage); }
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_13_PROLOG
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_GENERATED_BODY_LEGACY \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_13_PROLOG
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_SPARSE_DATA \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_RPC_WRAPPERS \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_INCLASS \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_SPARSE_DATA \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_RPC_WRAPPERS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_INCLASS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_GENERATED_BODY \
+#define StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_SPARSE_DATA \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_EnemyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_SPARSE_DATA \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -96,7 +96,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> STARRYTAIL_API UClass* StaticClass<class UEnemyAnimInstance>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID StarryTail_Source_StarryTail_EnemyAnimInstance_h
+#define CURRENT_FILE_ID StarryTail_Source_StarryTail_EnemySource_EnemyAnimInstance_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

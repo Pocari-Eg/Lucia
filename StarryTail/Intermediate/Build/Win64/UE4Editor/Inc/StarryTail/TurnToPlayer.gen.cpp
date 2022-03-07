@@ -5,7 +5,7 @@
 ===========================================================================*/
 
 #include "UObject/GeneratedCppIncludes.h"
-#include "StarryTail/TurnToPlayer.h"
+#include "StarryTail/EnemySource/TurnToPlayer.h"
 #ifdef _MSC_VER
 #pragma warning (push)
 #pragma warning (disable : 4883)
@@ -41,8 +41,8 @@ void EmptyLinkFunctionForGeneratedCodeTurnToPlayer() {}
 #if WITH_METADATA
 	const UE4CodeGen_Private::FMetaDataPairParam Z_Construct_UClass_UTurnToPlayer_Statics::Class_MetaDataParams[] = {
 		{ "Comment", "/**\n * \n */" },
-		{ "IncludePath", "TurnToPlayer.h" },
-		{ "ModuleRelativePath", "TurnToPlayer.h" },
+		{ "IncludePath", "EnemySource/TurnToPlayer.h" },
+		{ "ModuleRelativePath", "EnemySource/TurnToPlayer.h" },
 	};
 #endif
 	const FCppClassTypeInfoStatic Z_Construct_UClass_UTurnToPlayer_Statics::StaticCppClassTypeInfo = {
@@ -72,7 +72,7 @@ void EmptyLinkFunctionForGeneratedCodeTurnToPlayer() {}
 		}
 		return OuterClass;
 	}
-	IMPLEMENT_CLASS(UTurnToPlayer, 1322460182);
+	IMPLEMENT_CLASS(UTurnToPlayer, 3687223097);
 	template<> STARRYTAIL_API UClass* StaticClass<UTurnToPlayer>()
 	{
 		return UTurnToPlayer::StaticClass();
