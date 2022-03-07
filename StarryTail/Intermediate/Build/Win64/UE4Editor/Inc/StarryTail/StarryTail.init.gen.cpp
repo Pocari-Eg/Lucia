@@ -21,7 +21,7 @@ void EmptyLinkFunctionForGeneratedCodeStarryTail_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0xCC1D201A,
+				0xF9961979,
 				0x0786F9AD,
 				METADATA_PARAMS(nullptr, 0)
 			};
