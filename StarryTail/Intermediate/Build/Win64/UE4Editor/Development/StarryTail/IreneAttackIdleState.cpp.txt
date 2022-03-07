@@ -1,4 +1,4 @@
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\IreneAttackIdleState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\State.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\BaseGameEntity.h
+E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\IreneAttackIdleState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\State.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\IreneStates\BaseGameEntity.h
