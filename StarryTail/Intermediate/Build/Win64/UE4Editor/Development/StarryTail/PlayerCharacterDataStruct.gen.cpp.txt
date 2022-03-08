@@ -1,17 +1,17 @@
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail/PlayerCharacterDataStruct.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\IreneFSM.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/BaseGameEntity.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/State.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneIdleState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneAttackIdleState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneWalkState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneRunState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneDashState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneJumpState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneAttackState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneHitState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneDeathState.h
-C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\PlayerCharacterDataStruct.generated.h
+E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Definitions.StarryTail.h
+D:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GeneratedCppIncludes.h
+D:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/MetaData.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail/PlayerCharacterDataStruct.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\IreneFSM.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/BaseGameEntity.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/State.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneIdleState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneAttackIdleState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneWalkState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneRunState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneDashState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneJumpState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneAttackState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneHitState.h
+E:\STARRY-TAIL\StarryTail\Source\StarryTail\./IreneStates/IreneDeathState.h
+E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\PlayerCharacterDataStruct.generated.h
