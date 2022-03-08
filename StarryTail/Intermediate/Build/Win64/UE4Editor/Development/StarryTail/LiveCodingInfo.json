@@ -2,6 +2,8 @@
 	"RemapUnityFiles": 
 	{
 		"Module.StarryTail.cpp.obj": [
+			"Enemy.cpp.obj",
+			"EnemyMagicAttack.cpp.obj",
 			"CheckCanRangedAttack.cpp.obj",
 			"DetectPlayer.cpp.obj",
 			"EnemyAnimInstance.cpp.obj",
@@ -29,12 +31,12 @@
 			"StarryTail.cpp.obj",
 			"StarryTailCharacter.cpp.obj",
 			"StarryTailGameMode.cpp.obj",
+			"STGameInstance.cpp.obj",
 			"StopWatch.cpp.obj",
+			"TestObject.cpp.obj",
 			"HPBarWidget.cpp.obj",
 			"IreneAttributeWidget.cpp.obj",
-			"StopWatchWidget.cpp.obj",
-			"Enemy.cpp.obj",
-			"TestObject.cpp.obj"
+			"StopWatchWidget.cpp.obj"
 		],
 		"Module.StarryTail.gen.cpp.obj": [
 			"CheckCanRangedAttack.gen.cpp.obj",
@@ -42,6 +44,7 @@
 			"Enemy.gen.cpp.obj",
 			"EnemyAnimInstance.gen.cpp.obj",
 			"EnemyController.gen.cpp.obj",
+			"EnemyMagicAttack.gen.cpp.obj",
 			"EnemyMeleeAttack.gen.cpp.obj",
 			"EnemyRangedAttack.gen.cpp.obj",
 			"EnemyRushAttack.gen.cpp.obj",
@@ -58,6 +61,7 @@
 			"StarryTail.init.gen.cpp.obj",
 			"StarryTailCharacter.gen.cpp.obj",
 			"StarryTailGameMode.gen.cpp.obj",
+			"STGameInstance.gen.cpp.obj",
 			"StopWatch.gen.cpp.obj",
 			"StopWatchWidget.gen.cpp.obj",
 			"TestObject.gen.cpp.obj",

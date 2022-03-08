@@ -2,6 +2,7 @@
 
 
 #include "Enemy.h"
+#include "EnemyMagicAttack.h"
 #include "./EnemySource/EnemyAnimInstance.h"
 #include "./EnemySource/EnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -93,6 +94,8 @@ void AEnemy::RangedAttack()
 
 	EnemyAnimInstance->PlayRangedAttackMontage();
 	++AEnemyController::RangedAttackCount;
+
+	GetWorld()->SpawnActor<AEnemyMagicAttack>(GetActorLocation(), FRotator::ZeroRotator);
 
 	bIsAttacking = true;
 }
