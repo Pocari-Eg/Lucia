@@ -1,6 +1,2 @@
 ﻿  Using 'git status' to determine working set for adaptive non-unity build (E:\STARRY-TAIL).
-  Building StarryTailEditor...
-  Using Visual Studio 2019 14.29.30133 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.16299.0 SDK (C:\Program Files (x86)\Windows Kits\10).
-  Building 4 actions with 4 processes...
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.MakeFile.Targets(45,5): warning MSB5021: 빌드가 취소되었으므로 작업 실행 파일 "cmd" 및 자식 프로세스를 종료합니다.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.MakeFile.Targets(45,5): error MSB4181: "Exec" 작업이 false를 반환했지만 오류를 기록하지 않았습니다.

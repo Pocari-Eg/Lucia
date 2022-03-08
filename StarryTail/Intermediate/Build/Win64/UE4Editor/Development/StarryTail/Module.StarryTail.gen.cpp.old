@@ -4,6 +4,7 @@
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/Enemy.gen.cpp"
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyAnimInstance.gen.cpp"
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyController.gen.cpp"
+#include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyMagicAttack.gen.cpp"
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyMeleeAttack.gen.cpp"
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyRangedAttack.gen.cpp"
 #include "E:/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/EnemyRushAttack.gen.cpp"

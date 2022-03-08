@@ -2,12 +2,12 @@
 	"Targets": [
 		{
 			"Name": "StarryTail",
-			"Path": "C:\\Users\\Pocari\\Desktop\\STARRY-TAIL\\StarryTail\\Source\\StarryTail.Target.cs",
+			"Path": "E:\\STARRY-TAIL\\StarryTail\\Source\\StarryTail.Target.cs",
 			"Type": "Game"
 		},
 		{
 			"Name": "StarryTailEditor",
-			"Path": "C:\\Users\\Pocari\\Desktop\\STARRY-TAIL\\StarryTail\\Source\\StarryTailEditor.Target.cs",
+			"Path": "E:\\STARRY-TAIL\\StarryTail\\Source\\StarryTailEditor.Target.cs",
 			"Type": "Editor"
 		}
 	]
