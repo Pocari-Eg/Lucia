@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{E94C3957-A541-47AA-9D94-9A132FC7E581}</UniqueIdentifier>
+      <UniqueIdentifier>{6A113821-2AB7-4799-BCDA-761D1ECC1FB2}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{EAA21B64-7365-4F7E-B7CB-F48061C9E0F6}</UniqueIdentifier>
+      <UniqueIdentifier>{37A6DCD3-BE5D-46C5-81BD-DEA329D405EC}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{6B878014-B4F9-4C16-9700-3C09598FB29F}</UniqueIdentifier>
+      <UniqueIdentifier>{C5961BE9-6B56-4B54-807B-2B25927E598D}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\Enemy.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -93,7 +93,7 @@
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\EnemySource">
-      <UniqueIdentifier>{10AED50C-2619-4503-9510-44C9A7DBD5DF}</UniqueIdentifier>
+      <UniqueIdentifier>{DC7F56A8-AA7F-44D2-9669-019259B144AA}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\EnemySource\CheckCanRangedAttack.cpp">
       <Filter>Source\StarryTail\EnemySource</Filter>
@@ -168,7 +168,7 @@
       <Filter>Source\StarryTail\EnemySource</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{639340ED-F684-45F5-966D-4ED7DE95F192}</UniqueIdentifier>
+      <UniqueIdentifier>{54F92E14-41FC-492F-B1A7-5AA045B1A534}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -231,7 +231,7 @@
       <Filter>Source\StarryTail\IreneStates</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\UI">
-      <UniqueIdentifier>{85C8B0E4-A45F-4396-8708-BD5B082C6264}</UniqueIdentifier>
+      <UniqueIdentifier>{B441617C-C2B0-476A-AEB7-DE7A7160B325}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\UI\HPBarWidget.cpp">
       <Filter>Source\StarryTail\UI</Filter>

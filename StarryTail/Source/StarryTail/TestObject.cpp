@@ -29,9 +29,10 @@ ATestObject::ATestObject()
 	}
 
 	//콜리전 영역 설정
-	Trigger->SetCapsuleHalfHeight(85.0f);
-	Trigger->SetCapsuleRadius(65.0f);
+	Trigger->SetCapsuleHalfHeight(75.0f);
+	Trigger->SetCapsuleRadius(55.0f);
 
+	Mesh->SetRelativeLocation(FVector(0.0f, 0.0f, -10.0f));
 	//현재 콜리전을 Object로 설정 
 	Trigger->SetCollisionProfileName(TEXT("Object"));
 	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
@@ -126,6 +127,9 @@ void ATestObject::SetHp(float ATK)
 	STARRYLOG(Error, TEXT("HP : %f"), CurrentHP);
 	if (CurrentHP <= 0.0f)
 	{
+		//몬스터 스폰
+		SpawnEenmy();
+
 		//hp가 0 미만이되면 파괴
 		Destroy();
 	}
@@ -138,29 +142,7 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 	auto Player = Cast<AIreneCharacter>(OtherActor);  // 부딫힌 오브젝트를 해당 캐릭터로 캐스팅 
 
-	//랜덤 스폰 
-	/*if (Player->GetAttribute() == Attribute)  // 키워드가 같으면 
-	{
-		UE_LOG(LogTemp, Warning, TEXT("KeyWord Same"));
 
-
-		FVector2D random = FMath::RandPointInCircle(300.0f); //중심 기준 300반경의 원 안에 랜덤 포인트
-		UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); // 
-
-		if (FMath::Abs(random.X) < 50.0f)
-		{
-			random.X > 0.0f ? random.X += 50.0f : random.X -= 50.0f;
-		}
-		if (FMath::Abs(random.Y) < 50.0f)
-		{
-			random.Y > 0.0f ? random.Y += 50.0f : random.Y -= 50.0f;
-		}
-		UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); // 
-
-		GetWorld()->SpawnActor<ATestObject>(GetActorLocation() + FVector(random, 0.0f), FRotator::ZeroRotator); // 새 엑터 생성
-
-		Destroy();
-	} */
 
 	//속성에 따라 공격 가능 체크 
 	switch (Attribute)
@@ -187,6 +169,29 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	default:
 		break;
 	}
+}
+
+void ATestObject::SpawnEenmy()
+{
+
+
+	FVector2D random = FMath::RandPointInCircle(300.0f); //중심 기준 300반경의 원 안에 랜덤 포인트
+	UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); //
+
+	// 랜덤 좌표의 절댓값이 50보다 작으면 50을 더해서 중심보다 멀어지도록
+	if (FMath::Abs(random.X) < 50.0f)
+	{
+		random.X > 0.0f ? random.X += 50.0f : random.X -= 50.0f;
+	}
+	if (FMath::Abs(random.Y) < 50.0f)
+	{
+		random.Y > 0.0f ? random.Y += 50.0f : random.Y -= 50.0f;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); //
+
+	GetWorld()->SpawnActor<AEnemy>(GetActorLocation() + FVector(random, 0.0f), FRotator::ZeroRotator); // 새 엑터 생성
+
+
 }
 
 float ATestObject::GetHpRatio()

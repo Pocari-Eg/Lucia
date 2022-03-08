@@ -1,0 +1,674 @@
+Not using cached read wrapper
+Started task graph with 5 named threads and 35 total threads with 3 sets of task threads.
+Stats thread started at 0.312757
+ICU TimeZone Detection - Raw Offset: +9:00, Platform Override: ''
+Loading text-based GConfig....
+Mounting plugin MeshPainting
+Mounting plugin XGEController
+Mounting plugin AISupport
+Mounting plugin EnvironmentQueryEditor
+Mounting plugin Paper2D
+Mounting plugin LightPropagationVolume
+Mounting plugin LiveLink
+Mounting plugin OodleData
+Mounting plugin OodleNetwork
+Mounting plugin CodeLiteSourceCodeAccess
+Mounting plugin CLionSourceCodeAccess
+Mounting plugin NullSourceCodeAccess
+Mounting plugin GitSourceControl
+Mounting plugin KDevelopSourceCodeAccess
+Mounting plugin PerforceSourceControl
+Mounting plugin AnimationSharing
+Mounting plugin PixWinPlugin
+Mounting plugin PluginUtils
+Mounting plugin PropertyAccessNode
+Mounting plugin PlasticSourceControl
+Mounting plugin RiderSourceCodeAccess
+Mounting plugin SubversionSourceControl
+Mounting plugin TextureFormatOodle
+Mounting plugin UObjectPlugin
+Mounting plugin VisualStudioCodeSourceCodeAccess
+Mounting plugin XCodeSourceCodeAccess
+Mounting plugin VisualStudioSourceCodeAccess
+Mounting plugin DatasmithContent
+Mounting plugin VariantManagerContent
+Mounting plugin Niagara
+Mounting plugin CryptoKeys
+Mounting plugin CurveEditorTools
+Mounting plugin DataValidation
+Mounting plugin FacialAnimation
+Mounting plugin AssetManagerEditor
+Mounting plugin GameplayTagsEditor
+Mounting plugin GeometryMode
+Mounting plugin MacGraphicsSwitching
+Mounting plugin MaterialAnalyzer
+Mounting plugin MobileLauncherProfileWizard
+Mounting plugin PluginBrowser
+Mounting plugin SpeedTreeImporter
+Mounting plugin AndroidMedia
+Mounting plugin AvfMedia
+Mounting plugin ImgMedia
+Mounting plugin CameraShakePreviewer
+Mounting plugin MediaCompositing
+Mounting plugin GameplayCameras
+Mounting plugin MediaPlayerEditor
+Mounting plugin WebMMedia
+Mounting plugin WmfMedia
+Mounting plugin AlembicImporter
+Mounting plugin AutomationUtils
+Mounting plugin BackChannel
+Mounting plugin ChaosCloth
+Mounting plugin ChaosClothEditor
+Mounting plugin ChaosEditor
+Mounting plugin ChaosNiagara
+Mounting plugin CharacterAI
+Mounting plugin ChaosSolverPlugin
+Mounting plugin GeometryCache
+Mounting plugin GeometryCollectionPlugin
+Mounting plugin GeometryProcessing
+Mounting plugin ActorSequence
+Mounting plugin LevelSequenceEditor
+Mounting plugin MatineeToLevelSequence
+Mounting plugin TemplateSequence
+Mounting plugin MotoSynth
+Mounting plugin OpenImageDenoise
+Mounting plugin PlanarCut
+Mounting plugin PlatformCrypto
+Mounting plugin ProxyLODPlugin
+Mounting plugin PythonScriptPlugin
+Mounting plugin SkeletalReduction
+Mounting plugin TcpMessaging
+Mounting plugin OnlineSubsystem
+Mounting plugin UdpMessaging
+Mounting plugin OnlineSubsystemNull
+Mounting plugin OnlineSubsystemUtils
+Mounting plugin LauncherChunkInstaller
+Mounting plugin ScreenshotTools
+Mounting plugin ActorLayerUtilities
+Mounting plugin AndroidDeviceProfileSelector
+Mounting plugin AndroidPermission
+Mounting plugin AppleImageUtils
+Mounting plugin AppleMoviePlayer
+Mounting plugin ArchVisCharacter
+Mounting plugin AssetTags
+Mounting plugin AudioCapture
+Mounting plugin AudioSynesthesia
+Mounting plugin CableComponent
+Mounting plugin ChunkDownloader
+Mounting plugin CustomMeshComponent
+Mounting plugin AndroidMoviePlayer
+Mounting plugin ExampleDeviceProfileSelector
+Mounting plugin EditableMesh
+Mounting plugin GoogleCloudMessaging
+Mounting plugin LuminPlatformFeatures
+Mounting plugin MagicLeap
+Mounting plugin GooglePAD
+Mounting plugin MagicLeapLightEstimation
+Mounting plugin MagicLeapMedia
+Mounting plugin MagicLeapPassableWorld
+Mounting plugin MLSDK
+Mounting plugin IOSDeviceProfileSelector
+Mounting plugin LinuxDeviceProfileSelector
+Mounting plugin LocationServicesBPLibrary
+Mounting plugin Takes
+Mounting plugin MobilePatchingUtils
+Mounting plugin OpenXREyeTracker
+Mounting plugin OpenXR
+Mounting plugin OpenXRHandTracking
+Mounting plugin PhysXVehicles
+Mounting plugin PostSplashScreen
+Mounting plugin ProceduralMeshComponent
+Mounting plugin PropertyAccessEditor
+Mounting plugin RuntimePhysXCooking
+Mounting plugin SignificanceManager
+Mounting plugin SoundFields
+Mounting plugin Synthesis
+Mounting plugin WebMMoviePlayer
+Mounting plugin WindowsMoviePlayer
+Mounting plugin ContentBrowserAssetDataSource
+Mounting plugin ContentBrowserClassDataSource
+Mounting plugin ContentBrowserFileDataSource
+Mounting plugin OnlineSubsystemGooglePlay
+Mounting plugin OnlineSubsystemIOS
+Mounting plugin OculusVR
+Mounting plugin SteamVR
+Incompatible or missing module: StarryTail
+Running C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/DotNET/UnrealBuildTool.exe Development Win64 -Project="C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/StarryTail.uproject" -TargetType=Editor -Progress -NoEngineChanges -NoHotReloadFromIDE
+Using 'git status' to determine working set for adaptive non-unity build (C:\Users\Pocari\Desktop\STARRY-TAIL).
+Creating makefile for StarryTailEditor (no existing makefile)
+@progress push 5%
+Parsing headers for StarryTailEditor
+  Running UnrealHeaderTool "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\StarryTail.uproject" "C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\StarryTailEditor.uhtmanifest" -LogCmds="loginit warning, logexit warning, logdatabase error" -Unattended -WarningsAsErrors -abslog="C:\Users\Pocari\AppData\Local\UnrealBuildTool\Log_UHT.txt" -installed
+LogInit: Display: Loading text-based GConfig....
+Reflection code generated for StarryTailEditor in 10.2767508 seconds
+@progress pop
+Building StarryTailEditor...
+Using Visual Studio 2019 14.29.30137 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+Building 6 actions with 12 processes...
+  @progress 'Compiling C++ source code...' 0%
+  @progress 'Compiling C++ source code...' 17%
+  [1/6] SharedPCH.Engine.ShadowErrors.cpp
+  @progress 'Compiling C++ source code...' 33%
+  [2/6] Module.StarryTail.gen.cpp
+  @progress 'Compiling C++ source code...' 50%
+  [3/6] Module.StarryTail.cpp
+  @progress 'Compiling C++ source code...' 67%
+  [4/6] UE4Editor-StarryTail.lib
+     C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+  @progress 'Compiling C++ source code...' 83%
+  [5/6] UE4Editor-StarryTail.dll
+     C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.lib ???̺귯?? ?? C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.exp ??ü?? ?????ϰ? ?ֽ??ϴ?.
+  @progress 'Compiling C++ source code...' 100%
+  [6/6] StarryTailEditor.target
+Total time in Parallel executor: 23.66 seconds
+Total execution time: 35.77 seconds
+PIX capture plugin failed to initialize! Check that the process is launched from PIX.
+Using libcurl 7.55.1-DEV
+ - built for x86_64-pc-win32
+ - supports SSL with OpenSSL/1.1.1
+ - supports HTTP deflate (compression) using libz 1.2.8
+ - other features:
+     CURL_VERSION_SSL
+     CURL_VERSION_LIBZ
+     CURL_VERSION_IPV6
+     CURL_VERSION_ASYNCHDNS
+     CURL_VERSION_LARGEFILE
+     CURL_VERSION_IDN
+ CurlRequestOptions (configurable via config and command line):
+ - bVerifyPeer = true  - Libcurl will verify peer certificate
+ - bUseHttpProxy = false  - Libcurl will NOT use HTTP proxy
+ - bDontReuseConnections = false  - Libcurl will reuse connections
+ - MaxHostConnections = 16  - Libcurl will limit the number of connections to a host
+ - LocalHostAddr = Default
+ - BufferSize = 65536
+OSS: Creating online subsystem instance for: NULL
+WinSock: version 1.1 (2.2), MaxSocks=32767, MaxUdp=65467
+OSS: TryLoadSubsystemAndSetDefault: Loaded subsystem for module [NULL]
+OculusPlugin initialized successfully
+Failed initializing OVRPlugin 1.59.0
+Build: ++UE4+Release-4.27-CL-18319896
+Engine Version: 4.27.2-18319896+++UE4+Release-4.27
+Compatible Engine Version: 4.27.0-17155196+++UE4+Release-4.27
+Net CL: 17155196
+OS: Windows 10 (Release 2009) (), CPU: AMD Ryzen 5 5600X 6-Core Processor             , GPU: NVIDIA GeForce RTX 3060 Ti
+Compiled (64-bit): Nov 30 2021 07:12:08
+Compiled with Visual C++: 19.24.28315.00
+Build Configuration: Development
+Branch Name: ++UE4+Release-4.27
+Command Line: 
+Base Directory: C:/Program Files/Epic Games/UE_4.27/Engine/Binaries/Win64/
+Allocator: TBB
+Installed Engine Build: 1
+Number of dev versions registered: 29
+  Dev-Blueprints (B0D832E4-1F89-4F0D-ACCF-7EB736FD4AA2): 10
+  Dev-Build (E1C64328-A22C-4D53-A36C-8E866417BD8C): 0
+  Dev-Core (375EC13C-06E4-48FB-B500-84F0262A717E): 4
+  Dev-Editor (E4B068ED-F494-42E9-A231-DA0B2E46BB41): 40
+  Dev-Framework (CFFC743F-43B0-4480-9391-14DF171D2073): 37
+  Dev-Mobile (B02B49B5-BB20-44E9-A304-32B752E40360): 3
+  Dev-Networking (A4E4105C-59A1-49B5-A7C5-40C4547EDFEE): 0
+  Dev-Online (39C831C9-5AE6-47DC-9A44-9C173E1C8E7C): 0
+  Dev-Physics (78F01B33-EBEA-4F98-B9B4-84EACCB95AA2): 14
+  Dev-Platform (6631380F-2D4D-43E0-8009-CF276956A95A): 0
+  Dev-Rendering (12F88B9F-8875-4AFC-A67C-D90C383ABD29): 45
+  Dev-Sequencer (7B5AE74C-D270-4C10-A958-57980B212A5A): 13
+  Dev-VR (D7296918-1DD6-4BDD-9DE2-64A83CC13884): 3
+  Dev-LoadTimes (C2A15278-BFE7-4AFE-6C17-90FF531DF755): 1
+  Private-Geometry (6EACA3D4-40EC-4CC1-B786-8BED09428FC5): 3
+  Dev-AnimPhys (29E575DD-E0A3-4627-9D10-D276232CDCEA): 17
+  Dev-Anim (AF43A65D-7FD3-4947-9873-3E8ED9C1BB05): 15
+  Dev-ReflectionCapture (6B266CEC-1EC7-4B8F-A30B-E4D90942FC07): 1
+  Dev-Automation (0DF73D61-A23F-47EA-B727-89E90C41499A): 1
+  FortniteMain (601D1886-AC64-4F84-AA16-D3DE0DEAC7D6): 47
+  FortniteRelease (E7086368-6B23-4C58-8439-1B7016265E91): 1
+  Dev-Enterprise (9DFFBCD6-494F-0158-E221-12823C92A888): 10
+  Dev-Niagara (F2AED0AC-9AFE-416F-8664-AA7FFA26D6FC): 1
+  Dev-Destruction (174F1F0B-B4C6-45A5-B13F-2EE8D0FB917D): 10
+  Dev-Physics-Ext (35F94A83-E258-406C-A318-09F59610247C): 41
+  Dev-PhysicsMaterial-Chaos (B68FC16E-8B1B-42E2-B453-215C058844FE): 1
+  Dev-CineCamera (B2E18506-4273-CFC2-A54E-F4BB758BBA07): 1
+  Dev-VirtualProduction (64F58936-FD1B-42BA-BA96-7289D5D0FA4E): 1
+  Dev-MediaFramework (6F0ED827-A609-4895-9C91-998D90180EA4): 2
+Presizing for max 25165824 objects, including 0 objects not considered by GC, pre-allocating 0 bytes for permanent pool.
+Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+Setting CVar [[s.FlushStreamingOnExit:1]]
+Object subsystem initialized
+Setting CVar [[con.DebugEarlyDefault:1]]
+Setting CVar [[r.setres:1280x720]]
+Setting CVar [[r.VSync:0]]
+Setting CVar [[r.RHICmdBypass:0]]
+Applying CVar settings from Section [/Script/Engine.RendererSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Setting CVar [[r.GPUCrashDebugging:0]]
+Applying CVar settings from Section [/Script/Engine.RendererOverrideSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Applying CVar settings from Section [/Script/Engine.StreamingSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Setting CVar [[s.MinBulkDataSizeForAsyncLoading:131072]]
+Setting CVar [[s.AsyncLoadingThreadEnabled:0]]
+Setting CVar [[s.EventDrivenLoaderEnabled:1]]
+Setting CVar [[s.WarnIfTimeLimitExceeded:0]]
+Setting CVar [[s.TimeLimitExceededMultiplier:1.5]]
+Setting CVar [[s.TimeLimitExceededMinTime:0.005]]
+Setting CVar [[s.UseBackgroundLevelStreaming:1]]
+Setting CVar [[s.PriorityAsyncLoadingExtraTime:15.0]]
+Setting CVar [[s.LevelStreamingActorsUpdateTimeLimit:5.0]]
+Setting CVar [[s.PriorityLevelStreamingActorsUpdateExtraTime:5.0]]
+Setting CVar [[s.LevelStreamingComponentsRegistrationGranularity:10]]
+Setting CVar [[s.UnregisterComponentsTimeLimit:1.0]]
+Setting CVar [[s.LevelStreamingComponentsUnregistrationGranularity:5]]
+Setting CVar [[s.FlushStreamingOnExit:1]]
+Applying CVar settings from Section [/Script/Engine.GarbageCollectionSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Setting CVar [[gc.MaxObjectsNotConsideredByGC:1]]
+Setting CVar [[gc.SizeOfPermanentObjectPool:0]]
+Setting CVar [[gc.FlushStreamingOnGC:0]]
+Setting CVar [[gc.NumRetriesBeforeForcingGC:10]]
+Setting CVar [[gc.AllowParallelGC:1]]
+Setting CVar [[gc.TimeBetweenPurgingPendingKillObjects:61.1]]
+Setting CVar [[gc.MaxObjectsInEditor:25165824]]
+Setting CVar [[gc.IncrementalBeginDestroyEnabled:1]]
+Setting CVar [[gc.CreateGCClusters:1]]
+Setting CVar [[gc.MinGCClusterSize:5]]
+Setting CVar [[gc.ActorClusteringEnabled:0]]
+Setting CVar [[gc.BlueprintClusteringEnabled:0]]
+Setting CVar [[gc.UseDisregardForGCOnDedicatedServers:0]]
+Setting CVar [[gc.MultithreadedDestructionEnabled:1]]
+Applying CVar settings from Section [/Script/Engine.NetworkSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Applying CVar settings from Section [/Script/UnrealEd.CookerSettings] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Applying CVar settings from Section [ViewDistanceQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.SkeletalMeshLODBias:0]]
+Setting CVar [[r.ViewDistanceScale:1.0]]
+Applying CVar settings from Section [AntiAliasingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.PostProcessAAQuality:4]]
+Applying CVar settings from Section [ShadowQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.LightFunctionQuality:1]]
+Setting CVar [[r.ShadowQuality:5]]
+Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+Setting CVar [[r.Shadow.MaxResolution:2048]]
+Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+Setting CVar [[r.Shadow.DistanceScale:1.0]]
+Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+Setting CVar [[r.DistanceFieldShadowing:1]]
+Setting CVar [[r.DistanceFieldAO:1]]
+Setting CVar [[r.AOQuality:2]]
+Setting CVar [[r.VolumetricFog:1]]
+Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+Setting CVar [[r.CapsuleShadows:1]]
+Applying CVar settings from Section [PostProcessQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.MotionBlurQuality:4]]
+Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+Setting CVar [[r.AmbientOcclusionLevels:-1]]
+Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+Setting CVar [[r.DepthOfFieldQuality:2]]
+Setting CVar [[r.RenderTargetPoolMin:400]]
+Setting CVar [[r.LensFlareQuality:2]]
+Setting CVar [[r.SceneColorFringeQuality:1]]
+Setting CVar [[r.EyeAdaptationQuality:2]]
+Setting CVar [[r.BloomQuality:5]]
+Setting CVar [[r.FastBlurThreshold:100]]
+Setting CVar [[r.Upscale.Quality:3]]
+Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+Setting CVar [[r.LightShaftQuality:1]]
+Setting CVar [[r.Filter.SizeScale:1]]
+Setting CVar [[r.Tonemapper.Quality:5]]
+Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+Applying CVar settings from Section [TextureQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.Streaming.MipBias:0]]
+Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+Setting CVar [[r.Streaming.Boost:1]]
+Setting CVar [[r.MaxAnisotropy:8]]
+Setting CVar [[r.VT.MaxAnisotropy:8]]
+Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+Setting CVar [[r.Streaming.PoolSize:1000]]
+Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+Applying CVar settings from Section [EffectsQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+Setting CVar [[r.RefractionQuality:2]]
+Setting CVar [[r.SSR.Quality:3]]
+Setting CVar [[r.SSR.HalfResSceneColor:0]]
+Setting CVar [[r.SceneColorFormat:4]]
+Setting CVar [[r.DetailMode:2]]
+Setting CVar [[r.TranslucencyVolumeBlur:1]]
+Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+Setting CVar [[r.AnisotropicMaterials:1]]
+Setting CVar [[r.SSS.Scale:1]]
+Setting CVar [[r.SSS.SampleSet:2]]
+Setting CVar [[r.SSS.Quality:1]]
+Setting CVar [[r.SSS.HalfRes:0]]
+Setting CVar [[r.SSGI.Quality:3]]
+Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+Setting CVar [[r.ParticleLightQuality:2]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+Setting CVar [[r.SkyLight.RealTimeReflectionCapture:1]]
+Applying CVar settings from Section [FoliageQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[foliage.DensityScale:1.0]]
+Setting CVar [[grass.DensityScale:1.0]]
+Applying CVar settings from Section [ShadingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+Selected Device Profile: [Windows]
+Applying CVar settings loaded from the selected device profile: [Windows]
+Platform has ~ 16 GB [17080684544 / 17179869184 / 16], which maps to Larger [LargestMinGB=32, LargerMinGB=12, DefaultMinGB=8, SmallerMinGB=6, SmallestMinGB=0)
+Going up to parent DeviceProfile []
+Applying CVar settings from Section [ViewDistanceQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.SkeletalMeshLODBias:0]]
+Setting CVar [[r.ViewDistanceScale:1.0]]
+Applying CVar settings from Section [AntiAliasingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.PostProcessAAQuality:4]]
+Applying CVar settings from Section [ShadowQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.LightFunctionQuality:1]]
+Setting CVar [[r.ShadowQuality:5]]
+Setting CVar [[r.Shadow.CSM.MaxCascades:10]]
+Setting CVar [[r.Shadow.MaxResolution:2048]]
+Setting CVar [[r.Shadow.MaxCSMResolution:2048]]
+Setting CVar [[r.Shadow.RadiusThreshold:0.01]]
+Setting CVar [[r.Shadow.DistanceScale:1.0]]
+Setting CVar [[r.Shadow.CSM.TransitionScale:1.0]]
+Setting CVar [[r.Shadow.PreShadowResolutionFactor:1.0]]
+Setting CVar [[r.DistanceFieldShadowing:1]]
+Setting CVar [[r.DistanceFieldAO:1]]
+Setting CVar [[r.AOQuality:2]]
+Setting CVar [[r.VolumetricFog:1]]
+Setting CVar [[r.VolumetricFog.GridPixelSize:8]]
+Setting CVar [[r.VolumetricFog.GridSizeZ:128]]
+Setting CVar [[r.VolumetricFog.HistoryMissSupersampleCount:4]]
+Setting CVar [[r.LightMaxDrawDistanceScale:1]]
+Setting CVar [[r.CapsuleShadows:1]]
+Applying CVar settings from Section [PostProcessQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.MotionBlurQuality:4]]
+Setting CVar [[r.AmbientOcclusionMipLevelFactor:0.4]]
+Setting CVar [[r.AmbientOcclusionMaxQuality:100]]
+Setting CVar [[r.AmbientOcclusionLevels:-1]]
+Setting CVar [[r.AmbientOcclusionRadiusScale:1.0]]
+Setting CVar [[r.DepthOfFieldQuality:2]]
+Setting CVar [[r.RenderTargetPoolMin:400]]
+Setting CVar [[r.LensFlareQuality:2]]
+Setting CVar [[r.SceneColorFringeQuality:1]]
+Setting CVar [[r.EyeAdaptationQuality:2]]
+Setting CVar [[r.BloomQuality:5]]
+Setting CVar [[r.FastBlurThreshold:100]]
+Setting CVar [[r.Upscale.Quality:3]]
+Setting CVar [[r.Tonemapper.GrainQuantization:1]]
+Setting CVar [[r.LightShaftQuality:1]]
+Setting CVar [[r.Filter.SizeScale:1]]
+Setting CVar [[r.Tonemapper.Quality:5]]
+Setting CVar [[r.DOF.Gather.AccumulatorQuality:1        ; higher gathering accumulator quality]]
+Setting CVar [[r.DOF.Gather.PostfilterMethod:1          ; Median3x3 postfilering method]]
+Setting CVar [[r.DOF.Gather.EnableBokehSettings:0       ; no bokeh simulation when gathering]]
+Setting CVar [[r.DOF.Gather.RingCount:4                 ; medium number of samples when gathering]]
+Setting CVar [[r.DOF.Scatter.ForegroundCompositing:1    ; additive foreground scattering]]
+Setting CVar [[r.DOF.Scatter.BackgroundCompositing:2    ; additive background scattering]]
+Setting CVar [[r.DOF.Scatter.EnableBokehSettings:1      ; bokeh simulation when scattering]]
+Setting CVar [[r.DOF.Scatter.MaxSpriteRatio:0.1         ; only a maximum of 10% of scattered bokeh]]
+Setting CVar [[r.DOF.Recombine.Quality:1                ; cheap slight out of focus]]
+Setting CVar [[r.DOF.Recombine.EnableBokehSettings:0    ; no bokeh simulation on slight out of focus]]
+Setting CVar [[r.DOF.TemporalAAQuality:1                ; more stable temporal accumulation]]
+Setting CVar [[r.DOF.Kernel.MaxForegroundRadius:0.025]]
+Setting CVar [[r.DOF.Kernel.MaxBackgroundRadius:0.025]]
+Applying CVar settings from Section [TextureQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.Streaming.MipBias:0]]
+Setting CVar [[r.Streaming.AmortizeCPUToGPUCopy:0]]
+Setting CVar [[r.Streaming.MaxNumTexturesToStreamPerFrame:0]]
+Setting CVar [[r.Streaming.Boost:1]]
+Setting CVar [[r.MaxAnisotropy:8]]
+Setting CVar [[r.VT.MaxAnisotropy:8]]
+Setting CVar [[r.Streaming.LimitPoolSizeToVRAM:0]]
+Setting CVar [[r.Streaming.PoolSize:1000]]
+Setting CVar [[r.Streaming.MaxEffectiveScreenSize:0]]
+Applying CVar settings from Section [EffectsQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.TranslucencyLightingVolumeDim:64]]
+Setting CVar [[r.RefractionQuality:2]]
+Setting CVar [[r.SSR.Quality:3]]
+Setting CVar [[r.SSR.HalfResSceneColor:0]]
+Setting CVar [[r.SceneColorFormat:4]]
+Setting CVar [[r.DetailMode:2]]
+Setting CVar [[r.TranslucencyVolumeBlur:1]]
+Setting CVar [[r.MaterialQualityLevel:1 ; High quality]]
+Setting CVar [[r.AnisotropicMaterials:1]]
+Setting CVar [[r.SSS.Scale:1]]
+Setting CVar [[r.SSS.SampleSet:2]]
+Setting CVar [[r.SSS.Quality:1]]
+Setting CVar [[r.SSS.HalfRes:0]]
+Setting CVar [[r.SSGI.Quality:3]]
+Setting CVar [[r.EmitterSpawnRateScale:1.0]]
+Setting CVar [[r.ParticleLightQuality:2]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.FastApplyOnOpaque:1 ; Always have FastSkyLUT 1 in this case to avoid wrong sky]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.SampleCountMaxPerSlice:4]]
+Setting CVar [[r.SkyAtmosphere.AerialPerspectiveLUT.DepthResolution:16.0]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT:1]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMin:4.0]]
+Setting CVar [[r.SkyAtmosphere.FastSkyLUT.SampleCountMax:128.0]]
+Setting CVar [[r.SkyAtmosphere.SampleCountMin:4.0]]
+Setting CVar [[r.SkyAtmosphere.SampleCountMax:128.0]]
+Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.UseSmallFormat:0]]
+Setting CVar [[r.SkyAtmosphere.TransmittanceLUT.SampleCount:10.0]]
+Setting CVar [[r.SkyAtmosphere.MultiScatteringLUT.SampleCount:15.0]]
+Setting CVar [[r.SkyLight.RealTimeReflectionCapture:1]]
+Applying CVar settings from Section [FoliageQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[foliage.DensityScale:1.0]]
+Setting CVar [[grass.DensityScale:1.0]]
+Applying CVar settings from Section [ShadingQuality@3] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Scalability.ini]
+Setting CVar [[r.HairStrands.SkyLighting.IntegrationType:2]]
+Setting CVar [[r.HairStrands.SkyAO.SampleCount:4]]
+Setting CVar [[r.HairStrands.Visibility.MSAA.SamplePerPixel:4]]
+Applying CVar settings from Section [Startup] File [../../../Engine/Config/ConsoleVariables.ini]
+Setting CVar [[net.UseAdaptiveNetUpdateFrequency:0]]
+Setting CVar [[p.chaos.AllowCreatePhysxBodies:1]]
+Setting CVar [[fx.SkipVectorVMBackendOptimizations:1]]
+Applying CVar settings from Section [ConsoleVariables] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Engine.ini]
+Applying CVar settings from Section [ConsoleVariables] File [C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Saved/Config/Windows/Editor.ini]
+Computer: DESKTOP-JDOR4MB
+User: Pocari
+CPU Page size=4096, Cores=6
+High frequency timer resolution =10.000000 MHz
+Memory total: Physical=15.9GB (16GB approx)
+Platform Memory Stats for Windows
+Process Physical Memory: 155.46 MB used, 156.48 MB peak
+Process Virtual Memory: 129.84 MB used, 129.84 MB peak
+Physical Memory: 11956.90 MB used,  4332.51 MB free, 16289.41 MB total
+Virtual Memory: 134210912.00 MB used,  6812.54 MB free, 134217728.00 MB total
+WindowsPlatformFeatures enabled
+Physics initialised using underlying interface: PhysX
+Overriding language with editor language configuration option (ko).
+Using OS detected locale (ko-KR).
+Setting process to per monitor DPI aware
+IME system deactivated.
+New Slate User Created.  User Index 0, Is Virtual User: 0
+Slate User Registered.  User Index 0, Is Virtual User: 0
+Loaded GFSDK_Aftermath_Lib.x64.dll
+Failed to initialize OpenVR with code 126
+D3D11 min allowed feature level: 11_0
+D3D11 max allowed feature level: 11_0
+D3D11 adapters:
+   0. 'NVIDIA GeForce RTX 3060 Ti' (Feature Level 11_0)
+      8050/0/8144 MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:2, VendorId:0x10de
+   1. 'Microsoft Basic Render Driver' (Feature Level 11_0)
+      0/0/8144 MB DedicatedVideo/DedicatedSystem/SharedSystem, Outputs:0, VendorId:0x1414
+Chosen D3D11 Adapter:
+    Description : NVIDIA GeForce RTX 3060 Ti
+    VendorId    : 10de
+    DeviceId    : 2489
+    SubSysId    : 40771458
+    Revision    : 00a1
+    DedicatedVideoMemory : 8441036800 bytes
+    DedicatedSystemMemory : 0 bytes
+    SharedSystemMemory : 8540342272 bytes
+    AdapterLuid : 0 62957
+Creating new Direct3DDevice
+    GPU DeviceId: 0x2489 (for the marketing name, search the web for "GPU Device Id")
+EnumDisplayDevices:
+   0. 'NVIDIA GeForce RTX 3060 Ti' (P:1 D:1)
+   1. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:1)
+   2. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:0)
+   3. 'NVIDIA GeForce RTX 3060 Ti' (P:0 D:0)
+DebugString: FoundDriverCount:4 
+    Adapter Name: NVIDIA GeForce RTX 3060 Ti
+  Driver Version: 497.09 (internal:30.0.14.9709, unified:497.09)
+     Driver Date: 11-26-2021
+Texture pool is 5635 MB (70% of 8050 MB)
+Creating D3DDevice using adapter:
+    Description : NVIDIA GeForce RTX 3060 Ti
+    VendorId    : 10de
+    DeviceId    : 2489
+    SubSysId    : 40771458
+    Revision    : 00a1
+    DedicatedVideoMemory : 8441036800 bytes
+    DedicatedSystemMemory : 0 bytes
+    SharedSystemMemory : 8540342272 bytes
+    AdapterLuid : 0 62957
+RHI has support for 64 bit atomics
+Async texture creation enabled
+Array index from any shader is supported
+GPU Timing Frequency: 1000.000000 (Debug: 2 2)
+GeForceNow SDK initialized: 1
+Loaded TargetPlatform 'AllDesktop'
+Loaded TargetPlatform 'Android'
+Loaded TargetPlatform 'Android_ASTC'
+Loaded TargetPlatform 'Android_DXT'
+Loaded TargetPlatform 'Android_ETC2'
+Loaded TargetPlatform 'AndroidClient'
+Loaded TargetPlatform 'Android_ASTCClient'
+Loaded TargetPlatform 'Android_DXTClient'
+Loaded TargetPlatform 'Android_ETC2Client'
+Loaded TargetPlatform 'Android_Multi'
+Loaded TargetPlatform 'Android_MultiClient'
+Loaded TargetPlatform 'IOSClient'
+Loaded TargetPlatform 'IOS'
+Loaded TargetPlatform 'Linux'
+Loaded TargetPlatform 'LinuxNoEditor'
+Loaded TargetPlatform 'LinuxClient'
+Loaded TargetPlatform 'LinuxServer'
+Loaded TargetPlatform 'LinuxAArch64NoEditor'
+Loaded TargetPlatform 'LinuxAArch64Client'
+Loaded TargetPlatform 'LinuxAArch64Server'
+Loaded TargetPlatform 'Lumin'
+Loaded TargetPlatform 'LuminClient'
+Loaded TargetPlatform 'MacNoEditor'
+Loaded TargetPlatform 'Mac'
+Loaded TargetPlatform 'MacClient'
+Loaded TargetPlatform 'MacServer'
+Loaded TargetPlatform 'TVOSClient'
+Loaded TargetPlatform 'TVOS'
+Loaded TargetPlatform 'WindowsNoEditor'
+Loaded TargetPlatform 'Windows'
+Loaded TargetPlatform 'WindowsClient'
+Loaded TargetPlatform 'WindowsServer'
+Building Assets For Windows
+Lib vorbis DLL was dynamically loaded.
+Oodle Texture 2.9.0 init RDO Off
+Ray tracing is disabled. Reason: r.RayTracing=0.
+Guid format shader working directory is -15 characters bigger than the processId version (../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Intermediate/Shaders/WorkingDirectory/30300/).
+Cleaned the shader compiler working directory 'C:/Users/Pocari/AppData/Local/Temp/UnrealShaderWorkingDir/A63EF73747560BD5F41996AE01DF565F/'.
+Cannot use XGE Controller as Incredibuild is not installed on this machine.
+Cannot use XGE Shader Compiler as Incredibuild is not installed on this machine.
+Using Local Shader Compiler.
+Max Cache Size: 512 MB
+Loaded boot cache 0.05s 103MB C:/Users/Pocari/AppData/Local/UnrealEngine/4.27/DerivedDataCache/Boot.ddc.
+Loaded Boot cache: C:/Users/Pocari/AppData/Local/UnrealEngine/4.27/DerivedDataCache/Boot.ddc
+FDerivedDataBackendGraph:  Pak pak cache file ../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/DerivedDataCache/DDC.ddp not found, will not use a pak cache.
+Unable to find inner node Pak for hierarchical cache Hierarchy.
+FDerivedDataBackendGraph:  CompressedPak pak cache file ../../../../../../Users/Pocari/Desktop/STARRY-TAIL/StarryTail/DerivedDataCache/Compressed.ddp not found, will not use a pak cache.
+Unable to find inner node CompressedPak for hierarchical cache Hierarchy.
+Pak cache opened for reading ../../../Engine/DerivedDataCache/Compressed.ddp.
+FDerivedDataBackendGraph:  EnterprisePak pak cache file ../../../Enterprise/DerivedDataCache/Compressed.ddp not found, will not use a pak cache.
+Unable to find inner node EnterprisePak for hierarchical cache Hierarchy.
+Speed tests for C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache took 0.05 seconds
+Performance to C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache: Latency=0.21ms. RandomReadSpeed=21.94MBs, RandomWriteSpeed=128.91MBs. Assigned SpeedClass 'Local'
+Using Local data cache path C:/Users/Pocari/AppData/Local/UnrealEngine/Common/DerivedDataCache: Writable
+Shared data cache path not found in *engine.ini, will not use an Shared cache.
+Unable to find inner node Shared for hierarchical cache Hierarchy.
+Using FreeType 2.10.0
+SlateFontServices - WITH_FREETYPE: 1, WITH_HARFBUZZ: 1
+FAssetRegistry took 0.0048 seconds to start up
+Selected Device Profile: [Windows]
+Active device profile: [0000019A7EEFB700][0000019A746DC340 49] Windows
+Profiles: [0000019A7EEFB700][0000019A746DC340 49] Windows, [0000019A7EEA4B00][0000019A7E2144C0 49] WindowsNoEditor, [0000019A7EEF8B00][0000019A7E218640 49] WindowsServer, [0000019A7EEA6C00][0000019A7E21C7C0 49] WindowsClient, [0000019A7EEFAC00][0000019A7E220940 49] IOS, [0000019A7EEA7600][0000019A7E210A80 49] iPadAir, [0000019A7EEFB500][0000019A7E224BC0 49] iPadAir2, [0000019A7EE63800][0000019A7E230E40 49] IPadPro, [0000019A7EE63900][0000019A7E228E80 49] iPadAir3, [0000019A7EEF8400][0000019A7E235000 49] iPadAir4, [0000019A7EE61000][0000019A7E239180 49] iPadMini2, [0000019A7EEF9A00][0000019A7E23D300 49] iPadMini3, [0000019A7EE62700][0000019A7E241480 49] iPadMini4, [0000019A7EEFB400][0000019A7E245600 49] iPadMini5, [0000019A7EE87100][0000019A7E24D8C0 49] iPhone6, [0000019A7EE87200][0000019A7E249900 49] iPodTouch6, [0000019A7EE62100][0000019A7E255BC0 49] iPhone7, [0000019A7EE62200][0000019A7E251C00 49] iPodTouch7, [0000019A7EE84F00][0000019A7E258200 49] iPhone5S, [0000019A7EE61C00][0000019A7E25C380 49] iPhone6Plus, [0000019A7EE86800][0000019A7E260500 49] iPhone6S, [0000019A7EE62C00][0000019A7E264680 49] iPhone6SPlus, [0000019A7EE87F00][0000019A7E268800 49] iPhone7Plus, [0000019A7EE61F00][0000019A7E26C980 49] iPhoneSE, [0000019A7EE85200][0000019A7E270B00 49] iPhone8, [0000019A7EE61600][0000019A7E22CC40 49] iPhone8Plus, [0000019A7EE84100][0000019A7E274D80 49] iPhoneX, [0000019A7EE61100][0000019A7E278EC0 49] iPhoneXS, [0000019A7EE84700][0000019A7F291040 49] iPhoneXSMax, [0000019A7EE63D00][0000019A7F2951C0 49] iPhoneXR, [0000019A7EE86E00][0000019A7F299340 49] iPhone11, [0000019A7EE61500][0000019A7F29D4C0 49] iPhone11Pro, [0000019A7EE86200][0000019A7F2A1640 49] iPhone11ProMax, [0000019A7EE60800][0000019A7F2A57C0 49] iPhoneSE2, [0000019A7EE85F00][0000019A7F2A9940 49] iPhone12Mini, [0000019A7EE63500][0000019A7F2ADAC0 49] iPhone12, [0000019A7EE84B00][0000019A7F2B00C0 49] iPhone12Pro, [0000019A7EE62800][0000019A7F2B4240 49] iPhone12ProMax, [0000019A7EE85100][0000019A7F2B83C0 49] iPadPro105, [0000019A7EE63C00][0000019A7F2BC540 49] iPadPro129, [0000019A7EE86500][0000019A7F2C06C0 49] iPadPro97, [0000019A7EE63100][0000019A7F2C4840 49] iPadPro2_129, [0000019A7EE86A00][0000019A7F2C89C0 49] iPad5, [0000019A7EE62400][0000019A7F2CCB40 49] iPad6, [0000019A7EE85D00][0000019A7F2D0CC0 49] iPad7, [0000019A7EE62600][0000019A7E27CE00 49] iPad8, [0000019A7EE87600][0000019A7F2D4F40 49] iPadPro11, [0000019A7EE60700][0000019A7F2D9080 49] iPadPro2_11, [0000019A7EE87A00][0000019A7F2DD1C0 49] iPadPro3_129, [0000019A7EE61E00][0000019A7F2E5340 49] iPadPro4_129, [0000019A7EE86C00][0000019A7F2E94C0 49] AppleTV, [0000019A7EE61A00][0000019A7F2ED640 49] AppleTV4K, [0000019A7EE86F00][0000019A7F2F17C0 49] TVOS, [0000019A7EE62F00][0000019A7F2F5940 49] Mac, [0000019A7EEA6000][0000019A7F2F9AC0 49] MacClient, [0000019A7EF35100][0000019A7F2FC0C0 49] MacNoEditor, [0000019A7EEA4100][0000019A7F300240 49] MacServer, [0000019A7EF35C00][0000019A7F3043C0 49] Linux, [0000019A7EEA5000][0000019A7F308540 49] LinuxAArch64, [0000019A7EF35800][0000019A7F30C6C0 49] LinuxNoEditor, [0000019A7EEA4E00][0000019A7F310840 49] LinuxAArch64NoEditor, [0000019A7EF35900][0000019A7F3149C0 49] LinuxClient, [0000019A7EEA6A00][0000019A7F318B40 49] LinuxAArch64Client, [0000019A7EF34900][0000019A7F31CCC0 49] LinuxServer, [0000019A7EEA6700][0000019A7F320E40 49] LinuxAArch64Server, [0000019A7EF34B00][0000019A7F2E0F80 49] Android, [0000019A7EEA5A00][0000019A7F3250C0 49] Android_Low, [0000019A7EF36300][0000019A7F329200 49] Android_Mid, [0000019A7EEA5900][0000019A7F32D340 49] Android_High, [0000019A7EF35300][0000019A7F3354C0 49] Android_Default, [0000019A7EEA4700][0000019A7F339640 49] Android_Adreno4xx, [0000019A7EF35B00][0000019A7F33D7C0 49] Android_Adreno5xx_Low, [0000019A7EEA7C00][0000019A7F341940 49] Android_Adreno5xx, [0000019A7EF34C00][0000019A7F345AC0 49] Android_Adreno6xx, [0000019A7EEA6F00][0000019A7F3480C0 49] Android_Adreno6xx_Vulkan, [0000019A7EF35500][0000019A7F34C240 49] Android_Mali_T6xx, [0000019A7EEA5300][0000019A7F3503C0 49] Android_Mali_T7xx, [0000019A7EF36100][0000019A7F354540 49] Android_Mali_T8xx, [0000019A7EE60F00][0000019A7F3586C0 49] Android_Mali_G71, [0000019A7EF36500][0000019A7F35C840 49] Android_Mali_G72, [0000019A7EE60E00][0000019A7F3609C0 49] Android_Mali_G72_Vulkan, [0000019A7EF34F00][0000019A7F364B40 49] Android_Mali_G76, [0000019A7EE61300][0000019A7F368CC0 49] Android_Mali_G76_Vulkan, [0000019A7EF35F00][0000019A7F36CE40 49] Android_Mali_G77, [0000019A7EE60A00][0000019A7F370FC0 49] Android_Mali_G77_Vulkan, [0000019A7EF36000][0000019A7F375140 49] Android_Mali_G78, [0000019A7EE63400][0000019A7F331280 49] Android_Mali_G78_Vulkan, [0000019A7EF35D00][0000019A7F3793C0 49] Android_Mali_G710, [0000019A7EE62A00][0000019A7F37D500 49] Android_Mali_G710_Vulkan, [0000019A7EF37000][0000019A7F385680 49] Android_Vulkan_SM5, [0000019A7EE63A00][0000019A7F389800 49] Android_PowerVR_G6xxx, [0000019A7EF34A00][0000019A7F38D980 49] Android_PowerVR_GT7xxx, [0000019A7EE61800][0000019A7F391B00 49] Android_PowerVR_GE8xxx, [0000019A7EF35600][0000019A7F394100 49] Android_PowerVR_GM9xxx, [0000019A7EE60900][0000019A7F398280 49] Android_PowerVR_GM9xxx_Vulkan, [0000019A7EF34E00][0000019A7F39C400 49] Android_TegraK1, [0000019A7EE60300][0000019A7F3A0580 49] Android_Unknown_Vulkan, [0000019A7EF34100][0000019A7F3A4700 49] Lumin, [0000019A7EE60600][0000019A7F3A8880 49] Lumin_Desktop, [0000019A7EF36400][0000019A7F3ACA00 49] HoloLens, 
+Using QuadricMeshReduction for automatic static mesh reduction
+Using SimplygonMeshReduction for automatic skeletal mesh reduction
+Using ProxyLODMeshReduction for automatic mesh merging
+No distributed automatic mesh merging module available
+No distributed automatic mesh merging module available
+StarryTail 1.0.0, NetCL: 17155196, EngineNetVer: 17, GameNetVer: 0 (Checksum: 4214679525)
+Default maximum texture size for cubemaps generated from long-lat sources has been changed from 512 to unlimited. In order to preserve old behaiour for '/Engine/MapTemplates/Sky/DaylightAmbientCubemap.DaylightAmbientCubemap', its maximum texture size has been explicitly set to 512.
+PokeAHoleMaterial loaded successfully
+17178 objects as part of root set at end of initial load.
+4302048 out of 0 bytes used by permanent object pool.
+CloseDisregardForGC: 0/0 objects in disregard for GC pool
+Niagara Debugger Client Initialized | Session: DE012CF04FB7E7D09810079ADC4D53B8 | Instance: D465D97C442CEF209F3BF3A5DC4283E0 (DESKTOP-JDOR4MB-30300).
+Using Python 3.7.7
+Initializing TcpMessaging bridge
+Building Anim DDC data for AnimSequence /Game/Animation/Monster_Attack/Dummy_Attack_Anim.Dummy_Attack_Anim
+Building Anim DDC data for AnimSequence /Game/Animation/Monster_Walk/Dummy_Walk_Anim.Dummy_Walk_Anim
+
+
+Script Stack (0 frames):
+
+FPlatformStackWalk::StackWalkAndDump -  0.059 s
+=== Handled ensure: ===
+
+Ensure condition failed: MyOwnerWorld [File:D:/Build/++UE4/Sync/Engine/Source/Runtime/Engine/Private/Components/ActorComponent.cpp] [Line: 1278]
+
+Stack: 
+[Callstack] 0x00007ffedf70a569 UE4Editor-Engine.dll!UnknownFunction []
+[Callstack] 0x00007ffede0898f4 UE4Editor-Engine.dll!UnknownFunction []
+[Callstack] 0x00007ffebece6a38 UE4Editor-AIModule.dll!UnknownFunction []
+[Callstack] 0x00007ffea6fc72ec UE4Editor-StarryTail.dll!AEnemyController::AEnemyController() [C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Source\StarryTail\EnemySource\EnemyController.cpp:37]
+[Callstack] 0x00007ffee0d061d3 UE4Editor-CoreUObject.dll!UnknownFunction []
+[Callstack] 0x00007ffee1028faf UE4Editor-CoreUObject.dll!UnknownFunction []
+[Callstack] 0x00007ffee1005411 UE4Editor-CoreUObject.dll!UnknownFunction []
+[Callstack] 0x00007ffee0ecddc5 UE4Editor-CoreUObject.dll!UnknownFunction []
+[Callstack] 0x00007ffee3021bea UE4Editor-Core.dll!UnknownFunction []
+[Callstack] 0x00007ffee30415a3 UE4Editor-Core.dll!UnknownFunction []
+[Callstack] 0x00007fff11b56433 UE4Editor-Projects.dll!UnknownFunction []
+[Callstack] 0x00007fff11b5674f UE4Editor-Projects.dll!UnknownFunction []
+[Callstack] 0x00007ff76a905642 UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a909000 UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a900d2c UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a9010ba UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a9040dd UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a915984 UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007ff76a91853a UE4Editor.exe!UnknownFunction []
+[Callstack] 0x00007fff651854e0 KERNEL32.DLL!UnknownFunction []
+[Callstack] 0x00007fff6712485b ntdll.dll!UnknownFunction []
+
+               SubmitErrorReport -  0.000 s

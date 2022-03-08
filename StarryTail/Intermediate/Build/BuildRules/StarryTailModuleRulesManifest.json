@@ -1,8 +1,8 @@
 {
 	"SourceFiles": [
-		"E:\\STARRY-TAIL\\StarryTail\\Source\\StarryTail\\StarryTail.Build.cs",
-		"E:\\STARRY-TAIL\\StarryTail\\Source\\StarryTail.Target.cs",
-		"E:\\STARRY-TAIL\\StarryTail\\Source\\StarryTailEditor.Target.cs"
+		"C:\\Users\\Pocari\\Desktop\\STARRY-TAIL\\StarryTail\\Source\\StarryTail\\StarryTail.Build.cs",
+		"C:\\Users\\Pocari\\Desktop\\STARRY-TAIL\\StarryTail\\Source\\StarryTail.Target.cs",
+		"C:\\Users\\Pocari\\Desktop\\STARRY-TAIL\\StarryTail\\Source\\StarryTailEditor.Target.cs"
 	],
 	"EngineVersion": "4.27.2"
 }
