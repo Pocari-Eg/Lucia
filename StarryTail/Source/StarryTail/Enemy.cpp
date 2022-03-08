@@ -20,7 +20,17 @@ AEnemy::AEnemy()
 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> EnemeyMesh(TEXT("/Game/Animation/Monster_Walk/Dummy_Walk.Dummy_Walk"));
+	if (EnemeyMesh.Succeeded()) {
+		GetMesh()->SetSkeletalMesh(EnemeyMesh.Object);
+	}
+	
+	GetCapsuleComponent()->SetCapsuleHalfHeight(53.0f);
+
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -55.0f), FRotator(0.0f, 270.0f, 0.0f));
+	GetMesh()->SetRelativeScale3D(FVector(50.0f, 50.0f, 50.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+
 
 	static ConstructorHelpers::FClassFinder<UAnimInstance> EnemyAnim(TEXT("/Game/Animation/EnemyAnimBlueprint"));
 	if (EnemyAnim.Succeeded())

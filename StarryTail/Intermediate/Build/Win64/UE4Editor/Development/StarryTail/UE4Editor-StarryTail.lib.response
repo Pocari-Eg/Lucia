@@ -6,8 +6,10 @@
 /NAME:"UE4Editor-StarryTail.dll"
 /IGNORE:4221
 /NODEFAULTLIB
-"E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
-"E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Module.StarryTail.cpp.obj"
-"E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Module.StarryTail.gen.cpp.obj"
-"E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Default.rc2.res"
-/OUT:"E:\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\StarryTailEditor\Development\Engine\SharedPCH.Engine.ShadowErrors.h.obj"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Enemy.cpp.obj"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\TestObject.cpp.obj"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Module.StarryTail.cpp.obj"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Module.StarryTail.gen.cpp.obj"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\Default.rc2.res"
+/OUT:"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib"

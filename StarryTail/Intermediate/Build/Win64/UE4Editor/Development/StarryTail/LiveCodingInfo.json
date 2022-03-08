@@ -2,7 +2,6 @@
 	"RemapUnityFiles": 
 	{
 		"Module.StarryTail.cpp.obj": [
-			"Enemy.cpp.obj",
 			"CheckCanRangedAttack.cpp.obj",
 			"DetectPlayer.cpp.obj",
 			"EnemyAnimInstance.cpp.obj",
@@ -31,10 +30,11 @@
 			"StarryTailCharacter.cpp.obj",
 			"StarryTailGameMode.cpp.obj",
 			"StopWatch.cpp.obj",
-			"TestObject.cpp.obj",
 			"HPBarWidget.cpp.obj",
 			"IreneAttributeWidget.cpp.obj",
-			"StopWatchWidget.cpp.obj"
+			"StopWatchWidget.cpp.obj",
+			"Enemy.cpp.obj",
+			"TestObject.cpp.obj"
 		],
 		"Module.StarryTail.gen.cpp.obj": [
 			"CheckCanRangedAttack.gen.cpp.obj",
