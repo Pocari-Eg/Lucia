@@ -21,8 +21,8 @@ void EmptyLinkFunctionForGeneratedCodeStarryTail_init() {}
 				nullptr,
 				0,
 				PKG_CompiledIn | 0x00000000,
-				0x100340CF,
-				0xBEF4F331,
+				0xDA15B42E,
+				0x83D7EB70,
 				METADATA_PARAMS(nullptr, 0)
 			};
 			UE4CodeGen_Private::ConstructUPackage(ReturnPackage, PackageParams);

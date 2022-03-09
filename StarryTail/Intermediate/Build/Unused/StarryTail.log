@@ -1,2 +1,14 @@
-﻿  Using 'git status' to determine working set for adaptive non-unity build (E:\STARRY-TAIL).
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.MakeFile.Targets(45,5): warning MSB5021: 빌드가 취소되었으므로 작업 실행 파일 "cmd" 및 자식 프로세스를 종료합니다.
+﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\UnrealProjects\STARRY-TAIL).
+  Building StarryTailEditor...
+  Using Visual Studio 2019 14.29.30133 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  [Adaptive unity build] Excluded from StarryTail unity file: IreneAnimInstance.cpp, IreneCharacter.cpp, MyAnimInstance.cpp, StarryTailGameMode.cpp
+  [Adaptive unity build] Excluded from StarryTail.gen unity file: IreneAnimInstance.gen.cpp, IreneCharacter.gen.cpp, MyAnimInstance.gen.cpp, StarryTail.init.gen.cpp
+  Building 4 actions with 24 processes...
+    [1/4] IreneCharacter.cpp
+    [2/4] UE4Editor-StarryTail-0011.lib
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0011.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0011.exp 개체를 생성하고 있습니다.
+    [3/4] UE4Editor-StarryTail-0011.dll
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0011.suppressed.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0011.suppressed.exp 개체를 생성하고 있습니다.
+    [4/4] StarryTailEditor.target
+  Total time in Parallel executor: 3.79 seconds
+  Total execution time: 4.64 seconds

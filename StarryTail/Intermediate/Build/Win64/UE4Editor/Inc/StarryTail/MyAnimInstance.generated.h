@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define STARRYTAIL_MyAnimInstance_generated_h
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_SPARSE_DATA
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_RPC_WRAPPERS
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_RPC_WRAPPERS_NO_PURE_DECLS
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_INCLASS_NO_PURE_DECLS \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_SPARSE_DATA
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_RPC_WRAPPERS
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUMyAnimInstance(); \
 	friend struct Z_Construct_UClass_UMyAnimInstance_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(UMyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_INCLASS \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_INCLASS \
 private: \
 	static void StaticRegisterNativesUMyAnimInstance(); \
 	friend struct Z_Construct_UClass_UMyAnimInstance_Statics; \
@@ -34,9 +34,9 @@ public: \
 	DECLARE_SERIALIZER(UMyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_STANDARD_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
-	NO_API UMyAnimInstance(const FObjectInitializer& ObjectInitializer); \
+	NO_API UMyAnimInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UMyAnimInstance) \
 	DECLARE_VTABLE_PTR_HELPER_CTOR(NO_API, UMyAnimInstance); \
 	DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(UMyAnimInstance); \
@@ -47,7 +47,9 @@ private: \
 public:
 
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_ENHANCED_CONSTRUCTORS \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
+	/** Standard constructor, called after all reflected properties have been initialized */ \
+	NO_API UMyAnimInstance(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) { }; \
 private: \
 	/** Private move- and copy-constructors, should never be used */ \
 	NO_API UMyAnimInstance(UMyAnimInstance&&); \
@@ -55,31 +57,31 @@ private: \
 public: \
 	DECLARE_VTABLE_PTR_HELPER_CTOR(NO_API, UMyAnimInstance); \
 	DEFINE_VTABLE_PTR_HELPER_CTOR_CALLER(UMyAnimInstance); \
-	DEFINE_DEFAULT_CONSTRUCTOR_CALL(UMyAnimInstance)
+	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UMyAnimInstance)
 
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_PRIVATE_PROPERTY_OFFSET
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_14_PROLOG
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_GENERATED_BODY_LEGACY \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_13_PROLOG
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_SPARSE_DATA \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_RPC_WRAPPERS \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_INCLASS \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_STANDARD_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_SPARSE_DATA \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_RPC_WRAPPERS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_INCLASS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define StarryTail_Source_StarryTail_MyAnimInstance_h_17_GENERATED_BODY \
+#define StarryTail_Source_StarryTail_MyAnimInstance_h_16_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_PRIVATE_PROPERTY_OFFSET \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_SPARSE_DATA \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_RPC_WRAPPERS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_INCLASS_NO_PURE_DECLS \
-	StarryTail_Source_StarryTail_MyAnimInstance_h_17_ENHANCED_CONSTRUCTORS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_PRIVATE_PROPERTY_OFFSET \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_SPARSE_DATA \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_RPC_WRAPPERS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_INCLASS_NO_PURE_DECLS \
+	StarryTail_Source_StarryTail_MyAnimInstance_h_16_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 

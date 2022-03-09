@@ -16,7 +16,6 @@
 			"IsInRangedAttackRange.cpp.obj",
 			"MoveToPlayer.cpp.obj",
 			"TurnToPlayer.cpp.obj",
-			"IreneCharacter.cpp.obj",
 			"IreneFSM.cpp.obj",
 			"IreneAttackIdleState.cpp.obj",
 			"IreneAttackState.cpp.obj",
@@ -27,16 +26,18 @@
 			"IreneJumpState.cpp.obj",
 			"IreneRunState.cpp.obj",
 			"IreneWalkState.cpp.obj",
-			"MyAnimInstance.cpp.obj",
 			"StarryTail.cpp.obj",
 			"StarryTailCharacter.cpp.obj",
-			"StarryTailGameMode.cpp.obj",
 			"STGameInstance.cpp.obj",
 			"StopWatch.cpp.obj",
 			"TestObject.cpp.obj",
 			"HPBarWidget.cpp.obj",
 			"IreneAttributeWidget.cpp.obj",
-			"StopWatchWidget.cpp.obj"
+			"StopWatchWidget.cpp.obj",
+			"IreneAnimInstance.cpp.obj",
+			"IreneCharacter.cpp.obj",
+			"MyAnimInstance.cpp.obj",
+			"StarryTailGameMode.cpp.obj"
 		],
 		"Module.StarryTail.gen.cpp.obj": [
 			"CheckCanRangedAttack.gen.cpp.obj",
@@ -50,22 +51,23 @@
 			"EnemyRushAttack.gen.cpp.obj",
 			"HPBarWidget.gen.cpp.obj",
 			"IreneAttributeWidget.gen.cpp.obj",
-			"IreneCharacter.gen.cpp.obj",
 			"IsCanRushAttack.gen.cpp.obj",
 			"IsInMeleeAttackRange.gen.cpp.obj",
 			"IsInRangedAttackRange.gen.cpp.obj",
 			"MoveToPlayer.gen.cpp.obj",
-			"MyAnimInstance.gen.cpp.obj",
 			"PlayerCharacterDataStruct.gen.cpp.obj",
 			"StarryTail.gen.cpp.obj",
-			"StarryTail.init.gen.cpp.obj",
 			"StarryTailCharacter.gen.cpp.obj",
 			"StarryTailGameMode.gen.cpp.obj",
 			"STGameInstance.gen.cpp.obj",
 			"StopWatch.gen.cpp.obj",
 			"StopWatchWidget.gen.cpp.obj",
 			"TestObject.gen.cpp.obj",
-			"TurnToPlayer.gen.cpp.obj"
+			"TurnToPlayer.gen.cpp.obj",
+			"IreneAnimInstance.gen.cpp.obj",
+			"IreneCharacter.gen.cpp.obj",
+			"MyAnimInstance.gen.cpp.obj",
+			"StarryTail.init.gen.cpp.obj"
 		]
 	}
 }
