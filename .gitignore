@@ -1,5 +1,10 @@
-StarryTail/
+StarryTail/.vs/
+StarryTail/Binaries/
+StarryTail/Intermediate/
+StarryTail/Saved/
+StarryTail/StarryTail.sln
 !Config/
 !Content/
 !Source/
 !StarryTail.uproject
+*_BuiltData.uasset
