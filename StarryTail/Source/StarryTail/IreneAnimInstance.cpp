@@ -37,7 +37,7 @@ void UIreneAnimInstance::PlayAttackMontage()
 
 void UIreneAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
-	Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
+	Montage_SetNextSection(GetAttackMontageSectionName(NewSection-1),GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck()

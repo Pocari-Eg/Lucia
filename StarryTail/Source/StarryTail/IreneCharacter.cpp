@@ -62,9 +62,9 @@ AIreneCharacter::AIreneCharacter()
 	CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
-	//bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
-	//GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = 800.0f;

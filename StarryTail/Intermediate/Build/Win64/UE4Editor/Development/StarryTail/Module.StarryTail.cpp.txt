@@ -442,6 +442,9 @@ C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/IreneStates/IreneIdle
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/IreneStates/IreneJumpState.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/IreneStates/IreneRunState.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/IreneStates/IreneWalkState.cpp
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/MyAnimInstance.cpp
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\MyAnimInstance.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\MyAnimInstance.generated.h
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/StarryTail.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/StarryTailCharacter.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\StarryTailCharacter.h
@@ -455,6 +458,9 @@ D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\HeadMountedDi
 D:\EpicGames\UE_4.27\Engine\Source\Runtime\HeadMountedDisplay\Public\XRGestureConfig.h
 D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\HeadMountedDisplay\XRGestureConfig.generated.h
 D:\EpicGames\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\HeadMountedDisplay\HeadMountedDisplayFunctionLibrary.generated.h
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/StarryTailGameMode.cpp
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\StarryTailGameMode.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\StarryTailGameMode.generated.h
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Source/StarryTail/STGameInstance.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail\STGameInstance.h
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\STGameInstance.generated.h

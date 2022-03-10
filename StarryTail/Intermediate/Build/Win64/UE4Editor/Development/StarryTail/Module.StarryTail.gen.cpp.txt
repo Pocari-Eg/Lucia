@@ -399,7 +399,11 @@ C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/HPBarWidget.gen.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/UI/HPBarWidget.h
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\HPBarWidget.generated.h
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/IreneAnimInstance.gen.cpp
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/IreneAnimInstance.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\IreneAnimInstance.generated.h
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/IreneAttributeWidget.gen.cpp
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/IreneCharacter.gen.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/IsCanRushAttack.gen.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/EnemySource/IsCanRushAttack.h
 D:\EpicGames\UE_4.27\Engine\Source\Runtime\AIModule\Classes\BehaviorTree/BTDecorator.h
@@ -414,8 +418,12 @@ C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/MoveToPlayer.gen.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/EnemySource/MoveToPlayer.h
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\MoveToPlayer.generated.h
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/MyAnimInstance.gen.cpp
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/MyAnimInstance.h
+C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\MyAnimInstance.generated.h
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/PlayerCharacterDataStruct.gen.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/StarryTail.gen.cpp
+C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/StarryTail.init.gen.cpp
 C:/UnrealProjects/STARRY-TAIL/StarryTail/Intermediate/Build/Win64/UE4Editor/Inc/StarryTail/StarryTailCharacter.gen.cpp
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Source\StarryTail/StarryTailCharacter.h
 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Inc\StarryTail\StarryTailCharacter.generated.h
