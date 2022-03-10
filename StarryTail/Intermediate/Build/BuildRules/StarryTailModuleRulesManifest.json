@@ -1,8 +1,0 @@
-{
-	"SourceFiles": [
-		"C:\\UnrealProjects\\STARRY-TAIL\\StarryTail\\Source\\StarryTail\\StarryTail.Build.cs",
-		"C:\\UnrealProjects\\STARRY-TAIL\\StarryTail\\Source\\StarryTail.Target.cs",
-		"C:\\UnrealProjects\\STARRY-TAIL\\StarryTail\\Source\\StarryTailEditor.Target.cs"
-	],
-	"EngineVersion": "4.27.2"
-}
