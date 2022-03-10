@@ -7,6 +7,7 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+//Key = 비헤이비어 트리 연동 변수
 const FName AEnemyController::PlayerKey(TEXT("Player"));
 const FName AEnemyController::RangedAttackCountKey(TEXT("RangedAttackCount"));
 const FName AEnemyController::CanRangedAttackKey(TEXT("bCanRangedAttack"));

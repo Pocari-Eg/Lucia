@@ -10,7 +10,7 @@ UEnemyMeleeAttack::UEnemyMeleeAttack()
 {
 	bNotifyTick = true;
 }
-
+//Task = ½ÇÇà
 EBTNodeResult::Type UEnemyMeleeAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);

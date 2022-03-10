@@ -21,8 +21,6 @@ EBTNodeResult::Type UEnemyRushAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Enemy->RushAttack();
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsInt(AEnemyController::RangedAttackCountKey, AEnemyController::RangedAttackCount);
-
 	IsAttacking = true;
 	Enemy->OnAttackEnd.AddLambda([this]() -> void { IsAttacking = false; });
 

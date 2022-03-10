@@ -29,11 +29,6 @@ EBTNodeResult::Type UTurnToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 
 	Enemy->SetActorRotation(FMath::RInterpTo(Enemy->GetActorRotation(), Rotator, GetWorld()->GetDeltaSeconds(), 2.0f));
 
-	/*FVector LookVector = Player->GetActorLocation() - Enemy->GetActorLocation();
-	LookVector.Z = 0.0f;
-	FRotator PlayerRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	Enemy->SetActorRotation(FMath::RInterpTo(Enemy->GetActorRotation(), PlayerRot, GetWorld()->GetDeltaSeconds(), 2.0f));
-	*/
 	return EBTNodeResult::Succeeded;
 }
 

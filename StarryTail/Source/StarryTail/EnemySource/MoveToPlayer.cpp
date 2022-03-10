@@ -28,17 +28,26 @@ EBTNodeResult::Type UMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	auto EnemyController = Cast<AEnemyController>(OwnerComp.GetAIOwner()->GetPawn()->GetController());
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(EnemyController, Player->GetActorLocation());
 
+	//돌진 속도
 	Enemy->GetCharacterMovement()->MaxWalkSpeed = 600.f;
+
+	AEnemyController::RangedAttackCount = 0;
 
 	if (Player->GetDistanceTo(Enemy) <= AEnemyController::MeleeAttackRange)
 	{
-		AEnemyController::RangedAttackCount = 0;
+		Enemy->GetCharacterMovement()->MaxWalkSpeed = 300.f;
+
+		//돌진 종료 후 RangedAttackCount값 초기화
+		OwnerComp.GetBlackboardComponent()->SetValueAsInt(AEnemyController::RangedAttackCountKey, AEnemyController::RangedAttackCount);
+		bIsArrive = true;
+	}
+	if (Player->GetDistanceTo(Enemy) <= AEnemyController::RangedAttackRange && AEnemyController::RangedAttackCount == 0)
+	{
 		Enemy->GetCharacterMovement()->MaxWalkSpeed = 300.f;
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsInt(AEnemyController::RangedAttackCountKey, AEnemyController::RangedAttackCount);
 		bIsArrive = true;
 	}
-
 
 
 	return EBTNodeResult::InProgress;

@@ -9,7 +9,9 @@
 
 UDetectPlayer::UDetectPlayer()
 {
+	//비헤이비어 트리 서비스 이름
 	NodeName = TEXT("DetectPlayer");
+	//틱 주기
 	Interval = 1.0f;
 }
 

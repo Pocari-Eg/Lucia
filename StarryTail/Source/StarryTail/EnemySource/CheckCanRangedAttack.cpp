@@ -8,6 +8,7 @@
 
 UCheckCanRangedAttack::UCheckCanRangedAttack()
 {
+	// 비헤이비어 트리 서비스 이름
 	NodeName = TEXT("CheckCanRangedAttack");
 	Interval = 1.0f;
 }

@@ -9,8 +9,8 @@
 
 UIsInRangedAttackRange::UIsInRangedAttackRange()
 {
+	//비헤이비어 트리 데코레이터 이름
 	NodeName = TEXT("CanRangedAttack");
-	
 }
 
 bool UIsInRangedAttackRange::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
