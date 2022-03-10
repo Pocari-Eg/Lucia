@@ -21,11 +21,13 @@ EBTNodeResult::Type UEnemyRangedAttack::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	Enemy->RangedAttack();
 
+	//블랙보드 변수 설정
 	OwnerComp.GetBlackboardComponent()->SetValueAsInt(AEnemyController::RangedAttackCountKey, AEnemyController::RangedAttackCount);
 
 	IsAttacking = true;
 	Enemy->OnAttackEnd.AddLambda([this]() -> void { IsAttacking = false; });
 
+	//블랙보드 변수 설정
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AEnemyController::CanRangedAttackKey, false);
 
 	return EBTNodeResult::InProgress;

@@ -8,6 +8,7 @@
 
 UIsInMeleeAttackRange::UIsInMeleeAttackRange()
 {
+	//비헤이비어 트리 데코레이터 이름
 	NodeName = TEXT("CanMeleeAttack");
 }
 bool UIsInMeleeAttackRange::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
@@ -22,6 +23,7 @@ bool UIsInMeleeAttackRange::CalculateRawConditionValue(UBehaviorTreeComponent& O
 	if (nullptr == Player)
 		return false;
 
+	//1m
 	bResult = (Player->GetDistanceTo(ControllingPawn) <= AEnemyController::MeleeAttackRange);
 
 	if (bResult)

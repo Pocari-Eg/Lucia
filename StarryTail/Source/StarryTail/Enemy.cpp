@@ -2,7 +2,7 @@
 
 
 #include "Enemy.h"
-#include "EnemyMagicAttack.h"
+#include "./EnemySource/EnemyMagicAttack.h"
 #include "./EnemySource/EnemyAnimInstance.h"
 #include "./EnemySource/EnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -19,25 +19,32 @@ AEnemy::AEnemy()
 	AIControllerClass = AEnemyController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	//=====박찬영
+	// 
+	//콜리전 채널 설정
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 
+	//메쉬 설정
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> EnemeyMesh(TEXT("/Game/Animation/Monster_Walk/Dummy_Walk.Dummy_Walk"));
 	if (EnemeyMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(EnemeyMesh.Object);
 	}
 	
+	//콜리전 크기 설정
 	GetCapsuleComponent()->SetCapsuleHalfHeight(53.0f);
 
+	//메쉬 설정
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -55.0f), FRotator(0.0f, 270.0f, 0.0f));
 	GetMesh()->SetRelativeScale3D(FVector(50.0f, 50.0f, 50.0f));
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
-
+	// 애님 인스턴스 설정
 	static ConstructorHelpers::FClassFinder<UAnimInstance> EnemyAnim(TEXT("/Game/Animation/EnemyAnimBlueprint"));
 	if (EnemyAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(EnemyAnim.Class);
 	}
+	//
 }
 
 // Called when the game starts or when spawned
@@ -57,6 +64,7 @@ void AEnemy::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	EnemyAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
+	//애니메이션 몽타주 종료시 호출
 	EnemyAnimInstance->OnMontageEnded.AddDynamic(this, &AEnemy::OnAttackMontageEnded);
 }
 
@@ -95,6 +103,7 @@ void AEnemy::RangedAttack()
 	EnemyAnimInstance->PlayRangedAttackMontage();
 	++AEnemyController::RangedAttackCount;
 
+	//원거리 투사체 생성
 	GetWorld()->SpawnActor<AEnemyMagicAttack>(GetActorLocation(), FRotator::ZeroRotator);
 
 	bIsAttacking = true;
@@ -104,6 +113,8 @@ void AEnemy::MeleeAttack()
 	if (bIsAttacking) return;
 
 	EnemyAnimInstance->PlayMeleeAttackMontage();
+
+	//근거리 공격 충돌체크
 	FHitResult HitResult;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
@@ -128,6 +139,7 @@ void AEnemy::RushAttack()
 
 	EnemyAnimInstance->PlayRushAttackMontage();
 
+	//돌진 공격 충돌체크(미완성)
 	FHitResult HitResult;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(

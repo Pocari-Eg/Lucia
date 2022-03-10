@@ -8,6 +8,7 @@ UEnemyAnimInstance::UEnemyAnimInstance()
 {
 	CurrentPawnSpeed = 0.0f;
 
+	//애니메이션 몽타주 경로
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> RANGED_ATTACK_MONTAGE(TEXT("/Game/Animation/Dummy_Walk_Skeleton_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> MELEE_ATTACK_MONTAGE(TEXT("/Game/Animation/MeleeAttack_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> RUSH_ATTACK_MONTAGE(TEXT("/Game/Animation/RushAttack_Montage"));
