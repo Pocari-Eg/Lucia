@@ -54,6 +54,11 @@ private:
 	//오브젝트 CurrentHp
 	float CurrentHP;
 
+	//몬스터  스폰 반경
+	UPROPERTY(EditAnywhere, Category = INFO, meta = (AllowPrivateAccess = "true"))
+	float SpawnRadius;
+	//Radius변경 체크
+	float OldRadius;
 
 public:
 	// Sets default values for this actor's properties
@@ -79,5 +84,6 @@ private:
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	void SpawnEenmy();
+	void DrawSpawnErea();
 };
 

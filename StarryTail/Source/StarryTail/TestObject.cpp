@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneComponent.h"
 
+//디버그 
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ATestObject::ATestObject()
@@ -58,6 +60,10 @@ ATestObject::ATestObject()
 	//초기 HP 설정
 	MaxHP = 300.0f;
 	CurrentHP = MaxHP;
+
+	//몬스터 스포 반경 설정
+	SpawnRadius = 300.0f;
+	OldRadius = SpawnRadius;
 	//HP Bar UI 설정 
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(Mesh);
@@ -73,6 +79,8 @@ ATestObject::ATestObject()
 		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
 
 	}
+
+
 }
 
 void ATestObject::Tick(float DeltaTime)
@@ -86,6 +94,7 @@ void ATestObject::Tick(float DeltaTime)
 	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
 	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw,0.0f));
 	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	DrawSpawnErea();
 }
 
 // Called when the game starts or when spawned
@@ -175,7 +184,7 @@ void ATestObject::SpawnEenmy()
 {
 
 
-	FVector2D random = FMath::RandPointInCircle(300.0f); //중심 기준 300반경의 원 안에 랜덤 포인트
+	FVector2D random = FMath::RandPointInCircle(SpawnRadius); //중심 기준 300반경의 원 안에 랜덤 포인트
 	UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); //
 
 	// 랜덤 좌표의 절댓값이 50보다 작으면 50을 더해서 중심보다 멀어지도록
@@ -200,5 +209,21 @@ float ATestObject::GetHpRatio()
 	return (CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CurrentHP / MaxHP;
 }
 
-// Called every frame
+
+void ATestObject::DrawSpawnErea()
+{
+	//현재 Radius에 변화가 생기면 영역을 다시 그림
+	if (OldRadius != SpawnRadius)
+	{
+		FlushPersistentDebugLines(GetWorld());
+#if ENABLE_DRAW_DEBUG
+		DrawDebugCircle(GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 55.f), SpawnRadius, 40, FColor::Green, true, -1.0f, 0, 2.0f, FVector(1.0f, 0.0f, 0.0f), FVector(0.0f, 1.0f, 0.0f), true);
+#endif
+		OldRadius = SpawnRadius;
+
+	}
+
+
+}
+
 
