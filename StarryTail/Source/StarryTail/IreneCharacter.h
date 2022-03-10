@@ -31,9 +31,9 @@ protected:
 
 private:
 	// 카메라 암과 카메라
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArmComp;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
 
 	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기
@@ -54,25 +54,28 @@ private:
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
-
-	// 기본공격용 핸들
-	FTimerHandle NormalAttackWaitHandle;
-	// 기본종료용 핸들
-	FTimerHandle NormalAttackEndWaitHandle;
-	// 현재 공격 횟수를 의미하지만 나중에는 애니메이션으로 바꿀 예정
-	TQueue<uint8> AttackQueue;
-	// 큐에 값을 넣을 수 있는 시간
-	bool IsEnqueueTime;
-	// 공격 횟수
-	uint8 AttackCount;
-	uint8 AttackCountAnim;
-
 	// 키워드 출력용
 	uint8 MainKeywordType;
 	uint8 SubKeywordType;
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Weapon;
+
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool IsAttacking;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool CanNextCombo;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		bool IsComboInputOn;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 CurrentCombo;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
+		int32 MaxCombo;
+
+	UPROPERTY()
+		class UIreneAnimInstance* IreneAnim;
+
+	FTimerHandle AttackWaitHandle;
 
 	// 박찬영 ***************************************
 //스탑워치
@@ -91,10 +94,10 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	virtual void PostInitializeComponents() override;
+
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	uint8 GetAttackCountAnim() { return AttackCountAnim; }
 
 	///박찬영 ==================
 	//속성 반환
@@ -137,8 +140,7 @@ private:
 	void LookUp(float Rate);
 
 	// 마우스 좌클릭
-	void LeftButton();
-	void StartNormalAttackAnim();
+	void LeftButton(float Rate);
 
 	// 메인키워드, 보조키워드, 액션키워드
 	void MainKeyword();
@@ -152,7 +154,12 @@ private:
 
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(State* newState);
+	
+	UFUNCTION()
+		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
+	void AttackStartComboState();
+	void AttackEndComboState();
 
 	//박찬영 ============
 //스탑워치 

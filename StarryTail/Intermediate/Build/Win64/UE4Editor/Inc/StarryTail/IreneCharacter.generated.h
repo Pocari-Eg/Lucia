@@ -8,14 +8,23 @@
 #include "UObject/ScriptMacros.h"
 
 PRAGMA_DISABLE_DEPRECATION_WARNINGS
+class UAnimMontage;
 #ifdef STARRYTAIL_IreneCharacter_generated_h
 #error "IreneCharacter.generated.h already included, missing '#pragma once' in IreneCharacter.h"
 #endif
 #define STARRYTAIL_IreneCharacter_generated_h
 
 #define StarryTail_Source_StarryTail_IreneCharacter_h_26_SPARSE_DATA
-#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS
-#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS_NO_PURE_DECLS
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS \
+ \
+	DECLARE_FUNCTION(execOnAttackMontageEnded);
+
+
+#define StarryTail_Source_StarryTail_IreneCharacter_h_26_RPC_WRAPPERS_NO_PURE_DECLS \
+ \
+	DECLARE_FUNCTION(execOnAttackMontageEnded);
+
+
 #define StarryTail_Source_StarryTail_IreneCharacter_h_26_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesAIreneCharacter(); \
@@ -64,6 +73,12 @@ public: \
 	FORCEINLINE static uint32 __PPO__MoveKey() { return STRUCT_OFFSET(AIreneCharacter, MoveKey); } \
 	FORCEINLINE static uint32 __PPO__CharacterDataStruct() { return STRUCT_OFFSET(AIreneCharacter, CharacterDataStruct); } \
 	FORCEINLINE static uint32 __PPO__Weapon() { return STRUCT_OFFSET(AIreneCharacter, Weapon); } \
+	FORCEINLINE static uint32 __PPO__IsAttacking() { return STRUCT_OFFSET(AIreneCharacter, IsAttacking); } \
+	FORCEINLINE static uint32 __PPO__CanNextCombo() { return STRUCT_OFFSET(AIreneCharacter, CanNextCombo); } \
+	FORCEINLINE static uint32 __PPO__IsComboInputOn() { return STRUCT_OFFSET(AIreneCharacter, IsComboInputOn); } \
+	FORCEINLINE static uint32 __PPO__CurrentCombo() { return STRUCT_OFFSET(AIreneCharacter, CurrentCombo); } \
+	FORCEINLINE static uint32 __PPO__MaxCombo() { return STRUCT_OFFSET(AIreneCharacter, MaxCombo); } \
+	FORCEINLINE static uint32 __PPO__IreneAnim() { return STRUCT_OFFSET(AIreneCharacter, IreneAnim); } \
 	FORCEINLINE static uint32 __PPO__Attribute() { return STRUCT_OFFSET(AIreneCharacter, Attribute); } \
 	FORCEINLINE static uint32 __PPO__AttributeWidget() { return STRUCT_OFFSET(AIreneCharacter, AttributeWidget); }
 

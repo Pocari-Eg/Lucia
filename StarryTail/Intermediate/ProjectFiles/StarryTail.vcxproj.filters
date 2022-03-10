@@ -3,7 +3,7 @@
   <ItemGroup>
     <None Include="..\..\StarryTail.uproject" />
     <Filter Include="Source">
-      <UniqueIdentifier>{7E233CE9-44F2-4C3A-B659-470F36561A06}</UniqueIdentifier>
+      <UniqueIdentifier>{16363D75-F600-4A40-B89D-680CCE6E6501}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Source\StarryTail.Target.cs">
       <Filter>Source</Filter>
@@ -12,7 +12,7 @@
       <Filter>Source</Filter>
     </None>
     <Filter Include="Config">
-      <UniqueIdentifier>{215437FB-731E-4018-B7A9-65657F6865C5}</UniqueIdentifier>
+      <UniqueIdentifier>{217944D2-AF54-4525-B546-9A19493D0472}</UniqueIdentifier>
     </Filter>
     <None Include="..\..\Config\DefaultEditor.ini">
       <Filter>Config</Filter>
@@ -30,7 +30,7 @@
       <Filter>Config</Filter>
     </None>
     <Filter Include="Source\StarryTail">
-      <UniqueIdentifier>{56003C69-4312-458E-8DBA-4852670DEB46}</UniqueIdentifier>
+      <UniqueIdentifier>{E7E06BA5-3FF1-4FE2-9C71-44D6D9245C0D}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\Enemy.cpp">
       <Filter>Source\StarryTail</Filter>
@@ -42,6 +42,12 @@
       <Filter>Source\StarryTail</Filter>
     </ClCompile>
     <ClInclude Include="..\..\Source\StarryTail\EnemyMagicAttack.h">
+      <Filter>Source\StarryTail</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\Source\StarryTail\IreneAnimInstance.cpp">
+      <Filter>Source\StarryTail</Filter>
+    </ClCompile>
+    <ClInclude Include="..\..\Source\StarryTail\IreneAnimInstance.h">
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <ClCompile Include="..\..\Source\StarryTail\IreneCharacter.cpp">
@@ -105,7 +111,7 @@
       <Filter>Source\StarryTail</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\EnemySource">
-      <UniqueIdentifier>{2975B25F-AE02-4A86-AB14-D23C57265B0D}</UniqueIdentifier>
+      <UniqueIdentifier>{4656C4CF-7010-48FF-A088-E7384BBBA2C9}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\EnemySource\CheckCanRangedAttack.cpp">
       <Filter>Source\StarryTail\EnemySource</Filter>
@@ -180,7 +186,7 @@
       <Filter>Source\StarryTail\EnemySource</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\IreneStates">
-      <UniqueIdentifier>{90DC9143-12C2-41FB-B582-8AC6D998380F}</UniqueIdentifier>
+      <UniqueIdentifier>{5E707855-796B-419E-92A7-C7D85EB9E1DD}</UniqueIdentifier>
     </Filter>
     <ClInclude Include="..\..\Source\StarryTail\IreneStates\BaseGameEntity.h">
       <Filter>Source\StarryTail\IreneStates</Filter>
@@ -243,7 +249,7 @@
       <Filter>Source\StarryTail\IreneStates</Filter>
     </ClInclude>
     <Filter Include="Source\StarryTail\UI">
-      <UniqueIdentifier>{9573518E-FB46-4020-A9E2-D37F804B91EE}</UniqueIdentifier>
+      <UniqueIdentifier>{AAF2AD27-6268-4048-AA42-2C32B1852B33}</UniqueIdentifier>
     </Filter>
     <ClCompile Include="..\..\Source\StarryTail\UI\HPBarWidget.cpp">
       <Filter>Source\StarryTail\UI</Filter>

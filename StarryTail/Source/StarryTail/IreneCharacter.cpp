@@ -1,10 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 //
 //  
-// 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기, 연속공격 시스템 몽타주로 바꾸기
+// 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기
 // 일반 공격 속성 테이블 따라 값 읽기, 
 
 #include "IreneCharacter.h"
+#include "IreneAnimInstance.h"
 
 // Sets default values
 AIreneCharacter::AIreneCharacter()
@@ -20,6 +21,7 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
 		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 
+		//무기
 		FName WeaponSocket(TEXT("hand_rSocket"));
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
@@ -36,6 +38,7 @@ AIreneCharacter::AIreneCharacter()
 		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 
 		// 블루프린트 애니메이션 적용
+		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
 
 		if (CharacterAnimInstance.Succeeded())
@@ -46,7 +49,7 @@ AIreneCharacter::AIreneCharacter()
 
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-	SpringArmComp->SetupAttachment(GetMesh());
+	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(-20.0f, 90.0f, 0.0f));
 	SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
@@ -55,13 +58,13 @@ AIreneCharacter::AIreneCharacter()
 
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
-	CameraComp->SetupAttachment(SpringArmComp, USpringArmComponent::SocketName);
+	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
-	//bUseControllerRotationYaw = false;
+	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
-	//GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
@@ -92,11 +95,13 @@ AIreneCharacter::AIreneCharacter()
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
 
-	AttackQueue.Empty();
-	IsEnqueueTime = true;
-
 	MainKeywordType = 0;
 	SubKeywordType = 0;
+
+	IsAttacking = false;
+	MaxCombo = 3;
+	AttackEndComboState();
+	AttackWaitHandle.Invalidate();
 
 	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
 
@@ -120,7 +125,8 @@ AIreneCharacter::AIreneCharacter()
 	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
-	if (UI_HUD.Succeeded()) {
+	if (UI_HUD.Succeeded())
+	{
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
 		AttributeWidget->SetDrawSize(FVector2D(2.0f, 2.0f));
 	}
@@ -437,69 +443,34 @@ void AIreneCharacter::LookUp(float Rate)
 // 로그 출력용 더미
 // UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
 
-void AIreneCharacter::LeftButton()
+void AIreneCharacter::LeftButton(float Rate)
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0) {
-		if (!NormalAttackEndWaitHandle.IsValid())
-		{
-			if (AttackCount < 3)
+	if (Rate >= 1.0 && !AttackWaitHandle.IsValid()) 
+	{
+		// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+		float WaitTime = 0.15f;
+
+		GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
-				AttackCount++;
-				AttackQueue.Enqueue(AttackCount);
-				StartNormalAttackAnim();
+				AttackWaitHandle.Invalidate();
+			}), WaitTime, false);
+		UE_LOG(LogTemp, Warning, TEXT("LeftButton"));
+
+		if (IsAttacking)
+		{
+			if (CanNextCombo)
+			{
+				IsComboInputOn = true;
 			}
 		}
-		else if (IsEnqueueTime)
+		else
 		{
-			if (AttackCount < 3)
-			{
-				AttackCount++;
-				AttackQueue.Enqueue(AttackCount);
-			}
+			AttackStartComboState();
+			IreneAnim->PlayAttackMontage();
+			IreneAnim->JumpToAttackMontageSection(CurrentCombo);
+			IsAttacking = true;
 		}
 	}
-}
-
-void AIreneCharacter::StartNormalAttackAnim()
-{
-	ChangeStateAndLog(IreneAttackState::getInstance());
-	AttackCountAnim++;
-
-	UE_LOG(LogTemp, Warning, TEXT("%d"), AttackCountAnim);
-	UE_LOG(LogTemp, Warning, TEXT("%d Start NormalAttack"), AttackCountAnim);
-
-	float WaitTime = 0.3f; // 다시 공격할 시간을 설정
-
-	// 0.5초 안에 다시 공격을 하는지 체크한다.
-	GetWorld()->GetTimerManager().SetTimer(NormalAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			IsEnqueueTime = false;
-		}), WaitTime, false);
-
-	if(AttackCountAnim == 1)
-		WaitTime = 0.471f; // 에니메이션이 끝나는 시간
-	else if(AttackCountAnim == 2)
-		WaitTime = 0.479f; // 에니메이션이 끝나는 시간
-	else if (AttackCountAnim == 3)
-		WaitTime = 0.700f; // 에니메이션이 끝나는 시간
-
-	GetWorld()->GetTimerManager().SetTimer(NormalAttackEndWaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			uint8 Outqueue = 0;
-			IsEnqueueTime = true;
-			AttackQueue.Dequeue(Outqueue);		
-			UE_LOG(LogTemp, Warning, TEXT("%d End NormalAttack"), Outqueue);
-			if (AttackQueue.IsEmpty())
-			{
-				AttackCount = 0;
-				AttackCountAnim = 0;
-				ChangeStateAndLog(IreneIdleState::getInstance());
-			}
-			else
-			{
-				StartNormalAttackAnim();
-			}
-		}), WaitTime, false);
 }
 
 void AIreneCharacter::MainKeyword()
@@ -647,17 +618,26 @@ void AIreneCharacter::Tick(float DeltaTime)
 		DashKeyword();
 	}
 	MoveStop();
-
-	// 공격종료 핸들 초기화
-	if (AttackCount == 0)
-	{
-		if (AttackCount > 3) {
-			AttackCount = 0;
-			AttackCountAnim = 0;
-		}
-		NormalAttackEndWaitHandle.Invalidate();
-	}
 	
+}
+
+void AIreneCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
+
+	IreneAnim->OnMontageEnded.AddDynamic(this, &AIreneCharacter::OnAttackMontageEnded);
+
+	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
+		{
+			CanNextCombo = false;
+
+			if (IsComboInputOn)
+			{
+				AttackStartComboState();
+				IreneAnim->JumpToAttackMontageSection(CurrentCombo);
+			}
+		});
 }
 
 // Called to bind functionality to input
@@ -693,7 +673,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
-	PlayerInputComponent->BindAction("LeftButton", IE_Pressed, this, &AIreneCharacter::LeftButton);
+	PlayerInputComponent->BindAxis("LeftButton", this, &AIreneCharacter::LeftButton);
 
 
 	//박찬영
@@ -724,6 +704,26 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
+}
+
+void AIreneCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	IsAttacking = false;
+	AttackEndComboState();
+}
+
+void AIreneCharacter::AttackStartComboState()
+{
+	CanNextCombo = true;
+	IsComboInputOn = false;
+	CurrentCombo = FMath::Clamp<int32>(CurrentCombo + 1, 1, MaxCombo);
+}
+
+void AIreneCharacter::AttackEndComboState()
+{
+	CanNextCombo = false;
+	IsComboInputOn = false;
+	CurrentCombo = 0;
 }
 
 //박찬영

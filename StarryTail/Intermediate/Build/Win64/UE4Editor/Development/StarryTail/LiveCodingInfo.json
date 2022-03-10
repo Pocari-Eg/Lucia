@@ -16,7 +16,6 @@
 			"IsInRangedAttackRange.cpp.obj",
 			"MoveToPlayer.cpp.obj",
 			"TurnToPlayer.cpp.obj",
-			"IreneCharacter.cpp.obj",
 			"IreneFSM.cpp.obj",
 			"IreneAttackIdleState.cpp.obj",
 			"IreneAttackState.cpp.obj",
@@ -36,7 +35,9 @@
 			"TestObject.cpp.obj",
 			"HPBarWidget.cpp.obj",
 			"IreneAttributeWidget.cpp.obj",
-			"StopWatchWidget.cpp.obj"
+			"StopWatchWidget.cpp.obj",
+			"IreneAnimInstance.cpp.obj",
+			"IreneCharacter.cpp.obj"
 		],
 		"Module.StarryTail.gen.cpp.obj": [
 			"CheckCanRangedAttack.gen.cpp.obj",
@@ -49,6 +50,7 @@
 			"EnemyRangedAttack.gen.cpp.obj",
 			"EnemyRushAttack.gen.cpp.obj",
 			"HPBarWidget.gen.cpp.obj",
+			"IreneAnimInstance.gen.cpp.obj",
 			"IreneAttributeWidget.gen.cpp.obj",
 			"IreneCharacter.gen.cpp.obj",
 			"IsCanRushAttack.gen.cpp.obj",

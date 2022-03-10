@@ -1,2 +1,60 @@
-﻿  Using 'git status' to determine working set for adaptive non-unity build (E:\STARRY-TAIL).
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.MakeFile.Targets(45,5): warning MSB5021: 빌드가 취소되었으므로 작업 실행 파일 "cmd" 및 자식 프로세스를 종료합니다.
+﻿  Using 'git status' to determine working set for adaptive non-unity build (C:\UnrealProjects\STARRY-TAIL).
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0001.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0001.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0002.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0002.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0003.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0003.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0004.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0004.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0005.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0005.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0006.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0006.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0007.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0007.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0008.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0008.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0009.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0009.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0010.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0010.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0011.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0011.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0012.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0012.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0014.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0014.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0015.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0015.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0016.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0016.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0017.dll
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Binaries\Win64\UE4Editor-StarryTail-0017.pdb
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0001.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0002.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0003.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0004.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0005.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0006.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0007.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0008.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0009.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0010.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0011.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0012.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0014.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0015.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0016.lib
+  Deleted hot-reload file: C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail-0017.lib
+  Building StarryTailEditor...
+  Using Visual Studio 2019 14.29.30133 toolchain (C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133) and Windows 10.0.19041.0 SDK (C:\Program Files (x86)\Windows Kits\10).
+  [Adaptive unity build] Excluded from StarryTail unity file: IreneAnimInstance.cpp, IreneCharacter.cpp
+  Building 3 actions with 24 processes...
+    [1/3] UE4Editor-StarryTail.lib
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.exp 개체를 생성하고 있습니다.
+    [2/3] UE4Editor-StarryTail.dll
+       C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.lib 라이브러리 및 C:\UnrealProjects\STARRY-TAIL\StarryTail\Intermediate\Build\Win64\UE4Editor\Development\StarryTail\UE4Editor-StarryTail.suppressed.exp 개체를 생성하고 있습니다.
+    [3/3] StarryTailEditor.target
+  Total time in Parallel executor: 0.78 seconds
+  Total execution time: 1.28 seconds
