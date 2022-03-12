@@ -3,9 +3,13 @@
 //  
 // 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기
 // 일반 공격 속성 테이블 따라 값 읽기, 
+// 
+// 로그 출력용 더미
+// UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
 
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AIreneCharacter::AIreneCharacter()
@@ -20,6 +24,7 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
 		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
+		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 		//무기
 		FName WeaponSocket(TEXT("hand_rSocket"));
@@ -36,7 +41,6 @@ AIreneCharacter::AIreneCharacter()
 
 		//콜리전 적용
 		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
-		Weapon->SetGenerateOverlapEvents(true);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -103,6 +107,8 @@ AIreneCharacter::AIreneCharacter()
 	MaxCombo = 3;
 	AttackEndComboState();
 	AttackWaitHandle.Invalidate();
+	AttackRange = 200.0f;
+	AttackRadius = 50.0f;
 
 	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
 
@@ -132,16 +138,6 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetDrawSize(FVector2D(2.0f, 2.0f));
 	}
 }
-
-void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("NotifyActorBeginOverlap")); 
-}
-void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
-{
-	UE_LOG(LogTemp, Warning, TEXT("NotifyActorEndOverlap"));
-}
-
 
 // Called when the game starts or when spawned
 void AIreneCharacter::BeginPlay()
@@ -220,14 +216,17 @@ void AIreneCharacter::MoveStop()
 		{
 			if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 			{
+				GetCharacterMovement()->MaxWalkSpeed = 300;
 				ChangeStateAndLog(IreneIdleState::getInstance());
 			}
 			else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
 			{
+				GetCharacterMovement()->MaxWalkSpeed = 600;
 				ChangeStateAndLog(IreneRunState::getInstance());
 			}
 			else
 			{
+				GetCharacterMovement()->MaxWalkSpeed = 300;
 				ChangeStateAndLog(IreneWalkState::getInstance());
 			}
 		}
@@ -441,9 +440,6 @@ void AIreneCharacter::LookUp(float Rate)
 	AddControllerPitchInput(Rate);
 }
 
-// 로그 출력용 더미
-// UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
-
 void AIreneCharacter::LeftButton(float Rate)
 {
 	if (Rate >= 1.0 && !AttackWaitHandle.IsValid()) 
@@ -455,7 +451,6 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				AttackWaitHandle.Invalidate();
 			}), WaitTime, false);
-		UE_LOG(LogTemp, Warning, TEXT("LeftButton"));
 
 		if (IsAttacking)
 		{
@@ -639,6 +634,8 @@ void AIreneCharacter::PostInitializeComponents()
 				IreneAnim->JumpToAttackMontageSection(CurrentCombo);
 			}
 		});
+
+	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
 }
 
 // Called to bind functionality to input
@@ -725,6 +722,47 @@ void AIreneCharacter::AttackEndComboState()
 	CanNextCombo = false;
 	IsComboInputOn = false;
 	CurrentCombo = 0;
+}
+
+void AIreneCharacter::AttackCheck()
+{
+	FHitResult HitResult;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * 200.0f,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel5,
+		FCollisionShape::MakeSphere(50.0f),
+		Params);
+
+#if ENABLE_DRAW_DEBUG
+
+	FVector TraceVec = GetActorForwardVector() * AttackRange;
+	FVector Center = GetActorLocation() + TraceVec * 0.5f;
+	float HalfHeight = AttackRange * 0.5f + AttackRadius;
+	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	float DebugLifeTime = 5.0f;
+
+	DrawDebugCapsule(GetWorld(),
+		Center,
+		HalfHeight,
+		AttackRadius,
+		CapsuleRot,
+		DrawColor,
+		false,
+		DebugLifeTime);
+#endif
+
+	if(bResult)
+	{
+		if(HitResult.Actor.IsValid())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Hit Actor Name : %s"), *HitResult.Actor->GetName());
+		}
+	}
 }
 
 //박찬영
