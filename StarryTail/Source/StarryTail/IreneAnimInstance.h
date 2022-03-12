@@ -48,8 +48,6 @@ private:
 		void AnimNotify_AttackHitCheck();
 	UFUNCTION()
 		void AnimNotify_NextAttackCheck();
-	UFUNCTION()
-		void AnimNotify_AttackEndCheck();
 
 	FName GetAttackMontageSectionName(int32 Section);
 };

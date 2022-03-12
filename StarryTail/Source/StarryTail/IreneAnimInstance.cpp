@@ -37,7 +37,8 @@ void UIreneAnimInstance::PlayAttackMontage()
 
 void UIreneAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
-	Montage_SetNextSection(GetAttackMontageSectionName(NewSection-1),GetAttackMontageSectionName(NewSection), AttackMontage);
+	if(NewSection > 1)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection-1),GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck()
@@ -48,11 +49,6 @@ void UIreneAnimInstance::AnimNotify_AttackHitCheck()
 void UIreneAnimInstance::AnimNotify_NextAttackCheck()
 {
 	OnNextAttackCheck.Broadcast();
-}
-
-void UIreneAnimInstance::AnimNotify_AttackEndCheck()
-{
-	UE_LOG(LogTemp, Warning, TEXT("AttackEnd"));
 }
 
 FName UIreneAnimInstance::GetAttackMontageSectionName(int32 Section)
