@@ -180,6 +180,41 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	}
 }
 
+float ATestObject::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+	STARRYLOG(Warning, TEXT("Hit"));
+
+	auto Player = Cast<AIreneCharacter>(DamageCauser);  // 부딫힌 오브젝트를 해당 캐릭터로 캐스팅 
+
+	//속성에 따라 공격 가능 체크 
+	switch (Attribute)
+	{
+	case EAttributeKeyword::e_Fire:
+
+		if (Player->GetAttribute() == EAttributeKeyword::e_Water)
+		{
+			SetHp(Player->GetATK());
+		}
+		break;
+	case EAttributeKeyword::e_Water:
+		if (Player->GetAttribute() == EAttributeKeyword::e_Thunder)
+		{
+			SetHp(Player->GetATK());
+		}
+		break;
+	case EAttributeKeyword::e_Thunder:
+		if (Player->GetAttribute() == EAttributeKeyword::e_Fire)
+		{
+			SetHp(Player->GetATK());
+		}
+		break;
+	default:
+		break;
+	}
+	return FinalDamage;
+}
+
 void ATestObject::SpawnEenmy()
 {
 

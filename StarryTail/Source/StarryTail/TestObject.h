@@ -82,6 +82,8 @@ private:
 	UFUNCTION()
 	void OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	//己凯泅 面倒 贸府 规侥
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 
 	void SpawnEenmy();
 	void DrawSpawnErea();
