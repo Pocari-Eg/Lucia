@@ -614,6 +614,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 		DashKeyword();
 	}
 	MoveStop();
+	if (CharacterDataStruct.IsInvincibility == true)
+		SetActorEnableCollision(false);
 	
 }
 
@@ -761,6 +763,9 @@ void AIreneCharacter::AttackCheck()
 		if(HitResult.Actor.IsValid())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Hit Actor Name : %s"), *HitResult.Actor->GetName());
+
+			FDamageEvent DamageEvent;
+			HitResult.Actor->TakeDamage(50.0f, DamageEvent, GetController(), this);
 		}
 	}
 }

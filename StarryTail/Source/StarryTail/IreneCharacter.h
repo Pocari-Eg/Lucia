@@ -62,23 +62,23 @@ private:
 	USkeletalMeshComponent* Weapon;
 
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		bool IsAttacking;
+	bool IsAttacking;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		bool CanNextCombo;
+	bool CanNextCombo;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		bool IsComboInputOn;
+	bool IsComboInputOn;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		int32 CurrentCombo;
+	int32 CurrentCombo;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		int32 MaxCombo;
+	int32 MaxCombo;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		float AttackRange;
+	float AttackRange;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly, Category = Attack, Meta = (AllowPrivateAccess = true))
-		float AttackRadius;
+	float AttackRadius;
 
 
 	UPROPERTY()
-		class UIreneAnimInstance* IreneAnim;
+	class UIreneAnimInstance* IreneAnim;
 
 	FTimerHandle AttackWaitHandle;
 
