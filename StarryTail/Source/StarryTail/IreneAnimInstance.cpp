@@ -7,7 +7,7 @@ UIreneAnimInstance::UIreneAnimInstance()
 {
 	CurrentPawnSpeed = 0.0f;
 	IsInAir = false;
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Developers/syhwms/Collections/Move_KeQing_Skeleton_Montage.Move_KeQing_Skeleton_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Irene_Montage.Irene_Montage"));
 	if(ATTACK_MONTAGE.Succeeded())
 	{
 		AttackMontage = ATTACK_MONTAGE.Object;
