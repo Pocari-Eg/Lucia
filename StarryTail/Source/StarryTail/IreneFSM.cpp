@@ -1,19 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "IreneFSM.h"
-#include "./IreneStates/State.h"
-
-void IreneFSM::Update()
-{
-	StateValue->Execute(this);
-}
-
-void IreneFSM::ChangeState(State* newState)
-{
-	StateValue->Exit(this);
-	StateValue = newState;
-	StateValue->Enter(this);
-}
 
 StateEnum IreneFSM::getState()
 {

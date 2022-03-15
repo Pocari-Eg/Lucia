@@ -2,34 +2,29 @@
 
 #pragma once
 
-#include "./IreneStates/BaseGameEntity.h"
-#include "./IreneStates/State.h"
-#include "./IreneStates/IreneIdleState.h"
-#include "./IreneStates/IreneAttackIdleState.h"
-#include "./IreneStates/IreneWalkState.h"
-#include "./IreneStates/IreneRunState.h"
-#include "./IreneStates/IreneDashState.h"
-#include "./IreneStates/IreneJumpState.h"
-#include "./IreneStates/IreneAttackState.h"
-#include "./IreneStates/IreneHitState.h"
-#include "./IreneStates/IreneDeathState.h"
+enum class StateEnum {
+	Idle = 0,
+	AttackIdle,
+	Walk,
+	Run,
+	Dash,
+	Jump,
+	Attack,
+	Hit,
+	Death
+};
 
-class State;
-
-class IreneFSM : public BaseGameEntity
+class IreneFSM
 {
 public:
 
 protected:
 
 private:
-	State* StateValue;
-	StateEnum StateEnumValue;
+	enum StateEnum StateEnumValue;
 
 public:
-	IreneFSM() : BaseGameEntity(), StateValue(IreneIdleState::getInstance()), StateEnumValue(StateEnum::Idle) { StateValue->Enter(this); }
-	void Update();
-	void ChangeState(State* newState);
+	IreneFSM(): StateEnumValue(StateEnum::Idle) { };
 	StateEnum getState();
 	void setState(StateEnum val);
 	const char* StateEnumToString(StateEnum s);
