@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "./EnemySource/EnemyMagicAttack.h"
 #include "Enemy.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnAttackEndDelegate);
@@ -54,5 +55,10 @@ private:
 	UPROPERTY()
 		class UEnemyAnimInstance* EnemyAnimInstance;
 
+	//추후 수정
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ParticleAsset, meta = (AllowPrivateAccess = "true"))
+		class UParticleSystem* ParticleAsset;
+
+	AEnemyMagicAttack* MagicAttack;
 	EEnemyType CurrentEnemyType;
 };
