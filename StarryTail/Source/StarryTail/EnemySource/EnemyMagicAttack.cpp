@@ -53,11 +53,6 @@ AEnemyMagicAttack::AEnemyMagicAttack()
 	OurParticleSystem->bAutoActivate = true;
 	//생성시 위치 지정
 	OurParticleSystem->SetRelativeLocation(FVector(-20.0f, 0.0f, 20.0f));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleAsset(TEXT("/Game/StarterContent/Particles/P_Fire"));
-	if(ParticleAsset.Succeeded())
-	{
-		OurParticleSystem->SetTemplate(ParticleAsset.Object);
-	}
 }
 
 // Called when the game starts or when spawned
@@ -97,4 +92,8 @@ void AEnemyMagicAttack::OnCollisionOverlap(UPrimitiveComponent* OverlappedComp, 
 
 	STARRYLOG(Warning, TEXT("Collision Detect : %s"), *Other->GetName());
 	Destroy();
+}
+void AEnemyMagicAttack::SetParticleAsset(UParticleSystem* ParticleAsset)
+{
+	OurParticleSystem->SetTemplate(ParticleAsset);
 }

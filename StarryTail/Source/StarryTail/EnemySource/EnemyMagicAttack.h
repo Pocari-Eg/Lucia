@@ -25,12 +25,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	virtual void PostInitializeComponents() override;
+	void SetParticleAsset(UParticleSystem* ParticleAsset);
 private:
 	// Location 정보만 얻어오도록 생각해보기
 	UPROPERTY(VisibleAnyWhere, Category = Player)
 	AIreneCharacter* Player;
 	// 파티클 이펙트
 	UParticleSystemComponent* OurParticleSystem;
+
 	UFUNCTION()
 		void OnCollisionOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
