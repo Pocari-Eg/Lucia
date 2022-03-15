@@ -17,12 +17,12 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/Walk.Walk_KeQing"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
-		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -90), FRotator(0, 270, 0));
-		GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
+		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
+		//GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 		//무기
@@ -30,7 +30,7 @@ AIreneCharacter::AIreneCharacter()
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Developers/syhwms/Collections/Move.Move_Weapon"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Sword/PC_sworddummy02.PC_sworddummy02"));
 			if (SK_WEAPON.Succeeded())
 			{
 				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
@@ -43,7 +43,7 @@ AIreneCharacter::AIreneCharacter()
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/BP_KeQing.BP_KeQing_C"));
+		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/AnimTest/BP_Irene.BP_Irene_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 		{
@@ -55,7 +55,7 @@ AIreneCharacter::AIreneCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(-20.0f, 90.0f, 0.0f));
-	SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
+	//SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 0.0f;
@@ -77,7 +77,7 @@ AIreneCharacter::AIreneCharacter()
 	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
 
 	// 캡슐 사이즈 설정
-	GetCapsuleComponent()->InitCapsuleSize(42.f, 96.0f);
+	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 
 	// 플레이어 스폰 시 기본 제어 설정
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -127,14 +127,14 @@ AIreneCharacter::AIreneCharacter()
 	//ui 설정
 	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
 	AttributeWidget->SetupAttachment(GetMesh());
-	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 21.0f));
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 170.0f));
 	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
 	if (UI_HUD.Succeeded())
 	{
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
-		AttributeWidget->SetDrawSize(FVector2D(2.0f, 2.0f));
+		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
 }
 

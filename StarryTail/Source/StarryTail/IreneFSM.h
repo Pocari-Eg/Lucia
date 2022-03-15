@@ -16,10 +16,6 @@ enum class StateEnum {
 
 class IreneFSM
 {
-public:
-
-protected:
-
 private:
 	enum StateEnum StateEnumValue;
 
@@ -28,9 +24,4 @@ public:
 	StateEnum getState();
 	void setState(StateEnum val);
 	const char* StateEnumToString(StateEnum s);
-
-protected:
-
-private:
-
 };
