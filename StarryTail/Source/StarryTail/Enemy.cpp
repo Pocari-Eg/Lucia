@@ -2,7 +2,6 @@
 
 
 #include "Enemy.h"
-#include "./EnemySource/EnemyMagicAttack.h"
 #include "./EnemySource/EnemyAnimInstance.h"
 #include "./EnemySource/EnemyController.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -19,6 +18,14 @@ AEnemy::AEnemy()
 	AIControllerClass = AEnemyController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+
+	//임시 파티클 선언
+	if (ParticleAsset == nullptr)
+	{
+		ParticleAsset = LoadObject<UParticleSystem>(this, TEXT("/Game/StaerterContent/Particles/P_Fire"));
+	}
+	//
+	
 	//=====박찬영
 	// 
 	//콜리전 채널 설정
@@ -104,7 +111,8 @@ void AEnemy::RangedAttack()
 	++AEnemyController::RangedAttackCount;
 
 	//원거리 투사체 생성
-	GetWorld()->SpawnActor<AEnemyMagicAttack>(GetActorLocation(), FRotator::ZeroRotator);
+	MagicAttack = GetWorld()->SpawnActor<AEnemyMagicAttack>(GetActorLocation(), FRotator::ZeroRotator);
+	MagicAttack->SetParticleAsset(ParticleAsset);
 
 	bIsAttacking = true;
 }
