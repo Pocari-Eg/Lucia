@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 //
 //  
-// 나중에 해야할 것: FSM을 UE4 FSM상속 스크립트로 바꾸기
-// 일반 공격 속성 테이블 따라 값 읽기, 
+// 나중에 해야할 것: 일반 공격 속성 테이블 따라 값 읽기, 
 // 
 // 로그 출력용 더미
 // UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
@@ -206,7 +205,7 @@ void AIreneCharacter::MoveStop()
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0) 
 		{
-			ChangeStateAndLog(IreneIdleState::getInstance());
+			ChangeStateAndLog(StateEnum::Idle);
 		}
 	}
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
@@ -214,21 +213,7 @@ void AIreneCharacter::MoveStop()
 	{
 		if (!GetCharacterMovement()->IsFalling())
 		{
-			if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
-			{
-				GetCharacterMovement()->MaxWalkSpeed = 300;
-				ChangeStateAndLog(IreneIdleState::getInstance());
-			}
-			else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
-			{
-				GetCharacterMovement()->MaxWalkSpeed = 600;
-				ChangeStateAndLog(IreneRunState::getInstance());
-			}
-			else
-			{
-				GetCharacterMovement()->MaxWalkSpeed = 300;
-				ChangeStateAndLog(IreneWalkState::getInstance());
-			}
+			ActionEndChangeMoveState();
 		}
 	}
 }
@@ -296,7 +281,7 @@ void AIreneCharacter::StartJump()
 		
 		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() /GetMovementComponent()->GetMaxSpeed()));
 		bPressedJump = true;
-		ChangeStateAndLog(IreneJumpState::getInstance());
+		ChangeStateAndLog(StateEnum::Jump);
 	}
 }
 void AIreneCharacter::StopJump()
@@ -309,7 +294,7 @@ void AIreneCharacter::MovePressedW()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(IreneWalkState::getInstance());
+		ChangeStateAndLog(StateEnum::Walk);
 	}
 	MoveKey[0] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -319,7 +304,7 @@ void AIreneCharacter::MovePressedA()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(IreneWalkState::getInstance());
+		ChangeStateAndLog(StateEnum::Walk);
 	}
 	MoveKey[1] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -329,7 +314,7 @@ void AIreneCharacter::MovePressedS()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(IreneWalkState::getInstance());
+		ChangeStateAndLog(StateEnum::Walk);
 	}
 	MoveKey[2] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -339,7 +324,7 @@ void AIreneCharacter::MovePressedD()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(IreneWalkState::getInstance());
+		ChangeStateAndLog(StateEnum::Walk);
 	}
 	MoveKey[3] = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -353,7 +338,7 @@ void AIreneCharacter::MoveDoubleClickW()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(IreneRunState::getInstance());
+		ChangeStateAndLog(StateEnum::Run);
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -366,7 +351,7 @@ void AIreneCharacter::MoveDoubleClickA()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(IreneRunState::getInstance());
+		ChangeStateAndLog(StateEnum::Run);
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -379,7 +364,7 @@ void AIreneCharacter::MoveDoubleClickS()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(IreneRunState::getInstance());
+		ChangeStateAndLog(StateEnum::Run);
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -392,7 +377,7 @@ void AIreneCharacter::MoveDoubleClickD()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(IreneRunState::getInstance());
+		ChangeStateAndLog(StateEnum::Run);
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
@@ -431,6 +416,29 @@ void AIreneCharacter::MoveReleasedD()
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 
+void AIreneCharacter::ActionEndChangeMoveState()
+{
+	CharacterDataStruct.MoveSpeed = 1.0f;
+	MoveAutoDirection = FVector(0, 0, 0);
+
+	CharacterState->setState(StateEnum::Idle);
+	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
+		ChangeStateAndLog(StateEnum::Idle);
+	}
+	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
+		ChangeStateAndLog(StateEnum::Run);
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
+		ChangeStateAndLog(StateEnum::Walk);
+	}
+}
+
 void AIreneCharacter::Turn(float Rate)
 {
 	AddControllerYawInput(Rate);
@@ -467,6 +475,12 @@ void AIreneCharacter::LeftButton(float Rate)
 			IsAttacking = true;
 		}
 	}
+}
+
+void AIreneCharacter::MouseWheel(float Rate)
+{
+	SpringArmComp->TargetArmLength += Rate * CharacterDataStruct.MouseWheelSpeed;
+	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, 50.0f, 400.0f);
 }
 
 void AIreneCharacter::MainKeyword()
@@ -525,7 +539,7 @@ void AIreneCharacter::DashKeyword()
 {
 	if (!GetMovementComponent()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
-		ChangeStateAndLog(IreneDashState::getInstance());
+		ChangeStateAndLog(StateEnum::Dash);
 
 		float WaitTime = 1.5f; //시간을 설정
 		CharacterDataStruct.MoveSpeed = 30.0f; // 대쉬 속도 설정
@@ -535,22 +549,7 @@ void AIreneCharacter::DashKeyword()
 				// 도중에 추락 안하고 정상적으로 진행됬을 때
 				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
 				{
-					CharacterDataStruct.MoveSpeed = 1.0f;
-					MoveAutoDirection = FVector(0, 0, 0);
-
-					CharacterState->setState(StateEnum::Idle);
-					if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
-					{
-						ChangeStateAndLog(IreneIdleState::getInstance());
-					}
-					else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
-					{
-						ChangeStateAndLog(IreneRunState::getInstance());
-					}
-					else
-					{
-						ChangeStateAndLog(IreneWalkState::getInstance());
-					}
+					ActionEndChangeMoveState();
 				}
 			}), WaitTime, false);
 	}
@@ -674,6 +673,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", this, &AIreneCharacter::LeftButton);
+	PlayerInputComponent->BindAxis("MouseWheel", this, &AIreneCharacter::MouseWheel);
 
 
 	//박찬영
@@ -695,11 +695,11 @@ float AIreneCharacter::GetATK()
 	return CharacterDataStruct.ATK;
 }
 
-void AIreneCharacter::ChangeStateAndLog(State* newState)
+void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
 	{
-		CharacterState->ChangeState(newState);
+		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);

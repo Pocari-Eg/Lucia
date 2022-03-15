@@ -137,12 +137,15 @@ private:
 	void MoveReleasedS();
 	void MoveReleasedD();
 
+	void ActionEndChangeMoveState();
+
 	// 카메라 회전 관련 함수
 	void Turn(float Rate);
 	void LookUp(float Rate);
 
 	// 마우스 좌클릭
 	void LeftButton(float Rate);
+	void MouseWheel(float Rate);
 
 	// 메인키워드, 보조키워드, 액션키워드
 	void MainKeyword();
@@ -155,10 +158,10 @@ private:
 	void DashKeyword();
 
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(State* newState);
+	void ChangeStateAndLog(StateEnum newState);
 	
 	UFUNCTION()
-		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void AttackStartComboState();
 	void AttackEndComboState();
