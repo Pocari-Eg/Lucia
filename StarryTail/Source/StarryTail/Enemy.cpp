@@ -18,13 +18,12 @@ AEnemy::AEnemy()
 	AIControllerClass = AEnemyController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-
-	//임시 파티클 선언
+	/* 성공시 삭제
 	if (ParticleAsset == nullptr)
 	{
 		ParticleAsset = LoadObject<UParticleSystem>(this, TEXT("/Game/StaerterContent/Particles/P_Fire"));
 	}
-	//
+	*/
 	
 	//=====박찬영
 	// 

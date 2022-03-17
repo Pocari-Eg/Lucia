@@ -33,7 +33,7 @@ AEnemyMagicAttack::AEnemyMagicAttack()
 	Collision->SetCollisionProfileName(TEXT("EnemyAttack"));
 
 	//메쉬 설정
-	/*
+
 	UStaticMeshComponent* SphereVisual = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
 	SphereVisual->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere"));
@@ -43,7 +43,6 @@ AEnemyMagicAttack::AEnemyMagicAttack()
 		SphereVisual->SetRelativeLocation(FVector(0.0f, 0.0f, -40.0f));
 		SphereVisual->SetWorldScale3D(FVector(0.8f));
 	}
-	*/
 
 
 	//이펙트 생성

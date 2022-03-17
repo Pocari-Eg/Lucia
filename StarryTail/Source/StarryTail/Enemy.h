@@ -56,8 +56,8 @@ private:
 		class UEnemyAnimInstance* EnemyAnimInstance;
 
 	//추후 수정
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ParticleAsset, meta = (AllowPrivateAccess = "true"))
-		class UParticleSystem* ParticleAsset;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ParticleAsset, meta = (AllowPrivateAccess = true))
+		UParticleSystem* ParticleAsset;
 
 	AEnemyMagicAttack* MagicAttack;
 	EEnemyType CurrentEnemyType;
