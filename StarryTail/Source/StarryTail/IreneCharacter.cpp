@@ -10,6 +10,7 @@
 #include "IreneAnimInstance.h"
 #include "DrawDebugHelpers.h"
 
+#pragma region Setting
 // Sets default values
 AIreneCharacter::AIreneCharacter()
 {
@@ -102,12 +103,12 @@ AIreneCharacter::AIreneCharacter()
 	MainKeywordType = 0;
 	SubKeywordType = 0;
 
-	IsAttacking = false;
-	MaxCombo = 3;
+	CharacterDataStruct.IsAttacking = false;
+	CharacterDataStruct.MaxCombo = 3;
 	AttackEndComboState();
 	AttackWaitHandle.Invalidate();
-	AttackRange = 200.0f;
-	AttackRadius = 50.0f;
+	CharacterDataStruct.AttackRange = 200.0f;
+	CharacterDataStruct.AttackRadius = 50.0f;
 
 	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
 
@@ -153,9 +154,67 @@ void AIreneCharacter::BeginPlay()
 	{
 		Widget->BindCharacterAttribute(Attribute);
 	}
-	
+
 }
 
+void AIreneCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
+
+	IreneAnim->OnMontageEnded.AddDynamic(this, &AIreneCharacter::OnAttackMontageEnded);
+
+	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
+		{
+			CharacterDataStruct.CanNextCombo = false;
+
+			if (CharacterDataStruct.IsComboInputOn)
+			{
+				AttackStartComboState();
+				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+			}
+		});
+
+	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
+}
+
+#pragma endregion
+
+// Called every frame
+void AIreneCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+	// PlayerCharacterDataStruct.h의 상단 public에 할당 된 변수들로 인게임 수정 가능하게 해주는 기능
+	// 앞의 "//" 부분을 지워주고 에디터의 컴파일을 진행하고 플레이를 하고 인게임에서 값을 수정하면 바로 적용 됨
+	// 
+	//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
+
+	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	{
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
+			MoveForward();
+			MoveRight();
+		}
+	}
+	else
+	{
+		MoveAuto();
+	}
+	if (IsFallingRoll && !GetMovementComponent()->IsFalling())
+	{
+		//구르다가 땅에 도착
+		IsFallingRoll = false;
+		DashKeyword();
+	}
+	MoveStop();
+	if (CharacterDataStruct.IsInvincibility == true)
+		SetActorEnableCollision(false);
+
+}
+
+#pragma region Move
 void AIreneCharacter::MoveForward()
 {
 	// 0: 전진, 2: 후진
@@ -199,11 +258,11 @@ void AIreneCharacter::MoveRight()
 void AIreneCharacter::MoveStop()
 {
 	// 아무 키 입력이 없을 경우 정지 상태 지정
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") != 0 && 
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
-		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0) 
+		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 		{
 			ChangeStateAndLog(StateEnum::Idle);
 		}
@@ -219,7 +278,7 @@ void AIreneCharacter::MoveStop()
 }
 void AIreneCharacter::MoveAuto()
 {
-	if(MoveAutoDirection == FVector(0,0,0))
+	if (MoveAutoDirection == FVector(0, 0, 0))
 	{
 		// w키나 아무방향 없으면 정면으로 이동
 		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
@@ -242,7 +301,7 @@ void AIreneCharacter::MoveAuto()
 	}
 
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
-	if(GetMovementComponent()->IsFalling())
+	if (GetMovementComponent()->IsFalling())
 	{
 		CharacterDataStruct.MoveSpeed = 1.0f;
 		MoveAutoDirection = FVector(0, 0, 0);
@@ -250,7 +309,7 @@ void AIreneCharacter::MoveAuto()
 		CharacterState->setState(StateEnum::Jump);
 	}
 
-	if(strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
 		AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
 }
 
@@ -278,8 +337,8 @@ void AIreneCharacter::StartJump()
 		}
 		MoveAutoDirection.Normalize();
 		// 구한 방향의 반대 방향으로 힘을 가해서 점프 거리를 줄인다.
-		
-		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() /GetMovementComponent()->GetMaxSpeed()));
+
+		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() / GetMovementComponent()->GetMaxSpeed()));
 		bPressedJump = true;
 		ChangeStateAndLog(StateEnum::Jump);
 	}
@@ -387,7 +446,7 @@ void AIreneCharacter::MoveReleasedW()
 {
 	MoveKey[0] = 0;
 	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2) 
+	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
@@ -415,42 +474,21 @@ void AIreneCharacter::MoveReleasedD()
 		CharacterDataStruct.MoveSpeed = 1;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
+#pragma endregion
 
-void AIreneCharacter::ActionEndChangeMoveState()
-{
-	CharacterDataStruct.MoveSpeed = 1.0f;
-	MoveAutoDirection = FVector(0, 0, 0);
-
-	CharacterState->setState(StateEnum::Idle);
-	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Idle);
-	}
-	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
-	}
-	else
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
-	}
-}
-
+#pragma region Input
 void AIreneCharacter::Turn(float Rate)
 {
-	AddControllerYawInput(Rate);
+	AddControllerYawInput(Rate * CharacterDataStruct.EDPI);
 }
 void AIreneCharacter::LookUp(float Rate)
 {
-	AddControllerPitchInput(Rate);
+	AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
 }
 
 void AIreneCharacter::LeftButton(float Rate)
 {
-	if (Rate >= 1.0 && !AttackWaitHandle.IsValid()) 
+	if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
 	{
 		// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
 		float WaitTime = 0.15f;
@@ -460,26 +498,26 @@ void AIreneCharacter::LeftButton(float Rate)
 				AttackWaitHandle.Invalidate();
 			}), WaitTime, false);
 
-		if (IsAttacking)
+		if (CharacterDataStruct.IsAttacking)
 		{
-			if (CanNextCombo)
+			if (CharacterDataStruct.CanNextCombo)
 			{
-				IsComboInputOn = true;
+				CharacterDataStruct.IsComboInputOn = true;
 			}
 		}
 		else
 		{
 			AttackStartComboState();
 			IreneAnim->PlayAttackMontage();
-			IreneAnim->JumpToAttackMontageSection(CurrentCombo);
-			IsAttacking = true;
+			IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+			CharacterDataStruct.IsAttacking = true;
 		}
 	}
 }
 
 void AIreneCharacter::MouseWheel(float Rate)
 {
-	SpringArmComp->TargetArmLength += Rate * CharacterDataStruct.MouseWheelSpeed;
+	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
 	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, 50.0f, 400.0f);
 }
 
@@ -488,14 +526,14 @@ void AIreneCharacter::MainKeyword()
 	MainKeywordType++;
 	if (MainKeywordType >= 3)
 		MainKeywordType = 0;
-	switch(MainKeywordType)
+	switch (MainKeywordType)
 	{
 	case 0:
 		UE_LOG(LogTemp, Warning, TEXT("MainFire"));
 		break;
 	case 1:
 		UE_LOG(LogTemp, Warning, TEXT("MainWater"));
-		break; 
+		break;
 	case 2:
 		UE_LOG(LogTemp, Warning, TEXT("MainLightning"));
 		break;
@@ -553,7 +591,7 @@ void AIreneCharacter::DashKeyword()
 				}
 			}), WaitTime, false);
 	}
-	if(GetMovementComponent()->IsFalling())
+	if (GetMovementComponent()->IsFalling())
 	{
 		if (!IsFallingRoll)
 		{
@@ -582,61 +620,6 @@ void AIreneCharacter::DashKeyword()
 			MoveAutoDirection.Normalize();
 		}
 	}
-}
-
-// Called every frame
-void AIreneCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	// PlayerCharacterDataStruct.h의 상단 public에 할당 된 변수들로 인게임 수정 가능하게 해주는 기능
-	// 앞의 "//" 부분을 지워주고 에디터의 컴파일을 진행하고 플레이를 하고 인게임에서 값을 수정하면 바로 적용 됨
-	// 
-	//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
-
-	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
-	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
-			MoveForward();
-			MoveRight();
-		}
-	}
-	else
-	{
-		MoveAuto();
-	}
-	if (IsFallingRoll && !GetMovementComponent()->IsFalling())
-	{
-		//구르다가 땅에 도착
-		IsFallingRoll = false;
-		DashKeyword();
-	}
-	MoveStop();
-	if (CharacterDataStruct.IsInvincibility == true)
-		SetActorEnableCollision(false);
-	
-}
-
-void AIreneCharacter::PostInitializeComponents()
-{
-	Super::PostInitializeComponents();
-	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
-
-	IreneAnim->OnMontageEnded.AddDynamic(this, &AIreneCharacter::OnAttackMontageEnded);
-
-	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
-		{
-			CanNextCombo = false;
-
-			if (IsComboInputOn)
-			{
-				AttackStartComboState();
-				IreneAnim->JumpToAttackMontageSection(CurrentCombo);
-			}
-		});
-
-	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
 }
 
 // Called to bind functionality to input
@@ -684,46 +667,27 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 속성 변환 테스트
 	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
 }
+#pragma endregion
 
-EAttributeKeyword AIreneCharacter::GetAttribute()
-{
-	return Attribute;
-}
-
-float AIreneCharacter::GetATK()
-{
-	return CharacterDataStruct.ATK;
-}
-
-void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
-{
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
-	{
-		CharacterState->setState(newState);
-
-		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
-	}
-}
-
+#pragma region Attack
 void AIreneCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
-	IsAttacking = false;
+	CharacterDataStruct.IsAttacking = false;
 	AttackEndComboState();
 }
 
 void AIreneCharacter::AttackStartComboState()
 {
-	CanNextCombo = true;
-	IsComboInputOn = false;
-	CurrentCombo = FMath::Clamp<int32>(CurrentCombo + 1, 1, MaxCombo);
+	CharacterDataStruct.CanNextCombo = true;
+	CharacterDataStruct.IsComboInputOn = false;
+	CharacterDataStruct.CurrentCombo = FMath::Clamp<int32>(CharacterDataStruct.CurrentCombo + 1, 1, CharacterDataStruct.MaxCombo);
 }
 
 void AIreneCharacter::AttackEndComboState()
 {
-	CanNextCombo = false;
-	IsComboInputOn = false;
-	CurrentCombo = 0;
+	CharacterDataStruct.CanNextCombo = false;
+	CharacterDataStruct.IsComboInputOn = false;
+	CharacterDataStruct.CurrentCombo = 0;
 }
 
 void AIreneCharacter::AttackCheck()
@@ -741,9 +705,9 @@ void AIreneCharacter::AttackCheck()
 
 #if ENABLE_DRAW_DEBUG
 
-	FVector TraceVec = GetActorForwardVector() * AttackRange;
+	FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
-	float HalfHeight = AttackRange * 0.5f + AttackRadius;
+	float HalfHeight = CharacterDataStruct.AttackRange * 0.5f + CharacterDataStruct.AttackRadius;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 	float DebugLifeTime = 5.0f;
@@ -751,16 +715,16 @@ void AIreneCharacter::AttackCheck()
 	DrawDebugCapsule(GetWorld(),
 		Center,
 		HalfHeight,
-		AttackRadius,
+		CharacterDataStruct.AttackRadius,
 		CapsuleRot,
 		DrawColor,
 		false,
 		DebugLifeTime);
 #endif
 
-	if(bResult)
+	if (bResult)
 	{
-		if(HitResult.Actor.IsValid())
+		if (HitResult.Actor.IsValid())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Hit Actor Name : %s"), *HitResult.Actor->GetName());
 
@@ -769,7 +733,55 @@ void AIreneCharacter::AttackCheck()
 		}
 	}
 }
+#pragma endregion
 
+#pragma region State
+void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
+{
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	{
+		CharacterState->setState(newState);
+
+		FString str = CharacterState->StateEnumToString(CharacterState->getState());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+	}
+}
+
+void AIreneCharacter::ActionEndChangeMoveState()
+{
+	CharacterDataStruct.MoveSpeed = 1.0f;
+	MoveAutoDirection = FVector(0, 0, 0);
+
+	CharacterState->setState(StateEnum::Idle);
+	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
+		ChangeStateAndLog(StateEnum::Idle);
+	}
+	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 600;
+		ChangeStateAndLog(StateEnum::Run);
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 300;
+		ChangeStateAndLog(StateEnum::Walk);
+	}
+}
+#pragma endregion
+
+// 박찬영 코드
+#pragma region Park
+EAttributeKeyword AIreneCharacter::GetAttribute()
+{
+	return Attribute;
+}
+
+float AIreneCharacter::GetATK()
+{
+	return CharacterDataStruct.ATK;
+}
 //박찬영
 //스탑워치 컨트롤 함수
 //void AIreneCharacter::WatchContorl()
@@ -788,7 +800,7 @@ void AIreneCharacter::AttributeChange()
 
 	switch (Attribute)
 	{
-	
+
 	case EAttributeKeyword::e_Fire:
 		Attribute = EAttributeKeyword::e_Water;
 
@@ -810,3 +822,5 @@ void AIreneCharacter::AttributeChange()
 		Widget->BindCharacterAttribute(Attribute);
 	}
 }
+#pragma endregion
+

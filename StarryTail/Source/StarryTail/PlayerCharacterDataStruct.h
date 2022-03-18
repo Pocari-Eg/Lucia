@@ -51,4 +51,24 @@ public:
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MouseWheelSpeed = 10.0f;
+
+	// 마우스 감도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EDPI = 1.0f;
+public:
+	// 공격 관련 변수들
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	bool IsAttacking;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	bool CanNextCombo;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	bool IsComboInputOn;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	int32 CurrentCombo;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	int32 MaxCombo;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	float AttackRange;
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	float AttackRadius;
 };
