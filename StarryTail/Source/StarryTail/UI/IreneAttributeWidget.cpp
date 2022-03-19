@@ -5,5 +5,6 @@
 
 void UIreneAttributeWidget::BindCharacterAttribute(EAttributeKeyword Attribute)
 {
+ 
 	CurrentAttribute = Attribute;
 }
