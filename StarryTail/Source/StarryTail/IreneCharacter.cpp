@@ -52,6 +52,18 @@ AIreneCharacter::AIreneCharacter()
 		}
 	}
 
+	// 콜라이더 설정
+	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+	FindMonsterCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindMonster"));
+	FindMonsterCollsion->SetupAttachment(GetCapsuleComponent());
+	FindMonsterCollsion->SetRelativeLocation(FVector(300, 0, 0));
+	FindMonsterCollsion->SetBoxExtent(FVector(300.0f, 300.0f, 100.0f));
+
+	FindTargetCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindTarget"));
+	FindTargetCollsion->SetupAttachment(GetCapsuleComponent());
+	FindTargetCollsion->SetRelativeLocation(FVector(100, 0, 0));
+	FindTargetCollsion->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
+
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
@@ -75,10 +87,7 @@ AIreneCharacter::AIreneCharacter()
 	GetCharacterMovement()->JumpZVelocity = 800.0f;
 
 	// 기본 최대 이동속도
-	GetCharacterMovement()->MaxWalkSpeed = 300.0f;
-
-	// 캡슐 사이즈 설정
-	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
 
 	// 플레이어 스폰 시 기본 제어 설정
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -217,7 +226,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 void AIreneCharacter::MoveForward()
 {
 	// 0: 전진, 2: 후진
-	if (MoveKey[0] != 0)
+	if (MoveKey[0] != 0 && MoveKey[0] < 3)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -225,7 +234,7 @@ void AIreneCharacter::MoveForward()
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 		AddMovementInput(Direction, CharacterDataStruct.MoveSpeed);
 	}
-	if (MoveKey[2] != 0)
+	if (MoveKey[2] != 0 && MoveKey[2] < 3)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -237,7 +246,7 @@ void AIreneCharacter::MoveForward()
 void AIreneCharacter::MoveRight()
 {
 	// 1: 좌측, 3: 우측
-	if (MoveKey[1] != 0)
+	if (MoveKey[1] != 0 && MoveKey[1] < 3)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -245,7 +254,7 @@ void AIreneCharacter::MoveRight()
 		const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 		AddMovementInput(Direction * -1, CharacterDataStruct.MoveSpeed);
 	}
-	if (MoveKey[3] != 0)
+	if (MoveKey[3] != 0 && MoveKey[3] < 3)
 	{
 		const FRotator Rotation = Controller->GetControlRotation();
 		const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -335,9 +344,9 @@ void AIreneCharacter::StartJump()
 			Direction += GetActorRightVector();
 		}
 		MoveAutoDirection.Normalize();
-		// 구한 방향의 반대 방향으로 힘을 가해서 점프 거리를 줄인다.
 
-		GetCharacterMovement()->AddImpulse(Direction * -1 * CharacterDataStruct.JumpDistance * (GetMovementComponent()->Velocity.Size() / GetMovementComponent()->GetMaxSpeed()));
+		GetMovementComponent()->Velocity = FVector(0, 0, 0);
+
 		bPressedJump = true;
 		ChangeStateAndLog(StateEnum::Jump);
 	}
@@ -349,95 +358,136 @@ void AIreneCharacter::StopJump()
 
 void AIreneCharacter::MovePressedW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600;
+			ChangeStateAndLog(StateEnum::Run);
+		}
+		MoveKey[0] = 1;
 	}
-	MoveKey[0] = 1;
+	else
+		MoveKey[0] = 3;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600;
+			ChangeStateAndLog(StateEnum::Run);
+		}
+		MoveKey[1] = 1;
 	}
-	MoveKey[1] = 1;
+	else
+		MoveKey[1] = 3;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600;
+			ChangeStateAndLog(StateEnum::Run);
+		}
+		MoveKey[2] = 1;
 	}
-	MoveKey[2] = 1;
+	else
+		MoveKey[2] = 3;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MovePressedD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 600;
+			ChangeStateAndLog(StateEnum::Run);
+		}
+		MoveKey[3] = 1;
 	}
-	MoveKey[3] = 1;
+	else
+		MoveKey[3] = 3;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 
 void AIreneCharacter::MoveDoubleClickW()
 {
-	MoveKey[0] = 2;
-
-	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
-		CharacterDataStruct.MoveSpeed = 2;
+		MoveKey[0] = 2;
+
+		// 점프 중 달리기 금지
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 1200;
+			ChangeStateAndLog(StateEnum::Sprint);
+			CharacterDataStruct.MoveSpeed = 2;
+		}
 	}
+	else
+		MoveKey[0] = 4;
+
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickA()
 {
-	MoveKey[1] = 2;
-
-	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
-		CharacterDataStruct.MoveSpeed = 2;
+		MoveKey[1] = 2;
+
+		// 점프 중 달리기 금지
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 1200;
+			ChangeStateAndLog(StateEnum::Sprint);
+			CharacterDataStruct.MoveSpeed = 2;
+		}
 	}
+	else
+		MoveKey[1] = 4;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickS()
 {
-	MoveKey[2] = 2;
-
-	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
-		CharacterDataStruct.MoveSpeed = 2;
+		MoveKey[2] = 2;
+
+		// 점프 중 달리기 금지
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 1200;
+			ChangeStateAndLog(StateEnum::Sprint);
+			CharacterDataStruct.MoveSpeed = 2;
+		}
 	}
+	else
+		MoveKey[2] = 4;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 void AIreneCharacter::MoveDoubleClickD()
 {
-	MoveKey[3] = 2;
-
-	// 점프 중 달리기 금지
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
-		CharacterDataStruct.MoveSpeed = 2;
+		MoveKey[3] = 2;
+
+		// 점프 중 달리기 금지
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+		{
+			GetCharacterMovement()->MaxWalkSpeed = 1200;
+			ChangeStateAndLog(StateEnum::Sprint);
+			CharacterDataStruct.MoveSpeed = 2;
+		}
 	}
+	else
+		MoveKey[3] = 4;
 	//GetCharacterMovement()->JumpZVelocity = 600.0f * CharacterDataStruct.MoveSpeed;
 }
 
@@ -579,7 +629,7 @@ void AIreneCharacter::DashKeyword()
 		ChangeStateAndLog(StateEnum::Dash);
 
 		float WaitTime = 1.5f; //시간을 설정
-		CharacterDataStruct.MoveSpeed = 30.0f; // 대쉬 속도 설정
+		GetCharacterMovement()->MaxWalkSpeed = 1200;
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
@@ -595,8 +645,8 @@ void AIreneCharacter::DashKeyword()
 		if (!IsFallingRoll)
 		{
 			IsFallingRoll = true;
-			int32 FallingPower = 500000;
-			GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
+			//int32 FallingPower = 500000;
+			//GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
 
 			MoveAutoDirection.ZeroVector;
 			// w키나 아무방향 없으면 정면으로 이동
@@ -734,6 +784,40 @@ void AIreneCharacter::AttackCheck()
 }
 #pragma endregion
 
+#pragma region Collision
+void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	if (OtherActor->FindComponentByClass<UCapsuleComponent>())
+	{
+		FString aa = OtherActor->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName().ToString();
+		FString bb = "Enemy";
+		if (aa == bb)
+		{
+			if (FindMonsterCollsion->IsOverlappingActor(OtherActor))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("FindMonsterCollsion"));
+			}
+			if (FindTargetCollsion->IsOverlappingActor(OtherActor))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("FindTargetCollsion"));
+			}
+		}
+	}
+}
+void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
+{
+	if (OtherActor->FindComponentByClass<UCapsuleComponent>())
+	{
+		FString aa = OtherActor->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName().ToString();
+		FString bb = "Enemy";
+		if (aa == bb)
+		{
+			//UE_LOG(LogTemp, Warning, TEXT("lol"));
+		}
+	}
+}
+#pragma endregion
+
 #pragma region State
 void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 {
@@ -751,21 +835,30 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	CharacterDataStruct.MoveSpeed = 1.0f;
 	MoveAutoDirection = FVector(0, 0, 0);
 
+	if (MoveKey[0] > 2)
+		MoveKey[0] -= 2;
+	if (MoveKey[1] > 2)
+		MoveKey[1] -= 2;
+	if (MoveKey[2] > 2)
+		MoveKey[2] -= 2;
+	if (MoveKey[3] > 2)
+		MoveKey[3] -= 2;
+
 	CharacterState->setState(StateEnum::Idle);
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
+		GetCharacterMovement()->MaxWalkSpeed = 600;
 		ChangeStateAndLog(StateEnum::Idle);
 	}
 	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
-		ChangeStateAndLog(StateEnum::Run);
+		GetCharacterMovement()->MaxWalkSpeed = 1200;
+		ChangeStateAndLog(StateEnum::Sprint);
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 300;
-		ChangeStateAndLog(StateEnum::Walk);
+		GetCharacterMovement()->MaxWalkSpeed = 600;
+		ChangeStateAndLog(StateEnum::Run);
 	}
 }
 #pragma endregion

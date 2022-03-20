@@ -5,8 +5,8 @@
 enum class StateEnum {
 	Idle = 0,
 	AttackIdle,
-	Walk,
 	Run,
+	Sprint,
 	Dash,
 	Jump,
 	Attack,
