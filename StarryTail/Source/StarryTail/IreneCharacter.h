@@ -66,16 +66,15 @@ private:
 
 	FTimerHandle AttackWaitHandle;
 
-
+	// 박찬영 ***************************************
+//스탑워치
+	//AStopWatch* StopWatch;
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
-
-	//스탑워치
-	//AStopWatch* StopWatch;
 
 public:
 	// Sets default values for this character's properties
@@ -89,7 +88,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-
+	///박찬영 ==================
 	//속성 반환
 	EAttributeKeyword GetAttribute();
 	//공격력 반환
@@ -152,12 +151,10 @@ private:
 	void AttackEndComboState();
 	void AttackCheck();
 
-	//속성 변환
-	void AttributeChange();
-
+	//박찬영 ============
 //스탑워치 
 	//void WatchContorl();
 	//void WatchReset();
-
-
+	//속성 변환
+	void AttributeChange();
 };

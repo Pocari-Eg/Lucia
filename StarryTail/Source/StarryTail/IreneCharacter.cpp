@@ -121,6 +121,7 @@ AIreneCharacter::AIreneCharacter()
 	// 초기 공격력
 	CharacterDataStruct.ATK = 20.0f;
 
+	//박찬영
 	//초기 속성
 	Attribute = EAttributeKeyword::e_Fire;
 
@@ -143,10 +144,10 @@ void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//박찬영
 	//스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
-
 	// 속성 위젯에 속성값 설정
 	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
 	if (nullptr != Widget)
@@ -781,6 +782,17 @@ float AIreneCharacter::GetATK()
 {
 	return CharacterDataStruct.ATK;
 }
+//박찬영
+//스탑워치 컨트롤 함수
+//void AIreneCharacter::WatchContorl()
+//{
+//	StopWatch->WatchControl();
+//}
+//
+//void AIreneCharacter::WatchReset()
+//{
+//	StopWatch->WatchReset();
+//}
 
 void AIreneCharacter::AttributeChange()
 {
@@ -812,15 +824,3 @@ void AIreneCharacter::AttributeChange()
 }
 #pragma endregion
 
-#pragma region StopWatch
-//스탑워치 컨트롤 함수
-//void AIreneCharacter::WatchContorl()
-//{
-//	StopWatch->WatchControl();
-//}
-//
-//void AIreneCharacter::WatchReset()
-//{
-//	StopWatch->WatchReset();
-//}
-#pragma endregion
