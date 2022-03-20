@@ -6,14 +6,6 @@
 #include "AIController.h"
 #include "EnemyController.generated.h"
 
-/*
- 원거리 공격 이펙트 - RangedAttackEffect
- 근거리, 원거리, 돌진 공격 별 충돌체
- 몬스터의 스폰 위치 - SpawnPos
- 원거리 공격 횟수 - RangedAttackCount o
- 원거리 공격 사거리 - RangedAttackRange o
- 근거리 공격 사거리 - MeleeAttackRange o
- */
 UCLASS()
 class STARRYTAIL_API AEnemyController : public AAIController
 {
