@@ -36,7 +36,13 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
 
-	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기
+	// 충돌체
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* FindMonsterCollsion;
+	UPROPERTY(VisibleAnywhere)
+	UBoxComponent* FindTargetCollsion;
+
+	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
 	UPROPERTY(EditAnywhere)
 	TArray<uint8> MoveKey;
 	
@@ -65,7 +71,6 @@ private:
 	class UIreneAnimInstance* IreneAnim;
 
 	FTimerHandle AttackWaitHandle;
-
 
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
@@ -151,6 +156,10 @@ private:
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackCheck();
+
+	// 곂침 충돌 처리
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 
 	//속성 변환
 	void AttributeChange();
