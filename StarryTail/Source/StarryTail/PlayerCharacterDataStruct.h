@@ -39,14 +39,13 @@ public:
 	// 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float HP;
+	// 마나
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MP;
 
 	// 이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 1.0f;
-
-	// 점프 거리 반대 힘
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpDistance = 27000.0f;
 
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
