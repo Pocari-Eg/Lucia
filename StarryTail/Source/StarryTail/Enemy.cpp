@@ -18,12 +18,17 @@ AEnemy::AEnemy()
 	AIControllerClass = AEnemyController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	/* 성공시 삭제
 	if (ParticleAsset == nullptr)
 	{
-		ParticleAsset = LoadObject<UParticleSystem>(this, TEXT("/Game/StaerterContent/Particles/P_Fire"));
+		STARRYLOG(Warning, TEXT("ParticleAsset is empty, SetDefaultEffect : P_Fire"));
+		static ConstructorHelpers::FObjectFinder<UParticleSystem> ParticleEffect(TEXT("/Game/StarterContent/Particles/P_Fire"));
+
+		if (ParticleEffect.Succeeded())
+		{
+			ParticleAsset = ParticleEffect.Object;
+		}
 	}
-	*/
+	
 	
 	//=====박찬영
 	// 

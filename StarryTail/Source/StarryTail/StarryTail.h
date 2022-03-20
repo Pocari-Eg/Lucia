@@ -11,7 +11,6 @@ DECLARE_LOG_CATEGORY_EXTERN(StarryTail, Log, All);
 
 #define STARRYCHECK(Expr, ...) {if(!(Expr)) {STARRYLOG(Error, TEXT("ASSERTION : %s"), TEXT("'"#Expr"'")); return __VA_ARGS__;}}
 
-
 UENUM(BluePrintType)
 enum class  EAttributeKeyword :uint8
 {
