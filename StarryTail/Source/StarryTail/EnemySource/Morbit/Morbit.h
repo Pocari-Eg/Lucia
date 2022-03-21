@@ -32,16 +32,19 @@ public:
 	FAttackedEndDelegate AttackedEnd;
 private:
 	//override Function
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
-	void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
-	void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-
 	void InitMonsterInfo() override;
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
 
 	//Function
+	UFUNCTION()
+	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		virtual void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+	UFUNCTION()
+		virtual void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 	// void CalcDamage(EAttributeKeyword PlayerAttribute, float Damage);
 	
 	//Variable

@@ -55,12 +55,10 @@ AIreneCharacter::AIreneCharacter()
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 	FindMonsterCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindMonster"));
-	FindMonsterCollsion->SetupAttachment(GetCapsuleComponent());
 	FindMonsterCollsion->SetRelativeLocation(FVector(300, 0, 0));
 	FindMonsterCollsion->SetBoxExtent(FVector(300.0f, 300.0f, 100.0f));
 
 	FindTargetCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindTarget"));
-	FindTargetCollsion->SetupAttachment(GetCapsuleComponent());
 	FindTargetCollsion->SetRelativeLocation(FVector(100, 0, 0));
 	FindTargetCollsion->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
 

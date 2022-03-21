@@ -130,12 +130,34 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 	if (bTestMode)
 		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
 
+	FString FindName = "CollisionCylinder";
+	FString ElemName;
+
+	bool IsFind = false;
+	for (auto& Elem : OtherActor->GetComponents())
+	{
+		ElemName = Elem->GetName();
+		if (ElemName == FindName)
+		{
+			IsFind = true;
+			break;
+		}
+	}
+
+	if (!IsFind)
+	{
+		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
+		return;
+	}
+	
+
 	auto Player = Cast<AIreneCharacter>(OtherActor);
 	if (nullptr == Player)
 	{
 		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
 		return;
 	}
+	STARRYLOG(Log, TEXT("Find Player"));
 
 	auto MbAIController = Cast<AMbAIController>(GetController());
 	if (nullptr == MbAIController)
