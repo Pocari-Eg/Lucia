@@ -39,7 +39,7 @@ private:
 
 	//Function
 	UFUNCTION()
-	virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+		virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
 		virtual void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	UFUNCTION()
@@ -51,15 +51,15 @@ private:
 
 public:
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	virtual void PossessedBy(AController* NewController) override;
-
-	virtual void PostInitializeComponents() override;
+	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+	void BeginPlay() override;
+
+	void PossessedBy(AController* NewController) override;
+
+	void PostInitializeComponents() override;
 };

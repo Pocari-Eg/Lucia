@@ -95,6 +95,15 @@ void AMonster::BeginPlay()
 	Super::BeginPlay();
 	
 }
+void AMonster::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+}
+void AMonster::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+}
 
 // Called every frame
 void AMonster::Tick(float DeltaTime)
@@ -107,5 +116,5 @@ void AMonster::Tick(float DeltaTime)
 void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
+	
 }

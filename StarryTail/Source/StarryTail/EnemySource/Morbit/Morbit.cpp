@@ -210,13 +210,12 @@ void AMorbit::PossessedBy(AController* NewController)
 void AMorbit::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
 	MonsterAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
 	//애니메이션 몽타주 종료시 호출
-	if(bIsAttacking)
-		MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackMontageEnded);
-	if (bIsAttacked)
-		MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
+	MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackMontageEnded);
+	MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
 	//피격시 호출
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMorbit::OnAttacked);
 }
