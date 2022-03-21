@@ -2,7 +2,7 @@
 
 
 #include "HPBarWidget.h"
-#include "../TestObject.h"
+#include "../Object/TestObject.h"
 #include "Components/ProgressBar.h"
 
 void UHPBarWidget::BindObjectHp(class ATestObject* NewObject)
