@@ -39,10 +39,4 @@ private:
 		class UBehaviorTree* BTAsset;
 	UPROPERTY()
 		class UBlackboardData* BBAsset;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
-	float MeleeAttackRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Trace, Meta = (AllowPrivateAccess = true))
-	float TraceRange;
-
 };
