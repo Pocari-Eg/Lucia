@@ -2,20 +2,20 @@
 
 #pragma once
 
-#include "StarryTail.h"
+#include "../StarryTail.h"
 #include "GameFramework/Actor.h"
 //초기 설정 관련
 #include <Engine/Classes/Components/CapsuleComponent.h>
 #include <Engine/Classes/Components/BoxComponent.h> // 테스트
-#include "IreneCharacter.h"
+#include "../IreneCharacter.h"
 
 //UI 관련
-#include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
-#include "UI/HPBarWidget.h"
+#include "../UI/IreneAttributeWidget.h"
+#include "../UI/HPBarWidget.h"
 
 //소환 객체
-#include "Enemy.h"
+#include "../Enemy.h"
 
 #include "TestObject.generated.h"
 
