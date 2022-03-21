@@ -22,14 +22,6 @@ public:
 	float GetMeleeAttackRange();
 	float GetTraceRange();
 protected:
-	//Virtual Function
-	UFUNCTION()
-		virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) {};
-	UFUNCTION()
-		virtual void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted) {};
-	UFUNCTION()
-		virtual void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) {};
-
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
 	virtual void InitMesh() {};
@@ -64,4 +56,5 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 };
