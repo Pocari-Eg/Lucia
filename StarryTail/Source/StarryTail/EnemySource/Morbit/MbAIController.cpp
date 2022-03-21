@@ -2,6 +2,7 @@
 
 #include "MbAIController.h"
 #include "../../StarryTail.h"
+#include "Morbit.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -34,11 +35,6 @@ AMbAIController::AMbAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
-
-	MeleeAttackRange = 100.0f;
-	TraceRange = 1000.0f;
-
-	
 }
 
 void AMbAIController::OnPossess(APawn* InPawn)
@@ -48,9 +44,11 @@ void AMbAIController::OnPossess(APawn* InPawn)
 	if (UseBlackboard(BBAsset, Blackboard))
 	{
 		// 스폰 위치 저장
+		auto Morbit = Cast<AMorbit>(InPawn);
+
 		Blackboard->SetValueAsVector(SpawnPosKey, InPawn->GetActorLocation());
-		Blackboard->SetValueAsFloat(MeleeAttackRangeKey, MeleeAttackRange);
-		Blackboard->SetValueAsFloat(TraceRangeKey, TraceRange);
+		Blackboard->SetValueAsFloat(MeleeAttackRangeKey, Morbit->GetMeleeAttackRange());
+		Blackboard->SetValueAsFloat(TraceRangeKey, Morbit->GetTraceRange());
 		if (!RunBehaviorTree(BTAsset))
 		{
 			STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));

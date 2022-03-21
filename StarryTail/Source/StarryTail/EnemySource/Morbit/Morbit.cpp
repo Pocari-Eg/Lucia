@@ -15,7 +15,7 @@ AMorbit::AMorbit()
 	AIControllerClass = AMbAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	InitMorbitInfo();
+	InitMonsterInfo();
 
 	InitCollision();
 	InitMesh();
@@ -23,23 +23,25 @@ AMorbit::AMorbit()
 
 	bTestMode = false;
 }
-
-void AMorbit::InitMorbitInfo()
+#pragma region Init
+void AMorbit::InitMonsterInfo()
 {	
-	MorbitInfo.Name = FName(TEXT("M_Mb"));
-	MorbitInfo.Hp = 100.0f;
-	MorbitInfo.Atk = 100.0f;
-	MorbitInfo.Def = 100.0f;
+	MonsterInfo.Name = FName(TEXT("M_Mb"));
+	MonsterInfo.Hp = 100.0f;
+	MonsterInfo.Atk = 100.0f;
+	MonsterInfo.Def = 100.0f;
 
 	AttributeDef.Normal = 80.0f;
 	AttributeDef.Pyro = 15.0f;
 	AttributeDef.Hydro = 0.0f;
 	AttributeDef.Electro = 5.0f;
 
-	MorbitInfo.MoveSpeed = 100.0f;
-	MorbitInfo.BattleWalkMoveSpeed = 150.0f;
-	MorbitInfo.ViewAngle = 120.0f;
-	MorbitInfo.ViewRange = 200.0f;
+	MonsterInfo.MoveSpeed = 100.0f;
+	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
+	MonsterInfo.ViewAngle = 120.0f;
+	MonsterInfo.ViewRange = 200.0f;
+	MonsterInfo.MeleeAttackRange = 100.0f;
+	MonsterInfo.TraceRange = 1000.0f;
 }
 void AMorbit::InitCollision()
 {
@@ -71,98 +73,29 @@ void AMorbit::InitAnime()
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);
 	}
 }
-//error code
-
-void AMorbit::CalcAttributeDefType()
-{
-	TMap<EAttributeKeyword, float> AttributeDefMap;
-
-	TArray<float> DefList;
-
-	AttributeDefMap.Add(EAttributeKeyword::e_None, AttributeDef.Normal);
-	AttributeDefMap.Add(EAttributeKeyword::e_Fire, AttributeDef.Pyro);
-	AttributeDefMap.Add(EAttributeKeyword::e_Water, AttributeDef.Hydro);
-	AttributeDefMap.Add(EAttributeKeyword::e_Thunder, AttributeDef.Electro);
-	
-	AttributeDefMap.ValueSort([](float A, float B) {
-		return A > B;
-		});
-	for (auto& Elem : AttributeDefMap)
-	{
-		//log
-		if (bTestMode)
-		{
-			STARRYLOG(Warning, TEXT("AttributeDef : %f"), Elem.Value);
-		}
-		DefList.Add(Elem.Value);
-	}
-	MorbitInfo.MainAttributeDef.Add(AttributeDefMap.begin().Key());
-
-	for (auto Elem : DefList)
-	{
-		//속성 방어력이 같은지
-		if (DefList[0] == Elem)
-		{
-			//같은 요소가 있다면 등록된 맵을 돌면서 모든 Value값을 체크
-			for (auto& Map : AttributeDefMap)
-			{
-				if (Map.Value == Elem)
-				{
-					//log
-					if (bTestMode)
-					{
-						switch (Map.Key)
-						{
-						case EAttributeKeyword::e_None:
-							STARRYLOG(Log, TEXT("MainAttributeDef : Normal"));
-							break;
-						case EAttributeKeyword::e_Fire:
-							STARRYLOG(Log, TEXT("MainAttributeDef : Pyro"));
-							break;
-						case EAttributeKeyword::e_Water:
-							STARRYLOG(Log, TEXT("MainAttributeDef : Hydro"));
-							break;
-						case EAttributeKeyword::e_Thunder:
-							STARRYLOG(Log, TEXT("MainAttributeDef : Electro"));
-							break;
-						}
-					}
-					if (Map.Key == AttributeDefMap.begin().Key())
-						continue;
-					MorbitInfo.MainAttributeDef.Add(Map.Key);
-				}
-			}
-			//모든 Value값을 체크했기 때문에 실행종료
-			DefList.Empty();
-			AttributeDefMap.Empty();
-			return;
-		}
-	}
-
-	DefList.Empty();
-	AttributeDefMap.Empty();
-}
-
+#pragma endregion
+#pragma region GetValue
 bool AMorbit::GetTestMode()
 {
 	return bTestMode;
 }
 float AMorbit::GetViewAngle()
 {
-	return MorbitInfo.ViewAngle;
+	return MonsterInfo.ViewAngle;
 }
 float AMorbit::GetViewRange()
 {
-	return MorbitInfo.ViewRange;
+	return MonsterInfo.ViewRange;
 }
-
+#pragma endregion
+#pragma region CalledbyBBT
 void AMorbit::Walk()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MorbitInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
 }
 void AMorbit::BattleWalk()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MorbitInfo.BattleWalkMoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
 }
 void AMorbit::BattleIdle()
 {
@@ -173,11 +106,50 @@ void AMorbit::Attack()
 	if (bIsAttacking)
 		return;
 
-	MorbitAnimInstance->PlayMeleeAttackMontage();
+	MonsterAnimInstance->PlayMeleeAttackMontage();
 
 	bIsAttacking = true;
 }
+#pragma endregion
+#pragma region CalledbyDelegate
+void AMorbit::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bIsAttacking = false;
 
+	AttackEnd.Broadcast();
+}
+void AMorbit::OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bIsAttacked = false;
+
+	AttackedEnd.Broadcast();
+}
+void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	//액터 이름 확인
+	if (bTestMode)
+		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
+
+	auto Player = Cast<AIreneCharacter>(OtherActor);
+	if (nullptr == Player)
+	{
+		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
+		return;
+	}
+
+	auto MbAIController = Cast<AMbAIController>(GetController());
+	if (nullptr == MbAIController)
+	{
+		STARRYLOG(Warning, TEXT("Failed Load MbAIController"));
+		return;
+	}
+
+	MbAIController->Attacked(Player);
+
+	bIsAttacked = true;
+	// CalcDamage(Player->GetAttribute(), Player->GetATK());
+}
+#pragma endregion
 
 // Called when the game starts or when spawned
 void AMorbit::BeginPlay()
@@ -210,57 +182,19 @@ void AMorbit::PossessedBy(AController* NewController)
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
-	GetCharacterMovement()->MaxWalkSpeed = MorbitInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
 }
 
 void AMorbit::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
-	MorbitAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	MonsterAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
 
 	//애니메이션 몽타주 종료시 호출
 	if(bIsAttacking)
-		MorbitAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackMontageEnded);
+		MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackMontageEnded);
 	if (bIsAttacked)
-		MorbitAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
+		MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
 	//피격시 호출
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMorbit::OnAttacked);
-}
-
-void AMorbit::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsAttacking = false;
-
-	AttackEnd.Broadcast();
-}
-void AMorbit::OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsAttacked = false;
-	
-	AttackedEnd.Broadcast();
-}
-void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	//액터 이름 확인
-	if(bTestMode)
-		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
-
-	auto Player = Cast<AIreneCharacter>(OtherActor);
-	if (nullptr == Player)
-	{
-		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
-		return;
-	}
-
-	auto MbAIController = Cast<AMbAIController>(GetController());
-	if (nullptr == MbAIController)
-	{
-		STARRYLOG(Warning, TEXT("Failed Load MbAIController"));
-		return;
-	}
-
-	MbAIController->Attacked(Player);
-
-	bIsAttacked = true;
-	// CalcDamage(Player->GetAttribute(), Player->GetATK());
 }

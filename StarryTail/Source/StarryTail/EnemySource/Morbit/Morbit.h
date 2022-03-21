@@ -3,17 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "../Struct/FNormalMonsterInfo.h"
-#include "../Struct/FAttributeDefence.h"
-#include "../../StarryTail.h"
-#include "GameFramework/Character.h"
+#include "../Monster.h"
 #include "Morbit.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 
 UCLASS()
-class STARRYTAIL_API AMorbit : public ACharacter
+class STARRYTAIL_API AMorbit : public AMonster
 {
 	GENERATED_BODY()
 
@@ -33,11 +30,23 @@ public:
 
 	FAttackEndDelegate AttackEnd;
 	FAttackedEndDelegate AttackedEnd;
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
+private:
+	//override Function
+	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
+	void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted) override;
+	void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 
-public:	
+	void InitMonsterInfo() override;
+	void InitCollision() override;
+	void InitMesh() override;
+	void InitAnime() override;
+
+	//Function
+	// void CalcDamage(EAttributeKeyword PlayerAttribute, float Damage);
+	
+	//Variable
+
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -47,37 +56,7 @@ public:
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void PostInitializeComponents() override;
-
-private:
-	UFUNCTION()
-		void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	UFUNCTION()
-		void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	UFUNCTION()
-		void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
-	void InitMorbitInfo();
-	void InitCollision();
-	void InitMesh();
-	void InitAnime();
-	void CalcAttributeDefType();
-
-	// void CalcDamage(EAttributeKeyword PlayerAttribute, float Damage);
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
-		bool bTestMode;
-
-	UPROPERTY(VisibleAnywhere, Category = Collision, Meta = (AllowPrivateAccess = true))
-		class UCapsuleComponent* Collision;
-
-	//애니메이션 리소스 생길 시 변경
-	UPROPERTY()
-		class UEnemyAnimInstance* MorbitAnimInstance;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		FNormalMonsterInfo MorbitInfo;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		FAttributeDefence AttributeDef;
-
-	bool bIsAttacking;
-	bool bIsAttacked;
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 };
