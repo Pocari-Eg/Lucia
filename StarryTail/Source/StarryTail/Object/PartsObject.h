@@ -39,10 +39,10 @@ class STARRYTAIL_API APartsObject : public AActor
 
 	//상하 움직임 거리
 	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = Platform)
-	float ZMovmentDistance;
+	float ZMovementDistance;
 	//상하 움직임 속도
 	UPROPERTY(EditAnywhere, BluePrintReadOnly, Category = Platform)
-	float ZMovmentSpeed;
+	float ZMovementSpeed;
 	//상하 움직임을 할것인지
 	UPROPERTY(BluePrintReadOnly, Category = Platform)
 	bool ZMoving;
@@ -66,7 +66,7 @@ private:
 	//경로 시작 위치
 	FVector InitSplineLocation;
 	//상하 움직임 속도 저장
-	float InitZMovmentSpeed;
+	float InitZMovementSpeed;
 
 	//트리거 재사용시 사용 제한 시간 저장
 	int32 InitTriggerTime;

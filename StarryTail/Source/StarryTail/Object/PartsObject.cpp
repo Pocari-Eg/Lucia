@@ -26,8 +26,8 @@ APartsObject::APartsObject()
 	Percent = 0.0f;
 	Time = 0.016;
 
-	ZMovmentSpeed = 1.0f;
-	ZMovmentDistance = 1.0f;
+	ZMovementSpeed = 1.0f;
+	ZMovementDistance = 1.0f;
 
 
 	ZMoving = true;
@@ -49,7 +49,7 @@ void APartsObject::BeginPlay()
 	Super::BeginPlay();
 	//초기 설정값 저장 
 	InitSplineLocation = Track->GetLocationAtSplinePoint(0, ESplineCoordinateSpace::Local);
-	InitZMovmentSpeed = ZMovmentSpeed;
+	InitZMovementSpeed = ZMovementSpeed;
 	InitTriggerTime = TriggerTime;
 }
 
@@ -58,7 +58,7 @@ void APartsObject::ForwardMove(APartsTrigger* Trigger)
 {
 	PartsTrigger = Trigger;
 	//상하 움직임을 멈춤
-	ZMovmentSpeed = 0.0f;
+	ZMovementSpeed = 0.0f;
 	ZMoving = false;
 	//경로에 따라 Time 초마다 이동 
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &APartsObject::Forward, Time, true, 0.0f);
@@ -126,7 +126,7 @@ void APartsObject::Backward()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 		Percent = 0.0f;
 		//상하 움직임 작동
-		ZMovmentSpeed = InitZMovmentSpeed;
+		ZMovementSpeed = InitZMovementSpeed;
 		ZMoving = true;
 
 		//이전 오브젝트도 제자리로
