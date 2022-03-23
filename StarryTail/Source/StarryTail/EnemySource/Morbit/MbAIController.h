@@ -3,40 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIController.h"
-#include "../../IreneCharacter.h"
+#include "../MonsterAIController.h"
 #include "MbAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API AMbAIController : public AAIController
+class STARRYTAIL_API AMbAIController : public AMonsterAIController
 {
 	GENERATED_BODY()
 public:
 	AMbAIController();
+protected:
 	virtual void OnPossess(APawn* InPawn) override;
-
-	static const FName SpawnPosKey;
-	static const FName PatrolPosKey;
-
-	static const FName PlayerKey;
-	static const FName TraceRangeKey;
-
-	static const FName CanMeleeAttackKey;
-	static const FName MeleeAttackRangeKey;
-	static const FName IsAttackingKey;
-
-	static const FName IsAttackedKey;
-	static const FName IsGroggyKey;
-
-	static const FName ReturnKey;
-
-	void Attacked(AIreneCharacter* Player);
-private:
-	UPROPERTY()
-		class UBehaviorTree* BTAsset;
-	UPROPERTY()
-		class UBlackboardData* BBAsset;
 };

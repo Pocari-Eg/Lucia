@@ -20,6 +20,7 @@ AMorbit::AMorbit()
 	InitCollision();
 	InitMesh();
 	InitAnime();
+	InitDebuffInfo();
 
 	bTestMode = false;
 }
@@ -42,6 +43,8 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.ViewRange = 200.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f;
 	MonsterInfo.TraceRange = 1000.0f;
+
+	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 }
 void AMorbit::InitCollision()
 {
@@ -124,6 +127,12 @@ void AMorbit::OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 
 	AttackedEnd.Broadcast();
 }
+void AMorbit::OnGroggyMontageEnded(UAnimMontage* Montage, bool bInterrupted)
+{
+	bIsGroggy = false;
+
+	GroggyEnd.Broadcast();
+}
 void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	//액터 이름 확인
@@ -149,7 +158,6 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
 		return;
 	}
-	
 
 	auto Player = Cast<AIreneCharacter>(OtherActor);
 	if (nullptr == Player)
@@ -157,7 +165,6 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
 		return;
 	}
-	STARRYLOG(Log, TEXT("Find Player"));
 
 	auto MbAIController = Cast<AMbAIController>(GetController());
 	if (nullptr == MbAIController)
@@ -166,10 +173,18 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 		return;
 	}
 
+	CalcDamage(Player->GetAttribute(), Player->GetATK());
+	if (bTestMode)
+		STARRYLOG(Log, TEXT("Damage Calc Complete"));
+	CalcAttributeDebuff(Player->GetAttribute(), Player->GetATK());
+	if (bTestMode)
+		STARRYLOG(Log, TEXT("AttributeDebuff Calc Complete"));
+	if (MonsterInfo.Def <= 0)
+	{
+		MbAIController->Groggy(Player);
+		return;
+	}
 	MbAIController->Attacked(Player);
-
-	bIsAttacked = true;
-	// CalcDamage(Player->GetAttribute(), Player->GetATK());
 }
 #pragma endregion
 
