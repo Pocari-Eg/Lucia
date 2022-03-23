@@ -19,11 +19,11 @@ public:
 	
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FollowCameraZPosition = 200;
+	float FollowCameraZPosition = 550;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FieldofView = 105;
+	float FieldofView = 75;
 
 public:	
 	// 인게임에서 수정 가능한 값들로 수정 후 컴파일 하면 좋음
@@ -54,6 +54,7 @@ public:
 	// 마우스 감도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float EDPI = 1.0f;
+
 public:
 	// 공격 관련 변수들
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
