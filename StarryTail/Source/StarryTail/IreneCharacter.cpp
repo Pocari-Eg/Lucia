@@ -9,6 +9,7 @@
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
 #include "DrawDebugHelpers.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #pragma region Setting
 // Sets default values
@@ -54,6 +55,7 @@ AIreneCharacter::AIreneCharacter()
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+	/*
 	FindMonsterCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindMonster"));
 	FindMonsterCollsion->SetRelativeLocation(FVector(300, 0, 0));
 	FindMonsterCollsion->SetBoxExtent(FVector(300.0f, 300.0f, 100.0f));
@@ -61,6 +63,7 @@ AIreneCharacter::AIreneCharacter()
 	FindTargetCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindTarget"));
 	FindTargetCollsion->SetRelativeLocation(FVector(100, 0, 0));
 	FindTargetCollsion->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
+	*/
 
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
@@ -739,16 +742,17 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
-	FHitResult HitResult;
+	TArray<FHitResult> MonsterList;
 	FCollisionQueryParams Params(NAME_None, false, this);
-	bool bResult = GetWorld()->SweepSingleByChannel(
-		HitResult,
+	bool bResult = GetWorld()->SweepMultiByChannel(
+		MonsterList,
 		GetActorLocation(),
-		GetActorLocation() + GetActorForwardVector() * 200.0f,
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel5,
+		GetActorLocation() + GetActorForwardVector() * CharacterDataStruct.AttackRange,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * CharacterDataStruct.AttackRange).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
+	FindNearMonster();
 
 #if ENABLE_DRAW_DEBUG
 
@@ -769,50 +773,96 @@ void AIreneCharacter::AttackCheck()
 		DebugLifeTime);
 #endif
 
-	if (bResult)
+	for (FHitResult Monster : MonsterList)
 	{
-		if (HitResult.Actor.IsValid())
+		if (bResult)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit Actor Name : %s"), *HitResult.Actor->GetName());
-
-			FDamageEvent DamageEvent;
-			HitResult.Actor->TakeDamage(50.0f, DamageEvent, GetController(), this);
+			if (Monster.Actor.IsValid())
+			{
+				FDamageEvent DamageEvent;
+				Monster.Actor->TakeDamage(200.0f, DamageEvent, GetController(), this);
+			}
 		}
 	}
 }
 #pragma endregion
 
 #pragma region Collision
-void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+void AIreneCharacter::FindNearMonster()
 {
-	if (OtherActor->FindComponentByClass<UCapsuleComponent>())
+	float far = 300;
+	// 가로, 높이, 세로
+	FVector BoxSize = FVector(150, 50, far);
+	// 최대거리
+	float NearPosition = far;
+	AActor* TargetMonster = nullptr;
+
+	// 리스트에 모든 충돌 결과 담는다.
+	TArray<FHitResult> MonsterList;
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepMultiByChannel(
+		MonsterList,
+		GetActorLocation() + GetActorForwardVector() * far,
+		GetActorLocation() + GetActorForwardVector() * far,
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * far).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel8,
+		FCollisionShape::MakeBox(BoxSize*1),
+		Params);
+
+#if ENABLE_DRAW_DEBUG
+	FVector TraceVec = GetActorForwardVector() * far;
+	FVector Center = GetActorLocation() + TraceVec;
+	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
+	float DebugLifeTime = 5.0f;
+
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
+#endif
+
+	for (FHitResult Monster : MonsterList)
 	{
-		FString aa = OtherActor->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName().ToString();
-		FString bb = "Enemy";
-		if (aa == bb)
+		if (bResult)
 		{
-			if (FindMonsterCollsion->IsOverlappingActor(OtherActor))
+			// 리스트결과에 레이케스트 발사(반복)
+			FHitResult RayHit;
+			bool bLayResult = GetWorld()->LineTraceSingleByChannel(
+				RayHit,
+				GetActorLocation(),
+				Monster.GetActor()->GetActorLocation(),
+				ECollisionChannel::ECC_GameTraceChannel8,
+				Params);
+
+			// 맞췄을 때 캡슐컴포넌트를 가지고 카메라에 렌더링 되며 정상적으로 살아있는 몬스터 찾기
+			if (bLayResult && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>() != nullptr)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("FindMonsterCollsion"));
-			}
-			if (FindTargetCollsion->IsOverlappingActor(OtherActor))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("FindTargetCollsion"));
+				if (RayHit.Actor.IsValid() && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName() == "Enemy" && RayHit.GetActor()->WasRecentlyRendered())
+				{	
+					// 첫 몬스터 할당
+					if (TargetMonster == nullptr)
+						TargetMonster = RayHit.GetActor();
+					// 몬스터와 플레이어간 거리가 가장 작은 몬스터를 찾는다.
+					if(NearPosition > FVector::Dist(TargetMonster->GetActorLocation(), RayHit.GetActor()->GetActorLocation()))
+					{
+						NearPosition = FVector::Dist(TargetMonster->GetActorLocation(), RayHit.GetActor()->GetActorLocation());
+						TargetMonster = RayHit.GetActor();
+					}
+				}
 			}
 		}
 	}
+	// 몬스터를 찾고 쳐다보기
+	if(TargetMonster != nullptr)
+	{
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()));
+	}
+}
+void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	
 }
 void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
-	if (OtherActor->FindComponentByClass<UCapsuleComponent>())
-	{
-		FString aa = OtherActor->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName().ToString();
-		FString bb = "Enemy";
-		if (aa == bb)
-		{
-			//UE_LOG(LogTemp, Warning, TEXT("lol"));
-		}
-	}
+	
 }
 #pragma endregion
 
