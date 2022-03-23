@@ -68,7 +68,7 @@ AIreneCharacter::AIreneCharacter()
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 13.0f), FRotator(-20.0f, 90.0f, 0.0f));
+	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 46.0f), FRotator(-20.0f, 90.0f, 0.0f));
 	//SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
@@ -83,9 +83,9 @@ AIreneCharacter::AIreneCharacter()
 	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 	// 점프 높이
-	GetCharacterMovement()->JumpZVelocity = 800.0f;
+	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
 	// 기본 최대 이동속도
 	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
@@ -568,7 +568,7 @@ void AIreneCharacter::LeftButton(float Rate)
 void AIreneCharacter::MouseWheel(float Rate)
 {
 	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
-	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, 50.0f, 400.0f);
+	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, 250.0f, 550.0f);
 }
 
 void AIreneCharacter::MainKeyword()
@@ -853,7 +853,8 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if(TargetMonster != nullptr)
 	{
-		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()));
+		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 	}
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
