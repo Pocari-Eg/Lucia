@@ -40,7 +40,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		OverlapResults,
 		Center,
 		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel2,
+		ECollisionChannel::ECC_GameTraceChannel5,
 		FCollisionShape::MakeSphere(Morbit->GetViewRange()),
 		CollisionQueryParam
 	);

@@ -32,6 +32,8 @@ public:
 		float MeleeAttackRange; //공격사거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float TraceRange; //최대 추적 거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		EAttributeKeyword MonsterAttribute;
 public:
 	//메인 속성 방어력들을 저장
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

@@ -9,6 +9,8 @@
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FShockEndDelegate);
+
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -21,6 +23,11 @@ public:
 	//Function
 	float GetMeleeAttackRange();
 	float GetTraceRange();
+
+	void OnTrueDamage(float Damage);
+	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+
+	FShockEndDelegate ShockEnd;
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
@@ -28,7 +35,11 @@ protected:
 	virtual void InitAnime() {};
 
 	//Function
+	void InitDebuffInfo();
+
 	void CalcAttributeDefType();
+	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
 
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
@@ -45,6 +56,69 @@ protected:
 
 	bool bIsAttacking;
 	bool bIsAttacked;
+	bool bIsGroggy;
+private:
+	UFUNCTION()
+		void OnShockMontageEnded(UAnimMontage* Montage, bool bInterrupted);
+
+	//Function
+	void CalcHp(float Damage);
+
+	void Burn();
+	void Flooding();
+	void Shock();
+	void Explosion();
+	void Assemble(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+
+	//Variable
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		int BurnStack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float BurnCycle;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float BurnDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float BurnTime;
+	float BurnCycleTimer;
+	float BurnTimer;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		int FloodingStack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float FloodingTime;
+	float FloodingTimer;
+	float DefaultMoveSpeed;
+	float DefaultBattleWalkMoveSpeed;
+	float DefaultAnimeSpeed;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float ExplosionRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float ExplosionDamage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float AssembleRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float AssembleTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float AssembleSpeed;
+	float AssembleTimer;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float ChainRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float ChainTime;
+	float ChainTimer;
+
+	FVector AssembleLocation;
+
+	bool bIsBurn;
+	bool bIsFlooding;
+	bool bIsShock;
+	bool bIsAssemble;
+	bool bIsChain;
 //Virtual Function
 protected:
 	// Called when the game starts or when spawned

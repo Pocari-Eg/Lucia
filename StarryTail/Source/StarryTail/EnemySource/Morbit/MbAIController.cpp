@@ -1,26 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "MbAIController.h"
-#include "../../StarryTail.h"
 #include "Morbit.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
-const FName AMbAIController::SpawnPosKey(TEXT("SpawnPos"));
-const FName AMbAIController::PatrolPosKey(TEXT("PatrolPos"));
-
-const FName AMbAIController::PlayerKey(TEXT("Player"));
-const FName AMbAIController::TraceRangeKey(TEXT("TraceRange"));
-
-const FName AMbAIController::MeleeAttackRangeKey(TEXT("MeleeAttackRange"));
-const FName AMbAIController::CanMeleeAttackKey(TEXT("bCanMeleeAttack"));
-const FName AMbAIController::IsAttackingKey(TEXT("bIsAttacking"));
-
-const FName AMbAIController::IsAttackedKey(TEXT("bIsAttacked"));
-const FName AMbAIController::IsGroggyKey(TEXT("bIsGroggy"));
-
-const FName AMbAIController::ReturnKey(TEXT("bReturn"));
 
 AMbAIController::AMbAIController()
 {
@@ -53,18 +37,5 @@ void AMbAIController::OnPossess(APawn* InPawn)
 		{
 			STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));
 		}
-	}
-}
-void AMbAIController::Attacked(AIreneCharacter* Player)
-{
-	Blackboard->SetValueAsObject(PlayerKey, Player);
-
-	Blackboard->SetValueAsBool(IsAttackedKey, true);
-
-	int Random = FMath::RandRange(0, 1);
-
-	if (Random == 1)
-	{
-		Blackboard->SetValueAsBool(IsGroggyKey, true);
 	}
 }
