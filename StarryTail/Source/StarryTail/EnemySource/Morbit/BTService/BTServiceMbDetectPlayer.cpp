@@ -3,6 +3,7 @@
 
 #include "BTServiceMbDetectPlayer.h"
 #include "../MbAIController.h"
+#include "../../MonsterAIController.h"
 #include "../Morbit.h"
 #include "../../../IreneCharacter.h"
 #include "DrawDebugHelpers.h"
@@ -126,7 +127,27 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 						//3차 탐지
 						if (Morbit->GetTestMode())
 							STARRYLOG(Warning, TEXT("Detect Player in MorbitFOV"));
-						OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMbAIController::PlayerKey, Player);
+						//몬스터 대기상태 지정
+
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsFindKey, true);
+
+						//몬스터 탐색
+						TArray<FOverlapResult> AnotherMonsterList = Morbit->DetectMonster();
+						if (AnotherMonsterList.Num() != 0)
+						{
+							for (auto const& AnotherMonster : AnotherMonsterList)
+							{
+								auto Monster = Cast<AMonster>(AnotherMonster.GetActor());
+								if (Monster == nullptr)
+									continue;
+
+								auto AnotherMonsterAIController = Cast<AMonsterAIController>(Monster->GetController());
+								if (AnotherMonsterAIController == nullptr)
+									continue;
+
+								AnotherMonsterAIController->SetFind();
+							}
+						}
 
 						return;
 					}

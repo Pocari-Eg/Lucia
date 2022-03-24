@@ -15,5 +15,5 @@ class STARRYTAIL_API UBTTaskMbReturnEnded : public UBTTaskNode
 	GENERATED_BODY()
 public:
 	UBTTaskMbReturnEnded();
-	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

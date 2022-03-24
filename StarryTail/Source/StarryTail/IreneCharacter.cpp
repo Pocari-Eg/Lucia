@@ -9,6 +9,7 @@
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
 #include "DrawDebugHelpers.h"
+#include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #pragma region Setting
@@ -152,6 +153,18 @@ AIreneCharacter::AIreneCharacter()
 void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	//±Ë¿Áº∑
+	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (nullptr == GameInstance)
+	{
+		STARRYLOG(Error, TEXT("GameInstance is Not STGameInstance"));
+	}
+	else
+	{
+		GameInstance->SetPlayer(this);
+	}
+	//
 
 	//Ω∫≈æøˆƒ° ª˝º∫ 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);

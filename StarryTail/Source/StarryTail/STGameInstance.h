@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "IreneCharacter.h"
 #include "STGameInstance.generated.h"
 
 //±Ë¿Áº∑
@@ -15,5 +16,9 @@ UCLASS()
 class STARRYTAIL_API USTGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
-	
+public:
+	AIreneCharacter* GetPlayer();
+	void SetPlayer(AIreneCharacter* IreneCharacter);
+private:
+	AIreneCharacter* Player;
 };

@@ -20,13 +20,17 @@ public:
 
 	void Init();
 
-	void Attacked(AIreneCharacter* Player);
-	void Groggy(AIreneCharacter* Player);
-	void Shock(AIreneCharacter* Player);
+	void SetPlayer();
+	void SetFind();
+
+	void Attacked();
+	void Groggy();
+	void Shock();
 
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
 
+	static const FName IsFindKey;
 	static const FName PlayerKey;
 	static const FName TraceRangeKey;
 

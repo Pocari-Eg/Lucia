@@ -173,6 +173,8 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 		return;
 	}
 
+	bIsAttacked = true;
+
 	CalcDamage(Player->GetAttribute(), Player->GetATK());
 	if (bTestMode)
 		STARRYLOG(Log, TEXT("Damage Calc Complete"));
@@ -181,10 +183,10 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 		STARRYLOG(Log, TEXT("AttributeDebuff Calc Complete"));
 	if (MonsterInfo.Def <= 0)
 	{
-		MbAIController->Groggy(Player);
+		MbAIController->Groggy();
 		return;
 	}
-	MbAIController->Attacked(Player);
+	MbAIController->Attacked();
 }
 #pragma endregion
 

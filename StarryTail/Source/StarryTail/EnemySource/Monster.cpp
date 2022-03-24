@@ -11,6 +11,7 @@ AMonster::AMonster()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	DetectMonsterRange = 5.0f;
 }
 #pragma region Init
 void AMonster::InitDebuffInfo()
@@ -64,6 +65,16 @@ void AMonster::OnTrueDamage(float Damage)
 void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	CalcDamage(PlayerMainAttribute, Damage);
+
+	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+	if (nullptr == MonsterAIController)
+		STARRYLOG(Log, TEXT("Not Found MonsterAIController"));
+	if (MonsterInfo.Def <= 0)
+	{
+		MonsterAIController->Groggy();
+		return;
+	}
+	MonsterAIController->Attacked();
 }
 
 #pragma region Calc
@@ -272,12 +283,27 @@ void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 	CalcHp(Coefficient * (NormalDef - PyroDef - HydroDef - ElectroDef));
 }
 #pragma endregion
+TArray<FOverlapResult> AMonster::DetectMonster()
+{
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
+		FCollisionShape::MakeSphere(ExplosionRange * 100.0f),
+		CollisionQueryParam
+	);
+
+	return OverlapResults;
+}
 void AMonster::CalcHp(float Damage)
 {
 	MonsterInfo.Hp -= Damage;
 
-	if(bTestMode)
-		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
+	STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
 	if (MonsterInfo.Hp <= 0.0f)
 	{
 		Destroy();
@@ -306,30 +332,20 @@ void AMonster::Shock()
 	if (nullptr == MonsterAIController)
 		STARRYLOG(Log, TEXT("MonsterAIController Not Found"));
 
-	// MonsterAIController->Shock();
+	MonsterAIController->Shock();
 
 	// 애니메이션 및 이펙트 설정 추가
 	bIsShock = true;
 }
 void AMonster::Explosion()
 {
-	TArray<FOverlapResult> OverlapResults;
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
-		OverlapResults,
-		GetActorLocation(),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(ExplosionRange * 100.0f),
-		CollisionQueryParam
-	);
-
-	if (bResult)
+	if (AnotherMonsterList.Num() != 0)
 	{
-		for (auto const& OverlapResult : OverlapResults)
+		for (auto const& AnotherMonster : AnotherMonsterList)
 		{
-			AMonster* Monster = Cast<AMonster>(OverlapResult.GetActor());
+			AMonster* Monster = Cast<AMonster>(AnotherMonster.GetActor());
 			if (Monster == nullptr)
 				continue;
 
@@ -339,24 +355,14 @@ void AMonster::Explosion()
 }
 void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
-	TArray<FOverlapResult> OverlapResults;
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
-		OverlapResults,
-		GetActorLocation(),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(AssembleRange * 100.0f),
-		CollisionQueryParam
-	);
-
-	if (bResult)
+	if (AnotherMonsterList.Num() != 0)
 	{
-		for (auto const& OverlapResult : OverlapResults)
+		for (auto const& AnotherMonster : AnotherMonsterList)
 		{
-			AMonster* Monster = Cast<AMonster>(OverlapResult.GetActor());
-			if (Monster == nullptr || Monster == this)
+			AMonster* Monster = Cast<AMonster>(AnotherMonster.GetActor());
+			if (Monster == nullptr)
 				continue;
 
 			Monster->OnDamage(PlayerMainAttribute, Damage);
@@ -367,24 +373,14 @@ void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
-	TArray<FOverlapResult> OverlapResults;
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
-		OverlapResults,
-		GetActorLocation(),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(ChainRange * 100.0f),
-		CollisionQueryParam
-	);
-
-	if (bResult)
+	if (AnotherMonsterList.Num() != 0)
 	{
-		for (auto const& OverlapResult : OverlapResults)
+		for (auto const& AnotherMonster : AnotherMonsterList)
 		{
-			AMonster* Monster = Cast<AMonster>(OverlapResult.GetActor());
-			if (Monster == nullptr || Monster == this)
+			AMonster* Monster = Cast<AMonster>(AnotherMonster.GetActor());
+			if (Monster == nullptr)
 				continue;
 
 			for (auto const& MonsterMainAttributeDef : Monster->MonsterInfo.MainAttributeDef)
@@ -397,14 +393,13 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 	}
 }
-#pragma endregion
-
 void AMonster::OnShockMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	bIsShock = false;
 
 	ShockEnd.Broadcast();
 }
+#pragma endregion
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
