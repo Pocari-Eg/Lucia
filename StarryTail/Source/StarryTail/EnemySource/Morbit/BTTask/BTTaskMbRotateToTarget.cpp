@@ -6,6 +6,7 @@
 #include "../Morbit.h"
 #include "../MbAIController.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "../../../STGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskMbRotateToTarget::UBTTaskMbRotateToTarget()
@@ -20,11 +21,12 @@ EBTNodeResult::Type UBTTaskMbRotateToTarget::ExecuteTask(UBehaviorTreeComponent&
 	if (nullptr == Morbit)
 		return EBTNodeResult::Failed;
 
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMbAIController::PlayerKey));
-	if (nullptr == Player)
+	auto GameInstance = Cast<USTGameInstance>(Morbit->GetGameInstance());
+	if (nullptr == GameInstance)
 		return EBTNodeResult::Failed;
 
-	FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Morbit->GetActorLocation(), Player->GetActorLocation());
+	FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Morbit->GetActorLocation(), GameInstance->GetPlayer()->GetActorLocation());
+	Rotator.Euler().Set(Rotator.Euler().X, 0.0f, Rotator.Euler().Z);
 	Morbit->SetActorRotation(FMath::RInterpTo(Morbit->GetActorRotation(), Rotator, GetWorld()->GetDeltaSeconds(), 2.0f));
 
 	return EBTNodeResult::Succeeded;

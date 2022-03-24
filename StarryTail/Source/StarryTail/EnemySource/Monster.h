@@ -27,6 +27,8 @@ public:
 	void OnTrueDamage(float Damage);
 	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
 
+	TArray<FOverlapResult> DetectMonster();
+
 	FShockEndDelegate ShockEnd;
 protected:
 	virtual void InitMonsterInfo() {};
@@ -72,6 +74,9 @@ private:
 	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
 
 	//Variable
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+		float DetectMonsterRange;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Debuff, Meta = (AllowPrivateAccess = true))
 		int BurnStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
