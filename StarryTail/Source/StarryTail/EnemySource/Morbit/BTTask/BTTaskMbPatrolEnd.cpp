@@ -20,8 +20,7 @@ EBTNodeResult::Type UBTTaskMbPatrolEnd::ExecuteTask(UBehaviorTreeComponent& Owne
 		return EBTNodeResult::Failed;
 	}
 
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey) != nullptr)
-		MbAIController->SetPlayer();
+	MbAIController->SetPlayer();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
 
 	return EBTNodeResult::Succeeded;

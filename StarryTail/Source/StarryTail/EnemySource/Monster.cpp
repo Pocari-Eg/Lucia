@@ -66,6 +66,13 @@ void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	CalcDamage(PlayerMainAttribute, Damage);
 
+	if (MonsterInfo.Hp <= 0)
+	{
+		if(bTestMode)
+			STARRYLOG(Error, TEXT("Death?"));
+		return;
+	}
+
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
 	if (nullptr == MonsterAIController)
 		STARRYLOG(Log, TEXT("Not Found MonsterAIController"));
@@ -303,7 +310,8 @@ void AMonster::CalcHp(float Damage)
 {
 	MonsterInfo.Hp -= Damage;
 
-	STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
+	if(bTestMode)
+		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
 	if (MonsterInfo.Hp <= 0.0f)
 	{
 		Destroy();

@@ -25,9 +25,11 @@ EBTNodeResult::Type UBTTaskMbRotateToTarget::ExecuteTask(UBehaviorTreeComponent&
 	if (nullptr == GameInstance)
 		return EBTNodeResult::Failed;
 
-	FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Morbit->GetActorLocation(), GameInstance->GetPlayer()->GetActorLocation());
-	Rotator.Euler().Set(Rotator.Euler().X, 0.0f, Rotator.Euler().Z);
-	Morbit->SetActorRotation(FMath::RInterpTo(Morbit->GetActorRotation(), Rotator, GetWorld()->GetDeltaSeconds(), 2.0f));
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Morbit->GetActorLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	
+	Morbit->SetActorRotation(FMath::RInterpTo(Morbit->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 
 	return EBTNodeResult::Succeeded;
 }
