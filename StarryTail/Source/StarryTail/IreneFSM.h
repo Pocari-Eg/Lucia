@@ -7,8 +7,9 @@ enum class StateEnum {
 	AttackIdle,
 	Run,
 	Sprint,
-	Dash,
+	Dodge,
 	Jump,
+	Fall,
 	Attack,
 	Hit,
 	Death

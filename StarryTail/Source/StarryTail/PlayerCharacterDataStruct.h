@@ -47,6 +47,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MoveSpeed = 1.0f;
 
+	// Run 최대 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RunMaxSpeed = 600.0f;
+	// Sprint 최대 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SprintMaxSpeed = 1200.0f;
+
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MouseWheelSpeed = 10.0f;

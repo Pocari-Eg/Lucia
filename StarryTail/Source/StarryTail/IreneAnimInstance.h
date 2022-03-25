@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "IreneCharacter.h"
 
 #include "IreneAnimInstance.generated.h"
 
@@ -37,6 +36,7 @@ public:
 
 	void PlayAttackMontage();
 	void JumpToAttackMontageSection(int32 NewSection);
+	UAnimMontage* GetAttackAnimMontage() { return AttackMontage; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
