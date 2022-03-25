@@ -85,11 +85,12 @@ AIreneCharacter::AIreneCharacter()
 	SpringArmComp->bUsePawnControlRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = 400.0f;
 
 	// 기본 최대 이동속도
-	GetCharacterMovement()->MaxWalkSpeed = 600.0f;
+	GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 
 	// 플레이어 스폰 시 기본 제어 설정
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
@@ -99,6 +100,9 @@ AIreneCharacter::AIreneCharacter()
 	CharacterState->setState(StateEnum::Idle);
 
 	// IreneCharater.h의 변수 초기화
+
+	// 컨트롤러 초기화
+	WorldController = nullptr;
 
 	// WASD 키 입력 초기화
 	MoveKey.Add(0);
@@ -110,9 +114,6 @@ AIreneCharacter::AIreneCharacter()
 	MoveAutoDirection.ZeroVector;
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
-
-	MainKeywordType = 0;
-	SubKeywordType = 0;
 
 	CharacterDataStruct.IsAttacking = false;
 	CharacterDataStruct.MaxCombo = 3;
@@ -154,6 +155,9 @@ void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 컨트롤러 받아오기
+	WorldController = GetWorld()->GetFirstPlayerController();
+
 	//김재섭
 	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 	if (nullptr == GameInstance)
@@ -164,7 +168,6 @@ void AIreneCharacter::BeginPlay()
 	{
 		GameInstance->SetPlayer(this);
 	}
-	//
 
 	//스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
@@ -213,7 +216,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
 			MoveForward();
@@ -228,7 +231,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	{
 		//구르다가 땅에 도착
 		IsFallingRoll = false;
-		DashKeyword();
+		DodgeKeyword();
 	}
 	MoveStop();
 	if (CharacterDataStruct.IsInvincibility == true)
@@ -331,13 +334,15 @@ void AIreneCharacter::MoveAuto()
 		CharacterState->setState(StateEnum::Jump);
 	}
 
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
 		AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
 }
 
 void AIreneCharacter::StartJump()
 {
-	if (!GetCharacterMovement()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	if (!GetCharacterMovement()->IsFalling() 
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		// 키 입력을 바탕으로 점프 방향을 얻는다.
 		FVector Direction = FVector(0, 0, 0);
@@ -372,11 +377,12 @@ void AIreneCharacter::StopJump()
 
 void AIreneCharacter::MovePressedW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		|| strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600;
+			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 			ChangeStateAndLog(StateEnum::Run);
 		}
 		MoveKey[0] = 1;
@@ -387,11 +393,12 @@ void AIreneCharacter::MovePressedW()
 }
 void AIreneCharacter::MovePressedA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		|| strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) 
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600;
+			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 			ChangeStateAndLog(StateEnum::Run);
 		}
 		MoveKey[1] = 1;
@@ -402,11 +409,12 @@ void AIreneCharacter::MovePressedA()
 }
 void AIreneCharacter::MovePressedS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		|| strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) 
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600;
+			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 			ChangeStateAndLog(StateEnum::Run);
 		}
 		MoveKey[2] = 1;
@@ -417,11 +425,12 @@ void AIreneCharacter::MovePressedS()
 }
 void AIreneCharacter::MovePressedD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		|| strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) 
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
 		{
-			GetCharacterMovement()->MaxWalkSpeed = 600;
+			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 			ChangeStateAndLog(StateEnum::Run);
 		}
 		MoveKey[3] = 1;
@@ -433,17 +442,13 @@ void AIreneCharacter::MovePressedD()
 
 void AIreneCharacter::MoveDoubleClickW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		MoveKey[0] = 2;
-
-		// 점프 중 달리기 금지
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 1200;
-			ChangeStateAndLog(StateEnum::Sprint);
-			CharacterDataStruct.MoveSpeed = 2;
-		}
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+		ChangeStateAndLog(StateEnum::Sprint);
+		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
 		MoveKey[0] = 4;
@@ -452,17 +457,13 @@ void AIreneCharacter::MoveDoubleClickW()
 }
 void AIreneCharacter::MoveDoubleClickA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		MoveKey[1] = 2;
-
-		// 점프 중 달리기 금지
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 1200;
-			ChangeStateAndLog(StateEnum::Sprint);
-			CharacterDataStruct.MoveSpeed = 2;
-		}
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+		ChangeStateAndLog(StateEnum::Sprint);
+		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
 		MoveKey[1] = 4;
@@ -470,17 +471,13 @@ void AIreneCharacter::MoveDoubleClickA()
 }
 void AIreneCharacter::MoveDoubleClickS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		MoveKey[2] = 2;
-
-		// 점프 중 달리기 금지
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 1200;
-			ChangeStateAndLog(StateEnum::Sprint);
-			CharacterDataStruct.MoveSpeed = 2;
-		}
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+		ChangeStateAndLog(StateEnum::Sprint);
+		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
 		MoveKey[2] = 4;
@@ -488,17 +485,13 @@ void AIreneCharacter::MoveDoubleClickS()
 }
 void AIreneCharacter::MoveDoubleClickD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
 		MoveKey[3] = 2;
-
-		// 점프 중 달리기 금지
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0)
-		{
-			GetCharacterMovement()->MaxWalkSpeed = 1200;
-			ChangeStateAndLog(StateEnum::Sprint);
-			CharacterDataStruct.MoveSpeed = 2;
-		}
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+		ChangeStateAndLog(StateEnum::Sprint);
+		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
 		MoveKey[3] = 4;
@@ -542,42 +535,49 @@ void AIreneCharacter::MoveReleasedD()
 #pragma region Input
 void AIreneCharacter::Turn(float Rate)
 {
-	AddControllerYawInput(Rate * CharacterDataStruct.EDPI);
+	if (WorldController->bShowMouseCursor == false)
+		AddControllerYawInput(Rate * CharacterDataStruct.EDPI);
 }
 void AIreneCharacter::LookUp(float Rate)
 {
-	AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
+	if (WorldController->bShowMouseCursor == false)
+		AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
 }
 
 void AIreneCharacter::LeftButton(float Rate)
 {
-	if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Fall") != 0 
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
 	{
-		// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
-		float WaitTime = 0.15f;
-
-		GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-			{
-				AttackWaitHandle.Invalidate();
-			}), WaitTime, false);
-
-		if (CharacterDataStruct.IsAttacking)
+		if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
 		{
-			if (CharacterDataStruct.CanNextCombo)
+			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+			float WaitTime = 0.15f;
+
+			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					AttackWaitHandle.Invalidate();
+				}), WaitTime, false);
+
+			if (CharacterDataStruct.IsAttacking)
 			{
-				CharacterDataStruct.IsComboInputOn = true;
+				if (CharacterDataStruct.CanNextCombo)
+				{
+					CharacterDataStruct.IsComboInputOn = true;
+				}
 			}
-		}
-		else
-		{
-			AttackStartComboState();
-			IreneAnim->PlayAttackMontage();
-			IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
-			CharacterDataStruct.IsAttacking = true;
+			else
+			{
+				ChangeStateAndLog(StateEnum::Attack);
+				AttackStartComboState();
+				IreneAnim->PlayAttackMontage();
+				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+				CharacterDataStruct.IsAttacking = true;
+			}
 		}
 	}
 }
-
 void AIreneCharacter::MouseWheel(float Rate)
 {
 	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
@@ -586,41 +586,25 @@ void AIreneCharacter::MouseWheel(float Rate)
 
 void AIreneCharacter::MainKeyword()
 {
-	MainKeywordType++;
-	if (MainKeywordType >= 3)
-		MainKeywordType = 0;
-	switch (MainKeywordType)
+	//속상변환 차례대로 속성이 변환
+	switch (Attribute)
 	{
-	case 0:
-		UE_LOG(LogTemp, Warning, TEXT("MainFire"));
+	case EAttributeKeyword::e_Fire:
+		Attribute = EAttributeKeyword::e_Water;
 		break;
-	case 1:
-		UE_LOG(LogTemp, Warning, TEXT("MainWater"));
+	case EAttributeKeyword::e_Water:
+		Attribute = EAttributeKeyword::e_Thunder;
 		break;
-	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("MainLightning"));
+	case EAttributeKeyword::e_Thunder:
+		Attribute = EAttributeKeyword::e_Fire;
+		break;
+	default:
 		break;
 	}
-}
-void AIreneCharacter::SubKeyword()
-{
-	SubKeywordType++;
-	if (SubKeywordType >= 4)
-		SubKeywordType = 0;
-	switch (SubKeywordType)
+	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != Widget)
 	{
-	case 0:
-		UE_LOG(LogTemp, Warning, TEXT("SubNone"));
-		break;
-	case 1:
-		UE_LOG(LogTemp, Warning, TEXT("SubFire"));
-		break;
-	case 2:
-		UE_LOG(LogTemp, Warning, TEXT("SubWater"));
-		break;
-	case 3:
-		UE_LOG(LogTemp, Warning, TEXT("SubLightning"));
-		break;
+		Widget->BindCharacterAttribute(Attribute);
 	}
 }
 void AIreneCharacter::ActionKeyword1()
@@ -636,19 +620,20 @@ void AIreneCharacter::ActionKeyword3()
 	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword3"));
 }
 
-void AIreneCharacter::DashKeyword()
+void AIreneCharacter::DodgeKeyword()
 {
-	if (!GetMovementComponent()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	if (!GetMovementComponent()->IsFalling() && strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
 	{
-		ChangeStateAndLog(StateEnum::Dash);
+		StopAnimMontage(IreneAnim->GetAttackAnimMontage());
+		ChangeStateAndLog(StateEnum::Dodge);
 
 		float WaitTime = 1.5f; //시간을 설정
-		GetCharacterMovement()->MaxWalkSpeed = 1200;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				// 도중에 추락 안하고 정상적으로 진행됬을 때
-				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") == 0)
+				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
 				{
 					ActionEndChangeMoveState();
 				}
@@ -685,6 +670,14 @@ void AIreneCharacter::DashKeyword()
 	}
 }
 
+void AIreneCharacter::MouseCursorKeyword()
+{
+	if (WorldController->bShowMouseCursor == false)
+		WorldController->bShowMouseCursor = true;
+	else
+		WorldController->bShowMouseCursor = false;
+}
+
 // Called to bind functionality to input
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -709,11 +702,11 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("MainKeyword", IE_Pressed, this, &AIreneCharacter::MainKeyword);
-	PlayerInputComponent->BindAction("SubKeyword", IE_Pressed, this, &AIreneCharacter::SubKeyword);
 	PlayerInputComponent->BindAction("ActionKeyword1", IE_Pressed, this, &AIreneCharacter::ActionKeyword1);
 	PlayerInputComponent->BindAction("ActionKeyword2", IE_Pressed, this, &AIreneCharacter::ActionKeyword2);
 	PlayerInputComponent->BindAction("ActionKeyword3", IE_Pressed, this, &AIreneCharacter::ActionKeyword3);
-	PlayerInputComponent->BindAction("Dash", IE_Pressed, this, &AIreneCharacter::DashKeyword);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AIreneCharacter::DodgeKeyword);
+	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, this, &AIreneCharacter::MouseCursorKeyword);
 
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
@@ -721,14 +714,13 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("LeftButton", this, &AIreneCharacter::LeftButton);
 	PlayerInputComponent->BindAxis("MouseWheel", this, &AIreneCharacter::MouseWheel);
 
-
 	//박찬영
 	//스탑워치 컨트롤
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
 	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);*/
 
 	// 속성 변환 테스트
-	PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
+	//PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
 }
 #pragma endregion
 
@@ -745,12 +737,13 @@ void AIreneCharacter::AttackStartComboState()
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = FMath::Clamp<int32>(CharacterDataStruct.CurrentCombo + 1, 1, CharacterDataStruct.MaxCombo);
 }
-
 void AIreneCharacter::AttackEndComboState()
 {
 	CharacterDataStruct.CanNextCombo = false;
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = 0;
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
+		ActionEndChangeMoveState();
 }
 
 void AIreneCharacter::AttackCheck()
@@ -845,19 +838,61 @@ void AIreneCharacter::FindNearMonster()
 				ECollisionChannel::ECC_GameTraceChannel8,
 				Params);
 
-			// 맞췄을 때 캡슐컴포넌트를 가지고 카메라에 렌더링 되며 정상적으로 살아있는 몬스터 찾기
+			// 맞춘 액터가 캡슐오브젝트를 가지고 있는지 확인
 			if (bLayResult && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>() != nullptr)
 			{
-				if (RayHit.Actor.IsValid() && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName() == "Enemy" && RayHit.GetActor()->WasRecentlyRendered())
-				{	
+				// 거리 최소 찾기
+				float FindNearTarget = FVector::Dist(GetActorLocation(), RayHit.GetActor()->GetActorLocation());
+				// 기존 오브젝트 충돌체 프로필 이름
+				FName TargetCollisionProfileName;
+				// 새로운 오브젝트 충돌체 프로필 이름
+				FName RayCollisionProfileName = RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+				FName EnemyProfile = "Enemy";
+				FName ObjectProfile = "Object";
+
+				// 맞췄을 때 캡슐컴포넌트를 가지고 카메라에 렌더링 되며 정상적으로 살아있는 몬스터 또는 오브젝트 찾기
+				if (RayHit.Actor.IsValid() &&
+					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
+					&& RayHit.GetActor()->WasRecentlyRendered())
+				{						
 					// 첫 몬스터 할당
 					if (TargetMonster == nullptr)
-						TargetMonster = RayHit.GetActor();
-					// 몬스터와 플레이어간 거리가 가장 작은 몬스터를 찾는다.
-					if(NearPosition > FVector::Dist(TargetMonster->GetActorLocation(), RayHit.GetActor()->GetActorLocation()))
 					{
-						NearPosition = FVector::Dist(TargetMonster->GetActorLocation(), RayHit.GetActor()->GetActorLocation());
 						TargetMonster = RayHit.GetActor();
+						NearPosition = FindNearTarget;
+					}
+
+					TargetCollisionProfileName = TargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+
+					UE_LOG(LogTemp, Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
+
+					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
+					if(NearPosition >= FindNearTarget)
+					{
+						// 만약 최단거리가 같은 액터가 있다면
+						if (NearPosition == FindNearTarget)
+						{
+							if(TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)
+							{
+								NearPosition = FindNearTarget;
+								TargetMonster = RayHit.GetActor();
+							}
+							else if(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
+							{
+								NearPosition = FindNearTarget;
+								TargetMonster = RayHit.GetActor();
+							}
+							else if(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile)
+							{
+								NearPosition = FindNearTarget;
+								TargetMonster = RayHit.GetActor();
+							}
+						}
+						else
+						{
+							NearPosition = FindNearTarget;
+							TargetMonster = RayHit.GetActor();
+						}
 					}
 				}
 			}
@@ -866,24 +901,25 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if(TargetMonster != nullptr)
 	{
+		UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 	}
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
-	
+	Super::NotifyActorBeginOverlap(OtherActor);
 }
 void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
-	
+	Super::NotifyActorEndOverlap(OtherActor);
 }
 #pragma endregion
 
 #pragma region State
 void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dash") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
 	{
 		CharacterState->setState(newState);
 
@@ -909,17 +945,17 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	CharacterState->setState(StateEnum::Idle);
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 		ChangeStateAndLog(StateEnum::Idle);
 	}
 	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 1200;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
 		ChangeStateAndLog(StateEnum::Sprint);
 	}
 	else
 	{
-		GetCharacterMovement()->MaxWalkSpeed = 600;
+		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 		ChangeStateAndLog(StateEnum::Run);
 	}
 }
@@ -939,31 +975,7 @@ float AIreneCharacter::GetATK()
 
 void AIreneCharacter::AttributeChange()
 {
-	//속셩변환 차례대로 속성이 변환
-
-	switch (Attribute)
-	{
-
-	case EAttributeKeyword::e_Fire:
-		Attribute = EAttributeKeyword::e_Water;
-
-		break;
-	case EAttributeKeyword::e_Water:
-		Attribute = EAttributeKeyword::e_Thunder;
-
-		break;
-	case EAttributeKeyword::e_Thunder:
-		Attribute = EAttributeKeyword::e_Fire;
-
-		break;
-	default:
-		break;
-	}
-	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
-	if (nullptr != Widget)
-	{
-		Widget->BindCharacterAttribute(Attribute);
-	}
+	
 }
 #pragma endregion
 

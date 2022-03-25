@@ -30,6 +30,10 @@ public:
 protected:
 
 private:
+	// 플레이어 컨트롤러
+	UPROPERTY(VisibleAnywhere)
+	APlayerController* WorldController;
+
 	// 카메라 암과 카메라
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArmComp;
@@ -59,10 +63,6 @@ private:
 	FTimerHandle MoveAutoWaitHandle;
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
-
-	// 키워드 출력용
-	uint8 MainKeywordType;
-	uint8 SubKeywordType;
 
 	UPROPERTY(EditAnywhere)
 	USkeletalMeshComponent* Weapon;
@@ -139,13 +139,15 @@ private:
 
 	// 메인키워드, 보조키워드, 액션키워드
 	void MainKeyword();
-	void SubKeyword();
 	void ActionKeyword1();
 	void ActionKeyword2();
 	void ActionKeyword3();
 
 	// 대쉬
-	void DashKeyword();
+	void DodgeKeyword();
+
+	// 마우스 커서 활성화
+	void MouseCursorKeyword();
 
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(StateEnum newState);

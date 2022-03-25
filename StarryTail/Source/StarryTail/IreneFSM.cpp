@@ -20,8 +20,9 @@ const char* IreneFSM::StateEnumToString(StateEnum s)
     case StateEnum::AttackIdle: return "AttackIdle";
     case StateEnum::Run: return "Run";
 	case StateEnum::Sprint: return "Sprint";
-    case StateEnum::Dash: return "Dash";
+    case StateEnum::Dodge: return "Dodge";
     case StateEnum::Jump: return "Jump";
+	case StateEnum::Fall: return "Fall";
     case StateEnum::Attack: return "Attack";
     case StateEnum::Hit: return "Hit";
     case StateEnum::Death: return "Death";
