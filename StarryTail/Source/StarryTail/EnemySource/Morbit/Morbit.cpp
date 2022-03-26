@@ -26,7 +26,6 @@ AMorbit::AMorbit()
 #pragma region Init
 void AMorbit::InitMonsterInfo()
 {	
-	MonsterInfo.Name = FName(TEXT("M_Mb"));
 	MonsterInfo.Hp = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
@@ -109,68 +108,13 @@ void AMorbit::Attack()
 	bIsAttacking = true;
 }
 #pragma endregion
-#pragma region CalledbyDelegate
-void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (bIsAttacking)
-		bIsAttacking = false;
-
-	if (bIsDead)
-		return;
-
-	//액터 이름 확인
-	if (bTestMode)
-		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
-
-	FString FindName = "CollisionCylinder";
-	FString ElemName;
-
-	bool IsFind = false;
-	for (auto& Elem : OtherActor->GetComponents())
-	{
-		ElemName = Elem->GetName();
-		if (ElemName == FindName)
-		{
-			IsFind = true;
-			break;
-		}
-	}
-
-	if (!IsFind)
-	{
-		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
-		return;
-	}
-
-	auto Player = Cast<AIreneCharacter>(OtherActor);
-	if (nullptr == Player)
-	{
-		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
-		return;
-	}
-
-	auto MbAIController = Cast<AMbAIController>(GetController());
-	if (nullptr == MbAIController)
-	{
-		STARRYLOG(Warning, TEXT("Failed Load MbAIController"));
-		return;
-	}
-
-	bIsAttacked = true;
-
-	CalcDamage(Player->GetAttribute(), Player->GetATK());
-	if (bTestMode)
-		STARRYLOG(Log, TEXT("Damage Calc Complete"));
-	CalcAttributeDebuff(Player->GetAttribute(), Player->GetATK());
-	if (bTestMode)
-		STARRYLOG(Log, TEXT("AttributeDebuff Calc Complete"));
-}
-#pragma endregion
 
 // Called when the game starts or when spawned
 void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
+
+	// switch(MonsterInfo.MonsterAttribute)
 }
 
 // Called every frame
@@ -206,7 +150,6 @@ void AMorbit::PostInitializeComponents()
 	MonsterAnimInstance = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (MonsterAnimInstance == nullptr)
 		return;
-
 	//애니메이션 몽타주 종료시 호출
 	MonsterAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
@@ -217,7 +160,4 @@ void AMorbit::PostInitializeComponents()
 		if (bIsDead)
 			Death.Broadcast();
 		});
-	// MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
-	//피격시 호출
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMorbit::OnAttacked);
 }
