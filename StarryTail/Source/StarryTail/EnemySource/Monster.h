@@ -6,10 +6,11 @@
 #include "./Struct/FNormalMonsterInfo.h"
 #include "./Struct/FAttributeDefence.h"
 #include "../StarryTail.h"
+#include "MonsterAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FShockEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
@@ -21,15 +22,17 @@ public:
 	AMonster();
 
 	//Function
-	float GetMeleeAttackRange();
-	float GetTraceRange();
+	float GetMeleeAttackRange() const;
+	float GetTraceRange() const;
+	
+	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
 	void OnTrueDamage(float Damage);
 	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
 
 	TArray<FOverlapResult> DetectMonster();
 
-	FShockEndDelegate ShockEnd;
+	FDeathDelegate Death;
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
@@ -52,16 +55,15 @@ protected:
 		class UCapsuleComponent* Collision;
 	//애니메이션 리소스 생길 시 변경
 	UPROPERTY()
-		class UEnemyAnimInstance* MonsterAnimInstance;
+		class UMonsterAnimInstance* MonsterAnimInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
 
 	bool bIsAttacking;
 	bool bIsAttacked;
 	bool bIsGroggy;
+	bool bIsDead;
 private:
-	UFUNCTION()
-		void OnShockMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	//Function
 	void CalcHp(float Damage);
@@ -92,10 +94,11 @@ private:
 		int FloodingStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
 		float FloodingTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
+		float FloodingDebuffSpeedReductionValue;
 	float FloodingTimer;
 	float DefaultMoveSpeed;
 	float DefaultBattleWalkMoveSpeed;
-	float DefaultAnimeSpeed;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))

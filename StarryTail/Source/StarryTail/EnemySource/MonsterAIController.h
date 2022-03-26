@@ -26,6 +26,7 @@ public:
 	void Attacked();
 	void Groggy();
 	void Shock();
+	void Death();
 
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
@@ -41,6 +42,8 @@ public:
 	static const FName IsAttackedKey;
 	static const FName IsGroggyKey;
 	static const FName IsShockKey;
+
+	static const FName IsDeadKey;
 
 	static const FName ReturnKey;
 protected:

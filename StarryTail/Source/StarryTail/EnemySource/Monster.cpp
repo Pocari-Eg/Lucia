@@ -26,9 +26,7 @@ void AMonster::InitDebuffInfo()
 	FloodingStack = 0;
 	FloodingTime = 10.0f;
 	FloodingTimer = 0.0f;
-	DefaultMoveSpeed = MonsterInfo.MoveSpeed;
-	DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
-	DefaultAnimeSpeed = 1.0f;
+	FloodingDebuffSpeedReductionValue = 0.5f;
 
 	ExplosionRange = 10.0f;
 	ExplosionDamage = 50.0f;
@@ -50,40 +48,33 @@ void AMonster::InitDebuffInfo()
 }
 #pragma endregion
 
-float AMonster::GetMeleeAttackRange()
+float AMonster::GetMeleeAttackRange() const
 {
 	return MonsterInfo.MeleeAttackRange;
 }
-float AMonster::GetTraceRange()
+float AMonster::GetTraceRange() const
 {
 	return MonsterInfo.TraceRange;
 }
+UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
+{
+	return MonsterAnimInstance;
+}
+
 void AMonster::OnTrueDamage(float Damage)
 {
+	if (bIsDead)
+		return;
+
 	CalcHp(Damage);
 }
 void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
+	if (bIsDead)
+		return;
+
 	CalcDamage(PlayerMainAttribute, Damage);
-
-	if (MonsterInfo.Hp <= 0)
-	{
-		if(bTestMode)
-			STARRYLOG(Error, TEXT("Death?"));
-		return;
-	}
-
-	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
-	if (nullptr == MonsterAIController)
-		STARRYLOG(Log, TEXT("Not Found MonsterAIController"));
-	if (MonsterInfo.Def <= 0)
-	{
-		MonsterAIController->Groggy();
-		return;
-	}
-	MonsterAIController->Attacked();
 }
-
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
 {
@@ -312,10 +303,29 @@ void AMonster::CalcHp(float Damage)
 
 	if(bTestMode)
 		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
+
+	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+	if (nullptr == MonsterAIController)
+	{
+		STARRYLOG(Error, TEXT("Not Found MonsterAIController"));
+		return;
+	}
+
+	MonsterAIController->StopMovement();
+
 	if (MonsterInfo.Hp <= 0.0f)
 	{
-		Destroy();
+		bIsDead = true;
+		
+		MonsterAIController->Death();
+		return;
 	}
+	if (MonsterInfo.Def <= 0)
+	{
+		MonsterAIController->Groggy();
+		return;
+	}
+	MonsterAIController->Attacked();
 }
 #pragma region Debuff
 void AMonster::Burn()
@@ -326,12 +336,14 @@ void AMonster::Burn()
 }
 void AMonster::Flooding()
 {
-	FloodingStack++;
 	FloodingTimer = 0.0f;
 
-	MonsterInfo.MoveSpeed = (DefaultMoveSpeed * (1.0f - ((float)FloodingStack / 10.0f)));
-	MonsterInfo.BattleWalkMoveSpeed = (DefaultBattleWalkMoveSpeed * (1.0f - ((float)FloodingStack / 10.0f)));
-	// 애니메이션 속도 조절 추가 필요
+	MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * FloodingDebuffSpeedReductionValue;
+	MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * FloodingDebuffSpeedReductionValue;
+
+	MonsterAnimInstance->SetPlayRate(FloodingDebuffSpeedReductionValue);
+	MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), FloodingDebuffSpeedReductionValue);
+
 	bIsFlooding = true;
 }
 void AMonster::Shock()
@@ -342,7 +354,6 @@ void AMonster::Shock()
 
 	MonsterAIController->Shock();
 
-	// 애니메이션 및 이펙트 설정 추가
 	bIsShock = true;
 }
 void AMonster::Explosion()
@@ -401,18 +412,16 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 	}
 }
-void AMonster::OnShockMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsShock = false;
-
-	ShockEnd.Broadcast();
-}
 #pragma endregion
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	CalcAttributeDefType();
+
+	DefaultMoveSpeed = MonsterInfo.MoveSpeed;
+	DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -455,7 +464,9 @@ void AMonster::Tick(float DeltaTime)
 
 			MonsterInfo.MoveSpeed = DefaultMoveSpeed;
 			MonsterInfo.BattleWalkMoveSpeed = DefaultBattleWalkMoveSpeed;
-			// 애니메이션 속도 초기화 필요 ?? = DefaultAnimeSpeed;
+
+			MonsterAnimInstance->SetPlayRate(1.0f);
+			MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
 
 			bIsFlooding = false;
 		}

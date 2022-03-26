@@ -8,9 +8,6 @@
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 
-DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
-DECLARE_MULTICAST_DELEGATE(FGroggyEndDelegate);
-
 UCLASS()
 class STARRYTAIL_API AMorbit : public AMonster
 {
@@ -27,13 +24,9 @@ public:
 
 	void Walk();
 	void BattleWalk();
-	void BattleIdle();
 	void Attack();
 
 	FAttackEndDelegate AttackEnd;
-	FAttackedEndDelegate AttackedEnd;
-	FGroggyEndDelegate GroggyEnd;
-
 private:
 	//override Function
 	void InitMonsterInfo() override;
@@ -43,14 +36,7 @@ private:
 
 	//Function
 	UFUNCTION()
-		virtual void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	UFUNCTION()
-		virtual void OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	UFUNCTION()
-		virtual void OnGroggyMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-	UFUNCTION()
 		virtual void OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
 
 	//Variable
 

@@ -3,6 +3,7 @@
 
 #include "BTTaskMbGroggyEnd.h"
 #include "../MbAIController.h"
+#include "../../Monster.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 

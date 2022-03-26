@@ -26,6 +26,10 @@ EBTNodeResult::Type UBTTaskMbBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 
 	Morbit->BattleWalk();
+
+	if (!Morbit->GetMonsterAnimInstance()->GetBattleWalkIsPlaying())
+		Morbit->GetMonsterAnimInstance()->PlayBattleWalkMontage();
+
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Morbit->GetController(), Player->GetActorLocation());
 
 	if (Morbit->GetDistanceTo(Player) <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
