@@ -72,6 +72,9 @@ private:
 
 	FTimerHandle AttackWaitHandle;
 
+	// 타겟 몬스터 또는 오브젝트
+	AActor* TargetMonster;
+
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
@@ -81,6 +84,9 @@ private:
 
 	//스탑워치
 	//AStopWatch* StopWatch;
+
+	// 로그 출력용
+	bool bShowLog;
 
 public:
 	// Sets default values for this character's properties
@@ -165,6 +171,9 @@ private:
 	// 곂침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+
+	// 피격
+	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 
 	//속성 변환
 	void AttributeChange();

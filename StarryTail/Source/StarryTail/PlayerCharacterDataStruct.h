@@ -15,7 +15,6 @@ struct FPlayerCharacterDataStruct
 
 public:
 	// 코드에서 건들여 줘야하는 값들로 수정 후 컴파일 무조건 필요
-	// 즉시 수정(인게임 수정) 필요하면 IreneCharacter.cpp의 Tick함수에 주석처리("//") 해둔것을 활성화 시키고 컴파일 후 플레이하면 됨
 	
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -30,18 +29,24 @@ public:
 	
 	// 무적상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsInvincibility;
+	bool IsInvincibility = false;
 
 	//공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ATK;
+	float ATK = 20;
 
+	// 최대 체력
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxHP = 100;
+	// 최대 마나
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxMP = 100;
 	// 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float HP;
+	float CurrentHP;
 	// 마나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MP;
+	float CurrentMP;
 
 	// 이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -65,17 +70,17 @@ public:
 public:
 	// 공격 관련 변수들
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	bool IsAttacking;
+	bool IsAttacking = false;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	bool CanNextCombo;
+	bool CanNextCombo = false;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	bool IsComboInputOn;
+	bool IsComboInputOn = false;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	int32 CurrentCombo;
+	int32 CurrentCombo = 0;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	int32 MaxCombo;
+	int32 MaxCombo = 3;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	float AttackRange;
+	float AttackRange = 200.0f;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	float AttackRadius;
+	float AttackRadius = 50.0f;
 };
