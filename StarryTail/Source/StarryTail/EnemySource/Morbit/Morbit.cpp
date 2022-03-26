@@ -3,7 +3,6 @@
 #include "Morbit.h"
 #include "../../IreneCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "../EnemyAnimInstance.h"
 #include "MbAIController.h"
 
 // Sets default values
@@ -50,19 +49,19 @@ void AMorbit::InitCollision()
 {
 	Collision = GetCapsuleComponent();
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
-	GetCapsuleComponent()->SetCapsuleHalfHeight(53.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(34.0f);
 }
 void AMorbit::InitMesh()
 {
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster_Walk/Dummy_Walk.Dummy_Walk"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster/Morbit/Morbit_Idle/M_Mb_Idle"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
 
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -55.0f), FRotator(0.0f, 270.0f, 0.0f));
-	GetMesh()->SetRelativeScale3D(FVector(50.0f, 50.0f, 50.0f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -35.0f), FRotator(0.0f, 270.0f, 0.0f));
+	GetMesh()->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 void AMorbit::InitAnime()
 {
@@ -70,7 +69,7 @@ void AMorbit::InitAnime()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> MorbitAnim(TEXT("/Game/Animation/EnemyAnimBlueprint"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> MorbitAnim(TEXT("/Game/BluePrint/Monster/MorbitAnimation/MorbitAnimBlueprint"));
 	if (MorbitAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);
@@ -100,10 +99,6 @@ void AMorbit::BattleWalk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
 }
-void AMorbit::BattleIdle()
-{
-	
-}
 void AMorbit::Attack()
 {
 	if (bIsAttacking)
@@ -115,26 +110,14 @@ void AMorbit::Attack()
 }
 #pragma endregion
 #pragma region CalledbyDelegate
-void AMorbit::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsAttacking = false;
-
-	AttackEnd.Broadcast();
-}
-void AMorbit::OnAttackedMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsAttacked = false;
-
-	AttackedEnd.Broadcast();
-}
-void AMorbit::OnGroggyMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	bIsGroggy = false;
-
-	GroggyEnd.Broadcast();
-}
 void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (bIsAttacking)
+		bIsAttacking = false;
+
+	if (bIsDead)
+		return;
+
 	//액터 이름 확인
 	if (bTestMode)
 		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
@@ -181,12 +164,6 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 	CalcAttributeDebuff(Player->GetAttribute(), Player->GetATK());
 	if (bTestMode)
 		STARRYLOG(Log, TEXT("AttributeDebuff Calc Complete"));
-	if (MonsterInfo.Def <= 0)
-	{
-		MbAIController->Groggy();
-		return;
-	}
-	MbAIController->Attacked();
 }
 #pragma endregion
 
@@ -194,8 +171,6 @@ void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor
 void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CalcAttributeDefType();
 }
 
 // Called every frame
@@ -228,11 +203,21 @@ void AMorbit::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	MonsterAnimInstance = Cast<UEnemyAnimInstance>(GetMesh()->GetAnimInstance());
+	MonsterAnimInstance = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
+	if (MonsterAnimInstance == nullptr)
+		return;
 
 	//애니메이션 몽타주 종료시 호출
-	MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackMontageEnded);
-	MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
+	MonsterAnimInstance->AttackEnd.AddLambda([this]() -> void {
+		bIsAttacking = false;
+
+		AttackEnd.Broadcast();
+		});
+	MonsterAnimInstance->Death.AddLambda([this]() -> void {
+		if (bIsDead)
+			Death.Broadcast();
+		});
+	// MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
 	//피격시 호출
 	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMorbit::OnAttacked);
 }

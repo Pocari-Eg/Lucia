@@ -3,6 +3,7 @@
 
 #include "MonsterAIController.h"
 #include "../STGameInstance.h"
+#include "Monster.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -22,6 +23,8 @@ const FName AMonsterAIController::IsAttackedKey = (TEXT("bIsAttacked"));
 const FName AMonsterAIController::IsGroggyKey = (TEXT("bIsGroggy"));
 const FName AMonsterAIController::IsShockKey = (TEXT("bIsShock"));
 
+const FName AMonsterAIController::IsDeadKey = (TEXT("bIsDead"));
+
 const FName AMonsterAIController::ReturnKey = (TEXT("bReturn"));
 
 AMonsterAIController::AMonsterAIController()
@@ -40,20 +43,47 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::Attacked()
 {
 	SetPlayer();
-
+	
+	auto Monster = Cast<AMonster>(GetPawn());
+	if (Monster != nullptr)
+	{
+		Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+	}
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }
 void AMonsterAIController::Groggy()
 {
 	SetPlayer();
 
+	auto Monster = Cast<AMonster>(GetPawn());
+	if (Monster != nullptr)
+	{
+		Monster->GetMonsterAnimInstance()->PlayGroggyMontage();
+	}
+
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 }
 void AMonsterAIController::Shock()
 {
+	auto Monster = Cast<AMonster>(GetPawn());
+	if (Monster != nullptr)
+	{
+		Monster->GetMonsterAnimInstance()->PlayShockMontage();
+	}
+
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsShockKey, true);
+}
+void AMonsterAIController::Death()
+{
+	auto Monster = Cast<AMonster>(GetPawn());
+	if (Monster != nullptr)
+	{
+		Monster->GetMonsterAnimInstance()->PlayDeathMontage();
+	}
+
+	Blackboard->SetValueAsBool(IsDeadKey, true);
 }
 void AMonsterAIController::SetPlayer()
 {
