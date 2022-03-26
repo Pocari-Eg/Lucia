@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma region Setting
 // Sets default values
@@ -779,7 +780,7 @@ void AIreneCharacter::AttackCheck()
 			if (Monster.Actor.IsValid())
 			{
 				FDamageEvent DamageEvent;
-				Monster.Actor->TakeDamage(200.0f, DamageEvent, GetController(), this);
+				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), CharacterDataStruct.ATK, NULL, this, NULL);
 			}
 		}
 	}

@@ -10,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 UCLASS()
@@ -32,6 +33,7 @@ public:
 
 	TArray<FOverlapResult> DetectMonster();
 
+	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
 protected:
 	virtual void InitMonsterInfo() {};
@@ -135,6 +137,8 @@ protected:
 	virtual void PossessedBy(AController* NewController) override;
 
 	virtual void PostInitializeComponents() override;
+
+	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

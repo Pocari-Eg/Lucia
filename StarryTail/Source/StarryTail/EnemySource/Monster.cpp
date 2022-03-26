@@ -503,3 +503,43 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
 }
+float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (bIsAttacking)
+		bIsAttacking = false;
+
+	if (bIsDead)
+		return FinalDamage;
+
+	/* 이름확인 옛날코드 혹시몰라서 남겨두니 지우지 말것
+	if (bTestMode)
+		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
+
+	FString FindName = "CollisionCylinder";
+	FString ElemName;
+
+	bool IsFind = false;
+	for (auto& Elem : OtherActor->GetComponents())
+	{
+		ElemName = Elem->GetName();
+		if (ElemName == FindName)
+		{
+			IsFind = true;
+			break;
+		}
+	}
+	*/
+	auto Player = Cast<AIreneCharacter>(DamageCauser);
+	
+	if (Player != nullptr)
+	{
+		CalcDamage(Player->GetAttribute(), DamageAmount);
+		CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
+		bIsAttacked = true;
+		return FinalDamage;
+	}
+
+	return FinalDamage;
+}
