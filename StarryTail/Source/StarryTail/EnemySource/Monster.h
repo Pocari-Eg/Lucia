@@ -7,6 +7,7 @@
 #include "./Struct/FAttributeDefence.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
+#include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
 
@@ -101,6 +102,7 @@ private:
 	float FloodingTimer;
 	float DefaultMoveSpeed;
 	float DefaultBattleWalkMoveSpeed;
+	float DefaultDef;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
