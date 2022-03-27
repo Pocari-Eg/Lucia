@@ -4,6 +4,7 @@
 #include "../../IreneCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MbAIController.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AMorbit::AMorbit()
@@ -26,7 +27,6 @@ AMorbit::AMorbit()
 #pragma region Init
 void AMorbit::InitMonsterInfo()
 {	
-	MonsterInfo.Name = FName(TEXT("M_Mb"));
 	MonsterInfo.Hp = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
@@ -36,7 +36,7 @@ void AMorbit::InitMonsterInfo()
 	AttributeDef.Hydro = 0.0f;
 	AttributeDef.Electro = 5.0f;
 
-	MonsterInfo.MoveSpeed = 100.0f;
+	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
 	MonsterInfo.ViewAngle = 120.0f;
 	MonsterInfo.ViewRange = 200.0f;
@@ -110,67 +110,72 @@ void AMorbit::Attack()
 }
 #pragma endregion
 #pragma region CalledbyDelegate
-void AMorbit::OnAttacked(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AMorbit::AttackCheck()
 {
-	if (bIsAttacking)
-		bIsAttacking = false;
+	FHitResult Hit;
 
-	if (bIsDead)
-		return;
+	//By 성열현
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeSphere(20.0f),
+		Params);
 
-	//액터 이름 확인
 	if (bTestMode)
-		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
-
-	FString FindName = "CollisionCylinder";
-	FString ElemName;
-
-	bool IsFind = false;
-	for (auto& Elem : OtherActor->GetComponents())
 	{
-		ElemName = Elem->GetName();
-		if (ElemName == FindName)
-		{
-			IsFind = true;
-			break;
-		}
+		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
+		FVector Center = GetActorLocation() + TraceVec * 0.5f;
+		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			20.0f,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
 	}
 
-	if (!IsFind)
+	if (bResult)
 	{
-		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
-		return;
+		auto Player = Cast<AIreneCharacter>(Hit.Actor);
+		if (nullptr == Player)
+			return;
+
+		UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
 	}
-
-	auto Player = Cast<AIreneCharacter>(OtherActor);
-	if (nullptr == Player)
-	{
-		STARRYLOG(Warning, TEXT("Not Attacked by Player"));
-		return;
-	}
-
-	auto MbAIController = Cast<AMbAIController>(GetController());
-	if (nullptr == MbAIController)
-	{
-		STARRYLOG(Warning, TEXT("Failed Load MbAIController"));
-		return;
-	}
-
-	bIsAttacked = true;
-
-	CalcDamage(Player->GetAttribute(), Player->GetATK());
-	if (bTestMode)
-		STARRYLOG(Log, TEXT("Damage Calc Complete"));
-	CalcAttributeDebuff(Player->GetAttribute(), Player->GetATK());
-	if (bTestMode)
-		STARRYLOG(Log, TEXT("AttributeDebuff Calc Complete"));
+	//
 }
 #pragma endregion
-
 // Called when the game starts or when spawned
 void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
+
+	UMaterial* Material;
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_None:
+		AttributeDef.Normal = 80.0f;
+		AttributeDef.Pyro = 15.0f;
+		AttributeDef.Hydro = 0.0f;
+		AttributeDef.Electro = 5.0f;
+		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
+		if (Material != nullptr)
+		{
+			GetMesh()->SetMaterial(0, Material);
+			GetMesh()->SetMaterial(1, Material);
+		}
+		break;
+	}
 }
 
 // Called every frame
@@ -206,7 +211,6 @@ void AMorbit::PostInitializeComponents()
 	MonsterAnimInstance = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
 	if (MonsterAnimInstance == nullptr)
 		return;
-
 	//애니메이션 몽타주 종료시 호출
 	MonsterAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
@@ -217,7 +221,5 @@ void AMorbit::PostInitializeComponents()
 		if (bIsDead)
 			Death.Broadcast();
 		});
-	// MonsterAnimInstance->OnMontageEnded.AddDynamic(this, &AMorbit::OnAttackedMontageEnded);
-	//피격시 호출
-	Collision->OnComponentBeginOverlap.AddDynamic(this, &AMorbit::OnAttacked);
+	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }

@@ -115,7 +115,7 @@ void UMonsterAnimInstance::PlayBattleWalkMontage()
 }
 void UMonsterAnimInstance::PlayAttackedMontage()
 {
-	if(!Montage_IsPlaying(AttackedMontage))
+	if(!Montage_IsPlaying(AttackedMontage) && !Montage_IsPlaying(GroggyMontage))
 		Montage_Play(AttackedMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
@@ -155,6 +155,10 @@ bool UMonsterAnimInstance::GetBattleWalkIsPlaying()
 bool UMonsterAnimInstance::GetAttackIsPlaying()
 {
 	return (Montage_IsPlaying(MeleeAttackMontage1) || Montage_IsPlaying(MeleeAttackMontage2));
+}
+void UMonsterAnimInstance::AnimNotify_Attack()
+{
+	Attack.Broadcast();
 }
 void UMonsterAnimInstance::AnimNotify_AttackEnd()
 {

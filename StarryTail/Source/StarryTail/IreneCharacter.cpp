@@ -11,6 +11,7 @@
 #include "DrawDebugHelpers.h"
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 
 #pragma region Setting
 // Sets default values
@@ -115,23 +116,12 @@ AIreneCharacter::AIreneCharacter()
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
 
-	CharacterDataStruct.IsAttacking = false;
-	CharacterDataStruct.MaxCombo = 3;
-	AttackEndComboState();
-	AttackWaitHandle.Invalidate();
-	CharacterDataStruct.AttackRange = 200.0f;
-	CharacterDataStruct.AttackRadius = 50.0f;
+	TargetMonster = nullptr;
 
 	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
 
-	// 무적 아님
-	CharacterDataStruct.IsInvincibility = false;
-	// 초기 체력
-	CharacterDataStruct.HP = 100;
-	// 초기 이동속도
-	CharacterDataStruct.MoveSpeed = 1;
-	// 초기 공격력
-	CharacterDataStruct.ATK = 20.0f;
+	CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
+	CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
 
 	//초기 속성
 	Attribute = EAttributeKeyword::e_Fire;
@@ -148,6 +138,8 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
+
+	bShowLog = false;
 }
 
 // Called when the game starts or when spawned
@@ -209,11 +201,6 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	// PlayerCharacterDataStruct.h의 상단 public에 할당 된 변수들로 인게임 수정 가능하게 해주는 기능
-	// 앞의 "//" 부분을 지워주고 에디터의 컴파일을 진행하고 플레이를 하고 인게임에서 값을 수정하면 바로 적용 됨
-	// 
-	//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-	//CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
 
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
@@ -237,6 +224,11 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
+	if (TargetMonster != nullptr) 
+	{
+		if(bShowLog)
+			UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
+	}
 }
 
 #pragma region Move
@@ -609,14 +601,17 @@ void AIreneCharacter::MainKeyword()
 }
 void AIreneCharacter::ActionKeyword1()
 {
+	if (bShowLog)
 	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword1"));
 }
 void AIreneCharacter::ActionKeyword2()
 {
+	if (bShowLog)
 	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword2"));
 }
 void AIreneCharacter::ActionKeyword3()
 {
+	if (bShowLog)
 	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword3"));
 }
 
@@ -761,7 +756,6 @@ void AIreneCharacter::AttackCheck()
 	FindNearMonster();
 
 #if ENABLE_DRAW_DEBUG
-
 	FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
 	float HalfHeight = CharacterDataStruct.AttackRange * 0.5f + CharacterDataStruct.AttackRadius;
@@ -786,7 +780,7 @@ void AIreneCharacter::AttackCheck()
 			if (Monster.Actor.IsValid())
 			{
 				FDamageEvent DamageEvent;
-				Monster.Actor->TakeDamage(200.0f, DamageEvent, GetController(), this);
+				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), CharacterDataStruct.ATK, NULL, this, NULL);
 			}
 		}
 	}
@@ -801,7 +795,6 @@ void AIreneCharacter::FindNearMonster()
 	FVector BoxSize = FVector(150, 50, far);
 	// 최대거리
 	float NearPosition = far;
-	AActor* TargetMonster = nullptr;
 
 	// 리스트에 모든 충돌 결과 담는다.
 	TArray<FHitResult> MonsterList;
@@ -863,7 +856,7 @@ void AIreneCharacter::FindNearMonster()
 					}
 
 					TargetCollisionProfileName = TargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
-
+					if (bShowLog)
 					UE_LOG(LogTemp, Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
 
 					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
@@ -901,6 +894,7 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if(TargetMonster != nullptr)
 	{
+		if (bShowLog)
 		UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
@@ -914,6 +908,16 @@ void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 }
+float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if(CharacterDataStruct.CurrentHP > 0)
+		CharacterDataStruct.CurrentHP -= DamageAmount;
+
+	return FinalDamage;
+}
+
 #pragma endregion
 
 #pragma region State
@@ -924,6 +928,7 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
+		if (bShowLog)
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }

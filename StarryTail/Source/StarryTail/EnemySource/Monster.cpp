@@ -4,7 +4,6 @@
 #include "Monster.h"
 #include "MonsterAIController.h"
 
-
 // Sets default values
 AMonster::AMonster()
 {
@@ -277,6 +276,7 @@ void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 	}
 
 	//그로기 Def 계산식 추가
+	MonsterInfo.Def -= 20.0f;
 	//
 	CalcHp(Coefficient * (NormalDef - PyroDef - HydroDef - ElectroDef));
 }
@@ -323,6 +323,7 @@ void AMonster::CalcHp(float Damage)
 	if (MonsterInfo.Def <= 0)
 	{
 		MonsterAIController->Groggy();
+		MonsterInfo.Def = DefaultDef;
 		return;
 	}
 	MonsterAIController->Attacked();
@@ -358,6 +359,9 @@ void AMonster::Shock()
 }
 void AMonster::Explosion()
 {
+	if (bTestMode)
+		DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRange * 100.0f, 16, FColor::Red, false, 0.2f);
+
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
 	if (AnotherMonsterList.Num() != 0)
@@ -374,6 +378,9 @@ void AMonster::Explosion()
 }
 void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
+	if (bTestMode)
+		DrawDebugSphere(GetWorld(), GetActorLocation(), AssembleRange * 100.0f, 16, FColor::Blue, false, 0.2f);
+
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
 	if (AnotherMonsterList.Num() != 0)
@@ -392,6 +399,9 @@ void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
+	if (bTestMode)
+		DrawDebugSphere(GetWorld(), GetActorLocation(), ChainRange * 100.0f, 16, FColor::Yellow, false, 0.2f);
+
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
 	if (AnotherMonsterList.Num() != 0)
@@ -407,6 +417,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 				if (MonsterMainAttributeDef == EAttributeKeyword::e_Fire)
 					return;
 			}
+		
 			Monster->OnDamage(PlayerMainAttribute, Damage);
 			Monster->bIsChain = true;
 		}
@@ -422,6 +433,7 @@ void AMonster::BeginPlay()
 
 	DefaultMoveSpeed = MonsterInfo.MoveSpeed;
 	DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
+	DefaultDef = MonsterInfo.Def;
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -502,4 +514,44 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
+}
+float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
+{
+	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
+
+	if (bIsAttacking)
+		bIsAttacking = false;
+
+	if (bIsDead)
+		return FinalDamage;
+
+	/* 이름확인 옛날코드 혹시몰라서 남겨두니 지우지 말것
+	if (bTestMode)
+		STARRYLOG(Warning, TEXT("Morbit Attacked : %s"), *OtherActor->GetName());
+
+	FString FindName = "CollisionCylinder";
+	FString ElemName;
+
+	bool IsFind = false;
+	for (auto& Elem : OtherActor->GetComponents())
+	{
+		ElemName = Elem->GetName();
+		if (ElemName == FindName)
+		{
+			IsFind = true;
+			break;
+		}
+	}
+	*/
+	auto Player = Cast<AIreneCharacter>(DamageCauser);
+	
+	if (Player != nullptr)
+	{
+		CalcDamage(Player->GetAttribute(), DamageAmount);
+		CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
+		bIsAttacked = true;
+		return FinalDamage;
+	}
+
+	return FinalDamage;
 }
