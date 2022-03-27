@@ -139,8 +139,9 @@ private:
 	void Turn(float Rate);
 	void LookUp(float Rate);
 
-	// 마우스 좌클릭
+	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
+	void RightButton();
 	void MouseWheel(float Rate);
 
 	// 메인키워드, 보조키워드, 액션키워드

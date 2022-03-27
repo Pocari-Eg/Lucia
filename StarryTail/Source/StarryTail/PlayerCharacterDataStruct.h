@@ -14,7 +14,7 @@ struct FPlayerCharacterDataStruct
 	GENERATED_BODY()
 
 public:
-	// 코드에서 건들여 줘야하는 값들로 수정 후 컴파일 무조건 필요
+	// 캐릭터 외 설정 값
 	
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -24,23 +24,33 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FieldofView = 75;
 
+	// 마우스 휠 속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MouseWheelSpeed = 10.0f;
+	// 마우스 감도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float EDPI = 1.0f;
+
 public:	
-	// 인게임에서 수정 가능한 값들로 수정 후 컴파일 하면 좋음
-	
+	// 캐릭터 설정 값
+
 	// 무적상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincibility = false;
 
 	//공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ATK = 20;
+	float Strength = 20;
+	//방어력
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Defenses = 10;
 
 	// 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHP = 100;
+	float MaxHP = 10000;
 	// 최대 마나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxMP = 100;
+	float MaxMP = 10000;
 	// 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHP;
@@ -57,15 +67,7 @@ public:
 	float RunMaxSpeed = 600.0f;
 	// Sprint 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SprintMaxSpeed = 1200.0f;
-
-	// 마우스 휠 속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MouseWheelSpeed = 10.0f;
-
-	// 마우스 감도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float EDPI = 1.0f;
+	float SprintMaxSpeed = 900.0f;
 
 public:
 	// 공격 관련 변수들
@@ -80,7 +82,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	int32 MaxCombo = 3;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	float AttackRange = 200.0f;
+	float AttackRange = 100.0f;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRadius = 50.0f;
 };
