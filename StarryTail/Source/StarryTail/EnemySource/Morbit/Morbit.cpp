@@ -4,6 +4,8 @@
 #include "../../IreneCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MbAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 AMorbit::AMorbit()
@@ -35,7 +37,7 @@ void AMorbit::InitMonsterInfo()
 	AttributeDef.Hydro = 0.0f;
 	AttributeDef.Electro = 5.0f;
 
-	MonsterInfo.MoveSpeed = 100.0f;
+	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
 	MonsterInfo.ViewAngle = 120.0f;
 	MonsterInfo.ViewRange = 200.0f;
@@ -108,7 +110,52 @@ void AMorbit::Attack()
 	bIsAttacking = true;
 }
 #pragma endregion
+#pragma region CalledbyDelegate
+void AMorbit::AttackCheck()
+{
+	FHitResult Hit;
 
+	//By ¼º¿­Çö
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeSphere(20.0f),
+		Params);
+
+	if (bTestMode)
+	{
+		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
+		FVector Center = GetActorLocation() + TraceVec * 0.5f;
+		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			20.0f,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
+	}
+
+	if (bResult)
+	{
+		auto Player = Cast<AIreneCharacter>(Hit.Actor);
+		if (nullptr == Player)
+			return;
+
+		UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+	}
+	//
+}
+#pragma endregion
 // Called when the game starts or when spawned
 void AMorbit::BeginPlay()
 {
@@ -160,4 +207,5 @@ void AMorbit::PostInitializeComponents()
 		if (bIsDead)
 			Death.Broadcast();
 		});
+	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }

@@ -11,6 +11,7 @@
  * 
  */
 
+DECLARE_MULTICAST_DELEGATE(FAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 UCLASS()
@@ -37,11 +38,16 @@ public:
 	bool GetBattleWalkIsPlaying();
 
 	void SetPlayRate(float Value);
-
+	
+	//다이나믹 설정
+	
+	FAttackDelegate Attack;
 	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
 protected:
 	//Function
+	UFUNCTION()
+		void AnimNotify_Attack();
 	UFUNCTION()
 		void AnimNotify_AttackEnd();
 	UFUNCTION()

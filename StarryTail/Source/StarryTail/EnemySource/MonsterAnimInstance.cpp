@@ -156,6 +156,10 @@ bool UMonsterAnimInstance::GetAttackIsPlaying()
 {
 	return (Montage_IsPlaying(MeleeAttackMontage1) || Montage_IsPlaying(MeleeAttackMontage2));
 }
+void UMonsterAnimInstance::AnimNotify_Attack()
+{
+	Attack.Broadcast();
+}
 void UMonsterAnimInstance::AnimNotify_AttackEnd()
 {
 	AttackEnd.Broadcast();
