@@ -5,7 +5,6 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MbAIController.h"
 #include "Kismet/GameplayStatics.h"
-#include "DrawDebugHelpers.h"
 
 // Sets default values
 AMorbit::AMorbit()
@@ -161,7 +160,22 @@ void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// switch(MonsterInfo.MonsterAttribute)
+	UMaterial* Material;
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_None:
+		AttributeDef.Normal = 80.0f;
+		AttributeDef.Pyro = 15.0f;
+		AttributeDef.Hydro = 0.0f;
+		AttributeDef.Electro = 5.0f;
+		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
+		if (Material != nullptr)
+		{
+			GetMesh()->SetMaterial(0, Material);
+			GetMesh()->SetMaterial(1, Material);
+		}
+		break;
+	}
 }
 
 // Called every frame

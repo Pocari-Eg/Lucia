@@ -115,7 +115,7 @@ void UMonsterAnimInstance::PlayBattleWalkMontage()
 }
 void UMonsterAnimInstance::PlayAttackedMontage()
 {
-	if(!Montage_IsPlaying(AttackedMontage))
+	if(!Montage_IsPlaying(AttackedMontage) && !Montage_IsPlaying(GroggyMontage))
 		Montage_Play(AttackedMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
