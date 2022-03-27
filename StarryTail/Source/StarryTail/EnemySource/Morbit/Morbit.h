@@ -23,6 +23,8 @@ public:
 	void Walk();
 	void BattleWalk();
 	void Attack();
+
+	void AttackCheck();
 private:
 	//override Function
 	void InitMonsterInfo() override;
