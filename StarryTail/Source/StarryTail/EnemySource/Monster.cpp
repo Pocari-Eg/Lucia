@@ -3,6 +3,10 @@
 
 #include "Monster.h"
 #include "MonsterAIController.h"
+//UI
+#include "../STGameInstance.h"
+#include <Engine/Classes/Kismet/KismetMathLibrary.h>
+#include "../UI/HPBarWidget.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -11,6 +15,22 @@ AMonster::AMonster()
 	PrimaryActorTick.bCanEverTick = true;
 
 	DetectMonsterRange = 5.0f;
+
+	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+	HpBarWidget->SetupAttachment(GetMesh());
+
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_HPBar.BP_HPBar_C"));
+
+	if (UI_HPBARWIDGET.Succeeded()) {
+
+		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
+		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+		HpBarWidget->bAutoActivate = false;
+	}
 }
 #pragma region Init
 void AMonster::InitDebuffInfo()
@@ -299,10 +319,10 @@ TArray<FOverlapResult> AMonster::DetectMonster()
 }
 void AMonster::CalcHp(float Damage)
 {
-	MonsterInfo.Hp -= Damage;
+	MonsterInfo.CurrentHp -= Damage;
 
 	if(bTestMode)
-		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.Hp);
+		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
 
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
 	if (nullptr == MonsterAIController)
@@ -313,7 +333,13 @@ void AMonster::CalcHp(float Damage)
 
 	MonsterAIController->StopMovement();
 
-	if (MonsterInfo.Hp <= 0.0f)
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->UpdateWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
+	}
+
+	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
 		bIsDead = true;
 		
@@ -434,6 +460,7 @@ void AMonster::BeginPlay()
 	DefaultMoveSpeed = MonsterInfo.MoveSpeed;
 	DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
 	DefaultDef = MonsterInfo.Def;
+
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -449,6 +476,32 @@ void AMonster::PostInitializeComponents()
 void AMonster::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//박찬영
+	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
+	FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(HpBarWidget->GetComponentTransform().GetLocation(),
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation());
+
+	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
+	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	//
+
+	if (!bIsDead)
+	{
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		if (this->GetDistanceTo(STGameInstance->GetPlayer()) < 500.0f)
+		{
+			HpBarWidget->SetHiddenInGame(false);
+		}
+		else
+		{
+			HpBarWidget->SetHiddenInGame(true);
+		}
+	}
+	else
+	{
+		HpBarWidget->SetHiddenInGame(true);
+	}
 
 	if (bIsBurn)
 	{

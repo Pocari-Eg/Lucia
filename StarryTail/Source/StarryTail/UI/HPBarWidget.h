@@ -18,12 +18,11 @@ public:
 	// Object 엑터를 바인드 할떄 사용 
 	void BindObjectHp(class ATestObject* NewObject);
 
-
+	void UpdateWidget(float Hp);
 protected:
 	// 위젯을 초기화
 	virtual void NativeConstruct() override;
 	//위젯 업데이트
-	void UpdateWidget();
 private:
 
 	//현재 오브젝트

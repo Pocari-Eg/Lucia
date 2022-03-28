@@ -56,7 +56,10 @@ protected:
 		FAttributeDefence AttributeDef;
 	UPROPERTY(VisibleAnywhere, Category = Collision, Meta = (AllowPrivateAccess = true))
 		class UCapsuleComponent* Collision;
-	//애니메이션 리소스 생길 시 변경
+	//박찬영 UI
+	UPROPERTY(VisibleAnywhere, Category = UI)
+		class UWidgetComponent* HpBarWidget;
+	//
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
