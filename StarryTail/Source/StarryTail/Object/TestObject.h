@@ -15,7 +15,7 @@
 #include "../UI/HPBarWidget.h"
 
 //º“»Ø ∞¥√º
-#include "../Enemy.h"
+#include "../EnemySource/Morbit/Morbit.h"
 
 #include "TestObject.generated.h"
 

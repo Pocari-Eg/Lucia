@@ -27,7 +27,7 @@ AMorbit::AMorbit()
 #pragma region Init
 void AMorbit::InitMonsterInfo()
 {	
-	MonsterInfo.Hp = 100.0f;
+	MonsterInfo.MaxHp = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
 
@@ -159,6 +159,8 @@ void AMorbit::AttackCheck()
 void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
 
 	UMaterial* Material;
 	switch (MonsterInfo.MonsterAttribute)

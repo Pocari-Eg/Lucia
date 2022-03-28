@@ -15,7 +15,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FName Name; //이름
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Hp; //체력
+		float MaxHp; //체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Atk; //공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -38,6 +38,8 @@ public:
 	//메인 속성 방어력들을 저장
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		TArray<EAttributeKeyword> MainAttributeDef;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float CurrentHp;
 };
 	
 

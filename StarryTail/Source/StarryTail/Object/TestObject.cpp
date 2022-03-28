@@ -131,8 +131,12 @@ void ATestObject::SetHp(float ATK)
 {
 
 	CurrentHP -= ATK;
-	//HP변화 델리게이트를 호출 
-	OnHpChanged.Broadcast();
+	//HP변화
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->UpdateWidget(GetHpRatio());
+	}
 	STARRYLOG(Error, TEXT("HP : %f"), CurrentHP);
 	if (CurrentHP <= 0.0f)
 	{
@@ -233,7 +237,7 @@ void ATestObject::SpawnEenmy()
 	}
 	UE_LOG(LogTemp, Warning, TEXT("CreateBox x : %f y : %f"), random.X, random.Y); //
 
-	GetWorld()->SpawnActor<AEnemy>(GetActorLocation() + FVector(random, 0.0f), FRotator::ZeroRotator); // 새 엑터 생성
+	GetWorld()->SpawnActor<AMorbit>(GetActorLocation() + FVector(random, 0.0f), FRotator::ZeroRotator); // 새 엑터 생성
 
 
 }
