@@ -88,7 +88,7 @@ AIreneCharacter::AIreneCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 
 	// 점프 높이
-	GetCharacterMovement()->JumpZVelocity = 400.0f;
+	GetCharacterMovement()->JumpZVelocity = 900.0f;
 
 	// 기본 최대 이동속도
 	GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
@@ -224,6 +224,19 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
+	if(GetCharacterMovement()->IsFalling())
+	{
+		if (GetCharacterMovement()->GravityScale >= 1 && GetCharacterMovement()->GravityScale < 2.1f) 
+		{
+			// GravityScale = y축 값, x축 부호-, 수치는 작을수록 체공 증가
+			GetCharacterMovement()->GravityScale = 2-FMath::Clamp(FMath::Cos(FMath::DegreesToRadians((GetCharacterMovement()->Velocity.Z * 9) / (GetCharacterMovement()->JumpZVelocity/10))) * 1.0f, -1.0f, 1.0f);
+		}
+		else
+			GetCharacterMovement()->GravityScale = 2.1f;
+	}
+	else
+		GetCharacterMovement()->GravityScale = 2;
+
 	if (TargetMonster != nullptr) 
 	{
 		//if (bShowLog)
@@ -300,6 +313,7 @@ void AIreneCharacter::MoveStop()
 		if (!GetCharacterMovement()->IsFalling())
 		{
 			ActionEndChangeMoveState();
+			GetCharacterMovement()->GravityScale = 2;
 		}
 	}
 }
@@ -368,7 +382,7 @@ void AIreneCharacter::StartJump()
 		}
 		MoveAutoDirection.Normalize();
 
-		GetMovementComponent()->Velocity = FVector(0, 0, 0);
+		GetMovementComponent()->Velocity = GetMovementComponent()->Velocity / 3;
 
 		bPressedJump = true;
 		ChangeStateAndLog(StateEnum::Jump);
@@ -381,8 +395,8 @@ void AIreneCharacter::StopJump()
 
 void AIreneCharacter::MovePressedW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 ||
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 ||
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
@@ -397,8 +411,8 @@ void AIreneCharacter::MovePressedW()
 }
 void AIreneCharacter::MovePressedA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 ||
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 ||
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
@@ -413,8 +427,8 @@ void AIreneCharacter::MovePressedA()
 }
 void AIreneCharacter::MovePressedS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 ||
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 ||
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
@@ -429,8 +443,8 @@ void AIreneCharacter::MovePressedS()
 }
 void AIreneCharacter::MovePressedD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 ||
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 ||
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
 		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
