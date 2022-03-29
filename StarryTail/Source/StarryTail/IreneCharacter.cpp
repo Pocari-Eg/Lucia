@@ -245,6 +245,12 @@ void AIreneCharacter::Tick(float DeltaTime)
 		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 500.0f)
 			TargetMonster = nullptr;
 	}
+	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
+	FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(AttributeWidget->GetComponentTransform().GetLocation(),
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation());
+
+	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
+	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 }
 
 #pragma region Move
