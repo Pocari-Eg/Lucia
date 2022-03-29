@@ -633,6 +633,7 @@ void AIreneCharacter::MainKeyword()
 	{
 		Widget->BindCharacterAttribute(Attribute);
 	}
+	FOnAttributeChange.Broadcast();
 }
 void AIreneCharacter::ActionKeyword1()
 {

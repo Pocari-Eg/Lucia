@@ -155,7 +155,7 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 	auto Player = Cast<AIreneCharacter>(OtherActor);  // 부딫힌 오브젝트를 해당 캐릭터로 캐스팅 
 
-
+	
 
 	//속성에 따라 공격 가능 체크 
 	switch (Attribute)

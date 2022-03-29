@@ -15,13 +15,15 @@ class STARRYTAIL_API UHPBarWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+\
+
 	// Object 엑터를 바인드 할떄 사용 
 	void BindObjectHp(class ATestObject* NewObject);
-
 	void UpdateWidget(float Hp);
+	void SetColor(FLinearColor Color);
 protected:
 	// 위젯을 초기화
-	virtual void NativeConstruct() override;
+	virtual void NativeOnInitialized() override;
 	//위젯 업데이트
 private:
 
