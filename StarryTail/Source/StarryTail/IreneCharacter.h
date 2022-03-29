@@ -20,13 +20,17 @@
 
 #include "IreneCharacter.generated.h"
 
+//속성 변경 델리데이트
+DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
+
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:	
-
+	//속성변환 델리게이트
+	FOnAttributeChangeDelegate FOnAttributeChange;
 protected:
 
 private:
@@ -81,6 +85,7 @@ private:
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
+
 
 	//스탑워치
 	//AStopWatch* StopWatch;
