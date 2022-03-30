@@ -54,6 +54,12 @@ AIreneCharacter::AIreneCharacter()
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 		}
 	}
+	// 점프커브
+	ConstructorHelpers::FObjectFinder<UCurveFloat>JumpCurve(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Real/Jump.Jump"));
+	if (JumpCurve.Succeeded())
+	{
+		JumpGravityCurve = JumpCurve.Object;
+	}
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
@@ -88,7 +94,7 @@ AIreneCharacter::AIreneCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 
 	// 점프 높이
-	GetCharacterMovement()->JumpZVelocity = 900.0f;
+	GetCharacterMovement()->JumpZVelocity = CharacterDataStruct.JumpStartPower;
 
 	// 기본 최대 이동속도
 	GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
@@ -138,7 +144,8 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
-
+	bStartJump = false;
+	JumpingTime = 0.0f;
 	bShowLog = false;
 }
 
@@ -224,18 +231,17 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
-	if(GetCharacterMovement()->IsFalling())
+	if (bStartJump) 
 	{
-		if (GetCharacterMovement()->GravityScale >= 1 && GetCharacterMovement()->GravityScale < 2.1f) 
-		{
-			// GravityScale = y축 값, x축 부호-, 수치는 작을수록 체공 증가
-			GetCharacterMovement()->GravityScale = 2-FMath::Clamp(FMath::Cos(FMath::DegreesToRadians((GetCharacterMovement()->Velocity.Z * 9) / (GetCharacterMovement()->JumpZVelocity/10))) * 1.0f, -1.0f, 1.0f);
-		}
-		else
-			GetCharacterMovement()->GravityScale = 2.1f;
+		JumpingTime += DeltaTime;
+		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
 	}
-	else
-		GetCharacterMovement()->GravityScale = 2;
+
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		JumpingTime = 0.0f;
+		bStartJump = false;
+	}
 
 	if (TargetMonster != nullptr) 
 	{
@@ -391,6 +397,7 @@ void AIreneCharacter::StartJump()
 		GetMovementComponent()->Velocity = GetMovementComponent()->Velocity / 3;
 
 		bPressedJump = true;
+		bStartJump = true;
 		ChangeStateAndLog(StateEnum::Jump);
 	}
 }
