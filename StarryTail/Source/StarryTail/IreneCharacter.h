@@ -38,6 +38,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	APlayerController* WorldController;
 
+	// 점프증력 커브
+	UPROPERTY(EditAnywhere)
+	UCurveFloat* JumpGravityCurve;
+
 	// 카메라 암과 카메라
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	USpringArmComponent* SpringArmComp;
@@ -78,6 +82,9 @@ private:
 
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
+
+	bool bStartJump;
+	float JumpingTime;
 
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)

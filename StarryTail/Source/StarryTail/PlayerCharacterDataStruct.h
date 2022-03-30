@@ -24,6 +24,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FieldofView = 75;
 
+	// 점프시작파워
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float JumpStartPower = 300;
+
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MouseWheelSpeed = 10.0f;
