@@ -35,29 +35,31 @@ AMonster::AMonster()
 #pragma region Init
 void AMonster::InitDebuffInfo()
 {
-	BurnStack = 0;
-	BurnCycle = 0.2f;
-	BurnDamage = 1.0f;
-	BurnTime = 10.0f;
-	BurnCycleTimer = 0.0f;
-	BurnTimer = 0.0f;
+	MonsterAttributeDebuff.FireDebuffStack = 0;
+	MonsterAttributeDebuff.WaterDebuffStack = 0;
+	MonsterAttributeDebuff.ThunderDebuffStack = 0;
+
 	
-	FloodingStack = 0;
-	FloodingTime = 10.0f;
-	FloodingTimer = 0.0f;
-	FloodingDebuffSpeedReductionValue = 0.5f;
+	MonsterAttributeDebuff.BurnCycle = 0.2f;
+	MonsterAttributeDebuff.BurnDamage = 1.0f;
+	MonsterAttributeDebuff.BurnTime = 10.0f;
+	MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
+	MonsterAttributeDebuff.BurnTimer = 0.0f;
+	
+	MonsterAttributeDebuff.FloodingTime = 10.0f;
+	MonsterAttributeDebuff.FloodingTimer = 0.0f;
+	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
-	ExplosionRange = 10.0f;
-	ExplosionDamage = 50.0f;
+	MonsterAttributeDebuff.TransitionRange = 10.0f;
 
-	AssembleRange = 10.0f;
-	AssembleTime = 0.3f;
-	AssembleSpeed = 100.0f;
-	AssembleTimer = 0.0f;
+	MonsterAttributeDebuff.AssembleRange = 10.0f;
+	MonsterAttributeDebuff.AssembleTime = 0.3f;
+	MonsterAttributeDebuff.AssembleSpeed = 100.0f;
+	MonsterAttributeDebuff.AssembleTimer = 0.0f;
 
-	ChainRange = 10.0f;
-	ChainTime = 10.0f;
-	ChainTimer = 0.0f;
+	MonsterAttributeDebuff.ChainRange = 10.0f;
+	MonsterAttributeDebuff.ChainTime = 10.0f;
+	MonsterAttributeDebuff.ChainTimer = 0.0f;
 
 	bIsBurn = false;
 	bIsFlooding = false;
@@ -74,6 +76,10 @@ float AMonster::GetMeleeAttackRange() const
 float AMonster::GetTraceRange() const
 {
 	return MonsterInfo.TraceRange;
+}
+TArray<EAttributeKeyword> AMonster::GetMainAttributeDef() const
+{
+	return MonsterInfo.MainAttributeDef;
 }
 UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 {
@@ -94,6 +100,27 @@ void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 
 	CalcDamage(PlayerMainAttribute, Damage);
 }
+void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
+{
+	for (auto Elem : MonsterInfo.MainAttributeDef)
+	{
+		if (Elem == Attribute)
+			return;
+	}
+
+	switch (Attribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		MonsterAttributeDebuff.FireDebuffStack++;
+		break;
+	case EAttributeKeyword::e_Water:
+		MonsterAttributeDebuff.WaterDebuffStack++;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		MonsterAttributeDebuff.ThunderDebuffStack++;
+		break;
+	}
+}
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
 {
@@ -101,10 +128,10 @@ void AMonster::CalcAttributeDefType()
 
 	TArray<float> DefList;
 
-	AttributeDefMap.Add(EAttributeKeyword::e_None, AttributeDef.Normal);
-	AttributeDefMap.Add(EAttributeKeyword::e_Fire, AttributeDef.Pyro);
-	AttributeDefMap.Add(EAttributeKeyword::e_Water, AttributeDef.Hydro);
-	AttributeDefMap.Add(EAttributeKeyword::e_Thunder, AttributeDef.Electro);
+	AttributeDefMap.Add(EAttributeKeyword::e_None, AttributeDef.e_None);
+	AttributeDefMap.Add(EAttributeKeyword::e_Fire, AttributeDef.e_Fire);
+	AttributeDefMap.Add(EAttributeKeyword::e_Water, AttributeDef.e_Water);
+	AttributeDefMap.Add(EAttributeKeyword::e_Thunder, AttributeDef.e_Thunder);
 
 	AttributeDefMap.ValueSort([](float A, float B) {
 		return A > B;
@@ -166,82 +193,74 @@ void AMonster::CalcAttributeDefType()
 }
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (STGameInstance->GetAttributeEffectMonster() == nullptr)
+	{
+		STGameInstance->SetAttributeEffectMonster(this);
+	}
+
+	if (STGameInstance->GetAttributeEffectMonster() == this)
+	{
+		if (bIsBurn)
+		{
+			DebuffTransition(PlayerMainAttribute, Damage);
+		}
+		if (bIsFlooding)
+		{
+			Assemble();
+		}
+		if (bIsShock)
+		{
+			Chain(PlayerMainAttribute, Damage);
+		}
+	}
+
 	switch (PlayerMainAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		for (auto& Elem : MonsterInfo.MainAttributeDef)
 		{
-			if (Elem == EAttributeKeyword::e_Water)
+			if (Elem == EAttributeKeyword::e_Fire)
+			{
 				return;
+			}
 		}
-		if (bTestMode)
-		{
-			STARRYLOG(Log, TEXT("Player MainAttribute : Pyro"));
-			STARRYLOG(Log, TEXT("Hydro is not in Monster MainAttribute"));
-			STARRYLOG(Log, TEXT("Explosion effect is triggered"));
-		}
-		Explosion();
+		MonsterAttributeDebuff.FireDebuffStack++;
+		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
+		for (auto& Elem : MonsterInfo.MainAttributeDef)
+		{
+			if (Elem == EAttributeKeyword::e_Water)
+			{
+				return;
+			}
+		}
+		MonsterAttributeDebuff.WaterDebuffStack++;
+		SetDebuff(PlayerMainAttribute, Damage);
+		break;
+	case EAttributeKeyword::e_Thunder:
 		for (auto& Elem : MonsterInfo.MainAttributeDef)
 		{
 			if (Elem == EAttributeKeyword::e_Thunder)
+			{
 				return;
+			}
 		}
-		if (bTestMode)
-		{
-			STARRYLOG(Log, TEXT("Player MainAttribute : Water"));
-			STARRYLOG(Log, TEXT("Electro is not in Monster MainAttribute"));
-			STARRYLOG(Log, TEXT("Assemble effect is triggered"));
-		}
-		Assemble(PlayerMainAttribute, Damage);
+		MonsterAttributeDebuff.ThunderDebuffStack++;
+		SetDebuff(PlayerMainAttribute, Damage);
 		break;
-	case EAttributeKeyword::e_Thunder:
-		for (auto& Elem : MonsterInfo.MainAttributeDef)
-		{
-			if (Elem == EAttributeKeyword::e_Fire)
-				return;
-		}
-		if (bTestMode)
-		{
-			STARRYLOG(Log, TEXT("Player MainAttribute : Electro"));
-			STARRYLOG(Log, TEXT("Pyro is not in Monster MainAttribute"));
-			STARRYLOG(Log, TEXT("Chain effect is triggered"));
-		}
-		Chain(PlayerMainAttribute, Damage);
 	}
-	/*
-	switch (PlayerSubAttribute)
-	{
-	case EAttributeKeyword::e_Fire:
-		if (MonsterInfo.MainAttributeDef.Num() > 1)
-			return;
-		if (MonsterInfo.MainAttributeDef[0] == EAttributeKeyword::e_Thunder)
-			Burn();
-		break;
-	case EAttributeKeyword::e_Water:
-		if (MonsterInfo.MainAttributeDef.Num() > 1)
-			return;
-		if (MonsterInfo.MainAttributeDef[0] == EAttributeKeyword::e_Fire)
-			Flooding();
-		break;
-	case EAttributeKeyword::e_Thunder:
-		if (MonsterInfo.MainAttributeDef.Num() > 1)
-			return;
-		if (MonsterInfo.MainAttributeDef[0] == EAttributeKeyword::e_Water)
-			Shock();
-	}
-	*/
 }
 void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	float Coefficient = 1.0f;
 	float AttributeArmor = 100.0f;
 
-	float NormalDef = 0.0f;
-	float PyroDef = 0.0f;
-	float HydroDef = 0.0f;
-	float ElectroDef = 0.0f;
+	float NoneDef = 0.0f;
+	float FireDef = 0.0f;
+	float WaterDef = 0.0f;
+	float ThunderDef = 0.0f;
 
 	switch (PlayerMainAttribute)
 	{
@@ -277,51 +296,72 @@ void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 	}
 
 
-	if (AttributeDef.Normal != 0)
+	if (AttributeDef.e_None != 0)
 	{
-		NormalDef = Damage * (AttributeDef.Normal / 100.0f) * (AttributeArmor / 100.0f);
+		NoneDef = Damage * (AttributeDef.e_None / 100.0f) * (AttributeArmor / 100.0f);
 		
 	}
-	if (AttributeDef.Pyro != 0)
+	if (AttributeDef.e_Fire != 0)
 	{
-		PyroDef = Damage * (AttributeDef.Pyro / 100.0f) * (AttributeArmor / 100.0f);
+		FireDef = Damage * (AttributeDef.e_Fire / 100.0f) * (AttributeArmor / 100.0f);
 	}
-	if (AttributeDef.Hydro != 0)
+	if (AttributeDef.e_Water != 0)
 	{
-		HydroDef = Damage * (AttributeDef.Hydro / 100.0f) * (AttributeArmor / 100.0f);
+		WaterDef = Damage * (AttributeDef.e_Water / 100.0f) * (AttributeArmor / 100.0f);
 	}
-	if (AttributeDef.Electro != 0)
+	if (AttributeDef.e_Thunder != 0)
 	{
-		ElectroDef = Damage * (AttributeDef.Electro / 100.0f) * (AttributeArmor / 100.0f);
+		ThunderDef = Damage * (AttributeDef.e_Thunder / 100.0f) * (AttributeArmor / 100.0f);
 	}
 
 	//그로기 Def 계산식 추가
-	MonsterInfo.Def -= 20.0f;
+	MonsterInfo.CurrentDef -= 20.0f;
 	//
-	CalcHp(Coefficient * (NormalDef - PyroDef - HydroDef - ElectroDef));
+	CalcHp(Coefficient * (NoneDef - FireDef - WaterDef - ThunderDef));
 }
-#pragma endregion
-TArray<FOverlapResult> AMonster::DetectMonster()
+void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
-	TArray<FOverlapResult> OverlapResults;
+	TMap<EAttributeKeyword, int> AttributeDebuffMap;
 
-	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
-	GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
-		OverlapResults,
-		GetActorLocation(),
-		FQuat::Identity,
-		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(ExplosionRange * 100.0f),
-		CollisionQueryParam
-	);
+	AttributeDebuffMap.Add(EAttributeKeyword::e_Fire, MonsterAttributeDebuff.FireDebuffStack);
+	AttributeDebuffMap.Add(EAttributeKeyword::e_Water, MonsterAttributeDebuff.WaterDebuffStack);
+	AttributeDebuffMap.Add(EAttributeKeyword::e_Thunder, MonsterAttributeDebuff.ThunderDebuffStack);
 
-	return OverlapResults;
+	AttributeDebuffMap.ValueSort([](int A, int B) {
+		return A > B;
+		});
+
+	for (auto Elem : AttributeDebuffMap)
+	{
+		STARRYLOG(Log, TEXT("Attribute Sort : %d"), Elem.Value);
+	}
+
+	MonsterInfo.CurrentDebuffAttribute = AttributeDebuffMap.begin().Key();
+
+	if (AttributeDebuffMap[EAttributeKeyword::e_Fire] == AttributeDebuffMap[EAttributeKeyword::e_Water])
+	{
+		if (AttributeDebuffMap.begin().Key() == EAttributeKeyword::e_Thunder && AttributeDebuffMap[EAttributeKeyword::e_Thunder] != AttributeDebuffMap[EAttributeKeyword::e_Fire])
+			return;
+		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
+	}
+	else if (AttributeDebuffMap[EAttributeKeyword::e_Water] == AttributeDebuffMap[EAttributeKeyword::e_Thunder])
+	{
+		if (AttributeDebuffMap.begin().Key() == EAttributeKeyword::e_Fire && AttributeDebuffMap[EAttributeKeyword::e_Fire] != AttributeDebuffMap[EAttributeKeyword::e_Water])
+			return;
+		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
+	}
+	else if (AttributeDebuffMap[EAttributeKeyword::e_Thunder] == AttributeDebuffMap[EAttributeKeyword::e_Fire])
+	{
+		if (AttributeDebuffMap.begin().Key() == EAttributeKeyword::e_Water && AttributeDebuffMap[EAttributeKeyword::e_Water] != AttributeDebuffMap[EAttributeKeyword::e_Thunder])
+			return;
+		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
+	}
 }
 void AMonster::CalcHp(float Damage)
 {
 	MonsterInfo.CurrentHp -= Damage;
 
-	if(bTestMode)
+	if (bTestMode)
 		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
 
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
@@ -341,40 +381,108 @@ void AMonster::CalcHp(float Damage)
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
+		GetCapsuleComponent()->SetHiddenInGame(true);
 		bIsDead = true;
-		
+
 		MonsterAIController->Death();
 		return;
 	}
-	if (MonsterInfo.Def <= 0)
+	if (MonsterInfo.CurrentDef <= 0)
 	{
 		MonsterAIController->Groggy();
-		MonsterInfo.Def = DefaultDef;
+		MonsterInfo.CurrentDef = MonsterInfo.Def;
 		return;
 	}
 	MonsterAIController->Attacked();
 }
+void AMonster::CalcBurnDamage()
+{
+	MonsterInfo.CurrentHp -= MonsterAttributeDebuff.BurnDamage;
+
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->UpdateWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
+	}
+
+	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+
+	if (MonsterInfo.CurrentHp <= 0.0f)
+	{
+		GetCapsuleComponent()->SetHiddenInGame(true);
+
+		bIsDead = true;
+
+		MonsterAIController->Death();
+		return;
+	}
+
+	if (bTestMode)
+		STARRYLOG(Log, TEXT("CurrentHp : %f"), MonsterInfo.CurrentHp);
+}
+#pragma endregion
+void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
+{
+	CalcCurrentDebuffAttribute(AttackedAttribute);
+
+	switch (MonsterInfo.CurrentDebuffAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		Burn();
+		break;
+	case EAttributeKeyword::e_Water:
+		Flooding();
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Shock();
+		break;
+	}
+}
+TArray<FOverlapResult> AMonster::DetectMonster()
+{
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
+		FCollisionShape::MakeSphere(MonsterAttributeDebuff.TransitionRange * 100.0f),
+		CollisionQueryParam
+	);
+
+	return OverlapResults;
+}
 #pragma region Debuff
 void AMonster::Burn()
 {
-	BurnStack++;
-	BurnTimer = 0.0f;
+	bIsFlooding = false;
+	bIsShock = false;
+
+	MonsterAttributeDebuff.BurnTimer = 0.0f;
 	bIsBurn = true;
 }
 void AMonster::Flooding()
 {
-	FloodingTimer = 0.0f;
+	bIsBurn = false;
+	bIsShock = false;
 
-	MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * FloodingDebuffSpeedReductionValue;
-	MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * FloodingDebuffSpeedReductionValue;
+	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
-	MonsterAnimInstance->SetPlayRate(FloodingDebuffSpeedReductionValue);
-	MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), FloodingDebuffSpeedReductionValue);
+	MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
+	MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
+
+	MonsterAnimInstance->SetPlayRate(MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue);
+	MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue);
 
 	bIsFlooding = true;
 }
 void AMonster::Shock()
 {
+	bIsBurn = false;
+	bIsFlooding = false;
+
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
 	if (nullptr == MonsterAIController)
 		STARRYLOG(Log, TEXT("MonsterAIController Not Found"));
@@ -383,10 +491,10 @@ void AMonster::Shock()
 
 	bIsShock = true;
 }
-void AMonster::Explosion()
+void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage)
 {
 	if (bTestMode)
-		DrawDebugSphere(GetWorld(), GetActorLocation(), ExplosionRange * 100.0f, 16, FColor::Red, false, 0.2f);
+		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.TransitionRange * 100.0f, 16, FColor::Red, false, 0.2f);
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
@@ -398,14 +506,16 @@ void AMonster::Explosion()
 			if (Monster == nullptr)
 				continue;
 
-			Monster->OnTrueDamage(ExplosionDamage);
+			Monster->AddDebuffStack(AttackedAttribute);
+			Monster->SetDebuff(AttackedAttribute, Damage);
+			Monster->OnDamage(AttackedAttribute, Damage);
 		}
 	}
 }
-void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
+void AMonster::Assemble()
 {
 	if (bTestMode)
-		DrawDebugSphere(GetWorld(), GetActorLocation(), AssembleRange * 100.0f, 16, FColor::Blue, false, 0.2f);
+		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.AssembleRange * 100.0f, 16, FColor::Blue, false, 0.2f);
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
 
@@ -417,19 +527,33 @@ void AMonster::Assemble(EAttributeKeyword PlayerMainAttribute, float Damage)
 			if (Monster == nullptr)
 				continue;
 
-			Monster->OnDamage(PlayerMainAttribute, Damage);
 			Monster->bIsAssemble = true;
 			Monster->AssembleLocation = GetActorLocation();
+
+			auto MonsterAIController = Cast<AMonsterAIController>(Monster->GetController());
+			MonsterAIController->SetFind();
 		}
 	}
 }
 void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	if (bTestMode)
-		DrawDebugSphere(GetWorld(), GetActorLocation(), ChainRange * 100.0f, 16, FColor::Yellow, false, 0.2f);
+		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.ChainRange * 100.0f, 16, FColor::Yellow, false, 0.2f);
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
-
+	
+	switch (PlayerMainAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		STARRYLOG(Log, TEXT("Fire"));
+		break;
+	case EAttributeKeyword::e_Water:
+		STARRYLOG(Log, TEXT("Water"));
+		break;
+	case EAttributeKeyword::e_Thunder:
+		STARRYLOG(Log, TEXT("Thunder"));
+		break;
+	}
 	if (AnotherMonsterList.Num() != 0)
 	{
 		for (auto const& AnotherMonster : AnotherMonsterList)
@@ -438,14 +562,18 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 			if (Monster == nullptr)
 				continue;
 
-			for (auto const& MonsterMainAttributeDef : Monster->MonsterInfo.MainAttributeDef)
+			//몬스터의 속성중
+			for (auto Elem : Monster->GetMainAttributeDef())
 			{
-				if (MonsterMainAttributeDef == EAttributeKeyword::e_Fire)
-					return;
+				//플레이어의 공격속성과 겹치는 속성이 있으면
+				if (Elem == PlayerMainAttribute)
+				{
+					//체인 상태
+					Monster->bIsChain = true;
+					Monster->OnDamage(PlayerMainAttribute, Damage);
+					break;
+				}
 			}
-		
-			Monster->OnDamage(PlayerMainAttribute, Damage);
-			Monster->bIsChain = true;
 		}
 	}
 }
@@ -457,9 +585,11 @@ void AMonster::BeginPlay()
 	
 	CalcAttributeDefType();
 
-	DefaultMoveSpeed = MonsterInfo.MoveSpeed;
-	DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
-	DefaultDef = MonsterInfo.Def;
+	MonsterInfo.DefaultMoveSpeed = MonsterInfo.MoveSpeed;
+	MonsterInfo.DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
+
+	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
+	MonsterInfo.CurrentDef = MonsterInfo.Def;
 
 }
 void AMonster::PossessedBy(AController* NewController)
@@ -501,62 +631,81 @@ void AMonster::Tick(float DeltaTime)
 	else
 	{
 		HpBarWidget->SetHiddenInGame(true);
+		return;
 	}
 
 	if (bIsBurn)
 	{
-		BurnCycleTimer += DeltaTime;
-		BurnTimer += DeltaTime;
-		if (BurnCycleTimer >= BurnCycle)
+		//화상 틱 시간 계산
+		MonsterAttributeDebuff.BurnCycleTimer += DeltaTime;
+		//화상 지속시간 계산
+		MonsterAttributeDebuff.BurnTimer += DeltaTime;
+		//화상 틱 시간이 설정된 시간이 됐을 때
+		if (MonsterAttributeDebuff.BurnCycleTimer >= MonsterAttributeDebuff.BurnCycle)
 		{
-			BurnStack = 0;
-			BurnCycleTimer = 0.0f;
-			CalcHp(BurnDamage);
+			//틱 시간 초기화
+			MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
+			//데미지 계산 후 체력감소
+			CalcBurnDamage();
 		}
-		if (BurnTimer >= BurnTime)
+		//화상 지속시간이 설정된 시간이 됐을 때
+		if (MonsterAttributeDebuff.BurnTimer >= MonsterAttributeDebuff.BurnTime)
 		{
-			BurnTimer = 0.0f;
+			//시간 초기화 및 화상 상태 해제
+			MonsterAttributeDebuff.BurnTimer = 0.0f;
 			bIsBurn = false;
 		}
 	}
 	if (bIsFlooding)
 	{
-		FloodingTimer += DeltaTime;
-		if (FloodingTimer >= FloodingTime)
+		//침수 지속시간 계산
+		MonsterAttributeDebuff.FloodingTimer += DeltaTime;
+		//침수 지속시간이 설정된 시간이 됐을 때
+		if (MonsterAttributeDebuff.FloodingTimer >= MonsterAttributeDebuff.FloodingTime)
 		{
-			FloodingStack = 0;
-			FloodingTimer = 0.0f;
+			//시간 초기화
+			MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
-			MonsterInfo.MoveSpeed = DefaultMoveSpeed;
-			MonsterInfo.BattleWalkMoveSpeed = DefaultBattleWalkMoveSpeed;
+			//이동속도를 원래대로
+			MonsterInfo.MoveSpeed = MonsterInfo.DefaultMoveSpeed;
+			MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
 
+			//애니메이션 속도를 원래대로
 			MonsterAnimInstance->SetPlayRate(1.0f);
 			MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
 
+			//침수 상태 해제
 			bIsFlooding = false;
 		}
 	}
 	if (bIsAssemble)
 	{
+		//중심 몬스터로 향하는 벡터
 		FVector MoveDirection = AssembleLocation - GetActorLocation();
-		
-		FVector newLocation = GetTransform().GetLocation() + (MoveDirection * (AssembleSpeed / 100.0f) * DeltaTime);
+		//끌려가는 힘 계산
+		FVector newLocation = GetTransform().GetLocation() + (MoveDirection * (MonsterAttributeDebuff.AssembleSpeed / 100.0f) * DeltaTime);
 
 		RootComponent->SetWorldLocation(newLocation);
 
-		AssembleTimer += DeltaTime;
-		if (AssembleTimer >= AssembleTime)
+		//어셈블 지속시간 계산
+		MonsterAttributeDebuff.AssembleTimer += DeltaTime;
+		//시간이 됐다면
+		if (MonsterAttributeDebuff.AssembleTimer >= MonsterAttributeDebuff.AssembleTime)
 		{
-			AssembleTimer = 0.0f;
+			//시간 초기화 및 어셈블 상태 해제
+			MonsterAttributeDebuff.AssembleTimer = 0.0f;
 			bIsAssemble = false;
 		}
 	}
 	if (bIsChain)
 	{
-		ChainTimer += DeltaTime;
-		if (ChainTimer >= ChainTime)
+		//체인 지속시간 계산
+		MonsterAttributeDebuff.ChainTimer += DeltaTime;
+		//시간이 됐다면
+		if (MonsterAttributeDebuff.ChainTimer >= MonsterAttributeDebuff.ChainTime)
 		{
-			ChainTimer = 0.0f;
+			//시간 초기화 및 체인 상태 해제
+			MonsterAttributeDebuff.ChainTimer = 0.0f;
 			bIsChain = false;
 		}
 	}
@@ -600,8 +749,8 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	
 	if (Player != nullptr)
 	{
-		CalcDamage(Player->GetAttribute(), DamageAmount);
 		CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
+		CalcDamage(Player->GetAttribute(), DamageAmount);
 		bIsAttacked = true;
 		return FinalDamage;
 	}
