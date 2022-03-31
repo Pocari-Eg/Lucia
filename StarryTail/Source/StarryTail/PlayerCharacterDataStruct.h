@@ -19,6 +19,12 @@ public:
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FollowCameraZPosition = 550;
+	// 스프링암과 플레이어 간 최대 거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxFollowCameraZPosition = 550;
+	// 스프링암과 플레이어 간 최소 거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinFollowCameraZPosition = 250;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -85,8 +91,13 @@ public:
 	int32 CurrentCombo = 0;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	int32 MaxCombo = 3;
+	// 캡슐 공격 사거리
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRange = 100.0f;
+	// 캡슐 공격 사거리 반지름
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRadius = 50.0f;
+	// 타겟 추적 선형보간 속도
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	float TargetFollowSpeed = 8.0f;
 };

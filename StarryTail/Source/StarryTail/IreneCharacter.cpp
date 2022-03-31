@@ -154,16 +154,19 @@ AIreneCharacter::AIreneCharacter()
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_HPBar.BP_HPBar_C"));
 
-	if (UI_HPBARWIDGET.Succeeded()) {
-
+	if (UI_HPBARWIDGET.Succeeded()) 
+	{
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
 		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
-
-	}
-	
+	}	
 
 	bStartJump = false;
 	JumpingTime = 0.0f;
+	bFollowTarget = false;
+	FollowTargetAlpha = 0.0f;
+	PlayerPosVec = FVector::ZeroVector;
+	TargetPosVec = FVector::ZeroVector;
+
 	bShowLog = false;
 }
 
@@ -196,30 +199,23 @@ void AIreneCharacter::BeginPlay()
 	{
 		Widget->BindCharacterAttribute(Attribute);
 	}
-
 }
-
 void AIreneCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
-
 	IreneAnim->OnMontageEnded.AddDynamic(this, &AIreneCharacter::OnAttackMontageEnded);
-
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
 			CharacterDataStruct.CanNextCombo = false;
-
 			if (CharacterDataStruct.IsComboInputOn)
 			{
 				AttackStartComboState();
 				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
 			}
 		});
-
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
 }
-
 #pragma endregion
 
 // Called every frame
@@ -234,6 +230,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 			MoveForward();
 			MoveRight();
 		}
+		else
+			MoveAuto();
 	}
 	else
 	{
@@ -249,7 +247,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
-	if (bStartJump) 
+	if (bStartJump)
 	{
 		JumpingTime += DeltaTime;
 		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
@@ -261,12 +259,12 @@ void AIreneCharacter::Tick(float DeltaTime)
 		bStartJump = false;
 	}
 
-	if (TargetMonster != nullptr) 
+	if (TargetMonster != nullptr)
 	{
 		//if (bShowLog)
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 		// 타겟몹이 죽거나 거리가 멀어지면 초기화
-		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 500.0f)
+		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
 			TargetMonster = nullptr;
 	}
 	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
@@ -350,6 +348,19 @@ void AIreneCharacter::MoveStop()
 }
 void AIreneCharacter::MoveAuto()
 {
+	if (bFollowTarget)
+	{
+		FollowTargetAlpha += GetWorld()->GetDeltaSeconds() * 2 * CharacterDataStruct.TargetFollowSpeed;
+		if (FollowTargetAlpha >= 1)
+			FollowTargetAlpha = 1;
+		FVector tar = FMath::Lerp(PlayerPosVec, TargetPosVec, FollowTargetAlpha);
+		GetCapsuleComponent()->SetRelativeLocation(tar);
+		if (FVector::Dist(tar, TargetPosVec) <= 1)
+		{
+			DoAttack();
+		}
+	}
+
 	if (MoveAutoDirection == FVector(0, 0, 0))
 	{
 		// w키나 아무방향 없으면 정면으로 이동
@@ -378,7 +389,7 @@ void AIreneCharacter::MoveAuto()
 		CharacterDataStruct.MoveSpeed = 1.0f;
 		MoveAutoDirection = FVector(0, 0, 0);
 		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		if(strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 			CharacterState->setState(StateEnum::Jump);
 	}
 
@@ -388,8 +399,8 @@ void AIreneCharacter::MoveAuto()
 
 void AIreneCharacter::StartJump()
 {
-	if (!GetCharacterMovement()->IsFalling() 
-		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 
+	if (!GetCharacterMovement()->IsFalling()
+		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0
 		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0
 		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
@@ -640,7 +651,7 @@ void AIreneCharacter::RightButton()
 void AIreneCharacter::MouseWheel(float Rate)
 {
 	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
-	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, 250.0f, 550.0f);
+	SpringArmComp->TargetArmLength = FMath::Clamp(SpringArmComp->TargetArmLength, CharacterDataStruct.MinFollowCameraZPosition, CharacterDataStruct.MaxFollowCameraZPosition);
 }
 
 void AIreneCharacter::MainKeyword()
@@ -670,17 +681,17 @@ void AIreneCharacter::MainKeyword()
 void AIreneCharacter::ActionKeyword1()
 {
 	if (bShowLog)
-	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword1"));
+		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword1"));
 }
 void AIreneCharacter::ActionKeyword2()
 {
 	if (bShowLog)
-	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword2"));
+		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword2"));
 }
 void AIreneCharacter::ActionKeyword3()
 {
 	if (bShowLog)
-	UE_LOG(LogTemp, Warning, TEXT("ActionKeyword3"));
+		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword3"));
 }
 
 void AIreneCharacter::DodgeKeyword()
@@ -815,6 +826,21 @@ void AIreneCharacter::AttackEndComboState()
 void AIreneCharacter::AttackCheck()
 {
 	FindNearMonster();
+	FTimerHandle AttackCheckWaitHandle;
+
+	//GetWorld()->GetTimerManager().SetTimer(AttackCheckWaitHandle, FTimerDelegate::CreateLambda([&]()
+	//	{
+	//		DoAttack();
+	//	}), 1.0f, false);
+
+}
+void AIreneCharacter::DoAttack()
+{
+	// 몬스터 추적 초기화
+	bFollowTarget = false;
+	FollowTargetAlpha = 0;
+	PlayerPosVec = FVector::ZeroVector;
+	TargetPosVec = FVector::ZeroVector;
 
 	TArray<FHitResult> MonsterList;
 	FCollisionQueryParams Params(NAME_None, false, this);
@@ -862,7 +888,7 @@ void AIreneCharacter::AttackCheck()
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
-	if(TargetMonster!=nullptr)
+	if (TargetMonster != nullptr)
 	{
 		// 타겟이 캐릭터의 뒤에 있다면 추적 취소
 		FVector targetData = TargetMonster->GetActorLocation() - GetActorLocation();
@@ -870,7 +896,6 @@ void AIreneCharacter::FindNearMonster()
 		if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
 		{
 			TargetMonster = nullptr;
-			UE_LOG(LogTemp, Error, TEXT("Delete Target"));
 		}
 	}
 
@@ -889,7 +914,7 @@ void AIreneCharacter::FindNearMonster()
 		GetActorLocation() + GetActorForwardVector() * far,
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * far).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel8,
-		FCollisionShape::MakeBox(BoxSize*1),
+		FCollisionShape::MakeBox(BoxSize * 1),
 		Params);
 
 #if ENABLE_DRAW_DEBUG
@@ -941,25 +966,25 @@ void AIreneCharacter::FindNearMonster()
 
 					TargetCollisionProfileName = TargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 					if (bShowLog)
-					UE_LOG(LogTemp, Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
+						UE_LOG(LogTemp, Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
 
 					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
-					if(NearPosition >= FindNearTarget)
+					if (NearPosition >= FindNearTarget)
 					{
 						// 만약 최단거리가 같은 액터가 있다면
 						if (NearPosition == FindNearTarget)
 						{
-							if(TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)
+							if (TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
 								TargetMonster = RayHit.GetActor();
 							}
-							else if(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
+							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
 								TargetMonster = RayHit.GetActor();
 							}
-							else if(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile)
+							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile)
 							{
 								NearPosition = FindNearTarget;
 								TargetMonster = RayHit.GetActor();
@@ -976,18 +1001,24 @@ void AIreneCharacter::FindNearMonster()
 		}
 	}
 	// 몬스터를 찾고 쳐다보기
-	if(TargetMonster != nullptr)
+	if (TargetMonster != nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
+		//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 
 		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 		// 몬스터가 공격범위 보다 멀리 있다면
 		float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
-		if(TargetPos > CharacterDataStruct.AttackRange)
-		{			
-			GetCapsuleComponent()->SetRelativeLocation(GetActorLocation() + GetActorForwardVector() * (TargetPos- CharacterDataStruct.AttackRadius));
-			//GetWorldSettings()->SetTimeDilation(0.f);
+		if (TargetPos > CharacterDataStruct.AttackRange)
+		{
+			// 추적 세팅
+			bFollowTarget = true;
+			PlayerPosVec = GetActorLocation();
+			TargetPosVec = GetActorLocation() + GetActorForwardVector() * (TargetPos);
+		}
+		else
+		{
+			DoAttack();
 		}
 	}
 }
@@ -1003,7 +1034,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (CharacterDataStruct.CurrentHP > 0) 
+	if (CharacterDataStruct.CurrentHP > 0)
 	{
 		CharacterDataStruct.CurrentHP -= DamageAmount - CharacterDataStruct.Defenses;
 		//hp 바
@@ -1012,14 +1043,14 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		{
 			HpBar->UpdateWidget(GetHpRatio());
 		}
-		if (CharacterDataStruct.CurrentHP <= 0) 
+		if (CharacterDataStruct.CurrentHP <= 0)
 		{
 			IreneAnim->StopAllMontages(0);
 			IreneAnim->SetDeadAnim(true);
 			ChangeStateAndLog(StateEnum::Death);
 		}
 	}
-	if (TargetMonster == nullptr) 
+	if (TargetMonster == nullptr)
 	{
 		TargetMonster = DamageCauser;
 	}
@@ -1032,14 +1063,14 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 {
 	if ((strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0) || 
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0) ||
 		newState == StateEnum::Death)
 	{
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
 		if (bShowLog)
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }
 
@@ -1057,7 +1088,7 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	if (MoveKey[3] > 2)
 		MoveKey[3] -= 2;
 
-	if(strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 		CharacterState->setState(StateEnum::Idle);
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
@@ -1083,22 +1114,17 @@ EAttributeKeyword AIreneCharacter::GetAttribute()
 {
 	return Attribute;
 }
-
 float AIreneCharacter::GetATK()
 {
 	return CharacterDataStruct.Strength;
 }
-
-void AIreneCharacter::AttributeChange()
-{
-	
-}
-#pragma endregion
 float AIreneCharacter::GetHpRatio()
 {
-	//현재 HP를 0.0~1.0의 비율로 변환하여 반환
+	// 비율변환 0.0 ~ 1.0
 	return (CharacterDataStruct.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentHP / CharacterDataStruct.MaxHP;
 }
+#pragma endregion
+
 #pragma region StopWatch
 //스탑워치 컨트롤 함수
 //void AIreneCharacter::WatchContorl()
