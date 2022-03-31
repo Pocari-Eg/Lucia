@@ -12,11 +12,11 @@ struct FAttributeDefence
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Normal; //公加己
+		float e_None; //公加己
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Pyro; //阂加己
+		float e_Fire; //阂加己
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Hydro; //拱加己
+		float e_Water; //拱加己
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Electro; //锅俺加己
+		float e_Thunder; //锅俺加己
 };

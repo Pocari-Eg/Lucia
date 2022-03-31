@@ -31,10 +31,10 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
 
-	AttributeDef.Normal = 80.0f;
-	AttributeDef.Pyro = 15.0f;
-	AttributeDef.Hydro = 0.0f;
-	AttributeDef.Electro = 5.0f;
+	AttributeDef.e_None = 80.0f;
+	AttributeDef.e_Fire = 15.0f;
+	AttributeDef.e_Water = 0.0f;
+	AttributeDef.e_Thunder = 5.0f;
 
 	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
@@ -160,16 +160,14 @@ void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
-
 	UMaterial* Material;
 	switch (MonsterInfo.MonsterAttribute)
 	{
 	case EAttributeKeyword::e_None:
-		AttributeDef.Normal = 80.0f;
-		AttributeDef.Pyro = 15.0f;
-		AttributeDef.Hydro = 0.0f;
-		AttributeDef.Electro = 5.0f;
+		AttributeDef.e_None = 80.0f;
+		AttributeDef.e_Fire = 15.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 5.0f;
 		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
 		if (Material != nullptr)
 		{
@@ -221,7 +219,7 @@ void AMorbit::PostInitializeComponents()
 		});
 	MonsterAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
-			Death.Broadcast();
+			Destroy();
 		});
 	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }

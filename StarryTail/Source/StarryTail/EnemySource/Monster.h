@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "./Struct/FNormalMonsterInfo.h"
 #include "./Struct/FAttributeDefence.h"
+#include "./Struct/FAttributeDebuff.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
 #include "DrawDebugHelpers.h"
@@ -26,11 +27,14 @@ public:
 	//Function
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
+	TArray<EAttributeKeyword> GetMainAttributeDef() const;
 	
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
 	void OnTrueDamage(float Damage);
 	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+
+	void AddDebuffStack(EAttributeKeyword Attribute);
 
 	TArray<FOverlapResult> DetectMonster();
 
@@ -54,6 +58,8 @@ protected:
 		FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FAttributeDefence AttributeDef;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
+		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(VisibleAnywhere, Category = Collision, Meta = (AllowPrivateAccess = true))
 		class UCapsuleComponent* Collision;
 	//¹ÚÂù¿µ UI
@@ -73,59 +79,21 @@ private:
 
 	//Function
 	void CalcHp(float Damage);
+	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
+	void CalcBurnDamage();
+
+	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void Burn();
 	void Flooding();
 	void Shock();
-	void Explosion();
-	void Assemble(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
+	void Assemble();
 	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
 
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		float DetectMonsterRange;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		int BurnStack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float BurnCycle;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float BurnDamage;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float BurnTime;
-	float BurnCycleTimer;
-	float BurnTimer;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		int FloodingStack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float FloodingTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float FloodingDebuffSpeedReductionValue;
-	float FloodingTimer;
-	float DefaultMoveSpeed;
-	float DefaultBattleWalkMoveSpeed;
-	float DefaultDef;
-
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float ExplosionRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float ExplosionDamage;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float AssembleRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float AssembleTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float AssembleSpeed;
-	float AssembleTimer;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float ChainRange;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAccess = true))
-		float ChainTime;
-	float ChainTimer;
 
 	FVector AssembleLocation;
 

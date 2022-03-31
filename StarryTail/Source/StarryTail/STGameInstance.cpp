@@ -14,3 +14,18 @@ void USTGameInstance::SetPlayer(AIreneCharacter* IreneCharacter)
 		STARRYLOG(Log, TEXT("Failed SetPlayer"));
 	STARRYLOG(Log, TEXT("SetPlayer Complete : %s"), *Player->GetName());
 }
+AMonster* USTGameInstance::GetAttributeEffectMonster()
+{
+	return AttributeEffectMonster;
+}
+void USTGameInstance::SetAttributeEffectMonster(AMonster* Monster)
+{
+	AttributeEffectMonster = Monster;
+	if (AttributeEffectMonster == nullptr)
+		STARRYLOG(Log, TEXT("Failed SetAttributeEffectMonster"));
+	STARRYLOG(Log, TEXT("Set AttributeEffect Monster Complete : %s"), *AttributeEffectMonster->GetName());
+}
+void USTGameInstance::ResetAttributeEffectMonster()
+{
+	AttributeEffectMonster = nullptr;
+}
