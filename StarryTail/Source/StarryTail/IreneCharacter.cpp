@@ -54,6 +54,12 @@ AIreneCharacter::AIreneCharacter()
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 		}
 	}
+	// 점프커브
+	ConstructorHelpers::FObjectFinder<UCurveFloat>JumpCurve(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Real/Jump.Jump"));
+	if (JumpCurve.Succeeded())
+	{
+		JumpGravityCurve = JumpCurve.Object;
+	}
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
@@ -88,7 +94,7 @@ AIreneCharacter::AIreneCharacter()
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
 
 	// 점프 높이
-	GetCharacterMovement()->JumpZVelocity = 900.0f;
+	GetCharacterMovement()->JumpZVelocity = CharacterDataStruct.JumpStartPower;
 
 	// 기본 최대 이동속도
 	GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
@@ -138,7 +144,8 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
-
+	bStartJump = false;
+	JumpingTime = 0.0f;
 	bShowLog = false;
 }
 
@@ -224,18 +231,17 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
-	if(GetCharacterMovement()->IsFalling())
+	if (bStartJump) 
 	{
-		if (GetCharacterMovement()->GravityScale >= 1 && GetCharacterMovement()->GravityScale < 2.1f) 
-		{
-			// GravityScale = y축 값, x축 부호-, 수치는 작을수록 체공 증가
-			GetCharacterMovement()->GravityScale = 2-FMath::Clamp(FMath::Cos(FMath::DegreesToRadians((GetCharacterMovement()->Velocity.Z * 9) / (GetCharacterMovement()->JumpZVelocity/10))) * 1.0f, -1.0f, 1.0f);
-		}
-		else
-			GetCharacterMovement()->GravityScale = 2.1f;
+		JumpingTime += DeltaTime;
+		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
 	}
-	else
-		GetCharacterMovement()->GravityScale = 2;
+
+	if (!GetCharacterMovement()->IsFalling())
+	{
+		JumpingTime = 0.0f;
+		bStartJump = false;
+	}
 
 	if (TargetMonster != nullptr) 
 	{
@@ -391,6 +397,7 @@ void AIreneCharacter::StartJump()
 		GetMovementComponent()->Velocity = GetMovementComponent()->Velocity / 3;
 
 		bPressedJump = true;
+		bStartJump = true;
 		ChangeStateAndLog(StateEnum::Jump);
 	}
 }
@@ -788,6 +795,8 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
+	FindNearMonster();
+
 	TArray<FHitResult> MonsterList;
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepMultiByChannel(
@@ -798,7 +807,6 @@ void AIreneCharacter::AttackCheck()
 		ECollisionChannel::ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
-	FindNearMonster();
 
 #if ENABLE_DRAW_DEBUG
 	FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
@@ -835,6 +843,18 @@ void AIreneCharacter::AttackCheck()
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
+	if(TargetMonster!=nullptr)
+	{
+		// 타겟이 캐릭터의 뒤에 있다면 추적 취소
+		FVector targetData = TargetMonster->GetActorLocation() - GetActorLocation();
+		targetData.Normalize();
+		if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
+		{
+			TargetMonster = nullptr;
+			UE_LOG(LogTemp, Error, TEXT("Delete Target"));
+		}
+	}
+
 	float far = 300;
 	// 가로, 높이, 세로
 	FVector BoxSize = FVector(150, 50, far);
@@ -892,7 +912,7 @@ void AIreneCharacter::FindNearMonster()
 				if (RayHit.Actor.IsValid() &&
 					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
 					&& RayHit.GetActor()->WasRecentlyRendered())
-				{						
+				{
 					// 첫 몬스터 할당
 					if (TargetMonster == nullptr)
 					{
@@ -939,10 +959,17 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if(TargetMonster != nullptr)
 	{
-		if (bShowLog)
 		UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
+
 		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+		// 몬스터가 공격범위 보다 멀리 있다면
+		float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
+		if(TargetPos > CharacterDataStruct.AttackRange)
+		{			
+			GetCapsuleComponent()->SetRelativeLocation(GetActorLocation() + GetActorForwardVector() * (TargetPos- CharacterDataStruct.AttackRadius));
+			//GetWorldSettings()->SetTimeDilation(0.f);
+		}
 	}
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
