@@ -13,23 +13,22 @@ AGimbalObject::AGimbalObject()
 	RootComponent = Center;
 	
 	
-	FireGimbal = CreateDefaultSubobject<UGimbalPartsComponent>(TEXT("FIREGIMBAL"));
-	WaterObject = CreateDefaultSubobject<UGimbalPartsComponent>(TEXT("WATERGIMBAL"));
-	ThunderObject = CreateDefaultSubobject<UGimbalPartsComponent>(TEXT("THUNDERGIMBAL"));
+	FireGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FIREGIMBAL"));
+	WaterGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WATERGIMBAL"));
+	ThunderGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("THUNDERGIMBAL"));
 
-	
+	FireGimbal->SetupAttachment(RootComponent);
+	WaterGimbal->SetupAttachment(RootComponent);
+	ThunderGimbal->SetupAttachment(RootComponent);
 
-	FireGimbal->Mesh->SetupAttachment(Center);
-	WaterObject->Mesh->SetupAttachment(Center);
-	ThunderObject->Mesh->SetupAttachment(Center);
+	FireGimbal->SetRelativeLocation(FVector::ZeroVector);
+	WaterGimbal->SetRelativeLocation(FVector::ZeroVector);
+	ThunderGimbal->SetRelativeLocation(FVector::ZeroVector);
 
 
-	FireGimbal->Mesh->SetRelativeLocation(GetActorLocation());
-	WaterObject->Mesh->SetRelativeLocation(GetActorLocation());
-	ThunderObject->Mesh->SetRelativeLocation(GetActorLocation());
-
-	//WaterObject->Mesh->SetRelativeLocation(GetActorLocation());
-	//ThunderObject->Mesh->SetRelativeLocation(GetActorLocation());
+	IsFireGimbalOn = false;
+	IsWaterGimbalOn = false;
+	IsThunderGimbalOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -37,7 +36,12 @@ void AGimbalObject::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	FireOccupiedArea->FOnOccupy.AddUObject(this, &AGimbalObject::RotateFireGimbal);
+	if(FireOccupiedArea!=nullptr)
+		FireOccupiedArea->FOnOccupy.AddUObject(this, &AGimbalObject::FireGimbalOn);
+	if (WaterOccupiedArea != nullptr)
+		WaterOccupiedArea->FOnOccupy.AddUObject(this, &AGimbalObject::WaterGimbalOn);
+	if (ThungerOccupiedArea != nullptr)
+		ThungerOccupiedArea->FOnOccupy.AddUObject(this, &AGimbalObject::ThunderGimbalOn);
 	
 }
 
@@ -46,11 +50,27 @@ void AGimbalObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	IsFireGimbalOn == true ? FireGimbal->AddWorldRotation(FRotator(0.0f, FireGimbalSpeed, 0.0f)) : IsFireGimbalOn =false;
+	IsWaterGimbalOn == true ? WaterGimbal->AddWorldRotation(FRotator(0.0f, 0.0f, WaterGimbalSpeed)) : IsWaterGimbalOn = false;
+	IsThunderGimbalOn == true ? ThunderGimbal->AddWorldRotation(FRotator(ThunderGimbalSpeed, 0.0f, 0.0f)) : IsThunderGimbalOn = false;
+
 }
 
-void AGimbalObject::RotateFireGimbal()
+void AGimbalObject::FireGimbalOn()
 {
-	FireGimbal->SetRotation();
+	IsFireGimbalOn = true;
 }
+
+void AGimbalObject::WaterGimbalOn()
+{
+	IsWaterGimbalOn = true;
+}
+
+void AGimbalObject::ThunderGimbalOn()
+{
+	IsThunderGimbalOn = true;
+}
+
+
 
 

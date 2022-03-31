@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 
 #include "OccupiedObject.h"
-#include "GimbalPartsComponent.h"
+#include "Components/ChildActorComponent.h"
 #include "GimbalObject.generated.h"
 
 
@@ -21,15 +21,31 @@ public:
 	UStaticMeshComponent* Center;
 
 	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UGimbalPartsComponent* FireGimbal;
+	UStaticMeshComponent* FireGimbal;
 	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UGimbalPartsComponent* WaterObject;
+	UStaticMeshComponent* WaterGimbal;
 	UPROPERTY(EditAnyWhere,Category=GIMBAL)
-	UGimbalPartsComponent* ThunderObject;
+	UStaticMeshComponent* ThunderGimbal;
+
+
+	UPROPERTY(EditAnyWhere, Category = GIMBAL)
+	float FireGimbalSpeed;
+	UPROPERTY(EditAnyWhere, Category = GIMBAL)
+	float WaterGimbalSpeed;
+	UPROPERTY(EditAnyWhere, Category = GIMBAL)
+	float ThunderGimbalSpeed;
+
 
 	UPROPERTY(EditAnyWhere, Category = AREA)
 	AOccupiedObject* FireOccupiedArea;
-
+	UPROPERTY(EditAnyWhere, Category = AREA)
+	AOccupiedObject* WaterOccupiedArea;
+	UPROPERTY(EditAnyWhere, Category = AREA)
+	AOccupiedObject* ThungerOccupiedArea;
+private:
+	bool IsFireGimbalOn;
+	bool IsWaterGimbalOn;
+	bool IsThunderGimbalOn;
 public:	
 	// Sets default values for this actor's properties
 	AGimbalObject();
@@ -42,5 +58,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-	void RotateFireGimbal();
+	void FireGimbalOn();
+	void WaterGimbalOn();
+	void ThunderGimbalOn();
 };
