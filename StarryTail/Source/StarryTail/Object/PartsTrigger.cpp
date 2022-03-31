@@ -54,7 +54,7 @@ void APartsTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		UE_LOG(LogTemp, Error, TEXT("StartTrigger Hit"));
 		if (StartObject != nullptr)
 		{
-			StartObject->ForwardMove(this);
+			StartObject->MovingStart(this);
 			TriggerOff();
 		}
 	}
