@@ -135,7 +135,7 @@ AIreneCharacter::AIreneCharacter()
 	//ui 설정
 	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
 	AttributeWidget->SetupAttachment(GetMesh());
-	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 170.0f));
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f));
 	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
@@ -144,6 +144,24 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetWidgetClass(UI_HUD.Class);
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
+
+	//HP UI 설정
+	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
+	HpBarWidget->SetupAttachment(GetMesh());
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 170.0f));
+	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
+
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_HPBar.BP_HPBar_C"));
+
+	if (UI_HPBARWIDGET.Succeeded()) {
+
+		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
+		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+
+	}
+	
+
 	bStartJump = false;
 	JumpingTime = 0.0f;
 	bShowLog = false;
@@ -257,6 +275,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 
 	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
 	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 }
 
 #pragma region Move
@@ -987,6 +1006,12 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	if (CharacterDataStruct.CurrentHP > 0) 
 	{
 		CharacterDataStruct.CurrentHP -= DamageAmount - CharacterDataStruct.Defenses;
+		//hp 바
+		auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+		if (HpBar != nullptr)
+		{
+			HpBar->UpdateWidget(GetHpRatio());
+		}
 		if (CharacterDataStruct.CurrentHP <= 0) 
 		{
 			IreneAnim->StopAllMontages(0);
@@ -1069,7 +1094,11 @@ void AIreneCharacter::AttributeChange()
 	
 }
 #pragma endregion
-
+float AIreneCharacter::GetHpRatio()
+{
+	//현재 HP를 0.0~1.0의 비율로 변환하여 반환
+	return (CharacterDataStruct.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentHP / CharacterDataStruct.MaxHP;
+}
 #pragma region StopWatch
 //스탑워치 컨트롤 함수
 //void AIreneCharacter::WatchContorl()

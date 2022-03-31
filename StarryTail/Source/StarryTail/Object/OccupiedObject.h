@@ -14,6 +14,8 @@
 
 #include "OccupiedObject.generated.h"
 
+//속성 변경 델리데이트
+DECLARE_MULTICAST_DELEGATE(FOnOccupyDelegate);
 UCLASS()
 class STARRYTAIL_API AOccupiedObject : public AActor
 {
@@ -21,6 +23,7 @@ class STARRYTAIL_API AOccupiedObject : public AActor
 
 public:
 
+	FOnOccupyDelegate FOnOccupy;
 private:
    UPROPERTY(VisibleAnywhere,Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
@@ -43,6 +46,8 @@ private:
    bool IsInPlayer;
    UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
    bool IsOccupied;
+   UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
+    bool IsOccupying;
 
    UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
    EAttributeKeyword AreaAttribute;

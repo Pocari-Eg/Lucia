@@ -17,6 +17,7 @@
 #include "StopWatch.h"
 #include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
+#include "UI/HPBarWidget.h"
 
 #include "IreneCharacter.generated.h"
 
@@ -92,7 +93,9 @@ private:
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
-
+	//Hp Bar 위젯
+	UPROPERTY(VisibleAnywhere, Category = UI)
+		class UWidgetComponent* HpBarWidget;
 
 	//스탑워치
 	//AStopWatch* StopWatch;
@@ -190,7 +193,8 @@ private:
 
 	//속성 변환
 	void AttributeChange();
-
+   //현재 체력 비율 전환
+	float GetHpRatio();
 //스탑워치 
 	//void WatchContorl();
 	//void WatchReset();

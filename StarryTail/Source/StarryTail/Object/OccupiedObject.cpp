@@ -24,6 +24,7 @@ AOccupiedObject::AOccupiedObject()
 
 	IsInPlayer = false;
 	IsOccupied = false;
+	IsOccupying = false;
 	Player = nullptr;
 	CurrentOccupy = 0;
 
@@ -92,12 +93,12 @@ void AOccupiedObject::CompareAttribute()
 	if (IsInPlayer == true)
 	{	
 		PlayerAttribute = Player->GetAttribute();
-		PlayerAttribute == AreaAttribute ? IsOccupied = true : IsOccupied = false;
+		PlayerAttribute == AreaAttribute ? IsOccupying = true : IsOccupying = false;
 	}
 	else {
 	}
 
-	if (IsOccupied == true)
+	if (IsOccupying == true)
 	{
 		GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::Occupying, 1.0f, true, 0.0f);
 	}
@@ -108,12 +109,25 @@ void AOccupiedObject::CompareAttribute()
 
 void AOccupiedObject::Occupying()
 {
+
+	if (CurrentOccupy < MaxOccupy)
+	{
+		CurrentOccupy += OccupyNum;
+	}
+	else {
+		GetWorldTimerManager().ClearTimer(TimerHandle);
+			IsOccupying = false;
+			IsOccupied = true;
+			FOnOccupy.Broadcast();
+	}
+
+
 	auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 	if (OccupyBar != nullptr)
 	{
 		OccupyBar->UpdateWidget(((float)CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f :(float) CurrentOccupy / (float)MaxOccupy);
 	}
-	CurrentOccupy < MaxOccupy ? CurrentOccupy += OccupyNum : GetWorldTimerManager().ClearTimer(TimerHandle);
+	
 
 }
 
