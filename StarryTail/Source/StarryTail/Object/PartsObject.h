@@ -8,6 +8,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SplineComponent.h" 
+#include "Components/SphereComponent.h"
 #include "Components/TimelineComponent.h"
 
 
@@ -23,6 +24,8 @@ class STARRYTAIL_API APartsObject : public AActor
 	//물체가 한번 이동할때 얼마나 이동할것인가.
 	UPROPERTY(EditAnywhere, Category = Platform)
 	float Speed;
+	UPROPERTY(EditAnywhere, Category = Platform)
+	USphereComponent* Center;
 	//메쉬
 	UPROPERTY(EditAnywhere, Category = Platform)
 	UStaticMeshComponent* Mesh;

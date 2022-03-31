@@ -9,9 +9,11 @@ APartsObject::APartsObject()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	//초기 세팅
+	Center = CreateDefaultSubobject<USphereComponent>(TEXT("CENTER"));
 	Track = CreateDefaultSubobject<USplineComponent>(TEXT("TRACK"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
-	RootComponent = Track;
+	
+	RootComponent = Center;
 
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>ST_MESH(TEXT("/Engine/VREditor/BasicMeshes/SM_Cube_01.SM_Cube_01"));
 	if (ST_MESH.Succeeded())
@@ -19,7 +21,7 @@ APartsObject::APartsObject()
 		Mesh->SetStaticMesh(ST_MESH.Object);
 	}
 
-
+	Track->SetupAttachment(RootComponent);
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 
