@@ -29,7 +29,7 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	//속성변환 델리게이트
 	FOnAttributeChangeDelegate FOnAttributeChange;
 protected:
@@ -49,16 +49,10 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
 
-	// 충돌체
-	//UPROPERTY(VisibleAnywhere)
-	//UBoxComponent* FindMonsterCollsion;
-	//UPROPERTY(VisibleAnywhere)
-	//UBoxComponent* FindTargetCollsion;
-
 	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
 	UPROPERTY(EditAnywhere)
 	TArray<uint8> MoveKey;
-	
+
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
@@ -86,6 +80,10 @@ private:
 
 	bool bStartJump;
 	float JumpingTime;
+	bool bFollowTarget;
+	float FollowTargetAlpha;
+	FVector PlayerPosVec;
+	FVector TargetPosVec;
 
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
@@ -95,7 +93,7 @@ private:
 	class UWidgetComponent* AttributeWidget;
 	//Hp Bar 위젯
 	UPROPERTY(VisibleAnywhere, Category = UI)
-		class UWidgetComponent* HpBarWidget;
+	class UWidgetComponent* HpBarWidget;
 
 	//스탑워치
 	//AStopWatch* StopWatch;
@@ -125,7 +123,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:	
+private:
 	// 캐릭터 이동 관련 함수
 	void MoveForward();
 	void MoveRight();
@@ -173,13 +171,14 @@ private:
 
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(StateEnum newState);
-	
+
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackCheck();
+	void DoAttack();
 
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
@@ -191,10 +190,9 @@ private:
 	// 피격
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 
-	//속성 변환
-	void AttributeChange();
    //현재 체력 비율 전환
 	float GetHpRatio();
+
 //스탑워치 
 	//void WatchContorl();
 	//void WatchReset();
