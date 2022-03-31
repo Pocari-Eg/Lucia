@@ -348,6 +348,7 @@ void AIreneCharacter::MoveStop()
 }
 void AIreneCharacter::MoveAuto()
 {
+	// 이동 후 공격
 	if (bFollowTarget)
 	{
 		FollowTargetAlpha += GetWorld()->GetDeltaSeconds() * 2 * CharacterDataStruct.TargetFollowSpeed;
@@ -360,41 +361,27 @@ void AIreneCharacter::MoveAuto()
 			DoAttack();
 		}
 	}
-
-	if (MoveAutoDirection == FVector(0, 0, 0))
+	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
 	{
-		// w키나 아무방향 없으면 정면으로 이동
-		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
 			MoveAutoDirection += GetActorForwardVector();
+			MoveAutoDirection.Normalize();
 		}
-		if (MoveKey[1] != 0)
-		{
-			MoveAutoDirection += GetActorRightVector() * -1;
-		}
-		if (MoveKey[2] != 0)
-		{
-			MoveAutoDirection += GetActorForwardVector() * -2;
-		}
-		if (MoveKey[3] != 0)
-		{
-			MoveAutoDirection += GetActorRightVector();
-		}
-		MoveAutoDirection.Normalize();
-	}
 
-	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
-	if (GetMovementComponent()->IsFalling())
-	{
-		CharacterDataStruct.MoveSpeed = 1.0f;
-		MoveAutoDirection = FVector(0, 0, 0);
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
-			CharacterState->setState(StateEnum::Jump);
-	}
+		// 대쉬 도중 떨어지면 점프 상태로 강제 변화
+		if (GetMovementComponent()->IsFalling())
+		{
+			CharacterDataStruct.MoveSpeed = 1.0f;
+			MoveAutoDirection = FVector(0, 0, 0);
+			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
+			if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+				CharacterState->setState(StateEnum::Jump);
+		}
 
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
-		AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
+			AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
+	}
 }
 
 void AIreneCharacter::StartJump()
@@ -422,7 +409,7 @@ void AIreneCharacter::StartJump()
 		{
 			Direction += GetActorRightVector();
 		}
-		MoveAutoDirection.Normalize();
+		Direction.Normalize();
 
 		GetMovementComponent()->Velocity = GetMovementComponent()->Velocity / 3;
 
@@ -678,21 +665,6 @@ void AIreneCharacter::MainKeyword()
 	}
 	FOnAttributeChange.Broadcast();
 }
-void AIreneCharacter::ActionKeyword1()
-{
-	if (bShowLog)
-		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword1"));
-}
-void AIreneCharacter::ActionKeyword2()
-{
-	if (bShowLog)
-		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword2"));
-}
-void AIreneCharacter::ActionKeyword3()
-{
-	if (bShowLog)
-		UE_LOG(LogTemp, Warning, TEXT("ActionKeyword3"));
-}
 
 void AIreneCharacter::DodgeKeyword()
 {
@@ -720,8 +692,6 @@ void AIreneCharacter::DodgeKeyword()
 		if (!IsFallingRoll)
 		{
 			IsFallingRoll = true;
-			//int32 FallingPower = 500000;
-			//GetCharacterMovement()->AddImpulse(FVector(0, 0, -1) * FallingPower);
 
 			MoveAutoDirection.ZeroVector;
 			// w키나 아무방향 없으면 정면으로 이동
@@ -778,9 +748,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("MainKeyword", IE_Pressed, this, &AIreneCharacter::MainKeyword);
-	PlayerInputComponent->BindAction("ActionKeyword1", IE_Pressed, this, &AIreneCharacter::ActionKeyword1);
-	PlayerInputComponent->BindAction("ActionKeyword2", IE_Pressed, this, &AIreneCharacter::ActionKeyword2);
-	PlayerInputComponent->BindAction("ActionKeyword3", IE_Pressed, this, &AIreneCharacter::ActionKeyword3);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AIreneCharacter::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, this, &AIreneCharacter::MouseCursorKeyword);
 
@@ -795,9 +762,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	//스탑워치 컨트롤
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
 	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);*/
-
-	// 속성 변환 테스트
-	//PlayerInputComponent->BindAction("AttributeChange", IE_Pressed, this, &AIreneCharacter::AttributeChange);
 }
 #pragma endregion
 
@@ -827,12 +791,6 @@ void AIreneCharacter::AttackCheck()
 {
 	FindNearMonster();
 	FTimerHandle AttackCheckWaitHandle;
-
-	//GetWorld()->GetTimerManager().SetTimer(AttackCheckWaitHandle, FTimerDelegate::CreateLambda([&]()
-	//	{
-	//		DoAttack();
-	//	}), 1.0f, false);
-
 }
 void AIreneCharacter::DoAttack()
 {
