@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "IreneCharacter.h"
+#include "./EnemySource/Monster.h"
 #include "STGameInstance.generated.h"
 
 //김재섭
@@ -19,6 +20,10 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 public:
 	AIreneCharacter* GetPlayer();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
+	AMonster* GetAttributeEffectMonster();
+	void SetAttributeEffectMonster(AMonster* Monster);
+	void ResetAttributeEffectMonster();
 private:
 	AIreneCharacter* Player;
+	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
 };

@@ -39,7 +39,15 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		TArray<EAttributeKeyword> MainAttributeDef;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		EAttributeKeyword CurrentDebuffAttribute;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CurrentHp;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float CurrentDef;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float DefaultMoveSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float DefaultBattleWalkMoveSpeed;
 };
 	
 

@@ -882,6 +882,16 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
+	//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
+	//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
+	if (bResult)
+	{
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+		{
+			STGameInstance->ResetAttributeEffectMonster();
+		}
+	}
 }
 #pragma endregion
 
