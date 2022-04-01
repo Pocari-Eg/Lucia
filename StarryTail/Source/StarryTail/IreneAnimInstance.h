@@ -10,7 +10,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FOnFootStepDelegate);
 /**
  * 
  */
@@ -53,7 +53,7 @@ public:
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
-
+	FOnFootStepDelegate OnFootStep;
 protected:
 
 private:
@@ -61,6 +61,7 @@ private:
 		void AnimNotify_AttackHitCheck();
 	UFUNCTION()
 		void AnimNotify_NextAttackCheck();
-
+	UFUNCTION()
+	void AnimNotify_FootStep();
 	FName GetAttackMontageSectionName(int32 Section);
 };
