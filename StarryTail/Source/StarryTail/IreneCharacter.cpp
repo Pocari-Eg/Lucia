@@ -21,7 +21,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Idle.Idle"));
+	ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -34,7 +34,7 @@ AIreneCharacter::AIreneCharacter()
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Sword/PC_sworddummy02.PC_sworddummy02"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/IreneSword/PC_sworddummy02.PC_sworddummy02"));
 			if (SK_WEAPON.Succeeded())
 			{
 				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
@@ -47,7 +47,7 @@ AIreneCharacter::AIreneCharacter()
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Developers/syhwms/Collections/AnimTest/BP_Irene.BP_Irene_C"));
+		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/BP/BP_IreneAnination.BP_IreneAnination_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 		{
@@ -55,7 +55,7 @@ AIreneCharacter::AIreneCharacter()
 		}
 	}
 	// 점프커브
-	ConstructorHelpers::FObjectFinder<UCurveFloat>JumpCurve(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Real/Jump.Jump"));
+	ConstructorHelpers::FObjectFinder<UCurveFloat>JumpCurve(TEXT("/Game/Math/Jump.Jump"));
 	if (JumpCurve.Succeeded())
 	{
 		JumpGravityCurve = JumpCurve.Object;
@@ -333,6 +333,10 @@ void AIreneCharacter::MoveStop()
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 		{
+			if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Sprint") == 0)
+			{
+				IreneAnim->SetSprintStopAnim(true);
+			}
 			ChangeStateAndLog(StateEnum::Idle);
 		}
 	}
@@ -629,6 +633,7 @@ void AIreneCharacter::RightButton()
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Fall") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
+		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
 	{
 		ChangeStateAndLog(StateEnum::Attack);
@@ -1034,6 +1039,15 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0) ||
 		newState == StateEnum::Death)
 	{
+		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Sprint") != 0) 
+		{
+			IreneAnim->SetSprintStateAnim(false);
+			IreneAnim->SetSprintStopAnim(false);
+		}
+		else
+		{
+			IreneAnim->SetSprintStateAnim(true);
+		}
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
