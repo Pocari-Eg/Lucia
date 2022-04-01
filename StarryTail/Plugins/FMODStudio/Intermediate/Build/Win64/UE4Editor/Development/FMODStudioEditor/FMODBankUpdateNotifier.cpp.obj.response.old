@@ -32,10 +32,10 @@
 /wd4244
 /wd4838
 /I .
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Private
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudioEditor\Classes
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudioEditor\Private
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Classes
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Private
 /I ..\Intermediate\Build\Win64\UE4Editor\Inc\AssetRegistry
 /I Runtime
 /I Runtime\AssetRegistry\Public
@@ -250,12 +250,12 @@
 /I Editor\CurveEditor\Public
 /I Editor\EditorWidgets\Public
 /I Editor\WorkspaceMenuStructure\Public
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudioEditor
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudioEditor\Public
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Classes
-/I C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Public
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudioEditor
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Public
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes
+/I C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public
 /I Runtime\Media\Public
 /I ThirdParty\PhysX3\PxShared\include
 /I ThirdParty\PhysX3\PxShared\include\cudamanager
@@ -286,11 +286,11 @@
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\shared"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\um"
 /I "C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\winrt"
-/FI"C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h"
-/Yu"C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h"
-/Fp"C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h.pch"
-"C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudioEditor\Private\FMODBankUpdateNotifier.cpp"
-/Fo"C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\FMODBankUpdateNotifier.cpp.obj"
+/FI"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h"
+/Yu"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h"
+/Fp"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\PCH.FMODStudioEditor.h.pch"
+"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Private\FMODBankUpdateNotifier.cpp"
+/Fo"C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Development\FMODStudioEditor\FMODBankUpdateNotifier.cpp.obj"
 /TP
 /GR-
 /W4

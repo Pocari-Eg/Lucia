@@ -817,7 +817,6 @@ void AIreneCharacter::AttackCheck()
 	STARRYLOG_S(Error);
 	AttackSound->SoundPlay2D();
 	FindNearMonster();
-	FTimerHandle AttackCheckWaitHandle;
 }
 void AIreneCharacter::DoAttack()
 {

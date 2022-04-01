@@ -1,4 +1,4 @@
-// PCH for C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Private\FMODStudioPrivatePCH.h
+// PCH for C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODStudioPrivatePCH.h
 #define IS_PROGRAM 0
 #define UE_EDITOR 1
 #define ENABLE_PGO_PROFILE 0
@@ -44,8 +44,8 @@
 #define NDEBUG 1
 #define UE_BUILD_DEVELOPMENT 1
 #define UE_IS_ENGINE_MODULE 0
-#define UE_PROJECT_NAME TestProject
-#define UE_TARGET_NAME TestProjectEditor
+#define UE_PROJECT_NAME StarryTail
+#define UE_TARGET_NAME StarryTailEditor
 #define FMODSTUDIO_LINK_LOGGING 1
 #define UE_MODULE_NAME "FMODStudio"
 #define UE_PLUGIN_NAME "FMODStudio"
@@ -285,4 +285,4 @@
 #define FMODSTUDIO_LINK_LOGGING 1
 #define FMODSTUDIO_API DLLEXPORT
 #define MEDIA_API DLLIMPORT
-#include "C:/Users/Pocari/Desktop/UnrealPracties/TestProject/Plugins/FMODStudio/Source/FMODStudio/Private/FMODStudioPrivatePCH.h"
+#include "C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Plugins/FMODStudio/Source/FMODStudio/Private/FMODStudioPrivatePCH.h"
