@@ -8,7 +8,9 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/SplineComponent.h" 
-#include "Components/TimelineComponent.h"
+#include "Components/SphereComponent.h"
+
+#include "Components/TimeLineComponent.h"
 
 
 
@@ -23,11 +25,12 @@ class STARRYTAIL_API APartsObject : public AActor
 	//물체가 한번 이동할때 얼마나 이동할것인가.
 	UPROPERTY(EditAnywhere, Category = Platform)
 	float Speed;
+
 	//메쉬
-	UPROPERTY(EditAnywhere, Category = Platform)
+	UPROPERTY(EditAnywhere,BluePrintReadOnly ,Category = Platform)
 	UStaticMeshComponent* Mesh;
 	//이동경로 Spline
-	UPROPERTY(EditAnywhere, Category = Platform)
+	UPROPERTY(EditAnywhere, BluePrintReadOnly,Category = Platform)
 	USplineComponent* Track;
 
 	//다음 오브젝트 
@@ -54,12 +57,17 @@ class STARRYTAIL_API APartsObject : public AActor
 	UPROPERTY(EditAnywhere, Category = Event)
 	bool IsEndTriggerOn;
 
-private:
 
-	//경로에 오브젝트를 몇초마다 이동시킬것인지
-	float Time;
-	//경로에 몇퍼센트 이동했는지
-	float Percent;
+	//타임라인 커브
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timeline", Meta = (AllowPrivateAccess = "true"))
+	UCurveFloat* TimeLineCurve;
+
+	//타임라인
+	FTimeline PartsObjTimeline;
+
+	UPROPERTY(BluePrintReadOnly)
+	bool IsHoverStop;
+private:
 	// Timer
 	FTimerHandle TimerHandle;
 
@@ -71,25 +79,36 @@ private:
 	//트리거 재사용시 사용 제한 시간 저장
 	int32 InitTriggerTime;
 
+	//작동 트리거
 	APartsTrigger* PartsTrigger;
+
+	//움직임 방향 설정
+	bool IsBackMove;
+
+	bool IsTimelineOn;
+
+	
 
 public:
 	// Sets default values for this actor's properties
 	APartsObject();
 	virtual void Tick(float DeltaTime) override;
 
-	//경로 정방향 움직임 작동
-	void ForwardMove(APartsTrigger* Trigger);
-	//경로 역방향 움직임 작동
-	void BackwardMove();
+	//움직임 작동
+	void MovingStart(APartsTrigger* Trigger);
+	
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	//정방향 움직임
-	void Forward();
-	//역방향 움직임
-	void Backward();
+	UFUNCTION()
+	void MovingObject();
+	//다음 움직임 체크
+	UFUNCTION()
+	void NextMoveSet();
 	//다음 트리거 작동 시간 측정
 	void CountDown();
 

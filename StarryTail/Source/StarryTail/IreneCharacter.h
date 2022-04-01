@@ -157,11 +157,8 @@ private:
 	void RightButton();
 	void MouseWheel(float Rate);
 
-	// 메인키워드, 보조키워드, 액션키워드
+	// 메인키워드 속성변경
 	void MainKeyword();
-	void ActionKeyword1();
-	void ActionKeyword2();
-	void ActionKeyword3();
 
 	// 대쉬
 	void DodgeKeyword();
@@ -183,7 +180,7 @@ private:
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
 
-	// 곂침 충돌 처리
+	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 

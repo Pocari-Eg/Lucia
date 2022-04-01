@@ -57,7 +57,7 @@ public:
 
 	// 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHP = 10000;
+	float MaxHP = 1000;
 	// 최대 마나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxMP = 10000;
