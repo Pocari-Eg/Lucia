@@ -24,7 +24,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		return;
 
 	UWorld* World = Morbit->GetWorld();
-	FVector Center = Morbit->GetActorLocation();
+	FVector Center = Morbit->GetActorLocation() + (-Morbit->GetActorForwardVector() * 50.0f);
 
 	FVector CenterBottom = Center;
 	CenterBottom.Z -= 85.0f;
@@ -32,8 +32,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 	FVector CenterTop = CenterBottom;
 	CenterTop.Z += 150.0f;
 
-	float DetectRadius = Morbit->GetViewRange();
-
+	FVector Box = FVector(Morbit->GetViewRange(), Morbit->GetViewRange(), 150.0f);
 	//모르빗 주변 범위 200 안에 있는 액터 탐지, EnemyDetect 트레이스 채널 사용
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, Morbit);
@@ -42,9 +41,11 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		Center,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel5,
-		FCollisionShape::MakeSphere(Morbit->GetViewRange()),
+		FCollisionShape::MakeBox(Box),
 		CollisionQueryParam
 	);
+
+	DrawDebugBox(World, Center, Box, FColor::Red, false, 0.2f);
 
 	if (bResult)
 	{
@@ -121,8 +122,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					//플레이어 위치에 따른 탐지 조정 필요, 발끝과 머리의 Z값 정보
-					if (TargetAngle <= (Morbit->GetViewAngle() * 0.5f) && Player->GetActorLocation().Z >= CenterBottom.Z && Player->GetActorLocation().Z <= CenterTop.Z)
+					if (TargetAngle <= (Morbit->GetViewAngle() * 0.5f))
 					{
 						//3차 탐지
 						if (Morbit->GetTestMode())
@@ -163,6 +163,8 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		FVector RightDir = AngleToDir(Morbit->GetActorRotation().Euler().Z + Morbit->GetViewAngle() * 0.5f) * Morbit->GetViewRange();
 		FVector LeftDir = AngleToDir(Morbit->GetActorRotation().Euler().Z - Morbit->GetViewAngle() * 0.5f) * Morbit->GetViewRange();
 		FVector LookDir = Morbit->GetActorForwardVector() * Morbit->GetViewRange();
+		
+		DrawDebugLine(World, CenterTop, CenterBottom, FColor::Red, false, 0.2f);
 
 		DrawDebugLine(World, CenterBottom, CenterBottom + RightDir, FColor::Blue, false, 0.2f);
 		DrawDebugLine(World, CenterBottom, CenterBottom + LeftDir, FColor::Blue, false, 0.2f);

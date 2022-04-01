@@ -22,6 +22,9 @@ public:
 	UMonsterAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+	UAnimMontage* GetMeleeAttack1Montage();
+	UAnimMontage* GetMeleeAttack2Montage();
+
 	virtual void PlayMeleeAttackMontage();
 	virtual void PlayIdleMontage();
 	void PlayWalkMontage();
