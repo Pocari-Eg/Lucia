@@ -168,3 +168,12 @@ void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
 }
+
+UAnimMontage* UMonsterAnimInstance::GetMeleeAttack1Montage()
+{
+	return MeleeAttackMontage1;
+}
+UAnimMontage* UMonsterAnimInstance::GetMeleeAttack2Montage()
+{
+	return MeleeAttackMontage2;
+}

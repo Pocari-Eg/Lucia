@@ -47,7 +47,8 @@ void AMonsterAIController::Attacked()
 	auto Monster = Cast<AMonster>(GetPawn());
 	if (Monster != nullptr)
 	{
-		Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+		if(!Monster->GetMonsterAnimInstance()->Montage_IsPlaying(Monster->GetMonsterAnimInstance()->GetMeleeAttack1Montage()) && !Monster->GetMonsterAnimInstance()->Montage_IsPlaying(Monster->GetMonsterAnimInstance()->GetMeleeAttack2Montage()))
+			Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
 	}
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }

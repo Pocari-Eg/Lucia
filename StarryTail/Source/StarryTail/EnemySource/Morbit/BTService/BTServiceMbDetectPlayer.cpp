@@ -122,7 +122,6 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					//플레이어 위치에 따른 탐지 조정 필요, 발끝과 머리의 Z값 정보
 					if (TargetAngle <= (Morbit->GetViewAngle() * 0.5f))
 					{
 						//3차 탐지

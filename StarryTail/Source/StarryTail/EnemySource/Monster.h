@@ -82,7 +82,8 @@ private:
 	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
 	void CalcBurnDamage();
 
-	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
+	bool CheckPlayerIsBehindMonster();
+	void RotationToPlayerDirection();
 
 	void Burn();
 	void Flooding();
@@ -90,6 +91,8 @@ private:
 	void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
 	void Assemble();
 	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+
+	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))

@@ -359,7 +359,14 @@ void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 }
 void AMonster::CalcHp(float Damage)
 {
-	MonsterInfo.CurrentHp -= Damage;
+	if (CheckPlayerIsBehindMonster())
+	{
+		MonsterInfo.CurrentHp -= Damage * 1.5f;
+	}
+	else
+	{
+		MonsterInfo.CurrentHp -= Damage;
+	}
 
 	if (bTestMode)
 		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
@@ -421,22 +428,37 @@ void AMonster::CalcBurnDamage()
 		STARRYLOG(Log, TEXT("CurrentHp : %f"), MonsterInfo.CurrentHp);
 }
 #pragma endregion
-void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
+bool AMonster::CheckPlayerIsBehindMonster()
 {
-	CalcCurrentDebuffAttribute(AttackedAttribute);
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	
+	FVector TargetDir = STGameInstance->GetPlayer()->GetActorLocation() - GetActorLocation();
+	TargetDir = TargetDir.GetSafeNormal();
 
-	switch (MonsterInfo.CurrentDebuffAttribute)
+	//정면으로 향하는 벡터와 플레이어로 향하는 벡터의 내적을 통해 각도를 구할 수 있다. 결과값은 Radian
+	float Radian = FVector::DotProduct(GetActorForwardVector(), TargetDir);
+	//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
+	float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
+
+	if (TargetAngle <= (MonsterInfo.ViewAngle * 0.5f))
 	{
-	case EAttributeKeyword::e_Fire:
-		Burn();
-		break;
-	case EAttributeKeyword::e_Water:
-		Flooding();
-		break;
-	case EAttributeKeyword::e_Thunder:
-		Shock();
-		break;
+		return false;
 	}
+	else
+	{
+		RotationToPlayerDirection();
+		return true;
+	}
+}
+void AMonster::RotationToPlayerDirection()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+
+	FVector LookVector = STGameInstance->GetPlayer()->GetActorLocation() - GetActorLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+
+	SetActorRotation(TargetRot);
 }
 TArray<FOverlapResult> AMonster::DetectMonster()
 {
@@ -575,6 +597,23 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 				}
 			}
 		}
+	}
+}
+void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
+{
+	CalcCurrentDebuffAttribute(AttackedAttribute);
+
+	switch (MonsterInfo.CurrentDebuffAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		Burn();
+		break;
+	case EAttributeKeyword::e_Water:
+		Flooding();
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Shock();
+		break;
 	}
 }
 #pragma endregion
