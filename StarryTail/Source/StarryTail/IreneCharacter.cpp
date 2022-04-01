@@ -199,6 +199,14 @@ void AIreneCharacter::BeginPlay()
 	{
 		Widget->BindCharacterAttribute(Attribute);
 	}
+
+
+	//사운드 세팅
+	AttackSound = new SoundManager(AttackEvent, GetWorld());
+	AttackSound->SetVolume(0.4f);
+	AttackSound->SetParameter("Attributes", 1.0f);
+
+
 }
 void AIreneCharacter::PostInitializeComponents()
 {
@@ -212,6 +220,7 @@ void AIreneCharacter::PostInitializeComponents()
 			{
 				AttackStartComboState();
 				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+				
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
@@ -595,6 +604,7 @@ void AIreneCharacter::LookUp(float Rate)
 
 void AIreneCharacter::LeftButton(float Rate)
 {
+	
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Fall") != 0 &&
 		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
@@ -602,11 +612,13 @@ void AIreneCharacter::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
 		{
+			
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
 			float WaitTime = 0.15f;
 
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
+					
 					AttackWaitHandle.Invalidate();
 				}), WaitTime, false);
 
@@ -614,6 +626,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				if (CharacterDataStruct.CanNextCombo)
 				{
+				
 					CharacterDataStruct.IsComboInputOn = true;
 				}
 			}
@@ -621,7 +634,9 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				ChangeStateAndLog(StateEnum::Attack);
 				AttackStartComboState();
+				
 				IreneAnim->PlayAttackMontage();
+				
 				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
 				CharacterDataStruct.IsAttacking = true;
 			}
@@ -652,13 +667,18 @@ void AIreneCharacter::MainKeyword()
 	switch (Attribute)
 	{
 	case EAttributeKeyword::e_Fire:
+		AttackSound->SetParameter("Attributes", 2.0f);
 		Attribute = EAttributeKeyword::e_Water;
 		break;
 	case EAttributeKeyword::e_Water:
+		AttackSound->SetParameter("Attributes", 3.0f);
+
 		Attribute = EAttributeKeyword::e_Thunder;
 		break;
 	case EAttributeKeyword::e_Thunder:
+		AttackSound->SetParameter("Attributes", 1.0f);
 		Attribute = EAttributeKeyword::e_Fire;
+		
 		break;
 	default:
 		break;
@@ -794,6 +814,8 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
+	STARRYLOG_S(Error);
+	AttackSound->SoundPlay2D();
 	FindNearMonster();
 	FTimerHandle AttackCheckWaitHandle;
 }
@@ -815,6 +837,7 @@ void AIreneCharacter::DoAttack()
 		ECollisionChannel::ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
+	
 
 #if ENABLE_DRAW_DEBUG
 	FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
@@ -855,6 +878,9 @@ void AIreneCharacter::DoAttack()
 			STGameInstance->ResetAttributeEffectMonster();
 		}
 	}
+
+	
+
 }
 #pragma endregion
 
