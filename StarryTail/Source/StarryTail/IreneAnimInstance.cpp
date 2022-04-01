@@ -8,8 +8,10 @@ UIreneAnimInstance::UIreneAnimInstance()
 	CurrentPawnSpeed = 0.0f;
 	IsInAir = false;
 	IsDead = false;
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Irene_Montage.Irene_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Developers/syhwms/Collections/AnimTest/Real/Irene_Attack_Montage.Irene_Attack_Montage"));
+	IsSprintState = false;
+	IsSprintStop = false;
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
 	if(ATTACK_MONTAGE.Succeeded())
 	{

@@ -30,6 +30,10 @@ private:
 		bool IsInAir;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 		bool IsDead;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+		bool IsSprintState;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+		bool IsSprintStop;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -44,6 +48,8 @@ public:
 	void JumpToAttackMontageSection(int32 NewSection);
 	UAnimMontage* GetAttackAnimMontage() { return AttackMontage; }
 	void SetDeadAnim(bool value) { IsDead = value; }
+	void SetSprintStateAnim(bool value) { IsSprintState = value; }
+	void SetSprintStopAnim(bool value) { IsSprintStop = value; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
