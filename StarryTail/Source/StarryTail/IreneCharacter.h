@@ -18,7 +18,7 @@
 #include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
 #include "UI/HPBarWidget.h"
-
+#include "SoundManager.h"
 #include "IreneCharacter.generated.h"
 
 //속성 변경 델리데이트
@@ -100,6 +100,16 @@ private:
 
 	// 로그 출력용
 	bool bShowLog;
+
+	//사운드 이벤트
+	UPROPERTY(EditAnywhere, Category = "FMOD")
+	class UFMODEvent* AttackEvent;
+	UPROPERTY(EditAnywhere, Category = "FMOD")
+	class UFMODEvent* WalkEvent;
+
+	//사운드 
+	SoundManager* WalkSound;
+	SoundManager* AttackSound;
 
 public:
 	// Sets default values for this character's properties
