@@ -199,6 +199,10 @@ private:
 
    //현재 체력 비율 전환
 	float GetHpRatio();
+	
+
+	//사운드 출력
+	void FootStepSound();
 
 //스탑워치 
 	//void WatchContorl();

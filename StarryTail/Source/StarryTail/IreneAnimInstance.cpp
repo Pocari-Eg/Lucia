@@ -64,6 +64,11 @@ void UIreneAnimInstance::AnimNotify_NextAttackCheck()
 	OnNextAttackCheck.Broadcast();
 }
 
+void UIreneAnimInstance::AnimNotify_FootStep()
+{
+	OnFootStep.Broadcast();
+}
+
 FName UIreneAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));

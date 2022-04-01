@@ -27,7 +27,7 @@ private:
 
 	FName Parameter;
 	float ParameterValue;
-
+	float CurrentParameterValue=-1.0f;
 	float Volume;
 public:
 	//해당 위치에서 사운드 플레이
@@ -46,4 +46,6 @@ public:
 
 	//파라미터 변경
 	void SetParameter(FString  parameter, float Value);
+	void PlayingChangeParamter(FString  parameter, float Value);
+
 };

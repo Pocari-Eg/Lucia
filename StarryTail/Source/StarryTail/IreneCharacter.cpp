@@ -160,6 +160,9 @@ AIreneCharacter::AIreneCharacter()
 		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
 	}	
 
+	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
+	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
+
 	bStartJump = false;
 	JumpingTime = 0.0f;
 	bFollowTarget = false;
@@ -201,11 +204,16 @@ void AIreneCharacter::BeginPlay()
 	}
 
 
+	
+
+
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
-	AttackSound->SetVolume(0.4f);
+	AttackSound->SetVolume(0.5f);
 	AttackSound->SetParameter("Attributes", 1.0f);
-
+	WalkSound = new SoundManager(WalkEvent, GetWorld());
+	WalkSound -> SetVolume(0.8f);
+	AttackSound->SetParameter("Material", 0.0f);
 
 }
 void AIreneCharacter::PostInitializeComponents()
@@ -224,6 +232,7 @@ void AIreneCharacter::PostInitializeComponents()
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
+	IreneAnim->OnFootStep.AddUObject(this, &AIreneCharacter::FootStepSound);
 }
 #pragma endregion
 
@@ -814,7 +823,7 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
-	STARRYLOG_S(Error);
+
 	AttackSound->SoundPlay2D();
 	FindNearMonster();
 }
@@ -1129,6 +1138,10 @@ float AIreneCharacter::GetHpRatio()
 {
 	// 비율변환 0.0 ~ 1.0
 	return (CharacterDataStruct.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentHP / CharacterDataStruct.MaxHP;
+}
+void AIreneCharacter::FootStepSound()
+{
+	WalkSound->SoundPlay3D(GetActorTransform());
 }
 #pragma endregion
 
