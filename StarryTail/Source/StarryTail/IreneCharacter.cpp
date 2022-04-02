@@ -1082,6 +1082,7 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
+		IreneAnim->SetIreneStateAnim(newState);
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());

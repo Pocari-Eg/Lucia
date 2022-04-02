@@ -74,6 +74,7 @@ private:
 	class UIreneAnimInstance* IreneAnim;
 
 	FTimerHandle AttackWaitHandle;
+	FTimerHandle SprintEndWaitHandle;
 
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
