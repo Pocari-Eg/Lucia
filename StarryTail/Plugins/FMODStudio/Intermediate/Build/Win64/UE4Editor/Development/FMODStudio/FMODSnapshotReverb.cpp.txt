@@ -1,6 +1,6 @@
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshotReverb.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAsset.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAsset.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshotReverb.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAsset.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAsset.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Sound/ReverbEffect.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ReverbEffect.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshotReverb.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshotReverb.generated.h

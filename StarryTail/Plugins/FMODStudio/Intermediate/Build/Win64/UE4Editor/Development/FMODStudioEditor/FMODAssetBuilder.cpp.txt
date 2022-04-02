@@ -1,4 +1,4 @@
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Classes\FMODAssetBuilder.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Classes\FMODAssetBuilder.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\AssetRegistry\Public\AssetRegistryModule.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\AssetRegistry\Public\AssetRegistry/AssetRegistryModule.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\AssetRegistry\Public\AssetRegistry/IAssetRegistry.h
@@ -13,41 +13,41 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/Mo
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/Boilerplate/ModuleBoilerplate.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\AssetRegistry/ARFilter.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\AssetRegistry\IAssetRegistry.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODAssetLookup.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODAssetLookup.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/DataTable.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\DataTableUtils.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\DataTable.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAssetLookup.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODAssetTable.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODBank.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAsset.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAsset.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBank.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODBankLookup.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBankLookup.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODBus.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBus.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODEvent.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEvent.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSettings.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSettings.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshot.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshot.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshotReverb.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAssetLookup.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODAssetTable.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODBank.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAsset.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAsset.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBank.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODBankLookup.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBankLookup.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODBus.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBus.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODEvent.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEvent.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSettings.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSettings.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshot.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshot.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSnapshotReverb.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Sound/ReverbEffect.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ReverbEffect.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshotReverb.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSnapshotReverb.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime/Launch/Resources/Version.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Engine.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/World.h
@@ -217,9 +217,9 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Buffe
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/EngineSubsystem.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\EngineSubsystem.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Engine.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODVCA.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODVCA.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODVCA.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODVCA.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Public\FileHelpers.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\AssetRegistry\Public\AssetData.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Public\PackageTools.h

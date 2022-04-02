@@ -13,7 +13,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define FMODSTUDIO_FMODAssetLookup_generated_h
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODAssetLookup_h_12_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODAssetLookup_h_12_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FFMODAssetLookupRow_Statics; \
 	static class UScriptStruct* StaticStruct(); \
 	typedef FTableRowBase Super;
@@ -22,7 +22,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 template<> FMODSTUDIO_API UScriptStruct* StaticStruct<struct FFMODAssetLookupRow>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODAssetLookup_h
+#define CURRENT_FILE_ID HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODAssetLookup_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

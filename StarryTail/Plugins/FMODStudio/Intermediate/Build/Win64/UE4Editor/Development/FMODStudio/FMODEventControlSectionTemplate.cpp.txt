@@ -1,4 +1,4 @@
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSectionTemplate.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSectionTemplate.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvalTemplate.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/InlineValue.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneSection.h
@@ -128,7 +128,7 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Eval
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation\Blending\MovieSceneBlendingAccumulator.inl
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Compilation/MovieSceneTemplateInterrogation.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvalTemplate.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSection.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSection.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneClipboard.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneTrack.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Compilation/MovieSceneSegmentCompiler.h
@@ -149,10 +149,10 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Eval
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\EntitySystem/MovieSceneEntitySystemRunner.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvaluationTemplateInstance.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneByteChannel.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSection.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSectionTemplate.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAmbientSound.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAudioComponent.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSection.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSectionTemplate.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAmbientSound.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAudioComponent.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Sound/SoundAttenuation.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Attenuation.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Curves/CurveFloat.h
@@ -725,20 +725,20 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\AudioVir
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\ActiveSound.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Audio/AudioDebug.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SignalProcessing\Public\DSP/VolumeFader.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAudioComponent.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAmbientSound.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAudioComponent.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAmbientSound.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvaluation.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneSequence.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneSequence.generated.h

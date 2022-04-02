@@ -1,4 +1,4 @@
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Private\FMODSettingsCustomization.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudioEditor\Private\FMODSettingsCustomization.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\IDetailCustomization.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyHandle.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyEditorModule.h
@@ -54,8 +54,8 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\I
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\DetailWidgetRow.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SSpacer.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SLeafWidget.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSettings.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSettings.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODSettings.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODSettings.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Classes\Settings/ProjectPackagingSettings.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\UnrealEd\ProjectPackagingSettings.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SBorder.h

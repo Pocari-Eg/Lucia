@@ -1,5 +1,5 @@
-D:/ChungkangGame/STARRY-TAIL/StarryTail/Plugins/FMODStudio/Intermediate/Build/Win64/UE4Editor/Development/FMODStudio/PCH.FMODStudio.h
-D:/ChungkangGame/STARRY-TAIL/StarryTail/Plugins/FMODStudio/Source/FMODStudio/Private/FMODStudioPrivatePCH.h
+C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Plugins/FMODStudio/Intermediate/Build/Win64/UE4Editor/Development/FMODStudio/PCH.FMODStudio.h
+C:/Users/Pocari/Desktop/STARRY-TAIL/StarryTail/Plugins/FMODStudio/Source/FMODStudio/Private/FMODStudioPrivatePCH.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\CoreMinimal.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\CoreTypes.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/Platform.h

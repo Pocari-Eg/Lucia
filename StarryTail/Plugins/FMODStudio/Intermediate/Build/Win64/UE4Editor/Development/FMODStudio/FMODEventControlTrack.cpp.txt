@@ -1,4 +1,4 @@
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlTrack.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlTrack.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneNameableTrack.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneTrack.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Compilation/MovieSceneSegmentCompiler.h
@@ -82,8 +82,8 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\In
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneNameableTrack.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Compilation/IMovieSceneTrackTemplateProducer.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\IMovieSceneTrackTemplateProducer.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlTrack.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSection.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlTrack.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSection.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Curves/KeyHandle.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\KeyHandle.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\MovieSceneClipboard.h
@@ -108,7 +108,7 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Enti
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\IMovieSceneEntityProvider.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvaluationTemplateInstance.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneByteChannel.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSection.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSection.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\IMovieScenePlayer.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneAnimTypeID.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieScenePreAnimatedState.h
@@ -138,7 +138,7 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\In
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\RealCurve.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\RichCurve.generated.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEasingCurves.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSectionTemplate.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\Sequencer\FMODEventControlSectionTemplate.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvalTemplate.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation/MovieSceneEvalTemplateBase.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvalTemplateBase.generated.h
@@ -156,4 +156,4 @@ C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Eval
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Evaluation\Blending\MovieSceneBlendingAccumulator.inl
 C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\MovieScene\Public\Compilation/MovieSceneTemplateInterrogation.h
 C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\MovieScene\MovieSceneEvalTemplate.generated.h
-D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSectionTemplate.generated.h
+C:\Users\Pocari\Desktop\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODEventControlSectionTemplate.generated.h
