@@ -34,6 +34,8 @@ private:
 		bool IsSprintState;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 		bool IsSprintStop;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+		StateEnum IreneState;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -50,6 +52,7 @@ public:
 	void SetDeadAnim(bool value) { IsDead = value; }
 	void SetSprintStateAnim(bool value) { IsSprintState = value; }
 	void SetSprintStopAnim(bool value) { IsSprintStop = value; }
+	void SetIreneStateAnim(StateEnum value) { IreneState = value; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
@@ -58,9 +61,9 @@ protected:
 
 private:
 	UFUNCTION()
-		void AnimNotify_AttackHitCheck();
+	void AnimNotify_AttackHitCheck();
 	UFUNCTION()
-		void AnimNotify_NextAttackCheck();
+	void AnimNotify_NextAttackCheck();
 	UFUNCTION()
 	void AnimNotify_FootStep();
 	FName GetAttackMontageSectionName(int32 Section);
