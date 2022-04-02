@@ -13,7 +13,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define FMODSTUDIO_FMODBankLookup_generated_h
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_20_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_20_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FFMODLocalizedBankTable_Statics; \
 	static class UScriptStruct* StaticStruct(); \
 	typedef FTableRowBase Super;
@@ -21,7 +21,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 
 template<> FMODSTUDIO_API UScriptStruct* StaticStruct<struct FFMODLocalizedBankTable>();
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_12_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_12_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FFMODLocalizedBankRow_Statics; \
 	static class UScriptStruct* StaticStruct(); \
 	typedef FTableRowBase Super;
@@ -29,10 +29,10 @@ template<> FMODSTUDIO_API UScriptStruct* StaticStruct<struct FFMODLocalizedBankT
 
 template<> FMODSTUDIO_API UScriptStruct* StaticStruct<struct FFMODLocalizedBankRow>();
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS_NO_PURE_DECLS
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS_NO_PURE_DECLS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS_NO_PURE_DECLS
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUFMODBankLookup(); \
 	friend struct Z_Construct_UClass_UFMODBankLookup_Statics; \
@@ -41,7 +41,7 @@ public: \
 	DECLARE_SERIALIZER(UFMODBankLookup)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS \
 private: \
 	static void StaticRegisterNativesUFMODBankLookup(); \
 	friend struct Z_Construct_UClass_UFMODBankLookup_Statics; \
@@ -50,7 +50,7 @@ public: \
 	DECLARE_SERIALIZER(UFMODBankLookup)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_STANDARD_CONSTRUCTORS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UFMODBankLookup(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UFMODBankLookup) \
@@ -63,7 +63,7 @@ private: \
 public:
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_ENHANCED_CONSTRUCTORS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UFMODBankLookup(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) { }; \
 private: \
@@ -76,28 +76,28 @@ public: \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UFMODBankLookup)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_25_PROLOG
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_GENERATED_BODY_LEGACY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_25_PROLOG
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_STANDARD_CONSTRUCTORS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS_NO_PURE_DECLS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS_NO_PURE_DECLS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_ENHANCED_CONSTRUCTORS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_PRIVATE_PROPERTY_OFFSET \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_SPARSE_DATA \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_RPC_WRAPPERS_NO_PURE_DECLS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_INCLASS_NO_PURE_DECLS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h_28_ENHANCED_CONSTRUCTORS \
 private: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -105,7 +105,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> FMODSTUDIO_API UClass* StaticClass<class UFMODBankLookup>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h
+#define CURRENT_FILE_ID HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_FMODBankLookup_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS

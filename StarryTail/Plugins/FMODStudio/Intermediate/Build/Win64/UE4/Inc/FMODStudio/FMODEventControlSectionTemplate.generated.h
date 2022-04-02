@@ -13,7 +13,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define FMODSTUDIO_FMODEventControlSectionTemplate_generated_h
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_Sequencer_FMODEventControlSectionTemplate_h_14_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_Sequencer_FMODEventControlSectionTemplate_h_14_GENERATED_BODY \
 	friend struct Z_Construct_UScriptStruct_FFMODEventControlSectionTemplate_Statics; \
 	FMODSTUDIO_API static class UScriptStruct* StaticStruct(); \
 	typedef FMovieSceneEvalTemplate Super;
@@ -22,7 +22,7 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 template<> FMODSTUDIO_API UScriptStruct* StaticStruct<struct FFMODEventControlSectionTemplate>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TestProject_Plugins_FMODStudio_Source_FMODStudio_Private_Sequencer_FMODEventControlSectionTemplate_h
+#define CURRENT_FILE_ID HostProject_Plugins_FMODStudio_Source_FMODStudio_Private_Sequencer_FMODEventControlSectionTemplate_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
