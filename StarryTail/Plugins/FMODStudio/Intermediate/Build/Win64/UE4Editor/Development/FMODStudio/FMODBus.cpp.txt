@@ -1,8 +1,0 @@
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODBus.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Classes\FMODAsset.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODAsset.generated.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBus.generated.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleManager.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleInterface.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/Boilerplate/ModuleBoilerplate.h

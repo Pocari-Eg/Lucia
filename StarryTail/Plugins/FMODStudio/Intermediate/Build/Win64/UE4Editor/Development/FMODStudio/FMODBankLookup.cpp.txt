@@ -1,5 +1,0 @@
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODBankLookup.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/DataTable.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\DataTableUtils.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\DataTable.generated.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Intermediate\Build\Win64\UE4Editor\Inc\FMODStudio\FMODBankLookup.generated.h
