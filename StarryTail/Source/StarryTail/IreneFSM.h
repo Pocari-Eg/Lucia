@@ -1,8 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #pragma once
-
-enum class StateEnum {
+enum class StateEnum
+{
 	Idle = 0,
 	AttackIdle,
 	Run,
