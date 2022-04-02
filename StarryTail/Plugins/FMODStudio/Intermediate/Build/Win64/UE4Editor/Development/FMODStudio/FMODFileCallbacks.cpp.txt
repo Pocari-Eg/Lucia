@@ -1,143 +1,143 @@
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODFileCallbacks.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Engine.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/World.h
-C:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/CoreOnlineFwd.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\CollisionQueryParams.h
-C:\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\Chaos/ChaosEngineInterface.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/Declares.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/ParticleHandleFwd.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\ChaosCore\Public\Chaos/Real.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/PBDRigidsEvolutionFwd.h
-C:\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceDeclaresCore.h
-C:\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceWrapperShared.h
-C:\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceTypesCore.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/CollisionFilterData.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos\ChaosArchive.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos\Serializable.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\UObject/DestructionObjectVersion.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\UObject/ExternalPhysicsCustomObjectVersion.h
-C:\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\PhysicsProxy/SingleParticlePhysicsProxyFwd.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\PhysicsCore\ChaosEngineInterface.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\WorldCollision.h
-C:\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\CollisionShape.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Pawn.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Actor.h
-C:\UE_4.27\Engine\Source\Runtime\InputCore\Classes\InputCoreTypes.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Attribute.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\InputCore\InputCoreTypes.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Components/ChildActorComponent.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ChildActorComponent.generated.h
-C:\UE_4.27\Engine\Source\Runtime\RenderCore\Public\RenderCommandFence.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ITransaction.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc\Change.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Level.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Templates/ScopedCallback.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/MaterialMerging.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\MaterialMerging.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Level.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Actor.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\AI/Navigation/NavAgentInterface.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\AI/Navigation/NavigationTypes.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CoreStats.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\NavigationTypes.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\NavAgentInterface.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Pawn.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\EngineDefines.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Blueprint.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/BlueprintCore.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BlueprintCore.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/BlueprintGeneratedClass.h
-C:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/UndefineUPropertyMacros.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BlueprintGeneratedClass.generated.h
-C:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/DefineUPropertyMacros.h
-C:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\Blueprint/BlueprintSupport.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Blueprint.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/PendingNetGame.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine\NetworkDelegates.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\PendingNetGame.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/LatentActionManager.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\LatentActionManager.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/GameInstance.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/GameInstanceSubsystem.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/Subsystem.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Subsystem.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameInstanceSubsystem.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/SubsystemCollection.h
-C:\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GCObject.h
-C:\UE_4.27\Engine\Source\Editor\UnrealEd\Classes\Settings/LevelEditorPlaySettings.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Margin.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateEnums.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/EnumRange.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateEnums.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Margin.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Visibility.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/App.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CommandLine.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/QualifiedFrameTime.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameRate.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameTime.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ExpressionParserTypes.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ExpressionParserTypes.inl
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Timecode.h
-C:\UE_4.27\Engine\Source\Editor\UnrealEd\Classes\Settings/LevelEditorPlayNetworkEmulationSettings.h
-C:\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\IPropertyTypeCustomization.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/SlateFontInfo.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/CompositeFont.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\CompositeFont.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateFontInfo.generated.h
-C:\UE_4.27\Engine\Source\Editor\EditorStyle\Public\EditorStyleSet.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateColor.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/WidgetStyle.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateColor.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/StyleDefaults.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Sound/SlateSound.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateSound.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Paths.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Brushes/SlateNoResource.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateBrush.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateShaderResource.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\SlateGlobals.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Debugging/SlateDebugging.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/WidgetUpdateFlags.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/Reply.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/ReplyBase.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/Events.h
-C:\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericApplication.h
-C:\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/Accessibility/GenericAccessibleInterfaces.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Variant.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryWriter.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryArchive.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryReader.h
-C:\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericApplicationMessageHandler.h
-C:\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericWindowDefinition.h
-C:\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericWindow.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Geometry.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Math/TransformCalculus2D.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Math/TransformCalculus.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/SlateRect.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/SlateRotatedRect.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateLayoutTransform.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateRenderTransform.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/PaintGeometry.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Geometry.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Events.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/DragAndDrop.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/CursorReply.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/DragAndDrop.inl
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\ProfilingDebugging/CsvProfiler.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/Queue.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\ProfilingDebugging/CsvProfilerTrace.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Private\FMODFileCallbacks.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.hpp
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_common.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_codec.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_dsp_effects.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_output.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODUtils.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.hpp
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio_common.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMOD\fmod_studio.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Engine.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/World.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/CoreOnlineFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\CollisionQueryParams.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\Chaos/ChaosEngineInterface.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/Declares.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/ParticleHandleFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\ChaosCore\Public\Chaos/Real.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/PBDRigidsEvolutionFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceDeclaresCore.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceWrapperShared.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\PhysicsInterfaceTypesCore.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos/CollisionFilterData.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos\ChaosArchive.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\Chaos\Serializable.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\UObject/DestructionObjectVersion.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\UObject/ExternalPhysicsCustomObjectVersion.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Experimental\Chaos\Public\PhysicsProxy/SingleParticlePhysicsProxyFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\PhysicsCore\ChaosEngineInterface.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\WorldCollision.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\PhysicsCore\Public\CollisionShape.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Pawn.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\GameFramework/Actor.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\InputCore\Classes\InputCoreTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Attribute.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\InputCore\InputCoreTypes.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Components/ChildActorComponent.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\ChildActorComponent.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RenderCore\Public\RenderCommandFence.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ITransaction.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc\Change.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Level.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Templates/ScopedCallback.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/MaterialMerging.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\MaterialMerging.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Level.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Actor.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\AI/Navigation/NavAgentInterface.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\AI/Navigation/NavigationTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CoreStats.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\NavigationTypes.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\NavAgentInterface.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Pawn.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\EngineDefines.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/Blueprint.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/BlueprintCore.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BlueprintCore.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/BlueprintGeneratedClass.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/UndefineUPropertyMacros.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\BlueprintGeneratedClass.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/DefineUPropertyMacros.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\Blueprint/BlueprintSupport.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Blueprint.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/PendingNetGame.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine\NetworkDelegates.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\PendingNetGame.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/LatentActionManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\LatentActionManager.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/GameInstance.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/GameInstanceSubsystem.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/Subsystem.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Subsystem.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameInstanceSubsystem.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/SubsystemCollection.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\CoreUObject\Public\UObject/GCObject.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Classes\Settings/LevelEditorPlaySettings.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Margin.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateEnums.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/EnumRange.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateEnums.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Margin.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Visibility.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/App.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CommandLine.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/QualifiedFrameTime.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameRate.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameTime.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ExpressionParserTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/ExpressionParserTypes.inl
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Timecode.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Classes\Settings/LevelEditorPlayNetworkEmulationSettings.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\IPropertyTypeCustomization.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/SlateFontInfo.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/CompositeFont.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\CompositeFont.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateFontInfo.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\EditorStyle\Public\EditorStyleSet.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateColor.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/WidgetStyle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateColor.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/StyleDefaults.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Sound/SlateSound.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateSound.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Paths.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Brushes/SlateNoResource.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateBrush.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateShaderResource.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\SlateGlobals.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Debugging/SlateDebugging.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/WidgetUpdateFlags.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/Reply.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/ReplyBase.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/Events.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericApplication.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/Accessibility/GenericAccessibleInterfaces.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/Variant.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryWriter.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryArchive.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Serialization/MemoryReader.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericApplicationMessageHandler.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericWindowDefinition.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\ApplicationCore\Public\GenericPlatform/GenericWindow.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Geometry.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Math/TransformCalculus2D.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Math/TransformCalculus.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/SlateRect.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/SlateRotatedRect.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateLayoutTransform.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateRenderTransform.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/PaintGeometry.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Geometry.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Events.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/DragAndDrop.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/CursorReply.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/DragAndDrop.inl
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\ProfilingDebugging/CsvProfiler.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/Queue.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\ProfilingDebugging/CsvProfilerTrace.h
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE\atomic
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE\xatomic.h
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE\intrin0.h
@@ -145,175 +145,175 @@ C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.2
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE\xtimec.h
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\INCLUDE\ctime
 C:\Program Files (x86)\Windows Kits\10\include\10.0.19041.0\ucrt\time.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/InvalidateWidgetReason.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateDebugging.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Trace/SlateTrace.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateBrush.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/ISlateStyle.h
-C:\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyHandle.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SWidget.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameValue.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Clipping.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/RenderingCommon.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/NavigationReply.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\NavigationReply.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/PopupMethodReply.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\RenderingCommon.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Clipping.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/ArrangedWidget.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/LayoutGeometry.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/FlowDirection.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\FlowDirection.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/ISlateMetaData.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/WidgetActiveTimerDelegate.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/WidgetMouseEventsDelegate.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/PaintArgs.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/WidgetProxy.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationRootHandle.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationWidgetIndex.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationWidgetSortOrder.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/DrawElements.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/ShapedTextFwd.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/FontCache.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/TextureAtlas.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/FontTypes.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\FontCache.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/ShaderResourceManager.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateTextureData.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementPayloads.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\SlateRenderBatch.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\ElementBatcher.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/StaticArray.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateWidgetAccessibleTypes.h
-C:\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyEditorModule.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SWindow.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CoreDelegates.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/AES.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\GenericPlatform/GenericPlatformFile.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateStructs.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Animation/CurveSequence.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Animation/CurveHandle.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/Ticker.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleAsset.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyle.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyle.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleContainerBase.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleContainerInterface.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleContainerInterface.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleContainerBase.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleAsset.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/DeclarativeSyntaxSupport.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SNullWidget.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\SlotBase.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SCompoundWidget.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Children.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SBoxPanel.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SPanel.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/ArrangedChildren.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SOverlay.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateTypes.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateTypes.generated.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/CoreStyle.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationRoot.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleInterface.h
-C:\UE_4.27\Engine\Source\Editor\UnrealEd\Public\Toolkits/IToolkitHost.h
-C:\UE_4.27\Engine\Source\Editor\UnrealEd\Public\Toolkits/IToolkit.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Docking/WorkspaceItem.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateIcon.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Docking/TabManager.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\SlateFwd.h
-C:\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\IDetailsView.h
-C:\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyEditorDelegates.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UICommandList.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UIAction.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UICommandInfo.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/InputChord.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\InputChord.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\UICommandInfo.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SComboBox.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/SlateDelegates.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/SlateApplication.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/IMenu.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/SlateWindowHelper.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateRenderer.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Brushes/SlateDynamicImageBrush.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/SlateApplicationBase.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/ThrottleManager.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/IToolTip.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/WidgetPath.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/WidgetPath.inl
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/MenuStack.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/GestureDetector.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/SlateUser.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\SlateScope.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Text/STextBlock.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SLeafWidget.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextLayout.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextRunRenderer.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextLineHighlight.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/IRun.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/ShapedTextCacheFwd.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\TextLayout.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SBox.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SComboButton.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SMenuAnchor.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/STableViewBase.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/IScrollableWidget.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/ITypedTableView.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\ITypedTableView.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/InertialScrollManager.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/Overscroll.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\STableViewBase.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/TableViewTypeTraits.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/STableRow.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SBorder.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SExpanderArrow.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SHeaderRow.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SSplitter.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateCoreAccessibleWidgets.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateAccessibleWidgetCache.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateAccessibleMessageHandler.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SListView.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/TableViewMetadata.h
-C:\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateConstants.h
-C:\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SScrollBar.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\UnrealEd\LevelEditorPlayNetworkEmulationSettings.generated.h
-C:\UE_4.27\Engine\Source\Developer\ToolMenus\Public\ToolMenuContext.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\ToolMenus\ToolMenuContext.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\UnrealEd\LevelEditorPlaySettings.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameInstance.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Physics/PhysicsInterfaceDeclares.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Particles/WorldPSCPool.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\WorldPSCPool.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\AudioDeviceManager.h
-C:\UE_4.27\Engine\Source\Runtime\AudioMixerCore\Public\AudioDefines.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\AudioThread.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/Runnable.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/WorldSubsystem.h
-C:\UE_4.27\Engine\Source\Runtime\Engine/Public/Tickable.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\WorldSubsystem.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine\CollisionProfile.h
-C:\UE_4.27\Engine\Source\Runtime\DeveloperSettings\Public\Engine/DeveloperSettings.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\DeveloperSettings\DeveloperSettings.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CollisionProfile.generated.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\World.generated.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/BufferedOutputDevice.h
-C:\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/EngineSubsystem.h
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\EngineSubsystem.generated.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHI.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\MultiGPU.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIValidationCommon.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIResources.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\DynamicRHI.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIContext.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIUtilities.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHICommandList.h
-C:\UE_4.27\Engine\Source\Runtime\RHI\Public\RHICommandList.inl
-C:\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Engine.generated.h
-C:\UnrealProjects\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleManager.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/Boilerplate/ModuleBoilerplate.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/FileManager.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/RunnableThread.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/PlatformAffinity.h
-C:\UE_4.27\Engine\Source\Runtime\Core\Public\Windows/WindowsPlatformAffinity.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/InvalidateWidgetReason.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateDebugging.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Trace/SlateTrace.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateBrush.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/ISlateStyle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyHandle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/FrameValue.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Clipping.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/RenderingCommon.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/NavigationReply.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\NavigationReply.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Input/PopupMethodReply.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\RenderingCommon.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\Clipping.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/ArrangedWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/LayoutGeometry.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/FlowDirection.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\FlowDirection.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/ISlateMetaData.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/WidgetActiveTimerDelegate.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/WidgetMouseEventsDelegate.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/PaintArgs.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/WidgetProxy.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationRootHandle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationWidgetIndex.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationWidgetSortOrder.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/DrawElements.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/ShapedTextFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/FontCache.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/TextureAtlas.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Fonts/FontTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\FontCache.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/ShaderResourceManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateTextureData.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\DrawElementPayloads.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\SlateRenderBatch.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering\ElementBatcher.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/StaticArray.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateWidgetAccessibleTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyEditorModule.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SWindow.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/CoreDelegates.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/AES.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\GenericPlatform/GenericPlatformFile.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateStructs.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Animation/CurveSequence.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Animation/CurveHandle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Containers/Ticker.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleAsset.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyle.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleContainerBase.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateWidgetStyleContainerInterface.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleContainerInterface.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleContainerBase.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateWidgetStyleAsset.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/DeclarativeSyntaxSupport.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SNullWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\SlotBase.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SCompoundWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/Children.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SBoxPanel.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SPanel.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/ArrangedChildren.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SOverlay.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/SlateTypes.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\SlateCore\SlateTypes.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Styling/CoreStyle.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\FastUpdate/SlateInvalidationRoot.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleInterface.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Public\Toolkits/IToolkitHost.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\UnrealEd\Public\Toolkits/IToolkit.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Docking/WorkspaceItem.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Textures/SlateIcon.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Docking/TabManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\SlateFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\IDetailsView.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Editor\PropertyEditor\Public\PropertyEditorDelegates.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UICommandList.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UIAction.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/UICommandInfo.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Commands/InputChord.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\InputChord.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\UICommandInfo.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SComboBox.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/SlateDelegates.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/SlateApplication.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/IMenu.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/SlateWindowHelper.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Rendering/SlateRenderer.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Brushes/SlateDynamicImageBrush.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/SlateApplicationBase.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Application/ThrottleManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/IToolTip.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/WidgetPath.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Layout/WidgetPath.inl
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/MenuStack.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/GestureDetector.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Application/SlateUser.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\SlateScope.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Text/STextBlock.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/SLeafWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextLayout.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextRunRenderer.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/TextLineHighlight.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/IRun.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Text/ShapedTextCacheFwd.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\TextLayout.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SBox.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SComboButton.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Input/SMenuAnchor.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/STableViewBase.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/IScrollableWidget.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/ITypedTableView.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\ITypedTableView.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/InertialScrollManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Layout/Overscroll.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Slate\STableViewBase.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/TableViewTypeTraits.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/STableRow.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SBorder.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SExpanderArrow.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SHeaderRow.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SSplitter.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateCoreAccessibleWidgets.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateAccessibleWidgetCache.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Widgets/Accessibility/SlateAccessibleMessageHandler.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Views/SListView.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Framework/Views/TableViewMetadata.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\SlateCore\Public\Types/SlateConstants.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Slate\Public\Widgets/Layout/SScrollBar.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\UnrealEd\LevelEditorPlayNetworkEmulationSettings.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Developer\ToolMenus\Public\ToolMenuContext.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\ToolMenus\ToolMenuContext.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\UnrealEd\LevelEditorPlaySettings.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\GameInstance.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Physics/PhysicsInterfaceDeclares.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Particles/WorldPSCPool.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\WorldPSCPool.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\AudioDeviceManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\AudioMixerCore\Public\AudioDefines.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\AudioThread.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/Runnable.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/WorldSubsystem.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine/Public/Tickable.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\WorldSubsystem.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine\CollisionProfile.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\DeveloperSettings\Public\Engine/DeveloperSettings.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\DeveloperSettings\DeveloperSettings.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\CollisionProfile.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\World.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Misc/BufferedOutputDevice.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\Subsystems/EngineSubsystem.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\EngineSubsystem.generated.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHI.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\MultiGPU.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIValidationCommon.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIResources.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\DynamicRHI.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIContext.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHIUtilities.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHICommandList.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\RHI\Public\RHICommandList.inl
+C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4Editor\Inc\Engine\Engine.generated.h
+D:\ChungkangGame\STARRY-TAIL\StarryTail\Plugins\FMODStudio\Source\FMODStudio\Public\FMODStudioModule.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/ModuleManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Modules/Boilerplate/ModuleBoilerplate.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/FileManager.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/RunnableThread.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\HAL/PlatformAffinity.h
+C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Core\Public\Windows/WindowsPlatformAffinity.h
