@@ -22,8 +22,6 @@ AOccupiedObject::AOccupiedObject()
 		Mesh->SetStaticMesh(SM_MESH.Object);
 	}
 
-	Area->SetCollisionProfileName("Trigger");
-	Area->SetSphereRadius(240.0f);
 	IsInPlayer = false;
 	IsOccupied = false;
 	IsOccupying = false;
@@ -44,13 +42,7 @@ AOccupiedObject::AOccupiedObject()
 		OccupyBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
 		OccupyBarWidget->SetDrawSize(FVector2D(150, 50.0f));
 	}
-	
-	CurrentEnemyTime = EnemyOccupyTime;
 
-	MaxOccupy = 100;
-	OccupyNum = 14;
-	EnemyOccupyNum = 6.5f;
-	OccupyCancelNum = 50.0f;
 }
 
 // Called when the game starts or when spawned
@@ -74,28 +66,11 @@ void AOccupiedObject::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	
 	if (OtherComp->GetCollisionProfileName() == "Player")
 	{
-		if (CurrentOccupy < MaxOccupy) {
-
-			if (IsInEnemy)
-			{
-				GetWorldTimerManager().ClearTimer(EnemyTimerHandle);
-
-			}
-			STARRYLOG(Error, TEXT("AreaIn :%s"), *OtherComp->GetCollisionProfileName().ToString());
-			IsInPlayer = true;
-			Player = Cast<AIreneCharacter>(OtherActor);
-			CompareAttribute();
-			Player->FOnAttributeChange.AddUObject(this, &AOccupiedObject::CompareAttribute);
-		}
-	}
-	if (OtherComp->GetCollisionProfileName() == "Enemy")
-	{
-		
 		STARRYLOG(Error, TEXT("AreaIn :%s"), *OtherComp->GetCollisionProfileName().ToString());
-		IsInEnemy = true;
-		if (IsInPlayer == false) {
-			GetWorldTimerManager().SetTimer(EnemyTimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
-		}
+		IsInPlayer = true;
+		Player = Cast<AIreneCharacter>(OtherActor);
+		CompareAttribute();
+		Player->FOnAttributeChange.AddUObject(this, &AOccupiedObject::CompareAttribute);	
 	}
 }
 
@@ -103,33 +78,15 @@ void AOccupiedObject::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 {
 	if (OtherComp->GetCollisionProfileName() == "Player")
 	{
-
-
-			STARRYLOG(Error, TEXT("AreaOut :  %s"), *OtherComp->GetCollisionProfileName().ToString());
-			IsInPlayer = false;
-			Player = Cast<AIreneCharacter>(OtherActor);
-			if (Player->FOnAttributeChange.IsBound()==true) {
-				Player->FOnAttributeChange.Clear();
-			}
-			Player = nullptr;
-			IsOccupying = false;
-			GetWorldTimerManager().ClearTimer(TimerHandle);
-			if (IsInEnemy == true)
-			{
-				GetWorldTimerManager().SetTimer(EnemyTimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
-
-			}
-		
-
-	}
-	if (OtherComp->GetCollisionProfileName() == "Enemy")
-	{
-	  IsInEnemy = false;
-	  CurrentEnemyTime = EnemyOccupyTime;
-	  GetWorldTimerManager().ClearTimer(EnemyTimerHandle);
-
+		STARRYLOG(Error, TEXT("AreaOut :  %s"), *OtherComp->GetCollisionProfileName().ToString());
+		IsInPlayer = false;
+		Player->FOnAttributeChange.Clear();
+		Player = nullptr;
+		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
 }
+
+
 
 void AOccupiedObject::CompareAttribute()
 {
@@ -161,8 +118,7 @@ void AOccupiedObject::Occupying()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 			IsOccupying = false;
 			IsOccupied = true;
-			CurrentOccupy = MaxOccupy;
-			OnOccupy.Broadcast();
+			FOnOccupy.Broadcast();
 	}
 
 
@@ -173,36 +129,6 @@ void AOccupiedObject::Occupying()
 	}
 	
 
-}
-
-void AOccupiedObject::DeOccupying()
-{
-	if (CurrentEnemyTime > 0)
-	{
-		CurrentEnemyTime--;
-	}
-	else {
-		if (CurrentOccupy >= 0+EnemyOccupyNum) {
-			CurrentOccupy -= EnemyOccupyNum;
-			auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
-			if (OccupyBar != nullptr)
-			{
-				OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
-			}
-			if (CurrentOccupy < OccupyCancelNum&&IsOccupied==true)
-			{
-				IsOccupied = false;
-				OnOccupy.Broadcast();
-
-			}
-		}
-		else {
-
-			CurrentOccupy = 0;
-		}
-	
-
-	}
 }
 
 // Called every frame

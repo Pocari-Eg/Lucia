@@ -1,5 +1,0 @@
-C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Source\FMODStudio\Private\FMODAssetLookup.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Classes\Engine/DataTable.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Source\Runtime\Engine\Public\DataTableUtils.h
-C:\Program Files\Epic Games\UE_4.27\Engine\Intermediate\Build\Win64\UE4\Inc\Engine\DataTable.generated.h
-C:\Users\Pocari\Desktop\UnrealPracties\TestProject\Plugins\FMODStudio\Intermediate\Build\Win64\UE4\Inc\FMODStudio\FMODAssetLookup.generated.h
