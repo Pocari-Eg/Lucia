@@ -4,7 +4,7 @@
 // 나중에 해야할 것: 일반 공격 속성 테이블 따라 값 읽기, 
 // 
 // 로그 출력용 더미
-// UE_LOG(LogTemp, Warning, TEXT("SubKeyword"));
+// UE_LOG(LogTemp, Error, TEXT("SubKeyword"));
 
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
@@ -234,7 +234,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
 	IreneAnim->OnFootStep.AddUObject(this, &AIreneCharacter::FootStepSound);
 }
-#pragma endregion
+#pragma endregion Setting
 
 // Called every frame
 void AIreneCharacter::Tick(float DeltaTime)
@@ -354,6 +354,12 @@ void AIreneCharacter::MoveStop()
 			if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Sprint") == 0)
 			{
 				IreneAnim->SetSprintStopAnim(true);
+				UE_LOG(LogTemp, Error, TEXT("SubKeyword"));
+				FTimerHandle TimerHandle;
+				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+					{
+						IreneAnim->SetSprintStopAnim(false);
+					}, 0.3f, false);
 			}
 			ChangeStateAndLog(StateEnum::Idle);
 		}
@@ -445,6 +451,7 @@ void AIreneCharacter::StopJump()
 	bPressedJump = false;
 }
 
+#pragma region MoveInput
 void AIreneCharacter::MovePressedW()
 {
 	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
@@ -595,7 +602,8 @@ void AIreneCharacter::MoveReleasedD()
 	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[2] != 2)
 		CharacterDataStruct.MoveSpeed = 1;
 }
-#pragma endregion
+#pragma endregion MoveInput
+#pragma endregion Move
 
 #pragma region Input
 void AIreneCharacter::Turn(float Rate)
@@ -797,7 +805,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
 	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);*/
 }
-#pragma endregion
+#pragma endregion Input
 
 #pragma region Attack
 void AIreneCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
@@ -890,7 +898,7 @@ void AIreneCharacter::DoAttack()
 	
 
 }
-#pragma endregion
+#pragma endregion Attack
 
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
@@ -1064,7 +1072,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	return FinalDamage;
 }
 
-#pragma endregion
+#pragma endregion Collision
 
 #pragma region State
 void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
@@ -1082,6 +1090,7 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
+		IreneAnim->SetIreneStateAnim(newState);
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
@@ -1122,7 +1131,7 @@ void AIreneCharacter::ActionEndChangeMoveState()
 		ChangeStateAndLog(StateEnum::Run);
 	}
 }
-#pragma endregion
+#pragma endregion State
 
 // 박찬영 코드
 #pragma region Park
@@ -1143,7 +1152,7 @@ void AIreneCharacter::FootStepSound()
 {
 	WalkSound->SoundPlay3D(GetActorTransform());
 }
-#pragma endregion
+#pragma endregion Park
 
 #pragma region StopWatch
 //스탑워치 컨트롤 함수
@@ -1156,4 +1165,4 @@ void AIreneCharacter::FootStepSound()
 //{
 //	StopWatch->WatchReset();
 //}
-#pragma endregion
+#pragma endregion StopWatch

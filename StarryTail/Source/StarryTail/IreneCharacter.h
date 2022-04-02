@@ -35,6 +35,7 @@ public:
 protected:
 
 private:
+#pragma region GetClassOrObject
 	// 플레이어 컨트롤러
 	UPROPERTY(VisibleAnywhere)
 	APlayerController* WorldController;
@@ -49,16 +50,26 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
 
-	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
-	UPROPERTY(EditAnywhere)
-	TArray<uint8> MoveKey;
-
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
-
 	// 캐릭터 상태
 	IreneFSM* CharacterState;
+
+	// 무기 매쉬
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* Weapon;
+
+	// 애니메이션 인스턴스
+	UPROPERTY()
+	class UIreneAnimInstance* IreneAnim;
+
+#pragma endregion GetClassOrObject
+
+#pragma region InputData
+	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
+	UPROPERTY(EditAnywhere)
+	TArray<uint8> MoveKey;
 
 	// 구르기 같은 자동이동 방향
 	FVector MoveAutoDirection;
@@ -67,27 +78,34 @@ private:
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
-	UPROPERTY(EditAnywhere)
-	USkeletalMeshComponent* Weapon;
-
-	UPROPERTY()
-	class UIreneAnimInstance* IreneAnim;
-
+	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 
+	// 점프 중력 그래프용 시작 타이밍
+	bool bStartJump;
+	// 점프 중력 그래프용 시간
+	float JumpingTime;
+#pragma endregion MoveData
+
+#pragma region AttackData
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
-
-	bool bStartJump;
-	float JumpingTime;
-	bool bFollowTarget;
-	float FollowTargetAlpha;
-	FVector PlayerPosVec;
-	FVector TargetPosVec;
 
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
+
+	// 타켓 추적 유무
+	bool bFollowTarget;
+	// 보간을 위한 수 0 ~ 1
+	float FollowTargetAlpha;
+	// 보간을 위한 시작 위치
+	FVector PlayerPosVec;
+	// 보간을 위한 목표 위치
+	FVector TargetPosVec;
+#pragma endregion AttackData
+
+#pragma region UI
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
@@ -95,35 +113,37 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HpBarWidget;
 
-	//스탑워치
-	//AStopWatch* StopWatch;
-
 	// 로그 출력용
 	bool bShowLog;
+#pragma endregion UI	
 
+#pragma region Sound
 	//사운드 이벤트
 	UPROPERTY(EditAnywhere, Category = "FMOD")
-	class UFMODEvent* AttackEvent;
+		class UFMODEvent* AttackEvent;
 	UPROPERTY(EditAnywhere, Category = "FMOD")
-	class UFMODEvent* WalkEvent;
+		class UFMODEvent* WalkEvent;
 
 	//사운드 
 	SoundManager* WalkSound;
 	SoundManager* AttackSound;
+#pragma endregion Sound
 
+	//스탑워치
+	//AStopWatch* StopWatch;
 public:
+#pragma region Setting
 	// Sets default values for this character's properties
 	AIreneCharacter();
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	virtual void PostInitializeComponents() override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+#pragma endregion Setting
 
-
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 	//속성 반환
 	EAttributeKeyword GetAttribute();
 	//공격력 반환
@@ -134,7 +154,9 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+
 	// 캐릭터 이동 관련 함수
+#pragma region MoveInput
 	void MoveForward();
 	void MoveRight();
 	void MoveStop();
@@ -155,9 +177,10 @@ private:
 	void MoveReleasedA();
 	void MoveReleasedS();
 	void MoveReleasedD();
+#pragma endregion MoveInput
 
-	void ActionEndChangeMoveState();
-
+	// 입력 관련 함수
+#pragma region Input
 	// 카메라 회전 관련 함수
 	void Turn(float Rate);
 	void LookUp(float Rate);
@@ -175,10 +198,15 @@ private:
 
 	// 마우스 커서 활성화
 	void MouseCursorKeyword();
+#pragma endregion Input
 
+#pragma region State
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(StateEnum newState);
+	void ActionEndChangeMoveState();
+#pragma endregion State
 
+#pragma region Attack
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 
@@ -186,7 +214,9 @@ private:
 	void AttackEndComboState();
 	void AttackCheck();
 	void DoAttack();
-
+#pragma endregion Attack
+	
+#pragma region Collision
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
 
@@ -196,17 +226,18 @@ private:
 
 	// 피격
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+#pragma endregion Collision
 
-   //현재 체력 비율 전환
+#pragma region Park
+	//현재 체력 비율 전환
 	float GetHpRatio();
-	
+
 
 	//사운드 출력
 	void FootStepSound();
+#pragma endregion Park
 
 //스탑워치 
 	//void WatchContorl();
 	//void WatchReset();
-
-
 };
