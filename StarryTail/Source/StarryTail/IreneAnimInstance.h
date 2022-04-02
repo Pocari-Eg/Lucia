@@ -61,9 +61,9 @@ protected:
 
 private:
 	UFUNCTION()
-		void AnimNotify_AttackHitCheck();
+	void AnimNotify_AttackHitCheck();
 	UFUNCTION()
-		void AnimNotify_NextAttackCheck();
+	void AnimNotify_NextAttackCheck();
 	UFUNCTION()
 	void AnimNotify_FootStep();
 	FName GetAttackMontageSectionName(int32 Section);
