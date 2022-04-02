@@ -13,10 +13,10 @@ PRAGMA_DISABLE_DEPRECATION_WARNINGS
 #endif
 #define FMODSTUDIO_FMODVCA_generated_h
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS_NO_PURE_DECLS
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS_NO_PURE_DECLS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS_NO_PURE_DECLS
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS_NO_PURE_DECLS \
 private: \
 	static void StaticRegisterNativesUFMODVCA(); \
 	friend struct Z_Construct_UClass_UFMODVCA_Statics; \
@@ -25,7 +25,7 @@ public: \
 	DECLARE_SERIALIZER(UFMODVCA)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS \
 private: \
 	static void StaticRegisterNativesUFMODVCA(); \
 	friend struct Z_Construct_UClass_UFMODVCA_Statics; \
@@ -34,7 +34,7 @@ public: \
 	DECLARE_SERIALIZER(UFMODVCA)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_STANDARD_CONSTRUCTORS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_STANDARD_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UFMODVCA(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()); \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UFMODVCA) \
@@ -47,7 +47,7 @@ private: \
 public:
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_ENHANCED_CONSTRUCTORS \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_ENHANCED_CONSTRUCTORS \
 	/** Standard constructor, called after all reflected properties have been initialized */ \
 	NO_API UFMODVCA(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get()) : Super(ObjectInitializer) { }; \
 private: \
@@ -60,28 +60,28 @@ public: \
 	DEFINE_DEFAULT_OBJECT_INITIALIZER_CONSTRUCTOR_CALL(UFMODVCA)
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_11_PROLOG
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_GENERATED_BODY_LEGACY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_11_PROLOG
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_GENERATED_BODY_LEGACY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_STANDARD_CONSTRUCTORS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_STANDARD_CONSTRUCTORS \
 public: \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
 
-#define TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_GENERATED_BODY \
+#define HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_GENERATED_BODY \
 PRAGMA_DISABLE_DEPRECATION_WARNINGS \
 public: \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS_NO_PURE_DECLS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS_NO_PURE_DECLS \
-	TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_ENHANCED_CONSTRUCTORS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_PRIVATE_PROPERTY_OFFSET \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_SPARSE_DATA \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_RPC_WRAPPERS_NO_PURE_DECLS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_INCLASS_NO_PURE_DECLS \
+	HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h_14_ENHANCED_CONSTRUCTORS \
 static_assert(false, "Unknown access specifier for GENERATED_BODY() macro in class FMODVCA."); \
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
 
@@ -89,7 +89,7 @@ PRAGMA_ENABLE_DEPRECATION_WARNINGS
 template<> FMODSTUDIO_API UClass* StaticClass<class UFMODVCA>();
 
 #undef CURRENT_FILE_ID
-#define CURRENT_FILE_ID TestProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h
+#define CURRENT_FILE_ID HostProject_Plugins_FMODStudio_Source_FMODStudio_Classes_FMODVCA_h
 
 
 PRAGMA_ENABLE_DEPRECATION_WARNINGS
