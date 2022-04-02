@@ -4,9 +4,9 @@ StarryTail/Build/
 StarryTail/Intermediate/
 StarryTail/Saved/
 StarryTail/StarryTail.sln
+StarryTail/Plugins/
 !Config/
 !Content/
 !Source/
-!Plugin/
 !StarryTail.uproject
 *_BuiltData.uasset
