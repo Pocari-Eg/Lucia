@@ -13,7 +13,7 @@ struct FNormalMonsterInfo
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FName Name; //이름
+		int Code; // 몬스터 키값
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MaxHp; //체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

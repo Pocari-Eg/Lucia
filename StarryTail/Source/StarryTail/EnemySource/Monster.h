@@ -60,8 +60,6 @@ protected:
 		FAttributeDefence AttributeDef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
-	UPROPERTY(VisibleAnywhere, Category = Collision, Meta = (AllowPrivateAccess = true))
-		class UCapsuleComponent* Collision;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;

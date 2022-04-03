@@ -388,7 +388,8 @@ void AMonster::CalcHp(float Damage)
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
-		GetCapsuleComponent()->SetHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
 		bIsDead = true;
 
 		MonsterAIController->Death();
@@ -413,10 +414,12 @@ void AMonster::CalcBurnDamage()
 	}
 
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+	MonsterAIController->StopMovement();
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
-		GetCapsuleComponent()->SetHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
 
 		bIsDead = true;
 

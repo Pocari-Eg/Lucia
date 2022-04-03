@@ -18,17 +18,5 @@ EBTNodeResult::Type UBTTaskMonsterDead::ExecuteTask(UBehaviorTreeComponent& Owne
 	if (nullptr == Morbit)
 		return EBTNodeResult::Failed;
 
-	bIsLive = true;
-	Morbit->Death.AddLambda([this]() -> void { bIsLive = false; });
-
 	return EBTNodeResult::InProgress;
-}
-void UBTTaskMonsterDead::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
-{
-	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-
-	if (!bIsLive)
-	{
-		OwnerComp.GetAIOwner()->GetPawn()->Destroy();
-	}
 }

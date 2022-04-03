@@ -26,14 +26,10 @@ public:
 
 	void AttackCheck();
 private:
-	//override Function
-	void InitMonsterInfo() override;
-	void InitCollision() override;
-	void InitMesh() override;
-	void InitAnime() override;
-
 	//Function
-
+	void InitMorbitInfo();
+	void InitMorbitMaterial();
+	void InitOccupationAI();
 	//Variable
 
 public:
@@ -49,4 +45,9 @@ protected:
 	void PossessedBy(AController* NewController) override;
 
 	void PostInitializeComponents() override;
+private:
+	void InitMonsterInfo() override;
+	void InitCollision() override;
+	void InitMesh() override;
+	void InitAnime() override;
 };
