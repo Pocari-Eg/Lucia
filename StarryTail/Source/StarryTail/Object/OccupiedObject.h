@@ -23,7 +23,7 @@ class STARRYTAIL_API AOccupiedObject : public AActor
 
 public:
 
-	FOnOccupyDelegate FOnOccupy;
+	FOnOccupyDelegate OnOccupy;
 private:
    UPROPERTY(VisibleAnywhere,Category=Mesh, meta = (AllowPrivateAccess = "true"))
 	UStaticMeshComponent* Mesh;
@@ -33,21 +33,41 @@ private:
 
 
    UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
-   int32  MaxOccupy;
+   float  MaxOccupy;
 
    UPROPERTY(VisibleAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
-   int32  CurrentOccupy;
+   float  CurrentOccupy;
 
    UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
-   int32  OccupyNum;
+    float  OccupyNum;
+   UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+   float  DeOccupyNum;
+
+   //몬스터 점령 
+
+   UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+   int32  EnemyOccupyTime;
+
+   int32 CurrentEnemyTime;
+
+   UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+   float   EnemyOccupyNum;
+
+   UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+   float   OccupyCancelNum;
+
 
    //나중에 지울것
    UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
    bool IsInPlayer;
    UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
+   bool IsInEnemy;
+   UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
    bool IsOccupied;
    UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
     bool IsOccupying;
+   UPROPERTY(VisibleAnywhere, Category = Trigger, meta = (AllowPrivateAccess = "true"))
+   int32 InEnemyCount;
 
    UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
    EAttributeKeyword AreaAttribute;
@@ -58,9 +78,10 @@ private:
 
    // Timer
    FTimerHandle TimerHandle;
-
+   // Timer
+   FTimerHandle EnemyTimerHandle;
    //UI
-	//Hp Bar 위젯
+	//Hp Bar 위젯 -> 점령 게이지로 변경
    UPROPERTY(VisibleAnywhere, Category = UI)
    class UWidgetComponent* OccupyBarWidget;
 	
@@ -82,4 +103,5 @@ private:
 
 	void CompareAttribute();
 	void Occupying();
+	void DeOccupying();
 };

@@ -43,9 +43,25 @@ public:
 	UPROPERTY(EditAnyWhere, Category = AREA)
 	AOccupiedObject* ThungerOccupiedArea;
 private:
+
+	UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+	float  MaxAttributesGauge;
+	UPROPERTY(VisibleAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+	float  CurrentAttributesGauge;
+	UPROPERTY(EditAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+	float  AttributesGaugeNum;
+
+
+
 	bool IsFireGimbalOn;
 	bool IsWaterGimbalOn;
 	bool IsThunderGimbalOn;
+
+	UPROPERTY(VisibleAnywhere, Category = Occupied, meta = (AllowPrivateAccess = "true"))
+	bool IsAllGimbalOn;
+
+	// Timer
+	FTimerHandle TimerHandle;
 public:	
 	// Sets default values for this actor's properties
 	AGimbalObject();
@@ -58,7 +74,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-	void FireGimbalOn();
-	void WaterGimbalOn();
-	void ThunderGimbalOn();
+	void FireGimbalOnOff();
+	void WaterGimbalOnOff();
+	void ThunderGimbalOnOff();
+
+
+
+	void GimbalGaugeOn();
 };
