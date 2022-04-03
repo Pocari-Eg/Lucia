@@ -1094,7 +1094,7 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		CharacterState->setState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		if (bShowLog)
+		//if (bShowLog)
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }
