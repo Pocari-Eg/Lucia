@@ -45,8 +45,6 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		CollisionQueryParam
 	);
 
-	DrawDebugBox(World, Center, Box, FColor::Red, false, 0.2f);
-
 	if (bResult)
 	{
 		for (auto const& OverlapResult : OverlapResults)
@@ -155,8 +153,6 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 			}
 		}
 	}
-
-	
 
 	if (Morbit->GetTestMode())
 	{

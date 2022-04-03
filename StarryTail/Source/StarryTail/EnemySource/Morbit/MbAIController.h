@@ -15,6 +15,8 @@ class STARRYTAIL_API AMbAIController : public AMonsterAIController
 	GENERATED_BODY()
 public:
 	AMbAIController();
+	void SetMilitantAI();
+	void SetDefensiveAI();
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 };

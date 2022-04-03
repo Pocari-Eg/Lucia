@@ -8,13 +8,13 @@
 
 AMbAIController::AMbAIController()
 {
-	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/BB_Morbit"));
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Morbit/BB_Morbit"));
 	if (BBObject.Succeeded())
 	{
 		BBAsset = BBObject.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/AI/BT_Morbit"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/AI/Morbit/BT_Morbit"));
 	if (BTObject.Succeeded())
 	{
 		BTAsset = BTObject.Object;
@@ -38,4 +38,16 @@ void AMbAIController::OnPossess(APawn* InPawn)
 			STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));
 		}
 	}
+}
+void AMbAIController::SetMilitantAI()
+{
+	BTAsset = LoadObject<UBehaviorTree>(NULL, TEXT("/Game/AI/Morbit/Occupation/BT_MorbitMilitant"), NULL, LOAD_None, NULL);
+	if (!RunBehaviorTree(BTAsset))
+	{
+		STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));
+	}
+}
+void AMbAIController::SetDefensiveAI()
+{
+
 }

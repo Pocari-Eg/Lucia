@@ -9,7 +9,7 @@
 // Sets default values
 AMorbit::AMorbit()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	AIControllerClass = AMbAIController::StaticClass();
@@ -26,15 +26,17 @@ AMorbit::AMorbit()
 }
 #pragma region Init
 void AMorbit::InitMonsterInfo()
-{	
+{
+	MonsterInfo.Code = 1;
+
 	MonsterInfo.MaxHp = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
 
-	AttributeDef.e_None = 80.0f;
-	AttributeDef.e_Fire = 15.0f;
+	AttributeDef.e_None = 100.0f;
+	AttributeDef.e_Fire = 0.0f;
 	AttributeDef.e_Water = 0.0f;
-	AttributeDef.e_Thunder = 5.0f;
+	AttributeDef.e_Thunder = 0.0f;
 
 	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
@@ -47,7 +49,6 @@ void AMorbit::InitMonsterInfo()
 }
 void AMorbit::InitCollision()
 {
-	Collision = GetCapsuleComponent();
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(34.0f);
@@ -73,6 +74,106 @@ void AMorbit::InitAnime()
 	if (MorbitAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);
+	}
+}
+void AMorbit::InitMorbitInfo()
+{
+	switch (MonsterInfo.Code)
+	{
+	case 1:
+		AttributeDef.e_None = 100.0f;
+		AttributeDef.e_Fire = 0.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 0.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
+		break;
+	case 2:
+		AttributeDef.e_None = 100.0f;
+		AttributeDef.e_Fire = 0.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 0.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
+		break;
+	case 3:
+		AttributeDef.e_None = 30.0f;
+		AttributeDef.e_Fire = 50.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 2.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
+		break;
+	case 4:
+		AttributeDef.e_None = 0.0f;
+		AttributeDef.e_Fire = 50.0f;
+		AttributeDef.e_Water = 30.0f;
+		AttributeDef.e_Thunder = 20.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
+		break;
+	case 5:
+		AttributeDef.e_None = 25.0f;
+		AttributeDef.e_Fire = 15.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 60.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
+		break;
+	case 6:
+		AttributeDef.e_None = 0.0f;
+		AttributeDef.e_Fire = 0.0f;
+		AttributeDef.e_Water = 80.0f;
+		AttributeDef.e_Thunder = 20.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
+		break;
+	case 7:
+		AttributeDef.e_None = 0.0f;
+		AttributeDef.e_Fire = 10.0f;
+		AttributeDef.e_Water = 30.0f;
+		AttributeDef.e_Thunder = 60.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
+		break;
+	case 8:
+		AttributeDef.e_None = 30.0f;
+		AttributeDef.e_Fire = 0.0f;
+		AttributeDef.e_Water = 0.0f;
+		AttributeDef.e_Thunder = 70.0f;
+
+		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
+		break;
+	default:
+		break;
+	}
+}
+void AMorbit::InitMorbitMaterial()
+{
+	UMaterial* Material;
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_None:
+		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
+		if (Material != nullptr)
+		{
+			GetMesh()->SetMaterial(0, Material);
+			GetMesh()->SetMaterial(1, Material);
+		}
+		break;
+	}
+}
+void AMorbit::InitOccupationAI()
+{
+	auto MbAIController = Cast<AMbAIController>(GetController());
+
+	if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_None)
+	{
+		MbAIController->SetMilitantAI();	
+	}
+	else
+	{
+		MbAIController->SetDefensiveAI();
 	}
 }
 #pragma endregion
@@ -160,22 +261,8 @@ void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	UMaterial* Material;
-	switch (MonsterInfo.MonsterAttribute)
-	{
-	case EAttributeKeyword::e_None:
-		AttributeDef.e_None = 80.0f;
-		AttributeDef.e_Fire = 15.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 5.0f;
-		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
-		if (Material != nullptr)
-		{
-			GetMesh()->SetMaterial(0, Material);
-			GetMesh()->SetMaterial(1, Material);
-		}
-		break;
-	}
+	InitMorbitInfo();
+	InitMorbitMaterial();
 }
 
 // Called every frame
@@ -219,7 +306,7 @@ void AMorbit::PostInitializeComponents()
 		});
 	MonsterAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
-			Destroy();
+			SetActorHiddenInGame(true);
 		});
 	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }

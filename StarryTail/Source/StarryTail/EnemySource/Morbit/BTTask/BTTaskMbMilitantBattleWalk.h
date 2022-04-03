@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskMonsterDead.generated.h"
+#include "BTTaskMbMilitantBattleWalk.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskMonsterDead : public UBTTaskNode
+class STARRYTAIL_API UBTTaskMbMilitantBattleWalk : public UBTTaskNode
 {
 	GENERATED_BODY()
 public:
-	UBTTaskMonsterDead();
+	UBTTaskMbMilitantBattleWalk();
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 };
