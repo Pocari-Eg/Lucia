@@ -22,6 +22,9 @@ AOccupiedObject::AOccupiedObject()
 		Mesh->SetStaticMesh(SM_MESH.Object);
 	}
 
+	Area->SetCollisionProfileName("Trigger");
+	Area->SetSphereRadius(240.0f);
+
 	IsInPlayer = false;
 	IsOccupied = false;
 	IsOccupying = false;
@@ -42,6 +45,16 @@ AOccupiedObject::AOccupiedObject()
 		OccupyBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
 		OccupyBarWidget->SetDrawSize(FVector2D(150, 50.0f));
 	}
+
+	CurrentEnemyTime = EnemyOccupyTime;
+
+	MaxOccupy = 100;
+	OccupyNum = 14;
+	EnemyOccupyNum = 6.5f;
+	OccupyCancelNum = 50.0f;
+	InEnemyCount = 0;
+	DeOccupyNum = 4.0f;
+	EnemyOccupyTime = 3.0f;
 
 }
 
@@ -66,12 +79,30 @@ void AOccupiedObject::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	
 	if (OtherComp->GetCollisionProfileName() == "Player")
 	{
-		STARRYLOG(Error, TEXT("AreaIn :%s"), *OtherComp->GetCollisionProfileName().ToString());
-		IsInPlayer = true;
-		Player = Cast<AIreneCharacter>(OtherActor);
-		CompareAttribute();
-		Player->FOnAttributeChange.AddUObject(this, &AOccupiedObject::CompareAttribute);	
+		if (IsInEnemy)
+		{
+			GetWorldTimerManager().ClearTimer(EnemyTimerHandle);
+
+		}
+		if (CurrentOccupy < MaxOccupy) {
+
+			STARRYLOG(Error, TEXT("AreaIn :%s"), *OtherComp->GetCollisionProfileName().ToString());
+			IsInPlayer = true;
+			Player = Cast<AIreneCharacter>(OtherActor);
+			CompareAttribute();
+			Player->FOnAttributeChange.AddUObject(this, &AOccupiedObject::CompareAttribute);
+		}
 	}
+	if (OtherComp->GetCollisionProfileName() == "Enemy")
+	{
+		InEnemyCount++;
+		STARRYLOG(Error, TEXT("AreaIn :%s"), *OtherComp->GetCollisionProfileName().ToString());
+		IsInEnemy = true;
+		if (IsInPlayer == false) {
+			GetWorldTimerManager().SetTimer(EnemyTimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
+		}
+	}
+
 }
 
 void AOccupiedObject::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -80,36 +111,87 @@ void AOccupiedObject::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	{
 		STARRYLOG(Error, TEXT("AreaOut :  %s"), *OtherComp->GetCollisionProfileName().ToString());
 		IsInPlayer = false;
-		Player->FOnAttributeChange.Clear();
+		Player = Cast<AIreneCharacter>(OtherActor);
+		if (Player->FOnAttributeChange.IsBound() == true) {
+			Player->FOnAttributeChange.Clear();
+		}
 		Player = nullptr;
+		IsOccupying = false;
 		GetWorldTimerManager().ClearTimer(TimerHandle);
+		if (IsInEnemy == true)
+		{
+			GetWorldTimerManager().SetTimer(EnemyTimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
+
+		}
+
+
+	}
+	if (OtherComp->GetCollisionProfileName() == "Enemy")
+	{
+		if (InEnemyCount > 0)
+		{
+			InEnemyCount--;
+
+			if (InEnemyCount <= 0)
+			{
+				IsInEnemy = false;
+				InEnemyCount = 0;
+				CurrentEnemyTime = EnemyOccupyTime;
+				GetWorldTimerManager().ClearTimer(EnemyTimerHandle);
+			}
+		}			
 	}
 }
 
 
-
 void AOccupiedObject::CompareAttribute()
 {
+	GetWorldTimerManager().ClearTimer(TimerHandle);
 	if (IsInPlayer == true)
 	{	
 		PlayerAttribute = Player->GetAttribute();
-		PlayerAttribute == AreaAttribute ? IsOccupying = true : IsOccupying = false;
-	}
-	else {
-	}
 
-	if (IsOccupying == true)
-	{
-		GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::Occupying, 1.0f, true, 0.0f);
-	}
-	else {
-		GetWorldTimerManager().ClearTimer(TimerHandle);
+		if (PlayerAttribute == AreaAttribute)
+		{
+			IsOccupying = true;
+			GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::Occupying, 1.0f, true, 0.0f);
+		}
+		else {
+			IsOccupying = false;
+			switch (AreaAttribute)
+			{
+			case EAttributeKeyword::e_Fire:
+				if (PlayerAttribute == EAttributeKeyword::e_Water)
+				{
+					STARRYLOG_S(Error);
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
+					
+				}
+				break;
+			case EAttributeKeyword::e_Water:
+				if (PlayerAttribute == EAttributeKeyword::e_Thunder)
+				{
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
+
+				}
+				break;
+			case EAttributeKeyword::e_Thunder:
+				if (PlayerAttribute == EAttributeKeyword::e_Fire)
+				{
+					GetWorldTimerManager().SetTimer(TimerHandle, this, &AOccupiedObject::DeOccupying, 1.0f, true, 0.0f);
+
+				}
+				break;
+			default:
+				break;
+			}
+		}
 	}
 }
 
 void AOccupiedObject::Occupying()
 {
-
+	
 	if (CurrentOccupy < MaxOccupy)
 	{
 		CurrentOccupy += OccupyNum;
@@ -118,17 +200,67 @@ void AOccupiedObject::Occupying()
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 			IsOccupying = false;
 			IsOccupied = true;
-			FOnOccupy.Broadcast();
+			CurrentOccupy = MaxOccupy;
+			OnOccupy.Broadcast();
 	}
 
 
 	auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 	if (OccupyBar != nullptr)
 	{
-		OccupyBar->UpdateWidget(((float)CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f :(float) CurrentOccupy / (float)MaxOccupy);
+		OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
 	}
+}
+
+void AOccupiedObject::DeOccupying()
+{
 	
 
+	if (IsInPlayer==true) {
+		STARRYLOG_S(Error);
+		if (CurrentOccupy > 0) {
+			CurrentOccupy -= DeOccupyNum;
+			auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
+			if (OccupyBar != nullptr)
+			{
+				OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
+			}
+			if (CurrentOccupy < OccupyCancelNum && IsOccupied == true)
+			{
+				IsOccupied = false;
+				OnOccupy.Broadcast();
+			}
+		}
+		else {
+			CurrentOccupy = 0;
+		}
+	}
+	else {
+		if (CurrentEnemyTime > 0)
+		{
+			CurrentEnemyTime--;
+		}
+		else {
+			if (CurrentOccupy > 0) {
+				CurrentOccupy -= EnemyOccupyNum;
+				auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
+				if (OccupyBar != nullptr)
+				{
+					OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
+				}
+				if (CurrentOccupy < OccupyCancelNum && IsOccupied == true)
+				{
+					IsOccupied = false;
+					OnOccupy.Broadcast();
+				}
+			}
+			else {
+				CurrentOccupy = 0;
+			}
+
+
+		}
+	}
 }
 
 // Called every frame
