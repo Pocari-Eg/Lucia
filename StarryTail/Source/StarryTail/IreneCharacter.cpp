@@ -104,7 +104,7 @@ AIreneCharacter::AIreneCharacter()
 
 	// 상태 클래스 메모리 할당 후 정지 상태 적용
 	CharacterState = new IreneFSM();
-	CharacterState->setState(StateEnum::Idle);
+	CharacterState->setState(IdleState::getInstance());
 
 	// IreneCharater.h의 변수 초기화
 
@@ -203,10 +203,6 @@ void AIreneCharacter::BeginPlay()
 		Widget->BindCharacterAttribute(Attribute);
 	}
 
-
-	
-
-
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.5f);
@@ -242,9 +238,9 @@ void AIreneCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Dodge")) != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0) {
+		if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) {
 			MoveForward();
 			MoveRight();
 		}
@@ -297,7 +293,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 #pragma region Move
 void AIreneCharacter::MoveForward()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		// 0: 전진, 2: 후진
 		if (MoveKey[0] != 0 && MoveKey[0] < 3)
@@ -320,7 +316,7 @@ void AIreneCharacter::MoveForward()
 }
 void AIreneCharacter::MoveRight()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		// 1: 좌측, 3: 우측
 		if (MoveKey[1] != 0 && MoveKey[1] < 3)
@@ -344,28 +340,27 @@ void AIreneCharacter::MoveRight()
 void AIreneCharacter::MoveStop()
 {
 	// 아무 키 입력이 없을 경우 정지 상태 지정
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Idle")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 		{
-			if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Sprint") == 0)
+			if (CharacterState->getStateToString().Compare(FString("Sprint")) == 0)
 			{
 				IreneAnim->SetSprintStopAnim(true);
-				UE_LOG(LogTemp, Error, TEXT("SubKeyword"));
 				FTimerHandle TimerHandle;
 				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 					{
 						IreneAnim->SetSprintStopAnim(false);
 					}, 0.3f, false);
 			}
-			ChangeStateAndLog(StateEnum::Idle);
+			ChangeStateAndLog(IdleState::getInstance());
 		}
 	}
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") == 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) == 0)
 	{
 		if (!GetCharacterMovement()->IsFalling())
 		{
@@ -389,7 +384,7 @@ void AIreneCharacter::MoveAuto()
 			DoAttack();
 		}
 	}
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Attack")) == 0)
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
@@ -403,21 +398,21 @@ void AIreneCharacter::MoveAuto()
 			CharacterDataStruct.MoveSpeed = 1.0f;
 			MoveAutoDirection = FVector(0, 0, 0);
 			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-			if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
-				CharacterState->setState(StateEnum::Jump);
+			if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
+				CharacterState->setState(JumpState::getInstance());
 		}
 
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
+		if (CharacterState->getStateToString().Compare(FString("Dodge")) == 0)
 			AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
 	}
 }
 
 void AIreneCharacter::StartJump()
 {
-	if (!GetCharacterMovement()->IsFalling()
-		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0
-		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0
-		&& strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (!GetCharacterMovement()->IsFalling() &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		// 키 입력을 바탕으로 점프 방향을 얻는다.
 		FVector Direction = FVector(0, 0, 0);
@@ -443,7 +438,7 @@ void AIreneCharacter::StartJump()
 
 		bPressedJump = true;
 		bStartJump = true;
-		ChangeStateAndLog(StateEnum::Jump);
+		ChangeStateAndLog(JumpState::getInstance());
 	}
 }
 void AIreneCharacter::StopJump()
@@ -454,14 +449,14 @@ void AIreneCharacter::StopJump()
 #pragma region MoveInput
 void AIreneCharacter::MovePressedW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-			ChangeStateAndLog(StateEnum::Run);
+			ChangeStateAndLog(RunState::getInstance());
 		}
 		MoveKey[0] = 1;
 	}
@@ -470,14 +465,14 @@ void AIreneCharacter::MovePressedW()
 }
 void AIreneCharacter::MovePressedA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-			ChangeStateAndLog(StateEnum::Run);
+			ChangeStateAndLog(RunState::getInstance());
 		}
 		MoveKey[1] = 1;
 	}
@@ -486,14 +481,14 @@ void AIreneCharacter::MovePressedA()
 }
 void AIreneCharacter::MovePressedS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-			ChangeStateAndLog(StateEnum::Run);
+			ChangeStateAndLog(RunState::getInstance());
 		}
 		MoveKey[2] = 1;
 	}
@@ -502,14 +497,14 @@ void AIreneCharacter::MovePressedS()
 }
 void AIreneCharacter::MovePressedD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Idle") == 0)
+		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
 		{
 			GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-			ChangeStateAndLog(StateEnum::Run);
+			ChangeStateAndLog(RunState::getInstance());
 		}
 		MoveKey[3] = 1;
 	}
@@ -519,13 +514,13 @@ void AIreneCharacter::MovePressedD()
 
 void AIreneCharacter::MoveDoubleClickW()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[0] = 2;
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
-		ChangeStateAndLog(StateEnum::Sprint);
+		ChangeStateAndLog(SprintState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
@@ -533,13 +528,13 @@ void AIreneCharacter::MoveDoubleClickW()
 }
 void AIreneCharacter::MoveDoubleClickA()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[1] = 2;
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
-		ChangeStateAndLog(StateEnum::Sprint);
+		ChangeStateAndLog(SprintState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
@@ -547,13 +542,13 @@ void AIreneCharacter::MoveDoubleClickA()
 }
 void AIreneCharacter::MoveDoubleClickS()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[2] = 2;
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
-		ChangeStateAndLog(StateEnum::Sprint);
+		ChangeStateAndLog(SprintState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
@@ -561,13 +556,13 @@ void AIreneCharacter::MoveDoubleClickS()
 }
 void AIreneCharacter::MoveDoubleClickD()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[3] = 2;
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
-		ChangeStateAndLog(StateEnum::Sprint);
+		ChangeStateAndLog(SprintState::getInstance());
 		CharacterDataStruct.MoveSpeed = 2;
 	}
 	else
@@ -609,23 +604,23 @@ void AIreneCharacter::MoveReleasedD()
 void AIreneCharacter::Turn(float Rate)
 {
 	if (WorldController->bShowMouseCursor == false &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 		AddControllerYawInput(Rate * CharacterDataStruct.EDPI);
 }
 void AIreneCharacter::LookUp(float Rate)
 {
 	if (WorldController->bShowMouseCursor == false &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 		AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
 }
 
 void AIreneCharacter::LeftButton(float Rate)
 {
 	
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Fall") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
 		{
@@ -649,7 +644,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			}
 			else
 			{
-				ChangeStateAndLog(StateEnum::Attack);
+				ChangeStateAndLog(AttackState::getInstance());
 				AttackStartComboState();
 				
 				IreneAnim->PlayAttackMontage();
@@ -662,13 +657,13 @@ void AIreneCharacter::LeftButton(float Rate)
 }
 void AIreneCharacter::RightButton()
 {
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Jump") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Fall") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Attack") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		ChangeStateAndLog(StateEnum::Attack);
+		ChangeStateAndLog(AttackState::getInstance());
 		IreneAnim->PlayEffectAttackMontage();
 	}
 }
@@ -711,11 +706,11 @@ void AIreneCharacter::MainKeyword()
 void AIreneCharacter::DodgeKeyword()
 {
 	if (!GetMovementComponent()->IsFalling() &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		IreneAnim->StopAllMontages(0);
-		ChangeStateAndLog(StateEnum::Dodge);
+		ChangeStateAndLog(DodgeState::getInstance());
 
 		float WaitTime = 1.5f; //시간을 설정
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
@@ -723,7 +718,7 @@ void AIreneCharacter::DodgeKeyword()
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
 				// 도중에 추락 안하고 정상적으로 진행됬을 때
-				if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") == 0)
+				if (CharacterState->getStateToString().Compare(FString("Dodge")) == 0)
 				{
 					ActionEndChangeMoveState();
 				}
@@ -825,7 +820,7 @@ void AIreneCharacter::AttackEndComboState()
 	CharacterDataStruct.CanNextCombo = false;
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = 0;
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0)
+	if (CharacterState->getStateToString().Compare(FString("Dodge")) != 0)
 		ActionEndChangeMoveState();
 }
 
@@ -1062,7 +1057,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		{
 			IreneAnim->StopAllMontages(0);
 			IreneAnim->SetDeadAnim(true);
-			ChangeStateAndLog(StateEnum::Death);
+			ChangeStateAndLog(DeathState::getInstance());
 		}
 	}
 	if (TargetMonster == nullptr)
@@ -1075,13 +1070,13 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 #pragma endregion Collision
 
 #pragma region State
-void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
+void AIreneCharacter::ChangeStateAndLog(State* newState)
 {
-	if ((strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Dodge") != 0 &&
-		strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0) ||
-		newState == StateEnum::Death)
+	if ((CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0) || 
+		newState == DeathState::getInstance())	
 	{
-		if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Sprint") != 0) 
+		if (CharacterState->getStateToString().Compare(FString("Sprint")) != 0)
 		{
 			IreneAnim->SetSprintStateAnim(false);
 			IreneAnim->SetSprintStopAnim(false);
@@ -1090,8 +1085,8 @@ void AIreneCharacter::ChangeStateAndLog(StateEnum newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
-		IreneAnim->SetIreneStateAnim(newState);
-		CharacterState->setState(newState);
+		//IreneAnim->SetIreneStateAnim(newState);
+		CharacterState->ChangeState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
 		//if (bShowLog)
@@ -1113,22 +1108,22 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	if (MoveKey[3] > 2)
 		MoveKey[3] -= 2;
 
-	if (strcmp(CharacterState->StateEnumToString(CharacterState->getState()), "Death") != 0)
-		CharacterState->setState(StateEnum::Idle);
+	if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
+		CharacterState->setState(IdleState::getInstance());
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-		ChangeStateAndLog(StateEnum::Idle);
+		ChangeStateAndLog(IdleState::getInstance());
 	}
 	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
-		ChangeStateAndLog(StateEnum::Sprint);
+		ChangeStateAndLog(SprintState::getInstance());
 	}
 	else
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
-		ChangeStateAndLog(StateEnum::Run);
+		ChangeStateAndLog(RunState::getInstance());
 	}
 }
 #pragma endregion State
