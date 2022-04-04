@@ -10,6 +10,7 @@
 #include "Components/SplineComponent.h" 
 #include "Components/SphereComponent.h"
 
+//타임라인 
 #include "Components/TimeLineComponent.h"
 
 
@@ -22,9 +23,9 @@ class STARRYTAIL_API APartsObject : public AActor
 	GENERATED_BODY()
 
 	public:
-	//물체가 한번 이동할때 얼마나 이동할것인가.
+	//가속 속도
 	UPROPERTY(EditAnywhere, Category = Platform)
-	float Speed;
+	float AccelSpeed;
 
 	//메쉬
 	UPROPERTY(EditAnywhere,BluePrintReadOnly ,Category = Platform)
@@ -65,6 +66,7 @@ class STARRYTAIL_API APartsObject : public AActor
 	//타임라인
 	FTimeline PartsObjTimeline;
 
+	//상하 움직임을 종료할것인지
 	UPROPERTY(BluePrintReadOnly)
 	bool IsHoverStop;
 private:
@@ -85,6 +87,7 @@ private:
 	//움직임 방향 설정
 	bool IsBackMove;
 
+	//타임라인 종료 여부
 	bool IsTimelineOn;
 
 	
