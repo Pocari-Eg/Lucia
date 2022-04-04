@@ -8,8 +8,7 @@ APartsObject::APartsObject()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	//초기 세팅
-	
+	//초기값 세팅
 	Track = CreateDefaultSubobject<USplineComponent>(TEXT("TRACK"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 	
@@ -26,7 +25,7 @@ APartsObject::APartsObject()
 
 	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Developers/Pocari/Collections/Curve/PartsObjCurve.PartsObjCurve"));
 
-	if (ST_MESH.Succeeded())
+	if (CURVE.Succeeded())
 	{
 		TimeLineCurve= CURVE.Object;
 	}
@@ -37,11 +36,13 @@ APartsObject::APartsObject()
 	IsEndTriggerOn = false;
 	IsTimelineOn = false;
 	IsHoverStop = false;
+	AccelSpeed = 0.1f;
 }
 
 void APartsObject::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//틱 마다 타임 라인 호출
 	if(IsTimelineOn==true)PartsObjTimeline.TickTimeline(DeltaTime);
 }
 
@@ -56,7 +57,7 @@ void APartsObject::BeginPlay()
 	InitTriggerTime = TriggerTime;
 
 	//타임라인 속도 설정
-	PartsObjTimeline.SetPlayRate(Speed / 1.0f);
+	PartsObjTimeline.SetPlayRate(AccelSpeed);
 
 	//타임라인 시작 호출 함수
 	FOnTimelineFloat TimelineCallback;
@@ -75,7 +76,7 @@ void APartsObject::BeginPlay()
 void APartsObject::MovingStart(APartsTrigger* Trigger)
 {
 	PartsTrigger = Trigger;
-	//상하 움직임을 멈춤
+	//상하 움직임을 멈춤고 타임라인 을 시작 
 	ZMovementSpeed = 0.0f;
 	ZMoving = false;
 	IsTimelineOn = true;
@@ -84,18 +85,22 @@ void APartsObject::MovingStart(APartsTrigger* Trigger)
 }
 void APartsObject::NextMoveSet()
 {
+	//뒤로가는 상황이 아니면
 	if (IsBackMove == false)
 	{
 		Track->SetLocationAtSplinePoint(0, InitSplineLocation, ESplineCoordinateSpace::Local);
 		if (NextObject != nullptr)
 		{
+			//다음 오브젝트도 움직임 
 			NextObject->MovingStart(PartsTrigger);
 		}
 		else {
+			//다음 오브젝트가 없으면 마지막 오브젝트이므로 카운트 다운
 			GetWorldTimerManager().SetTimer(TimerHandle, this, &APartsObject::CountDown, 1.0f, true, 0.0f);
 		}
 	}
 	else {
+		
 		IsHoverStop = false;
 		ZMovementSpeed = InitZMovementSpeed;
 		ZMoving = true;
@@ -103,10 +108,14 @@ void APartsObject::NextMoveSet()
 		//이전 오브젝트도 제자리로
 		if (PrevObject != nullptr)
 		{
+			//이전오브젝트가 있으면 뒤로가기 on
+			//타임 라인 거꾸로
 			PrevObject->IsBackMove = true;
 			PrevObject->PartsObjTimeline.Reverse();
 		}
 		else {
+			//이전 오브젝트가 없으면 트리거 켜기
+			//타임라인 종료
 			PartsTrigger->TriggerOn();
 			IsTimelineOn = false;
 		}
@@ -114,16 +123,18 @@ void APartsObject::NextMoveSet()
 }
 void APartsObject::MovingObject()
 {
+	//타임라인에서 x y 값을 불러옴
 	float TimelineVal = PartsObjTimeline.GetPlaybackPosition();
 	float CurveDistance = TimeLineCurve->GetFloatValue(TimelineVal);
 
+	//Spline 에서 현재 총 길이에서 해당 퍼센트만큼 불러옴
 	float Distance = FMath::Lerp(0.0f, Track->GetSplineLength(), CurveDistance);
 
 	FVector NewLocation = Track->GetLocationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
-	FRotator NewRotation = Track->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::Local);
+	FRotator NewRotation = Track->GetRotationAtDistanceAlongSpline(Distance, ESplineCoordinateSpace::World);
 
 	Mesh->SetWorldLocation(NewLocation);
-	Mesh->SetRelativeRotation(NewRotation);
+	Mesh->SetWorldRotation(NewRotation);
 }
 #pragma endregion
 
