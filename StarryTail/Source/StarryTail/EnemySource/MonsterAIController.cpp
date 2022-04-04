@@ -47,7 +47,7 @@ void AMonsterAIController::Attacked()
 	auto Monster = Cast<AMonster>(GetPawn());
 	if (Monster != nullptr)
 	{
-		if(!Monster->GetMonsterAnimInstance()->Montage_IsPlaying(Monster->GetMonsterAnimInstance()->GetMeleeAttack1Montage()) && !Monster->GetMonsterAnimInstance()->Montage_IsPlaying(Monster->GetMonsterAnimInstance()->GetMeleeAttack2Montage()))
+		if(!Monster->GetMonsterAnimInstance()->GetAttackIsPlaying())
 			Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
 	}
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
@@ -75,6 +75,11 @@ void AMonsterAIController::Shock()
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsShockKey, true);
+}
+void AMonsterAIController::ShockCancel()
+{
+	Blackboard->SetValueAsBool(IsAttackedKey, false);
+	Blackboard->SetValueAsBool(IsShockKey, false);
 }
 void AMonsterAIController::Death()
 {

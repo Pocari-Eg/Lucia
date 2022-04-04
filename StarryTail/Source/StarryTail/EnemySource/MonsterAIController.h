@@ -26,6 +26,7 @@ public:
 	void Attacked();
 	void Groggy();
 	void Shock();
+	void ShockCancel();
 	void Death();
 
 	static const FName SpawnPosKey;

@@ -74,7 +74,6 @@ protected:
 	bool bIsGroggy;
 	bool bIsDead;
 private:
-
 	//Function
 	void CalcHp(float Damage);
 	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
@@ -92,6 +91,7 @@ private:
 
 	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
+	void SetActive();
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		float DetectMonsterRange;

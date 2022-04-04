@@ -318,6 +318,7 @@ void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 	MonsterInfo.CurrentDef -= 20.0f;
 	//
 	CalcHp(Coefficient * (NoneDef - FireDef - WaterDef - ThunderDef));
+
 }
 void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
@@ -388,9 +389,8 @@ void AMonster::CalcHp(float Damage)
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
-		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
 		bIsDead = true;
+		SetActive();
 
 		MonsterAIController->Death();
 		return;
@@ -418,10 +418,8 @@ void AMonster::CalcBurnDamage()
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
-		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
-
 		bIsDead = true;
+		SetActive();
 
 		MonsterAIController->Death();
 		return;
@@ -479,11 +477,26 @@ TArray<FOverlapResult> AMonster::DetectMonster()
 
 	return OverlapResults;
 }
+void AMonster::SetActive()
+{
+	if (bIsDead)
+	{
+		HpBarWidget->SetHiddenInGame(true);
+		SetActorEnableCollision(false);
+		SetActorTickEnabled(false);
+	}
+}
 #pragma region Debuff
 void AMonster::Burn()
 {
 	bIsFlooding = false;
 	bIsShock = false;
+
+	if(MonsterAnimInstance->GetShockIsPlaying())
+	{
+		auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+		MonsterAIController->ShockCancel();
+	}
 
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
 	bIsBurn = true;
@@ -492,6 +505,12 @@ void AMonster::Flooding()
 {
 	bIsBurn = false;
 	bIsShock = false;
+
+	if (MonsterAnimInstance->GetShockIsPlaying())
+	{
+		auto MonsterAIController = Cast<AMonsterAIController>(GetController());
+		MonsterAIController->ShockCancel();
+	}
 
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
@@ -669,11 +688,6 @@ void AMonster::Tick(float DeltaTime)
 		{
 			HpBarWidget->SetHiddenInGame(true);
 		}
-	}
-	else
-	{
-		HpBarWidget->SetHiddenInGame(true);
-		return;
 	}
 
 	if (bIsBurn)
