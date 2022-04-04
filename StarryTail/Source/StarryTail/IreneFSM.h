@@ -33,9 +33,21 @@ public:
 class BaseGameEntity
 {
 public:
+	float PlayTime;
+	bool bIsEnd;
+public:
 	BaseGameEntity();
-	virtual void Update() = 0;
+	virtual void Update(float value) = 0;
 	virtual void ChangeState(State* newState) = 0;
+
+	virtual void SetStateEnum(StateEnum value) = 0;
+
+	virtual void SetMaxMoveSpeed(float value) = 0;
+	virtual void SetIsInAir(bool value) = 0;
+	virtual void SetIsDodge(bool value) = 0;
+	virtual void SetIsHit(bool value) = 0;
+	virtual void SetIsAttack(bool value) = 0;
+	virtual void SetIsDead(bool value) = 0;
 };
 #pragma endregion StateInterface
 
@@ -128,14 +140,33 @@ class IreneFSM: public BaseGameEntity
 private:
 	State* StateValue;
 	StateEnum StateEnumValue;
+	//최대 이동 속도 변수: idle, run, sprint
+	//공중에 있는지 변수: jump, fall
+	//이벤트 상태(시간 후 풀림): dodge, hit, attack
+	//종료 상태: dead
+	float MaxMoveSpeed;
+	bool bIsInAir;
+	bool bIsDodge;
+	bool bIsHit;
+	bool bIsAttack;
+	bool bIsDead;
 
 public:
 	IreneFSM() : BaseGameEntity(), StateValue(IdleState::getInstance()), StateEnumValue(StateEnum::Idle) { StateValue->Enter(this); };
-	void Update();
+	void Update(float value);
 	void ChangeState(State* newState);
 
-	StateEnum getState();
-	void setState(StateEnum val);
+	void SetMaxMoveSpeed(float value) { MaxMoveSpeed = value; };
+	void SetIsInAir(bool value) { bIsInAir = value; };
+	void SetIsDodge(bool value) { bIsDodge = value; };
+	void SetIsHit(bool value) { bIsHit = value; };
+	void SetIsAttack(bool value) { bIsAttack = value; };
+	void SetIsDead(bool value) { bIsDead = value; };
+	void SetStateEnum(StateEnum value) { StateEnumValue = value; };
 
+	StateEnum getState() { return StateEnumValue; };
+	void setState(State* val) { StateValue = val; };
+
+	FString getStateToString();
 	const char* StateEnumToString(StateEnum s);
 };

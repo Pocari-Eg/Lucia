@@ -3,8 +3,9 @@
 #include "IreneFSM.h"
 
 #pragma region IreneFSM
-void IreneFSM::Update()
+void IreneFSM::Update(float value)
 {
+	this->PlayTime += value;
 	StateValue->Execute(this);
 }
 void IreneFSM::ChangeState(State* newState)
@@ -13,16 +14,24 @@ void IreneFSM::ChangeState(State* newState)
 	StateValue = newState;
 	StateValue->Enter(this);
 }
-StateEnum IreneFSM::getState()
-{
-	return StateEnumValue;
-}
 
-void IreneFSM::setState(StateEnum val)
+FString IreneFSM::getStateToString()
 {
-	StateEnumValue = val;
+	switch (StateEnumValue)
+	{
+	case StateEnum::Idle: return FString("Idle");
+	case StateEnum::AttackIdle: return FString("AttackIdle");
+	case StateEnum::Run: return FString("Run");
+	case StateEnum::Sprint: return FString("Sprint");
+	case StateEnum::Dodge: return FString("Dodge");
+	case StateEnum::Jump: return FString("Jump");
+	case StateEnum::Fall: return FString("Fall");
+	case StateEnum::Attack: return FString("Attack");
+	case StateEnum::Hit: return FString("Hit");
+	case StateEnum::Death: return FString("Death");
+	default: return FString("Error StateEnumToString");
+	}
 }
-
 const char* IreneFSM::StateEnumToString(StateEnum s)
 {
     switch(s)
@@ -43,7 +52,7 @@ const char* IreneFSM::StateEnumToString(StateEnum s)
 #pragma endregion IreneFSM
 
 #pragma region StateInterface
-BaseGameEntity::BaseGameEntity()
+BaseGameEntity::BaseGameEntity():PlayTime(0.0f), bIsEnd(false)
 {
 
 }
@@ -60,7 +69,9 @@ IdleState* IdleState::getInstance()
 
 void IdleState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Idle);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void IdleState::Execute(BaseGameEntity* curState)
@@ -70,7 +81,7 @@ void IdleState::Execute(BaseGameEntity* curState)
 
 void IdleState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
 #pragma endregion IdleState
 #pragma region AttackIdleState
@@ -84,7 +95,9 @@ AttackIdleState* AttackIdleState::getInstance()
 
 void AttackIdleState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::AttackIdle);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void AttackIdleState::Execute(BaseGameEntity* curState)
@@ -108,7 +121,9 @@ RunState* RunState::getInstance()
 
 void RunState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Run);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void RunState::Execute(BaseGameEntity* curState)
@@ -132,7 +147,9 @@ SprintState* SprintState::getInstance()
 
 void SprintState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Sprint);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void SprintState::Execute(BaseGameEntity* curState)
@@ -156,7 +173,9 @@ DodgeState* DodgeState::getInstance()
 
 void DodgeState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Dodge);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void DodgeState::Execute(BaseGameEntity* curState)
@@ -180,7 +199,9 @@ JumpState* JumpState::getInstance()
 
 void JumpState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Jump);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void JumpState::Execute(BaseGameEntity* curState)
@@ -204,7 +225,9 @@ FallState* FallState::getInstance()
 
 void FallState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Fall);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void FallState::Execute(BaseGameEntity* curState)
@@ -228,7 +251,9 @@ AttackState* AttackState::getInstance()
 
 void AttackState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Attack);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void AttackState::Execute(BaseGameEntity* curState)
@@ -252,7 +277,9 @@ HitState* HitState::getInstance()
 
 void HitState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Hit);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void HitState::Execute(BaseGameEntity* curState)
@@ -276,7 +303,9 @@ DeathState* DeathState::getInstance()
 
 void DeathState::Enter(BaseGameEntity* curState)
 {
-
+	curState->SetStateEnum(StateEnum::Death);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
 }
 
 void DeathState::Execute(BaseGameEntity* curState)
@@ -289,4 +318,3 @@ void DeathState::Exit(BaseGameEntity* curState)
 
 }
 #pragma endregion DeathState
-

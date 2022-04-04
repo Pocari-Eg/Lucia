@@ -202,7 +202,7 @@ private:
 
 #pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(StateEnum newState);
+	void ChangeStateAndLog(State* newState);
 	void ActionEndChangeMoveState();
 #pragma endregion State
 
