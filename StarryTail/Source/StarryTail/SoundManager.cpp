@@ -21,14 +21,11 @@ void SoundManager::SoundPlay3D(FTransform transform)
 	if (Event != nullptr) {
 		//사운드 인스턴스를 만듬 
 		Instance = UFMODBlueprintStatics::PlayEventAtLocation(World, Event, transform, false);
-		//사운드의 파라미터가 해당하는 파라미터가 있을시 파라미터 변경
-
 		
-	
-		UFMODBlueprintStatics::EventInstanceSetParameter(Instance, Parameter, ParameterValue);
-	
+		char* result = TCHAR_TO_ANSI(*Parameter);
+		Instance.Instance->setParameterByName(result, ParameterValue);
 		//사운드 볼륨 조절
-		UFMODBlueprintStatics::EventInstanceSetVolume(Instance, Volume);
+		Instance.Instance->setVolume(Volume);
 		//사운드 플레이
 		UFMODBlueprintStatics::EventInstancePlay(Instance);
 	}
@@ -39,12 +36,11 @@ void SoundManager::SoundPlay2D()
 	if (Event != nullptr) {
 
 		Instance = UFMODBlueprintStatics::PlayEvent2D(World, Event, false);
-
-	UFMODBlueprintStatics::EventInstanceSetParameter(Instance, Parameter, ParameterValue);
-	
-		UFMODBlueprintStatics::EventInstanceSetVolume(Instance, Volume);
+		char* result = TCHAR_TO_ANSI(*Parameter);
+		Instance.Instance->setParameterByName(result, ParameterValue);
+		Instance.Instance->setVolume(Volume);
 		UFMODBlueprintStatics::EventInstancePlay(Instance);
-
+		
 	}
 }
 
@@ -70,7 +66,7 @@ void SoundManager::SetVolume(float Vol)
 	if (Event != nullptr) {
 		//사운드의 볼륨 조절
 
-	//사운드가 단발성이면 값을 저장했다가 다음 사운드 출력때 사용
+	//사운드가 단발성이면 값을 저장했다가 다음 사운드 출력때 사용asdB
 		Volume = Vol;
 		//사운드가 연속적이면 볼륨을바로 조절
 		if (Instance.Instance->isValid()) {
@@ -84,12 +80,9 @@ void SoundManager::SetParameter(FString parameter, float Value)
 	if (Event != nullptr) {
 		//사운드의 파라미터값 설정
 		//사운드가 단발성이면 값을 저장했다가 다음 사운드 출력때 사용
-		this->Parameter = FName(parameter);
-		this->ParameterValue = Value;
-		/*if (Instance.Instance->isValid()) {
-
-			UFMODBlueprintStatics::EventInstanceSetParameter(Instance, Parameter, ParameterValue);
-		}*/
+		this->Parameter = parameter;
+		this->ParameterValue = Value;		
+	
 	}
 }
 
