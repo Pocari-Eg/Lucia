@@ -4,6 +4,7 @@
 #include "BTTaskMbAttack.h"
 #include "../Morbit.h"
 #include "../MbAIController.h"
+#include "../../../IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 
@@ -27,6 +28,10 @@ EBTNodeResult::Type UBTTaskMbAttack::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	bIsAttacking = true;
 	Morbit->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
 
+	auto MorbitAnimInstance = Morbit->GetMonsterAnimInstance();
+	if (!MorbitAnimInstance->GetAttackIsPlaying())
+		return EBTNodeResult::Failed;
+
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskMbAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -38,4 +43,10 @@ void UBTTaskMbAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackingKey, false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+	if (bIsAttacking)
+	{
+		
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+
 }

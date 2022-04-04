@@ -202,9 +202,6 @@ void AMorbit::BattleWalk()
 }
 void AMorbit::Attack()
 {
-	if (bIsAttacking)
-		return;
-
 	MonsterAnimInstance->PlayMeleeAttackMontage();
 
 	bIsAttacking = true;
@@ -263,6 +260,7 @@ void AMorbit::BeginPlay()
 
 	InitMorbitInfo();
 	InitMorbitMaterial();
+	InitOccupationAI();
 }
 
 // Called every frame

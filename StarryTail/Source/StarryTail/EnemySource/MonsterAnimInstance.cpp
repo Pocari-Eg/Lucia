@@ -156,6 +156,10 @@ bool UMonsterAnimInstance::GetAttackIsPlaying()
 {
 	return (Montage_IsPlaying(MeleeAttackMontage1) || Montage_IsPlaying(MeleeAttackMontage2));
 }
+bool UMonsterAnimInstance::GetShockIsPlaying()
+{
+	return Montage_IsPlaying(ShockMontage);
+}
 void UMonsterAnimInstance::AnimNotify_Attack()
 {
 	Attack.Broadcast();
@@ -167,13 +171,4 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
-}
-
-UAnimMontage* UMonsterAnimInstance::GetMeleeAttack1Montage()
-{
-	return MeleeAttackMontage1;
-}
-UAnimMontage* UMonsterAnimInstance::GetMeleeAttack2Montage()
-{
-	return MeleeAttackMontage2;
 }
