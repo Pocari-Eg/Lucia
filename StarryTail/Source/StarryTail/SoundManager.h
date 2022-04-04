@@ -15,7 +15,7 @@ public:
 		this->Event = Event;
 		this->World = World;
 
-		Parameter = FName("Empty");
+		
 		ParameterValue = 0.0f;
 		Volume = 1.0f;
 	}
@@ -25,7 +25,7 @@ private:
 	UFMODEvent* Event;
 	FFMODEventInstance Instance;
 
-	FName Parameter;
+	FString Parameter = "Empty";
 	float ParameterValue;
 	float CurrentParameterValue=-1.0f;
 	float Volume;
