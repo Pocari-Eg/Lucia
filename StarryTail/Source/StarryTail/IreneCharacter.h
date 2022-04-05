@@ -81,6 +81,11 @@ private:
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 
+	// 차징 중인지
+	bool IsCharging;
+	// 차징 시간
+	float ChargingTime;
+
 	// 점프 중력 그래프용 시작 타이밍
 	bool bStartJump;
 	// 점프 중력 그래프용 시간
@@ -187,7 +192,8 @@ private:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
-	void RightButton();
+	void RightButtonPressed();
+	void RightButtonReleased();
 	void MouseWheel(float Rate);
 
 	// 메인키워드 속성변경
