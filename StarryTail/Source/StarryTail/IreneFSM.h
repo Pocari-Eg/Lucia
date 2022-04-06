@@ -165,7 +165,14 @@ public:
 	void SetStateEnum(StateEnum value) { StateEnumValue = value; };
 
 	StateEnum getState() { return StateEnumValue; };
-	void setState(State* val) { StateValue = val; };
+	void setState(State* val) {
+		StateValue = val;
+		if (val == nullptr) 
+		{
+			StateValue = IdleState::getInstance();
+			StateEnumValue = StateEnum::Idle;
+		}
+	};
 
 	FString getStateToString();
 	const char* StateEnumToString(StateEnum s);
