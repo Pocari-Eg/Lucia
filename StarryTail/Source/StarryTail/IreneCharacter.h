@@ -64,6 +64,9 @@ private:
 	UPROPERTY()
 	class UIreneAnimInstance* IreneAnim;
 
+	UPROPERTY(EditAnywhere)
+	TArray<UCurveFloat*> CameraShakeCurve;
+
 #pragma endregion GetClassOrObject
 
 #pragma region InputData
@@ -108,6 +111,9 @@ private:
 	FVector PlayerPosVec;
 	// 보간을 위한 목표 위치
 	FVector TargetPosVec;
+
+	// 카메라 쉐이크 시간
+	float CameraShakeTime;
 #pragma endregion AttackData
 
 #pragma region UI

@@ -61,6 +61,14 @@ AIreneCharacter::AIreneCharacter()
 		JumpGravityCurve = JumpCurve.Object;
 	}
 
+	// 카메라 쉐이크 커브
+	ConstructorHelpers::FObjectFinder<UCurveFloat>CameraCurveDataObject(TEXT("/Game/Math/CameraShakeCurve.CameraShakeCurve"));
+	if (CameraCurveDataObject.Succeeded())
+	{
+		CameraShakeCurve.Add(CameraCurveDataObject.Object);
+	}
+
+
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 	/*
@@ -264,18 +272,34 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
+	// 점프 그래프 사용
 	if (bStartJump)
 	{
 		JumpingTime += DeltaTime;
 		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
 	}
-
 	if (!GetCharacterMovement()->IsFalling())
 	{
 		JumpingTime = 0.0f;
 		bStartJump = false;
 	}
 
+	STARRYLOG(Error, TEXT("%d"), CharacterDataStruct.CurrentCombo);
+
+	// 점프 그래프 사용
+	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo)
+	{
+		CameraShakeTime += DeltaTime;
+		FRotator CameraRotate = CameraComp->GetRelativeRotation();
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime);
+		CameraComp->SetRelativeRotation(CameraRotate);
+	}
+	else
+	{
+		CameraShakeTime = 0;
+	}
+
+	// 차징 사용
 	if(IsCharging)
 	{
 		ChargingTime += DeltaTime;
@@ -873,6 +897,10 @@ void AIreneCharacter::AttackCheck()
 }
 void AIreneCharacter::DoAttack()
 {
+	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것
+	//WorldController->ClientStartCameraShake(CameraShakeCurve);
+
+
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
 	FollowTargetAlpha = 0;
