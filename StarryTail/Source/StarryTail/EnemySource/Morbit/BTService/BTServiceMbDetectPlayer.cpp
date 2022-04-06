@@ -130,7 +130,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsFindKey, true);
 
 						//¸ó½ºÅÍ Å½»ö
-						TArray<FOverlapResult> AnotherMonsterList = Morbit->DetectMonster();
+						TArray<FOverlapResult> AnotherMonsterList = Morbit->DetectMonster(Morbit->GetDetectMonsterRange());
 						if (AnotherMonsterList.Num() != 0)
 						{
 							for (auto const& AnotherMonster : AnotherMonsterList)

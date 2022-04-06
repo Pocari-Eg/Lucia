@@ -27,6 +27,7 @@ public:
 	//Function
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
+	float GetDetectMonsterRange() const;
 	TArray<EAttributeKeyword> GetMainAttributeDef() const;
 	
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
@@ -36,7 +37,7 @@ public:
 
 	void AddDebuffStack(EAttributeKeyword Attribute);
 
-	TArray<FOverlapResult> DetectMonster();
+	TArray<FOverlapResult> DetectMonster(float DetectRange);
 
 	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
@@ -52,6 +53,7 @@ protected:
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
 	void CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void PrintHitEffect(FVector AttackedPosition);
 
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
@@ -60,12 +62,22 @@ protected:
 		FAttributeDefence AttributeDef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* HitEffect;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* HitEffectComponent;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
 	//
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		FRotator EffectRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		FVector EffectScale;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
 
@@ -82,6 +94,8 @@ private:
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
 
+	void InitHitEffect();
+
 	void Burn();
 	void Flooding();
 	void Shock();
@@ -92,10 +106,10 @@ private:
 	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void SetActive();
-	//Variable
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		float DetectMonsterRange;
+	UFUNCTION()
+	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	//Variable
 	FVector AssembleLocation;
 
 	bool bIsBurn;
