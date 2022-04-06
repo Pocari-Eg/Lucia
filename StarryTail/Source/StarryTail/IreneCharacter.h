@@ -225,6 +225,7 @@ private:
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackCheck();
+	void AttackStopCheck();
 	void DoAttack();
 #pragma endregion Attack
 	

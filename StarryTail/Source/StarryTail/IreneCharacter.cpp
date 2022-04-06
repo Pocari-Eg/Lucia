@@ -4,7 +4,8 @@
 // 나중에 해야할 것: 일반 공격 속성 테이블 따라 값 읽기, 
 // 
 // 로그 출력용 더미
-// UE_LOG(LogTemp, Error, TEXT("SubKeyword"));
+// UE_LOG(LogTemp, Error, TEXT("Sub"));
+// STARRYLOG(Error, TEXT("Sub"));
 
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
@@ -26,7 +27,6 @@ AIreneCharacter::AIreneCharacter()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
-		//GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 		//무기
@@ -44,6 +44,7 @@ AIreneCharacter::AIreneCharacter()
 
 		//콜리전 적용
 		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -68,24 +69,13 @@ AIreneCharacter::AIreneCharacter()
 		CameraShakeCurve.Add(CameraCurveDataObject.Object);
 	}
 
-
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
-	/*
-	FindMonsterCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindMonster"));
-	FindMonsterCollsion->SetRelativeLocation(FVector(300, 0, 0));
-	FindMonsterCollsion->SetBoxExtent(FVector(300.0f, 300.0f, 100.0f));
-
-	FindTargetCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindTarget"));
-	FindTargetCollsion->SetRelativeLocation(FVector(100, 0, 0));
-	FindTargetCollsion->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
-	*/
 
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 46.0f), FRotator(-20.0f, 90.0f, 0.0f));
-	//SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 0.0f;
@@ -132,8 +122,7 @@ AIreneCharacter::AIreneCharacter()
 
 	TargetMonster = nullptr;
 
-	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
-
+	// PlayerCharacterDataStruct.h의 변수들 초기화
 	CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
 	CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
 
@@ -238,6 +227,7 @@ void AIreneCharacter::PostInitializeComponents()
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
+	IreneAnim->OnAttackStopCheck.AddUObject(this, &AIreneCharacter::AttackStopCheck);
 	IreneAnim->OnFootStep.AddUObject(this, &AIreneCharacter::FootStepSound);
 }
 #pragma endregion Setting
@@ -892,11 +882,16 @@ void AIreneCharacter::AttackCheck()
 	AttackSound->SoundPlay2D();
 	FindNearMonster();
 }
+void AIreneCharacter::AttackStopCheck()
+{
+	Weapon->SetGenerateOverlapEvents(false);
+}
 void AIreneCharacter::DoAttack()
 {
-	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것
+	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
 	//WorldController->ClientStartCameraShake(CameraShakeCurve);
 
+	Weapon->SetGenerateOverlapEvents(true);
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
@@ -945,14 +940,18 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
-	//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
-	//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
-	if (bResult)
+	if (CharacterDataStruct.CurrentCombo == 5 || IsCharging) 
 	{
-		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+		STARRYLOG(Error, TEXT("sss"));
+		//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
+		//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
+		if (bResult)
 		{
-			STGameInstance->ResetAttributeEffectMonster();
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+			{
+				STGameInstance->ResetAttributeEffectMonster();
+			}
 		}
 	}
 }
