@@ -7,6 +7,8 @@
 #include "GimbalPartsObject.h"
 #include "OccupiedObject.h"
 #include "Components/ChildActorComponent.h"
+
+#include "EnemySpawnPoint.h"
 #include "GimbalObject.generated.h"
 
 
@@ -64,6 +66,16 @@ public:
 	AOccupiedObject* WaterOccupiedArea;
 	UPROPERTY(EditAnyWhere, Category = AREA)
 	AOccupiedObject* ThungerOccupiedArea;
+
+
+	//몬스터 스폰 반경
+	UPROPERTY(EditAnyWhere, Category = SPAWN)
+	float SpawnRadius;
+
+	//몬스터 스폰 위치 
+	UPROPERTY(EditAnyWhere, Category = SPAWN)
+	TArray<AEnemySpawnPoint*> EnemySpawnPoint;
+
 private:
 
 	//목표 원소 게이지
@@ -106,8 +118,9 @@ private:
 	void WaterGimbalOnOff();
 	void ThunderGimbalOnOff();
 
-
-
 	//원소 게이지 상승
 	void GimbalGaugeOn();
+
+	//적 스폰
+	void SpawnEnemy();
 };
