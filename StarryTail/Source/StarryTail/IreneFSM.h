@@ -42,12 +42,16 @@ public:
 
 	virtual void SetStateEnum(StateEnum value) = 0;
 
-	virtual void SetMaxMoveSpeed(float value) = 0;
-	virtual void SetIsInAir(bool value) = 0;
-	virtual void SetIsDodge(bool value) = 0;
-	virtual void SetIsHit(bool value) = 0;
-	virtual void SetIsAttack(bool value) = 0;
-	virtual void SetIsDead(bool value) = 0;
+	virtual bool CanIdle() = 0;
+	virtual bool CanAttackIdle() = 0;
+	virtual bool CanRun() = 0;
+	virtual bool CanSprint() = 0;
+	virtual bool CanDodge() = 0;
+	virtual bool CanJump() = 0;
+	virtual bool CanFall() = 0;
+	virtual bool CanAttack() = 0;
+	virtual bool CanHit() = 0;
+	virtual bool CanDeath() = 0;
 };
 #pragma endregion StateInterface
 
@@ -140,31 +144,26 @@ class IreneFSM: public BaseGameEntity
 private:
 	State* StateValue;
 	StateEnum StateEnumValue;
-	//최대 이동 속도 변수: idle, run, sprint
-	//공중에 있는지 변수: jump, fall
-	//이벤트 상태(시간 후 풀림): dodge, hit, attack
-	//종료 상태: dead
-	float MaxMoveSpeed;
-	bool bIsInAir;
-	bool bIsDodge;
-	bool bIsHit;
-	bool bIsAttack;
-	bool bIsDead;
 
 public:
-	IreneFSM() : BaseGameEntity(), StateValue(IdleState::getInstance()), StateEnumValue(StateEnum::Idle) { StateValue->Enter(this); };
+	IreneFSM() : BaseGameEntity(), StateValue(IdleState::getInstance()), StateEnumValue(StateEnum::Idle) { StateValue->Enter(this); }
 	void Update(float value);
 	void ChangeState(State* newState);
 
-	void SetMaxMoveSpeed(float value) { MaxMoveSpeed = value; };
-	void SetIsInAir(bool value) { bIsInAir = value; };
-	void SetIsDodge(bool value) { bIsDodge = value; };
-	void SetIsHit(bool value) { bIsHit = value; };
-	void SetIsAttack(bool value) { bIsAttack = value; };
-	void SetIsDead(bool value) { bIsDead = value; };
-	void SetStateEnum(StateEnum value) { StateEnumValue = value; };
+	bool CanIdle();
+	bool CanAttackIdle();
+	bool CanRun();
+	bool CanSprint();
+	bool CanDodge();
+	bool CanJump();
+	bool CanFall();
+	bool CanAttack();
+	bool CanHit();
+	bool CanDeath();
 
-	StateEnum getState() { return StateEnumValue; };
+	void SetStateEnum(StateEnum value) { StateEnumValue = value; }
+
+	StateEnum getState() { return StateEnumValue; }
 	void setState(State* val) {
 		StateValue = val;
 		if (val == nullptr) 
@@ -172,8 +171,7 @@ public:
 			StateValue = IdleState::getInstance();
 			StateEnumValue = StateEnum::Idle;
 		}
-	};
+	}
 
 	FString getStateToString();
-	const char* StateEnumToString(StateEnum s);
 };

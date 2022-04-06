@@ -14,7 +14,143 @@ void IreneFSM::ChangeState(State* newState)
 	StateValue = newState;
 	StateValue->Enter(this);
 }
-
+bool IreneFSM::CanIdle()
+{
+	if (StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanAttackIdle()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||		
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanRun()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanSprint()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanDodge()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanJump()
+{
+	if (StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanFall()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanAttack()
+{
+	if (StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanHit()
+{
+	if (StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
+bool IreneFSM::CanDeath()
+{
+	if (StateEnumValue == StateEnum::Attack ||
+		StateEnumValue == StateEnum::AttackIdle ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::Idle ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint
+		)
+		return true;
+	else
+		return false;
+}
 FString IreneFSM::getStateToString()
 {
 	switch (StateEnumValue)
@@ -31,23 +167,6 @@ FString IreneFSM::getStateToString()
 	case StateEnum::Death: return FString("Death");
 	default: return FString("Error StateEnumToString");
 	}
-}
-const char* IreneFSM::StateEnumToString(StateEnum s)
-{
-    switch(s)
-    {
-    case StateEnum::Idle: return "Idle";
-    case StateEnum::AttackIdle: return "AttackIdle";
-    case StateEnum::Run: return "Run";
-	case StateEnum::Sprint: return "Sprint";
-    case StateEnum::Dodge: return "Dodge";
-    case StateEnum::Jump: return "Jump";
-	case StateEnum::Fall: return "Fall";
-    case StateEnum::Attack: return "Attack";
-    case StateEnum::Hit: return "Hit";
-    case StateEnum::Death: return "Death";
-    default: return "Error StateEnumToString";
-    }
 }
 #pragma endregion IreneFSM
 

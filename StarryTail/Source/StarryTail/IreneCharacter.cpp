@@ -291,7 +291,6 @@ void AIreneCharacter::Tick(float DeltaTime)
 	if(IsCharging)
 	{
 		ChargingTime += DeltaTime;
-		STARRYLOG(Error, TEXT("%f"), ChargingTime);
 	}
 
 	if (TargetMonster != nullptr)
@@ -1149,10 +1148,6 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		}
 
 		CharacterState->ChangeState(newState);
-
-		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		//if (bShowLog)
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }
 
@@ -1173,9 +1168,6 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	if (CharacterState->getStateToString().Compare(FString("Death")) != 0) 
 	{
 		CharacterState->setState(nullptr);
-
-		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
