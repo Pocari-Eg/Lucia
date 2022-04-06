@@ -70,7 +70,7 @@ void AMorbit::InitAnime()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> MorbitAnim(TEXT("/Game/BluePrint/Monster/MorbitAnimation/MorbitAnimBlueprint"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> MorbitAnim(TEXT("/Game/BluePrint/Monster/Morbit/MorbitAnimBlueprint"));
 	if (MorbitAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);

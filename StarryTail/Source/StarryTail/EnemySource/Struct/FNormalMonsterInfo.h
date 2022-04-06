@@ -34,6 +34,8 @@ public:
 		float TraceRange; //최대 추적 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DetectMonsterRange;
 public:
 	//메인 속성 방어력들을 저장
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
