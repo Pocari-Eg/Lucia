@@ -284,9 +284,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 		bStartJump = false;
 	}
 
-	STARRYLOG(Error, TEXT("%d"), CharacterDataStruct.CurrentCombo);
-
-	// 점프 그래프 사용
+	// 카메라 쉐이크 그래프 사용
 	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo)
 	{
 		CameraShakeTime += DeltaTime;
@@ -417,7 +415,7 @@ void AIreneCharacter::MoveAuto()
 			DoAttack();
 		}
 	}
-	if (CharacterState->getStateToString().Compare(FString("Attack")) == 0)
+	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0)
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
@@ -662,8 +660,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			float WaitTime = 0.15f;
 
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					
+				{					
 					AttackWaitHandle.Invalidate();
 				}), WaitTime, false);
 
@@ -1155,7 +1152,7 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		CharacterState->ChangeState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		if (bShowLog)
+		//if (bShowLog)
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }
@@ -1174,8 +1171,13 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	if (MoveKey[3] > 2)
 		MoveKey[3] -= 2;
 
-	if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
-		CharacterState->setState(IdleState::getInstance());
+	if (CharacterState->getStateToString().Compare(FString("Death")) != 0) 
+	{
+		CharacterState->setState(nullptr);
+
+		FString str = CharacterState->StateEnumToString(CharacterState->getState());
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+	}
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
