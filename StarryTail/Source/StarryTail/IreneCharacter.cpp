@@ -43,7 +43,7 @@ AIreneCharacter::AIreneCharacter()
 		}
 
 		//콜리전 적용
-		//Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -60,6 +60,14 @@ AIreneCharacter::AIreneCharacter()
 	{
 		JumpGravityCurve = JumpCurve.Object;
 	}
+
+	// 카메라 쉐이크 커브
+	ConstructorHelpers::FObjectFinder<UCurveFloat>CameraCurveDataObject(TEXT("/Game/Math/CameraShakeCurve.CameraShakeCurve"));
+	if (CameraCurveDataObject.Succeeded())
+	{
+		CameraShakeCurve.Add(CameraCurveDataObject.Object);
+	}
+
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
@@ -169,6 +177,8 @@ AIreneCharacter::AIreneCharacter()
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
 	TargetPosVec = FVector::ZeroVector;
+	IsCharging = false;
+	ChargingTime = 0.0f;
 
 	bShowLog = false;
 }
@@ -258,19 +268,42 @@ void AIreneCharacter::Tick(float DeltaTime)
 		DodgeKeyword();
 	}
 	MoveStop();
+	
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
+	// 점프 그래프 사용
 	if (bStartJump)
 	{
 		JumpingTime += DeltaTime;
 		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
 	}
-
 	if (!GetCharacterMovement()->IsFalling())
 	{
 		JumpingTime = 0.0f;
 		bStartJump = false;
+	}
+
+	STARRYLOG(Error, TEXT("%d"), CharacterDataStruct.CurrentCombo);
+
+	// 점프 그래프 사용
+	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo)
+	{
+		CameraShakeTime += DeltaTime;
+		FRotator CameraRotate = CameraComp->GetRelativeRotation();
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime);
+		CameraComp->SetRelativeRotation(CameraRotate);
+	}
+	else
+	{
+		CameraShakeTime = 0;
+	}
+
+	// 차징 사용
+	if(IsCharging)
+	{
+		ChargingTime += DeltaTime;
+		STARRYLOG(Error, TEXT("%f"), ChargingTime);
 	}
 
 	if (TargetMonster != nullptr)
@@ -638,7 +671,6 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				if (CharacterDataStruct.CanNextCombo)
 				{
-				
 					CharacterDataStruct.IsComboInputOn = true;
 				}
 			}
@@ -655,7 +687,7 @@ void AIreneCharacter::LeftButton(float Rate)
 		}
 	}
 }
-void AIreneCharacter::RightButton()
+void AIreneCharacter::RightButtonPressed()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
@@ -664,9 +696,42 @@ void AIreneCharacter::RightButton()
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		ChangeStateAndLog(AttackState::getInstance());
-		IreneAnim->PlayEffectAttackMontage();
+		IsCharging = true;
+		ChargingTime = 0.0f;
 	}
 }
+void AIreneCharacter::RightButtonReleased()
+{
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
+	{
+		IsCharging = false;
+		if(ChargingTime > 7.0f)
+		{
+			CharacterDataStruct.Strength = 100;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else if(ChargingTime > 4.0f)
+		{
+			CharacterDataStruct.Strength = 60;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else if (ChargingTime > 1.0f)
+		{
+			CharacterDataStruct.Strength = 40;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else
+		{
+			CharacterDataStruct.Strength = 5;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		ChargingTime = 0.0f;
+	}
+}
+
 void AIreneCharacter::MouseWheel(float Rate)
 {
 	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
@@ -792,7 +857,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", this, &AIreneCharacter::LeftButton);
-	PlayerInputComponent->BindAction("RightButton", IE_Pressed, this, &AIreneCharacter::RightButton);
+	PlayerInputComponent->BindAction("RightButton", IE_Pressed, this, &AIreneCharacter::RightButtonPressed);
+	PlayerInputComponent->BindAction("RightButton", IE_Released, this, &AIreneCharacter::RightButtonReleased);
 	PlayerInputComponent->BindAxis("MouseWheel", this, &AIreneCharacter::MouseWheel);
 
 	//박찬영
@@ -826,12 +892,15 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
-
 	AttackSound->SoundPlay2D();
 	FindNearMonster();
 }
 void AIreneCharacter::DoAttack()
 {
+	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것
+	//WorldController->ClientStartCameraShake(CameraShakeCurve);
+
+
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
 	FollowTargetAlpha = 0;
@@ -889,9 +958,6 @@ void AIreneCharacter::DoAttack()
 			STGameInstance->ResetAttributeEffectMonster();
 		}
 	}
-
-	
-
 }
 #pragma endregion Attack
 
@@ -1085,11 +1151,11 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
-		//IreneAnim->SetIreneStateAnim(newState);
+
 		CharacterState->ChangeState(newState);
 
 		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		//if (bShowLog)
+		if (bShowLog)
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
 	}
 }
