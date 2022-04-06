@@ -4,7 +4,8 @@
 // 나중에 해야할 것: 일반 공격 속성 테이블 따라 값 읽기, 
 // 
 // 로그 출력용 더미
-// UE_LOG(LogTemp, Error, TEXT("SubKeyword"));
+// UE_LOG(LogTemp, Error, TEXT("Sub"));
+// STARRYLOG(Error, TEXT("Sub"));
 
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
@@ -26,7 +27,6 @@ AIreneCharacter::AIreneCharacter()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
-		//GetMesh()->SetWorldScale3D(FVector(10.0f, 10.0f, 10.0f));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 		//무기
@@ -43,7 +43,8 @@ AIreneCharacter::AIreneCharacter()
 		}
 
 		//콜리전 적용
-		//Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -61,23 +62,20 @@ AIreneCharacter::AIreneCharacter()
 		JumpGravityCurve = JumpCurve.Object;
 	}
 
+	// 카메라 쉐이크 커브
+	ConstructorHelpers::FObjectFinder<UCurveFloat>CameraCurveDataObject(TEXT("/Game/Math/CameraShakeCurve.CameraShakeCurve"));
+	if (CameraCurveDataObject.Succeeded())
+	{
+		CameraShakeCurve.Add(CameraCurveDataObject.Object);
+	}
+
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
-	/*
-	FindMonsterCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindMonster"));
-	FindMonsterCollsion->SetRelativeLocation(FVector(300, 0, 0));
-	FindMonsterCollsion->SetBoxExtent(FVector(300.0f, 300.0f, 100.0f));
-
-	FindTargetCollsion = CreateDefaultSubobject<UBoxComponent>(TEXT("FindTarget"));
-	FindTargetCollsion->SetRelativeLocation(FVector(100, 0, 0));
-	FindTargetCollsion->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f));
-	*/
 
 	// 스프링암 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 46.0f), FRotator(-20.0f, 90.0f, 0.0f));
-	//SpringArmComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
 	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
 	SpringArmComp->CameraLagSpeed = 0.0f;
@@ -124,8 +122,7 @@ AIreneCharacter::AIreneCharacter()
 
 	TargetMonster = nullptr;
 
-	// PlayerCharacterDataStruct.h의 하단 public 변수들 초기화
-
+	// PlayerCharacterDataStruct.h의 변수들 초기화
 	CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
 	CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
 
@@ -169,6 +166,8 @@ AIreneCharacter::AIreneCharacter()
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
 	TargetPosVec = FVector::ZeroVector;
+	IsCharging = false;
+	ChargingTime = 0.0f;
 
 	bShowLog = false;
 }
@@ -228,6 +227,7 @@ void AIreneCharacter::PostInitializeComponents()
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
+	IreneAnim->OnAttackStopCheck.AddUObject(this, &AIreneCharacter::AttackStopCheck);
 	IreneAnim->OnFootStep.AddUObject(this, &AIreneCharacter::FootStepSound);
 }
 #pragma endregion Setting
@@ -258,19 +258,39 @@ void AIreneCharacter::Tick(float DeltaTime)
 		DodgeKeyword();
 	}
 	MoveStop();
+	
 	if (CharacterDataStruct.IsInvincibility == true)
 		SetActorEnableCollision(false);
 
+	// 점프 그래프 사용
 	if (bStartJump)
 	{
 		JumpingTime += DeltaTime;
 		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpingTime);
 	}
-
 	if (!GetCharacterMovement()->IsFalling())
 	{
 		JumpingTime = 0.0f;
 		bStartJump = false;
+	}
+
+	// 카메라 쉐이크 그래프 사용
+	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo)
+	{
+		CameraShakeTime += DeltaTime;
+		FRotator CameraRotate = CameraComp->GetRelativeRotation();
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime);
+		CameraComp->SetRelativeRotation(CameraRotate);
+	}
+	else
+	{
+		CameraShakeTime = 0;
+	}
+
+	// 차징 사용
+	if(IsCharging)
+	{
+		ChargingTime += DeltaTime;
 	}
 
 	if (TargetMonster != nullptr)
@@ -384,7 +404,7 @@ void AIreneCharacter::MoveAuto()
 			DoAttack();
 		}
 	}
-	if (CharacterState->getStateToString().Compare(FString("Attack")) == 0)
+	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0)
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
@@ -629,8 +649,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			float WaitTime = 0.15f;
 
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					
+				{					
 					AttackWaitHandle.Invalidate();
 				}), WaitTime, false);
 
@@ -638,7 +657,6 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				if (CharacterDataStruct.CanNextCombo)
 				{
-				
 					CharacterDataStruct.IsComboInputOn = true;
 				}
 			}
@@ -655,7 +673,7 @@ void AIreneCharacter::LeftButton(float Rate)
 		}
 	}
 }
-void AIreneCharacter::RightButton()
+void AIreneCharacter::RightButtonPressed()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
@@ -664,9 +682,42 @@ void AIreneCharacter::RightButton()
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		ChangeStateAndLog(AttackState::getInstance());
-		IreneAnim->PlayEffectAttackMontage();
+		IsCharging = true;
+		ChargingTime = 0.0f;
 	}
 }
+void AIreneCharacter::RightButtonReleased()
+{
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
+	{
+		IsCharging = false;
+		if(ChargingTime > 7.0f)
+		{
+			CharacterDataStruct.Strength = 100;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else if(ChargingTime > 4.0f)
+		{
+			CharacterDataStruct.Strength = 60;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else if (ChargingTime > 1.0f)
+		{
+			CharacterDataStruct.Strength = 40;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		else
+		{
+			CharacterDataStruct.Strength = 5;
+			IreneAnim->PlayEffectAttackMontage();
+		}
+		ChargingTime = 0.0f;
+	}
+}
+
 void AIreneCharacter::MouseWheel(float Rate)
 {
 	SpringArmComp->TargetArmLength -= Rate * CharacterDataStruct.MouseWheelSpeed;
@@ -792,7 +843,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", this, &AIreneCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &AIreneCharacter::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", this, &AIreneCharacter::LeftButton);
-	PlayerInputComponent->BindAction("RightButton", IE_Pressed, this, &AIreneCharacter::RightButton);
+	PlayerInputComponent->BindAction("RightButton", IE_Pressed, this, &AIreneCharacter::RightButtonPressed);
+	PlayerInputComponent->BindAction("RightButton", IE_Released, this, &AIreneCharacter::RightButtonReleased);
 	PlayerInputComponent->BindAxis("MouseWheel", this, &AIreneCharacter::MouseWheel);
 
 	//박찬영
@@ -826,12 +878,20 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
-
 	AttackSound->SoundPlay2D();
 	FindNearMonster();
 }
+void AIreneCharacter::AttackStopCheck()
+{
+	Weapon->SetGenerateOverlapEvents(false);
+}
 void AIreneCharacter::DoAttack()
 {
+	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
+	//WorldController->ClientStartCameraShake(CameraShakeCurve);
+
+	Weapon->SetGenerateOverlapEvents(true);
+
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
 	FollowTargetAlpha = 0;
@@ -879,19 +939,20 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
-	//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
-	//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
-	if (bResult)
+	if (CharacterDataStruct.CurrentCombo == 5 || IsCharging) 
 	{
-		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+		STARRYLOG(Error, TEXT("sss"));
+		//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
+		//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
+		if (bResult)
 		{
-			STGameInstance->ResetAttributeEffectMonster();
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+			{
+				STGameInstance->ResetAttributeEffectMonster();
+			}
 		}
 	}
-
-	
-
 }
 #pragma endregion Attack
 
@@ -1085,12 +1146,8 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
-		//IreneAnim->SetIreneStateAnim(newState);
-		CharacterState->ChangeState(newState);
 
-		FString str = CharacterState->StateEnumToString(CharacterState->getState());
-		//if (bShowLog)
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *str);
+		CharacterState->ChangeState(newState);
 	}
 }
 
@@ -1108,8 +1165,10 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	if (MoveKey[3] > 2)
 		MoveKey[3] -= 2;
 
-	if (CharacterState->getStateToString().Compare(FString("Death")) != 0)
-		CharacterState->setState(IdleState::getInstance());
+	if (CharacterState->getStateToString().Compare(FString("Death")) != 0) 
+	{
+		CharacterState->setState(nullptr);
+	}
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;

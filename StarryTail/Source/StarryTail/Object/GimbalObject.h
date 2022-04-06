@@ -4,10 +4,11 @@
 
 #include "../StarryTail.h"
 #include "GameFramework/Actor.h"
-
+#include "GimbalPartsObject.h"
 #include "OccupiedObject.h"
-#include "Components/TimeLineComponent.h"
+#include "Components/ChildActorComponent.h"
 
+#include "EnemySpawnPoint.h"
 #include "GimbalObject.generated.h"
 
 
@@ -22,13 +23,29 @@ public:
 	UPROPERTY(EditAnyWhere)
 	UStaticMeshComponent* Center;
 
+	//각각 속성 ChildActor
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildFireGimbal;
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildWaterGimbal;
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildThunderGimbal;
+
 	//각각 속성 메쉬
-	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UStaticMeshComponent* FireGimbal;
-	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UStaticMeshComponent* WaterGimbal;
-	UPROPERTY(EditAnyWhere,Category=GIMBAL)
-	UStaticMeshComponent* ThunderGimbal;
+	UPROPERTY(EditAnyWhere, Category = MESH)
+	UStaticMesh* FireGimbalMesh;
+	UPROPERTY(EditAnyWhere, Category = MESH)
+	UStaticMesh* WaterGimbalMesh;
+	UPROPERTY(EditAnyWhere,Category = MESH)
+	UStaticMesh* ThunderGimbalMesh;
+
+	//각각 속성 짐벌
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* FireGimbal;
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* WaterGimbal;
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* ThunderGimbal;
 
 	//각각 속성별 회전 속도
 	UPROPERTY(EditAnyWhere, Category = GIMBAL)
@@ -49,6 +66,16 @@ public:
 	AOccupiedObject* WaterOccupiedArea;
 	UPROPERTY(EditAnyWhere, Category = AREA)
 	AOccupiedObject* ThungerOccupiedArea;
+
+
+	//몬스터 스폰 반경
+	UPROPERTY(EditAnyWhere, Category = SPAWN)
+	float SpawnRadius;
+
+	//몬스터 스폰 위치 
+	UPROPERTY(EditAnyWhere, Category = SPAWN)
+	TArray<AEnemySpawnPoint*> EnemySpawnPoint;
+
 private:
 
 	//목표 원소 게이지
@@ -63,7 +90,6 @@ private:
 
 
 	//현재 짐벌 상태
-	bool IsFireGimbalOn;
 	bool IsWaterGimbalOn;
 	bool IsThunderGimbalOn;
 
@@ -74,19 +100,10 @@ private:
 	// Timer
 	FTimerHandle TimerHandle;
 
-
-	//타임 라인
-	
 	//타임라인 커브
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timeline", Meta = (AllowPrivateAccess = "true"))
 	UCurveFloat* TimeLineCurve;
-	//타임라인
-	FTimeline GimbalTimeline;
 
-	//타임라인 상태
-	bool IsTimeLineOn;
-
-	float RotationAccel;
 public:	
 	// Sets default values for this actor's properties
 	AGimbalObject();
@@ -94,24 +111,16 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 private:
 	//짐벌 OnOff
 	void FireGimbalOnOff();
 	void WaterGimbalOnOff();
 	void ThunderGimbalOnOff();
 
-
-	//가속 시작
-	UFUNCTION()
-	void Acceleration();
-
-	//가속 종료
-	UFUNCTION()
-	void AccelerationOff();
 	//원소 게이지 상승
 	void GimbalGaugeOn();
+
+	//적 스폰
+	void SpawnEnemy();
 };

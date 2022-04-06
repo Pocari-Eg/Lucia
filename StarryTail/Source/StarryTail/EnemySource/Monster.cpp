@@ -14,7 +14,7 @@ AMonster::AMonster()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	DetectMonsterRange = 5.0f;
+	MonsterInfo.DetectMonsterRange = 5.0f;
 
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
@@ -31,6 +31,14 @@ AMonster::AMonster()
 		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
+
+	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
+	HitEffectComponent->SetupAttachment(RootComponent);
+
+	HitEffectComponent->bAutoActivate = false;
+
+	EffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	EffectScale = FVector(1.0f, 1.0f, 1.0f);
 }
 #pragma region Init
 void AMonster::InitDebuffInfo()
@@ -76,6 +84,10 @@ float AMonster::GetMeleeAttackRange() const
 float AMonster::GetTraceRange() const
 {
 	return MonsterInfo.TraceRange;
+}
+float AMonster::GetDetectMonsterRange() const
+{
+	return MonsterInfo.DetectMonsterRange;
 }
 TArray<EAttributeKeyword> AMonster::GetMainAttributeDef() const
 {
@@ -461,7 +473,7 @@ void AMonster::RotationToPlayerDirection()
 
 	SetActorRotation(TargetRot);
 }
-TArray<FOverlapResult> AMonster::DetectMonster()
+TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
 	TArray<FOverlapResult> OverlapResults;
 
@@ -485,6 +497,10 @@ void AMonster::SetActive()
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
 	}
+}
+void AMonster::InitHitEffect()
+{
+	HitEffectComponent->SetTemplate(HitEffect);
 }
 #pragma region Debuff
 void AMonster::Burn()
@@ -540,7 +556,7 @@ void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damag
 	if (bTestMode)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.TransitionRange * 100.0f, 16, FColor::Red, false, 0.2f);
 
-	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.TransitionRange);
 
 	if (AnotherMonsterList.Num() != 0)
 	{
@@ -561,7 +577,7 @@ void AMonster::Assemble()
 	if (bTestMode)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.AssembleRange * 100.0f, 16, FColor::Blue, false, 0.2f);
 
-	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.AssembleRange);
 
 	if (AnotherMonsterList.Num() != 0)
 	{
@@ -584,7 +600,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 	if (bTestMode)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.ChainRange * 100.0f, 16, FColor::Yellow, false, 0.2f);
 
-	TArray<FOverlapResult> AnotherMonsterList = DetectMonster();
+	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.ChainRange);
 	
 	switch (PlayerMainAttribute)
 	{
@@ -638,6 +654,21 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 		break;
 	}
 }
+void AMonster::PrintHitEffect(FVector AttackedPosition)
+{
+	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -20.0f));
+	FVector CompToMonsterDir = GetActorLocation() - (AttackedPosition + FVector(0.0f, 0.0f, -20.0f));
+	CompToMonsterDir.Normalize();
+	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -20.0f)) + (CompToMonsterDir * (Distance / 2.0f));
+
+	HitEffectComponent->SetWorldLocation(EffectPosition);
+	
+	HitEffectComponent->SetRelativeRotation(EffectRotation);
+	HitEffectComponent->SetRelativeScale3D(EffectScale);
+
+	HitEffectComponent->SetActive(true);
+	HitEffectComponent->ForceReset();
+}
 #pragma endregion
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
@@ -645,6 +676,7 @@ void AMonster::BeginPlay()
 	Super::BeginPlay();
 	
 	CalcAttributeDefType();
+	InitHitEffect();
 
 	MonsterInfo.DefaultMoveSpeed = MonsterInfo.MoveSpeed;
 	MonsterInfo.DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
@@ -661,6 +693,7 @@ void AMonster::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMonster::OnOverlapBegin);
 }
 
 // Called every frame
@@ -772,6 +805,16 @@ void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	
+}
+void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	FString CompName = OtherComp->GetName();
+	FString FindName = "WEAPON";
+	if (CompName == FindName)
+	{
+		PrintHitEffect(OtherComp->GetComponentLocation());
+		STARRYLOG(Error, TEXT("Attacked"));
+	}
 }
 float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {

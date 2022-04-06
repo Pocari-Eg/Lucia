@@ -2,125 +2,93 @@
 
 
 #include "GimbalObject.h"
+#include "../STGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 // Sets default values
 AGimbalObject::AGimbalObject()
 {
 	//초기 세팅
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	Center = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CENTER"));
+	
 	RootComponent = Center;
-	
-	
-	FireGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("FIREGIMBAL"));
-	WaterGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("WATERGIMBAL"));
-	ThunderGimbal = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("THUNDERGIMBAL"));
 
-	FireGimbal->SetupAttachment(RootComponent);
-	WaterGimbal->SetupAttachment(RootComponent);
-	ThunderGimbal->SetupAttachment(RootComponent);
+	ChildFireGimbal = CreateDefaultSubobject<UChildActorComponent>(TEXT("FIREGIMBAL"));
+	ChildWaterGimbal = CreateDefaultSubobject<UChildActorComponent>(TEXT("WATERGIMBAL"));
+	ChildThunderGimbal = CreateDefaultSubobject<UChildActorComponent>(TEXT("THUNDERGIMBAL"));
 
-	FireGimbal->SetRelativeLocation(FVector::ZeroVector);
-	WaterGimbal->SetRelativeLocation(FVector::ZeroVector);
-	ThunderGimbal->SetRelativeLocation(FVector::ZeroVector);
+	ChildFireGimbal->SetChildActorClass(AGimbalPartsObject::StaticClass());
+	ChildWaterGimbal->SetChildActorClass(AGimbalPartsObject::StaticClass());
+	ChildThunderGimbal->SetChildActorClass(AGimbalPartsObject::StaticClass());
 
-	FireGimbal->SetCollisionProfileName("NoCollision");
-	WaterGimbal->SetCollisionProfileName("NoCollision");
-	ThunderGimbal->SetCollisionProfileName("NoCollision");
+	ChildFireGimbal->SetupAttachment(RootComponent);
+	ChildWaterGimbal->SetupAttachment(RootComponent);
+	ChildThunderGimbal->SetupAttachment(RootComponent);
 
-	IsFireGimbalOn = false;
-	IsWaterGimbalOn = false;
-	IsThunderGimbalOn = false;
+	ChildFireGimbal->SetRelativeLocation(FVector::ZeroVector);
+	ChildWaterGimbal->SetRelativeLocation(FVector::ZeroVector);
+	ChildThunderGimbal->SetRelativeLocation(FVector::ZeroVector);
 
-	IsAllGimbalOn = false;
-
-
-	MaxAttributesGauge = 100.0f;
-	CurrentAttributesGauge = 0.0f;
-	AttributesGaugeNum = 10.0f;
-
-	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Developers/Pocari/Collections/Curve/PartsObjCurve.PartsObjCurve"));
-
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Developers/Pocari/Collections/Curve/GimbalObjCurve.GimbalObjCurve"));
 	if (CURVE.Succeeded())
 	{
 		TimeLineCurve = CURVE.Object;
 	}
 
-	IsTimeLineOn = false;
-
-	RotationAccel = 0.0f;
-	AccelSpeed = 0.1f;
+	MaxAttributesGauge = 100.0f;
+	CurrentAttributesGauge = 0.0f;
+	AttributesGaugeNum = 10.0f;
+	IsAllGimbalOn = false;
 }
 
 // Called when the game starts or when spawned
 void AGimbalObject::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	//점령 델리게이트 설정
 	if(FireOccupiedArea!=nullptr)
-		FireOccupiedArea->OnOccupy.AddUObject(this, &AGimbalObject::FireGimbalOnOff);
+	FireOccupiedArea->OnOccupy.AddUObject(this, &AGimbalObject::FireGimbalOnOff);
 	if (WaterOccupiedArea != nullptr)
 		WaterOccupiedArea->OnOccupy.AddUObject(this, &AGimbalObject::WaterGimbalOnOff);
 	if (ThungerOccupiedArea != nullptr)
 		ThungerOccupiedArea->OnOccupy.AddUObject(this, &AGimbalObject::ThunderGimbalOnOff);
-	
 
-	//타임라인 속도 설정
-	GimbalTimeline.SetPlayRate(AccelSpeed);
-
-	//타임라인 시작 호출 함수
-	FOnTimelineFloat TimelineCallback;	
-	//타임라인 종료 호출 함수
-	FOnTimelineEventStatic TimelineFinishedCallback;
-	//함수 바인딩 
-	TimelineCallback.BindUFunction(this, FName("Acceleration"));
-	TimelineFinishedCallback.BindUFunction(this, FName(TEXT("AccelerationOff")));
-	GimbalTimeline.AddInterpFloat(TimeLineCurve, TimelineCallback);
-	GimbalTimeline.SetTimelineFinishedFunc(TimelineFinishedCallback);
-	GimbalTimeline.SetTimelineLength(1.0f);
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+	instance->OnEnemySpawn.AddUObject(this, &AGimbalObject::SpawnEnemy);
 
 }
 
-// Called every frame
-void AGimbalObject::Tick(float DeltaTime)
+void AGimbalObject::PostInitializeComponents()
 {
-	Super::Tick(DeltaTime);
+	Super::PostInitializeComponents();
+	FireGimbal = Cast<AGimbalPartsObject>(ChildFireGimbal->GetChildActor());
+	FireGimbal->Gimbal->SetStaticMesh(FireGimbalMesh);
+	FireGimbal->GimbalSpeed = FireGimbalSpeed;
+	FireGimbal->AccelSpeed = AccelSpeed;
+	FireGimbal->TimeLineCurve = TimeLineCurve;
+	FireGimbal->Attributes = EAttributeKeyword::e_Fire;
 
-	//타임라인 상태 설정
-	if (IsTimeLineOn == true)GimbalTimeline.TickTimeline(DeltaTime);
+	WaterGimbal = Cast<AGimbalPartsObject>(ChildWaterGimbal->GetChildActor());
+	WaterGimbal->Gimbal->SetStaticMesh(WaterGimbalMesh);
+	WaterGimbal->GimbalSpeed = WaterGimbalSpeed;
+	WaterGimbal->AccelSpeed = AccelSpeed;
+	WaterGimbal->TimeLineCurve = TimeLineCurve;
+	WaterGimbal->Attributes = EAttributeKeyword::e_Water;
 
-	//현재 속성 짐벌이 켜지면 짐벌 회전
-	IsFireGimbalOn == true ? FireGimbal->AddWorldRotation(FRotator(0.0f, FireGimbalSpeed* RotationAccel, 0.0f)) : FireGimbal->AddWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
-	IsWaterGimbalOn == true ? WaterGimbal->AddWorldRotation(FRotator(0.0f, 0.0f, WaterGimbalSpeed* RotationAccel)) : WaterGimbal->AddWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
-	IsThunderGimbalOn == true ? ThunderGimbal->AddWorldRotation(FRotator(ThunderGimbalSpeed* RotationAccel, 0.0f, 0.0f)) : ThunderGimbal->AddWorldRotation(FRotator(0.0f, 0.0f, 0.0f));
-
+	ThunderGimbal = Cast<AGimbalPartsObject>(ChildThunderGimbal->GetChildActor());
+	ThunderGimbal->Gimbal->SetStaticMesh(ThunderGimbalMesh);
+	ThunderGimbal->GimbalSpeed = ThunderGimbalSpeed;
+	ThunderGimbal->AccelSpeed = AccelSpeed;
+	ThunderGimbal->TimeLineCurve = TimeLineCurve;
+	ThunderGimbal->Attributes = EAttributeKeyword::e_Thunder;
 }
 
-void AGimbalObject::Acceleration()
-{
 
-	//짐벌 회전 가속 
-	float TimelineVal = GimbalTimeline.GetPlaybackPosition();
-	 RotationAccel = TimeLineCurve->GetFloatValue(TimelineVal);
-
-   
-}
-
-void AGimbalObject::AccelerationOff()
-{
-	//짐벌 회전 속도 고정
-	IsTimeLineOn = false;
-	if (RotationAccel == 0.0f)
-	{
-		if (IsFireGimbalOn) IsFireGimbalOn = false;
-		else if (IsWaterGimbalOn) IsWaterGimbalOn = false;
-		else if (IsThunderGimbalOn) IsThunderGimbalOn = false;
-
-	}
-}
 
 void AGimbalObject::GimbalGaugeOn()
 {
@@ -135,15 +103,23 @@ void AGimbalObject::GimbalGaugeOn()
 	}
 }
 
+void AGimbalObject::SpawnEnemy()
+{
+	STARRYLOG(Warning, TEXT("EnemySpawn"));
+	int32 SelectPoint = UKismetMathLibrary::RandomInteger(EnemySpawnPoint.Num());
+	EnemySpawnPoint[SelectPoint]->RandomSpawn(SpawnRadius);
+	
+
+}
+
 void AGimbalObject::FireGimbalOnOff()
 {
 	//짐벌이 꺼저있으면 
-	if (IsFireGimbalOn == false) {
+	if (FireGimbal->IsGimbalOn == false) {
 		//짐벌을 키고 회전 속도 가속
-		IsFireGimbalOn = true;
-		IsTimeLineOn = true;
-		GimbalTimeline.PlayFromStart();
-		if (IsWaterGimbalOn == true && IsThunderGimbalOn == true)
+		
+		FireGimbal->GimbalStart();
+		if (WaterGimbal->IsGimbalOn == true && ThunderGimbal->IsGimbalOn == true)
 		{
 			//다른 짐벌도 켜있으면 원소 게이지 상승
 			IsAllGimbalOn = true;
@@ -155,8 +131,7 @@ void AGimbalObject::FireGimbalOnOff()
 		//짐벌 종료
 		//회전 속도 감속
 		IsAllGimbalOn = false;
-		IsTimeLineOn = true;
-		GimbalTimeline.Reverse();
+		FireGimbal->GimbalReverse();
 		//원소 게이지 상승 종료
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 	}
@@ -165,46 +140,51 @@ void AGimbalObject::FireGimbalOnOff()
 //이하동문
 void AGimbalObject::WaterGimbalOnOff()
 {
-	if (IsWaterGimbalOn == false) {
-		IsTimeLineOn = true;
-		IsWaterGimbalOn = true;
-		GimbalTimeline.PlayFromStart();
-		if (IsFireGimbalOn == true && IsThunderGimbalOn == true)
+	//짐벌이 꺼저있으면 
+	if (WaterGimbal->IsGimbalOn == false) {
+		//짐벌을 키고 회전 속도 가속
+
+		WaterGimbal->GimbalStart();
+		if (FireGimbal->IsGimbalOn == true && ThunderGimbal->IsGimbalOn == true)
 		{
+			//다른 짐벌도 켜있으면 원소 게이지 상승
 			IsAllGimbalOn = true;
 			GetWorldTimerManager().SetTimer(TimerHandle, this, &AGimbalObject::GimbalGaugeOn, 1.0f, true, 0.0f);
 
 		}
 	}
 	else {
+		//짐벌 종료
+		//회전 속도 감속
 		IsAllGimbalOn = false;
-		IsTimeLineOn = true;
-		GimbalTimeline.Reverse();
+		WaterGimbal->GimbalReverse();
+		//원소 게이지 상승 종료
 		GetWorldTimerManager().ClearTimer(TimerHandle);
-
 	}
 }
 
 void AGimbalObject::ThunderGimbalOnOff()
 {
-	if (IsThunderGimbalOn == false) {
-		IsThunderGimbalOn = true;
-		IsTimeLineOn = true;
+	//짐벌이 꺼저있으면 
+	if (ThunderGimbal->IsGimbalOn == false) {
+		//짐벌을 키고 회전 속도 가속
 
-		GimbalTimeline.PlayFromStart();
-		if (IsWaterGimbalOn == true && IsFireGimbalOn == true)
+		ThunderGimbal->GimbalStart();
+		if (WaterGimbal->IsGimbalOn == true && FireGimbal->IsGimbalOn == true)
 		{
+			//다른 짐벌도 켜있으면 원소 게이지 상승
 			IsAllGimbalOn = true;
 			GetWorldTimerManager().SetTimer(TimerHandle, this, &AGimbalObject::GimbalGaugeOn, 1.0f, true, 0.0f);
 
 		}
 	}
 	else {
+		//짐벌 종료
+		//회전 속도 감속
 		IsAllGimbalOn = false;
-		IsTimeLineOn = true;
-		GimbalTimeline.Reverse();
+		ThunderGimbal->GimbalReverse();
+		//원소 게이지 상승 종료
 		GetWorldTimerManager().ClearTimer(TimerHandle);
-
 	}
 }
 

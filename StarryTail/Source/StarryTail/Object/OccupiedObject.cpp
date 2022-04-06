@@ -2,6 +2,7 @@
 
 
 #include "OccupiedObject.h"
+#include "../STGameInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 
 // Sets default values
@@ -10,7 +11,7 @@ AOccupiedObject::AOccupiedObject()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 
 	//초기값 세팅
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	Area = CreateDefaultSubobject<USphereComponent>(TEXT("AREA"));
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
@@ -67,7 +68,7 @@ void AOccupiedObject::BeginPlay()
 	//점령지 관련 트리거 델리게이트
 	Area->OnComponentBeginOverlap.AddDynamic(this, &AOccupiedObject::OnBeginOverlap);
 	Area->OnComponentEndOverlap.AddDynamic(this, &AOccupiedObject::OnEndOverlap);
-
+	
 	//점령 바 띄우기
 	auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 	if (OccupyBar != nullptr)
@@ -220,13 +221,16 @@ void AOccupiedObject::Occupying()
 	{
 		CurrentOccupy += OccupyNum;
 	}
-	else {
+	else if(CurrentOccupy>=MaxOccupy){
 		//아니면 점령중을 종료하고 점령상태로 변경
 		GetWorldTimerManager().ClearTimer(TimerHandle);
 			IsOccupying = false;
 			IsOccupied = true;
 			CurrentOccupy = MaxOccupy;
 			//짐벌 오브젝트에 점령 했음을 알림
+			
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (Instance->GetFirstOccupied() == false)Instance->OnFirstOccupy();
 			OnOccupy.Broadcast();
 	}
 
