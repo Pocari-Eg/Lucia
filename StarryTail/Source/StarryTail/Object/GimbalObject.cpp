@@ -2,6 +2,9 @@
 
 
 #include "GimbalObject.h"
+#include "../STGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
+
 
 // Sets default values
 AGimbalObject::AGimbalObject()
@@ -55,6 +58,8 @@ void AGimbalObject::BeginPlay()
 	if (ThungerOccupiedArea != nullptr)
 		ThungerOccupiedArea->OnOccupy.AddUObject(this, &AGimbalObject::ThunderGimbalOnOff);
 
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+	instance->OnEnemySpawn.AddUObject(this, &AGimbalObject::SpawnEnemy);
 
 }
 
@@ -96,6 +101,15 @@ void AGimbalObject::GimbalGaugeOn()
 	{
 		CurrentAttributesGauge += AttributesGaugeNum;
 	}
+}
+
+void AGimbalObject::SpawnEnemy()
+{
+	STARRYLOG(Warning, TEXT("EnemySpawn"));
+	int32 SelectPoint = UKismetMathLibrary::RandomInteger(EnemySpawnPoint.Num());
+	EnemySpawnPoint[SelectPoint]->RandomSpawn(SpawnRadius);
+	
+
 }
 
 void AGimbalObject::FireGimbalOnOff()
