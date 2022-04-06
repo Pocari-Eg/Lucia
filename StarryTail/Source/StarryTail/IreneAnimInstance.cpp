@@ -65,6 +65,11 @@ void UIreneAnimInstance::AnimNotify_NextAttackCheck()
 	OnNextAttackCheck.Broadcast();
 }
 
+void UIreneAnimInstance::AnimNotify_AttackStopCheck()
+{
+	OnAttackStopCheck.Broadcast();
+}
+
 void UIreneAnimInstance::AnimNotify_FootStep()
 {
 	OnFootStep.Broadcast();
