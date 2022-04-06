@@ -4,10 +4,9 @@
 
 #include "../StarryTail.h"
 #include "GameFramework/Actor.h"
-
+#include "GimbalPartsObject.h"
 #include "OccupiedObject.h"
-#include "Components/TimeLineComponent.h"
-
+#include "Components/ChildActorComponent.h"
 #include "GimbalObject.generated.h"
 
 
@@ -22,13 +21,29 @@ public:
 	UPROPERTY(EditAnyWhere)
 	UStaticMeshComponent* Center;
 
+	//각각 속성 ChildActor
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildFireGimbal;
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildWaterGimbal;
+	UPROPERTY(EditAnyWhere)
+	UChildActorComponent* ChildThunderGimbal;
+
 	//각각 속성 메쉬
-	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UStaticMeshComponent* FireGimbal;
-	UPROPERTY(EditAnyWhere, Category = GIMBAL)
-	UStaticMeshComponent* WaterGimbal;
-	UPROPERTY(EditAnyWhere,Category=GIMBAL)
-	UStaticMeshComponent* ThunderGimbal;
+	UPROPERTY(EditAnyWhere, Category = MESH)
+	UStaticMesh* FireGimbalMesh;
+	UPROPERTY(EditAnyWhere, Category = MESH)
+	UStaticMesh* WaterGimbalMesh;
+	UPROPERTY(EditAnyWhere,Category = MESH)
+	UStaticMesh* ThunderGimbalMesh;
+
+	//각각 속성 짐벌
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* FireGimbal;
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* WaterGimbal;
+	UPROPERTY(VisibleAnywhere, Category = GIMBAL)
+	AGimbalPartsObject* ThunderGimbal;
 
 	//각각 속성별 회전 속도
 	UPROPERTY(EditAnyWhere, Category = GIMBAL)
@@ -63,7 +78,6 @@ private:
 
 
 	//현재 짐벌 상태
-	bool IsFireGimbalOn;
 	bool IsWaterGimbalOn;
 	bool IsThunderGimbalOn;
 
@@ -74,19 +88,10 @@ private:
 	// Timer
 	FTimerHandle TimerHandle;
 
-
-	//타임 라인
-	
 	//타임라인 커브
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Timeline", Meta = (AllowPrivateAccess = "true"))
 	UCurveFloat* TimeLineCurve;
-	//타임라인
-	FTimeline GimbalTimeline;
 
-	//타임라인 상태
-	bool IsTimeLineOn;
-
-	float RotationAccel;
 public:	
 	// Sets default values for this actor's properties
 	AGimbalObject();
@@ -94,10 +99,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	virtual void PostInitializeComponents() override;
 private:
 	//짐벌 OnOff
 	void FireGimbalOnOff();
@@ -105,13 +107,7 @@ private:
 	void ThunderGimbalOnOff();
 
 
-	//가속 시작
-	UFUNCTION()
-	void Acceleration();
 
-	//가속 종료
-	UFUNCTION()
-	void AccelerationOff();
 	//원소 게이지 상승
 	void GimbalGaugeOn();
 };
