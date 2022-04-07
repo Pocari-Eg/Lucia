@@ -28,7 +28,7 @@ AMonster::AMonster()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+		HpBarWidget->SetDrawSize(FVector2D(156, 20.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
 
@@ -328,6 +328,13 @@ void AMonster::CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 
 	//그로기 Def 계산식 추가
 	MonsterInfo.CurrentDef -= 20.0f;
+
+	//방어력 게이지 업데이트
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
+	}
 	//
 	CalcHp(Coefficient * (NoneDef - FireDef - WaterDef - ThunderDef));
 
@@ -396,7 +403,7 @@ void AMonster::CalcHp(float Damage)
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->UpdateWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
+		HpBar->UpdateHpWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
 	}
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
@@ -422,7 +429,7 @@ void AMonster::CalcBurnDamage()
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->UpdateWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
+		HpBar->UpdateHpWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
 	}
 
 	auto MonsterAIController = Cast<AMonsterAIController>(GetController());
@@ -683,6 +690,13 @@ void AMonster::BeginPlay()
 
 	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
 	MonsterInfo.CurrentDef = MonsterInfo.Def;
+
+	//방어력 게이지 최대치 설정
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->UpdateDefWidget(1.0f);
+	}
 
 }
 void AMonster::PossessedBy(AController* NewController)

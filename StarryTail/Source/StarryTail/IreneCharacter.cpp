@@ -154,7 +154,7 @@ AIreneCharacter::AIreneCharacter()
 	if (UI_HPBARWIDGET.Succeeded()) 
 	{
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+		HpBarWidget->SetDrawSize(FVector2D(156, 20.0f));
 	}	
 
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
@@ -1112,7 +1112,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 		if (HpBar != nullptr)
 		{
-			HpBar->UpdateWidget(GetHpRatio());
+			HpBar->UpdateHpWidget(GetHpRatio());
 		}
 		if (CharacterDataStruct.CurrentHP <= 0)
 		{

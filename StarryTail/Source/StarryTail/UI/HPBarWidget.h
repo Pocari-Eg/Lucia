@@ -15,12 +15,14 @@ class STARRYTAIL_API UHPBarWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
-\
 
 	// Object 엑터를 바인드 할떄 사용 
 	void BindObjectHp(class ATestObject* NewObject);
-	void UpdateWidget(float Hp);
+	void UpdateHpWidget(float Hp);
+	void UpdateDefWidget(float Def);
 	void SetColor(FLinearColor Color);
+
+
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
@@ -33,6 +35,6 @@ private:
 	//위젯 안 HP Bar 데이터
 	UPROPERTY()
 	class UProgressBar* HPProgressBar;	
-	
-
+	UPROPERTY()
+	class UProgressBar* DefProgressBar;
 };

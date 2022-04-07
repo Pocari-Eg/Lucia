@@ -21,14 +21,15 @@ void UHPBarWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
+	DefProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("DefBar")));
 }
 
 
-void UHPBarWidget::UpdateWidget(float Hp)
+void UHPBarWidget::UpdateHpWidget(float UpdateHp)
 {
 	if (nullptr != HPProgressBar)
 	{
-		HPProgressBar->SetPercent(Hp);
+		HPProgressBar->SetPercent(UpdateHp);
 	}
 	/*
 	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
@@ -40,6 +41,15 @@ void UHPBarWidget::UpdateWidget(float Hp)
 		}
 	}
 	*/
+}
+
+void UHPBarWidget::UpdateDefWidget(float Def)
+{
+
+	if (nullptr != DefProgressBar)
+	{
+		DefProgressBar->SetPercent(Def);
+	}
 }
 
 void UHPBarWidget::SetColor(FLinearColor Color)

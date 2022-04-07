@@ -76,7 +76,7 @@ ATestObject::ATestObject()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+		HpBarWidget->SetDrawSize(FVector2D(156, 20.0f));
 
 	}
 
@@ -135,7 +135,7 @@ void ATestObject::SetHp(float ATK)
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->UpdateWidget(GetHpRatio());
+		HpBar->UpdateHpWidget(GetHpRatio());
 	}
 	STARRYLOG(Error, TEXT("HP : %f"), CurrentHP);
 	if (CurrentHP <= 0.0f)

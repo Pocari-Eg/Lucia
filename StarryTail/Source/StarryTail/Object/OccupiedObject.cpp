@@ -46,7 +46,7 @@ AOccupiedObject::AOccupiedObject()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		OccupyBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		OccupyBarWidget->SetDrawSize(FVector2D(150, 50.0f));
+		OccupyBarWidget->SetDrawSize(FVector2D(156, 20.0f));
 	}
 
 	CurrentEnemyTime = EnemyOccupyTime;
@@ -73,7 +73,7 @@ void AOccupiedObject::BeginPlay()
 	auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 	if (OccupyBar != nullptr)
 	{
-		OccupyBar->UpdateWidget(0.0f);
+		OccupyBar->UpdateHpWidget(0.0f);
 		OccupyBar->SetColor(FLinearColor::Yellow);
 	}
 
@@ -238,7 +238,7 @@ void AOccupiedObject::Occupying()
 	auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 	if (OccupyBar != nullptr)
 	{
-		OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
+		OccupyBar->UpdateHpWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
 	}
 }
 
@@ -254,7 +254,7 @@ void AOccupiedObject::DeOccupying()
 			auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 			if (OccupyBar != nullptr)
 			{
-				OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
+				OccupyBar->UpdateHpWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
 			}
 			//점령 수치가 OccupyCancelNum보다 작아지면 점령 취소
 			if (CurrentOccupy < OccupyCancelNum && IsOccupied == true)
@@ -278,7 +278,7 @@ void AOccupiedObject::DeOccupying()
 				auto OccupyBar = Cast<UHPBarWidget>(OccupyBarWidget->GetWidget());
 				if (OccupyBar != nullptr)
 				{
-					OccupyBar->UpdateWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
+					OccupyBar->UpdateHpWidget((CurrentOccupy < KINDA_SMALL_NUMBER) ? 0.0f : CurrentOccupy / MaxOccupy);
 				}
 				if (CurrentOccupy < OccupyCancelNum && IsOccupied == true)
 				{
