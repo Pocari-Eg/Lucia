@@ -49,6 +49,7 @@ public:
 	void PlayAttackMontage();
 	void PlayEffectAttackMontage();
 	void JumpToAttackMontageSection(int32 NewSection);
+	void JumpToEffectAttackMontageSection(int32 NewSection);
 	UAnimMontage* GetAttackAnimMontage() { return AttackMontage; }
 	void SetDeadAnim(bool value) { IsDead = value; }
 	void SetSprintStateAnim(bool value) { IsSprintState = value; }

@@ -168,6 +168,8 @@ AIreneCharacter::AIreneCharacter()
 	TargetPosVec = FVector::ZeroVector;
 	IsCharging = false;
 	ChargingTime = 0.0f;
+	bUseLeftButton = false;
+	bUseRightButton = false;
 
 	bShowLog = false;
 }
@@ -223,7 +225,7 @@ void AIreneCharacter::PostInitializeComponents()
 			{
 				AttackStartComboState();
 				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
-				
+				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
@@ -288,10 +290,10 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 
 	// 차징 사용
-	if(IsCharging)
-	{
-		ChargingTime += DeltaTime;
-	}
+	//if(IsCharging)
+	//{
+	//	ChargingTime += DeltaTime;
+	//}
 
 	if (TargetMonster != nullptr)
 	{
@@ -635,16 +637,15 @@ void AIreneCharacter::LookUp(float Rate)
 }
 
 void AIreneCharacter::LeftButton(float Rate)
-{
-	
+{	
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (Rate >= 1.0 && !AttackWaitHandle.IsValid())
+		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseRightButton == false)
 		{
-			
+			bUseLeftButton = true;
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
 			float WaitTime = 0.15f;
 
@@ -673,8 +674,47 @@ void AIreneCharacter::LeftButton(float Rate)
 		}
 	}
 }
-void AIreneCharacter::RightButtonPressed()
+void AIreneCharacter::RightButton(float Rate)
 {
+	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("Death")) != 0)
+	{
+		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
+		{
+			bUseRightButton = true;
+			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+			float WaitTime = 0.15f;
+
+			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					AttackWaitHandle.Invalidate();
+				}), WaitTime, false);
+
+			if (CharacterDataStruct.IsAttacking)
+			{
+				if (CharacterDataStruct.CanNextCombo)
+				{
+					CharacterDataStruct.IsComboInputOn = true;
+				}
+			}
+			else
+			{
+				ChangeStateAndLog(AttackState::getInstance());
+				AttackStartComboState();
+
+				IreneAnim->PlayEffectAttackMontage();
+
+				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
+				CharacterDataStruct.IsAttacking = true;
+			}
+		}
+	}
+}
+void AIreneCharacter::RightButtonPressed()
+{	
+	/*
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
@@ -685,9 +725,11 @@ void AIreneCharacter::RightButtonPressed()
 		IsCharging = true;
 		ChargingTime = 0.0f;
 	}
+	*/
 }
 void AIreneCharacter::RightButtonReleased()
 {
+	/*
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
@@ -715,7 +757,7 @@ void AIreneCharacter::RightButtonReleased()
 			IreneAnim->PlayEffectAttackMontage();
 		}
 		ChargingTime = 0.0f;
-	}
+	}*/
 }
 
 void AIreneCharacter::MouseWheel(float Rate)
@@ -846,6 +888,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("RightButton", IE_Pressed, this, &AIreneCharacter::RightButtonPressed);
 	PlayerInputComponent->BindAction("RightButton", IE_Released, this, &AIreneCharacter::RightButtonReleased);
 	PlayerInputComponent->BindAxis("MouseWheel", this, &AIreneCharacter::MouseWheel);
+	PlayerInputComponent->BindAxis("RightButtonAxis", this, &AIreneCharacter::RightButton);
 
 	//박찬영
 	//스탑워치 컨트롤
@@ -860,7 +903,6 @@ void AIreneCharacter::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrup
 	CharacterDataStruct.IsAttacking = false;
 	AttackEndComboState();
 }
-
 void AIreneCharacter::AttackStartComboState()
 {
 	CharacterDataStruct.CanNextCombo = true;
@@ -869,6 +911,8 @@ void AIreneCharacter::AttackStartComboState()
 }
 void AIreneCharacter::AttackEndComboState()
 {
+	bUseLeftButton = false;
+	bUseRightButton = false;
 	CharacterDataStruct.CanNextCombo = false;
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = 0;
@@ -908,7 +952,7 @@ void AIreneCharacter::DoAttack()
 		ECollisionChannel::ECC_GameTraceChannel1,
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
-	
+
 
 #if ENABLE_DRAW_DEBUG
 	FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
@@ -939,18 +983,14 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
-	if (CharacterDataStruct.CurrentCombo == 5 || IsCharging) 
+	//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
+	//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
+	if (bResult)
 	{
-		STARRYLOG(Error, TEXT("sss"));
-		//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
-		//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
-		if (bResult)
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
 		{
-			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-			if (STGameInstance->GetAttributeEffectMonster() != nullptr)
-			{
-				STGameInstance->ResetAttributeEffectMonster();
-			}
+			STGameInstance->ResetAttributeEffectMonster();
 		}
 	}
 }

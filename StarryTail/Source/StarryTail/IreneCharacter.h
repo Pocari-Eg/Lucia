@@ -114,6 +114,10 @@ private:
 
 	// 카메라 쉐이크 시간
 	float CameraShakeTime;
+
+	bool bUseLeftButton;
+	bool bUseRightButton;
+
 #pragma endregion AttackData
 
 #pragma region UI
@@ -201,6 +205,7 @@ private:
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);
+	void RightButton(float Rate);
 
 	// 메인키워드 속성변경
 	void MainKeyword();
@@ -221,7 +226,6 @@ private:
 #pragma region Attack
 	UFUNCTION()
 	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
-
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackCheck();

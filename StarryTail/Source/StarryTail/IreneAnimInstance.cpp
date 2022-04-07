@@ -54,6 +54,11 @@ void UIreneAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 	if(NewSection > 1)
 		Montage_SetNextSection(GetAttackMontageSectionName(NewSection-1),GetAttackMontageSectionName(NewSection), AttackMontage);
 }
+void UIreneAnimInstance::JumpToEffectAttackMontageSection(int32 NewSection)
+{
+	if (NewSection > 1)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), EffectAttackMontage);
+}
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck()
 {
