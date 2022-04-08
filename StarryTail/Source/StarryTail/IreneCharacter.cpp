@@ -170,6 +170,8 @@ AIreneCharacter::AIreneCharacter()
 	ChargingTime = 0.0f;
 	bUseLeftButton = false;
 	bUseRightButton = false;
+	bUseMP = false;
+	UseMP = 0.0f;
 
 	bShowLog = false;
 }
@@ -683,7 +685,7 @@ void AIreneCharacter::RightButton(float Rate)
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
+		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= 30)
 		{
 			bUseRightButton = true;
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
@@ -915,6 +917,8 @@ void AIreneCharacter::AttackEndComboState()
 {
 	bUseLeftButton = false;
 	bUseRightButton = false;
+	bUseMP = false;
+	UseMP = 0.0f;
 	CharacterDataStruct.CanNextCombo = false;
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = 0;
@@ -974,27 +978,6 @@ void AIreneCharacter::DoAttack()
 		DebugLifeTime);
 #endif
 
-	bool bUseMP = false;
-	float UseMP = 0.0f;
-	const float DummyAttakMpSize = 30.0f;
-
-	if ((bUseLeftButton && 
-		IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && 
-		CharacterDataStruct.CurrentMP >= DummyAttakMpSize))
-	{
-		bUseMP = true;
-		UseMP = DummyAttakMpSize;
-		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
-		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
-	}
-	if(bUseRightButton && CharacterDataStruct.CurrentMP >= DummyAttakMpSize)
-	{
-		bUseMP = true;
-		UseMP = DummyAttakMpSize;
-		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
-		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
-	}
-
 	for (FHitResult Monster : MonsterList)
 	{
 		if (bResult)
@@ -1012,13 +995,16 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
+	STARRYLOG(Error, TEXT("%s"), bUseMP?TEXT("t"):TEXT("f"));
+	STARRYLOG(Error, TEXT("%f"), UseMP);
 	// 마나 회복
 	if(!bUseMP && UseMP == 0.0f)
 	{
+		const float DummyAttakMpSize = 30.0f;
+
 		CharacterDataStruct.CurrentMP += DummyAttakMpSize;
 		if (CharacterDataStruct.CurrentMP > CharacterDataStruct.MaxMP)
 			CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
-		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
 	}
 
 	//속성공격 기준 몬스터 할당해제
@@ -1036,6 +1022,22 @@ void AIreneCharacter::DoAttack()
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
+	// 마나 사용 유무
+	const float DummyAttakMpSize = 30.0f;
+	bUseMP = false;
+	UseMP = 0.0f;
+
+	if ((bUseLeftButton &&
+		IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") &&
+		CharacterDataStruct.CurrentMP >= DummyAttakMpSize))
+	{
+		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
+	}
+	if (bUseRightButton && CharacterDataStruct.CurrentMP >= DummyAttakMpSize)
+	{
+		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
+	}
+
 	if (TargetMonster != nullptr)
 	{
 		// 타겟이 캐릭터의 뒤에 있다면 추적 취소

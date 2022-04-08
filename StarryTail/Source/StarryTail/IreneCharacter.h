@@ -117,7 +117,8 @@ private:
 
 	bool bUseLeftButton;
 	bool bUseRightButton;
-
+	bool bUseMP;
+	float UseMP;
 #pragma endregion AttackData
 
 #pragma region UI
