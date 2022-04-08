@@ -979,12 +979,20 @@ void AIreneCharacter::DoAttack()
 			if (Monster.Actor.IsValid())
 			{
 				FDamageEvent DamageEvent;
+
+				auto Mob = Cast<AMonster>(Monster.Actor);
+				if (Mob != nullptr)
+				{
+					if (CharacterDataStruct.CurrentCombo == 5 || bUseRightButton)
+					{
+						Mob->SetAttackedInfo(true, CharacterDataStruct.CurrentMP);
+					}
+				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), CharacterDataStruct.Strength, NULL, this, NULL);
 			}
 		}
 	}
-	//마나 사용하는 공격 시 ApplyDamage반복 종료 후 호출
-	//마나 사용 공격 추가 시 몬스터에서 코드 수정 이후 지울 것 (평타공격)
+	//속성공격 기준 몬스터 할당해제
 	if (bResult)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());

@@ -15,6 +15,9 @@ EBTNodeResult::Type UBTTaskMbGroggyEnd::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+
+	Monster->ResetDef();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsGroggyKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
 

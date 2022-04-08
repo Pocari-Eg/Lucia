@@ -36,6 +36,12 @@ public:
 		EAttributeKeyword MonsterAttribute;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DetectMonsterRange;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ArbitraryConstValueA; // 임의의 상수 A
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ArbitraryConstValueB; // 임의의 상수 B
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ArbitraryConstValueC; // 임의의 상수 C
 public:
 	//메인 속성 방어력들을 저장
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
