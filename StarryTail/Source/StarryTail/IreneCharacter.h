@@ -129,6 +129,9 @@ private:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* HpBarWidget;
 
+	//Hp Bar 위젯 -> MP위젯 으로 
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* MpBarWidget;
 	// 로그 출력용
 	bool bShowLog;
 #pragma endregion UI	
@@ -249,6 +252,10 @@ private:
 #pragma region Park
 	//현재 체력 비율 전환
 	float GetHpRatio();
+	void UpdateHpWidget();
+	//현재 마나 비율 전환
+	float GetMpRatio();
+	void UpdateMpWidget();
 
 	//사운드 출력
 	void FootStepSound();
