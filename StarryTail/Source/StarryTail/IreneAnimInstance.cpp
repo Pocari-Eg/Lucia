@@ -51,8 +51,8 @@ void UIreneAnimInstance::PlayEffectAttackMontage()
 
 void UIreneAnimInstance::JumpToAttackMontageSection(int32 NewSection)
 {
-	if(NewSection > 1)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection-1),GetAttackMontageSectionName(NewSection), AttackMontage);
+	if (NewSection > 1)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), AttackMontage);
 }
 void UIreneAnimInstance::JumpToEffectAttackMontageSection(int32 NewSection)
 {
@@ -84,3 +84,4 @@ FName UIreneAnimInstance::GetAttackMontageSectionName(int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
 }
+

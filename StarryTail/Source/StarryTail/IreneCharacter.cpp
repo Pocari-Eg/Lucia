@@ -224,7 +224,9 @@ void AIreneCharacter::PostInitializeComponents()
 			if (CharacterDataStruct.IsComboInputOn)
 			{
 				AttackStartComboState();
-				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+				if(bUseLeftButton)
+					IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
+				if (bUseRightButton)
 				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 			}
 		});
@@ -972,6 +974,27 @@ void AIreneCharacter::DoAttack()
 		DebugLifeTime);
 #endif
 
+	bool bUseMP = false;
+	float UseMP = 0.0f;
+	const float DummyAttakMpSize = 30.0f;
+
+	if ((bUseLeftButton && 
+		IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && 
+		CharacterDataStruct.CurrentMP >= DummyAttakMpSize))
+	{
+		bUseMP = true;
+		UseMP = DummyAttakMpSize;
+		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
+		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
+	}
+	if(bUseRightButton && CharacterDataStruct.CurrentMP >= DummyAttakMpSize)
+	{
+		bUseMP = true;
+		UseMP = DummyAttakMpSize;
+		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
+		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
+	}
+
 	for (FHitResult Monster : MonsterList)
 	{
 		if (bResult)
@@ -983,15 +1006,21 @@ void AIreneCharacter::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 				{
-					if (CharacterDataStruct.CurrentCombo == 5 || bUseRightButton)
-					{
-						Mob->SetAttackedInfo(true, CharacterDataStruct.CurrentMP);
-					}
+					Mob->SetAttackedInfo(bUseMP, UseMP);
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), CharacterDataStruct.Strength, NULL, this, NULL);
 			}
 		}
 	}
+	// 마나 회복
+	if(!bUseMP && UseMP == 0.0f)
+	{
+		CharacterDataStruct.CurrentMP += DummyAttakMpSize;
+		if (CharacterDataStruct.CurrentMP > CharacterDataStruct.MaxMP)
+			CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
+		STARRYLOG(Error, TEXT("%f"), CharacterDataStruct.CurrentMP);
+	}
+
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)
 	{
