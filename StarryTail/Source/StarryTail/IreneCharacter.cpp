@@ -247,7 +247,7 @@ void AIreneCharacter::PostInitializeComponents()
 				if(bUseLeftButton)
 					IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
 				if (bUseRightButton)
-				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
+					IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(this, &AIreneCharacter::AttackCheck);
@@ -719,7 +719,8 @@ void AIreneCharacter::RightButton(float Rate)
 			{
 				if (CharacterDataStruct.CanNextCombo)
 				{
-					CharacterDataStruct.IsComboInputOn = true;
+					if(!(CharacterDataStruct.CurrentMP == 30 && IreneAnim->GetCurrentActiveMontage() != NULL))
+						CharacterDataStruct.IsComboInputOn = true;
 				}
 			}
 			else
@@ -728,7 +729,6 @@ void AIreneCharacter::RightButton(float Rate)
 				AttackStartComboState();
 
 				IreneAnim->PlayEffectAttackMontage();
-
 				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 				CharacterDataStruct.IsAttacking = true;
 			}
@@ -1014,8 +1014,7 @@ void AIreneCharacter::DoAttack()
 			}
 		}
 	}
-	STARRYLOG(Error, TEXT("%s"), bUseMP?TEXT("t"):TEXT("f"));
-	STARRYLOG(Error, TEXT("%f"), UseMP);
+
 	// 마나 회복
 	if(!bUseMP && UseMP == 0.0f)
 	{
@@ -1053,11 +1052,15 @@ void AIreneCharacter::FindNearMonster()
 		IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") &&
 		CharacterDataStruct.CurrentMP >= DummyAttakMpSize))
 	{
+		bUseMP = true;
+		UseMP = DummyAttakMpSize;
 		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
 		UpdateMpWidget();
 	}
 	if (bUseRightButton && CharacterDataStruct.CurrentMP >= DummyAttakMpSize)
 	{
+		bUseMP = true;
+		UseMP = DummyAttakMpSize;
 		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
 		UpdateMpWidget();
 	}
