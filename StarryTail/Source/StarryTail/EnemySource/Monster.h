@@ -7,6 +7,7 @@
 #include "./Struct/FAttributeDefence.h"
 #include "./Struct/FAttributeDebuff.h"
 #include "./Struct/FAttackedInfo.h"
+#include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
 #include "DrawDebugHelpers.h"
@@ -44,6 +45,8 @@ public:
 
 	void ResetDef();
 
+	void OffShockDebuffEffect();
+
 	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
 protected:
@@ -65,28 +68,35 @@ protected:
 	void PrintHitEffect(FVector AttackedPosition);
 
 	//Variable
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FAttributeDefence AttributeDef;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
-		FAttackedInfo AttackedInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystem* HitEffect;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Effect, Meta = (AllowPrivateAccess = true))
+		FMonsterEffectData MonsterEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* HitEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* BurnEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* FloodingEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* ShockEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* TransitionEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* AssembleEffectComponent;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
+		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
 	//
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		FRotator EffectRotation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		FVector EffectScale;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
@@ -105,7 +115,8 @@ private:
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
 
-	void InitHitEffect();
+	void InitEffect();
+	void SetEffect();
 
 	void Burn();
 	void Flooding();

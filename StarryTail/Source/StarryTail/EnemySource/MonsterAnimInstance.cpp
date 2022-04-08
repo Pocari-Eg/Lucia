@@ -120,11 +120,12 @@ void UMonsterAnimInstance::PlayAttackedMontage()
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
 {
-	Montage_Play(GroggyMontage, PlayRate);
+	if(!Montage_IsPlaying(GroggyMontage))
+		Montage_Play(GroggyMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayShockMontage()
 {
-	if (!Montage_IsPlaying(ShockMontage))
+	if (!Montage_IsPlaying(ShockMontage) && !Montage_IsPlaying(GroggyMontage))
 		Montage_Play(ShockMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayMeleeAttackMontage()

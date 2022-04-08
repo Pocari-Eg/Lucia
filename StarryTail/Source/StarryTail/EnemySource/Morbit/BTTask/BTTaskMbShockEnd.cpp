@@ -3,6 +3,7 @@
 
 #include "BTTaskMbShockEnd.h"
 #include "../MbAIController.h"
+#include "../../Monster.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskMbShockEnd::UBTTaskMbShockEnd()
@@ -12,6 +13,9 @@ UBTTaskMbShockEnd::UBTTaskMbShockEnd()
 EBTNodeResult::Type UBTTaskMbShockEnd::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
+
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	Monster->OffShockDebuffEffect();
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsShockKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
