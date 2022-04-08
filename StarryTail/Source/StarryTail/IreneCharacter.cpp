@@ -1310,7 +1310,7 @@ void AIreneCharacter::UpdateHpWidget()
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->UpdateHpWidget(GetMpRatio());
+		HpBar->UpdateHpWidget(GetHpRatio());
 	}
 }
 float AIreneCharacter::GetMpRatio()
