@@ -38,13 +38,7 @@ AMonster::AMonster()
 		HpBarWidget->bAutoActivate = false;
 	}
 
-	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
-	HitEffectComponent->SetupAttachment(RootComponent);
-
-	HitEffectComponent->bAutoActivate = false;
-
-	EffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	EffectScale = FVector(1.0f, 1.0f, 1.0f);
+	InitEffect();
 }
 #pragma region Init
 void AMonster::InitDebuffInfo()
@@ -63,6 +57,8 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.FloodingTime = 10.0f;
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
+
+	MonsterAttributeDebuff.ShockTime = 5.0f;
 
 	MonsterAttributeDebuff.TransitionRange = 10.0f;
 
@@ -86,6 +82,41 @@ void AMonster::InitAttackedInfo()
 	AttackedInfo.bIsUseMana = false;
 	AttackedInfo.Mana = 0.0f;
 	AttackedInfo.AttributeArmor = 100.0f;
+}
+void AMonster::InitEffect()
+{
+	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
+	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
+	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
+	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockEffect"));
+	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
+	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
+
+	HitEffectComponent->SetupAttachment(RootComponent);
+	BurnEffectComponent->SetupAttachment(RootComponent);
+	FloodingEffectComponent->SetupAttachment(RootComponent);
+	ShockEffectComponent->SetupAttachment(RootComponent);
+	TransitionEffectComponent->SetupAttachment(RootComponent);
+	AssembleEffectComponent->SetupAttachment(RootComponent);
+
+	HitEffectComponent->bAutoActivate = false;
+	BurnEffectComponent->bAutoActivate = false;
+	FloodingEffectComponent->bAutoActivate = false;
+	ShockEffectComponent->bAutoActivate = false;
+	TransitionEffectComponent->bAutoActivate = false;
+	AssembleEffectComponent->bAutoActivate = false;
+
+	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.DebuffEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.DebuffEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.TransitionEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.TransitionEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.AssembleEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.AssembleEffectScale = FVector(1.0f, 1.0f, 1.0f);
 }
 #pragma endregion
 
@@ -116,6 +147,33 @@ void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana)
 	AttackedInfo.bIsUseMana = bIsUseMana;
 	AttackedInfo.Mana = Mana;
 }
+void AMonster::SetEffect()
+{
+	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
+	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
+	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
+	ShockEffectComponent->SetTemplate(MonsterEffect.ShockEffect);
+	TransitionEffectComponent->SetTemplate(MonsterEffect.TransitionEffect);
+	AssembleEffectComponent->SetTemplate(MonsterEffect.AssembleEffect);
+
+	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
+	HitEffectComponent->SetRelativeScale3D(MonsterEffect.HitEffectScale);
+
+	BurnEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
+	BurnEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
+
+	FloodingEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
+	FloodingEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
+
+	ShockEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
+	ShockEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
+
+	TransitionEffectComponent->SetRelativeRotation(MonsterEffect.TransitionEffectRotation);
+	TransitionEffectComponent->SetRelativeScale3D(MonsterEffect.TransitionEffectScale);
+
+	AssembleEffectComponent->SetRelativeRotation(MonsterEffect.AssembleEffectRotation);
+	AssembleEffectComponent->SetRelativeScale3D(MonsterEffect.AssembleEffectScale);
+}
 void AMonster::OnTrueDamage(float Damage)
 {
 	if (bIsDead)
@@ -128,7 +186,7 @@ void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 	if (bIsDead)
 		return;
 
-	CalcManaAttackDamage(Damage);
+	CalcHp(CalcManaAttackDamage(Damage));
 }
 void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 {
@@ -293,7 +351,13 @@ void AMonster::CalcDef()
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
+		if (ShockEffectComponent->IsActive())
+		{
+			ShockEffectComponent->SetActive(false);
+			bIsShock = false;
+		}
 		MonsterAIController->Groggy();
+		bIsGroggy = true;
 	}
 
 	//방어력 게이지 업데이트
@@ -463,6 +527,7 @@ void AMonster::RotationToPlayerDirection()
 void AMonster::ResetDef()
 {
 	MonsterInfo.CurrentDef = MonsterInfo.Def;
+	bIsGroggy = false;
 
 	HpBarWidget->ToggleActive();
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
@@ -470,6 +535,10 @@ void AMonster::ResetDef()
 	{
 		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
 	}
+}
+void AMonster::OffShockDebuffEffect()
+{
+	ShockEffectComponent->SetActive(false);
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
@@ -496,20 +565,29 @@ void AMonster::SetActive()
 		SetActorTickEnabled(false);
 	}
 }
-void AMonster::InitHitEffect()
-{
-	HitEffectComponent->SetTemplate(HitEffect);
-}
 #pragma region Debuff
 void AMonster::Burn()
 {
-	bIsFlooding = false;
-	bIsShock = false;
+	if (bIsFlooding)
+	{
+		//이동속도를 원래대로
+		MonsterInfo.MoveSpeed = MonsterInfo.DefaultMoveSpeed;
+		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
+
+		//애니메이션 속도를 원래대로
+		MonsterAnimInstance->SetPlayRate(1.0f);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+		bIsFlooding = false;
+	}
 
 	if(MonsterAnimInstance->GetShockIsPlaying())
 	{
 		MonsterAIController->ShockCancel();
+		bIsShock = false;
 	}
+	FloodingEffectComponent->SetActive(false);
+	ShockEffectComponent->SetActive(false);
+	BurnEffectComponent->SetActive(true);
 
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
 	bIsBurn = true;
@@ -517,12 +595,15 @@ void AMonster::Burn()
 void AMonster::Flooding()
 {
 	bIsBurn = false;
-	bIsShock = false;
 
 	if (MonsterAnimInstance->GetShockIsPlaying())
 	{
 		MonsterAIController->ShockCancel();
+		bIsShock = false;
 	}
+	BurnEffectComponent->SetActive(false);
+	ShockEffectComponent->SetActive(false);
+	FloodingEffectComponent->SetActive(true);
 
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
@@ -539,16 +620,37 @@ void AMonster::Flooding()
 void AMonster::Shock()
 {
 	bIsBurn = false;
-	bIsFlooding = false;
+	if (bIsFlooding)
+	{
+		//이동속도를 원래대로
+		MonsterInfo.MoveSpeed = MonsterInfo.DefaultMoveSpeed;
+		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
 
-	MonsterAIController->Shock();
+		//애니메이션 속도를 원래대로
+		MonsterAnimInstance->SetPlayRate(1.0f);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+		bIsFlooding = false;
+	}
 
-	bIsShock = true;
+	BurnEffectComponent->SetActive(false);
+	FloodingEffectComponent->SetActive(false);
+
+	if (!bIsGroggy)
+	{
+		ShockEffectComponent->SetActive(true);
+		MonsterAIController->Shock();
+
+		MonsterAttributeDebuff.ShockTimer = 0.0f;
+		bIsShock = true;
+	}
 }
 void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage)
 {
 	if (bTestMode)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.TransitionRange * 100.0f, 16, FColor::Red, false, 0.2f);
+
+	TransitionEffectComponent->SetActive(true);
+	TransitionEffectComponent->ForceReset();
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.TransitionRange);
 
@@ -570,6 +672,9 @@ void AMonster::Assemble()
 {
 	if (bTestMode)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.AssembleRange * 100.0f, 16, FColor::Blue, false, 0.2f);
+
+	AssembleEffectComponent->SetActive(true);
+	AssembleEffectComponent->ForceReset();
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.AssembleRange);
 
@@ -655,9 +760,6 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -20.0f)) + (CompToMonsterDir * (Distance / 2.0f));
 
 	HitEffectComponent->SetWorldLocation(EffectPosition);
-	
-	HitEffectComponent->SetRelativeRotation(EffectRotation);
-	HitEffectComponent->SetRelativeScale3D(EffectScale);
 
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
@@ -669,7 +771,7 @@ void AMonster::BeginPlay()
 	Super::BeginPlay();
 	
 	CalcAttributeDefType();
-	InitHitEffect();
+	SetEffect();
 
 	MonsterInfo.DefaultMoveSpeed = MonsterInfo.MoveSpeed;
 	MonsterInfo.DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
@@ -744,6 +846,7 @@ void AMonster::Tick(float DeltaTime)
 		{
 			//시간 초기화 및 화상 상태 해제
 			MonsterAttributeDebuff.BurnTimer = 0.0f;
+			BurnEffectComponent->SetActive(false);
 			bIsBurn = false;
 		}
 	}
@@ -765,8 +868,20 @@ void AMonster::Tick(float DeltaTime)
 			MonsterAnimInstance->SetPlayRate(1.0f);
 			MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
 
+			FloodingEffectComponent->SetActive(false);
 			//침수 상태 해제
 			bIsFlooding = false;
+		}
+	}
+	if (bIsShock)
+	{
+		MonsterAttributeDebuff.ShockTimer += DeltaTime;
+
+		if (MonsterAttributeDebuff.ShockTimer >= MonsterAttributeDebuff.ShockTime)
+		{
+			MonsterAttributeDebuff.ShockTimer = 0.0f;
+			ShockEffectComponent->SetActive(false);
+			bIsShock = false;
 		}
 	}
 	if (bIsAssemble)
