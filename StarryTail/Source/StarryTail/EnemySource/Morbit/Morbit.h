@@ -31,7 +31,6 @@ private:
 	void InitMorbitMaterial();
 	void InitOccupationAI();
 	//Variable
-
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

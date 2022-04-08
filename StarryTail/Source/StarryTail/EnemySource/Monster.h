@@ -6,6 +6,7 @@
 #include "./Struct/FNormalMonsterInfo.h"
 #include "./Struct/FAttributeDefence.h"
 #include "./Struct/FAttributeDebuff.h"
+#include "./Struct/FAttackedInfo.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
 #include "DrawDebugHelpers.h"
@@ -29,8 +30,10 @@ public:
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
 	TArray<EAttributeKeyword> GetMainAttributeDef() const;
-	
+
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
+
+	void SetAttackedInfo(bool bIsUseMana, float Mana);
 
 	void OnTrueDamage(float Damage);
 	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
@@ -38,6 +41,8 @@ public:
 	void AddDebuffStack(EAttributeKeyword Attribute);
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
+
+	void ResetDef();
 
 	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
@@ -49,10 +54,14 @@ protected:
 
 	//Function
 	void InitDebuffInfo();
+	void InitAttackedInfo();
 
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
-	void CalcDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void CalcDef();
+	float CalcNormalAttackDamage(float Damage);
+	float CalcManaAttackDamage(float Damage);
+
 	void PrintHitEffect(FVector AttackedPosition);
 
 	//Variable
@@ -60,6 +69,8 @@ protected:
 		FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FAttributeDefence AttributeDef;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
+		FAttackedInfo AttackedInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -89,7 +100,7 @@ private:
 	//Function
 	void CalcHp(float Damage);
 	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
-	void CalcBurnDamage();
+	float CalcBurnDamage(float Damage);
 
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
@@ -111,6 +122,7 @@ private:
 
 	//Variable
 	FVector AssembleLocation;
+	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
 	bool bIsFlooding;

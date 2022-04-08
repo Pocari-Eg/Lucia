@@ -24,7 +24,6 @@ void USTGameInstance::SetAttributeEffectMonster(AMonster* Monster)
 	AttributeEffectMonster = Monster;
 	if (AttributeEffectMonster == nullptr)
 		STARRYLOG(Log, TEXT("Failed SetAttributeEffectMonster"));
-	STARRYLOG(Log, TEXT("Set AttributeEffect Monster Complete : %s"), *AttributeEffectMonster->GetName());
 }
 void USTGameInstance::ResetAttributeEffectMonster()
 {
