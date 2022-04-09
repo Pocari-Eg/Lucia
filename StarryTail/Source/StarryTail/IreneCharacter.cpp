@@ -791,32 +791,35 @@ void AIreneCharacter::MouseWheel(float Rate)
 
 void AIreneCharacter::MainKeyword()
 {
-	//속상변환 차례대로 속성이 변환
-	switch (Attribute)
-	{
-	case EAttributeKeyword::e_Fire:
-		AttackSound->SetParameter("Attributes", 2.0f);
-		Attribute = EAttributeKeyword::e_Water;
-		break;
-	case EAttributeKeyword::e_Water:
-		AttackSound->SetParameter("Attributes", 3.0f);
+	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) {
 
-		Attribute = EAttributeKeyword::e_Thunder;
-		break;
-	case EAttributeKeyword::e_Thunder:
-		AttackSound->SetParameter("Attributes", 1.0f);
-		Attribute = EAttributeKeyword::e_Fire;
-		
-		break;
-	default:
-		break;
+		//속상변환 차례대로 속성이 변환
+		switch (Attribute)
+		{
+		case EAttributeKeyword::e_Fire:
+			AttackSound->SetParameter("Attributes", 2.0f);
+			Attribute = EAttributeKeyword::e_Water;
+			break;
+		case EAttributeKeyword::e_Water:
+			AttackSound->SetParameter("Attributes", 3.0f);
+
+			Attribute = EAttributeKeyword::e_Thunder;
+			break;
+		case EAttributeKeyword::e_Thunder:
+			AttackSound->SetParameter("Attributes", 1.0f);
+			Attribute = EAttributeKeyword::e_Fire;
+
+			break;
+		default:
+			break;
+		}
+		auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+		if (nullptr != Widget)
+		{
+			Widget->BindCharacterAttribute(Attribute);
+		}
+		FOnAttributeChange.Broadcast();
 	}
-	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
-	if (nullptr != Widget)
-	{
-		Widget->BindCharacterAttribute(Attribute);
-	}
-	FOnAttributeChange.Broadcast();
 }
 
 void AIreneCharacter::DodgeKeyword()
