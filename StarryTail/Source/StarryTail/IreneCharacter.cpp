@@ -13,6 +13,7 @@
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "StarryTailGameMode.h"
 
 #pragma region Setting
 // Sets default values
@@ -233,6 +234,38 @@ void AIreneCharacter::BeginPlay()
 	AttackSound->SetParameter("Material", 0.0f);
 
 }
+void AIreneCharacter::Destroyed()
+{
+	Super::Destroyed();
+
+	// Example to bind to OnPlayerDied event in GameMode. 
+	if (UWorld* World = GetWorld())
+	{
+		if (AStarryTailGameMode* GameMode = Cast<AStarryTailGameMode>(World->GetAuthGameMode()))
+		{
+			GameMode->GetOnPlayerDied().Broadcast(this);
+		}
+	}
+}
+
+void AIreneCharacter::CallRestartPlayer()
+{
+	//Get a reference to the Pawn Controller.
+	AController* CortollerRef = GetController();
+
+	//Destroy the Player.   
+	Destroy();
+
+		//Get the World and GameMode in the world to invoke its restart player function.
+		if (UWorld* World = GetWorld())
+		{
+			if (AStarryTailGameMode* GameMode = Cast<AStarryTailGameMode>(World->GetAuthGameMode()))
+			{
+				GameMode->RestartPlayer(CortollerRef);
+			}
+		}
+}
+
 void AIreneCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
@@ -791,8 +824,8 @@ void AIreneCharacter::MouseWheel(float Rate)
 
 void AIreneCharacter::MainKeyword()
 {
-	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) {
-
+	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) 
+	{
 		//속상변환 차례대로 속성이 변환
 		switch (Attribute)
 		{
@@ -802,13 +835,11 @@ void AIreneCharacter::MainKeyword()
 			break;
 		case EAttributeKeyword::e_Water:
 			AttackSound->SetParameter("Attributes", 3.0f);
-
 			Attribute = EAttributeKeyword::e_Thunder;
 			break;
 		case EAttributeKeyword::e_Thunder:
 			AttackSound->SetParameter("Attributes", 1.0f);
 			Attribute = EAttributeKeyword::e_Fire;
-
 			break;
 		default:
 			break;
@@ -819,6 +850,7 @@ void AIreneCharacter::MainKeyword()
 			Widget->BindCharacterAttribute(Attribute);
 		}
 		FOnAttributeChange.Broadcast();
+		IreneAnim->SetAttribute(Attribute);
 	}
 }
 

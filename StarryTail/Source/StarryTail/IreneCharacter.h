@@ -163,14 +163,22 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	UFUNCTION(BlueprintCallable)
 	//속성 반환
 	EAttributeKeyword GetAttribute();
+
 	//공격력 반환
 	float GetATK();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	//Called when our Actor is destroyed during Gameplay.
+	virtual void Destroyed();
+
+	//Call Gamemode class to Restart Player Character.
+	void CallRestartPlayer();
 
 private:
 

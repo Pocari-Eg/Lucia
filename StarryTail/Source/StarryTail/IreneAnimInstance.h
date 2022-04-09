@@ -41,7 +41,9 @@ private:
 	UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* EffectAttackMontage;
-
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	EAttributeKeyword Attribute;
+	
 public:
 	UIreneAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
@@ -55,6 +57,7 @@ public:
 	void SetSprintStateAnim(bool value) { IsSprintState = value; }
 	void SetSprintStopAnim(bool value) { IsSprintStop = value; }
 	void SetIreneStateAnim(StateEnum value) { IreneState = value; }
+	void SetAttribute(EAttributeKeyword value) { Attribute = value; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
