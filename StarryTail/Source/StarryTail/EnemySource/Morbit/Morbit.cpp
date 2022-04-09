@@ -259,7 +259,7 @@ void AMorbit::BeginPlay()
 	Super::BeginPlay();
 
 	InitMorbitInfo();
-	InitMorbitMaterial();
+	//InitMorbitMaterial();
 	InitOccupationAI();
 }
 
