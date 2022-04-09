@@ -447,8 +447,8 @@ void AIreneCharacter::MoveAuto()
 				CharacterState->setState(JumpState::getInstance());
 		}
 
-		if (CharacterState->getStateToString().Compare(FString("Dodge")) == 0)
-			AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
+		//if (CharacterState->getStateToString().Compare(FString("Dodge")) == 0)
+			//AddMovementInput(MoveAutoDirection, CharacterDataStruct.MoveSpeed);
 	}
 }
 
@@ -828,7 +828,7 @@ void AIreneCharacter::DodgeKeyword()
 		IreneAnim->StopAllMontages(0);
 		ChangeStateAndLog(DodgeState::getInstance());
 
-		float WaitTime = 1.5f; //시간을 설정
+		float WaitTime = 0.5f; //시간을 설정
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -1248,8 +1248,8 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		{
 			IreneAnim->SetSprintStateAnim(true);
 		}
-
 		CharacterState->ChangeState(newState);
+		IreneAnim->SetIreneStateAnim(CharacterState->getState());
 	}
 }
 
