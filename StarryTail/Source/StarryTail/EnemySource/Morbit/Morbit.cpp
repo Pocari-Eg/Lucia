@@ -61,7 +61,7 @@ void AMorbit::InitMesh()
 	}
 
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -35.0f), FRotator(0.0f, 270.0f, 0.0f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -60.0f), FRotator(0.0f, 270.0f, 0.0f));
 	GetMesh()->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 void AMorbit::InitAnime()
