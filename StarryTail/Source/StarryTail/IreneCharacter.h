@@ -103,6 +103,8 @@ private:
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
 
+	UDataTable* AttackDataTable;
+
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1

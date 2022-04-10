@@ -70,6 +70,13 @@ AIreneCharacter::AIreneCharacter()
 		CameraShakeCurve.Add(CameraCurveDataObject.Object);
 	}
 
+	// 데이터 테이블
+	ConstructorHelpers::FObjectFinder<UDataTable>DT_AttackDataTable(TEXT("/Game/Math/BP_AttackDataTable.BP_AttackDataTable"));
+	if (DT_AttackDataTable.Succeeded())
+	{
+		AttackDataTable = DT_AttackDataTable.Object;
+	}
+
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 
@@ -209,6 +216,9 @@ void AIreneCharacter::BeginPlay()
 	//스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
+
+	// 애니메이션 속성 초기화
+	IreneAnim->SetAttribute(Attribute);
 
 	// 속성 위젯에 속성값 설정
 	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
@@ -982,8 +992,11 @@ void AIreneCharacter::AttackEndComboState()
 
 void AIreneCharacter::AttackCheck()
 {
-	AttackSound->SoundPlay2D();
-	FindNearMonster();
+	if (IreneAnim->GetCurrentActiveMontage() != NULL)
+	{
+		AttackSound->SoundPlay2D();
+		FindNearMonster();
+	}
 }
 void AIreneCharacter::AttackStopCheck()
 {
@@ -993,7 +1006,7 @@ void AIreneCharacter::DoAttack()
 {
 	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
 	//WorldController->ClientStartCameraShake(CameraShakeCurve);
-
+	
 	Weapon->SetGenerateOverlapEvents(true);
 
 	// 몬스터 추적 초기화
@@ -1031,6 +1044,11 @@ void AIreneCharacter::DoAttack()
 		false,
 		DebugLifeTime);
 #endif
+
+	//IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5")
+	//FAttackDataTable* table = AttackDataTable->FindRow<FAttackDataTable>(FName("Dodge"), "");
+	//if (table != nullptr)
+		//STARRYLOG(Error, TEXT("%s"), *table->ATTACK_DAMAGE_1);
 
 	for (FHitResult Monster : MonsterList)
 	{
