@@ -16,7 +16,7 @@ AMonster::AMonster()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MonsterInfo.DetectMonsterRange = 5.0f;
-	MonsterInfo.ArbitraryConstValueA = 1.0f;
+	MonsterInfo.ArbitraryConstValueA = 2.5f;
 	MonsterInfo.ArbitraryConstValueB = 1.0f;
 	MonsterInfo.ArbitraryConstValueC = 1.0f;
 
@@ -91,13 +91,15 @@ void AMonster::InitEffect()
 	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockEffect"));
 	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
 	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
+	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
 
-	HitEffectComponent->SetupAttachment(RootComponent);
-	BurnEffectComponent->SetupAttachment(RootComponent);
-	FloodingEffectComponent->SetupAttachment(RootComponent);
-	ShockEffectComponent->SetupAttachment(RootComponent);
-	TransitionEffectComponent->SetupAttachment(RootComponent);
-	AssembleEffectComponent->SetupAttachment(RootComponent);
+	HitEffectComponent->SetupAttachment(GetMesh());
+	BurnEffectComponent->SetupAttachment(GetMesh());
+	FloodingEffectComponent->SetupAttachment(GetMesh());
+	ShockEffectComponent->SetupAttachment(GetMesh());
+	TransitionEffectComponent->SetupAttachment(GetMesh());
+	AssembleEffectComponent->SetupAttachment(GetMesh());
+	GroggyEffectComponent->SetupAttachment(RootComponent);
 
 	HitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
@@ -105,6 +107,7 @@ void AMonster::InitEffect()
 	ShockEffectComponent->bAutoActivate = false;
 	TransitionEffectComponent->bAutoActivate = false;
 	AssembleEffectComponent->bAutoActivate = false;
+	GroggyEffectComponent->bAutoActivate = false;
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
@@ -117,6 +120,9 @@ void AMonster::InitEffect()
 
 	MonsterEffect.AssembleEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.AssembleEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.GroggyEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.GroggyEffectScale = FVector(1.0f, 1.0f, 1.0f);
 }
 #pragma endregion
 
@@ -155,6 +161,7 @@ void AMonster::SetEffect()
 	ShockEffectComponent->SetTemplate(MonsterEffect.ShockEffect);
 	TransitionEffectComponent->SetTemplate(MonsterEffect.TransitionEffect);
 	AssembleEffectComponent->SetTemplate(MonsterEffect.AssembleEffect);
+	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
 
 	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
 	HitEffectComponent->SetRelativeScale3D(MonsterEffect.HitEffectScale);
@@ -173,6 +180,9 @@ void AMonster::SetEffect()
 
 	AssembleEffectComponent->SetRelativeRotation(MonsterEffect.AssembleEffectRotation);
 	AssembleEffectComponent->SetRelativeScale3D(MonsterEffect.AssembleEffectScale);
+
+	GroggyEffectComponent->SetRelativeRotation(MonsterEffect.GroggyEffectRotation);
+	GroggyEffectComponent->SetRelativeScale3D(MonsterEffect.GroggyEffectScale);
 }
 void AMonster::OnTrueDamage(float Damage)
 {
@@ -356,6 +366,7 @@ void AMonster::CalcDef()
 			ShockEffectComponent->SetActive(false);
 			bIsShock = false;
 		}
+		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
 		bIsGroggy = true;
 	}
@@ -530,6 +541,7 @@ void AMonster::ResetDef()
 {
 	MonsterInfo.CurrentDef = MonsterInfo.Def;
 	bIsGroggy = false;
+	GroggyEffectComponent->SetActive(false);
 
 	HpBarWidget->ToggleActive();
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
@@ -565,6 +577,14 @@ void AMonster::SetActive()
 		HpBarWidget->SetHiddenInGame(true);
 		SetActorEnableCollision(false);
 		SetActorTickEnabled(false);
+
+		HitEffectComponent->SetActive(false);
+		BurnEffectComponent->SetActive(false);
+		FloodingEffectComponent->SetActive(false);
+		ShockEffectComponent->SetActive(false);
+		TransitionEffectComponent->SetActive(false);
+		AssembleEffectComponent->SetActive(false);
+		GroggyEffectComponent->SetActive(false);
 	}
 }
 #pragma region Debuff

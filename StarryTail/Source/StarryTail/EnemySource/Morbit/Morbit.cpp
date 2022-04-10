@@ -100,7 +100,7 @@ void AMorbit::InitMorbitInfo()
 		AttributeDef.e_None = 30.0f;
 		AttributeDef.e_Fire = 50.0f;
 		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 2.0f;
+		AttributeDef.e_Thunder = 20.0f;
 
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 		break;
@@ -297,7 +297,6 @@ void AMorbit::PostInitializeComponents()
 	//애니메이션 몽타주 종료시 호출
 	MonsterAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
-
 		AttackEnd.Broadcast();
 		});
 	MonsterAnimInstance->Death.AddLambda([this]() -> void {

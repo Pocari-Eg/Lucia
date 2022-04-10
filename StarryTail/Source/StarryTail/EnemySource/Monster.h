@@ -89,6 +89,8 @@ protected:
 		UParticleSystemComponent* TransitionEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* AssembleEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* GroggyEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI
