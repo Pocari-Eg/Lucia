@@ -43,10 +43,4 @@ void UBTTaskMbAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMem
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackingKey, false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	if (bIsAttacking)
-	{
-		
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	}
-
 }

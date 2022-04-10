@@ -25,6 +25,8 @@ public:
 		UParticleSystem* TransitionEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* AssembleEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UParticleSystem* GroggyEffect;
 
 	//Rotation, Scale
 	//Hit
@@ -47,4 +49,9 @@ public:
 		FRotator AssembleEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector AssembleEffectScale;
+	//Groggy
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FRotator GroggyEffectRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector GroggyEffectScale;
 };
