@@ -372,7 +372,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	MonsterAIController->Attacked();
 	MonsterAIController->StopMovement();
-
+	
 	return MonsterInfo.ArbitraryConstValueA * (Damage / MonsterInfo.CurrentDef) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
@@ -464,6 +464,8 @@ void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 }
 void AMonster::CalcHp(float Damage)
 {
+	Damage = FMath::Abs(Damage);
+
 	if (CheckPlayerIsBehindMonster())
 	{
 		MonsterInfo.CurrentHp -= Damage * 1.5f;
