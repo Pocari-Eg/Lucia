@@ -50,7 +50,7 @@ void AMorbit::InitMonsterInfo()
 void AMorbit::InitCollision()
 {
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
-	GetCapsuleComponent()->SetCapsuleHalfHeight(40.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(60.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(34.0f);
 }
 void AMorbit::InitMesh()
@@ -258,9 +258,7 @@ void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	InitMorbitInfo();
 	//InitMorbitMaterial();
-	InitOccupationAI();
 }
 
 // Called every frame

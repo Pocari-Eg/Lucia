@@ -54,21 +54,21 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
 	
-	MonsterAttributeDebuff.FloodingTime = 10.0f;
+	MonsterAttributeDebuff.FloodingTime = 5.0f;
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
-	MonsterAttributeDebuff.ShockTime = 5.0f;
+	MonsterAttributeDebuff.ShockTime = 1.0f;
 
-	MonsterAttributeDebuff.TransitionRange = 10.0f;
+	MonsterAttributeDebuff.TransitionRange = 2.0f;
 
-	MonsterAttributeDebuff.AssembleRange = 10.0f;
+	MonsterAttributeDebuff.AssembleRange = 5.0f;
 	MonsterAttributeDebuff.AssembleTime = 0.3f;
-	MonsterAttributeDebuff.AssembleSpeed = 100.0f;
+	MonsterAttributeDebuff.AssembleSpeed = 500.0f;
 	MonsterAttributeDebuff.AssembleTimer = 0.0f;
 
-	MonsterAttributeDebuff.ChainRange = 10.0f;
-	MonsterAttributeDebuff.ChainTime = 10.0f;
+	MonsterAttributeDebuff.ChainRange = 5.0f;
+	MonsterAttributeDebuff.ChainTime = 5.0f;
 	MonsterAttributeDebuff.ChainTimer = 0.0f;
 
 	bIsBurn = false;
@@ -839,7 +839,7 @@ void AMonster::Tick(float DeltaTime)
 			//틱 시간 초기화
 			MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
 			//데미지 계산 후 체력감소
-			CalcHp(CalcBurnDamage(MonsterAttributeDebuff.BurnDamage));
+			CalcHp(CalcBurnDamage(MonsterAttributeDebuff.BurnDamage) / 100.0f);
 		}
 		//화상 지속시간이 설정된 시간이 됐을 때
 		if (MonsterAttributeDebuff.BurnTimer >= MonsterAttributeDebuff.BurnTime)
