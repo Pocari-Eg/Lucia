@@ -39,7 +39,7 @@ void AMorbit::InitMonsterInfo()
 	AttributeDef.e_Thunder = 0.0f;
 
 	MonsterInfo.MoveSpeed = 40.0f;
-	MonsterInfo.BattleWalkMoveSpeed = 150.0f;
+	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
 	MonsterInfo.ViewAngle = 150.0f;
 	MonsterInfo.ViewRange = 500.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f;
