@@ -27,7 +27,9 @@ public:
 	void AttackCheck();
 private:
 	//Function
-	void InitMorbitInfo();
+	UFUNCTION(BlueprintCallable)
+		void InitMorbitInfo();
+
 	void InitMorbitMaterial();
 	void InitOccupationAI();
 	//Variable
