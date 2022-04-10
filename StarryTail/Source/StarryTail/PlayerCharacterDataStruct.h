@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "IreneFSM.h"
+#include "Engine/DataTable.h"
 
 #include "PlayerCharacterDataStruct.generated.h"
 
@@ -57,10 +58,10 @@ public:
 
 	// 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxHP = 1000;
+	float MaxHP = 2000;
 	// 최대 마나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxMP = 1000;
+	float MaxMP = 1500;
 	// 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHP;
@@ -100,4 +101,50 @@ public:
 	// 타겟 추적 선형보간 속도
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float TargetFollowSpeed = 8.0f;
+};
+
+USTRUCT(BlueprintType)
+struct FAttackDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Move_TYPE;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Pre_Attack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Gage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Time_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Time_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Time_3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ATTACK_DAMAGE_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ATTACK_DAMAGE_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int ATTACK_DAMAGE_3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Distance_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Distance_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Distance_3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Save_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Main_Keyword;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int MANA;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Key_Set;
+
 };
