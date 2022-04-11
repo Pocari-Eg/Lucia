@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../Monster.h"
+#include"../../SoundManager.h"
 #include "Morbit.generated.h"
 
 UCLASS()
@@ -25,6 +26,9 @@ public:
 	void Attack();
 
 	void AttackCheck();
+
+
+
 private:
 	//Function
 	UFUNCTION(BlueprintCallable)

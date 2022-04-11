@@ -237,7 +237,7 @@ void AIreneCharacter::BeginPlay()
 
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
-	AttackSound->SetVolume(0.5f);
+	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 1.0f);
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
 	WalkSound -> SetVolume(0.8f);
