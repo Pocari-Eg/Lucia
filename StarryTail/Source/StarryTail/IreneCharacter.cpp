@@ -1045,11 +1045,6 @@ void AIreneCharacter::DoAttack()
 		DebugLifeTime);
 #endif
 
-	//IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5")
-	//FAttackDataTable* table = AttackDataTable->FindRow<FAttackDataTable>(FName("Dodge"), "");
-	//if (table != nullptr)
-		//STARRYLOG(Error, TEXT("%s"), *table->ATTACK_DAMAGE_1);
-
 	for (FHitResult Monster : MonsterList)
 	{
 		if (bResult)
@@ -1069,11 +1064,9 @@ void AIreneCharacter::DoAttack()
 	}
 
 	// 마나 회복
-	if(!bUseMP && UseMP == 0.0f)
+	if(bUseMP == false && UseMP != 0.0f)
 	{
-		const float DummyAttakMpSize = 30.0f;
-
-		CharacterDataStruct.CurrentMP += DummyAttakMpSize;
+		CharacterDataStruct.CurrentMP += UseMP;
 		
 		if (CharacterDataStruct.CurrentMP > CharacterDataStruct.MaxMP)
 			CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
@@ -1096,25 +1089,23 @@ void AIreneCharacter::DoAttack()
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
-	// 마나 사용 유무
-	const float DummyAttakMpSize = 30.0f;
-	bUseMP = false;
-	UseMP = 0.0f;
-
-	if ((bUseLeftButton &&
-		IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") &&
-		CharacterDataStruct.CurrentMP >= DummyAttakMpSize))
+	FAttackDataTable* table = GetNameAtDataTable(GetAnimName());
+	if (table != nullptr)
 	{
-		bUseMP = true;
-		UseMP = DummyAttakMpSize;
-		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
-		UpdateMpWidget();
-	}
-	if (bUseRightButton && CharacterDataStruct.CurrentMP >= DummyAttakMpSize)
-	{
-		bUseMP = true;
-		UseMP = DummyAttakMpSize;
-		CharacterDataStruct.CurrentMP -= DummyAttakMpSize;
+		CharacterDataStruct.Strength = table->ATTACK_DAMAGE_1;
+		// 마나 사용 조건
+		if (table->Main_Keyword != 0 && CharacterDataStruct.CurrentMP >= table->MANA)
+		{
+			bUseMP = true;
+			UseMP = table->MANA;
+			CharacterDataStruct.CurrentMP -= table->MANA;
+		}
+		// 마나 회복 조건
+		else
+		{
+			bUseMP = false;
+			UseMP = table->MANA;
+		}
 		UpdateMpWidget();
 	}
 
@@ -1339,6 +1330,68 @@ void AIreneCharacter::ActionEndChangeMoveState()
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 		ChangeStateAndLog(RunState::getInstance());
 	}
+}
+FName AIreneCharacter::GetAnimName()
+{
+	if (CharacterState->getStateToString().Compare(FString("Dodge")) == 0)
+	{
+		return FName("Dodge");
+	}
+	if (CharacterState->getStateToString().Compare(FString("Jump")) == 0)
+	{
+		return FName("Jump");
+	}
+	if (bUseLeftButton) 
+	{
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1")) 
+		{
+			return FName("B_Attack_1");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
+		{
+			return FName("B_Attack_2");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
+		{
+			return FName("B_Attack_3");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
+		{
+			return FName("B_Attack_4");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_None)
+		{
+			return FName("B_Attack_5_N");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Fire)
+		{
+			return FName("B_Attack_5_F");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Water)
+		{
+			return FName("B_Attack_5_W");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Thunder)
+		{
+			return FName("B_Attack_5_E");
+		}
+	}
+	if (bUseRightButton) 
+	{
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1") && Attribute == EAttributeKeyword::e_Fire)
+		{
+			return FName("Actionkeyword_1_F");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && Attribute == EAttributeKeyword::e_Water)
+		{
+			return FName("Actionkeyword_1_W");
+		}
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3") && Attribute == EAttributeKeyword::e_Thunder)
+		{
+			return FName("Actionkeyword_1_E");
+		}
+	}
+	return FName("");
 }
 #pragma endregion State
 
