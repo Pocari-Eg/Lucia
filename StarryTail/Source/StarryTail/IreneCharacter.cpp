@@ -747,33 +747,37 @@ void AIreneCharacter::RightButton(float Rate)
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= 50)
+		FAttackDataTable* table = GetNameAtDataTable(FName("Actionkeyword_1_F"));
+		if (table != nullptr)
 		{
-			bUseRightButton = true;
-			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
-			float WaitTime = 0.15f;
-
-			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					AttackWaitHandle.Invalidate();
-				}), WaitTime, false);
-
-			if (CharacterDataStruct.IsAttacking)
+			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= table->MANA)
 			{
-				if (CharacterDataStruct.CanNextCombo)
+				bUseRightButton = true;
+				// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+				float WaitTime = 0.15f;
+
+				GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+					{
+						AttackWaitHandle.Invalidate();
+					}), WaitTime, false);
+
+				if (CharacterDataStruct.IsAttacking)
 				{
-					if(!(CharacterDataStruct.CurrentMP == 50 && IreneAnim->GetCurrentActiveMontage() != NULL))
-						CharacterDataStruct.IsComboInputOn = true;
+					if (CharacterDataStruct.CanNextCombo)
+					{
+						if (!(CharacterDataStruct.CurrentMP == table->MANA && IreneAnim->GetCurrentActiveMontage() != NULL))
+							CharacterDataStruct.IsComboInputOn = true;
+					}
 				}
-			}
-			else
-			{
-				ChangeStateAndLog(AttackState::getInstance());
-				AttackStartComboState();
+				else
+				{
+					ChangeStateAndLog(AttackState::getInstance());
+					AttackStartComboState();
 
-				IreneAnim->PlayEffectAttackMontage();
-				IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
-				CharacterDataStruct.IsAttacking = true;
+					IreneAnim->PlayEffectAttackMontage();
+					IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
+					CharacterDataStruct.IsAttacking = true;
+				}
 			}
 		}
 	}
@@ -1093,6 +1097,9 @@ void AIreneCharacter::FindNearMonster()
 	if (table != nullptr)
 	{
 		CharacterDataStruct.Strength = table->ATTACK_DAMAGE_1;
+		STARRYLOG(Error, TEXT("%d"), table->Main_Keyword);
+		STARRYLOG(Error, TEXT("%d"), table->MANA);
+
 		// 마나 사용 조건
 		if (table->Main_Keyword != 0 && CharacterDataStruct.CurrentMP >= table->MANA)
 		{
@@ -1106,6 +1113,12 @@ void AIreneCharacter::FindNearMonster()
 			bUseMP = false;
 			UseMP = table->MANA;
 		}
+		if (table->Main_Keyword != 0 && CharacterDataStruct.CurrentMP < table->MANA)
+		{
+			bUseMP = false;
+			UseMP = 0;
+		}
+
 		UpdateMpWidget();
 	}
 
