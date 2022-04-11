@@ -81,67 +81,27 @@ void AMorbit::InitMorbitInfo()
 	switch (MonsterInfo.Code)
 	{
 	case 1:
-		AttributeDef.e_None = 100.0f;
-		AttributeDef.e_Fire = 0.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 0.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 		break;
 	case 2:
-		AttributeDef.e_None = 100.0f;
-		AttributeDef.e_Fire = 0.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 0.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 		break;
 	case 3:
-		AttributeDef.e_None = 30.0f;
-		AttributeDef.e_Fire = 50.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 20.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 		break;
 	case 4:
-		AttributeDef.e_None = 0.0f;
-		AttributeDef.e_Fire = 50.0f;
-		AttributeDef.e_Water = 30.0f;
-		AttributeDef.e_Thunder = 20.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 		break;
 	case 5:
-		AttributeDef.e_None = 25.0f;
-		AttributeDef.e_Fire = 15.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 60.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 		break;
 	case 6:
-		AttributeDef.e_None = 0.0f;
-		AttributeDef.e_Fire = 0.0f;
-		AttributeDef.e_Water = 80.0f;
-		AttributeDef.e_Thunder = 20.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 		break;
 	case 7:
-		AttributeDef.e_None = 0.0f;
-		AttributeDef.e_Fire = 10.0f;
-		AttributeDef.e_Water = 30.0f;
-		AttributeDef.e_Thunder = 60.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 		break;
 	case 8:
-		AttributeDef.e_None = 30.0f;
-		AttributeDef.e_Fire = 0.0f;
-		AttributeDef.e_Water = 0.0f;
-		AttributeDef.e_Thunder = 70.0f;
-
 		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 		break;
 	default:
