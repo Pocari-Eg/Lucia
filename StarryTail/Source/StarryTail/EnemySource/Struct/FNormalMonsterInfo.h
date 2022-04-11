@@ -57,5 +57,3 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultBattleWalkMoveSpeed;
 };
-	
-
