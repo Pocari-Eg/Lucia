@@ -747,7 +747,7 @@ void AIreneCharacter::RightButton(float Rate)
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
-		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= 30)
+		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= 50)
 		{
 			bUseRightButton = true;
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
@@ -762,7 +762,7 @@ void AIreneCharacter::RightButton(float Rate)
 			{
 				if (CharacterDataStruct.CanNextCombo)
 				{
-					if(!(CharacterDataStruct.CurrentMP == 30 && IreneAnim->GetCurrentActiveMontage() != NULL))
+					if(!(CharacterDataStruct.CurrentMP == 50 && IreneAnim->GetCurrentActiveMontage() != NULL))
 						CharacterDataStruct.IsComboInputOn = true;
 				}
 			}
@@ -1378,15 +1378,15 @@ FName AIreneCharacter::GetAnimName()
 	}
 	if (bUseRightButton) 
 	{
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1") && Attribute == EAttributeKeyword::e_Fire)
+		if (Attribute == EAttributeKeyword::e_Fire)
 		{
 			return FName("Actionkeyword_1_F");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && Attribute == EAttributeKeyword::e_Water)
+		if (Attribute == EAttributeKeyword::e_Water)
 		{
 			return FName("Actionkeyword_1_W");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3") && Attribute == EAttributeKeyword::e_Thunder)
+		if (Attribute == EAttributeKeyword::e_Thunder)
 		{
 			return FName("Actionkeyword_1_E");
 		}
