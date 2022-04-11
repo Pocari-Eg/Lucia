@@ -23,6 +23,8 @@ AMorbit::AMorbit()
 	InitDebuffInfo();
 
 	bTestMode = false;
+
+	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 }
 #pragma region Init
 void AMorbit::InitMonsterInfo()

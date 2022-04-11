@@ -108,6 +108,15 @@ protected:
 	bool bIsAttacked;
 	bool bIsGroggy;
 	bool bIsDead;
+
+#pragma region Sound
+	//사운드 이벤트
+	UPROPERTY(EditAnywhere, Category = "FMOD")
+		class UFMODEvent* HitEvent;
+	//사운드 
+	SoundManager* HitSound;
+	
+#pragma endregion Sound
 private:
 	//Function
 	void CalcHp(float Damage);

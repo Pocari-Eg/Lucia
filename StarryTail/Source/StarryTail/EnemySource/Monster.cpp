@@ -783,6 +783,10 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
+	FTransform SoundTransform;
+	SoundTransform.SetLocation(AttackedPosition);
+	HitSound->SoundPlay3D(SoundTransform);
+
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
 }
@@ -808,6 +812,19 @@ void AMonster::BeginPlay()
 	if (HpBar != nullptr)
 	{
 		HpBar->UpdateDefWidget(1.0f);
+	}
+
+	//사운드 세팅
+	HitSound = new SoundManager(HitEvent, GetWorld());
+
+	if (GetActorScale3D().X > 1.0f)
+	{
+		HitSound->SetVolume(2.0f);
+
+	}
+	else {
+		HitSound->SetVolume(1.0f);
+
 	}
 
 }
