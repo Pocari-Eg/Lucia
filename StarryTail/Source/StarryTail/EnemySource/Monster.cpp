@@ -789,6 +789,8 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
+
+
 }
 #pragma endregion
 // Called when the game starts or when spawned
@@ -969,6 +971,11 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	if (CompName == FindName)
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
+		STARRYLOG(Error, TEXT("%s"), *OtherActor->GetName())
+
+		auto Player = Cast<AIreneCharacter>(OtherActor);
+		Player->HitStopEvent();
+	  	HitStopEvent();
 	}
 }
 float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)

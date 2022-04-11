@@ -192,6 +192,8 @@ AIreneCharacter::AIreneCharacter()
 	UseMP = 0.0f;
 
 	bShowLog = false;
+
+	CameraShakeOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -342,7 +344,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 
 	// 카메라 쉐이크 그래프 사용
-	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo)
+	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo&&CameraShakeOn)
 	{
 		CameraShakeTime += DeltaTime;
 		FRotator CameraRotate = CameraComp->GetRelativeRotation();
@@ -352,6 +354,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 	else
 	{
 		CameraShakeTime = 0;
+		CameraShakeOn = false;
+		CameraComp->SetRelativeRotation(FRotator::ZeroRotator);
 	}
 
 	// 차징 사용

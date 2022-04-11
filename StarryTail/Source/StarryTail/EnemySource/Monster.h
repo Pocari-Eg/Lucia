@@ -49,6 +49,10 @@ public:
 
 	FAttackEndDelegate AttackEnd;
 	FDeathDelegate Death;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  HitStopEvent();
+
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
@@ -141,6 +145,8 @@ private:
 	void SetActive();
 	UFUNCTION()
 	void OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+
 
 	//Variable
 	FVector AssembleLocation;
