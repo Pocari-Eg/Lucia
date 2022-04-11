@@ -235,6 +235,7 @@ private:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(State* newState);
 	void ActionEndChangeMoveState();
+	FName GetAnimName();
 #pragma endregion State
 
 #pragma region Attack
@@ -245,6 +246,8 @@ private:
 	void AttackCheck();
 	void AttackStopCheck();
 	void DoAttack();
+
+	FAttackDataTable* GetNameAtDataTable(FName value) { if (value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(value, "")); return nullptr; }
 #pragma endregion Attack
 	
 #pragma region Collision
