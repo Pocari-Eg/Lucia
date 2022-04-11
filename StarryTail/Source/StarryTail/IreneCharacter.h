@@ -32,6 +32,12 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 public:
 	//속성변환 델리게이트
 	FOnAttributeChangeDelegate FOnAttributeChange;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  HitStopEvent();
+
+	UPROPERTY(BluePrintReadWrite)
+	bool CameraShakeOn;
 protected:
 
 private:
@@ -248,6 +254,8 @@ private:
 	void DoAttack();
 
 	FAttackDataTable* GetNameAtDataTable(FName value) { if (value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(value, "")); return nullptr; }
+
+
 #pragma endregion Attack
 	
 #pragma region Collision
