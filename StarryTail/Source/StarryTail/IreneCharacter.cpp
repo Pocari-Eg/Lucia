@@ -1236,23 +1236,27 @@ void AIreneCharacter::FindNearMonster()
 							if (TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
-								TargetMonster = RayHit.GetActor();
+								if (TargetMonster == nullptr)
+									TargetMonster = RayHit.GetActor();
 							}
 							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
-								TargetMonster = RayHit.GetActor();
+								if (TargetMonster == nullptr)
+									TargetMonster = RayHit.GetActor();
 							}
 							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile)
 							{
 								NearPosition = FindNearTarget;
-								TargetMonster = RayHit.GetActor();
+								if (TargetMonster == nullptr)
+									TargetMonster = RayHit.GetActor();
 							}
 						}
 						else
 						{
 							NearPosition = FindNearTarget;
-							TargetMonster = RayHit.GetActor();
+							if (TargetMonster == nullptr)
+								TargetMonster = RayHit.GetActor();
 						}
 					}
 				}
