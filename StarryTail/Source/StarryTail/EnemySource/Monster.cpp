@@ -356,6 +356,9 @@ void AMonster::CalcDef()
 	if (Morbit != nullptr)
 	{
 		MonsterInfo.CurrentDef -= AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB;
+		STARRYLOG(Log, TEXT("%f"), AttackedInfo.Mana);
+		if (CheckPlayerIsBehindMonster())
+			MonsterInfo.CurrentDef = 0;
 	}
 
 
@@ -774,6 +777,7 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 		break;
 	}
 }
+#pragma endregion
 void AMonster::PrintHitEffect(FVector AttackedPosition)
 {
 	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -20.0f));
@@ -792,7 +796,10 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 
 
 }
-#pragma endregion
+void AMonster::OffIsAttacked()
+{
+	bIsAttacked = false;
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -930,9 +937,9 @@ void AMonster::Tick(float DeltaTime)
 		//중심 몬스터로 향하는 벡터
 		FVector MoveDirection = AssembleLocation - GetActorLocation();
 		//끌려가는 힘 계산
-		FVector newLocation = GetTransform().GetLocation() + (MoveDirection * (MonsterAttributeDebuff.AssembleSpeed / 100.0f) * DeltaTime);
+		FVector NewLocation = GetTransform().GetLocation() + (MoveDirection * (MonsterAttributeDebuff.AssembleSpeed / 100.0f) * DeltaTime);
 
-		RootComponent->SetWorldLocation(newLocation);
+		SetActorLocation(NewLocation);
 
 		//어셈블 지속시간 계산
 		MonsterAttributeDebuff.AssembleTimer += DeltaTime;
@@ -956,6 +963,22 @@ void AMonster::Tick(float DeltaTime)
 			bIsChain = false;
 		}
 	}
+	
+	if (bIsAttacked) // 0.2
+	{
+		KnockBackTime += DeltaTime;
+
+		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.8f)) * (DeltaTime * 3));
+
+		SetActorLocation(NewLocation);
+
+		if (KnockBackTime > 0.15f)
+		{
+			KnockBackTime = 0.0f;
+			bIsAttacked = false;
+		}
+	}
+	
 }
 
 // Called to bind functionality to input
@@ -1045,10 +1068,10 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		}
 
 		//넉백
-		FVector KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
+		KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
 		KnockBackDir.Normalize();
 		KnockBackDir.Z = 0.0f;
-		SetActorLocation(GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower / GetActorScale().X)));
+
 		//
 		if (AttackedInfo.bIsUseMana)
 		{

@@ -24,6 +24,8 @@ AMorbit::AMorbit()
 
 	bTestMode = false;
 
+	SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
+
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 }
 #pragma region Init
@@ -44,7 +46,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
 	MonsterInfo.ViewAngle = 150.0f;
 	MonsterInfo.ViewRange = 500.0f;
-	MonsterInfo.MeleeAttackRange = 100.0f;
+	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
 	MonsterInfo.TraceRange = 1000.0f;
 
 	MonsterInfo.KnockBackPower = 50.0f;
