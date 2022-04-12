@@ -28,13 +28,14 @@ EBTNodeResult::Type UBTTaskMbFindPatrolPos::ExecuteTask(UBehaviorTreeComponent& 
 	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(AMbAIController::SpawnPosKey);
 	FNavLocation NextPatrol;
 	
-	// Orgin을 중심점으로 반지름이 500인 원 안에서 랜덤 좌표 생성
-	if (NavSystem->GetRandomPointInNavigableRadius(Origin, 500.0f, NextPatrol))
+	// Orgin을 중심점으로 반지름이 600인 원 안에서 랜덤 좌표 생성
+	if (NavSystem->GetRandomPointInNavigableRadius(Origin, 600.0f, NextPatrol))
 	{
+		float MoveRange = FMath::RandRange(4.0f, 6.0f);
 		// 좌표로 향하는 방향 벡터를 구하고
 		FVector MoveDirection = NextPatrol.Location - Morbit->GetTransform().GetLocation();
 		// 방향 벡터로 5m 떨어진 위치
-		FVector PatrolPos = Morbit->GetTransform().GetLocation() + (MoveDirection.GetSafeNormal() * 500.0f);
+		FVector PatrolPos = Morbit->GetTransform().GetLocation() + (MoveDirection.GetSafeNormal() * MoveRange * 100.0f);
 		
 		// 이동 거리가 5m가 맞는지 확인용
 		if(Morbit->GetTestMode())

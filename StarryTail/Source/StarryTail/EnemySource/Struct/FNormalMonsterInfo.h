@@ -33,9 +33,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float TraceRange; //최대 추적 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EAttributeKeyword MonsterAttribute;
+		EAttributeKeyword MonsterAttribute; // 몬스터 속성
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DetectMonsterRange;
+		float DetectMonsterRange; // 비헤이비어 트리 Detect 몬스터 전이 범위
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float KnockBackPower;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ArbitraryConstValueA; // 임의의 상수 A
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
