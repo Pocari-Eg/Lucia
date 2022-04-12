@@ -15,6 +15,8 @@ EBTNodeResult::Type UBTTaskMbAttackedEnd::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	Monster->OffIsAttacked();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
 
 	return EBTNodeResult::Succeeded;
