@@ -12,7 +12,7 @@
 // Sets default values
 AMonster::AMonster()
 {
- 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
 	MonsterInfo.DetectMonsterRange = 5.0f;
@@ -47,13 +47,13 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.WaterDebuffStack = 0;
 	MonsterAttributeDebuff.ThunderDebuffStack = 0;
 
-	
+
 	MonsterAttributeDebuff.BurnCycle = 0.5f;
 	MonsterAttributeDebuff.BurnDamage = 1.0f;
 	MonsterAttributeDebuff.BurnTime = 10.0f;
 	MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
-	
+
 	MonsterAttributeDebuff.FloodingTime = 5.0f;
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
@@ -383,7 +383,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	MonsterAIController->Attacked();
 	MonsterAIController->StopMovement();
-	
+
 	return MonsterInfo.ArbitraryConstValueA * (Damage / MonsterInfo.CurrentDef) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
@@ -508,7 +508,7 @@ void AMonster::CalcHp(float Damage)
 bool AMonster::CheckPlayerIsBehindMonster()
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-	
+
 	FVector TargetDir = STGameInstance->GetPlayer()->GetActorLocation() - GetActorLocation();
 	TargetDir = TargetDir.GetSafeNormal();
 
@@ -602,7 +602,7 @@ void AMonster::Burn()
 		bIsFlooding = false;
 	}
 
-	if(MonsterAnimInstance->GetShockIsPlaying())
+	if (MonsterAnimInstance->GetShockIsPlaying())
 	{
 		MonsterAIController->ShockCancel();
 		bIsShock = false;
@@ -721,7 +721,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		DrawDebugSphere(GetWorld(), GetActorLocation(), MonsterAttributeDebuff.ChainRange * 100.0f, 16, FColor::Yellow, false, 0.2f);
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.ChainRange);
-	
+
 	switch (PlayerMainAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
@@ -797,7 +797,7 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 void AMonster::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	CalcAttributeDefType();
 	SetEffect();
 
@@ -962,7 +962,7 @@ void AMonster::Tick(float DeltaTime)
 void AMonster::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	
+
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -971,9 +971,10 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	if (CompName == FindName)
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
+
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		Player->HitStopEvent();
-	  	HitStopEvent();
+		HitStopEvent();
 	}
 }
 float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
@@ -1005,7 +1006,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	}
 	*/
 	auto Player = Cast<AIreneCharacter>(DamageCauser);
-	
+
 	if (Player != nullptr)
 	{
 		bIsAttacked = true;
@@ -1019,7 +1020,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor= 200.0f;
+				AttackedInfo.AttributeArmor = 200.0f;
 			}
 			break;
 		case EAttributeKeyword::e_Water:
@@ -1043,6 +1044,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
+		//³Ë¹é
+		FVector KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
+		KnockBackDir.Normalize();
+		KnockBackDir.Z = 0.0f;
+		SetActorLocation(GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower / GetActorScale().X)));
+		//
 		if (AttackedInfo.bIsUseMana)
 		{
 			CalcDef();

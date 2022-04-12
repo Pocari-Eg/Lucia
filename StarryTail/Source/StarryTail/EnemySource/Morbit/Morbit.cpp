@@ -47,6 +47,8 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.MeleeAttackRange = 100.0f;
 	MonsterInfo.TraceRange = 1000.0f;
 
+	MonsterInfo.KnockBackPower = 50.0f;
+
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 }
 void AMorbit::InitCollision()
