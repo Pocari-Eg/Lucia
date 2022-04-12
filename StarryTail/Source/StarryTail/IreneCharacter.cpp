@@ -987,6 +987,7 @@ void AIreneCharacter::AttackStartComboState()
 }
 void AIreneCharacter::AttackEndComboState()
 {
+	Weapon->SetGenerateOverlapEvents(false);
 	bUseLeftButton = false;
 	bUseRightButton = false;
 	bUseMP = false;
@@ -1008,6 +1009,7 @@ void AIreneCharacter::AttackCheck()
 }
 void AIreneCharacter::AttackStopCheck()
 {
+	IsTimeStopping = false;
 	Weapon->SetGenerateOverlapEvents(false);
 }
 void AIreneCharacter::DoAttack()

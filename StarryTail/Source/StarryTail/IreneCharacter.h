@@ -33,11 +33,6 @@ public:
 	//속성변환 델리게이트
 	FOnAttributeChangeDelegate FOnAttributeChange;
 
-	UFUNCTION(BlueprintImplementableEvent)
-	void  HitStopEvent();
-
-	UPROPERTY(BluePrintReadWrite)
-	bool CameraShakeOn;
 protected:
 
 private:
@@ -282,6 +277,18 @@ private:
 	void FootStepSound();
 #pragma endregion Park
 
+
+#pragma region HitFeel
+	UFUNCTION(BlueprintImplementableEvent)
+		void  HitStopEvent();
+
+	UPROPERTY(BluePrintReadWrite)
+		bool CameraShakeOn;
+
+
+	UPROPERTY(BluePrintReadWrite)
+		bool IsTimeStopping;
+#pragma endregion HitFeel
 //스탑워치 
 	//void WatchContorl();
 	//void WatchReset();
