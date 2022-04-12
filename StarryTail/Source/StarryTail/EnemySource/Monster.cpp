@@ -971,8 +971,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	if (CompName == FindName)
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
-		STARRYLOG(Error, TEXT("%s"), *OtherActor->GetName())
-
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		Player->HitStopEvent();
 	  	HitStopEvent();
