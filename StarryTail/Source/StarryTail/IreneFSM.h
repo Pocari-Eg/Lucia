@@ -1,19 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 
+// 13°³
 UENUM(BlueprintType)
-enum class StateEnum: uint8
+enum class StateEnum : uint8
 {
 	Idle = 0,
-	AttackIdle,
+	Death,
+	Dodge,
+	Hit,
+	BasicAttack,
+	ActionAttack,
+	BattleIdle,
 	Run,
 	Sprint,
-	Dodge,
+	SprintEnd,
 	Jump,
 	Fall,
-	Attack,
-	Hit,
-	Death
+	SprintJump
 };
 
 class BaseGameEntity;
@@ -43,15 +47,18 @@ public:
 	virtual void SetStateEnum(StateEnum value) = 0;
 
 	virtual bool CanIdle() = 0;
-	virtual bool CanAttackIdle() = 0;
+	virtual bool CanDeath() = 0;
+	virtual bool CanDodge() = 0;
+	virtual bool CanHit() = 0;
+	virtual bool CanBasicAttack() = 0;
+	virtual bool CanActionAttack() = 0;
+	virtual bool CanBattleIdle() = 0;
 	virtual bool CanRun() = 0;
 	virtual bool CanSprint() = 0;
-	virtual bool CanDodge() = 0;
+	virtual bool CanSprintEnd() = 0;
 	virtual bool CanJump() = 0;
 	virtual bool CanFall() = 0;
-	virtual bool CanAttack() = 0;
-	virtual bool CanHit() = 0;
-	virtual bool CanDeath() = 0;
+	virtual bool CanSprintJump() = 0;
 };
 #pragma endregion StateInterface
 
@@ -64,10 +71,50 @@ public:
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
 };
-class AttackIdleState :public State
+class DeathState :public State
 {
 public:
-	static AttackIdleState* getInstance();
+	static DeathState* getInstance();
+	void Enter(BaseGameEntity* curState);
+	void Execute(BaseGameEntity* curState);
+	void Exit(BaseGameEntity* curState);
+};
+class DodgeState :public State
+{
+public:
+	static DodgeState* getInstance();
+	void Enter(BaseGameEntity* curState);
+	void Execute(BaseGameEntity* curState);
+	void Exit(BaseGameEntity* curState);
+};
+class HitState :public State
+{
+public:
+	static HitState* getInstance();
+	void Enter(BaseGameEntity* curState);
+	void Execute(BaseGameEntity* curState);
+	void Exit(BaseGameEntity* curState);
+};
+class BasicAttackState :public State
+{
+public:
+	static BasicAttackState* getInstance();
+	void Enter(BaseGameEntity* curState);
+	void Execute(BaseGameEntity* curState);
+	void Exit(BaseGameEntity* curState);
+};
+class ActionAttackState :public State
+{
+public:
+	static ActionAttackState* getInstance();
+	void Enter(BaseGameEntity* curState);
+	void Execute(BaseGameEntity* curState);
+	void Exit(BaseGameEntity* curState);
+};
+class BattleIdleState :public State
+{
+public:
+	static BattleIdleState* getInstance();
 	void Enter(BaseGameEntity* curState);
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
@@ -88,10 +135,10 @@ public:
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
 };
-class DodgeState :public State
+class SprintEndState :public State
 {
 public:
-	static DodgeState* getInstance();
+	static SprintEndState* getInstance();
 	void Enter(BaseGameEntity* curState);
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
@@ -112,34 +159,17 @@ public:
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
 };
-class AttackState :public State
+class SprintJumpState :public State
 {
 public:
-	static AttackState* getInstance();
+	static SprintJumpState* getInstance();
 	void Enter(BaseGameEntity* curState);
 	void Execute(BaseGameEntity* curState);
 	void Exit(BaseGameEntity* curState);
 };
-class HitState :public State
-{
-public:
-	static HitState* getInstance();
-	void Enter(BaseGameEntity* curState);
-	void Execute(BaseGameEntity* curState);
-	void Exit(BaseGameEntity* curState);
-};
-class DeathState :public State
-{
-public:
-	static DeathState* getInstance();
-	void Enter(BaseGameEntity* curState);
-	void Execute(BaseGameEntity* curState);
-	void Exit(BaseGameEntity* curState);
-};
-
 #pragma endregion State
 
-class IreneFSM: public BaseGameEntity
+class IreneFSM : public BaseGameEntity
 {
 private:
 	State* StateValue;
@@ -151,22 +181,25 @@ public:
 	void ChangeState(State* newState);
 
 	bool CanIdle();
-	bool CanAttackIdle();
+	bool CanDeath();
+	bool CanDodge();
+	bool CanHit();
+	bool CanBasicAttack();
+	bool CanActionAttack();
+	bool CanBattleIdle();
 	bool CanRun();
 	bool CanSprint();
-	bool CanDodge();
+	bool CanSprintEnd();
 	bool CanJump();
 	bool CanFall();
-	bool CanAttack();
-	bool CanHit();
-	bool CanDeath();
+	bool CanSprintJump();
 
 	void SetStateEnum(StateEnum value) { StateEnumValue = value; }
 
 	StateEnum getState() { return StateEnumValue; }
 	void setState(State* val) {
 		StateValue = val;
-		if (val == nullptr) 
+		if (val == nullptr)
 		{
 			StateValue = IdleState::getInstance();
 			StateEnumValue = StateEnum::Idle;

@@ -310,7 +310,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (CharacterState->getStateToString().Compare(FString("Dodge")) != 0)
 	{
-		if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) {
+		if (CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0) {
 			MoveForward();
 			MoveRight();
 		}
@@ -349,7 +349,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	{
 		CameraShakeTime += DeltaTime;
 		FRotator CameraRotate = CameraComp->GetRelativeRotation();
-		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime);
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime*100);
 		CameraComp->SetRelativeRotation(CameraRotate);
 	}
 	else
@@ -435,7 +435,7 @@ void AIreneCharacter::MoveStop()
 	// 아무 키 입력이 없을 경우 정지 상태 지정
 	if (CharacterState->getStateToString().Compare(FString("Idle")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
@@ -472,12 +472,15 @@ void AIreneCharacter::MoveAuto()
 			FollowTargetAlpha = 1;
 		FVector tar = FMath::Lerp(PlayerPosVec, TargetPosVec, FollowTargetAlpha);
 		GetCapsuleComponent()->SetRelativeLocation(tar);
+		STARRYLOG(Error, TEXT("CCC"));
+
 		if (FVector::Dist(tar, TargetPosVec) <= 1)
 		{
+			STARRYLOG(Error, TEXT("AAA"));
 			DoAttack();
 		}
 	}
-	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0)
+	if (CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0)
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
@@ -504,7 +507,7 @@ void AIreneCharacter::StartJump()
 {
 	if (!GetCharacterMovement()->IsFalling() &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		// 키 입력을 바탕으로 점프 방향을 얻는다.
@@ -543,7 +546,7 @@ void AIreneCharacter::StopJump()
 void AIreneCharacter::MovePressedW()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
@@ -559,7 +562,7 @@ void AIreneCharacter::MovePressedW()
 void AIreneCharacter::MovePressedA()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
@@ -575,7 +578,7 @@ void AIreneCharacter::MovePressedA()
 void AIreneCharacter::MovePressedS()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
@@ -591,7 +594,7 @@ void AIreneCharacter::MovePressedS()
 void AIreneCharacter::MovePressedD()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		if (CharacterState->getStateToString().Compare(FString("Idle")) == 0)
@@ -608,7 +611,7 @@ void AIreneCharacter::MovePressedD()
 void AIreneCharacter::MoveDoubleClickW()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[0] = 2;
@@ -622,7 +625,7 @@ void AIreneCharacter::MoveDoubleClickW()
 void AIreneCharacter::MoveDoubleClickA()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[1] = 2;
@@ -636,7 +639,7 @@ void AIreneCharacter::MoveDoubleClickA()
 void AIreneCharacter::MoveDoubleClickS()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[2] = 2;
@@ -650,7 +653,7 @@ void AIreneCharacter::MoveDoubleClickS()
 void AIreneCharacter::MoveDoubleClickD()
 {
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		MoveKey[3] = 2;
@@ -734,7 +737,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			}
 			else
 			{
-				ChangeStateAndLog(AttackState::getInstance());
+				ChangeStateAndLog(BasicAttackState::getInstance());
 				AttackStartComboState();
 				AttackSound->SetParameter("Attributes", 0.0f);
 				IreneAnim->PlayAttackMontage();
@@ -777,7 +780,7 @@ void AIreneCharacter::RightButton(float Rate)
 				}
 				else
 				{
-					ChangeStateAndLog(AttackState::getInstance());
+					ChangeStateAndLog(ActionAttackState::getInstance());
 					AttackStartComboState();
 
 					switch (Attribute)
@@ -811,7 +814,7 @@ void AIreneCharacter::RightButtonPressed()
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Attack")) != 0 &&
+		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Death")) != 0)
 	{
 		ChangeStateAndLog(AttackState::getInstance());
@@ -861,7 +864,7 @@ void AIreneCharacter::MouseWheel(float Rate)
 
 void AIreneCharacter::MainKeyword()
 {
-	if (CharacterState->getStateToString().Compare(FString("Attack")) != 0) 
+	if (CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0) 
 	{
 		//속상변환 차례대로 속성이 변환
 		switch (Attribute)
@@ -1122,8 +1125,6 @@ void AIreneCharacter::FindNearMonster()
 	if (table != nullptr)
 	{
 		CharacterDataStruct.Strength = table->ATTACK_DAMAGE_1;
-		STARRYLOG(Error, TEXT("%d"), table->Main_Keyword);
-		STARRYLOG(Error, TEXT("%d"), table->MANA);
 
 		// 마나 사용 조건
 		if (table->Main_Keyword != 0 && CharacterDataStruct.CurrentMP >= table->MANA)
@@ -1236,7 +1237,7 @@ void AIreneCharacter::FindNearMonster()
 							if (TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
-								if (TargetMonster == nullptr)
+								if(TargetMonster == nullptr)
 									TargetMonster = RayHit.GetActor();
 							}
 							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
@@ -1263,6 +1264,7 @@ void AIreneCharacter::FindNearMonster()
 			}
 		}
 	}
+
 	// 몬스터를 찾고 쳐다보기
 	if (TargetMonster != nullptr)
 	{

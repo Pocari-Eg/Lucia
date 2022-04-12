@@ -16,167 +16,292 @@ void IreneFSM::ChangeState(State* newState)
 }
 bool IreneFSM::CanIdle()
 {
-	if (StateEnumValue == StateEnum::AttackIdle ||
+	if (//StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
 		StateEnumValue == StateEnum::Dodge ||
-		StateEnumValue == StateEnum::Fall ||
 		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::BasicAttack ||
+		//StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		//StateEnumValue == StateEnum::Run ||
+		//StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd ||
 		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanAttackIdle()
-{
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Dodge ||
 		StateEnumValue == StateEnum::Fall ||
-		StateEnumValue == StateEnum::Hit ||		
-		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
+		StateEnumValue == StateEnum::SprintJump)
 		return true;
 	else
 		return false;
 }
-bool IreneFSM::CanRun()
-{
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Dodge ||
-		StateEnumValue == StateEnum::Fall ||
-		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanSprint()
-{
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Dodge ||
-		StateEnumValue == StateEnum::Fall ||
-		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanDodge()
-{
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Fall ||
-		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanJump()
-{
-	if (StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanFall()
-{
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Fall ||
-		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Jump ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanAttack()
-{
-	if (StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
-bool IreneFSM::CanHit()
-{
-	if (StateEnumValue == StateEnum::AttackIdle ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
-		return true;
-	else
-		return false;
-}
+
 bool IreneFSM::CanDeath()
 {
-	if (StateEnumValue == StateEnum::Attack ||
-		StateEnumValue == StateEnum::AttackIdle ||
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
 		StateEnumValue == StateEnum::Hit ||
-		StateEnumValue == StateEnum::Idle ||
-		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
 		StateEnumValue == StateEnum::Run ||
-		StateEnumValue == StateEnum::Sprint
-		)
+		StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd ||
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::SprintJump)
 		return true;
 	else
 		return false;
 }
+
+bool IreneFSM::CanDodge()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd)
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanHit()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd)
+		StateEnumValue == StateEnum::Jump ||
+		StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanBasicAttack()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		//StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint ||
+		StateEnumValue == StateEnum::SprintEnd)
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanActionAttack()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint ||
+		StateEnumValue == StateEnum::SprintEnd)
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanBattleIdle()
+{
+	if (//StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack)
+		//StateEnumValue == StateEnum::BattleIdle ||
+		//StateEnumValue == StateEnum::Run ||
+		//StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanRun()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		//StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint)
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanSprint()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run)
+		//StateEnumValue == StateEnum::Sprint ||
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanSprintEnd()
+{
+	if (//StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		//StateEnumValue == StateEnum::BasicAttack ||
+		//StateEnumValue == StateEnum::ActionAttack ||
+		//StateEnumValue == StateEnum::BattleIdle ||
+		//StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint)
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanJump()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		//StateEnumValue == StateEnum::BasicAttack ||
+		//StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint)
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanFall()
+{
+	if (StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		StateEnumValue == StateEnum::BasicAttack ||
+		StateEnumValue == StateEnum::ActionAttack ||
+		StateEnumValue == StateEnum::BattleIdle ||
+		StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint ||
+		StateEnumValue == StateEnum::SprintEnd ||
+		StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
+bool IreneFSM::CanSprintJump()
+{
+	if (//StateEnumValue == StateEnum::Idle ||
+		//StateEnumValue == StateEnum::Death ||
+		//StateEnumValue == StateEnum::Dodge ||
+		//StateEnumValue == StateEnum::Hit ||
+		//StateEnumValue == StateEnum::BasicAttack ||
+		//StateEnumValue == StateEnum::ActionAttack ||
+		//StateEnumValue == StateEnum::BattleIdle ||
+		//StateEnumValue == StateEnum::Run ||
+		StateEnumValue == StateEnum::Sprint)
+		//StateEnumValue == StateEnum::SprintEnd ||
+		//StateEnumValue == StateEnum::Jump ||
+		//StateEnumValue == StateEnum::Fall ||
+		//StateEnumValue == StateEnum::SprintJump)
+		return true;
+	else
+		return false;
+}
+
 FString IreneFSM::getStateToString()
 {
 	switch (StateEnumValue)
 	{
 	case StateEnum::Idle: return FString("Idle");
-	case StateEnum::AttackIdle: return FString("AttackIdle");
+	case StateEnum::Death: return FString("Death");
+	case StateEnum::Dodge: return FString("Dodge");
+	case StateEnum::Hit: return FString("Hit");
+	case StateEnum::BasicAttack: return FString("BasicAttack");
+	case StateEnum::ActionAttack: return FString("BasicAttack");
+	case StateEnum::BattleIdle: return FString("BattleIdle");
 	case StateEnum::Run: return FString("Run");
 	case StateEnum::Sprint: return FString("Sprint");
-	case StateEnum::Dodge: return FString("Dodge");
+	case StateEnum::SprintEnd: return FString("SprintEnd");
 	case StateEnum::Jump: return FString("Jump");
 	case StateEnum::Fall: return FString("Fall");
-	case StateEnum::Attack: return FString("Attack");
-	case StateEnum::Hit: return FString("Hit");
-	case StateEnum::Death: return FString("Death");
+	case StateEnum::SprintJump: return FString("SprintJump");
 	default: return FString("Error StateEnumToString");
 	}
 }
 #pragma endregion IreneFSM
 
 #pragma region StateInterface
-BaseGameEntity::BaseGameEntity():PlayTime(0.0f), bIsEnd(false)
+BaseGameEntity::BaseGameEntity() :PlayTime(0.0f), bIsEnd(false)
 {
 
 }
 #pragma endregion StateInterface
-
 #pragma region IdleState
 IdleState* IdleState::getInstance()
 {
@@ -203,32 +328,162 @@ void IdleState::Exit(BaseGameEntity* curState)
 	curState->bIsEnd = true;
 }
 #pragma endregion IdleState
-#pragma region AttackIdleState
-AttackIdleState* AttackIdleState::getInstance()
+#pragma region DeathState
+DeathState* DeathState::getInstance()
 {
-	static AttackIdleState* instance;
+	static DeathState* instance;
 	if (instance == nullptr)
-		instance = new AttackIdleState();
+		instance = new DeathState();
 	return instance;
 }
 
-void AttackIdleState::Enter(BaseGameEntity* curState)
+void DeathState::Enter(BaseGameEntity* curState)
 {
-	curState->SetStateEnum(StateEnum::AttackIdle);
+	curState->SetStateEnum(StateEnum::Death);
 	curState->PlayTime = 0.0f;
 	curState->bIsEnd = false;
 }
 
-void AttackIdleState::Execute(BaseGameEntity* curState)
+void DeathState::Execute(BaseGameEntity* curState)
 {
 
 }
 
-void AttackIdleState::Exit(BaseGameEntity* curState)
+void DeathState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion DeathState
+#pragma region DodgeState
+DodgeState* DodgeState::getInstance()
+{
+	static DodgeState* instance;
+	if (instance == nullptr)
+		instance = new DodgeState();
+	return instance;
+}
+
+void DodgeState::Enter(BaseGameEntity* curState)
+{
+	curState->SetStateEnum(StateEnum::Dodge);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
+}
+
+void DodgeState::Execute(BaseGameEntity* curState)
 {
 
 }
-#pragma endregion AttackIdleState
+
+void DodgeState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion DodgeState
+#pragma region HitState
+HitState* HitState::getInstance()
+{
+	static HitState* instance;
+	if (instance == nullptr)
+		instance = new HitState();
+	return instance;
+}
+
+void HitState::Enter(BaseGameEntity* curState)
+{
+	curState->SetStateEnum(StateEnum::Hit);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
+}
+
+void HitState::Execute(BaseGameEntity* curState)
+{
+
+}
+
+void HitState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion HitState
+#pragma region BasicAttackState
+BasicAttackState* BasicAttackState::getInstance()
+{
+	static BasicAttackState* instance;
+	if (instance == nullptr)
+		instance = new BasicAttackState();
+	return instance;
+}
+
+void BasicAttackState::Enter(BaseGameEntity* curState)
+{
+	curState->SetStateEnum(StateEnum::BasicAttack);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
+}
+
+void BasicAttackState::Execute(BaseGameEntity* curState)
+{
+
+}
+
+void BasicAttackState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion BasicAttackState
+#pragma region ActionAttackState
+ActionAttackState* ActionAttackState::getInstance()
+{
+	static ActionAttackState* instance;
+	if (instance == nullptr)
+		instance = new ActionAttackState();
+	return instance;
+}
+
+void ActionAttackState::Enter(BaseGameEntity* curState)
+{
+	curState->SetStateEnum(StateEnum::ActionAttack);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
+}
+
+void ActionAttackState::Execute(BaseGameEntity* curState)
+{
+
+}
+
+void ActionAttackState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion ActionAttackState
+#pragma region BattleIdleState
+BattleIdleState* BattleIdleState::getInstance()
+{
+	static BattleIdleState* instance;
+	if (instance == nullptr)
+		instance = new BattleIdleState();
+	return instance;
+}
+
+void BattleIdleState::Enter(BaseGameEntity* curState)
+{
+	curState->SetStateEnum(StateEnum::BattleIdle);
+	curState->PlayTime = 0.0f;
+	curState->bIsEnd = false;
+}
+
+void BattleIdleState::Execute(BaseGameEntity* curState)
+{
+
+}
+
+void BattleIdleState::Exit(BaseGameEntity* curState)
+{
+	curState->bIsEnd = true;
+}
+#pragma endregion BattleIdleState
 #pragma region RunState
 RunState* RunState::getInstance()
 {
@@ -252,7 +507,7 @@ void RunState::Execute(BaseGameEntity* curState)
 
 void RunState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
 #pragma endregion RunState
 #pragma region SprintState
@@ -278,35 +533,35 @@ void SprintState::Execute(BaseGameEntity* curState)
 
 void SprintState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
 #pragma endregion SprintState
-#pragma region DodgeState
-DodgeState* DodgeState::getInstance()
+#pragma region SprintEndState
+SprintEndState* SprintEndState::getInstance()
 {
-	static DodgeState* instance;
+	static SprintEndState* instance;
 	if (instance == nullptr)
-		instance = new DodgeState();
+		instance = new SprintEndState();
 	return instance;
 }
 
-void DodgeState::Enter(BaseGameEntity* curState)
+void SprintEndState::Enter(BaseGameEntity* curState)
 {
-	curState->SetStateEnum(StateEnum::Dodge);
+	curState->SetStateEnum(StateEnum::SprintEnd);
 	curState->PlayTime = 0.0f;
 	curState->bIsEnd = false;
 }
 
-void DodgeState::Execute(BaseGameEntity* curState)
+void SprintEndState::Execute(BaseGameEntity* curState)
 {
 
 }
 
-void DodgeState::Exit(BaseGameEntity* curState)
+void SprintEndState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
-#pragma endregion DodgeState
+#pragma endregion SprintEndState
 #pragma region JumpState
 JumpState* JumpState::getInstance()
 {
@@ -330,7 +585,7 @@ void JumpState::Execute(BaseGameEntity* curState)
 
 void JumpState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
 #pragma endregion JumpState
 #pragma region FallState
@@ -356,84 +611,32 @@ void FallState::Execute(BaseGameEntity* curState)
 
 void FallState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
 #pragma endregion FallState
-#pragma region AttackState
-AttackState* AttackState::getInstance()
+#pragma region SprintJumpState
+SprintJumpState* SprintJumpState::getInstance()
 {
-	static AttackState* instance;
+	static SprintJumpState* instance;
 	if (instance == nullptr)
-		instance = new AttackState();
+		instance = new SprintJumpState();
 	return instance;
 }
 
-void AttackState::Enter(BaseGameEntity* curState)
+void SprintJumpState::Enter(BaseGameEntity* curState)
 {
-	curState->SetStateEnum(StateEnum::Attack);
+	curState->SetStateEnum(StateEnum::SprintJump);
 	curState->PlayTime = 0.0f;
 	curState->bIsEnd = false;
 }
 
-void AttackState::Execute(BaseGameEntity* curState)
+void SprintJumpState::Execute(BaseGameEntity* curState)
 {
 
 }
 
-void AttackState::Exit(BaseGameEntity* curState)
+void SprintJumpState::Exit(BaseGameEntity* curState)
 {
-
+	curState->bIsEnd = true;
 }
-#pragma endregion AttackState
-#pragma region HitState
-HitState* HitState::getInstance()
-{
-	static HitState* instance;
-	if (instance == nullptr)
-		instance = new HitState();
-	return instance;
-}
-
-void HitState::Enter(BaseGameEntity* curState)
-{
-	curState->SetStateEnum(StateEnum::Hit);
-	curState->PlayTime = 0.0f;
-	curState->bIsEnd = false;
-}
-
-void HitState::Execute(BaseGameEntity* curState)
-{
-
-}
-
-void HitState::Exit(BaseGameEntity* curState)
-{
-
-}
-#pragma endregion HitState
-#pragma region DeathState
-DeathState* DeathState::getInstance()
-{
-	static DeathState* instance;
-	if (instance == nullptr)
-		instance = new DeathState();
-	return instance;
-}
-
-void DeathState::Enter(BaseGameEntity* curState)
-{
-	curState->SetStateEnum(StateEnum::Death);
-	curState->PlayTime = 0.0f;
-	curState->bIsEnd = false;
-}
-
-void DeathState::Execute(BaseGameEntity* curState)
-{
-
-}
-
-void DeathState::Exit(BaseGameEntity* curState)
-{
-
-}
-#pragma endregion DeathState
+#pragma endregion SprintJumpState
