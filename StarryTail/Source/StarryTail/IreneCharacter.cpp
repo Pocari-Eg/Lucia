@@ -194,6 +194,7 @@ AIreneCharacter::AIreneCharacter()
 	bShowLog = false;
 
 	CameraShakeOn = false;
+
 }
 
 // Called when the game starts or when spawned
@@ -240,7 +241,7 @@ void AIreneCharacter::BeginPlay()
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 1.0f);
+	AttackSound->SetParameter("Attributes", 0.0f);
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
 	WalkSound -> SetVolume(0.8f);
 	AttackSound->SetParameter("Material", 0.0f);
@@ -735,7 +736,7 @@ void AIreneCharacter::LeftButton(float Rate)
 			{
 				ChangeStateAndLog(AttackState::getInstance());
 				AttackStartComboState();
-				
+				AttackSound->SetParameter("Attributes", 0.0f);
 				IreneAnim->PlayAttackMontage();
 				
 				IreneAnim->JumpToAttackMontageSection(CharacterDataStruct.CurrentCombo);
@@ -746,6 +747,7 @@ void AIreneCharacter::LeftButton(float Rate)
 }
 void AIreneCharacter::RightButton(float Rate)
 {
+
 	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
@@ -778,6 +780,23 @@ void AIreneCharacter::RightButton(float Rate)
 					ChangeStateAndLog(AttackState::getInstance());
 					AttackStartComboState();
 
+					switch (Attribute)
+		          {
+		             case EAttributeKeyword::e_None:
+			            break;
+		               case EAttributeKeyword::e_Fire:
+			            AttackSound->SetParameter("Attributes", 1.0f);
+			           break;
+		              case EAttributeKeyword::e_Water:
+			           AttackSound->SetParameter("Attributes", 2.0f);
+		             	break;
+		           case EAttributeKeyword::e_Thunder:
+		            	AttackSound->SetParameter("Attributes", 3.0f);
+
+		           	break;
+		                default:
+			           break;
+	            	} 
 					IreneAnim->PlayEffectAttackMontage();
 					IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 					CharacterDataStruct.IsAttacking = true;
@@ -848,15 +867,12 @@ void AIreneCharacter::MainKeyword()
 		switch (Attribute)
 		{
 		case EAttributeKeyword::e_Fire:
-			AttackSound->SetParameter("Attributes", 2.0f);
 			Attribute = EAttributeKeyword::e_Water;
 			break;
 		case EAttributeKeyword::e_Water:
-			AttackSound->SetParameter("Attributes", 3.0f);
 			Attribute = EAttributeKeyword::e_Thunder;
 			break;
 		case EAttributeKeyword::e_Thunder:
-			AttackSound->SetParameter("Attributes", 1.0f);
 			Attribute = EAttributeKeyword::e_Fire;
 			break;
 		default:
@@ -995,6 +1011,8 @@ void AIreneCharacter::AttackEndComboState()
 	CharacterDataStruct.CanNextCombo = false;
 	CharacterDataStruct.IsComboInputOn = false;
 	CharacterDataStruct.CurrentCombo = 0;
+	AttackSoundParameter = 0.0f;
+	AttackSound->SetParameter("Attributes", AttackSoundParameter);
 	if (CharacterState->getStateToString().Compare(FString("Dodge")) != 0)
 		ActionEndChangeMoveState();
 }
@@ -1003,6 +1021,7 @@ void AIreneCharacter::AttackCheck()
 {
 	if (IreneAnim->GetCurrentActiveMontage() != NULL)
 	{
+		
 		AttackSound->SoundPlay2D();
 		FindNearMonster();
 	}
@@ -1364,6 +1383,7 @@ FName AIreneCharacter::GetAnimName()
 	{
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1")) 
 		{
+		
 			return FName("B_Attack_1");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
@@ -1376,14 +1396,35 @@ FName AIreneCharacter::GetAnimName()
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
 		{
+			switch (Attribute)
+			{
+			case EAttributeKeyword::e_None:
+				break;
+			case EAttributeKeyword::e_Fire:
+				AttackSound->SetParameter("Attributes", 1.0f);
+				break;
+			case EAttributeKeyword::e_Water:
+				AttackSound->SetParameter("Attributes", 2.0f);
+
+				break;
+			case EAttributeKeyword::e_Thunder:
+				AttackSound->SetParameter("Attributes", 3.0f);
+
+				break;
+			default:
+				break;
+			}
 			return FName("B_Attack_4");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_None)
 		{
+		
 			return FName("B_Attack_5_N");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Fire)
 		{
+			STARRYLOG_S(Warning);
+			
 			return FName("B_Attack_5_F");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Water)
@@ -1397,6 +1438,7 @@ FName AIreneCharacter::GetAnimName()
 	}
 	if (bUseRightButton) 
 	{
+
 		if (Attribute == EAttributeKeyword::e_Fire)
 		{
 			return FName("Actionkeyword_1_F");

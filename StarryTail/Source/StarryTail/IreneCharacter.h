@@ -149,6 +149,8 @@ private:
 	//사운드 
 	SoundManager* WalkSound;
 	SoundManager* AttackSound;
+
+	float AttackSoundParameter;
 #pragma endregion Sound
 
 	//스탑워치
