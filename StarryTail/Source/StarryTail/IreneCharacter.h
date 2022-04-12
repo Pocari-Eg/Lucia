@@ -279,6 +279,7 @@ private:
 
 
 #pragma region HitFeel
+	public:
 	UFUNCTION(BlueprintImplementableEvent)
 		void  HitStopEvent();
 
