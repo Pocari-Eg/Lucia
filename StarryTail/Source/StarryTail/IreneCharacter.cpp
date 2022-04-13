@@ -42,6 +42,18 @@ AIreneCharacter::AIreneCharacter()
 			}
 			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 		}
+		//카메라
+		FName CameraSocket(TEXT("Hip_Socket"));
+		if (GetMesh()->DoesSocketExist(CameraSocket))
+		{
+			// 스프링암 설정
+			SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+			SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+			SpringArmComp->bEnableCameraLag = true;
+			SpringArmComp->CameraLagSpeed = 0.0f;
+			SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
+		}
+
 
 		//콜리전 적용
 		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
@@ -79,14 +91,6 @@ AIreneCharacter::AIreneCharacter()
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
-
-	// 스프링암 설정
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-	SpringArmComp->SetupAttachment(GetCapsuleComponent());
-	SpringArmComp->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, 46.0f), FRotator(-20.0f, 90.0f, 0.0f));
-	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->CameraLagSpeed = 0.0f;
 
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
@@ -194,7 +198,7 @@ AIreneCharacter::AIreneCharacter()
 	bShowLog = false;
 
 	CameraShakeOn = false;
-
+	GoTargetOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -345,11 +349,11 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 
 	// 카메라 쉐이크 그래프 사용
-	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo&&CameraShakeOn)
+	if (CharacterDataStruct.IsAttacking && CharacterDataStruct.CurrentCombo == CharacterDataStruct.MaxCombo && CameraShakeOn)
 	{
 		CameraShakeTime += DeltaTime;
 		FRotator CameraRotate = CameraComp->GetRelativeRotation();
-		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime*100);
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime*50);
 		CameraComp->SetRelativeRotation(CameraRotate);
 	}
 	else
@@ -472,11 +476,11 @@ void AIreneCharacter::MoveAuto()
 			FollowTargetAlpha = 1;
 		FVector tar = FMath::Lerp(PlayerPosVec, TargetPosVec, FollowTargetAlpha);
 		GetCapsuleComponent()->SetRelativeLocation(tar);
-		STARRYLOG(Error, TEXT("CCC"));
 
 		if (FVector::Dist(tar, TargetPosVec) <= 1)
 		{
-			STARRYLOG(Error, TEXT("AAA"));
+			if(GetAnimName() == FName("B_Attack_1"))
+				GoTargetOn = true;
 			DoAttack();
 		}
 	}
@@ -1037,8 +1041,7 @@ void AIreneCharacter::AttackStopCheck()
 void AIreneCharacter::DoAttack()
 {
 	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
-	//WorldController->ClientStartCameraShake(CameraShakeCurve);
-	
+	//WorldController->ClientStartCameraShake(CameraShakeCurve);	
 	Weapon->SetGenerateOverlapEvents(true);
 
 	// 몬스터 추적 초기화
