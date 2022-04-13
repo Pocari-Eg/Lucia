@@ -2,11 +2,13 @@
 
 #include "StarryTailGameMode.h"
 #include "IreneCharacter.h"
+#include"UI/PlayerHudWidget.h"
 #include "UObject/ConstructorHelpers.h"
 
 AStarryTailGameMode::AStarryTailGameMode()
 {
 	DefaultPawnClass = AIreneCharacter::StaticClass();
+    HUDClass = UPlayerHudWidget::StaticClass();
 }
 
 void AStarryTailGameMode::BeginPlay()
