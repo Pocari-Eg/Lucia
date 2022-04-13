@@ -500,6 +500,7 @@ void AMonster::CalcHp(float Damage)
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
+		MonsterDeadEvent();
 		bIsDead = true;
 		SetActive();
 
