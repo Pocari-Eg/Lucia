@@ -122,7 +122,7 @@ protected:
 		class UFMODEvent* HitEvent;
 	//»ç¿îµå 
 	SoundManager* HitSound;
-	
+	FTransform SoundTransform;
 #pragma endregion Sound
 private:
 	//Function
