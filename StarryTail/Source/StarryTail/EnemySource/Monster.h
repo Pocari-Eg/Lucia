@@ -53,6 +53,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  HitStopEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  MonsterDeadEvent();
 
 protected:
 	virtual void InitMonsterInfo() {};
