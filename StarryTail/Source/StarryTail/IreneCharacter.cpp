@@ -154,29 +154,12 @@ AIreneCharacter::AIreneCharacter()
 		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
 	}
 
-	//HP UI 설정
-	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
-	HpBarWidget->SetupAttachment(GetMesh());
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 180.0f));
-	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
-	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
-	
-	//MP UI 설정
-	MpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MPBARWIDGET"));
-	MpBarWidget->SetupAttachment(GetMesh());
-	MpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 170.0f));
-	MpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
-	MpBarWidget->SetWidgetSpace(EWidgetSpace::World);
-
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_HPBar.BP_HPBar_C"));
-
-	if (UI_HPBARWIDGET.Succeeded())
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_PlayerHud.BP_PlayerHud_C"));
+	if (UI_PlayerHud.Succeeded())
 	{
-		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(156, 20.0f));
-		MpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		MpBarWidget->SetDrawSize(FVector2D(156, 20.0f));
+
+		PlayerHudClass = UI_PlayerHud.Class;
 	}
 
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
@@ -234,14 +217,9 @@ void AIreneCharacter::BeginPlay()
 		Widget->BindCharacterAttribute(Attribute);
 	}
 
-	//점령 바 띄우기
-	auto MpBar = Cast<UHPBarWidget>(MpBarWidget->GetWidget());
-	if (MpBar != nullptr)
-	{
-		
-		MpBar->SetColor(FLinearColor::Blue);
-	}
-
+	PlayerHud = CreateWidget<UPlayerHudWidget>(GetGameInstance(), PlayerHudClass);
+	PlayerHud->AddToViewport();
+	PlayerHud->BindCharacter(this);
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.3f);
@@ -383,8 +361,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 
 	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
 	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
-	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
-	MpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	
 }
 
 #pragma region Move
@@ -1106,7 +1083,7 @@ void AIreneCharacter::DoAttack()
 		if (CharacterDataStruct.CurrentMP > CharacterDataStruct.MaxMP)
 			CharacterDataStruct.CurrentMP = CharacterDataStruct.MaxMP;
 			
-		UpdateMpWidget();
+		OnMpChanged.Broadcast();
 	}
 
 	//속성공격 기준 몬스터 할당해제
@@ -1148,7 +1125,7 @@ void AIreneCharacter::FindNearMonster()
 			UseMP = 0;
 		}
 
-		UpdateMpWidget();
+		OnMpChanged.Broadcast();
 	}
 
 	if (TargetMonster != nullptr)
@@ -1306,7 +1283,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	{
 		CharacterDataStruct.CurrentHP -= DamageAmount - CharacterDataStruct.Defenses;
 		//hp 바
-		UpdateHpWidget();
+		OnHpChanged.Broadcast();
 		if (CharacterDataStruct.CurrentHP <= 0)
 		{
 			IreneAnim->StopAllMontages(0);
@@ -1480,28 +1457,13 @@ float AIreneCharacter::GetHpRatio()
 	// 비율변환 0.0 ~ 1.0
 	return (CharacterDataStruct.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentHP / CharacterDataStruct.MaxHP;
 }
-void AIreneCharacter::UpdateHpWidget()
-{
 
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateHpWidget(GetHpRatio());
-	}
-}
 float AIreneCharacter::GetMpRatio()
 {
 	return (CharacterDataStruct.CurrentMP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentMP / CharacterDataStruct.MaxMP;
 
 }
-void AIreneCharacter::UpdateMpWidget()
-{
-	auto MpBar = Cast<UHPBarWidget>(MpBarWidget->GetWidget());
-	if (MpBar != nullptr)
-	{
-		MpBar->UpdateHpWidget(GetMpRatio());
-	}
-}
+
 void AIreneCharacter::FootStepSound()
 {
 	WalkSound->SoundPlay3D(GetActorTransform());
