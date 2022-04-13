@@ -288,6 +288,8 @@ private:
 	UPROPERTY(BluePrintReadWrite)
 		bool CameraShakeOn;
 
+	UPROPERTY(BluePrintReadWrite)
+		bool  GoTargetOn;
 
 	UPROPERTY(BluePrintReadWrite)
 		bool IsTimeStopping;
