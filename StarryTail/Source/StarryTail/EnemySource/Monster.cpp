@@ -292,10 +292,6 @@ void AMonster::CalcAttributeDefType()
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-	if (STGameInstance->GetAttributeEffectMonster() == nullptr)
-	{
-		STGameInstance->SetAttributeEffectMonster(this);
-	}
 
 	if (STGameInstance->GetAttributeEffectMonster() == this)
 	{
@@ -788,9 +784,7 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
-	FTransform SoundTransform;
-	SoundTransform.SetLocation(AttackedPosition);
-	HitSound->SoundPlay3D(SoundTransform);
+		
 
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
@@ -996,6 +990,7 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
+	
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		Player->HitStopEvent();
 		HitStopEvent();
@@ -1033,6 +1028,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	if (Player != nullptr)
 	{
+		SoundTransform = Player->GetTransform();
 		bIsAttacked = true;
 
 		switch (Player->GetAttribute())
@@ -1074,6 +1070,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		KnockBackDir.Z = 0.0f;
 
 		//
+
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		if (STGameInstance->GetAttributeEffectMonster() == nullptr)
+		{
+			STGameInstance->SetAttributeEffectMonster(this);
+			HitSound->SoundPlay3D(SoundTransform);
+		}
+
 		if (AttackedInfo.bIsUseMana)
 		{
 			CalcDef();
