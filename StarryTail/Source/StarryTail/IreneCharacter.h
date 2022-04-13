@@ -17,12 +17,15 @@
 #include "StopWatch.h"
 #include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
-#include "UI/HPBarWidget.h"
+#include "UI/PlayerHudWidget.h"
 #include "SoundManager.h"
 #include "IreneCharacter.generated.h"
 
 //속성 변경 델리데이트
 DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
 
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
@@ -125,18 +128,20 @@ private:
 #pragma endregion AttackData
 
 #pragma region UI
+	
 	//속성 ui
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* AttributeWidget;
-	//Hp Bar 위젯
-	UPROPERTY(VisibleAnywhere, Category = UI)
-	class UWidgetComponent* HpBarWidget;
-
-	//Hp Bar 위젯 -> MP위젯 으로 
-	UPROPERTY(VisibleAnywhere, Category = UI)
-	class UWidgetComponent* MpBarWidget;
 	// 로그 출력용
 	bool bShowLog;
+
+public:
+	FOnHpChangeDelegate OnHpChanged;
+	FOnMpChangeDelegate OnMpChanged;
+	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
+	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
+	UPROPERTY()
+	class UPlayerHudWidget* PlayerHud; // 위젯	
 #pragma endregion UI	
 
 #pragma region Sound
@@ -268,12 +273,11 @@ private:
 #pragma endregion Collision
 
 #pragma region Park
+	public:
 	//현재 체력 비율 전환
 	float GetHpRatio();
-	void UpdateHpWidget();
 	//현재 마나 비율 전환
 	float GetMpRatio();
-	void UpdateMpWidget();
 
 	//사운드 출력
 	void FootStepSound();
@@ -288,6 +292,8 @@ private:
 	UPROPERTY(BluePrintReadWrite)
 		bool CameraShakeOn;
 
+	UPROPERTY(BluePrintReadWrite)
+		bool  GoTargetOn;
 
 	UPROPERTY(BluePrintReadWrite)
 		bool IsTimeStopping;
