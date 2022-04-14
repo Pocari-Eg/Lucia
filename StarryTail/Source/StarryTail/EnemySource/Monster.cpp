@@ -22,9 +22,6 @@ AMonster::AMonster()
 
 	InitAttackedInfo();
 
-	KnockBackTime = 0.15f;
-	ShowUITime = 5.0f;
-
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
 
@@ -491,10 +488,6 @@ void AMonster::CalcHp(float Damage)
 	if (bTestMode)
 		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
 
-	bShowUI = true;
-	ShowUITimer = 0.0f;
-	HpBarWidget->SetHiddenInGame(false);
-
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
@@ -864,18 +857,18 @@ void AMonster::Tick(float DeltaTime)
 	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
-	
 	if (!bIsDead)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 		if (this->GetDistanceTo(STGameInstance->GetPlayer()) < 500.0f)
 		{
-			bShowUI = true;
-			ShowUITimer = 0.0f;
 			HpBarWidget->SetHiddenInGame(false);
 		}
+		else
+		{
+			HpBarWidget->SetHiddenInGame(true);
+		}
 	}
-	
 
 	if (bIsBurn)
 	{
@@ -980,17 +973,7 @@ void AMonster::Tick(float DeltaTime)
 			bIsAttacked = false;
 		}
 	}
-	if (bShowUI)
-	{
-		ShowUITimer += DeltaTime;
-
-		if (ShowUITimer >= ShowUITime)
-		{
-			ShowUITimer = 0.0f;
-			HpBarWidget->SetHiddenInGame(true);
-			bShowUI = false;
-		}
-	}
+	
 }
 
 // Called to bind functionality to input
@@ -1046,25 +1029,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (Player != nullptr)
 	{
 		SoundTransform = Player->GetTransform();
-
-		if (!bIsAttacked)
-		{
-			FString FindName = "WEAPON";
-			FString ElemName;
-
-			for (auto& Elem : Player->GetComponents())
-			{
-				ElemName = Elem->GetName();
-				if (ElemName == FindName)
-				{
-					auto Component = Cast<UPrimitiveComponent>(Elem);
-
-					PrintHitEffect(Component->GetComponentLocation());
-					Player->HitStopEvent();
-				}
-			}
-		}
-
 		bIsAttacked = true;
 
 		switch (Player->GetAttribute())

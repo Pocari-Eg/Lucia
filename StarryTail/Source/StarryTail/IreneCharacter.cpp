@@ -141,6 +141,20 @@ AIreneCharacter::AIreneCharacter()
 	//초기 속성
 	Attribute = EAttributeKeyword::e_Fire;
 
+	//ui 설정
+	AttributeWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ATTRIBUTEWIDGET"));
+	AttributeWidget->SetupAttachment(GetMesh());
+	AttributeWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 210.0f));
+	AttributeWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	AttributeWidget->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HUD(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_AttributesWidget.BP_AttributesWidget_C"));
+	if (UI_HUD.Succeeded())
+	{
+		AttributeWidget->SetWidgetClass(UI_HUD.Class);
+		AttributeWidget->SetDrawSize(FVector2D(20.0f, 20.0f));
+	}
+
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_PlayerHud.BP_PlayerHud_C"));
 	if (UI_PlayerHud.Succeeded())
 	{
@@ -195,12 +209,17 @@ void AIreneCharacter::BeginPlay()
 
 	// 애니메이션 속성 초기화
 	IreneAnim->SetAttribute(Attribute);
-	
+
+	// 속성 위젯에 속성값 설정
+	auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+	if (nullptr != Widget)
+	{
+		Widget->BindCharacterAttribute(Attribute);
+	}
 
 	PlayerHud = CreateWidget<UPlayerHudWidget>(GetGameInstance(), PlayerHudClass);
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(this);
-	PlayerHud->FireAttributesOn();
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.3f);
@@ -336,6 +355,13 @@ void AIreneCharacter::Tick(float DeltaTime)
 		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
 			TargetMonster = nullptr;
 	}
+	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
+	FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(AttributeWidget->GetComponentTransform().GetLocation(),
+		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation());
+
+	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
+	AttributeWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	
 }
 
 #pragma region Move
@@ -755,7 +781,6 @@ void AIreneCharacter::RightButton(float Rate)
 		                default:
 			           break;
 	            	} 
-				
 					IreneAnim->PlayEffectAttackMontage();
 					IreneAnim->JumpToEffectAttackMontageSection(CharacterDataStruct.CurrentCombo);
 					CharacterDataStruct.IsAttacking = true;
@@ -826,20 +851,21 @@ void AIreneCharacter::MainKeyword()
 		switch (Attribute)
 		{
 		case EAttributeKeyword::e_Fire:
-			PlayerHud->WaterAttributesOn();
 			Attribute = EAttributeKeyword::e_Water;
 			break;
 		case EAttributeKeyword::e_Water:
-			PlayerHud->ThunderAttributesOn();
-
 			Attribute = EAttributeKeyword::e_Thunder;
 			break;
 		case EAttributeKeyword::e_Thunder:
-			PlayerHud->FireAttributesOn();
 			Attribute = EAttributeKeyword::e_Fire;
 			break;
 		default:
 			break;
+		}
+		auto Widget = Cast<UIreneAttributeWidget>(AttributeWidget->GetUserWidgetObject());
+		if (nullptr != Widget)
+		{
+			Widget->BindCharacterAttribute(Attribute);
 		}
 		FOnAttributeChange.Broadcast();
 		IreneAnim->SetAttribute(Attribute);
@@ -979,7 +1005,7 @@ void AIreneCharacter::AttackCheck()
 {
 	if (IreneAnim->GetCurrentActiveMontage() != NULL)
 	{
-		Weapon->SetGenerateOverlapEvents(true);
+		
 		AttackSound->SoundPlay2D();
 		FindNearMonster();
 	}
@@ -993,6 +1019,7 @@ void AIreneCharacter::DoAttack()
 {
 	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
 	//WorldController->ClientStartCameraShake(CameraShakeCurve);	
+	Weapon->SetGenerateOverlapEvents(true);
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;

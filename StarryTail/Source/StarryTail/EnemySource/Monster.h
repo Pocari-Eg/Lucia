@@ -107,10 +107,6 @@ protected:
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
-		float KnockBackTime;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
-		float ShowUITime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
@@ -157,9 +153,7 @@ private:
 	//Variable
 	FVector AssembleLocation;
 	FVector KnockBackDir;
-	float KnockBackTimer;
-	float ShowUITimer;
-
+	float KnockBackTime;
 	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
@@ -167,7 +161,6 @@ private:
 	bool bIsShock;
 	bool bIsAssemble;
 	bool bIsChain;
-	bool bShowUI;
 //Virtual Function
 protected:
 	// Called when the game starts or when spawned
