@@ -1005,7 +1005,7 @@ void AIreneCharacter::AttackCheck()
 {
 	if (IreneAnim->GetCurrentActiveMontage() != NULL)
 	{
-		
+		Weapon->SetGenerateOverlapEvents(true);
 		AttackSound->SoundPlay2D();
 		FindNearMonster();
 	}
@@ -1019,7 +1019,6 @@ void AIreneCharacter::DoAttack()
 {
 	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
 	//WorldController->ClientStartCameraShake(CameraShakeCurve);	
-	Weapon->SetGenerateOverlapEvents(true);
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
