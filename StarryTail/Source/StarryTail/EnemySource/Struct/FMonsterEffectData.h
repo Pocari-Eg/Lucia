@@ -16,6 +16,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* HitEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		UParticleSystem* LightningHitEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* BurnEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* FloodingEffect;
@@ -34,6 +36,11 @@ public:
 		FRotator HitEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector HitEffectScale;
+	//
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FRotator LightningHitEffectRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		FVector LightningHitEffectScale;
 	//Debuff - Burn/Flooding/Shock
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FRotator DebuffEffectRotation;

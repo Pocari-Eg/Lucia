@@ -45,9 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ArbitraryConstValueC; // 임의의 상수 C
 public:
-	//메인 속성 방어력들을 저장
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		TArray<EAttributeKeyword> MainAttributeDef;
+	//메인 속성 방어력들을 저장 20220414 수정
+	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		// TArray<EAttributeKeyword> MainAttributeDef;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentDebuffAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

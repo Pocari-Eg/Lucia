@@ -30,14 +30,15 @@ public:
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
-	TArray<EAttributeKeyword> GetMainAttributeDef() const;
+	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
+	EAttributeKeyword GetAttribute() const;
 
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana);
 
 	void OnTrueDamage(float Damage);
-	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void OnDamage(float Damage);
 
 	void AddDebuffStack(EAttributeKeyword Attribute);
 
@@ -65,6 +66,7 @@ protected:
 	//Function
 	void InitDebuffInfo();
 	void InitAttackedInfo();
+	void InitEffect();
 
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
@@ -73,7 +75,7 @@ protected:
 	float CalcManaAttackDamage(float Damage);
 
 	void PrintHitEffect(FVector AttackedPosition);
-
+	void PrintLightningHitEffect();
 	//Variable
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
@@ -98,6 +100,8 @@ protected:
 		UParticleSystemComponent* AssembleEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* LightningHitEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI
@@ -137,7 +141,6 @@ private:
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
 
-	void InitEffect();
 	void SetEffect();
 
 	void Burn();

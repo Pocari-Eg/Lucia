@@ -27,6 +27,9 @@ public:
 	AMonster* GetAttributeEffectMonster();
 	void SetAttributeEffectMonster(AMonster* Monster);
 	void ResetAttributeEffectMonster();
+	void AddChainMonster(AMonster* Monster);
+	TArray<AMonster*> GetChainMonsterList();
+	void ResetChainMonsterList();
 
 #pragma region Occupy
 	//점령 컨텐츠
@@ -50,6 +53,7 @@ public:
 private:
 	AIreneCharacter* Player;
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
+	TArray<AMonster*> ChainMonsterList; // 체인 효과의 중심이 되는 몬스터
 
 #pragma region Occupy
 	//점령 컨텐츠
