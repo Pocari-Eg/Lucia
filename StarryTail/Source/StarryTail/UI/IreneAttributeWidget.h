@@ -22,4 +22,6 @@ class STARRYTAIL_API UIreneAttributeWidget : public UUserWidget
 public:
 	//아이린 속성 bind
 	void BindCharacterAttribute(EAttributeKeyword Attribute);
+
+
 };
