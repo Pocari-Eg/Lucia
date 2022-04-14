@@ -2,6 +2,7 @@
 
 
 #include "PlayerHudWidget.h"
+#include "../IreneCharacter.h"
 #include "Components/ProgressBar.h"
 
 void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
