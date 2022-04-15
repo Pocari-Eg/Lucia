@@ -45,16 +45,16 @@ AIreneCharacter::AIreneCharacter()
 			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 		}
 		//카메라
-		FName CameraSocket(TEXT("Hip_Socket"));
-		if (GetMesh()->DoesSocketExist(CameraSocket))
-		{
+		//FName CameraSocket(TEXT("Hip_Socket"));
+		//if (GetMesh()->DoesSocketExist(CameraSocket))
+		//{
 			// 스프링암 설정
-			SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-			SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-			SpringArmComp->bEnableCameraLag = true;
-			SpringArmComp->CameraLagSpeed = 0.0f;
-			SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
-		}
+			//SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+			//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+			//SpringArmComp->bEnableCameraLag = true;
+			//SpringArmComp->CameraLagSpeed = 0.0f;
+			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
+		//}
 
 
 		//콜리전 적용
@@ -93,6 +93,13 @@ AIreneCharacter::AIreneCharacter()
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->SetRelativeLocation(FVector(0,0,53));
+	SpringArmComp->CameraLagSpeed = 0.0f;
+	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
