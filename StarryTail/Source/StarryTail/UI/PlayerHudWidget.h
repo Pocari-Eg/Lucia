@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "../IreneCharacter.h"
+
 #include "PlayerHudWidget.generated.h"
 
 /**

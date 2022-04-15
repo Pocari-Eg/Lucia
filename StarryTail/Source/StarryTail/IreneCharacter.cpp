@@ -14,6 +14,8 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
 #include "StarryTailGameMode.h"
+#include "UI/PlayerHudWidget.h"
+
 
 #pragma region Setting
 // Sets default values

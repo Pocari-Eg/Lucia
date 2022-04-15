@@ -17,7 +17,7 @@
 #include "StopWatch.h"
 #include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
-#include "UI/PlayerHudWidget.h"
+
 #include "SoundManager.h"
 #include "IreneCharacter.generated.h"
 
@@ -35,7 +35,6 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 public:
 	//속성변환 델리게이트
 	FOnAttributeChangeDelegate FOnAttributeChange;
-
 protected:
 
 private:
