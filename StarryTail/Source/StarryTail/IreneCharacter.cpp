@@ -662,9 +662,14 @@ void AIreneCharacter::Turn(float Rate)
 }
 void AIreneCharacter::LookUp(float Rate)
 {
-	if (WorldController->bShowMouseCursor == false &&
-		CharacterState->getStateToString().Compare(FString("Death")) != 0)
-		AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
+	float yaw = FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch) + Rate * CharacterDataStruct.EDPI * WorldController->InputPitchScale;
+
+	if (yaw < 50)
+	{
+		if (WorldController->bShowMouseCursor == false &&
+			CharacterState->getStateToString().Compare(FString("Death")) != 0)
+			AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
+	}
 }
 
 void AIreneCharacter::LeftButton(float Rate)
@@ -859,6 +864,29 @@ void AIreneCharacter::DodgeKeyword()
 
 		float WaitTime = 0.5f; //시간을 설정
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+
+		MoveAutoDirection.ZeroVector;
+		// w키나 아무방향 없으면 정면으로 이동
+		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+		{
+			MoveAutoDirection += CameraComp->GetForwardVector();
+		}
+		if (MoveKey[1] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetRightVector() * -1;
+		}
+		if (MoveKey[2] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetForwardVector() * -2;
+		}
+		if (MoveKey[3] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetRightVector();
+		}
+		MoveAutoDirection.Normalize();
+
+		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetActorLocation()+ MoveAutoDirection).Yaw;
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
