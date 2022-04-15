@@ -15,9 +15,8 @@
 
 //박찬영
 #include "StopWatch.h"
-#include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
-#include "UI/PlayerHudWidget.h"
+
 #include "SoundManager.h"
 #include "IreneCharacter.generated.h"
 
@@ -35,7 +34,6 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 public:
 	//속성변환 델리게이트
 	FOnAttributeChangeDelegate FOnAttributeChange;
-
 protected:
 
 private:
@@ -129,9 +127,6 @@ private:
 
 #pragma region UI
 	
-	//속성 ui
-	UPROPERTY(VisibleAnywhere, Category = UI)
-	class UWidgetComponent* AttributeWidget;
 	// 로그 출력용
 	bool bShowLog;
 
