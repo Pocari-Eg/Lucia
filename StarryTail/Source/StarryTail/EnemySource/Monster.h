@@ -30,14 +30,15 @@ public:
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
-	TArray<EAttributeKeyword> GetMainAttributeDef() const;
+	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
+	EAttributeKeyword GetAttribute() const;
 
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana);
 
 	void OnTrueDamage(float Damage);
-	void OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void OnDamage(float Damage);
 
 	void AddDebuffStack(EAttributeKeyword Attribute);
 
@@ -65,6 +66,7 @@ protected:
 	//Function
 	void InitDebuffInfo();
 	void InitAttackedInfo();
+	void InitEffect();
 
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
@@ -73,7 +75,7 @@ protected:
 	float CalcManaAttackDamage(float Damage);
 
 	void PrintHitEffect(FVector AttackedPosition);
-
+	void PrintLightningHitEffect();
 	//Variable
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
@@ -98,6 +100,8 @@ protected:
 		UParticleSystemComponent* AssembleEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* LightningHitEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//박찬영 UI
@@ -107,6 +111,10 @@ protected:
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
+		float KnockBackTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
+		float ShowUITime;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
@@ -115,7 +123,7 @@ protected:
 	bool bIsAttacked;
 	bool bIsGroggy;
 	bool bIsDead;
-
+	bool bDeadWait;
 #pragma region Sound
 	//사운드 이벤트
 	UPROPERTY(EditAnywhere, Category = "FMOD")
@@ -133,7 +141,6 @@ private:
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
 
-	void InitEffect();
 	void SetEffect();
 
 	void Burn();
@@ -153,7 +160,10 @@ private:
 	//Variable
 	FVector AssembleLocation;
 	FVector KnockBackDir;
-	float KnockBackTime;
+	float KnockBackTimer;
+	float ShowUITimer;
+	float DeadWaitTimer;
+
 	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
@@ -161,6 +171,7 @@ private:
 	bool bIsShock;
 	bool bIsAssemble;
 	bool bIsChain;
+	bool bShowUI;
 //Virtual Function
 protected:
 	// Called when the game starts or when spawned

@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "./Morbit/Morbit.h"
 #include "MonsterAIController.h"
+#include "ChainLightning.h"
 //UI
 #include "../STGameInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
@@ -22,6 +23,9 @@ AMonster::AMonster()
 
 	InitAttackedInfo();
 
+	KnockBackTime = 0.15f;
+	ShowUITime = 5.0f;
+
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
 
@@ -37,8 +41,6 @@ AMonster::AMonster()
 		HpBarWidget->SetDrawSize(FVector2D(96, 20.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
-
-	InitEffect();
 }
 #pragma region Init
 void AMonster::InitDebuffInfo()
@@ -58,7 +60,7 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
-	MonsterAttributeDebuff.ShockTime = 1.0f;
+	MonsterAttributeDebuff.ShockTime = 2.0f;
 
 	MonsterAttributeDebuff.TransitionRange = 2.0f;
 
@@ -67,9 +69,8 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.AssembleSpeed = 500.0f;
 	MonsterAttributeDebuff.AssembleTimer = 0.0f;
 
-	MonsterAttributeDebuff.ChainRange = 5.0f;
-	MonsterAttributeDebuff.ChainTime = 5.0f;
-	MonsterAttributeDebuff.ChainTimer = 0.0f;
+	MonsterAttributeDebuff.ChainRange = 10.0f;
+	MonsterAttributeDebuff.ChainSpeed = 2500.0f;
 
 	bIsBurn = false;
 	bIsFlooding = false;
@@ -86,6 +87,7 @@ void AMonster::InitAttackedInfo()
 void AMonster::InitEffect()
 {
 	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
+	LightningHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LightningHitEffect"));
 	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
 	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
 	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockEffect"));
@@ -93,7 +95,9 @@ void AMonster::InitEffect()
 	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
 
+
 	HitEffectComponent->SetupAttachment(GetMesh());
+	LightningHitEffectComponent->SetupAttachment(GetMesh());
 	BurnEffectComponent->SetupAttachment(GetMesh());
 	FloodingEffectComponent->SetupAttachment(GetMesh());
 	ShockEffectComponent->SetupAttachment(GetMesh());
@@ -102,6 +106,7 @@ void AMonster::InitEffect()
 	GroggyEffectComponent->SetupAttachment(RootComponent);
 
 	HitEffectComponent->bAutoActivate = false;
+	LightningHitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
 	ShockEffectComponent->bAutoActivate = false;
@@ -111,6 +116,9 @@ void AMonster::InitEffect()
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.LightningHitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.LightningHitEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
 	MonsterEffect.DebuffEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.DebuffEffectScale = FVector(1.0f, 1.0f, 1.0f);
@@ -139,9 +147,15 @@ float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
 }
+/*
 TArray<EAttributeKeyword> AMonster::GetMainAttributeDef() const
 {
 	return MonsterInfo.MainAttributeDef;
+}
+*/
+EAttributeKeyword AMonster::GetAttribute() const
+{
+	return MonsterInfo.MonsterAttribute;
 }
 UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 {
@@ -156,6 +170,7 @@ void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana)
 void AMonster::SetEffect()
 {
 	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
+	LightningHitEffectComponent->SetTemplate(MonsterEffect.LightningHitEffect);
 	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
 	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
 	ShockEffectComponent->SetTemplate(MonsterEffect.ShockEffect);
@@ -165,6 +180,9 @@ void AMonster::SetEffect()
 
 	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
 	HitEffectComponent->SetRelativeScale3D(MonsterEffect.HitEffectScale);
+
+	LightningHitEffectComponent->SetRelativeRotation(MonsterEffect.LightningHitEffectRotation);
+	LightningHitEffectComponent->SetRelativeScale3D(MonsterEffect.LightningHitEffectScale);
 
 	BurnEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
 	BurnEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
@@ -191,7 +209,7 @@ void AMonster::OnTrueDamage(float Damage)
 
 	CalcHp(Damage);
 }
-void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
+void AMonster::OnDamage(float Damage)
 {
 	if (bIsDead)
 		return;
@@ -200,10 +218,16 @@ void AMonster::OnDamage(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 {
+	/* 20220414 수정
 	for (auto Elem : MonsterInfo.MainAttributeDef)
 	{
 		if (Elem == Attribute)
 			return;
+	}
+	*/
+	if (MonsterInfo.MonsterAttribute == Attribute)
+	{
+		return;
 	}
 
 	switch (Attribute)
@@ -222,6 +246,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
 {
+	/*
 	TMap<EAttributeKeyword, float> AttributeDefMap;
 
 	TArray<float> DefList;
@@ -288,6 +313,7 @@ void AMonster::CalcAttributeDefType()
 
 	DefList.Empty();
 	AttributeDefMap.Empty();
+	*/
 }
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
@@ -308,10 +334,10 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 			Chain(PlayerMainAttribute, Damage);
 		}
 	}
-
 	switch (PlayerMainAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
+		/* 20220414 속성방어력삭제
 		for (auto& Elem : MonsterInfo.MainAttributeDef)
 		{
 			if (Elem == EAttributeKeyword::e_Fire)
@@ -319,10 +345,16 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 				return;
 			}
 		}
+		*/
+		if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
+		{
+			return;
+		}
 		MonsterAttributeDebuff.FireDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
+		/* 20220414 속성방어력삭제
 		for (auto& Elem : MonsterInfo.MainAttributeDef)
 		{
 			if (Elem == EAttributeKeyword::e_Water)
@@ -330,16 +362,27 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 				return;
 			}
 		}
+		*/
+		if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+		{
+			return;
+		}
 		MonsterAttributeDebuff.WaterDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Thunder:
+		/* 20220414 속성방어력삭제
 		for (auto& Elem : MonsterInfo.MainAttributeDef)
 		{
 			if (Elem == EAttributeKeyword::e_Thunder)
 			{
 				return;
 			}
+		}
+		*/
+		if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
+		{
+			return;
 		}
 		MonsterAttributeDebuff.ThunderDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
@@ -352,9 +395,6 @@ void AMonster::CalcDef()
 	if (Morbit != nullptr)
 	{
 		MonsterInfo.CurrentDef -= AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB;
-		STARRYLOG(Log, TEXT("%f"), AttackedInfo.Mana);
-		if (CheckPlayerIsBehindMonster())
-			MonsterInfo.CurrentDef = 0;
 	}
 
 
@@ -382,7 +422,8 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	MonsterAIController->Attacked();
 	MonsterAIController->StopMovement();
-
+	if (MonsterInfo.CurrentDef == 0)
+		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
 	return MonsterInfo.ArbitraryConstValueA * (Damage / MonsterInfo.CurrentDef) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
@@ -488,6 +529,10 @@ void AMonster::CalcHp(float Damage)
 	if (bTestMode)
 		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
 
+	bShowUI = true;
+	ShowUITimer = 0.0f;
+	HpBarWidget->SetHiddenInGame(false);
+
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
@@ -564,7 +609,7 @@ TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 		GetActorLocation(),
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(MonsterAttributeDebuff.TransitionRange * 100.0f),
+		FCollisionShape::MakeSphere(DetectRange * 100.0f),
 		CollisionQueryParam
 	);
 
@@ -576,7 +621,6 @@ void AMonster::SetActive()
 	{
 		HpBarWidget->SetHiddenInGame(true);
 		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
 
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
@@ -686,7 +730,7 @@ void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damag
 
 			Monster->AddDebuffStack(AttackedAttribute);
 			Monster->SetDebuff(AttackedAttribute, Damage);
-			Monster->OnDamage(AttackedAttribute, Damage);
+			Monster->OnDamage(Damage);
 		}
 	}
 }
@@ -722,26 +766,22 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 
 	TArray<FOverlapResult> AnotherMonsterList = DetectMonster(MonsterAttributeDebuff.ChainRange);
 
-	switch (PlayerMainAttribute)
-	{
-	case EAttributeKeyword::e_Fire:
-		STARRYLOG(Log, TEXT("Fire"));
-		break;
-	case EAttributeKeyword::e_Water:
-		STARRYLOG(Log, TEXT("Water"));
-		break;
-	case EAttributeKeyword::e_Thunder:
-		STARRYLOG(Log, TEXT("Thunder"));
-		break;
-	}
 	if (AnotherMonsterList.Num() != 0)
 	{
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+
 		for (auto const& AnotherMonster : AnotherMonsterList)
 		{
 			AMonster* Monster = Cast<AMonster>(AnotherMonster.GetActor());
 			if (Monster == nullptr)
 				continue;
 
+			if (Monster->GetAttribute() == MonsterInfo.MonsterAttribute)
+			{
+				if (STGameInstance->GetChainMonsterList().Num() < 2)
+					STGameInstance->AddChainMonster(Monster);
+			}
+			/*
 			//몬스터의 속성중
 			for (auto Elem : Monster->GetMainAttributeDef())
 			{
@@ -750,10 +790,18 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 				{
 					//체인 상태
 					Monster->bIsChain = true;
-					Monster->OnDamage(PlayerMainAttribute, Damage);
+					Monster->OnDamage(Damage);
 					break;
 				}
 			}
+			*/
+		}
+		if (STGameInstance->GetChainMonsterList().Num() != 0)
+		{
+			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(GetActorLocation(), FRotator::ZeroRotator);
+			ChainLightning->Init();
+			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
+			ChainLightning->SetDamage(Damage);
 		}
 	}
 }
@@ -784,12 +832,13 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
-		
-
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
-
-
+}
+void AMonster::PrintLightningHitEffect()
+{
+	LightningHitEffectComponent->SetActive(true);
+	LightningHitEffectComponent->ForceReset();
 }
 void AMonster::OffIsAttacked()
 {
@@ -823,7 +872,7 @@ void AMonster::BeginPlay()
 
 	if (GetActorScale3D().X > 1.0f)
 	{
-		HitSound->SetVolume(2.0f);
+		HitSound->SetVolume(1.5f);
 
 	}
 	else {
@@ -857,18 +906,28 @@ void AMonster::Tick(float DeltaTime)
 	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
+	if (bDeadWait)
+	{
+		DeadWaitTimer += DeltaTime;
+		if (DeadWaitTimer >= MonsterInfo.DeadWaitTime)
+		{
+			SetActorTickEnabled(false);
+			SetActorHiddenInGame(true);
+		}
+		return;
+	}
+
 	if (!bIsDead)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 		if (this->GetDistanceTo(STGameInstance->GetPlayer()) < 500.0f)
 		{
+			bShowUI = true;
+			ShowUITimer = 0.0f;
 			HpBarWidget->SetHiddenInGame(false);
 		}
-		else
-		{
-			HpBarWidget->SetHiddenInGame(true);
-		}
 	}
+
 
 	if (bIsBurn)
 	{
@@ -946,19 +1005,7 @@ void AMonster::Tick(float DeltaTime)
 			bIsAssemble = false;
 		}
 	}
-	if (bIsChain)
-	{
-		//체인 지속시간 계산
-		MonsterAttributeDebuff.ChainTimer += DeltaTime;
-		//시간이 됐다면
-		if (MonsterAttributeDebuff.ChainTimer >= MonsterAttributeDebuff.ChainTime)
-		{
-			//시간 초기화 및 체인 상태 해제
-			MonsterAttributeDebuff.ChainTimer = 0.0f;
-			bIsChain = false;
-		}
-	}
-	
+
 	if (bIsAttacked) // 0.2
 	{
 		KnockBackTime += DeltaTime;
@@ -973,7 +1020,17 @@ void AMonster::Tick(float DeltaTime)
 			bIsAttacked = false;
 		}
 	}
-	
+	if (bShowUI)
+	{
+		ShowUITimer += DeltaTime;
+
+		if (ShowUITimer >= ShowUITime)
+		{
+			ShowUITimer = 0.0f;
+			HpBarWidget->SetHiddenInGame(true);
+			bShowUI = false;
+		}
+	}
 }
 
 // Called to bind functionality to input
@@ -990,10 +1047,35 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
-	
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		Player->HitStopEvent();
 		HitStopEvent();
+		return;
+	}
+
+	auto ChainLightningComp = Cast<USphereComponent>(OtherComp);
+	if (ChainLightningComp != nullptr)
+	{
+		FString CompProfileName = ChainLightningComp->GetCollisionProfileName().ToString();
+		FindName = "ChainLightning";
+		if (CompProfileName == FindName)
+		{
+			auto ChainLightning = Cast<AChainLightning>(OtherActor);
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			if (STGameInstance->GetChainMonsterList().Num() != 0)
+			{
+				for (auto& Elem : STGameInstance->GetChainMonsterList())
+				{
+					if (Elem == this)
+					{
+						OnDamage(ChainLightning->GetDamage());
+						PrintLightningHitEffect();
+						LightningHitEffectComponent->SetActive(true);
+						LightningHitEffectComponent->ForceReset();
+					}
+				}
+			}
+		}
 	}
 }
 float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
@@ -1029,6 +1111,25 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (Player != nullptr)
 	{
 		SoundTransform = Player->GetTransform();
+
+		if (!bIsAttacked)
+		{
+			FString FindName = "WEAPON";
+			FString ElemName;
+
+			for (auto& Elem : Player->GetComponents())
+			{
+				ElemName = Elem->GetName();
+				if (ElemName == FindName)
+				{
+					auto Component = Cast<UPrimitiveComponent>(Elem);
+
+					PrintHitEffect(Component->GetComponentLocation());
+					Player->HitStopEvent();
+				}
+			}
+		}
+
 		bIsAttacked = true;
 
 		switch (Player->GetAttribute())
