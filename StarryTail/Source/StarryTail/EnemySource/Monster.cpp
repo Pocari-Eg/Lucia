@@ -870,7 +870,7 @@ void AMonster::BeginPlay()
 
 	if (GetActorScale3D().X > 1.0f)
 	{
-		HitSound->SetVolume(2.0f);
+		HitSound->SetVolume(1.5f);
 
 	}
 	else {

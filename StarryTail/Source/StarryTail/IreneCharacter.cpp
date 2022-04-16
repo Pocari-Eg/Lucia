@@ -45,16 +45,16 @@ AIreneCharacter::AIreneCharacter()
 			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
 		}
 		//카메라
-		FName CameraSocket(TEXT("Hip_Socket"));
-		if (GetMesh()->DoesSocketExist(CameraSocket))
-		{
+		//FName CameraSocket(TEXT("Hip_Socket"));
+		//if (GetMesh()->DoesSocketExist(CameraSocket))
+		//{
 			// 스프링암 설정
-			SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-			SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
-			SpringArmComp->bEnableCameraLag = true;
-			SpringArmComp->CameraLagSpeed = 0.0f;
-			SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
-		}
+			//SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+			//SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+			//SpringArmComp->bEnableCameraLag = true;
+			//SpringArmComp->CameraLagSpeed = 0.0f;
+			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
+		//}
 
 
 		//콜리전 적용
@@ -93,6 +93,13 @@ AIreneCharacter::AIreneCharacter()
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	SpringArmComp->TargetArmLength = CharacterDataStruct.FollowCameraZPosition;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->SetRelativeLocation(FVector(0,0,53));
+	SpringArmComp->CameraLagSpeed = 0.0f;
+	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
@@ -208,7 +215,7 @@ void AIreneCharacter::BeginPlay()
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 0.0f);
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
-	WalkSound -> SetVolume(0.8f);
+	WalkSound -> SetVolume(1.2f);
 	AttackSound->SetParameter("Material", 0.0f);
 
 }
@@ -662,9 +669,14 @@ void AIreneCharacter::Turn(float Rate)
 }
 void AIreneCharacter::LookUp(float Rate)
 {
-	if (WorldController->bShowMouseCursor == false &&
-		CharacterState->getStateToString().Compare(FString("Death")) != 0)
-		AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
+	float yaw = FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch) + Rate * CharacterDataStruct.EDPI * WorldController->InputPitchScale;
+
+	if (yaw < 50)
+	{
+		if (WorldController->bShowMouseCursor == false &&
+			CharacterState->getStateToString().Compare(FString("Death")) != 0)
+			AddControllerPitchInput(Rate * CharacterDataStruct.EDPI);
+	}
 }
 
 void AIreneCharacter::LeftButton(float Rate)
@@ -859,6 +871,29 @@ void AIreneCharacter::DodgeKeyword()
 
 		float WaitTime = 0.5f; //시간을 설정
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.SprintMaxSpeed;
+
+		MoveAutoDirection.ZeroVector;
+		// w키나 아무방향 없으면 정면으로 이동
+		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+		{
+			MoveAutoDirection += CameraComp->GetForwardVector();
+		}
+		if (MoveKey[1] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetRightVector() * -1;
+		}
+		if (MoveKey[2] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetForwardVector() * -2;
+		}
+		if (MoveKey[3] != 0)
+		{
+			MoveAutoDirection += CameraComp->GetRightVector();
+		}
+		MoveAutoDirection.Normalize();
+
+		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetActorLocation()+ MoveAutoDirection).Yaw;
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 
 		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
