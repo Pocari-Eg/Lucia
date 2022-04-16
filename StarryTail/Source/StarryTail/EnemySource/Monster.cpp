@@ -424,7 +424,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef == 0)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
-	return MonsterInfo.ArbitraryConstValueA * (Damage / (MonsterInfo.CurrentDef / 2)) * (AttackedInfo.AttributeArmor / 100.0f);
+	return MonsterInfo.ArbitraryConstValueA * (Damage / MonsterInfo.CurrentDef) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
 {
@@ -926,10 +926,6 @@ void AMonster::Tick(float DeltaTime)
 			ShowUITimer = 0.0f;
 			HpBarWidget->SetHiddenInGame(false);
 		}
-	}
-	else
-	{
-		return;
 	}
 
 

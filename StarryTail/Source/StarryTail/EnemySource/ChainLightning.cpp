@@ -21,6 +21,7 @@ AChainLightning::AChainLightning()
 void AChainLightning::Init()
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+
 	for (auto& Elem : STGameInstance->GetChainMonsterList())
 	{
 		MoveTargetList.Add(Elem->GetActorLocation());
@@ -54,7 +55,8 @@ void AChainLightning::AddCount()
 }
 void AChainLightning::CheckDistance()
 {
-	if ((GetActorLocation() - MoveTargetList[Count]).Size() < 30.0f)
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (GetDistanceTo(STGameInstance->GetChainMonsterList()[Count]) < 30.0f)
 		AddCount();
 }
 // Called when the game starts or when spawned
