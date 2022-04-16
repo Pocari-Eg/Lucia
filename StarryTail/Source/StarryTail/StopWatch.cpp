@@ -9,7 +9,7 @@ AStopWatch::AStopWatch()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
-	static ConstructorHelpers::FClassFinder<UStopWatchWidget>UI_TIMERWIDGET_C(TEXT("/Game/UI/BluePrint/BP_StopWatchWidget.BP_StopWatchWidget_C"));
+	static ConstructorHelpers::FClassFinder<UStopWatchWidget>UI_TIMERWIDGET_C(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_StopWatchWidget.BP_StopWatchWidget_C"));
 	if (UI_TIMERWIDGET_C.Succeeded())
 	{
 		TimerWidgetClass = UI_TIMERWIDGET_C.Class;

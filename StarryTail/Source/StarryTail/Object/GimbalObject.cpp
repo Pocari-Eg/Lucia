@@ -33,7 +33,7 @@ AGimbalObject::AGimbalObject()
 	ChildWaterGimbal->SetRelativeLocation(FVector::ZeroVector);
 	ChildThunderGimbal->SetRelativeLocation(FVector::ZeroVector);
 
-	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Curve/GimbalObjCurve.GimbalObjCurve"));
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Developers/Pocari/Collections/Curve/GimbalObjCurve.GimbalObjCurve"));
 	if (CURVE.Succeeded())
 	{
 		TimeLineCurve = CURVE.Object;

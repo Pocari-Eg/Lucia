@@ -15,6 +15,7 @@
 
 //박찬영
 #include "StopWatch.h"
+#include "UI/IreneAttributeWidget.h"
 #include "Components/WidgetComponent.h"
 
 #include "SoundManager.h"
@@ -127,6 +128,9 @@ private:
 
 #pragma region UI
 	
+	//속성 ui
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* AttributeWidget;
 	// 로그 출력용
 	bool bShowLog;
 

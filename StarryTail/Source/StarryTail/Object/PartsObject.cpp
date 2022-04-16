@@ -23,7 +23,7 @@ APartsObject::APartsObject()
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 
-	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Curve/PartsObjCurve.PartsObjCurve"));
+	static ConstructorHelpers::FObjectFinder<UCurveFloat>CURVE(TEXT("/Game/Developers/Pocari/Collections/Curve/PartsObjCurve.PartsObjCurve"));
 
 	if (CURVE.Succeeded())
 	{
