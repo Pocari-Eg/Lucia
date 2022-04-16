@@ -21,13 +21,10 @@ void UPlayerHudWidget::UpdateHp()
 	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
 	if (CurrentIrene != nullptr)
 	{
-	
 		if (nullptr != HPProgressBar)
 		{
 			HPProgressBar->SetPercent(CurrentIrene->GetHpRatio());
 		}
-	
-		
 	}
 	
 }
@@ -49,7 +46,6 @@ void UPlayerHudWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
-	UE_LOG(LogTemp, Warning, TEXT("Init"));
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
 	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
 }
