@@ -69,9 +69,8 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.AssembleSpeed = 500.0f;
 	MonsterAttributeDebuff.AssembleTimer = 0.0f;
 
-	MonsterAttributeDebuff.ChainRange = 5.0f;
-	MonsterAttributeDebuff.ChainTime = 5.0f;
-	MonsterAttributeDebuff.ChainTimer = 0.0f;
+	MonsterAttributeDebuff.ChainRange = 10.0f;
+	MonsterAttributeDebuff.ChainSpeed = 2000.0f;
 
 	bIsBurn = false;
 	bIsFlooding = false;
@@ -95,7 +94,7 @@ void AMonster::InitEffect()
 	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
 	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
-	
+
 
 	HitEffectComponent->SetupAttachment(GetMesh());
 	LightningHitEffectComponent->SetupAttachment(GetMesh());
@@ -107,6 +106,7 @@ void AMonster::InitEffect()
 	GroggyEffectComponent->SetupAttachment(RootComponent);
 
 	HitEffectComponent->bAutoActivate = false;
+	LightningHitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
 	ShockEffectComponent->bAutoActivate = false;
@@ -116,6 +116,9 @@ void AMonster::InitEffect()
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.LightningHitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.LightningHitEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
 	MonsterEffect.DebuffEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.DebuffEffectScale = FVector(1.0f, 1.0f, 1.0f);
@@ -328,7 +331,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		}
 		if (bIsShock)
 		{
-			STGameInstance->AddChainMonster(this);
 			Chain(PlayerMainAttribute, Damage);
 		}
 	}
@@ -393,9 +395,6 @@ void AMonster::CalcDef()
 	if (Morbit != nullptr)
 	{
 		MonsterInfo.CurrentDef -= AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB;
-		STARRYLOG(Log, TEXT("%f"), AttackedInfo.Mana);
-		if (CheckPlayerIsBehindMonster())
-			MonsterInfo.CurrentDef = 0;
 	}
 
 
@@ -423,7 +422,8 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	MonsterAIController->Attacked();
 	MonsterAIController->StopMovement();
-
+	if (MonsterInfo.CurrentDef == 0)
+		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
 	return MonsterInfo.ArbitraryConstValueA * (Damage / MonsterInfo.CurrentDef) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
@@ -609,7 +609,7 @@ TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 		GetActorLocation(),
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(MonsterAttributeDebuff.TransitionRange * 100.0f),
+		FCollisionShape::MakeSphere(DetectRange * 100.0f),
 		CollisionQueryParam
 	);
 
@@ -621,7 +621,6 @@ void AMonster::SetActive()
 	{
 		HpBarWidget->SetHiddenInGame(true);
 		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
 
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
@@ -779,7 +778,8 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 
 			if (Monster->GetAttribute() == MonsterInfo.MonsterAttribute)
 			{
-				STGameInstance->AddChainMonster(Monster);
+				if (STGameInstance->GetChainMonsterList().Num() < 2)
+					STGameInstance->AddChainMonster(Monster);
 			}
 			/*
 			//몬스터의 속성중
@@ -798,8 +798,10 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 		if (STGameInstance->GetChainMonsterList().Num() != 0)
 		{
-			// Spawn ChainLightningActor
-			// Set ChainLightningDamage
+			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(GetActorLocation(), FRotator::ZeroRotator);
+			ChainLightning->Init();
+			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
+			ChainLightning->SetDamage(Damage);
 		}
 	}
 }
@@ -904,7 +906,17 @@ void AMonster::Tick(float DeltaTime)
 	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
-	
+	if (bDeadWait)
+	{
+		DeadWaitTimer += DeltaTime;
+		if (DeadWaitTimer >= DeadWaitTime)
+		{
+			SetActorTickEnabled(false);
+			SetActorHiddenInGame(true);
+		}
+		return;
+	}
+
 	if (!bIsDead)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -915,7 +927,7 @@ void AMonster::Tick(float DeltaTime)
 			HpBarWidget->SetHiddenInGame(false);
 		}
 	}
-	
+
 
 	if (bIsBurn)
 	{
@@ -993,7 +1005,7 @@ void AMonster::Tick(float DeltaTime)
 			bIsAssemble = false;
 		}
 	}
-	
+
 	if (bIsAttacked) // 0.2
 	{
 		KnockBackTime += DeltaTime;
@@ -1034,26 +1046,33 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	if (CompName == FindName)
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
-	
+
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		Player->HitStopEvent();
 		HitStopEvent();
+		return;
 	}
-	FString ActorName = OtherActor->GetName();
-	FindName = "ChainLightning";
-	if (ActorName == FindName)
+
+	auto ChainLightningComp = Cast<USphereComponent>(OtherComp);
+	if (ChainLightningComp != nullptr)
 	{
-		auto ChainLightning = Cast<AChainLightning>(OtherActor);
-		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		if (STGameInstance->GetChainMonsterList().Num() != 0)
+		FString CompProfileName = ChainLightningComp->GetCollisionProfileName().ToString();
+		FindName = "ChainLightning";
+		if (CompProfileName == FindName)
 		{
-			for (auto& Elem : STGameInstance->GetChainMonsterList())
+			auto ChainLightning = Cast<AChainLightning>(OtherActor);
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			if (STGameInstance->GetChainMonsterList().Num() != 0)
 			{
-				if (Elem == this)
+				for (auto& Elem : STGameInstance->GetChainMonsterList())
 				{
-					OnDamage(ChainLightning->GetDamage());
-					PrintLightningHitEffect();
-					ChainLightning->AddCount();
+					if (Elem == this)
+					{
+						OnDamage(ChainLightning->GetDamage());
+						PrintLightningHitEffect();
+						LightningHitEffectComponent->SetActive(true);
+						LightningHitEffectComponent->ForceReset();
+					}
 				}
 			}
 		}

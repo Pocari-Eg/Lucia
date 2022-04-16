@@ -123,7 +123,7 @@ protected:
 	bool bIsAttacked;
 	bool bIsGroggy;
 	bool bIsDead;
-
+	bool bDeadWait;
 #pragma region Sound
 	//사운드 이벤트
 	UPROPERTY(EditAnywhere, Category = "FMOD")
@@ -162,6 +162,7 @@ private:
 	FVector KnockBackDir;
 	float KnockBackTimer;
 	float ShowUITimer;
+	float DeadWaitTimer;
 
 	AMonsterAIController* MonsterAIController;
 

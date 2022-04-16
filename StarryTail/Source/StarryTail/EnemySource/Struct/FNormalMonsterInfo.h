@@ -37,6 +37,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DetectMonsterRange; // 비헤이비어 트리 Detect 몬스터 전이 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DeadWaitTime; // 사망시 사라지는 대기시간
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float KnockBackPower;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ArbitraryConstValueA; // 임의의 상수 A

@@ -51,6 +51,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.TraceRange = 1000.0f;
 
 	MonsterInfo.KnockBackPower = 50.0f;
+	MonsterInfo.DeadWaitTime = 2.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 }
@@ -268,7 +269,7 @@ void AMorbit::PostInitializeComponents()
 		});
 	MonsterAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
-			SetActorHiddenInGame(true);
+			bDeadWait = true;
 		});
 	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }
