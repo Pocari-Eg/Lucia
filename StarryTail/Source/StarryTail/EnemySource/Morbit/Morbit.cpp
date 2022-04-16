@@ -58,7 +58,7 @@ void AMorbit::InitMonsterInfo()
 void AMorbit::InitCollision()
 {
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
-	GetCapsuleComponent()->SetCapsuleHalfHeight(60.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(150.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(34.0f);
 }
 void AMorbit::InitMesh()
@@ -69,7 +69,7 @@ void AMorbit::InitMesh()
 	}
 
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
-	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -60.0f), FRotator(0.0f, 270.0f, 0.0f));
+	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -150.0f), FRotator(0.0f, 270.0f, 0.0f));
 	GetMesh()->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
 }
 void AMorbit::InitAnime()
