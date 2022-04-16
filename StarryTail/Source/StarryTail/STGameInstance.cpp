@@ -15,6 +15,7 @@ void USTGameInstance::SetPlayer(AIreneCharacter* IreneCharacter)
 		STARRYLOG(Log, TEXT("Failed SetPlayer"));
 	STARRYLOG(Log, TEXT("SetPlayer Complete : %s"), *Player->GetName());
 }
+#pragma region MonsterDebuff
 AMonster* USTGameInstance::GetAttributeEffectMonster()
 {
 	return AttributeEffectMonster;
@@ -29,11 +30,23 @@ void USTGameInstance::ResetAttributeEffectMonster()
 {
 	AttributeEffectMonster = nullptr;
 }
+void USTGameInstance::AddChainMonster(AMonster* Monster)
+{
+	ChainMonsterList.Add(Monster);
+}
+TArray<AMonster*> USTGameInstance::GetChainMonsterList()
+{
+	return ChainMonsterList;
+}
+void USTGameInstance::ResetChainMonsterList()
+{
+	ChainMonsterList.Empty();
+}
+#pragma endregion
 
 #pragma region Occupy
 void USTGameInstance::OnFirstOccupy()
 {
-
 	if (IsFirstOccupied == false)
 	{
 		IsFirstOccupied = true;

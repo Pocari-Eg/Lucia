@@ -51,8 +51,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ChainRange; // Chain 효과 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ChainTime; // Chain 효과 지속 시간
-	float ChainTimer; // Chain 지속시간 재는 변수
+		float ChainSpeed; // Chain 효과 전이속도
 public:
 	//원소별 디버프 중첩 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
