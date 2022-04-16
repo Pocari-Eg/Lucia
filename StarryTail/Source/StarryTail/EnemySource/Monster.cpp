@@ -798,10 +798,20 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 		if (STGameInstance->GetChainMonsterList().Num() != 0)
 		{
+			FName path = TEXT("Blueprint'/Game/BluePrint/Monster/BP_ChainLightning.BP_ChainLightning'");
+			UBlueprint* ObjectToSpawn =
+				Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *path.ToString()));
+
+			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(ObjectToSpawn->GeneratedClass, GetActorLocation(), GetActorRotation());
+			ChainLightning->Init();
+			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
+			ChainLightning->SetDamage(Damage);
+			/*
 			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(GetActorLocation(), FRotator::ZeroRotator);
 			ChainLightning->Init();
 			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
 			ChainLightning->SetDamage(Damage);
+			*/
 		}
 	}
 }
