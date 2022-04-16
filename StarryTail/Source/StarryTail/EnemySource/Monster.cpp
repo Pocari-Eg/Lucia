@@ -60,7 +60,7 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
-	MonsterAttributeDebuff.ShockTime = 1.0f;
+	MonsterAttributeDebuff.ShockTime = 2.0f;
 
 	MonsterAttributeDebuff.TransitionRange = 2.0f;
 
@@ -70,7 +70,7 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.AssembleTimer = 0.0f;
 
 	MonsterAttributeDebuff.ChainRange = 10.0f;
-	MonsterAttributeDebuff.ChainSpeed = 2000.0f;
+	MonsterAttributeDebuff.ChainSpeed = 2500.0f;
 
 	bIsBurn = false;
 	bIsFlooding = false;
@@ -909,7 +909,7 @@ void AMonster::Tick(float DeltaTime)
 	if (bDeadWait)
 	{
 		DeadWaitTimer += DeltaTime;
-		if (DeadWaitTimer >= DeadWaitTime)
+		if (DeadWaitTimer >= MonsterInfo.DeadWaitTime)
 		{
 			SetActorTickEnabled(false);
 			SetActorHiddenInGame(true);
