@@ -150,7 +150,7 @@ AIreneCharacter::AIreneCharacter()
 	//초기 속성
 	Attribute = EAttributeKeyword::e_Fire;
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/Developers/Pocari/Collections/Widget/BP_PlayerHud.BP_PlayerHud_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/UI/BluePrint/BP_PlayerHud.BP_PlayerHud_C"));
 	if (UI_PlayerHud.Succeeded())
 	{
 
