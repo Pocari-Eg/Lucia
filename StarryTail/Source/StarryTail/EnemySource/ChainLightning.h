@@ -28,6 +28,11 @@ private:
 	//Var
 	USphereComponent* Collision;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess))
+		UParticleSystem* LightningEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* LightningEffectComponent;
+
 	TArray<FVector> MoveTargetList;
 	FVector MoveDir;
 	FVector NewLocation;
@@ -36,6 +41,13 @@ private:
 	float MoveSpeed;
 	int TargetCount;
 	int Count;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = WaitTime, Meta = (AllowPrivateAccess = true))
+		float DeadWaitTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = WaitTime, Meta = (AllowPrivateAccess = true))
+		float DeadWaitTimer;
+
+	bool bDead;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

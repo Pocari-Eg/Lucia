@@ -15,11 +15,18 @@ AChainLightning::AChainLightning()
 	Collision->InitSphereRadius(0.01f);
 	Collision->SetCollisionProfileName(TEXT("ChainLightning"));
 
+	LightningEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LightningEffect"));;
+	LightningEffectComponent->SetupAttachment(RootComponent);
+	LightningEffectComponent->bAutoActivate = true;
+
 	MoveSpeed = 0.0f;
 	Count = 0;
 }
 void AChainLightning::Init()
 {
+	LightningEffectComponent->SetRelativeLocation(FVector(0, 0, -150));
+	LightningEffectComponent->SetTemplate(LightningEffect);
+
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 
 	for (auto& Elem : STGameInstance->GetChainMonsterList())
@@ -48,9 +55,8 @@ void AChainLightning::AddCount()
 	if (Count == TargetCount)
 	{
 		SetActorEnableCollision(false);
-		SetActorTickEnabled(false);
 		STGameInstance->ResetChainMonsterList();
-		Destroy();
+		bDead = true;
 	}
 }
 void AChainLightning::CheckDistance()
@@ -70,8 +76,20 @@ void AChainLightning::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (bDead)
+	{
+		DeadWaitTimer += DeltaTime;
+		if (DeadWaitTimer >= DeadWaitTime)
+		{
+			LightningEffectComponent->SetActive(false);
+			Destroy();
+		}
+		return;
+	}
+
 	if (Count == TargetCount)
 		return;
+
 
 	MoveDir = MoveTargetList[Count] - GetActorLocation();
 	MoveDir.Normalize();
