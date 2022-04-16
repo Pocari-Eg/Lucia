@@ -30,6 +30,8 @@ public:
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FieldofView = 75;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxCameraLagSpeed = 5.0f;
 
 	// 점프시작파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
