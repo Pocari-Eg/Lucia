@@ -1378,7 +1378,6 @@ FName AIreneCharacter::GetAnimName()
 	{
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 		{
-
 			return FName("B_Attack_1");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
@@ -1400,11 +1399,9 @@ FName AIreneCharacter::GetAnimName()
 				break;
 			case EAttributeKeyword::e_Water:
 				AttackSound->SetParameter("Attributes", 2.0f);
-
 				break;
 			case EAttributeKeyword::e_Thunder:
 				AttackSound->SetParameter("Attributes", 3.0f);
-
 				break;
 			default:
 				break;
@@ -1413,13 +1410,10 @@ FName AIreneCharacter::GetAnimName()
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_None)
 		{
-
 			return FName("B_Attack_5_N");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Fire)
 		{
-			STARRYLOG_S(Warning);
-
 			return FName("B_Attack_5_F");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && Attribute == EAttributeKeyword::e_Water)
