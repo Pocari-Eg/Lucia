@@ -32,17 +32,17 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 
 		//무기
-		//FName WeaponSocket(TEXT("hand_rSocket"));
-		//if (GetMesh()->DoesSocketExist(WeaponSocket))
-		//{
-		//	Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-		//	static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/IreneSword/PC_sworddummy02.PC_sworddummy02"));
-		//	if (SK_WEAPON.Succeeded())
-		//	{
-		//		Weapon->SetSkeletalMesh(SK_WEAPON.Object);
-		//	}
-		//	Weapon->SetupAttachment(GetMesh(), WeaponSocket);
-		//}
+		FName WeaponSocket(TEXT("hand_rSocket"));
+		if (GetMesh()->DoesSocketExist(WeaponSocket))
+		{
+			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Model/Irene/Test_Sw.Test_Sw"));
+			if (SK_WEAPON.Succeeded())
+			{
+				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+			}
+			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+		}
 		
 		//카메라
 		//FName CameraSocket(TEXT("Hip_Socket"));
@@ -445,7 +445,7 @@ void AIreneCharacter::MoveAuto()
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
 		{
-			MoveAutoDirection += CameraComp->GetForwardVector();
+			MoveAutoDirection += GetActorForwardVector();
 			MoveAutoDirection.Normalize();
 		}
 
@@ -873,19 +873,19 @@ void AIreneCharacter::DodgeKeyword()
 		// w키나 아무방향 없으면 정면으로 이동
 		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 		{
-			MoveAutoDirection += CameraComp->GetForwardVector();
+			MoveAutoDirection += GetActorForwardVector() + CameraComp->GetForwardVector();
 		}
 		if (MoveKey[1] != 0)
 		{
-			MoveAutoDirection += CameraComp->GetRightVector() * -1;
+			MoveAutoDirection += GetActorForwardVector() + CameraComp->GetRightVector() * -1;
 		}
 		if (MoveKey[2] != 0)
 		{
-			MoveAutoDirection += CameraComp->GetForwardVector() * -2;
+			MoveAutoDirection += GetActorForwardVector() + CameraComp->GetForwardVector() * -2;
 		}
 		if (MoveKey[3] != 0)
 		{
-			MoveAutoDirection += CameraComp->GetRightVector();
+			MoveAutoDirection += GetActorForwardVector() + CameraComp->GetRightVector();
 		}
 		MoveAutoDirection.Normalize();
 
@@ -995,7 +995,7 @@ void AIreneCharacter::AttackStartComboState()
 }
 void AIreneCharacter::AttackEndComboState()
 {
-	//Weapon->SetGenerateOverlapEvents(false);
+	Weapon->SetGenerateOverlapEvents(false);
 	bUseLeftButton = false;
 	bUseRightButton = false;
 	bUseMP = false;
@@ -1013,7 +1013,7 @@ void AIreneCharacter::AttackCheck()
 {
 	if (IreneAnim->GetCurrentActiveMontage() != NULL)
 	{
-		//Weapon->SetGenerateOverlapEvents(true);
+		Weapon->SetGenerateOverlapEvents(true);
 		AttackSound->SoundPlay2D();
 		FindNearMonster();
 	}
@@ -1021,7 +1021,7 @@ void AIreneCharacter::AttackCheck()
 void AIreneCharacter::AttackStopCheck()
 {
 	IsTimeStopping = false;
-	//Weapon->SetGenerateOverlapEvents(false);
+	Weapon->SetGenerateOverlapEvents(false);
 }
 void AIreneCharacter::DoAttack()
 {
