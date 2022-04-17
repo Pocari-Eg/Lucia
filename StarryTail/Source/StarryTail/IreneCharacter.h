@@ -59,8 +59,8 @@ private:
 	IreneFSM* CharacterState;
 
 	// 무기 매쉬
-	UPROPERTY(EditAnywhere)
-	USkeletalMeshComponent* Weapon;
+	//UPROPERTY(EditAnywhere)
+	//USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
 	UPROPERTY()
@@ -282,16 +282,16 @@ private:
 #pragma region HitFeel
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
-		void  HitStopEvent();
+	void HitStopEvent();
 
 	UPROPERTY(BluePrintReadWrite)
-		bool CameraShakeOn;
+	bool CameraShakeOn;
 
 	UPROPERTY(BluePrintReadWrite)
-		bool  GoTargetOn;
+	bool GoTargetOn;
 
 	UPROPERTY(BluePrintReadWrite)
-		bool IsTimeStopping;
+	bool IsTimeStopping;
 #pragma endregion HitFeel
 //스탑워치 
 	//void WatchContorl();

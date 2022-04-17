@@ -11,8 +11,11 @@ UIreneAnimInstance::UIreneAnimInstance()
 	IsSprintState = false;
 	IsSprintStop = false;
 	IreneState = StateEnum::Idle;
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+	//static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Model/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Model/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
 	if(ATTACK_MONTAGE.Succeeded())
 	{
