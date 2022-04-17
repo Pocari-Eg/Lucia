@@ -59,8 +59,8 @@ private:
 	IreneFSM* CharacterState;
 
 	// 무기 매쉬
-	//UPROPERTY(EditAnywhere)
-	//USkeletalMeshComponent* Weapon;
+	UPROPERTY(EditAnywhere)
+	USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
 	UPROPERTY()
