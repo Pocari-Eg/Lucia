@@ -32,12 +32,12 @@ EBTNodeResult::Type UBTTaskMbBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Morbit->GetController(), Player->GetActorLocation());
 
-	if (Morbit->GetDistanceTo(Player) <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
+	if (Morbit->GetDistanceToPlayer() <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::CanMeleeAttackKey, true);
 		return EBTNodeResult::Succeeded;
 	}
-	if (Morbit->GetDistanceTo(Player) > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::TraceRangeKey))
+	if (Morbit->GetDistanceToPlayer() > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::TraceRangeKey))
 	{
 		Morbit->Walk();
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMbAIController::PlayerKey, nullptr);

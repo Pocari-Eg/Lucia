@@ -26,7 +26,7 @@ EBTNodeResult::Type UBTTaskMbBattleIdle::ExecuteTask(UBehaviorTreeComponent& Own
 	if (!Morbit->GetMonsterAnimInstance()->GetBattleIdleIsPlaying() && !Morbit->GetMonsterAnimInstance()->GetAttackIsPlaying())
 		Morbit->GetMonsterAnimInstance()->PlayBattleIdleMontage();
 
-	if (Morbit->GetDistanceTo(Player) > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
+	if (Morbit->GetDistanceToPlayer() > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::CanMeleeAttackKey, false);
 		return EBTNodeResult::Succeeded;

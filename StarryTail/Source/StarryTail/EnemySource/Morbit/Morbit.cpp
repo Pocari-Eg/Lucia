@@ -184,8 +184,8 @@ void AMorbit::AttackCheck()
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		Hit,
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange),
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -150),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -150),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel6,
 		FCollisionShape::MakeSphere(20.0f),

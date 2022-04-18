@@ -147,6 +147,10 @@ float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
 }
+FVector AMonster::GetLocation() const
+{
+	return GetActorLocation() + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+}
 /*
 TArray<EAttributeKeyword> AMonster::GetMainAttributeDef() const
 {
@@ -156,6 +160,12 @@ TArray<EAttributeKeyword> AMonster::GetMainAttributeDef() const
 EAttributeKeyword AMonster::GetAttribute() const
 {
 	return MonsterInfo.MonsterAttribute;
+}
+float AMonster::GetDistanceToPlayer() const
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	FVector ActorMeshLocation = GetActorLocation() + FVector(0, 0, -150);
+	return (ActorMeshLocation - STGameInstance->GetPlayer()->GetActorLocation()).Size();
 }
 UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 {
@@ -394,7 +404,7 @@ void AMonster::CalcDef()
 	auto Morbit = Cast<AMorbit>(this);
 	if (Morbit != nullptr)
 	{
-		MonsterInfo.CurrentDef -= AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB;
+		MonsterInfo.CurrentDef -= ((AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB) / 2.5f);
 	}
 
 
@@ -422,9 +432,9 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	MonsterAIController->Attacked();
 	MonsterAIController->StopMovement();
-	if (MonsterInfo.CurrentDef == 0)
+	if ((MonsterInfo.CurrentDef / 10.0f) < 1)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
-	return MonsterInfo.ArbitraryConstValueA * (Damage / (MonsterInfo.CurrentDef / 2.0f)) * (AttackedInfo.AttributeArmor / 100.0f);
+	return MonsterInfo.ArbitraryConstValueA * (Damage / (MonsterInfo.CurrentDef / 10.0f)) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
 {
@@ -835,10 +845,10 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 #pragma endregion
 void AMonster::PrintHitEffect(FVector AttackedPosition)
 {
-	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -20.0f));
-	FVector CompToMonsterDir = GetActorLocation() - (AttackedPosition + FVector(0.0f, 0.0f, -20.0f));
+	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
+	FVector CompToMonsterDir = GetActorLocation() - (AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
 	CompToMonsterDir.Normalize();
-	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -20.0f)) + (CompToMonsterDir * (Distance / 2.0f));
+	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -150.0f)) + (CompToMonsterDir * (Distance / 2.0f));
 
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
@@ -1161,21 +1171,21 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		case EAttributeKeyword::e_Water:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 200.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor = 200.0f;
+				AttackedInfo.AttributeArmor = 50.0f;
 			}
 			break;
 		case EAttributeKeyword::e_Thunder:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 200.0f;
+				AttackedInfo.AttributeArmor = 50.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 200.0f;
 			}
 		}
 
@@ -1197,11 +1207,11 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		{
 			CalcDef();
 			CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
-			CalcHp(CalcManaAttackDamage(DamageAmount));
+			CalcHp(CalcNormalAttackDamage(DamageAmount) / 3.0);
 		}
 		else
 		{
-			CalcHp(CalcNormalAttackDamage(DamageAmount));
+			CalcHp(CalcNormalAttackDamage(DamageAmount) / 1.5);
 		}
 		InitAttackedInfo();
 		return FinalDamage;
