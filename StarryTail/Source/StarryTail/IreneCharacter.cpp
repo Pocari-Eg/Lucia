@@ -57,8 +57,8 @@ AIreneCharacter::AIreneCharacter()
 		//}
 
 		//콜리전 적용
-		//Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
-		//Weapon->SetGenerateOverlapEvents(false);
+		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
