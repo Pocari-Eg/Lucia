@@ -434,7 +434,7 @@ void AIreneCharacter::MoveAuto()
 		FVector tar = FMath::Lerp(PlayerPosVec, TargetPosVec, FollowTargetAlpha);
 		GetCapsuleComponent()->SetRelativeLocation(tar);
 
-		if (FVector::Dist(tar, TargetPosVec) <= 1)
+		if (FVector::Dist(tar, TargetPosVec) <= 50)
 		{
 			if (GetAnimName() == FName("B_Attack_1"))
 				GoTargetOn = true;
@@ -1327,6 +1327,11 @@ void AIreneCharacter::ChangeStateAndLog(State* newState)
 		}
 		CharacterState->ChangeState(newState);
 		IreneAnim->SetIreneStateAnim(CharacterState->getState());
+
+		if (newState == RunState::getInstance() || newState == SprintState::getInstance())
+			Weapon->SetVisibility(false);
+		else
+			Weapon->SetVisibility(true);
 	}
 }
 
