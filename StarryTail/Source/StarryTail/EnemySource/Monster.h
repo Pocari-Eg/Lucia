@@ -32,6 +32,8 @@ public:
 	float GetDetectMonsterRange() const;
 	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
 	EAttributeKeyword GetAttribute() const;
+	float GetDistanceToPlayer() const;
+	FVector GetLocation() const;
 
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 

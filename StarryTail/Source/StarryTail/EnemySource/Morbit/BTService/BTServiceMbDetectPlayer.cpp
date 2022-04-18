@@ -24,7 +24,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 		return;
 
 	UWorld* World = Morbit->GetWorld();
-	FVector Center = Morbit->GetActorLocation() + (-Morbit->GetActorForwardVector() * 50.0f);
+	FVector Center = Morbit->GetLocation() + (-Morbit->GetActorForwardVector() * 50.0f);
 
 	FVector CenterBottom = Center;
 	CenterBottom.Z -= 85.0f;
@@ -67,7 +67,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 				{
 					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
 						World,
-						Morbit->GetActorLocation(), // SphereTrace 시작 위치
+						Morbit->GetLocation(), // SphereTrace 시작 위치
 						Player->GetActorLocation(), // SphereTrace 종료 위치
 						5.0f,
 						ETraceTypeQuery::TraceTypeQuery4,
@@ -85,7 +85,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 				{
 					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
 						World,
-						Morbit->GetActorLocation(),
+						Morbit->GetLocation(),
 						Player->GetActorLocation(),
 						5.0f,
 						ETraceTypeQuery::TraceTypeQuery4,
@@ -112,7 +112,7 @@ void UBTServiceMbDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8
 					if (Morbit->GetTestMode())
 						STARRYLOG(Warning, TEXT("Detect Player in SphereTrace"));
 
-					FVector TargetDir = Player->GetActorLocation() - Morbit->GetActorLocation();
+					FVector TargetDir = Player->GetActorLocation() - Morbit->GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
 
 					//Morbit의 정면으로 향하는 벡터와 플레이어로 향하는 벡터의 내적을 통해 각도를 구할 수 있다. 결과값은 Radian
