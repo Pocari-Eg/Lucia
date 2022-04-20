@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "IreneFSM.h"
 #include "Engine/DataTable.h"
 
 #include "PlayerCharacterDataStruct.generated.h"

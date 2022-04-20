@@ -9,12 +9,10 @@
 #include "PlayerCharacterDataStruct.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "GameFramework/CharacterMovementComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "IreneFSM.h"
 
 //박찬영
-#include "StopWatch.h"
+//#include "StopWatch.h"
 #include "Components/WidgetComponent.h"
 
 #include "SoundManager.h"
@@ -56,7 +54,7 @@ private:
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
 	// 캐릭터 상태
-	IreneFSM* CharacterState;
+	FIreneFSM* CharacterState;
 
 	// 무기 매쉬
 	UPROPERTY(EditAnywhere)
@@ -98,13 +96,15 @@ private:
 #pragma endregion MoveData
 
 #pragma region AttackData
+	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
 
 	//캐릭터 속성
 	UPROPERTY(EditAnywhere)
 	EAttributeKeyword Attribute;
-
+	
+	UPROPERTY()
 	UDataTable* AttackDataTable;
 
 	// 타켓 추적 유무
@@ -182,9 +182,9 @@ protected:
 	virtual void BeginPlay() override;
 
 	//Called when our Actor is destroyed during Gameplay.
-	virtual void Destroyed();
+	virtual void Destroyed() override;
 
-	//Call Gamemode class to Restart Player Character.
+	//Call Game mode class to Restart Player Character.
 	void CallRestartPlayer();
 
 private:
@@ -238,7 +238,7 @@ private:
 
 #pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(State* newState);
+	void ChangeStateAndLog(FState* NewState);
 	void ActionEndChangeMoveState();
 	FName GetAnimName();
 #pragma endregion State
@@ -252,8 +252,7 @@ private:
 	void AttackStopCheck();
 	void DoAttack();
 
-	FAttackDataTable* GetNameAtDataTable(FName value) { if (value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(value, "")); return nullptr; }
-
+	FAttackDataTable* GetNameAtDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 
 #pragma endregion Attack
 	
@@ -296,6 +295,6 @@ private:
 	bool IsTimeStopping;
 #pragma endregion HitFeel
 //스탑워치 
-	//void WatchContorl();
+	//void WatchControl();
 	//void WatchReset();
 };
