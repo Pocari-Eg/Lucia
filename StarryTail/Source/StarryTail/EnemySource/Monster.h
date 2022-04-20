@@ -10,6 +10,7 @@
 #include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
+#include "ChainLightning.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Monster.generated.h"
@@ -58,6 +59,8 @@ public:
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
+
+	TSubclassOf<AChainLightning> ChainBP;
 
 protected:
 	virtual void InitMonsterInfo() {};
