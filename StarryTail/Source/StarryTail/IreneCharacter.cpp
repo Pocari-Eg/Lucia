@@ -212,7 +212,7 @@ void AIreneCharacter::BeginPlay()
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 0.0f);
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
-	WalkSound->SetVolume(1.2f);
+	WalkSound->SetVolume(WalkSoundVolume);
 	AttackSound->SetParameter("Material", 0.0f);
 
 }
