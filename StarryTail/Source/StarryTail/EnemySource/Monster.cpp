@@ -4,7 +4,6 @@
 #include "Monster.h"
 #include "./Morbit/Morbit.h"
 #include "MonsterAIController.h"
-#include "ChainLightning.h"
 //UI
 #include "../STGameInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
@@ -34,12 +33,17 @@ AMonster::AMonster()
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/BP_HPBar.BP_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<AChainLightning> ChainBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_ChainLightning'"));
 
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
 		HpBarWidget->SetDrawSize(FVector2D(96, 20.0f));
 		HpBarWidget->bAutoActivate = false;
+	}
+	if (ChainBlueprint.Succeeded())
+	{
+		ChainBP = ChainBlueprint.Class;
 	}
 }
 #pragma region Init
@@ -808,11 +812,13 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 		if (STGameInstance->GetChainMonsterList().Num() != 0)
 		{
-			FName path = TEXT("Blueprint'/Game/BluePrint/Monster/BP_ChainLightning.BP_ChainLightning'");
-			UBlueprint* ObjectToSpawn =
-				Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *path.ToString()));
+			if (ChainBP == nullptr)
+			{
+				STARRYLOG(Log, TEXT("Failed Load"));
+				return;
+			}
 
-			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(ObjectToSpawn->GeneratedClass, GetActorLocation(), GetActorRotation());
+			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(ChainBP, GetActorLocation(), GetActorRotation());
 			ChainLightning->Init();
 			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
 			ChainLightning->SetDamage(Damage);
