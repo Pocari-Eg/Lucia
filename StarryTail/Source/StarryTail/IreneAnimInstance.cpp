@@ -10,32 +10,32 @@ UIreneAnimInstance::UIreneAnimInstance()
 	IsDead = false;
 	IsSprintState = false;
 	IsSprintStop = false;
-	IreneState = StateEnum::Idle;
+	IreneState = EStateEnum::Idle;
 	//static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
 	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Model/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Model/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Model/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_Attack_Montage(TEXT("/Game/Model/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
-	if(ATTACK_MONTAGE.Succeeded())
+	if(Attack_Montage.Succeeded())
 	{
-		AttackMontage = ATTACK_MONTAGE.Object;
+		AttackMontage = Attack_Montage.Object;
 	}
-	if (Effect_ATTACK_MONTAGE.Succeeded())
+	if (Effect_Attack_Montage.Succeeded())
 	{
-		EffectAttackMontage = Effect_ATTACK_MONTAGE.Object;
+		EffectAttackMontage = Effect_Attack_Montage.Object;
 	}
 }
 
-void UIreneAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
+void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	auto Pawn = TryGetPawnOwner();
+	const auto Pawn = TryGetPawnOwner();
 	if(::IsValid(Pawn))
 	{
 		CurrentPawnSpeed = Pawn->GetVelocity().Size();
-		auto Character = Cast<ACharacter>(Pawn);
+		const auto Character = Cast<ACharacter>(Pawn);
 		if(Character)
 		{
 			IsInAir = Character->GetMovementComponent()->IsFalling();
@@ -52,38 +52,38 @@ void UIreneAnimInstance::PlayEffectAttackMontage()
 	Montage_Play(EffectAttackMontage, 1.0f);
 }
 
-void UIreneAnimInstance::JumpToAttackMontageSection(int32 NewSection)
+void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), AttackMontage);
 }
-void UIreneAnimInstance::JumpToEffectAttackMontageSection(int32 NewSection)
+void UIreneAnimInstance::JumpToEffectAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), EffectAttackMontage);
 }
 
-void UIreneAnimInstance::AnimNotify_AttackHitCheck()
+void UIreneAnimInstance::AnimNotify_AttackHitCheck() const
 {
 	OnAttackHitCheck.Broadcast();
 }
 
-void UIreneAnimInstance::AnimNotify_NextAttackCheck()
+void UIreneAnimInstance::AnimNotify_NextAttackCheck() const
 {
 	OnNextAttackCheck.Broadcast();
 }
 
-void UIreneAnimInstance::AnimNotify_AttackStopCheck()
+void UIreneAnimInstance::AnimNotify_AttackStopCheck() const
 {
 	OnAttackStopCheck.Broadcast();
 }
 
-void UIreneAnimInstance::AnimNotify_FootStep()
+void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
 }
 
-FName UIreneAnimInstance::GetAttackMontageSectionName(int32 Section)
+FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
 }

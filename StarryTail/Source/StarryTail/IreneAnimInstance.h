@@ -36,7 +36,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsSprintStop;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	StateEnum IreneState;
+	EStateEnum IreneState;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -46,18 +46,18 @@ private:
 	
 public:
 	UIreneAnimInstance();
-	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 
 	void PlayAttackMontage();
 	void PlayEffectAttackMontage();
-	void JumpToAttackMontageSection(int32 NewSection);
-	void JumpToEffectAttackMontageSection(int32 NewSection);
+	void JumpToAttackMontageSection(const int32 NewSection);
+	void JumpToEffectAttackMontageSection(const int32 NewSection);
 
-	void SetDeadAnim(bool value) { IsDead = value; }
-	void SetSprintStateAnim(bool value) { IsSprintState = value; }
-	void SetSprintStopAnim(bool value) { IsSprintStop = value; }
-	void SetIreneStateAnim(StateEnum value) { IreneState = value; }
-	void SetAttribute(EAttributeKeyword value) { Attribute = value; }
+	void SetDeadAnim(const bool Value) { IsDead = Value; }
+	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
+	void SetSprintStopAnim(const bool Value) { IsSprintStop = Value; }
+	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
+	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
@@ -67,12 +67,12 @@ protected:
 
 private:
 	UFUNCTION()
-	void AnimNotify_AttackHitCheck();
+	void AnimNotify_AttackHitCheck() const;
 	UFUNCTION()
-	void AnimNotify_NextAttackCheck();
+	void AnimNotify_NextAttackCheck() const;
 	UFUNCTION()
-	void AnimNotify_AttackStopCheck();
+	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()
-	void AnimNotify_FootStep();
-	FName GetAttackMontageSectionName(int32 Section);
+	void AnimNotify_FootStep() const;
+	FName GetAttackMontageSectionName(const int32 Section);
 };
