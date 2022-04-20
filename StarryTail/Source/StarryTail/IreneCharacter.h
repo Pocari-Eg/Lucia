@@ -141,10 +141,12 @@ public:
 
 #pragma region Sound
 	//사운드 이벤트
-	UPROPERTY(EditAnywhere, Category = "FMOD")
-		class UFMODEvent* AttackEvent;
-	UPROPERTY(EditAnywhere, Category = "FMOD")
-		class UFMODEvent* WalkEvent;
+public:
+	UPROPERTY(EditAnyWhere,Category="SOUND_VOLUME",meta=(ClampMin="0", ClampMax = "1"))
+	float WalkSoundVolume;
+private:
+	class UFMODEvent* AttackEvent;
+	class UFMODEvent* WalkEvent;
 
 	//사운드 
 	SoundManager* WalkSound;
