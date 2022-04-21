@@ -31,6 +31,7 @@ public:
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
+	float GetHp() const;
 	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
