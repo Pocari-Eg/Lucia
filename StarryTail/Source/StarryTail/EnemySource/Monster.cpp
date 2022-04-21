@@ -239,6 +239,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 			return;
 	}
 	*/
+	/* 20220421 수정
 	if (MonsterInfo.MonsterAttribute == Attribute)
 	{
 		return;
@@ -256,6 +257,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 		MonsterAttributeDebuff.ThunderDebuffStack++;
 		break;
 	}
+	*/
 }
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
@@ -364,7 +366,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.FireDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
@@ -381,7 +382,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.WaterDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Thunder:
@@ -398,7 +398,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.ThunderDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	}
@@ -496,6 +495,7 @@ float AMonster::CalcBurnDamage(float Damage)
 }
 void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
+	/* 20220421 수정
 	TMap<EAttributeKeyword, int> AttributeDebuffMap;
 
 	AttributeDebuffMap.Add(EAttributeKeyword::e_Fire, MonsterAttributeDebuff.FireDebuffStack);
@@ -526,6 +526,7 @@ void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 			return;
 		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
 	}
+	*/
 }
 void AMonster::CalcHp(float Damage)
 {
@@ -742,7 +743,7 @@ void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damag
 			if (Monster == nullptr)
 				continue;
 
-			Monster->AddDebuffStack(AttackedAttribute);
+			// Monster->AddDebuffStack(AttackedAttribute);
 			Monster->SetDebuff(AttackedAttribute, Damage);
 			Monster->OnDamage(Damage);
 		}
@@ -833,9 +834,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 {
-	CalcCurrentDebuffAttribute(AttackedAttribute);
-
-	switch (MonsterInfo.CurrentDebuffAttribute)
+	switch (AttackedAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		Burn();
