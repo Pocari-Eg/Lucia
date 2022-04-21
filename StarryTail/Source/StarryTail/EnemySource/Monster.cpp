@@ -28,7 +28,7 @@ AMonster::AMonster()
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
 
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
@@ -38,7 +38,7 @@ AMonster::AMonster()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(96, 20.0f));
+		HpBarWidget->SetDrawSize(FVector2D(96, 80.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
 	if (ChainBlueprint.Succeeded())
@@ -47,6 +47,14 @@ AMonster::AMonster()
 	}
 }
 #pragma region Init
+void AMonster::MarkerOnOff()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOnOff();
+	}
+}
 void AMonster::InitDebuffInfo()
 {
 	MonsterAttributeDebuff.FireDebuffStack = 0;
@@ -243,6 +251,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 			return;
 	}
 	*/
+	/* 20220421 수정
 	if (MonsterInfo.MonsterAttribute == Attribute)
 	{
 		return;
@@ -260,6 +269,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 		MonsterAttributeDebuff.ThunderDebuffStack++;
 		break;
 	}
+	*/
 }
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
@@ -368,7 +378,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.FireDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
@@ -385,7 +394,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.WaterDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Thunder:
@@ -402,7 +410,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.ThunderDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	}
@@ -500,6 +507,7 @@ float AMonster::CalcBurnDamage(float Damage)
 }
 void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
+	/* 20220421 수정
 	TMap<EAttributeKeyword, int> AttributeDebuffMap;
 
 	AttributeDebuffMap.Add(EAttributeKeyword::e_Fire, MonsterAttributeDebuff.FireDebuffStack);
@@ -530,6 +538,7 @@ void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 			return;
 		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
 	}
+	*/
 }
 void AMonster::CalcHp(float Damage)
 {
@@ -746,7 +755,7 @@ void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damag
 			if (Monster == nullptr)
 				continue;
 
-			Monster->AddDebuffStack(AttackedAttribute);
+			// Monster->AddDebuffStack(AttackedAttribute);
 			Monster->SetDebuff(AttackedAttribute, Damage);
 			Monster->OnDamage(Damage);
 		}
@@ -837,9 +846,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 {
-	CalcCurrentDebuffAttribute(AttackedAttribute);
-
-	switch (MonsterInfo.CurrentDebuffAttribute)
+	switch (AttackedAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		Burn();
