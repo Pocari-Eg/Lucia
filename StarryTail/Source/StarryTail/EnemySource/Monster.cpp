@@ -28,7 +28,7 @@ AMonster::AMonster()
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
 
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
@@ -38,7 +38,7 @@ AMonster::AMonster()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(96, 20.0f));
+		HpBarWidget->SetDrawSize(FVector2D(96, 80.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
 	if (ChainBlueprint.Succeeded())
@@ -47,6 +47,14 @@ AMonster::AMonster()
 	}
 }
 #pragma region Init
+void AMonster::MarkerOnOff()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOnOff();
+	}
+}
 void AMonster::InitDebuffInfo()
 {
 	MonsterAttributeDebuff.FireDebuffStack = 0;

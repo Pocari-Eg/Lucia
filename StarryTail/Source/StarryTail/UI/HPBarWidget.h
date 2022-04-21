@@ -21,7 +21,7 @@ public:
 	void UpdateHpWidget(float Hp);
 	void UpdateDefWidget(float Def);
 	void SetColor(FLinearColor Color);
-
+	void MarkerOnOff();
 
 protected:
 	// 위젯을 초기화
@@ -37,4 +37,6 @@ private:
 	class UProgressBar* HPProgressBar;	
 	UPROPERTY()
 	class UProgressBar* DefProgressBar;
+	UPROPERTY()
+	class UImage* MarkerImage;
 };
