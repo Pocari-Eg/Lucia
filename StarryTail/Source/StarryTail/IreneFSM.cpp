@@ -297,7 +297,7 @@ FString FIreneFSM::GetStateToString() const
 #pragma endregion IreneFSM
 
 #pragma region StateInterface
-FBaseGameEntity::FBaseGameEntity() :PlayTime(0.0f), bIsEnd(false)
+FBaseGameEntity::FBaseGameEntity(FPlayerCharacterDataStruct* Value) :PlayTime(0.0f), bIsEnd(false), CharacterDataStruct(Value)
 {
 
 }
@@ -316,15 +316,26 @@ void FIdleState::Enter(FBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Idle);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	HpTime = 0.0f;
+	BeforeTime = 0.0f;
 }
 
 void FIdleState::Execute(FBaseGameEntity* CurState)
 {
-
+	const float DeltaTime = CurState->PlayTime - BeforeTime;
+	HpTime += DeltaTime;
+	if(HpTime > 2)
+	{
+		HpTime -= 2;
+		//CurState->CharacterDataStruct->CurrentHP += 100;
+	}
+	BeforeTime = CurState->PlayTime;
 }
 
 void FIdleState::Exit(FBaseGameEntity* CurState)
 {
+	HpTime = 0.0f;
+	BeforeTime = 0.0f;
 	CurState->bIsEnd = true;
 }
 #pragma endregion IdleState

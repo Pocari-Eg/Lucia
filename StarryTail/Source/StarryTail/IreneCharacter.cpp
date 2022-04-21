@@ -103,7 +103,7 @@ AIreneCharacter::AIreneCharacter()
 	// 카메라 설정
 	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
 	CameraComp->SetupAttachment(SpringArmComp);
-	CameraComp->FieldOfView = CharacterDataStruct.FieldofView;
+	CameraComp->FieldOfView = CharacterDataStruct.FieldOfView;
 
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
 	bUseControllerRotationYaw = false;
@@ -121,7 +121,7 @@ AIreneCharacter::AIreneCharacter()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	// 상태 클래스 메모리 할당 후 정지 상태 적용
-	CharacterState = new FIreneFSM();
+	CharacterState = new FIreneFSM(&CharacterDataStruct);
 	CharacterState->SetState(FIdleState::GetInstance());
 
 	// IreneCharacter.h의 변수 초기화
@@ -342,6 +342,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
 			TargetMonster = nullptr;
 	}
+	
+	CharacterState->Update(DeltaTime);
 }
 
 #pragma region Move
@@ -716,16 +718,15 @@ void AIreneCharacter::LeftButton(float Rate)
 }
 void AIreneCharacter::RightButton(float Rate)
 {
-
 	if (CharacterState->GetStateToString().Compare(FString("Jump")) != 0 &&
 		CharacterState->GetStateToString().Compare(FString("Fall")) != 0 &&
 		CharacterState->GetStateToString().Compare(FString("Dodge")) != 0 &&
 		CharacterState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		const FAttackDataTable* table = GetNameAtDataTable(FName("ActionKeyword_1_F"));
-		if (table != nullptr)
+		const FAttackDataTable* Table = GetNameAtDataTable(FName("ActionKeyword_1_F"));
+		if (Table != nullptr)
 		{
-			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= table->MANA)
+			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false && CharacterDataStruct.CurrentMP >= Table->MANA)
 			{
 				bUseRightButton = true;
 				// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
@@ -740,7 +741,7 @@ void AIreneCharacter::RightButton(float Rate)
 				{
 					if (CharacterDataStruct.CanNextCombo)
 					{
-						if (!(CharacterDataStruct.CurrentMP == table->MANA && IreneAnim->GetCurrentActiveMontage()))
+						if (!(CharacterDataStruct.CurrentMP == Table->MANA && IreneAnim->GetCurrentActiveMontage()))
 							CharacterDataStruct.IsComboInputOn = true;
 					}
 				}
@@ -976,7 +977,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	//박찬영
 	//스탑워치 컨트롤
-	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchContorl);
+	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);
 	PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);*/
 }
 #pragma endregion Input

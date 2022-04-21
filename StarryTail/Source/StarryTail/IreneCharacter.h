@@ -37,11 +37,11 @@ protected:
 private:
 #pragma region GetClassOrObject
 	// 플레이어 컨트롤러
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY()
 	APlayerController* WorldController;
 
 	// 점프증력 커브
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	UCurveFloat* JumpGravityCurve;
 
 	// 카메라 암과 카메라
@@ -57,7 +57,7 @@ private:
 	FIreneFSM* CharacterState;
 
 	// 무기 매쉬
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
@@ -71,7 +71,7 @@ private:
 
 #pragma region InputData
 	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	TArray<uint8> MoveKey;
 
 	// 구르기 같은 자동이동 방향
