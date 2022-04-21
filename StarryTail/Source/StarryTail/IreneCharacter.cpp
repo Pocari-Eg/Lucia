@@ -275,7 +275,12 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	//STARRYLOG(Error,TEXT("Yaw: %f"), WorldController->GetControlRotation().Yaw);
+	//float currentZ = GetActorRotation().Yaw;
+	//float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
+	//STARRYLOG(Error,TEXT("%f"),(currentZ-z));
+	
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (CharacterState->GetStateToString().Compare(FString("Dodge")) != 0)
 	{
@@ -339,8 +344,12 @@ void AIreneCharacter::Tick(float DeltaTime)
 		//if (bShowLog)
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 		// 타겟몹이 죽거나 거리가 멀어지면 초기화
-		if (TargetMonster->IsPendingKill() == true || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
-			TargetMonster = nullptr;
+		const auto Mob = Cast<AMonster>(TargetMonster);
+		if (Mob != nullptr)
+		{
+			if (Mob->GetHp() <= 0 || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
+				TargetMonster = nullptr;
+		}
 	}
 	
 	CharacterState->Update(DeltaTime);
@@ -1046,7 +1055,6 @@ void AIreneCharacter::DoAttack()
 		FCollisionShape::MakeSphere(50.0f),
 		Params);
 
-	/*
 	#if ENABLE_DRAW_DEBUG
 		FVector TraceVec = GetActorForwardVector() * CharacterDataStruct.AttackRange;
 		FVector Center = GetActorLocation() + TraceVec * 0.5f;
@@ -1064,7 +1072,6 @@ void AIreneCharacter::DoAttack()
 			false,
 			DebugLifeTime);
 	#endif
-	*/
 
 	for (FHitResult Monster : MonsterList)
 	{
@@ -1137,20 +1144,20 @@ void AIreneCharacter::FindNearMonster()
 		OnMpChanged.Broadcast();
 	}
 
-	if (TargetMonster != nullptr)
-	{
-		// 타겟이 캐릭터의 뒤에 있다면 추적 취소
-		FVector targetData = TargetMonster->GetActorLocation() - GetActorLocation();
-		targetData.Normalize();
-		if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
-		{
-			TargetMonster = nullptr;
-		}
-	}
+	// if (TargetMonster != nullptr)
+	// {
+	// 	// 타겟이 캐릭터의 뒤에 있다면 추적 취소
+	// 	FVector targetData = TargetMonster->GetActorLocation() - GetActorLocation();
+	// 	targetData.Normalize();
+	// 	if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
+	// 	{
+	// 		TargetMonster = nullptr;
+	// 	}
+	// }
 
 	float far = 300;
 	// 가로, 높이, 세로
-	FVector BoxSize = FVector(150, 50, far);
+	FVector BoxSize = FVector(200, 50, far);
 	// 최대거리
 	float NearPosition = far;
 
@@ -1165,17 +1172,16 @@ void AIreneCharacter::FindNearMonster()
 		ECollisionChannel::ECC_GameTraceChannel8,
 		FCollisionShape::MakeBox(BoxSize * 1),
 		Params);
-	/*
+	
 	#if ENABLE_DRAW_DEBUG
 		FVector TraceVec = GetActorForwardVector() * far;
-		FVector Center = GetActorLocation() + TraceVec;
+		FVector Center = GetActorLocation() + TraceVec + (GetActorForwardVector()*-150.0f);
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 		float DebugLifeTime = 5.0f;
 
 		DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 	#endif
-	*/
 
 	for (FHitResult Monster : MonsterList)
 	{
@@ -1259,18 +1265,30 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if (TargetMonster != nullptr)
 	{
-		//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
-
-		float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
-		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-		// 몬스터가 공격범위 보다 멀리 있다면
-		float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
-		if (TargetPos > CharacterDataStruct.AttackRange)
+		if(GetAnimName() == FName("B_Attack_1"))
 		{
-			// 추적 세팅
-			bFollowTarget = true;
-			PlayerPosVec = GetActorLocation();
-			TargetPosVec = GetActorLocation() + GetActorForwardVector() * (TargetPos);
+			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
+
+			//float currentZ = GetActorRotation().Yaw;
+			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
+			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+			//STARRYLOG(Error,TEXT("%f"),(currentZ-z));
+			//AddControllerYawInput(WorldController->GetControlRotation().Yaw + (currentZ-z));
+			//WorldController->GetControlRotation().Yaw;
+			
+			// 몬스터가 공격범위 보다 멀리 있다면
+			float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
+			if (TargetPos > CharacterDataStruct.AttackRange)
+			{
+				// 추적 세팅
+				bFollowTarget = true;
+				PlayerPosVec = GetActorLocation();
+				TargetPosVec = GetActorLocation() + GetActorForwardVector() * (TargetPos);
+			}
+			else
+			{
+				DoAttack();
+			}
 		}
 		else
 		{

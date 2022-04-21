@@ -151,6 +151,10 @@ float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
 }
+float AMonster::GetHp() const
+{
+	return MonsterInfo.CurrentHp;
+}
 FVector AMonster::GetLocation() const
 {
 	return GetActorLocation() + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
