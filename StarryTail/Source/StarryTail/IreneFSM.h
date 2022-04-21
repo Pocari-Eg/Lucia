@@ -1,5 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
+#include "PlayerCharacterDataStruct.h"
 
 // 13°³
 UENUM(BlueprintType)
@@ -40,11 +41,13 @@ public:
 	virtual ~FBaseGameEntity() = default;
 	float PlayTime;
 	bool bIsEnd;
+	FPlayerCharacterDataStruct* CharacterDataStruct;
 public:
-	FBaseGameEntity();
+	FBaseGameEntity(){};
+	FBaseGameEntity(FPlayerCharacterDataStruct* Value);
 	virtual void Update(const float Value) = 0;
 	virtual void ChangeState(FState* NewState) = 0;
-
+	
 	virtual void SetStateEnum(EStateEnum Value) = 0;
 
 	virtual bool CanIdle() = 0;
@@ -66,6 +69,8 @@ public:
 #pragma region State
 class FIdleState final :public FState
 {
+	float BeforeTime = 0.0f;
+	float HpTime = 0.0f;
 public:
 	static FIdleState* GetInstance();
 	virtual void Enter(FBaseGameEntity* CurState) override;
@@ -175,9 +180,10 @@ class FIreneFSM final : public FBaseGameEntity
 private:
 	FState* StateValue;
 	EStateEnum StateEnumValue;
-
+	
 public:
-	FIreneFSM() : FBaseGameEntity(), StateValue(FIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle) { StateValue->Enter(this); }
+	FIreneFSM():StateValue(FIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle) { StateValue->Enter(this); }
+	FIreneFSM(FPlayerCharacterDataStruct* Value) : FBaseGameEntity(Value), StateValue(FIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle) { StateValue->Enter(this); }
 	virtual void Update(const float Value) override;
 	virtual void ChangeState(FState* NewState) override;
 
