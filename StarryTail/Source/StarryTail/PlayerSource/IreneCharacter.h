@@ -15,7 +15,7 @@
 //#include "StopWatch.h"
 #include "Components/WidgetComponent.h"
 
-#include "SoundManager.h"
+#include "../SoundManager.h"
 #include "IreneCharacter.generated.h"
 
 //속성 변경 델리데이트

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/SphereComponent.h"
 
-#include"../IreneCharacter.h"
+#include"../PlayerSource/IreneCharacter.h"
 
 //UI ฐüทร
 #include "Components/WidgetComponent.h"

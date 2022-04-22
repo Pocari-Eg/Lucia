@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "../IreneCharacter.h"
+#include "../PlayerSource/IreneCharacter.h"
 #include "MonsterAIController.generated.h"
 
 /**

@@ -7,7 +7,7 @@
 //초기 설정 관련
 #include <Engine/Classes/Components/CapsuleComponent.h>
 #include <Engine/Classes/Components/BoxComponent.h> // 테스트
-#include "../IreneCharacter.h"
+#include "../PlayerSource/IreneCharacter.h"
 
 //UI 관련
 #include "Components/WidgetComponent.h"
