@@ -2,7 +2,7 @@
 
 
 #include "BTTaskMbRotateToTarget.h"
-#include "../../../IreneCharacter.h"
+#include "../../../PlayerSource/IreneCharacter.h"
 #include "../Morbit.h"
 #include "../MbAIController.h"
 #include "Kismet/KismetMathLibrary.h"

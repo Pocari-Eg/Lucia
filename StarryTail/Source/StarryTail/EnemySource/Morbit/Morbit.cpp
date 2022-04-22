@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Morbit.h"
-#include "../../IreneCharacter.h"
+#include "../../PlayerSource/IreneCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "MbAIController.h"
 #include "Kismet/GameplayStatics.h"

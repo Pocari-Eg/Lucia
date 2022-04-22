@@ -10,11 +10,11 @@
 #include "IreneCharacter.h"
 #include "IreneAnimInstance.h"
 #include "DrawDebugHelpers.h"
-#include "STGameInstance.h"
+#include "../STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "StarryTailGameMode.h"
-#include "UI/PlayerHudWidget.h"
+#include "../StarryTailGameMode.h"
+#include "../UI/PlayerHudWidget.h"
 
 #pragma region Setting
 // Sets default values

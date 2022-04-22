@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "StarryTailGameMode.h"
-#include "IreneCharacter.h"
+#include "PlayerSource/IreneCharacter.h"
 #include"UI/PlayerHudWidget.h"
 #include "UObject/ConstructorHelpers.h"
 
