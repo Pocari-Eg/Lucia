@@ -118,7 +118,15 @@ private:
 
 	// 카메라 쉐이크 시간
 	float CameraShakeTime;
-
+	// 타켓 추적 유무
+	bool bFollowCameraTarget;
+	// 보간을 위한 수 0 ~ 1
+	float FollowTargetCameraAlpha;
+	// 보간을 위한 시작 위치
+	FRotator CameraRot;
+	// 보간을 위한 목표 위치
+	FRotator TargetCameraRot;
+	
 	bool bUseLeftButton;
 	bool bUseRightButton;
 	bool bUseMP;

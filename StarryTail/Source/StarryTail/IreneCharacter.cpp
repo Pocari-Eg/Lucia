@@ -160,14 +160,21 @@ AIreneCharacter::AIreneCharacter()
 
 	bStartJump = false;
 	JumpingTime = 0.0f;
+	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
 	TargetPosVec = FVector::ZeroVector;
+	bFollowCameraTarget = false;
+	FollowTargetCameraAlpha = 0.0f;
+	CameraRot = FRotator::ZeroRotator;
+	TargetCameraRot = FRotator::ZeroRotator;
+	
 	IsCharging = false;
 	ChargingTime = 0.0f;
 	bUseLeftButton = false;
 	bUseRightButton = false;
+	
 	bUseMP = false;
 	UseMP = 0.0f;
 
@@ -349,6 +356,26 @@ void AIreneCharacter::Tick(float DeltaTime)
 		{
 			if (Mob->GetHp() <= 0 || FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) > 700.0f)
 				TargetMonster = nullptr;
+		}
+	}
+
+	// 카메라 회전
+	if (bFollowCameraTarget)
+	{
+		const float Dist = FVector::Dist(CameraRot.Vector(), TargetCameraRot.Vector());
+		FollowTargetCameraAlpha += GetWorld()->GetDeltaSeconds() * CharacterDataStruct.TargetCameraFollowSpeed / Dist;
+		if (FollowTargetCameraAlpha >= 1)
+		{
+			FollowTargetCameraAlpha = 1;
+		}
+		const FRotator Tar = FMath::Lerp(CameraRot, TargetCameraRot, FollowTargetCameraAlpha);
+		WorldController->SetControlRotation(Tar);
+		if (FollowTargetCameraAlpha >= 1)
+		{
+			bFollowCameraTarget = false;
+			FollowTargetCameraAlpha = 0.0f;
+			CameraRot = FRotator::ZeroRotator;
+			TargetCameraRot = FRotator::ZeroRotator;
 		}
 	}
 	
@@ -1268,18 +1295,14 @@ void AIreneCharacter::FindNearMonster()
 		if(GetAnimName() == FName("B_Attack_1") || bUseRightButton)
 		{
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
-
-			//float currentZ = GetActorRotation().Yaw;
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 			
-			//FVector targetData = CameraComp->GetRelativeLocation() - GetActorLocation();
-			//targetData.Normalize();
-			//if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
-				//AddControllerYawInput(360);
-			//WorldController->GetControlRotation().Yaw;
+			bFollowCameraTarget = true;
+			CameraRot = WorldController->GetControlRotation();
 			FRotator ForwardRotator = GetActorForwardVector().Rotation();
-			WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
+			//WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
+			TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
 			
 			// 몬스터가 공격범위 보다 멀리 있다면
 			float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
