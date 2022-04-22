@@ -1265,16 +1265,21 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if (TargetMonster != nullptr)
 	{
-		if(GetAnimName() == FName("B_Attack_1"))
+		if(GetAnimName() == FName("B_Attack_1") || bUseRightButton)
 		{
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 
 			//float currentZ = GetActorRotation().Yaw;
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-			//STARRYLOG(Error,TEXT("%f"),(currentZ-z));
-			//AddControllerYawInput(WorldController->GetControlRotation().Yaw + (currentZ-z));
+			
+			//FVector targetData = CameraComp->GetRelativeLocation() - GetActorLocation();
+			//targetData.Normalize();
+			//if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
+				//AddControllerYawInput(360);
 			//WorldController->GetControlRotation().Yaw;
+			FRotator ForwardRotator = GetActorForwardVector().Rotation();
+			WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
 			
 			// 몬스터가 공격범위 보다 멀리 있다면
 			float TargetPos = FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()) - CharacterDataStruct.AttackRange;
@@ -1452,7 +1457,6 @@ FName AIreneCharacter::GetAnimName()
 	}
 	if (bUseRightButton)
 	{
-
 		if (Attribute == EAttributeKeyword::e_Fire)
 		{
 			return FName("ActionKeyword_1_F");
@@ -1485,13 +1489,10 @@ float AIreneCharacter::GetHpRatio()
 	// 비율변환 0.0 ~ 1.0
 	return (CharacterDataStruct.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentHP / CharacterDataStruct.MaxHP;
 }
-
 float AIreneCharacter::GetMpRatio()
 {
 	return (CharacterDataStruct.CurrentMP < KINDA_SMALL_NUMBER) ? 0.0f : CharacterDataStruct.CurrentMP / CharacterDataStruct.MaxMP;
-
 }
-
 void AIreneCharacter::FootStepSound()
 {
 	WalkSound->SoundPlay3D(GetActorTransform());
