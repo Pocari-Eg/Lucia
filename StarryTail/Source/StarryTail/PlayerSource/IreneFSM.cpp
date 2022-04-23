@@ -304,8 +304,10 @@ FString UIreneFSM::GetStateToString() const
 UIdleState* UIdleState::GetInstance()
 {
 	static UIdleState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UIdleState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UIdleState::Enter(IBaseGameEntity* CurState)
@@ -329,8 +331,10 @@ void UIdleState::Exit(IBaseGameEntity* CurState)
 UDeathState* UDeathState::GetInstance()
 {
 	static UDeathState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UDeathState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UDeathState::Enter(IBaseGameEntity* CurState)
@@ -354,8 +358,10 @@ void UDeathState::Exit(IBaseGameEntity* CurState)
 UDodgeState* UDodgeState::GetInstance()
 {
 	static UDodgeState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UDodgeState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UDodgeState::Enter(IBaseGameEntity* CurState)
@@ -379,8 +385,10 @@ void UDodgeState::Exit(IBaseGameEntity* CurState)
 UHitState* UHitState::GetInstance()
 {
 	static UHitState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UHitState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UHitState::Enter(IBaseGameEntity* CurState)
@@ -404,8 +412,10 @@ void UHitState::Exit(IBaseGameEntity* CurState)
 UBasicAttackState* UBasicAttackState::GetInstance()
 {
 	static UBasicAttackState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UBasicAttackState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UBasicAttackState::Enter(IBaseGameEntity* CurState)
@@ -429,8 +439,10 @@ void UBasicAttackState::Exit(IBaseGameEntity* CurState)
 UActionAttackState* UActionAttackState::GetInstance()
 {
 	static UActionAttackState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UActionAttackState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UActionAttackState::Enter(IBaseGameEntity* CurState)
@@ -454,8 +466,10 @@ void UActionAttackState::Exit(IBaseGameEntity* CurState)
 UBattleIdleState* UBattleIdleState::GetInstance()
 {
 	static UBattleIdleState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UBattleIdleState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UBattleIdleState::Enter(IBaseGameEntity* CurState)
@@ -479,8 +493,10 @@ void UBattleIdleState::Exit(IBaseGameEntity* CurState)
 URunState* URunState::GetInstance()
 {
 	static URunState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<URunState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void URunState::Enter(IBaseGameEntity* CurState)
@@ -504,8 +520,10 @@ void URunState::Exit(IBaseGameEntity* CurState)
 USprintState* USprintState::GetInstance()
 {
 	static USprintState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<USprintState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void USprintState::Enter(IBaseGameEntity* CurState)
@@ -529,8 +547,10 @@ void USprintState::Exit(IBaseGameEntity* CurState)
 USprintEndState* USprintEndState::GetInstance()
 {
 	static USprintEndState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<USprintEndState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void USprintEndState::Enter(IBaseGameEntity* CurState)
@@ -554,8 +574,10 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 UJumpState* UJumpState::GetInstance()
 {
 	static UJumpState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UJumpState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void UJumpState::Enter(IBaseGameEntity* CurState)
@@ -579,8 +601,11 @@ void UJumpState::Exit(IBaseGameEntity* CurState)
 UFallState* UFallState::GetInstance()
 {
 	static UFallState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<UFallState>();
+		Instance->AddToRoot();
+	}
+	
 	return Instance;
 }
 void UFallState::Enter(IBaseGameEntity* CurState)
@@ -604,8 +629,10 @@ void UFallState::Exit(IBaseGameEntity* CurState)
 USprintJumpState* USprintJumpState::GetInstance()
 {
 	static USprintJumpState* Instance;
-	if (Instance == nullptr)
+	if (Instance == nullptr) {
 		Instance = NewObject<USprintJumpState>();
+		Instance->AddToRoot();
+	}
 	return Instance;
 }
 void USprintJumpState::Enter(IBaseGameEntity* CurState)
