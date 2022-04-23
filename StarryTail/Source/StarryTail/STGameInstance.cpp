@@ -108,11 +108,134 @@ void USTGameInstance::Init()
 	EnemyMaxCount = 20;
 }
 #pragma region FSM
-UIdleState* USTGameInstance::GetIdleInstance()
-{
-	static UIdleState* Instance;
-	if (Instance == nullptr)
-		Instance = new UIdleState();
-	return Instance;
-}
+// UIdleState* USTGameInstance::GetIdleInstance()
+// {
+// 	static UIdleState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UIdleState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UDeathState* USTGameInstance::GetDeathInstance()
+// {
+// 	static UDeathState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UDeathState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UDodgeState* USTGameInstance::GetDodgeInstance()
+// {
+// 	static UDodgeState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UDodgeState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UHitState* USTGameInstance::GetHitInstance()
+// {
+// 	static UHitState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UHitState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UBasicAttackState* USTGameInstance::GetBasicAttackInstance()
+// {
+// 	static UBasicAttackState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UBasicAttackState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UActionAttackState* USTGameInstance::GetActionAttackInstance()
+// {
+// 	static UActionAttackState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UActionAttackState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UBattleIdleState* USTGameInstance::GetBattleIdleInstance()
+// {
+// 	static UBattleIdleState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UBattleIdleState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// URunState* USTGameInstance::GetRunInstance()
+// {
+// 	static URunState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<URunState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// USprintState* USTGameInstance::GetSprintInstance()
+// {
+// 	static USprintState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<USprintState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// USprintEndState* USTGameInstance::GetSprintEndInstance()
+// {
+// 	static USprintEndState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<USprintEndState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UJumpState* USTGameInstance::GetJumpInstance()
+// {
+// 	static UJumpState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UJumpState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// UFallState* USTGameInstance::GetFallInstance()
+// {
+// 	static UFallState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<UFallState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
+// USprintJumpState* USTGameInstance::GetSprintJumpInstance()
+// {
+// 	static USprintJumpState* Instance;
+// 	if (Instance == nullptr)
+// 	{
+// 		Instance = NewObject<USprintJumpState>();
+// 		StateValue = Instance;
+// 	}
+// 	return Instance;
+// }
 #pragma endregion

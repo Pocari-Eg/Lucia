@@ -1,7 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
-#include "PlayerCharacterDataStruct.h"
-//#include "../STGameInstance.h"
 
 #include "IreneFSM.generated.h"
 
@@ -77,106 +75,130 @@ public:
 #pragma endregion StateInterface
 
 #pragma region State
-//UCLASS()
-class UIdleState final : public IState
+UCLASS()
+class STARRYTAIL_API UIdleState final : public UObject, public IState
 {
-	//GENERATED_BODY()
+	GENERATED_BODY()
 public:
 	static UIdleState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UDeathState final : public IState
+UCLASS()
+class STARRYTAIL_API UDeathState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UDeathState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UDodgeState final : public IState
+UCLASS()
+class STARRYTAIL_API UDodgeState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UDodgeState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UHitState final : public IState
+UCLASS()
+class STARRYTAIL_API UHitState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UHitState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UBasicAttackState final : public IState
+UCLASS()
+class STARRYTAIL_API UBasicAttackState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UBasicAttackState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UActionAttackState final : public IState
+UCLASS()
+class STARRYTAIL_API UActionAttackState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UActionAttackState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UBattleIdleState final : public IState
+UCLASS()
+class STARRYTAIL_API UBattleIdleState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UBattleIdleState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class URunState final : public IState
+UCLASS()
+class STARRYTAIL_API URunState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static URunState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class USprintState final : public IState
+UCLASS()
+class STARRYTAIL_API USprintState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static USprintState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class USprintEndState final : public IState
+UCLASS()
+class STARRYTAIL_API USprintEndState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static USprintEndState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UJumpState final : public IState
+UCLASS()
+class STARRYTAIL_API UJumpState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UJumpState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class UFallState final : public IState
+UCLASS()
+class STARRYTAIL_API UFallState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static UFallState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class USprintJumpState final : public IState
+UCLASS()
+class STARRYTAIL_API USprintJumpState final : public UObject, public IState
 {
+	GENERATED_BODY()
 public:
 	static USprintJumpState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -193,10 +215,9 @@ private:
 	IState* StateValue;
 	EStateEnum StateEnumValue;
 public:
-	UIreneFSM(): StateEnumValue(EStateEnum::Idle)
+	UIreneFSM():StateValue(UIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle)
 	{
-		//StateValue = USTGameInstance::GetIdleInstance();
-		
+		StateValue = UIdleState::GetInstance();
 		StateValue->Enter(this);
 	}
 	virtual void Update(const float Value) override;
@@ -223,7 +244,7 @@ public:
 		StateValue = Value;
 		if (Value == nullptr)
 		{
-			//StateValue = USTGameInstance::GetIdleInstance();
+			StateValue = UIdleState::GetInstance();
 			StateEnumValue = EStateEnum::Idle;
 		}
 	}

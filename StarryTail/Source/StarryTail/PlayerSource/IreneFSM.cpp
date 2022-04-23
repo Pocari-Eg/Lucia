@@ -305,7 +305,7 @@ UIdleState* UIdleState::GetInstance()
 {
 	static UIdleState* Instance;
 	if (Instance == nullptr)
-		Instance = new UIdleState();
+		Instance = NewObject<UIdleState>();
 	return Instance;
 }
 void UIdleState::Enter(IBaseGameEntity* CurState)
@@ -330,7 +330,7 @@ UDeathState* UDeathState::GetInstance()
 {
 	static UDeathState* Instance;
 	if (Instance == nullptr)
-		Instance = new UDeathState();
+		Instance = NewObject<UDeathState>();
 	return Instance;
 }
 void UDeathState::Enter(IBaseGameEntity* CurState)
@@ -355,7 +355,7 @@ UDodgeState* UDodgeState::GetInstance()
 {
 	static UDodgeState* Instance;
 	if (Instance == nullptr)
-		Instance = new UDodgeState();
+		Instance = NewObject<UDodgeState>();
 	return Instance;
 }
 void UDodgeState::Enter(IBaseGameEntity* CurState)
@@ -380,7 +380,7 @@ UHitState* UHitState::GetInstance()
 {
 	static UHitState* Instance;
 	if (Instance == nullptr)
-		Instance = new UHitState();
+		Instance = NewObject<UHitState>();
 	return Instance;
 }
 void UHitState::Enter(IBaseGameEntity* CurState)
@@ -405,7 +405,7 @@ UBasicAttackState* UBasicAttackState::GetInstance()
 {
 	static UBasicAttackState* Instance;
 	if (Instance == nullptr)
-		Instance = new UBasicAttackState();
+		Instance = NewObject<UBasicAttackState>();
 	return Instance;
 }
 void UBasicAttackState::Enter(IBaseGameEntity* CurState)
@@ -430,7 +430,7 @@ UActionAttackState* UActionAttackState::GetInstance()
 {
 	static UActionAttackState* Instance;
 	if (Instance == nullptr)
-		Instance = new UActionAttackState();
+		Instance = NewObject<UActionAttackState>();
 	return Instance;
 }
 void UActionAttackState::Enter(IBaseGameEntity* CurState)
@@ -455,7 +455,7 @@ UBattleIdleState* UBattleIdleState::GetInstance()
 {
 	static UBattleIdleState* Instance;
 	if (Instance == nullptr)
-		Instance = new UBattleIdleState();
+		Instance = NewObject<UBattleIdleState>();
 	return Instance;
 }
 void UBattleIdleState::Enter(IBaseGameEntity* CurState)
@@ -480,7 +480,7 @@ URunState* URunState::GetInstance()
 {
 	static URunState* Instance;
 	if (Instance == nullptr)
-		Instance = new URunState();
+		Instance = NewObject<URunState>();
 	return Instance;
 }
 void URunState::Enter(IBaseGameEntity* CurState)
@@ -505,7 +505,7 @@ USprintState* USprintState::GetInstance()
 {
 	static USprintState* Instance;
 	if (Instance == nullptr)
-		Instance = new USprintState();
+		Instance = NewObject<USprintState>();
 	return Instance;
 }
 void USprintState::Enter(IBaseGameEntity* CurState)
@@ -530,7 +530,7 @@ USprintEndState* USprintEndState::GetInstance()
 {
 	static USprintEndState* Instance;
 	if (Instance == nullptr)
-		Instance = new USprintEndState();
+		Instance = NewObject<USprintEndState>();
 	return Instance;
 }
 void USprintEndState::Enter(IBaseGameEntity* CurState)
@@ -555,7 +555,7 @@ UJumpState* UJumpState::GetInstance()
 {
 	static UJumpState* Instance;
 	if (Instance == nullptr)
-		Instance = new UJumpState();
+		Instance = NewObject<UJumpState>();
 	return Instance;
 }
 void UJumpState::Enter(IBaseGameEntity* CurState)
@@ -580,7 +580,7 @@ UFallState* UFallState::GetInstance()
 {
 	static UFallState* Instance;
 	if (Instance == nullptr)
-		Instance = new UFallState();
+		Instance = NewObject<UFallState>();
 	return Instance;
 }
 void UFallState::Enter(IBaseGameEntity* CurState)
@@ -605,7 +605,7 @@ USprintJumpState* USprintJumpState::GetInstance()
 {
 	static USprintJumpState* Instance;
 	if (Instance == nullptr)
-		Instance = new USprintJumpState();
+		Instance = NewObject<USprintJumpState>();
 	return Instance;
 }
 void USprintJumpState::Enter(IBaseGameEntity* CurState)

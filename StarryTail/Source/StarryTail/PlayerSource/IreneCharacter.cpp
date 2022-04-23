@@ -15,7 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../StarryTailGameMode.h"
 #include "../UI/PlayerHudWidget.h"
-#include "IreneAnimInstance.h"
+#include "../StarryTail.h"
 
 #pragma region Setting
 // Sets default values

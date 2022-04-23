@@ -9,7 +9,7 @@
 #include "PlayerCharacterDataStruct.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "IreneFSM.h"
+#include "IreneAnimInstance.h"
 
 //박찬영
 //#include "StopWatch.h"
@@ -55,14 +55,14 @@ private:
 	FPlayerCharacterDataStruct CharacterDataStruct;
 	UPROPERTY()
 	UIreneFSM* CharacterState;
-
+	
 	// 무기 매쉬
 	UPROPERTY()
 	USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
 	UPROPERTY()
-	class UIreneAnimInstance* IreneAnim;
+	UIreneAnimInstance* IreneAnim;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
