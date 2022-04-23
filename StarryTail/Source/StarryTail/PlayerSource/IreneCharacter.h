@@ -9,7 +9,7 @@
 #include "PlayerCharacterDataStruct.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "IreneFSM.h"
+#include "IreneAnimInstance.h"
 
 //박찬영
 //#include "StopWatch.h"
@@ -53,16 +53,16 @@ private:
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
-	// 캐릭터 상태
-	FIreneFSM* CharacterState;
-
+	UPROPERTY()
+	UIreneFSM* CharacterState;
+	
 	// 무기 매쉬
 	UPROPERTY()
 	USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
 	UPROPERTY()
-	class UIreneAnimInstance* IreneAnim;
+	UIreneAnimInstance* IreneAnim;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
@@ -246,7 +246,7 @@ private:
 
 #pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(FState* NewState);
+	void ChangeStateAndLog(IState* NewState);
 	void ActionEndChangeMoveState();
 	FName GetAnimName();
 #pragma endregion State
