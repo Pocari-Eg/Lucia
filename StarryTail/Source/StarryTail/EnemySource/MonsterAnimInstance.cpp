@@ -23,7 +23,7 @@ UMonsterAnimInstance::UMonsterAnimInstance()
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACKED_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Attacked_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> GROGGY_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Groggy_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> SHOCK_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Shock_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SHOCK_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Shocked_Montage"));
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DEATH_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Die_Montage"));
 	if (IDLE_MONTAGE1.Succeeded())
