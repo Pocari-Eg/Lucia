@@ -3,18 +3,18 @@
 #include "IreneFSM.h"
 
 #pragma region IreneFSM
-void FIreneFSM::Update(const float Value)
+void UIreneFSM::Update(const float Value)
 {
 	this->PlayTime += Value;
 	StateValue->Execute(this);
 }
-void FIreneFSM::ChangeState(FState* NewState)
+void UIreneFSM::ChangeState(IState* NewState)
 {
 	StateValue->Exit(this);
 	StateValue = NewState;
 	StateValue->Enter(this);
 }
-bool FIreneFSM::CanIdle()
+bool UIreneFSM::CanIdle()
 {
 	if (//StateEnumValue == StateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -34,7 +34,7 @@ bool FIreneFSM::CanIdle()
 		return false;
 }
 
-bool FIreneFSM::CanDeath()
+bool UIreneFSM::CanDeath()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -54,7 +54,7 @@ bool FIreneFSM::CanDeath()
 		return false;
 }
 
-bool FIreneFSM::CanDodge()
+bool UIreneFSM::CanDodge()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -74,7 +74,7 @@ bool FIreneFSM::CanDodge()
 		return false;
 }
 
-bool FIreneFSM::CanHit()
+bool UIreneFSM::CanHit()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -94,7 +94,7 @@ bool FIreneFSM::CanHit()
 		return false;
 }
 
-bool FIreneFSM::CanBasicAttack()
+bool UIreneFSM::CanBasicAttack()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -114,7 +114,7 @@ bool FIreneFSM::CanBasicAttack()
 		return false;
 }
 
-bool FIreneFSM::CanActionAttack()
+bool UIreneFSM::CanActionAttack()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -134,7 +134,7 @@ bool FIreneFSM::CanActionAttack()
 		return false;
 }
 
-bool FIreneFSM::CanBattleIdle()
+bool UIreneFSM::CanBattleIdle()
 {
 	if (//StateEnumValue == StateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -154,7 +154,7 @@ bool FIreneFSM::CanBattleIdle()
 		return false;
 }
 
-bool FIreneFSM::CanRun()
+bool UIreneFSM::CanRun()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -174,7 +174,7 @@ bool FIreneFSM::CanRun()
 		return false;
 }
 
-bool FIreneFSM::CanSprint()
+bool UIreneFSM::CanSprint()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -194,7 +194,7 @@ bool FIreneFSM::CanSprint()
 		return false;
 }
 
-bool FIreneFSM::CanSprintEnd()
+bool UIreneFSM::CanSprintEnd()
 {
 	if (//StateEnumValue == StateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -214,7 +214,7 @@ bool FIreneFSM::CanSprintEnd()
 		return false;
 }
 
-bool FIreneFSM::CanJump()
+bool UIreneFSM::CanJump()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -234,7 +234,7 @@ bool FIreneFSM::CanJump()
 		return false;
 }
 
-bool FIreneFSM::CanFall()
+bool UIreneFSM::CanFall()
 {
 	if (StateEnumValue == EStateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -254,7 +254,7 @@ bool FIreneFSM::CanFall()
 		return false;
 }
 
-bool FIreneFSM::CanSprintJump()
+bool UIreneFSM::CanSprintJump()
 {
 	if (//StateEnumValue == StateEnum::Idle ||
 		//StateEnumValue == StateEnum::Death ||
@@ -274,7 +274,7 @@ bool FIreneFSM::CanSprintJump()
 		return false;
 }
 
-FString FIreneFSM::GetStateToString() const
+FString UIreneFSM::GetStateToString() const
 {
 	switch (StateEnumValue)
 	{
@@ -297,356 +297,330 @@ FString FIreneFSM::GetStateToString() const
 #pragma endregion IreneFSM
 
 #pragma region StateInterface
-FBaseGameEntity::FBaseGameEntity(FPlayerCharacterDataStruct* Value) :PlayTime(0.0f), bIsEnd(false), CharacterDataStruct(Value)
-{
 
-}
 #pragma endregion StateInterface
+
 #pragma region IdleState
-FIdleState* FIdleState::GetInstance()
+UIdleState* UIdleState::GetInstance()
 {
-	static FIdleState* Instance;
+	static UIdleState* Instance;
 	if (Instance == nullptr)
-		Instance = new FIdleState();
+		Instance = new UIdleState();
 	return Instance;
 }
-
-void FIdleState::Enter(FBaseGameEntity* CurState)
+void UIdleState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Idle);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	HpTime = 0.0f;
-	BeforeTime = 0.0f;
 }
 
-void FIdleState::Execute(FBaseGameEntity* CurState)
+void UIdleState::Execute(IBaseGameEntity* CurState)
 {
-	const float DeltaTime = CurState->PlayTime - BeforeTime;
-	HpTime += DeltaTime;
-	if(HpTime > 2)
-	{
-		HpTime -= 2;
-		//CurState->CharacterDataStruct->CurrentHP += 100;
-	}
-	BeforeTime = CurState->PlayTime;
+
 }
 
-void FIdleState::Exit(FBaseGameEntity* CurState)
+void UIdleState::Exit(IBaseGameEntity* CurState)
 {
-	HpTime = 0.0f;
-	BeforeTime = 0.0f;
 	CurState->bIsEnd = true;
 }
 #pragma endregion IdleState
 #pragma region DeathState
-FDeathState* FDeathState::GetInstance()
+UDeathState* UDeathState::GetInstance()
 {
-	static FDeathState* Instance;
+	static UDeathState* Instance;
 	if (Instance == nullptr)
-		Instance = new FDeathState();
+		Instance = new UDeathState();
 	return Instance;
 }
-
-void FDeathState::Enter(FBaseGameEntity* CurState)
+void UDeathState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Death);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FDeathState::Execute(FBaseGameEntity* CurState)
+void UDeathState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FDeathState::Exit(FBaseGameEntity* CurState)
+void UDeathState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion DeathState
 #pragma region DodgeState
-FDodgeState* FDodgeState::GetInstance()
+UDodgeState* UDodgeState::GetInstance()
 {
-	static FDodgeState* Instance;
+	static UDodgeState* Instance;
 	if (Instance == nullptr)
-		Instance = new FDodgeState();
+		Instance = new UDodgeState();
 	return Instance;
 }
-
-void FDodgeState::Enter(FBaseGameEntity* CurState)
+void UDodgeState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Dodge);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FDodgeState::Execute(FBaseGameEntity* CurState)
+void UDodgeState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FDodgeState::Exit(FBaseGameEntity* CurState)
+void UDodgeState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion DodgeState
 #pragma region HitState
-FHitState* FHitState::GetInstance()
+UHitState* UHitState::GetInstance()
 {
-	static FHitState* Instance;
+	static UHitState* Instance;
 	if (Instance == nullptr)
-		Instance = new FHitState();
+		Instance = new UHitState();
 	return Instance;
 }
-
-void FHitState::Enter(FBaseGameEntity* CurState)
+void UHitState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Hit);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FHitState::Execute(FBaseGameEntity* CurState)
+void UHitState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FHitState::Exit(FBaseGameEntity* CurState)
+void UHitState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion HitState
 #pragma region BasicAttackState
-FBasicAttackState* FBasicAttackState::GetInstance()
+UBasicAttackState* UBasicAttackState::GetInstance()
 {
-	static FBasicAttackState* Instance;
+	static UBasicAttackState* Instance;
 	if (Instance == nullptr)
-		Instance = new FBasicAttackState();
+		Instance = new UBasicAttackState();
 	return Instance;
 }
-
-void FBasicAttackState::Enter(FBaseGameEntity* CurState)
+void UBasicAttackState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::BasicAttack);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FBasicAttackState::Execute(FBaseGameEntity* CurState)
+void UBasicAttackState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FBasicAttackState::Exit(FBaseGameEntity* CurState)
+void UBasicAttackState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion BasicAttackState
 #pragma region ActionAttackState
-FActionAttackState* FActionAttackState::GetInstance()
+UActionAttackState* UActionAttackState::GetInstance()
 {
-	static FActionAttackState* Instance;
+	static UActionAttackState* Instance;
 	if (Instance == nullptr)
-		Instance = new FActionAttackState();
+		Instance = new UActionAttackState();
 	return Instance;
 }
-
-void FActionAttackState::Enter(FBaseGameEntity* CurState)
+void UActionAttackState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::ActionAttack);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FActionAttackState::Execute(FBaseGameEntity* CurState)
+void UActionAttackState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FActionAttackState::Exit(FBaseGameEntity* CurState)
+void UActionAttackState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion ActionAttackState
 #pragma region BattleIdleState
-FBattleIdleState* FBattleIdleState::GetInstance()
+UBattleIdleState* UBattleIdleState::GetInstance()
 {
-	static FBattleIdleState* Instance;
+	static UBattleIdleState* Instance;
 	if (Instance == nullptr)
-		Instance = new FBattleIdleState();
+		Instance = new UBattleIdleState();
 	return Instance;
 }
-
-void FBattleIdleState::Enter(FBaseGameEntity* CurState)
+void UBattleIdleState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::BattleIdle);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FBattleIdleState::Execute(FBaseGameEntity* CurState)
+void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FBattleIdleState::Exit(FBaseGameEntity* CurState)
+void UBattleIdleState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion BattleIdleState
 #pragma region RunState
-FRunState* FRunState::GetInstance()
+URunState* URunState::GetInstance()
 {
-	static FRunState* Instance;
+	static URunState* Instance;
 	if (Instance == nullptr)
-		Instance = new FRunState();
+		Instance = new URunState();
 	return Instance;
 }
-
-void FRunState::Enter(FBaseGameEntity* CurState)
+void URunState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Run);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FRunState::Execute(FBaseGameEntity* CurState)
+void URunState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FRunState::Exit(FBaseGameEntity* CurState)
+void URunState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion RunState
 #pragma region SprintState
-FSprintState* FSprintState::GetInstance()
+USprintState* USprintState::GetInstance()
 {
-	static FSprintState* Instance;
+	static USprintState* Instance;
 	if (Instance == nullptr)
-		Instance = new FSprintState();
+		Instance = new USprintState();
 	return Instance;
 }
-
-void FSprintState::Enter(FBaseGameEntity* CurState)
+void USprintState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Sprint);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FSprintState::Execute(FBaseGameEntity* CurState)
+void USprintState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FSprintState::Exit(FBaseGameEntity* CurState)
+void USprintState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion SprintState
 #pragma region SprintEndState
-FSprintEndState* FSprintEndState::GetInstance()
+USprintEndState* USprintEndState::GetInstance()
 {
-	static FSprintEndState* Instance;
+	static USprintEndState* Instance;
 	if (Instance == nullptr)
-		Instance = new FSprintEndState();
+		Instance = new USprintEndState();
 	return Instance;
 }
-
-void FSprintEndState::Enter(FBaseGameEntity* CurState)
+void USprintEndState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::SprintEnd);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FSprintEndState::Execute(FBaseGameEntity* CurState)
+void USprintEndState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FSprintEndState::Exit(FBaseGameEntity* CurState)
+void USprintEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion SprintEndState
 #pragma region JumpState
-FJumpState* FJumpState::GetInstance()
+UJumpState* UJumpState::GetInstance()
 {
-	static FJumpState* Instance;
+	static UJumpState* Instance;
 	if (Instance == nullptr)
-		Instance = new FJumpState();
+		Instance = new UJumpState();
 	return Instance;
 }
-
-void FJumpState::Enter(FBaseGameEntity* CurState)
+void UJumpState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Jump);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FJumpState::Execute(FBaseGameEntity* CurState)
+void UJumpState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FJumpState::Exit(FBaseGameEntity* CurState)
+void UJumpState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion JumpState
 #pragma region FallState
-FFallState* FFallState::GetInstance()
+UFallState* UFallState::GetInstance()
 {
-	static FFallState* Instance;
+	static UFallState* Instance;
 	if (Instance == nullptr)
-		Instance = new FFallState();
+		Instance = new UFallState();
 	return Instance;
 }
-
-void FFallState::Enter(FBaseGameEntity* CurState)
+void UFallState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Fall);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FFallState::Execute(FBaseGameEntity* CurState)
+void UFallState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FFallState::Exit(FBaseGameEntity* CurState)
+void UFallState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
 #pragma endregion FallState
 #pragma region SprintJumpState
-FSprintJumpState* FSprintJumpState::GetInstance()
+USprintJumpState* USprintJumpState::GetInstance()
 {
-	static FSprintJumpState* Instance;
+	static USprintJumpState* Instance;
 	if (Instance == nullptr)
-		Instance = new FSprintJumpState();
+		Instance = new USprintJumpState();
 	return Instance;
 }
-
-void FSprintJumpState::Enter(FBaseGameEntity* CurState)
+void USprintJumpState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::SprintJump);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 }
 
-void FSprintJumpState::Execute(FBaseGameEntity* CurState)
+void USprintJumpState::Execute(IBaseGameEntity* CurState)
 {
 
 }
 
-void FSprintJumpState::Exit(FBaseGameEntity* CurState)
+void USprintJumpState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }

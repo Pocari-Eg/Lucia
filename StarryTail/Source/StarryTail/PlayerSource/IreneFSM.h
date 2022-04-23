@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
 #include "PlayerCharacterDataStruct.h"
+//#include "../STGameInstance.h"
+
+#include "IreneFSM.generated.h"
 
 // 13°³
 UENUM(BlueprintType)
@@ -21,32 +24,38 @@ enum class EStateEnum : uint8
 	SprintJump
 };
 
-class FBaseGameEntity;
-class FState;
-class FIdleState;
+class IBaseGameEntity;
+class IState;
 
 #pragma region StateInterface
-class FState
+UINTERFACE()
+class UState : public UInterface
 {
+	GENERATED_BODY()
+};
+class IState
+{
+	GENERATED_BODY()
 public:
-	virtual ~FState() = default;
-	virtual void Enter(FBaseGameEntity*) = 0;
-	virtual void Execute(FBaseGameEntity*) = 0;
-	virtual void Exit(FBaseGameEntity*) = 0;
+	virtual void Enter(IBaseGameEntity*) = 0;
+	virtual void Execute(IBaseGameEntity*) = 0;
+	virtual void Exit(IBaseGameEntity*) = 0;
 };
 
-class FBaseGameEntity
+UINTERFACE()
+class UBaseGameEntity : public UInterface
 {
+	GENERATED_BODY()
+};
+class IBaseGameEntity
+{
+	GENERATED_BODY()
 public:
-	virtual ~FBaseGameEntity() = default;
 	float PlayTime;
 	bool bIsEnd;
-	FPlayerCharacterDataStruct* CharacterDataStruct;
 public:
-	FBaseGameEntity(){};
-	FBaseGameEntity(FPlayerCharacterDataStruct* Value);
 	virtual void Update(const float Value) = 0;
-	virtual void ChangeState(FState* NewState) = 0;
+	virtual void ChangeState(IState* NewState) = 0;
 	
 	virtual void SetStateEnum(EStateEnum Value) = 0;
 
@@ -62,130 +71,136 @@ public:
 	virtual bool CanSprintEnd() = 0;
 	virtual bool CanJump() = 0;
 	virtual bool CanFall() = 0;
-	virtual bool CanSprintJump() = 0;
+	virtual bool CanSprintJump() = 0;	
 };
+
 #pragma endregion StateInterface
 
 #pragma region State
-class FIdleState final :public FState
+//UCLASS()
+class UIdleState final : public IState
 {
-	float BeforeTime = 0.0f;
-	float HpTime = 0.0f;
+	//GENERATED_BODY()
 public:
-	static FIdleState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UIdleState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FDeathState final :public FState
+class UDeathState final : public IState
 {
 public:
-	static FDeathState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UDeathState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FDodgeState final :public FState
+class UDodgeState final : public IState
 {
 public:
-	static FDodgeState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UDodgeState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FHitState final :public FState
+class UHitState final : public IState
 {
 public:
-	static FHitState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UHitState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FBasicAttackState final :public FState
+class UBasicAttackState final : public IState
 {
 public:
-	static FBasicAttackState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UBasicAttackState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FActionAttackState final :public FState
+class UActionAttackState final : public IState
 {
 public:
-	static FActionAttackState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UActionAttackState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FBattleIdleState final :public FState
+class UBattleIdleState final : public IState
 {
 public:
-	static FBattleIdleState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UBattleIdleState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FRunState final :public FState
+class URunState final : public IState
 {
 public:
-	static FRunState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static URunState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FSprintState final :public FState
+class USprintState final : public IState
 {
 public:
-	static FSprintState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static USprintState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FSprintEndState final :public FState
+class USprintEndState final : public IState
 {
 public:
-	static FSprintEndState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static USprintEndState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FJumpState final :public FState
+class UJumpState final : public IState
 {
 public:
-	static FJumpState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UJumpState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FFallState final :public FState
+class UFallState final : public IState
 {
 public:
-	static FFallState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static UFallState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
-class FSprintJumpState final :public FState
+class USprintJumpState final : public IState
 {
 public:
-	static FSprintJumpState* GetInstance();
-	virtual void Enter(FBaseGameEntity* CurState) override;
-	virtual void Execute(FBaseGameEntity* CurState) override;
-	virtual void Exit(FBaseGameEntity* CurState) override;
+	static USprintJumpState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
 };
 #pragma endregion State
 
-class FIreneFSM final : public FBaseGameEntity
+UCLASS()
+class STARRYTAIL_API UIreneFSM final : public UObject, public IBaseGameEntity
 {
+	GENERATED_BODY()
 private:
-	FState* StateValue;
+	IState* StateValue;
 	EStateEnum StateEnumValue;
-	
 public:
-	FIreneFSM():StateValue(FIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle) { StateValue->Enter(this); }
-	FIreneFSM(FPlayerCharacterDataStruct* Value) : FBaseGameEntity(Value), StateValue(FIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle) { StateValue->Enter(this); }
+	UIreneFSM(): StateEnumValue(EStateEnum::Idle)
+	{
+		//StateValue = USTGameInstance::GetIdleInstance();
+		
+		StateValue->Enter(this);
+	}
 	virtual void Update(const float Value) override;
-	virtual void ChangeState(FState* NewState) override;
+	virtual void ChangeState(IState* NewState) override;
 
 	virtual bool CanIdle() override;
 	virtual bool CanDeath() override;
@@ -204,11 +219,11 @@ public:
 	virtual void SetStateEnum(const EStateEnum Value) override { StateEnumValue = Value; }
 
 	EStateEnum GetState() const { return StateEnumValue; }
-	void SetState(FState* Value) {
+	void SetState(IState* Value) {
 		StateValue = Value;
 		if (Value == nullptr)
 		{
-			StateValue = FIdleState::GetInstance();
+			//StateValue = USTGameInstance::GetIdleInstance();
 			StateEnumValue = EStateEnum::Idle;
 		}
 	}

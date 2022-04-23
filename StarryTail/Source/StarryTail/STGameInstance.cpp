@@ -107,3 +107,12 @@ void USTGameInstance::Init()
 	EnemyCount = 0;
 	EnemyMaxCount = 20;
 }
+#pragma region FSM
+UIdleState* USTGameInstance::GetIdleInstance()
+{
+	static UIdleState* Instance;
+	if (Instance == nullptr)
+		Instance = new UIdleState();
+	return Instance;
+}
+#pragma endregion

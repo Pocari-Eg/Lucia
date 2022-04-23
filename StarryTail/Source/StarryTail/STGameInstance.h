@@ -60,4 +60,10 @@ private:
 	bool IsFirstOccupied;
 	int32 SpawnTime;
 #pragma endregion
+
+public:
+#pragma region FSM
+	static UIdleState* GetIdleInstance();
+
+#pragma endregion FSM
 };
