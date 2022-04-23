@@ -50,6 +50,7 @@ protected:
 public:
 	int32 EnemyCount;
 	int32 EnemyMaxCount;
+	
 private:
 	AIreneCharacter* Player;
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
@@ -60,4 +61,21 @@ private:
 	bool IsFirstOccupied;
 	int32 SpawnTime;
 #pragma endregion
+
+public:
+#pragma region FSM
+	// static UIdleState* GetIdleInstance();
+	// static UDeathState* GetDeathInstance();
+	// static UDodgeState* GetDodgeInstance();
+	// static UHitState* GetHitInstance();
+	// static UBasicAttackState* GetBasicAttackInstance();
+	// static UActionAttackState* GetActionAttackInstance();
+	// static UBattleIdleState* GetBattleIdleInstance();
+	// static URunState* GetRunInstance();
+	// static USprintState* GetSprintInstance();
+	// static USprintEndState* GetSprintEndInstance();
+	// static UJumpState* GetJumpInstance();
+	// static UFallState* GetFallInstance();
+	// static USprintJumpState* GetSprintJumpInstance();
+#pragma endregion FSM
 };
