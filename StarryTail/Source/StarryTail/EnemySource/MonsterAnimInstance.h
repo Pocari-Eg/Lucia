@@ -75,7 +75,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* MeleeAttackMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* AttackedMontage;
+		UAnimMontage* AttackedRightMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedLeftMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GroggyAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* GroggyMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ShockAnimation, Meta = (AllowPrivateAccess = true))
