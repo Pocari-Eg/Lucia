@@ -217,7 +217,6 @@ private:
 public:
 	UIreneFSM():StateValue(UIdleState::GetInstance()), StateEnumValue(EStateEnum::Idle)
 	{
-		StateValue = UIdleState::GetInstance();
 		StateValue->Enter(this);
 	}
 	virtual void Update(const float Value) override;
