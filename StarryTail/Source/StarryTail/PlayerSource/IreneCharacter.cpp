@@ -1346,6 +1346,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		CharacterDataStruct.CurrentHP -= DamageAmount - CharacterDataStruct.Defenses;
 		//hp 바
 		OnHpChanged.Broadcast();
+		//hp회복 취소
+		HPRecoveryWaitCancel();
+		if (HpRecoveryData.bIsRecovering)HpRecoveringCancel();
+
 		if (CharacterDataStruct.CurrentHP <= 0)
 		{
 			IreneAnim->StopAllMontages(0);
@@ -1557,6 +1561,11 @@ void AIreneCharacter::HPRecoveringStart()
 }
 void AIreneCharacter::HPRecovering()
 {
+	if (CharacterState->GetStateToString().Compare(FString("Idle")) != 0)
+	{
+		HpRecoveringCancel();
+	}
+
 	if (HpRecoveryData.bIsRecovering) {
 		int CurRecoveryAmount = RemainingRecovry / CurRecoverTime;
 		RemainingRecovry -= CurRecoveryAmount;
@@ -1572,8 +1581,6 @@ void AIreneCharacter::HPRecovering()
 }
 void AIreneCharacter::HpRecoveringCancel()
 {
-	
-
 	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
 	RemainingRecovry = 0;
 	HpRecoveryData.bIsRecovering = false;
@@ -1589,7 +1596,6 @@ bool AIreneCharacter::IsHpFull()
 	else {
 		return false;
 	}
-	
 }
 float AIreneCharacter::GetHpRecoveryRatio()
 {
