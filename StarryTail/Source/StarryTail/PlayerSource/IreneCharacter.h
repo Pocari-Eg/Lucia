@@ -98,13 +98,11 @@ private:
 public:
 	UPROPERTY(EditAnywhere,Category=HpRecorvery)
 	FPlayerRecoveryDataStruct HpRecoveryData;
-	UPROPERTY(EditAnywhere, Category = HpRecorvery)
-	int RemainingRecovry;
+	
 private:
 	int CurRecoverWaitTime;
 	int CurRecoverTime;
-	bool bIsCurHpChanged;
-
+	int RemainingRecovry;
 	FTimerHandle HpRecorveryTimerHandle;
 	FTimerHandle HpRecorveryWaitTimerHandle;
 #pragma endregion
