@@ -1,26 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #pragma once
-
+#include "../StarryTail.h"
 #include "IreneFSM.generated.h"
-
-// 13°³
-UENUM(BlueprintType)
-enum class EStateEnum : uint8
-{
-	Idle = 0,
-	Death,
-	Dodge,
-	Hit,
-	BasicAttack,
-	ActionAttack,
-	BattleIdle,
-	Run,
-	Sprint,
-	SprintEnd,
-	Jump,
-	Fall,
-	SprintJump
-};
 
 class IBaseGameEntity;
 class IState;

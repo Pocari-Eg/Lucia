@@ -13,6 +13,9 @@
 #include "ChainLightning.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
+#include "../SoundManager.h"
+
 #include "Monster.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
@@ -135,8 +138,8 @@ protected:
 	bool bDeadWait;
 #pragma region Sound
 	//사운드 이벤트
-	UPROPERTY(EditAnywhere, Category = "FMOD")
-		class UFMODEvent* HitEvent;
+	//UPROPERTY(EditAnywhere, Category = "FMOD")
+	class UFMODEvent* HitEvent;
 	//사운드 
 	SoundManager* HitSound;
 	FTransform SoundTransform;
