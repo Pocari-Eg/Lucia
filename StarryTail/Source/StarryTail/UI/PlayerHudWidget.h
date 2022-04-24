@@ -19,7 +19,7 @@ public:
 	void BindCharacter(class AIreneCharacter* NewIrene);
 	void UpdateHp();
 	void UpdateMp();
-
+	void UpdateHpRecovery();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  FireAttributesOn();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -38,5 +38,8 @@ private:
 	UPROPERTY()
 		class UProgressBar* HPProgressBar;
 	UPROPERTY()
+	class UProgressBar* HPRecoveryProgressBar;
+	UPROPERTY()
 		class UProgressBar* MPProgressBar;	
+
 };
