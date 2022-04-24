@@ -179,6 +179,9 @@ AIreneCharacter::AIreneCharacter()
 
 	CameraShakeOn = false;
 	GoTargetOn = false;
+
+	CurRecoverWaitTime = 0;
+	HpRecoveryData.bIsRecovering = false;
 }
 
 // Called when the game starts or when spawned
@@ -450,6 +453,7 @@ void AIreneCharacter::MoveStop()
 					}, 0.3f, false);
 			}
 			ChangeStateAndLog(UIdleState::GetInstance());
+			HPRecorveryWaitStart();
 		}
 	}
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
@@ -1406,6 +1410,7 @@ void AIreneCharacter::ActionEndChangeMoveState()
 	{
 		GetCharacterMovement()->MaxWalkSpeed = CharacterDataStruct.RunMaxSpeed;
 		ChangeStateAndLog(UIdleState::GetInstance());
+		HPRecorveryWaitStart();
 	}
 	else if (MoveKey[0] == 2 || MoveKey[1] == 2 || MoveKey[2] == 2 || MoveKey[3] == 2)
 	{
@@ -1520,6 +1525,51 @@ float AIreneCharacter::GetMpRatio()
 void AIreneCharacter::FootStepSound()
 {
 	WalkSound->SoundPlay3D(GetActorTransform());
+}
+void AIreneCharacter::HPRecorveryWaitStart()
+{
+	if(!HpRecoveryData.bIsRecovering)
+	GetWorld()->GetTimerManager().SetTimer(HpRecorveryWaitTimerHandle, this, &AIreneCharacter::HPRecorveryWaiting, 1.0f, true, 0.0f);
+}
+void AIreneCharacter::HPRecorveryWaiting()
+{
+	if (CharacterDataStruct.CurrentHP >= CharacterDataStruct.MaxHP)HPRecorveryWaitCancel();
+	else if (CharacterState->GetStateToString().Compare(FString("Idle")) != 0)	HPRecorveryWaitCancel();
+	else {
+		STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+		CurRecoverWaitTime++;
+		if (CurRecoverWaitTime >= HpRecoveryData.Time)HPRecorveringStart();
+	}
+}
+void AIreneCharacter::HPRecorveryWaitCancel()
+{
+	CurRecoverWaitTime = 0;
+	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryWaitTimerHandle);
+}
+void AIreneCharacter::HPRecorveringStart()
+{
+	HpRecoveryData.bIsRecovering = true;
+	HPRecorveryWaitCancel();
+	GetWorld()->GetTimerManager().SetTimer(HpRecorveryTimerHandle, this, &AIreneCharacter::HPRecorvering, HpRecoveryData.Speed, true, 0.0f);
+}
+void AIreneCharacter::HPRecorvering()
+{
+	if (CharacterDataStruct.CurrentHP < CharacterDataStruct.MaxHP&& HpRecoveryData.bIsRecovering) {
+		CharacterDataStruct.CurrentHP += HpRecoveryData.Amount;
+		OnHpChanged.Broadcast();
+		if (CharacterDataStruct.CurrentHP >= CharacterDataStruct.MaxHP)	HpRecorveringCancel();
+	}
+	else {
+		HpRecorveringCancel();
+	}
+
+}
+void AIreneCharacter::HpRecorveringCancel()
+{
+	CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
+	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
+	HpRecoveryData.bIsRecovering = false;
+	OnHpChanged.Broadcast();
 }
 #pragma endregion Park
 

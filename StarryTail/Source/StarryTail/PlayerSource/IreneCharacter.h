@@ -95,6 +95,16 @@ private:
 	float JumpingTime;
 #pragma endregion MoveData
 
+#pragma region Recorvery
+	UPROPERTY(EditAnywhere,Category=HpRecorvery)
+	FPlayerRecoveryDataStruct HpRecoveryData;
+
+private:
+	int CurRecoverWaitTime;
+	FTimerHandle HpRecorveryTimerHandle;
+	FTimerHandle HpRecorveryWaitTimerHandle;
+#pragma endregion
+
 #pragma region AttackData
 	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
@@ -302,6 +312,18 @@ private:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region RecorveryFunc
+	//회복 대기 관련
+	void HPRecorveryWaitStart();
+	void HPRecorveryWaiting();
+	void HPRecorveryWaitCancel();
+
+	//회복 관련
+	void HPRecorveringStart();
+	void HPRecorvering();
+	void HpRecorveringCancel();
+#pragma endregion
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();
