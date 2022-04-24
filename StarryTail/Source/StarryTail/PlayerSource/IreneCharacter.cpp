@@ -1344,7 +1344,6 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	if (CharacterDataStruct.CurrentHP > 0)
 	{
 		CharacterDataStruct.CurrentHP -= DamageAmount - CharacterDataStruct.Defenses;
-		bIsCurHpChanged = true;
 		//hp ¹Ù
 		OnHpChanged.Broadcast();
 		if (CharacterDataStruct.CurrentHP <= 0)
@@ -1529,7 +1528,7 @@ void AIreneCharacter::FootStepSound()
 }
 void AIreneCharacter::HPRecoveryWaitStart()
 {
-	if(!HpRecoveryData.bIsRecovering&& !IsHpFull()&& bIsCurHpChanged)
+	if(!HpRecoveryData.bIsRecovering&& !IsHpFull())
 	GetWorld()->GetTimerManager().SetTimer(HpRecorveryWaitTimerHandle, this, &AIreneCharacter::HPRecoveryWaiting, 1.0f, true, 0.0f);
 }
 void AIreneCharacter::HPRecoveryWaiting()
@@ -1573,13 +1572,16 @@ void AIreneCharacter::HPRecovering()
 }
 void AIreneCharacter::HpRecoveringCancel()
 {
-	if (IsHpFull())CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
+	
 
-	bIsCurHpChanged = false;
 	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
 	RemainingRecovry = 0;
 	HpRecoveryData.bIsRecovering = false;
 	OnHpChanged.Broadcast();
+	if (IsHpFull())CharacterDataStruct.CurrentHP = CharacterDataStruct.MaxHP;
+	else {
+		HPRecoveryWaitStart();
+	}
 }
 bool AIreneCharacter::IsHpFull()
 {
