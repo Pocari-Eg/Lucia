@@ -96,13 +96,18 @@ private:
 
 #pragma region Recorvery
 public:
+	//회복 구조체
 	UPROPERTY(EditAnywhere,Category=HpRecorvery)
 	FPlayerRecoveryDataStruct HpRecoveryData;
-	
 private:
+
+	//현재 회복 대기 시간
 	int CurRecoverWaitTime;
+	//현재 회복 시간
 	int CurRecoverTime;
+	//남은 회복량
 	int RemainingRecovry;
+	//타이머 핸들
 	FTimerHandle HpRecorveryTimerHandle;
 	FTimerHandle HpRecorveryWaitTimerHandle;
 #pragma endregion
@@ -316,13 +321,20 @@ private:
 
 #pragma region RecoveryFunc
 	//회복 대기 관련
+	//회복 대기 시작
 	void HPRecoveryWaitStart();
+	//회복 대기 기다림
 	void HPRecoveryWaiting();
+	//회보 대기 취소
 	void HPRecoveryWaitCancel();
 
 	//회복 관련
+
+	//회복 시작
 	void HPRecoveringStart();
+	//회복 중
 	void HPRecovering();
+	//회복 취소
 	void HpRecoveringCancel();
 
 	//Hp 확인
