@@ -26,9 +26,8 @@ void UPlayerHudWidget::UpdateHp()
 		{
 			HPProgressBar->SetPercent(CurrentIrene->GetHpRatio());
 		}
-	
-		
 	}
+	UpdateHpRecovery();
 	
 }
 
@@ -42,7 +41,18 @@ void UPlayerHudWidget::UpdateMp()
 			MPProgressBar->SetPercent(CurrentIrene->GetMpRatio());
 		}
 	}
-	
+}
+
+void UPlayerHudWidget::UpdateHpRecovery()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != HPRecoveryProgressBar)
+		{
+			HPRecoveryProgressBar->SetPercent(CurrentIrene->GetHpRecoveryRatio());
+		}
+	}
 }
 
 void UPlayerHudWidget::NativeOnInitialized()
@@ -52,4 +62,5 @@ void UPlayerHudWidget::NativeOnInitialized()
 	UE_LOG(LogTemp, Warning, TEXT("Init"));
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
 	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
+	HPRecoveryProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_RecoverBar")));
 }

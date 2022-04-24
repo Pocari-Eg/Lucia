@@ -9,7 +9,7 @@
 #include "PlayerCharacterDataStruct.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
-#include "IreneFSM.h"
+#include "IreneAnimInstance.h"
 
 //박찬영
 //#include "StopWatch.h"
@@ -23,7 +23,6 @@ DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
-
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
 {
@@ -53,16 +52,16 @@ private:
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct CharacterDataStruct;
-	// 캐릭터 상태
-	FIreneFSM* CharacterState;
-
+	UPROPERTY()
+	UIreneFSM* CharacterState;
+	
 	// 무기 매쉬
 	UPROPERTY()
 	USkeletalMeshComponent* Weapon;
 
 	// 애니메이션 인스턴스
 	UPROPERTY()
-	class UIreneAnimInstance* IreneAnim;
+	UIreneAnimInstance* IreneAnim;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
@@ -94,6 +93,19 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 #pragma endregion MoveData
+
+#pragma region Recorvery
+public:
+	UPROPERTY(EditAnywhere,Category=HpRecorvery)
+	FPlayerRecoveryDataStruct HpRecoveryData;
+	
+private:
+	int CurRecoverWaitTime;
+	int CurRecoverTime;
+	int RemainingRecovry;
+	FTimerHandle HpRecorveryTimerHandle;
+	FTimerHandle HpRecorveryWaitTimerHandle;
+#pragma endregion
 
 #pragma region AttackData
 	UPROPERTY()
@@ -246,7 +258,7 @@ private:
 
 #pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(FState* NewState);
+	void ChangeStateAndLog(IState* NewState);
 	void ActionEndChangeMoveState();
 	FName GetAnimName();
 #pragma endregion State
@@ -282,7 +294,6 @@ private:
 	float GetHpRatio();
 	//현재 마나 비율 전환
 	float GetMpRatio();
-
 	//사운드 출력
 	void FootStepSound();
 #pragma endregion Park
@@ -302,6 +313,25 @@ private:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region RecoveryFunc
+	//회복 대기 관련
+	void HPRecoveryWaitStart();
+	void HPRecoveryWaiting();
+	void HPRecoveryWaitCancel();
+
+	//회복 관련
+	void HPRecoveringStart();
+	void HPRecovering();
+	void HpRecoveringCancel();
+
+	//Hp 확인
+	bool IsHpFull();
+
+public:
+	//Hp RecoveryBar 
+	float GetHpRecoveryRatio();
+#pragma endregion
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();
