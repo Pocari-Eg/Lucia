@@ -6,6 +6,7 @@
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
+#include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "../UI/HPBarWidget.h"
 
@@ -1173,7 +1174,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 		bIsAttacked = true;
 
-		switch (Player->GetAttribute())
+		switch (Player->IreneAttack->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
@@ -1223,7 +1224,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (AttackedInfo.bIsUseMana)
 		{
 			CalcDef();
-			CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
+			CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
 			CalcHp(CalcNormalAttackDamage(DamageAmount) / 3.0);
 		}
 		else

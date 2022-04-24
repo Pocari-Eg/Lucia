@@ -3,6 +3,7 @@
 
 #include "OccupiedObject.h"
 #include "../STGameInstance.h"
+#include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 
 // Sets default values
@@ -171,7 +172,7 @@ void AOccupiedObject::CompareAttribute()
 	GetWorldTimerManager().ClearTimer(TimerHandle);
 	if (IsInPlayer == true)
 	{	
-		PlayerAttribute = Player->GetAttribute();
+		PlayerAttribute = Player->IreneAttack->GetAttribute();
 
 		//플레이어 속성과 점령지 속성이 동일하면 점령 시작
 		if (PlayerAttribute == AreaAttribute)
