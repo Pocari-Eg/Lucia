@@ -23,7 +23,6 @@ DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
-
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
 {
@@ -94,6 +93,21 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 #pragma endregion MoveData
+
+#pragma region Recorvery
+public:
+	UPROPERTY(EditAnywhere,Category=HpRecorvery)
+	FPlayerRecoveryDataStruct HpRecoveryData;
+	UPROPERTY(EditAnywhere, Category = HpRecorvery)
+	int RemainingRecovry;
+private:
+	int CurRecoverWaitTime;
+	int CurRecoverTime;
+	bool bIsCurHpChanged;
+
+	FTimerHandle HpRecorveryTimerHandle;
+	FTimerHandle HpRecorveryWaitTimerHandle;
+#pragma endregion
 
 #pragma region AttackData
 	UPROPERTY()
@@ -282,7 +296,6 @@ private:
 	float GetHpRatio();
 	//현재 마나 비율 전환
 	float GetMpRatio();
-
 	//사운드 출력
 	void FootStepSound();
 #pragma endregion Park
@@ -302,6 +315,25 @@ private:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region RecoveryFunc
+	//회복 대기 관련
+	void HPRecoveryWaitStart();
+	void HPRecoveryWaiting();
+	void HPRecoveryWaitCancel();
+
+	//회복 관련
+	void HPRecoveringStart();
+	void HPRecovering();
+	void HpRecoveringCancel();
+
+	//Hp 확인
+	bool IsHpFull();
+
+public:
+	//Hp RecoveryBar 
+	float GetHpRecoveryRatio();
+#pragma endregion
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();

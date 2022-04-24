@@ -152,3 +152,21 @@ struct FAttackDataTable : public FTableRowBase
 	FName Key_Set;
 
 };
+
+
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerRecoveryDataStruct
+{
+  GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="HP_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
+	int Speed;
+	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
+	int Time;
+	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
+	bool bIsRecovering;
+			
+};
