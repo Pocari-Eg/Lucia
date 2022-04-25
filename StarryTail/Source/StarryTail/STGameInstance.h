@@ -4,11 +4,11 @@
 
 #include "StarryTail.h"
 #include "Engine/GameInstance.h"
-#include "PlayerSource/IreneCharacter.h"
 #include "./EnemySource/Monster.h"
  
 #include "STGameInstance.generated.h"
 
+class AIreneCharacter;
 
 DECLARE_MULTICAST_DELEGATE(FOnSpawnDelegate);
 
@@ -61,21 +61,5 @@ private:
 	bool IsFirstOccupied;
 	int32 SpawnTime;
 #pragma endregion
-
-public:
-#pragma region FSM
-	// static UIdleState* GetIdleInstance();
-	// static UDeathState* GetDeathInstance();
-	// static UDodgeState* GetDodgeInstance();
-	// static UHitState* GetHitInstance();
-	// static UBasicAttackState* GetBasicAttackInstance();
-	// static UActionAttackState* GetActionAttackInstance();
-	// static UBattleIdleState* GetBattleIdleInstance();
-	// static URunState* GetRunInstance();
-	// static USprintState* GetSprintInstance();
-	// static USprintEndState* GetSprintEndInstance();
-	// static UJumpState* GetJumpInstance();
-	// static UFallState* GetFallInstance();
-	// static USprintJumpState* GetSprintJumpInstance();
-#pragma endregion FSM
+	
 };

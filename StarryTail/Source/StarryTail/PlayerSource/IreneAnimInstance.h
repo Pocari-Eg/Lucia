@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "IreneFSM.h"
 #include "../StarryTail.h"
 
 #include "IreneAnimInstance.generated.h"
@@ -16,6 +15,8 @@ DECLARE_MULTICAST_DELEGATE(FOnFootStepDelegate);
 /**
  * 
  */
+enum class EStateEnum: uint8;
+
 UCLASS()
 class STARRYTAIL_API UIreneAnimInstance : public UAnimInstance
 {
