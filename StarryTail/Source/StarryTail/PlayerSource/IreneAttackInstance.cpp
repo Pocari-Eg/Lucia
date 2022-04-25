@@ -59,7 +59,36 @@ EAttributeKeyword UIreneAttackInstance::GetAttribute()
 {
 	return Attribute;
 }
+int UIreneAttackInstance::GetAttackDirection()
+{
+	// 0 == Right to Left
+	// 1 == Left to Right
+	// 2 == Down to Up
+	// 3 == Up to Down
+	
+	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
+	{
+		return 0;
+	}
+	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
+	{
+		return 1;
+	}
+	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
+	{
+		return 0;
+	}
+	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
+	{
+		return 1;
+	}
+	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack5"))
+	{
+		return 3;
+	}
 
+	return 0;
+}
 void UIreneAttackInstance::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	Irene->IreneData.IsAttacking = false;
@@ -152,7 +181,7 @@ void UIreneAttackInstance::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 				{
-					Mob->SetAttackedInfo(bUseMP, UseMP);
+					Mob->SetAttackedInfo(bUseMP, UseMP, (EAttackedDirection)GetAttackDirection());
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}

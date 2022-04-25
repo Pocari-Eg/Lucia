@@ -29,6 +29,22 @@ enum class  WatchState :uint8 // 타이머의 상태를 나타내는 열거체
 
 };
 
+UENUM(BluePrintType)
+enum class  EAttackedDirection :uint8
+{
+	Left = 0 UMETA(DisplayName = "Left"),
+	Right UMETA(DisplayName = "Right"),
+	Up  UMETA(DisplayName = "Up"),
+	Down UMETA(DisplayName = "Down")
+};
+UENUM(BluePrintType)
+enum class EAttackedPower : uint8
+{
+	Halved = 0 UMETA(DisplayName = "Halved"),
+	Normal UMETA(DisplayName = "Normal"),
+	Critical UMETA(DisplayName = "Critical")
+};
+
 // 13개
 UENUM(BlueprintType)
 enum class EStateEnum : uint8

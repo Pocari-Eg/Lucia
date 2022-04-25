@@ -649,6 +649,7 @@ void AIreneCharacter::ActionEndChangeMoveState()
 		ChangeStateAndLog(URunState::GetInstance());
 	}
 }
+
 FName AIreneCharacter::GetAnimName()
 {
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) == 0)

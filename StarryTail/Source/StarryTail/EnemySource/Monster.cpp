@@ -189,10 +189,11 @@ UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 	return MonsterAnimInstance;
 }
 #pragma endregion
-void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana)
+void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection)
 {
 	AttackedInfo.bIsUseMana = bIsUseMana;
 	AttackedInfo.Mana = Mana;
+	AttackedInfo.AttackedDirection = AttackedDirection;
 }
 void AMonster::SetEffect()
 {
@@ -446,7 +447,7 @@ void AMonster::CalcDef()
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
-	MonsterAIController->Attacked();
+	MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
 	MonsterAIController->StopMovement();
 	if ((MonsterInfo.CurrentDef / 10.0f) < 1)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
@@ -454,6 +455,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 }
 float AMonster::CalcManaAttackDamage(float Damage)
 {
+	/*
 	float NoneDef = 0.0f;
 	float FireDef = 0.0f;
 	float WaterDef = 0.0f;
@@ -479,6 +481,8 @@ float AMonster::CalcManaAttackDamage(float Damage)
 	MonsterAIController->StopMovement();
 
 	return MonsterInfo.ArbitraryConstValueA * (NoneDef - FireDef - WaterDef - ThunderDef);
+	*/
+	return 0;
 }
 float AMonster::CalcBurnDamage(float Damage)
 {
@@ -648,7 +652,6 @@ void AMonster::SetActive()
 	if (bIsDead)
 	{
 		HpBarWidget->SetHiddenInGame(true);
-		SetActorEnableCollision(false);
 
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
@@ -1205,6 +1208,19 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			{
 				AttackedInfo.AttributeArmor = 200.0f;
 			}
+		}
+
+		if (AttackedInfo.AttributeArmor == 50)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Halved;
+		}
+		else if (AttackedInfo.AttributeArmor == 100)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Normal;
+		}
+		else if (AttackedInfo.AttributeArmor == 200)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Critical;
 		}
 
 		//³Ë¹é
