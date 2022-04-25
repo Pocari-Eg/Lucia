@@ -3,6 +3,7 @@
 #pragma once
 
 #include "IreneAnimInstance.h"
+#include "IreneFSM.h"
 
 UIreneAnimInstance::UIreneAnimInstance()
 {

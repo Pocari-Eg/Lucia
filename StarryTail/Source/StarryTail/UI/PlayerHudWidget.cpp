@@ -3,6 +3,7 @@
 
 #include "PlayerHudWidget.h"
 #include "../PlayerSource/IreneCharacter.h"
+#include "../PlayerSource/IreneUIManager.h"
 #include "Components/ProgressBar.h"
 
 void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
@@ -12,8 +13,8 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
-	NewIrene->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->OnMpChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
+	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
+	NewIrene->IreneUIManager->OnMpChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 }
 
 void UPlayerHudWidget::UpdateHp()
@@ -24,12 +25,10 @@ void UPlayerHudWidget::UpdateHp()
 	
 		if (nullptr != HPProgressBar)
 		{
-			HPProgressBar->SetPercent(CurrentIrene->GetHpRatio());
+			HPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetHpRatio());
 		}
-	
-		
 	}
-	
+	UpdateHpRecovery();
 }
 
 void UPlayerHudWidget::UpdateMp()
@@ -39,10 +38,21 @@ void UPlayerHudWidget::UpdateMp()
 	{
 		if (nullptr != MPProgressBar)
 		{
-			MPProgressBar->SetPercent(CurrentIrene->GetMpRatio());
+			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetMpRatio());
 		}
 	}
-	
+}
+
+void UPlayerHudWidget::UpdateHpRecovery()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != HPRecoveryProgressBar)
+		{
+			HPRecoveryProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetHpRecoveryRatio());
+		}
+	}
 }
 
 void UPlayerHudWidget::NativeOnInitialized()
@@ -52,4 +62,5 @@ void UPlayerHudWidget::NativeOnInitialized()
 	UE_LOG(LogTemp, Warning, TEXT("Init"));
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
 	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
+	HPRecoveryProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_RecoverBar")));
 }

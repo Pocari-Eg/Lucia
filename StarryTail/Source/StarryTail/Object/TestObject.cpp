@@ -5,6 +5,7 @@
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
 #include "Components/SceneComponent.h"
+#include "../PlayerSource/IreneAttackInstance.h"
 
 //µð¹ö±× 
 #include "DrawDebugHelpers.h"
@@ -162,21 +163,21 @@ void ATestObject::OnAttackedOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	{
 	case EAttributeKeyword::e_Fire:
 
-		if (Player->GetAttribute() == EAttributeKeyword::e_Water)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	case EAttributeKeyword::e_Water:
-		if (Player->GetAttribute() == EAttributeKeyword::e_Thunder)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	case EAttributeKeyword::e_Thunder:
-		if (Player->GetAttribute() == EAttributeKeyword::e_Fire)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	default:
@@ -196,21 +197,21 @@ float ATestObject::TakeDamage(float DamageAmount, struct FDamageEvent const& Dam
 	{
 	case EAttributeKeyword::e_Fire:
 
-		if (Player->GetAttribute() == EAttributeKeyword::e_Water)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	case EAttributeKeyword::e_Water:
-		if (Player->GetAttribute() == EAttributeKeyword::e_Thunder)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	case EAttributeKeyword::e_Thunder:
-		if (Player->GetAttribute() == EAttributeKeyword::e_Fire)
+		if (Player->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
-			SetHp(Player->GetATK());
+			SetHp(Player->IreneAttack->GetATK());
 		}
 		break;
 	default:
