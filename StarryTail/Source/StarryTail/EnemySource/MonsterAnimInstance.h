@@ -13,6 +13,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 UCLASS()
 class STARRYTAIL_API UMonsterAnimInstance : public UAnimInstance
@@ -32,6 +33,11 @@ public:
 	void PlayGroggyMontage();
 	void PlayShockMontage();
 	void PlayDeathMontage();
+	void PlayAttackedRightMontage();
+	void PlayAttackedLeftMontage();
+	void PlayAttackedCriticalRightMontage();
+	void PlayAttackedCriticalLeftMontage();
+	void PlayRollingMontage();
 
 	bool GetBattleIdleIsPlaying();
 	bool GetAttackIsPlaying();
@@ -44,6 +50,7 @@ public:
 	
 	FAttackDelegate Attack;
 	FAttackEndDelegate AttackEnd;
+	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 protected:
 	//Function
@@ -51,6 +58,8 @@ protected:
 		void AnimNotify_Attack();
 	UFUNCTION()
 		void AnimNotify_AttackEnd();
+	UFUNCTION()
+		void AnimNotify_AttackedEnd();
 	UFUNCTION()
 		void AnimNotify_Death();
 
@@ -76,13 +85,24 @@ protected:
 		UAnimMontage* MeleeAttackMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackedMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedRightMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedLeftMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedCriticalRightMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedCriticalLeftMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* RollingMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GroggyAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* GroggyMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ShockAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* ShockMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* DeathMontage;
-
+private:
+	bool CheckAttackedMontagePlaying();
 	/*
 	bool bIsWalk;
 	bool bIsBattleWalk;

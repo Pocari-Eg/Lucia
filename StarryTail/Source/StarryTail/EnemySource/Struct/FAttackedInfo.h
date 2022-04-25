@@ -17,4 +17,8 @@ public:
 		float Mana;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float AttributeArmor;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		EAttackedDirection AttackedDirection;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		EAttackedPower AttackedPower;
 };

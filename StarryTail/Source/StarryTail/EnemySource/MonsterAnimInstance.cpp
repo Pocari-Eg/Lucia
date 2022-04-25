@@ -115,8 +115,33 @@ void UMonsterAnimInstance::PlayBattleWalkMontage()
 }
 void UMonsterAnimInstance::PlayAttackedMontage()
 {
-	if(!Montage_IsPlaying(AttackedMontage) && !Montage_IsPlaying(GroggyMontage) && !Montage_IsPlaying(ShockMontage))
-		Montage_Play(AttackedMontage, PlayRate);
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedMontage, PlayRate);
+}
+void UMonsterAnimInstance::PlayAttackedRightMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedRightMontage, PlayRate);
+}
+void UMonsterAnimInstance::PlayAttackedLeftMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedLeftMontage, PlayRate);
+}
+void UMonsterAnimInstance::PlayAttackedCriticalRightMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedCriticalRightMontage, PlayRate);
+}
+void UMonsterAnimInstance::PlayAttackedCriticalLeftMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedCriticalLeftMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
 {
@@ -144,6 +169,12 @@ void UMonsterAnimInstance::PlayDeathMontage()
 {
 	Montage_Play(DeathMontage, 1.0f);
 }
+void UMonsterAnimInstance::PlayRollingMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(RollingMontage);
+}
 #pragma endregion
 bool UMonsterAnimInstance::GetBattleIdleIsPlaying()
 {
@@ -169,7 +200,28 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 {
 	AttackEnd.Broadcast();
 }
+void UMonsterAnimInstance::AnimNotify_AttackedEnd()
+{
+	AttackedEnd.Broadcast();
+}
 void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
+}
+bool UMonsterAnimInstance::CheckAttackedMontagePlaying()
+{
+	if (Montage_IsPlaying(AttackedMontage))
+		return true;
+	if (Montage_IsPlaying(AttackedRightMontage))
+		return true;
+	if (Montage_IsPlaying(AttackedLeftMontage))
+		return true;
+	if (Montage_IsPlaying(GroggyMontage))
+		return true;
+	if (Montage_IsPlaying(ShockMontage))
+		return true;
+	if (Montage_IsPlaying(RollingMontage))
+		return true;
+
+	return false;
 }
