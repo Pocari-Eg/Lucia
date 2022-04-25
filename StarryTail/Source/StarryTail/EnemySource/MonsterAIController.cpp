@@ -40,15 +40,47 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 }
-void AMonsterAIController::Attacked()
+void AMonsterAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana)
 {
 	SetPlayer();
 	
+
 	auto Monster = Cast<AMonster>(GetPawn());
 	if (Monster != nullptr)
 	{
-		if(!Monster->GetMonsterAnimInstance()->GetAttackIsPlaying())
-			Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+		if (!Monster->GetMonsterAnimInstance()->GetAttackIsPlaying())
+		{
+			if (!bIsPlayerUseMana)
+			{
+				if (AttackedPower == EAttackedPower::Halved)
+				{
+					Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+				}
+				else if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Monster->GetMonsterAnimInstance()->PlayAttackedRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Monster->GetMonsterAnimInstance()->PlayAttackedLeftMontage();
+				}
+			}
+			else
+			{
+				if (AttackedPower == EAttackedPower::Halved)
+				{
+					Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+				}
+				else if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Monster->GetMonsterAnimInstance()->PlayAttackedCriticalRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Monster->GetMonsterAnimInstance()->PlayAttackedCriticalLeftMontage();
+					else if (AttackedDirection == EAttackedDirection::Up || AttackedDirection == EAttackedDirection::Down)
+						Monster->GetMonsterAnimInstance()->PlayRollingMontage();
+				}
+			}
+		}
 	}
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }

@@ -23,7 +23,7 @@ public:
 	void SetPlayer();
 	void SetFind();
 
-	void Attacked();
+	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana);
 	void Groggy();
 	void Shock();
 	void ShockCancel();

@@ -19,6 +19,7 @@
 #include "Monster.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 UCLASS()
@@ -42,7 +43,7 @@ public:
 
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
-	void SetAttackedInfo(bool bIsUseMana, float Mana);
+	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 
 	void OnTrueDamage(float Damage);
 	void OnDamage(float Damage);
@@ -57,6 +58,7 @@ public:
 	void OffIsAttacked();
 
 	FAttackEndDelegate AttackEnd;
+	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 
 	UFUNCTION(BlueprintImplementableEvent)

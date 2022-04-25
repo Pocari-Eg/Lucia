@@ -52,6 +52,7 @@ public:
 	float UseMP;	
 private:
 	UIreneAttackInstance();
+	int GetAttackDirection();
 
 public:
 	void Init(AIreneCharacter* Value);

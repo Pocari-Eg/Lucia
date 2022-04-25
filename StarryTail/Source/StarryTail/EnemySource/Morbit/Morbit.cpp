@@ -267,9 +267,17 @@ void AMorbit::PostInitializeComponents()
 		bIsAttacking = false;
 		AttackEnd.Broadcast();
 		});
+	MonsterAnimInstance->AttackedEnd.AddLambda([this]() -> void {
+		bIsAttacked = false;
+		AttackedEnd.Broadcast();
+		});
 	MonsterAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
+		{
 			bDeadWait = true;
+			SetActorEnableCollision(false);
+		}
+
 		});
 	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }
