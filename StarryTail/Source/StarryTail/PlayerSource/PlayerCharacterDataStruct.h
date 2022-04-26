@@ -169,6 +169,8 @@ public:
 	int Speed;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
 	int Time;
+	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
+	int HP_Re_Time;
 	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
 	bool bIsRecovering;
 			
