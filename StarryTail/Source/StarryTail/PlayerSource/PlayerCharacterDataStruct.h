@@ -35,7 +35,10 @@ public:
 	// 점프시작파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpStartPower = 450;
-
+	// 점프시작파워
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float JumpDrag = 2;
+	
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MouseWheelSpeed = 10.0f;
@@ -95,7 +98,7 @@ public:
 	int32 MaxCombo = 5;
 	// 캡슐 공격 사거리
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	float AttackRange = 100.0f;
+	float AttackRange = 200.0f;
 	// 캡슐 공격 사거리 반지름
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRadius = 50.0f;

@@ -34,6 +34,7 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
 		const FName WeaponSocket(TEXT("hand_rSocket"));
@@ -229,6 +230,11 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch));
+	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch- 90)*-1);
+	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch));
+	//STARRYLOG(Error,TEXT("Tick: %f"), (FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch - 90)*-1)-FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch- 90)-80);
 	
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
@@ -529,8 +535,7 @@ void AIreneCharacter::FindNearMonster()
 
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
-	{
-		
+	{		
 		if(GetAnimName() == FName("B_Attack_1") || IreneInput->bUseRightButton)
 		{
 			auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
@@ -539,25 +544,19 @@ void AIreneCharacter::FindNearMonster()
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 			
-			IreneAttack->bFollowCameraTarget = true;
-			IreneAttack->CameraRot = WorldController->GetControlRotation();
-			FRotator ForwardRotator = GetActorForwardVector().Rotation();
-			//WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
-			IreneAttack->TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
+			//IreneAttack->bFollowCameraTarget = true;
+			//IreneAttack->CameraRot = WorldController->GetControlRotation();
+			//FRotator ForwardRotator = GetActorForwardVector().Rotation();
+			//IreneAttack->TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
 
 			auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			
 			float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
-			STARRYLOG(Error,TEXT("qqq: %f"),CharacterRadius);
-			STARRYLOG(Error,TEXT("www: %f"),MonsterRadius);
-			STARRYLOG(Error,TEXT("eee: %f"),TargetPos);
-			STARRYLOG(Error,TEXT("rrr: %f"),TargetPos - (CharacterRadius + MonsterRadius));
 
 			// 몬스터가 공격범위 보다 멀리 있다면
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
-				STARRYLOG(Error,TEXT("r"));
 				// 추적 세팅
 				IreneAttack->bFollowTarget = true;
 				IreneAttack->PlayerPosVec = GetActorLocation();
@@ -565,7 +564,6 @@ void AIreneCharacter::FindNearMonster()
 			}
 			else
 			{
-				STARRYLOG(Error,TEXT("w"));
 				IreneAttack->DoAttack();
 			}
 		}
@@ -583,11 +581,11 @@ void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		if(Cast<AMonster>(OtherActor))
 		{
-			STARRYLOG_S(Error);
 			IreneAttack->bFollowTarget = false;
 			IreneAttack->FollowTargetAlpha = 0;
 			IreneAttack->PlayerPosVec = FVector::ZeroVector;
 			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->DoAttack();
 		}
 	}
 }
@@ -603,11 +601,11 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 	{
 		if(Cast<AMonster>(Other))
 		{
-			STARRYLOG_S(Error);
 			IreneAttack->bFollowTarget = false;
 			IreneAttack->FollowTargetAlpha = 0;
 			IreneAttack->PlayerPosVec = FVector::ZeroVector;
 			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->DoAttack();
 		}
 	}
 }
