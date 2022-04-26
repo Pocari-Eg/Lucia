@@ -103,7 +103,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float TargetFollowSpeed = 8.0f;
 	// 카메라 타겟 추적 선형보간 속도
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TargetCameraFollowSpeed = 3.0f;
 };
 

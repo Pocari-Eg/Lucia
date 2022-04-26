@@ -17,6 +17,8 @@ void UHPBarWidget::BindObjectHp(class ATestObject* NewObject)
 
 }
 
+
+
 void UHPBarWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -62,9 +64,12 @@ void UHPBarWidget::SetColor(FLinearColor Color)
 	}
 }
 
-void UHPBarWidget::MarkerOnOff()
+void UHPBarWidget::MarkerOn()
 {
-	
-	if (MarkerImage->IsVisible())MarkerImage->SetVisibility(ESlateVisibility::Hidden);
-	else MarkerImage->SetVisibility(ESlateVisibility::Visible);
+	MarkerImage->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UHPBarWidget::MarkerOff()
+{
+	MarkerImage->SetVisibility(ESlateVisibility::Hidden);
 }

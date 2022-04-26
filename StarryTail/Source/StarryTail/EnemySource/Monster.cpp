@@ -48,14 +48,25 @@ AMonster::AMonster()
 	}
 }
 #pragma region Init
-void AMonster::MarkerOnOff()
+
+void AMonster::MarkerOn()
 {
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->MarkerOnOff();
+		HpBar->MarkerOn();
 	}
 }
+
+void AMonster::MarkerOff()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOff();
+	}
+}
+
 void AMonster::InitDebuffInfo()
 {
 	MonsterAttributeDebuff.FireDebuffStack = 0;
