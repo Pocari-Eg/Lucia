@@ -69,8 +69,8 @@ public:
 	TSubclassOf<AChainLightning> ChainBP;
 
 	//UI
-	void MarkerOnOff();
-
+	void MarkerOn();
+    void MarkerOff();
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};

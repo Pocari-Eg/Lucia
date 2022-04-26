@@ -298,7 +298,12 @@ void AIreneCharacter::Tick(float DeltaTime)
 		if (Mob != nullptr)
 		{
 			if (Mob->GetHp() <= 0 || FVector::Dist(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()) > 700.0f)
+			{
+				auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+				Mon->MarkerOff();
 				IreneAttack->TargetMonster = nullptr;
+			}
+			
 		}
 	}
 
@@ -371,6 +376,13 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
+	if(IreneAttack->TargetMonster!=nullptr && GetAnimName()==FName("B_Attack_1"))
+	{
+		auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+		Mon->MarkerOff();
+		IreneAttack->TargetMonster = nullptr;
+	}
+	
 	FAttackDataTable* table = IreneAttack->GetNameAtDataTable(GetAnimName());
 	if (table != nullptr)
 	{
@@ -519,11 +531,15 @@ void AIreneCharacter::FindNearMonster()
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
 	{
+		
 		if(GetAnimName() == FName("B_Attack_1") || IreneInput->bUseRightButton)
 		{
+			auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+			Mon->MarkerOn();
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+
 			
 			IreneAttack->bFollowCameraTarget = true;
 			IreneAttack->CameraRot = WorldController->GetControlRotation();
