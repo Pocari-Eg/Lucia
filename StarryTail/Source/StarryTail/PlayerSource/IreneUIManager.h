@@ -59,7 +59,6 @@ private:
 
 	//회복 대기 기다림
 	void HPRecoveryWaiting();
-
 	//회복 관련
 
 	//회복 중
@@ -67,6 +66,8 @@ private:
 
 	//Hp 확인
 	bool IsHpFull();
+	//Idle 연속 확인
+	bool IsConsecutiveIdle;
 	
 public:
 	void Init(AIreneCharacter* Value);
