@@ -1,19 +1,19 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskMonsterAttacked.h"
-#include "../Monster.h"
-#include "../MonsterAIController.h"
+#include "BTTaskMbAttacked.h"
+#include "../../Monster.h"
+#include "../MbAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTaskMonsterAttacked::UBTTaskMonsterAttacked()
+UBTTaskMbAttacked::UBTTaskMbAttacked()
 {
-	NodeName = TEXT("Attacked");
+	NodeName = TEXT("MbAttacked");
 	bNotifyTick = true;
 	WaitTimer = 0.0f;
 	WaitTime = 2.0f;
 }
-EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskMbAttacked::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
@@ -21,14 +21,12 @@ EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& 
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, true);
-
 	bIsAttacked = true;
 	Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });
 
 	return EBTNodeResult::InProgress;
 }
-void UBTTaskMonsterAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTaskMbAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -41,9 +39,9 @@ void UBTTaskMonsterAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 	}
 	if (WaitTimer >= WaitTime)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
 		WaitTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
-	
+
 }

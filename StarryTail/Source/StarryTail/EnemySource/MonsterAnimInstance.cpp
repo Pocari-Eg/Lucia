@@ -103,7 +103,9 @@ void UMonsterAnimInstance::PlayWalkMontage()
 }
 void UMonsterAnimInstance::PlayDetectMontage()
 {
-	Montage_Play(DetectMontage, PlayRate);
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(DetectMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayBattleIdleMontage()
 {
@@ -117,31 +119,31 @@ void UMonsterAnimInstance::PlayAttackedMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedMontage, PlayRate);
+	Montage_Play(AttackedMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayAttackedRightMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedRightMontage, PlayRate);
+	Montage_Play(AttackedRightMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayAttackedLeftMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedLeftMontage, PlayRate);
+	Montage_Play(AttackedLeftMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayAttackedCriticalRightMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedCriticalRightMontage, PlayRate);
+	Montage_Play(AttackedCriticalRightMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayAttackedCriticalLeftMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedCriticalLeftMontage, PlayRate);
+	Montage_Play(AttackedCriticalLeftMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
 {
