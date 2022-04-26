@@ -129,6 +129,12 @@ AIreneCharacter::AIreneCharacter()
 	IreneData.CurrentMP = IreneData.MaxMP;
 
 	CameraShakeOn = false;
+
+	HpRecoveryData.Amount = 300;
+	HpRecoveryData.HP_Re_Time = 4;
+	HpRecoveryData.Speed = 5;
+	HpRecoveryData.Time = 10;
+
 }
 
 // Called when the game starts or when spawned
@@ -620,8 +626,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		IreneData.CurrentHP -= DamageAmount - IreneData.Defenses;
 		//hp ¹Ù
 		IreneUIManager->OnHpChanged.Broadcast();
-		IreneUIManager->HPRecoveryWaitCancel();
-		if(HpRecoveryData.bIsRecovering) IreneUIManager->HpRecoveringCancel();			
+		ChangeStateAndLog(UHitState::GetInstance());
 		if (IreneData.CurrentHP <= 0)
 		{
 			IreneAnim->StopAllMontages(0);
@@ -664,6 +669,10 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 
 		if(NewState == UIdleState::GetInstance())
 			IreneUIManager->HPRecoveryWaitStart();
+		else {
+			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
+			else IreneUIManager->HPRecoveryWaitCancel();
+		}
 	}
 }
 
