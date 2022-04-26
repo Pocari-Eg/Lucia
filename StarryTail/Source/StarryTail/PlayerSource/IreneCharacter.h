@@ -116,6 +116,7 @@ public:
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
+	virtual void NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit) override;
 
 	// 피격
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
@@ -128,9 +129,6 @@ public:
 
 	UPROPERTY(BluePrintReadWrite)
 	bool CameraShakeOn;
-
-	UPROPERTY(BluePrintReadWrite)
-	bool GoTargetOn;
 
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
