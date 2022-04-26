@@ -135,8 +135,6 @@ void UIreneInputInstance::MoveAuto()
 
 		if (FVector::Dist(tar, Irene->IreneAttack->TargetPosVec) <= 50)
 		{
-			if (Irene->GetAnimName() == FName("B_Attack_1"))
-				Irene->GoTargetOn = true;
 			Irene->IreneAttack->DoAttack();
 		}
 	}
@@ -155,7 +153,10 @@ void UIreneInputInstance::MoveAuto()
 			MoveAutoDirection = FVector(0, 0, 0);
 			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
 			if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+			{
 				Irene->IreneState->SetState(UJumpState::GetInstance());
+				//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+			}
 		}
 
 		if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
@@ -560,6 +561,7 @@ void UIreneInputInstance::DodgeKeyword()
 	{
 		Irene->IreneAnim->StopAllMontages(0);
 		Irene->ChangeStateAndLog(UDodgeState::GetInstance());
+		//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 
 		constexpr float WaitTime = 0.5f; //시간을 설정
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
@@ -593,6 +595,7 @@ void UIreneInputInstance::DodgeKeyword()
 				if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
 				{
 					Irene->ActionEndChangeMoveState();
+					//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 				}
 			}), WaitTime, false);
 	}

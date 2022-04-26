@@ -34,7 +34,7 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-
+		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
 		const FName WeaponSocket(TEXT("hand_rSocket"));
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
@@ -128,7 +128,6 @@ AIreneCharacter::AIreneCharacter()
 	IreneData.CurrentMP = IreneData.MaxMP;
 
 	CameraShakeOn = false;
-	GoTargetOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -539,18 +538,26 @@ void AIreneCharacter::FindNearMonster()
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-
 			
 			IreneAttack->bFollowCameraTarget = true;
 			IreneAttack->CameraRot = WorldController->GetControlRotation();
 			FRotator ForwardRotator = GetActorForwardVector().Rotation();
 			//WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
 			IreneAttack->TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
+
+			auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
+			auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			
+			float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
+			STARRYLOG(Error,TEXT("qqq: %f"),CharacterRadius);
+			STARRYLOG(Error,TEXT("www: %f"),MonsterRadius);
+			STARRYLOG(Error,TEXT("eee: %f"),TargetPos);
+			STARRYLOG(Error,TEXT("rrr: %f"),TargetPos - (CharacterRadius + MonsterRadius));
+
 			// 몬스터가 공격범위 보다 멀리 있다면
-			float TargetPos = FVector::Dist(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()) - IreneData.AttackRange;
-			if (TargetPos > IreneData.AttackRange)
+			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
+				STARRYLOG(Error,TEXT("r"));
 				// 추적 세팅
 				IreneAttack->bFollowTarget = true;
 				IreneAttack->PlayerPosVec = GetActorLocation();
@@ -558,6 +565,7 @@ void AIreneCharacter::FindNearMonster()
 			}
 			else
 			{
+				STARRYLOG(Error,TEXT("w"));
 				IreneAttack->DoAttack();
 			}
 		}
@@ -570,11 +578,41 @@ void AIreneCharacter::FindNearMonster()
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if(IreneAttack->bFollowTarget)
+	{
+		if(Cast<AMonster>(OtherActor))
+		{
+			STARRYLOG_S(Error);
+			IreneAttack->bFollowTarget = false;
+			IreneAttack->FollowTargetAlpha = 0;
+			IreneAttack->PlayerPosVec = FVector::ZeroVector;
+			IreneAttack->TargetPosVec = FVector::ZeroVector;
+		}
+	}
 }
 void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 }
+void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if(IreneAttack->bFollowTarget)
+	{
+		if(Cast<AMonster>(Other))
+		{
+			STARRYLOG_S(Error);
+			IreneAttack->bFollowTarget = false;
+			IreneAttack->FollowTargetAlpha = 0;
+			IreneAttack->PlayerPosVec = FVector::ZeroVector;
+			IreneAttack->TargetPosVec = FVector::ZeroVector;
+		}
+	}
+}
+
+
 float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
