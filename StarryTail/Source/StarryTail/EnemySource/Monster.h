@@ -91,6 +91,7 @@ protected:
 	void PrintHitEffect(FVector AttackedPosition);
 	void PrintLightningHitEffect();
 	//Variable
+	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
@@ -177,8 +178,6 @@ private:
 	float KnockBackTimer;
 	float ShowUITimer;
 	float DeadWaitTimer;
-
-	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
 	bool bIsFlooding;

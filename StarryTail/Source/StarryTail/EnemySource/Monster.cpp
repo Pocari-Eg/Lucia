@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "./Morbit/Morbit.h"
 #include "MonsterAIController.h"
+#include "./Morbit/MbAIController.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
@@ -356,6 +357,7 @@ void AMonster::CalcAttributeDefType()
 	AttributeDefMap.Empty();
 	*/
 }
+
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -458,7 +460,13 @@ void AMonster::CalcDef()
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
-	MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+	if (Cast<AMorbit>(this))
+	{
+		auto Morbit = Cast<AMorbit>(this);
+		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
+
+		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+	}
 	MonsterAIController->StopMovement();
 	if ((MonsterInfo.CurrentDef / 10.0f) < 1)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
@@ -1066,7 +1074,8 @@ void AMonster::Tick(float DeltaTime)
 	{
 		KnockBackTime += DeltaTime;
 
-		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.8f)) * (DeltaTime * 3));
+		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
+		
 
 		SetActorLocation(NewLocation);
 
@@ -1104,8 +1113,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
 		auto Player = Cast<AIreneCharacter>(OtherActor);
-		Player->HitStopEvent();
-		HitStopEvent();
 		return;
 	}
 
@@ -1182,11 +1189,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 					PrintHitEffect(Component->GetComponentLocation());
 					Player->HitStopEvent();
+					HitStopEvent();
 				}
 			}
 		}
 
 		bIsAttacked = true;
+
 
 		switch (Player->IreneAttack->GetAttribute())
 		{
