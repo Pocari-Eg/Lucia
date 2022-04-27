@@ -22,7 +22,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* FloodingEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* ShockEffect;
+		UParticleSystem* SparkEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* TransitionEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -56,6 +56,7 @@ public:
 		FRotator AssembleEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector AssembleEffectScale;
+	
 	//Groggy
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FRotator GroggyEffectRotation;
