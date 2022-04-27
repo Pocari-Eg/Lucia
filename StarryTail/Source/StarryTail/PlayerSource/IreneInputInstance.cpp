@@ -9,6 +9,7 @@
 #include "IreneUIManager.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
@@ -565,36 +566,18 @@ void UIreneInputInstance::DodgeKeyword()
 		constexpr float WaitTime = 0.9f; //시간을 설정
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		
-		STARRYLOG(Error, TEXT("%s"), *Irene->IreneState->GetStateToString());
+		FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+		ForwardVec.Z = 0;
+		ForwardVec.Normalize();
+		
 		if(Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
 		{
 			MoveAutoDirection = FVector::ZeroVector;
 
-			float Pitch = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch)*-1 -90 + -1*FVector::DotProduct(Irene->CameraComp->GetForwardVector(), Irene->CameraComp->GetUpVector());
-			if(Pitch < 1.1f)
-				Pitch = 1.1f;
-			bool Down = false;
-			if(FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch- 90)*-1 < 90)
-				Down = true;
-
-			//STARRYLOG(Error,TEXT("%f"), FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch));
-			STARRYLOG(Error,TEXT("%f"), FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch- 90)*-1);
-			//STARRYLOG(Error,TEXT("%f"), FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch));
-			//STARRYLOG(Error,TEXT("%f"), (FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch - 90)*-1)-FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch- 90)-80);
-			//STARRYLOG(Error,TEXT("P: %f"), Pitch);
-
-			FVector ForwardVec = Irene->CameraComp->GetForwardVector();
-			FVector UpVec = Irene->CameraComp->GetUpVector();
-			FVector DownVec = (-1*Irene->CameraComp->GetUpVector());
-			
-
 			// w키나 아무방향 없으면 정면으로 이동
 			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
-				if(!Down)
-					MoveAutoDirection += UpVec*Pitch + ForwardVec/Pitch;
-				else
-					MoveAutoDirection += DownVec/Pitch + ForwardVec*Pitch;
+				MoveAutoDirection += ForwardVec;
 			}
 			if (MoveKey[1] != 0)
 			{
@@ -602,10 +585,7 @@ void UIreneInputInstance::DodgeKeyword()
 			}
 			if (MoveKey[2] != 0)
 			{
-				if(!Down)
-					MoveAutoDirection += -1*(UpVec*Pitch + ForwardVec/Pitch);
-				else
-					MoveAutoDirection += -1*(DownVec/Pitch + ForwardVec*Pitch);
+				MoveAutoDirection += -1 * ForwardVec;
 			}
 			if (MoveKey[3] != 0)
 			{
@@ -619,22 +599,23 @@ void UIreneInputInstance::DodgeKeyword()
 			// w키나 아무방향 없으면 정면으로 이동
 			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
-				MoveAutoDirection += Irene->GetActorForwardVector();
+				MoveAutoDirection += ForwardVec;
 			}
 			if (MoveKey[1] != 0)
 			{
-				MoveAutoDirection += Irene->GetActorRightVector() * -1;
+				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
 			}
 			if (MoveKey[2] != 0)
 			{
-				MoveAutoDirection += Irene->GetActorForwardVector() * -2;
+				MoveAutoDirection += -1 * ForwardVec;
 			}
 			if (MoveKey[3] != 0)
 			{
-				MoveAutoDirection += Irene->GetActorRightVector();
+				MoveAutoDirection += Irene->CameraComp->GetRightVector();
 			}
 			MoveAutoDirection.Normalize();
 		}
+
 		const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 
@@ -654,20 +635,23 @@ void UIreneInputInstance::DodgeKeyword()
 		if (!IsFallingRoll)
 		{
 			IsFallingRoll = true;
-
+			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+			ForwardVec.Z = 0;
+			ForwardVec.Normalize();
+			
 			MoveAutoDirection = FVector::ZeroVector;
 			// w키나 아무방향 없으면 정면으로 이동
 			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
-				MoveAutoDirection += Irene->CameraComp->GetForwardVector();
+				MoveAutoDirection += ForwardVec;
 			}
 			if (MoveKey[1] != 0)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector() * -1;
+				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
 			}
 			if (MoveKey[2] != 0)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetForwardVector() * -2;
+				MoveAutoDirection += -1 * ForwardVec;
 			}
 			if (MoveKey[3] != 0)
 			{
