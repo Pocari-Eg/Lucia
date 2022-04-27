@@ -92,5 +92,8 @@ public:
 
 	// 마우스 커서 활성화
 	void MouseCursorKeyword();
+
+	// Pause위젯 on
+	void PauseWidgetOn();
 #pragma endregion Other
 };

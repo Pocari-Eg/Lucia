@@ -670,5 +670,15 @@ void UIreneInputInstance::MouseCursorKeyword()
 		Irene->WorldController->bShowMouseCursor = false;
 }
 
+void UIreneInputInstance::PauseWidgetOn()
+{
+	for (int i = 0; i < MoveKey.Num(); i++)
+	{
+		MoveKey[i] = 0;
+	}
+	Irene->IreneState->SetState(UIdleState::GetInstance());
+	Irene->IreneUIManager->PauseWidgetOn();
+}
+
 
 #pragma endregion Input
