@@ -236,11 +236,6 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch));
-	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch- 90)*-1);
-	//STARRYLOG(Error,TEXT("Tick: %f"), FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch));
-	//STARRYLOG(Error,TEXT("Tick: %f"), (FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch - 90)*-1)-FRotator::NormalizeAxis(WorldController->GetControlRotation().Pitch- 90)-80);
 	
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
@@ -319,24 +314,24 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 
 	// 카메라 회전
-	if (IreneAttack->bFollowCameraTarget)
-	{
-		const float Dist = FVector::Dist(IreneAttack->CameraRot.Vector(), IreneAttack->TargetCameraRot.Vector());
-		IreneAttack->FollowTargetCameraAlpha += GetWorld()->GetDeltaSeconds() * IreneData.TargetCameraFollowSpeed / Dist;
-		if (IreneAttack->FollowTargetCameraAlpha >= 1)
-		{
-			IreneAttack->FollowTargetCameraAlpha = 1;
-		}
-		const FRotator Tar = FMath::Lerp(IreneAttack->CameraRot, IreneAttack->TargetCameraRot, IreneAttack->FollowTargetCameraAlpha);
-		WorldController->SetControlRotation(Tar);
-		if (IreneAttack->FollowTargetCameraAlpha >= 1)
-		{
-			IreneAttack->bFollowCameraTarget = false;
-			IreneAttack->FollowTargetCameraAlpha = 0.0f;
-			IreneAttack->CameraRot = FRotator::ZeroRotator;
-			IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
-		}
-	}
+	// if (IreneAttack->bFollowCameraTarget)
+	// {
+	// 	const float Dist = FVector::Dist(IreneAttack->CameraRot.Vector(), IreneAttack->TargetCameraRot.Vector());
+	// 	IreneAttack->FollowTargetCameraAlpha += GetWorld()->GetDeltaSeconds() * IreneData.TargetCameraFollowSpeed / Dist;
+	// 	if (IreneAttack->FollowTargetCameraAlpha >= 1)
+	// 	{
+	// 		IreneAttack->FollowTargetCameraAlpha = 1;
+	// 	}
+	// 	const FRotator Tar = FMath::Lerp(IreneAttack->CameraRot, IreneAttack->TargetCameraRot, IreneAttack->FollowTargetCameraAlpha);
+	// 	WorldController->SetControlRotation(Tar);
+	// 	if (IreneAttack->FollowTargetCameraAlpha >= 1)
+	// 	{
+	// 		IreneAttack->bFollowCameraTarget = false;
+	// 		IreneAttack->FollowTargetCameraAlpha = 0.0f;
+	// 		IreneAttack->CameraRot = FRotator::ZeroRotator;
+	// 		IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
+	// 	}
+	// }
 	
 	IreneState->Update(DeltaTime);
 }
