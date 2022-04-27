@@ -29,11 +29,21 @@ public:
 		float FloodingDebuffSpeedReductionValue; // 속도 감속 수치
 	float FloodingTimer;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SparkReduction;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SparkDamage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float SparkTime;
+	float SparkTimer;
+	
+	/*
 	//감전 디버프 관련 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ShockTime;
 	float ShockTimer;
 
+	
 	//범위 디버프 중첩 효과 관련 변수
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float TransitionRange;
@@ -52,6 +62,7 @@ public:
 		float ChainRange; // Chain 효과 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ChainSpeed; // Chain 효과 전이속도
+	*/
 public:
 	//원소별 디버프 중첩 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
