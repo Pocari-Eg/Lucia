@@ -3,6 +3,7 @@
 
 #include "HPBarWidget.h"
 #include "../Object/TestObject.h"
+#include "Components/Image.h"
 #include "Components/ProgressBar.h"
 
 void UHPBarWidget::BindObjectHp(class ATestObject* NewObject)
@@ -16,12 +17,15 @@ void UHPBarWidget::BindObjectHp(class ATestObject* NewObject)
 
 }
 
+
+
 void UHPBarWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 	DefProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("DefBar")));
+	MarkerImage = Cast<UImage>(GetWidgetFromName(TEXT("Marker")));
 }
 
 
@@ -58,4 +62,14 @@ void UHPBarWidget::SetColor(FLinearColor Color)
 	{
 		HPProgressBar->SetFillColorAndOpacity(Color);
 	}
+}
+
+void UHPBarWidget::MarkerOn()
+{
+	MarkerImage->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UHPBarWidget::MarkerOff()
+{
+	MarkerImage->SetVisibility(ESlateVisibility::Hidden);
 }

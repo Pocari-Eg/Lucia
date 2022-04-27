@@ -36,8 +36,12 @@ void SoundManager::SoundPlay2D()
 	if (Event != nullptr) {
 
 		Instance = UFMODBlueprintStatics::PlayEvent2D(World, Event, false);
-		char* result = TCHAR_TO_ANSI(*Parameter);
-		Instance.Instance->setParameterByName(result, ParameterValue);
+		
+		if (Parameter != "Empty")
+		{
+			char* result = TCHAR_TO_ANSI(*Parameter);
+			Instance.Instance->setParameterByName(result, ParameterValue);
+		}
 		Instance.Instance->setVolume(Volume);
 		UFMODBlueprintStatics::EventInstancePlay(Instance);
 		

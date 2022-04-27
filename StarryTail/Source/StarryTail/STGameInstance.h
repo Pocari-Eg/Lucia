@@ -4,11 +4,11 @@
 
 #include "StarryTail.h"
 #include "Engine/GameInstance.h"
-#include "IreneCharacter.h"
 #include "./EnemySource/Monster.h"
  
 #include "STGameInstance.generated.h"
 
+class AIreneCharacter;
 
 DECLARE_MULTICAST_DELEGATE(FOnSpawnDelegate);
 
@@ -50,6 +50,7 @@ protected:
 public:
 	int32 EnemyCount;
 	int32 EnemyMaxCount;
+	
 private:
 	AIreneCharacter* Player;
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
@@ -60,4 +61,5 @@ private:
 	bool IsFirstOccupied;
 	int32 SpawnTime;
 #pragma endregion
+	
 };

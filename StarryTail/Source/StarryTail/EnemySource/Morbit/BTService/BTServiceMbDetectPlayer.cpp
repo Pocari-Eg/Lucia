@@ -5,7 +5,7 @@
 #include "../MbAIController.h"
 #include "../../MonsterAIController.h"
 #include "../Morbit.h"
-#include "../../../IreneCharacter.h"
+#include "../../../PlayerSource/IreneCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"

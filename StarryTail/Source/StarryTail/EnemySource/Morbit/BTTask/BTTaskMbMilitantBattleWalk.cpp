@@ -3,7 +3,7 @@
 
 #include "BTTaskMbMilitantBattleWalk.h"
 #include "../MbAIController.h"
-#include "../../../IreneCharacter.h"
+#include "../../../PlayerSource/IreneCharacter.h"
 #include "../Morbit.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"

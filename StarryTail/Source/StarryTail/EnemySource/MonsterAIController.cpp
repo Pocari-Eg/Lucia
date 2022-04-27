@@ -40,17 +40,58 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 	Super::OnPossess(InPawn);
 
 }
-void AMonsterAIController::Attacked()
+void AMonsterAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana)
 {
+	if (AttackedPower == EAttackedPower::Halved)
+		return;
+
 	SetPlayer();
-	
+
 	auto Monster = Cast<AMonster>(GetPawn());
 	if (Monster != nullptr)
 	{
-		if(!Monster->GetMonsterAnimInstance()->GetAttackIsPlaying())
-			Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
+		if (!Monster->GetMonsterAnimInstance()->GetAttackIsPlaying())
+		{
+			Blackboard->SetValueAsBool(IsAttackedKey, true);
+			if (!bIsPlayerUseMana)
+			{
+				if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Monster->GetMonsterAnimInstance()->PlayAttackedRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Monster->GetMonsterAnimInstance()->PlayAttackedLeftMontage();
+				}
+			}
+			else
+			{
+				if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Monster->GetMonsterAnimInstance()->PlayAttackedCriticalRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Monster->GetMonsterAnimInstance()->PlayAttackedCriticalLeftMontage();
+					else if (AttackedDirection == EAttackedDirection::Up || AttackedDirection == EAttackedDirection::Down)
+						Monster->GetMonsterAnimInstance()->PlayRollingMontage();
+				}
+			}
+		}
+		else
+		{
+			if (bIsPlayerUseMana)
+			{
+				Blackboard->SetValueAsBool(IsAttackingKey, false);
+				Monster->GetMonsterAnimInstance()->AttackEnd;
+				if (AttackedDirection == EAttackedDirection::Left)
+					Monster->GetMonsterAnimInstance()->PlayAttackedCriticalRightMontage();
+				else if (AttackedDirection == EAttackedDirection::Right)
+					Monster->GetMonsterAnimInstance()->PlayAttackedCriticalLeftMontage();
+				else if (AttackedDirection == EAttackedDirection::Up || AttackedDirection == EAttackedDirection::Down)
+					Monster->GetMonsterAnimInstance()->PlayRollingMontage();
+				Blackboard->SetValueAsBool(IsAttackedKey, true);
+			}
+		}
 	}
-	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }
 void AMonsterAIController::Groggy()
 {

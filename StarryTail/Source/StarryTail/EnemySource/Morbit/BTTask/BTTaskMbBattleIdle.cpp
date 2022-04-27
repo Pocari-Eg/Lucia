@@ -4,7 +4,7 @@
 #include "BTTaskMbBattleIdle.h"
 #include "../Morbit.h"
 #include "../MbAIController.h"
-#include "../../../IreneCharacter.h"
+#include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskMbBattleIdle::UBTTaskMbBattleIdle()

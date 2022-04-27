@@ -23,7 +23,7 @@ UMonsterAnimInstance::UMonsterAnimInstance()
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACKED_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Attacked_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> GROGGY_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Groggy_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> SHOCK_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Shock_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SHOCK_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Shocked_Montage"));
 
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> DEATH_MONTAGE(TEXT("/Game/Animation/Monster/Morbit/Morbit_Montage/M_Mb_Die_Montage"));
 	if (IDLE_MONTAGE1.Succeeded())
@@ -103,7 +103,9 @@ void UMonsterAnimInstance::PlayWalkMontage()
 }
 void UMonsterAnimInstance::PlayDetectMontage()
 {
-	Montage_Play(DetectMontage, PlayRate);
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(DetectMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayBattleIdleMontage()
 {
@@ -115,8 +117,33 @@ void UMonsterAnimInstance::PlayBattleWalkMontage()
 }
 void UMonsterAnimInstance::PlayAttackedMontage()
 {
-	if(!Montage_IsPlaying(AttackedMontage) && !Montage_IsPlaying(GroggyMontage) && !Montage_IsPlaying(ShockMontage))
-		Montage_Play(AttackedMontage, PlayRate);
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedMontage, 1.0f);
+}
+void UMonsterAnimInstance::PlayAttackedRightMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedRightMontage, 1.0f);
+}
+void UMonsterAnimInstance::PlayAttackedLeftMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedLeftMontage, 1.0f);
+}
+void UMonsterAnimInstance::PlayAttackedCriticalRightMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedCriticalRightMontage, 1.0f);
+}
+void UMonsterAnimInstance::PlayAttackedCriticalLeftMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedCriticalLeftMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
 {
@@ -144,6 +171,12 @@ void UMonsterAnimInstance::PlayDeathMontage()
 {
 	Montage_Play(DeathMontage, 1.0f);
 }
+void UMonsterAnimInstance::PlayRollingMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(RollingMontage);
+}
 #pragma endregion
 bool UMonsterAnimInstance::GetBattleIdleIsPlaying()
 {
@@ -169,7 +202,28 @@ void UMonsterAnimInstance::AnimNotify_AttackEnd()
 {
 	AttackEnd.Broadcast();
 }
+void UMonsterAnimInstance::AnimNotify_AttackedEnd()
+{
+	AttackedEnd.Broadcast();
+}
 void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
+}
+bool UMonsterAnimInstance::CheckAttackedMontagePlaying()
+{
+	if (Montage_IsPlaying(AttackedMontage))
+		return true;
+	if (Montage_IsPlaying(AttackedRightMontage))
+		return true;
+	if (Montage_IsPlaying(AttackedLeftMontage))
+		return true;
+	if (Montage_IsPlaying(GroggyMontage))
+		return true;
+	if (Montage_IsPlaying(ShockMontage))
+		return true;
+	if (Montage_IsPlaying(RollingMontage))
+		return true;
+
+	return false;
 }

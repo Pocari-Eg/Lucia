@@ -4,9 +4,10 @@
 #include "Monster.h"
 #include "./Morbit/Morbit.h"
 #include "MonsterAIController.h"
-#include "ChainLightning.h"
+#include "./Morbit/MbAIController.h"
 //UI
 #include "../STGameInstance.h"
+#include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "../UI/HPBarWidget.h"
 
@@ -29,20 +30,44 @@ AMonster::AMonster()
 	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
 	HpBarWidget->SetupAttachment(GetMesh());
 
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 90.0f));
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/BP_HPBar.BP_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<AChainLightning> ChainBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_ChainLightning'"));
 
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(96, 20.0f));
+		HpBarWidget->SetDrawSize(FVector2D(96, 80.0f));
 		HpBarWidget->bAutoActivate = false;
+	}
+	if (ChainBlueprint.Succeeded())
+	{
+		ChainBP = ChainBlueprint.Class;
 	}
 }
 #pragma region Init
+
+void AMonster::MarkerOn()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOn();
+	}
+}
+
+void AMonster::MarkerOff()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOff();
+	}
+}
+
 void AMonster::InitDebuffInfo()
 {
 	MonsterAttributeDebuff.FireDebuffStack = 0;
@@ -147,6 +172,10 @@ float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
 }
+float AMonster::GetHp() const
+{
+	return MonsterInfo.CurrentHp;
+}
 FVector AMonster::GetLocation() const
 {
 	return GetActorLocation() + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
@@ -172,10 +201,11 @@ UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 	return MonsterAnimInstance;
 }
 #pragma endregion
-void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana)
+void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection)
 {
 	AttackedInfo.bIsUseMana = bIsUseMana;
 	AttackedInfo.Mana = Mana;
+	AttackedInfo.AttackedDirection = AttackedDirection;
 }
 void AMonster::SetEffect()
 {
@@ -235,6 +265,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 			return;
 	}
 	*/
+	/* 20220421 수정
 	if (MonsterInfo.MonsterAttribute == Attribute)
 	{
 		return;
@@ -252,6 +283,7 @@ void AMonster::AddDebuffStack(EAttributeKeyword Attribute)
 		MonsterAttributeDebuff.ThunderDebuffStack++;
 		break;
 	}
+	*/
 }
 #pragma region Calc
 void AMonster::CalcAttributeDefType()
@@ -325,6 +357,7 @@ void AMonster::CalcAttributeDefType()
 	AttributeDefMap.Empty();
 	*/
 }
+
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -360,7 +393,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.FireDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
@@ -377,7 +409,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.WaterDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Thunder:
@@ -394,7 +425,6 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
-		MonsterAttributeDebuff.ThunderDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	}
@@ -430,7 +460,13 @@ void AMonster::CalcDef()
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
-	MonsterAIController->Attacked();
+	if (Cast<AMorbit>(this))
+	{
+		auto Morbit = Cast<AMorbit>(this);
+		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
+
+		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+	}
 	MonsterAIController->StopMovement();
 	if ((MonsterInfo.CurrentDef / 10.0f) < 1)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
@@ -438,6 +474,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 }
 float AMonster::CalcManaAttackDamage(float Damage)
 {
+	/*
 	float NoneDef = 0.0f;
 	float FireDef = 0.0f;
 	float WaterDef = 0.0f;
@@ -463,6 +500,8 @@ float AMonster::CalcManaAttackDamage(float Damage)
 	MonsterAIController->StopMovement();
 
 	return MonsterInfo.ArbitraryConstValueA * (NoneDef - FireDef - WaterDef - ThunderDef);
+	*/
+	return 0;
 }
 float AMonster::CalcBurnDamage(float Damage)
 {
@@ -492,6 +531,7 @@ float AMonster::CalcBurnDamage(float Damage)
 }
 void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
+	/* 20220421 수정
 	TMap<EAttributeKeyword, int> AttributeDebuffMap;
 
 	AttributeDebuffMap.Add(EAttributeKeyword::e_Fire, MonsterAttributeDebuff.FireDebuffStack);
@@ -522,6 +562,7 @@ void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 			return;
 		MonsterInfo.CurrentDebuffAttribute = AttackedAttribute;
 	}
+	*/
 }
 void AMonster::CalcHp(float Damage)
 {
@@ -630,7 +671,6 @@ void AMonster::SetActive()
 	if (bIsDead)
 	{
 		HpBarWidget->SetHiddenInGame(true);
-		SetActorEnableCollision(false);
 
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
@@ -738,7 +778,7 @@ void AMonster::DebuffTransition(EAttributeKeyword AttackedAttribute, float Damag
 			if (Monster == nullptr)
 				continue;
 
-			Monster->AddDebuffStack(AttackedAttribute);
+			// Monster->AddDebuffStack(AttackedAttribute);
 			Monster->SetDebuff(AttackedAttribute, Damage);
 			Monster->OnDamage(Damage);
 		}
@@ -808,11 +848,13 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 		}
 		if (STGameInstance->GetChainMonsterList().Num() != 0)
 		{
-			FName path = TEXT("Blueprint'/Game/BluePrint/Monster/BP_ChainLightning.BP_ChainLightning'");
-			UBlueprint* ObjectToSpawn =
-				Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *path.ToString()));
+			if (ChainBP == nullptr)
+			{
+				STARRYLOG(Log, TEXT("Failed Load"));
+				return;
+			}
 
-			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(ObjectToSpawn->GeneratedClass, GetActorLocation(), GetActorRotation());
+			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(ChainBP, GetActorLocation(), GetActorRotation());
 			ChainLightning->Init();
 			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
 			ChainLightning->SetDamage(Damage);
@@ -827,9 +869,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 }
 void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 {
-	CalcCurrentDebuffAttribute(AttackedAttribute);
-
-	switch (MonsterInfo.CurrentDebuffAttribute)
+	switch (AttackedAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		Burn();
@@ -1034,7 +1074,8 @@ void AMonster::Tick(float DeltaTime)
 	{
 		KnockBackTime += DeltaTime;
 
-		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.8f)) * (DeltaTime * 3));
+		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
+		
 
 		SetActorLocation(NewLocation);
 
@@ -1072,8 +1113,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
 		auto Player = Cast<AIreneCharacter>(OtherActor);
-		Player->HitStopEvent();
-		HitStopEvent();
 		return;
 	}
 
@@ -1150,13 +1189,15 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 					PrintHitEffect(Component->GetComponentLocation());
 					Player->HitStopEvent();
+					HitStopEvent();
 				}
 			}
 		}
 
 		bIsAttacked = true;
 
-		switch (Player->GetAttribute())
+
+		switch (Player->IreneAttack->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
@@ -1189,6 +1230,19 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
+		if (AttackedInfo.AttributeArmor == 50)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Halved;
+		}
+		else if (AttackedInfo.AttributeArmor == 100)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Normal;
+		}
+		else if (AttackedInfo.AttributeArmor == 200)
+		{
+			AttackedInfo.AttackedPower = EAttackedPower::Critical;
+		}
+
 		//넉백
 		KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
 		KnockBackDir.Normalize();
@@ -1206,7 +1260,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (AttackedInfo.bIsUseMana)
 		{
 			CalcDef();
-			CalcAttributeDebuff(Player->GetAttribute(), DamageAmount);
+			CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
 			CalcHp(CalcNormalAttackDamage(DamageAmount) / 3.0);
 		}
 		else

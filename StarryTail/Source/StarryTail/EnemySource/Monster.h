@@ -10,11 +10,16 @@
 #include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
+#include "ChainLightning.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include "Components/WidgetComponent.h"
+#include "../SoundManager.h"
+
 #include "Monster.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 UCLASS()
@@ -30,6 +35,7 @@ public:
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
+	float GetHp() const;
 	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
@@ -37,7 +43,7 @@ public:
 
 	UMonsterAnimInstance* GetMonsterAnimInstance() const;
 
-	void SetAttackedInfo(bool bIsUseMana, float Mana);
+	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 
 	void OnTrueDamage(float Damage);
 	void OnDamage(float Damage);
@@ -52,6 +58,7 @@ public:
 	void OffIsAttacked();
 
 	FAttackEndDelegate AttackEnd;
+	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -59,6 +66,11 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
 
+	TSubclassOf<AChainLightning> ChainBP;
+
+	//UI
+	void MarkerOn();
+    void MarkerOff();
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
@@ -79,6 +91,7 @@ protected:
 	void PrintHitEffect(FVector AttackedPosition);
 	void PrintLightningHitEffect();
 	//Variable
+	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
@@ -128,8 +141,8 @@ protected:
 	bool bDeadWait;
 #pragma region Sound
 	//사운드 이벤트
-	UPROPERTY(EditAnywhere, Category = "FMOD")
-		class UFMODEvent* HitEvent;
+	//UPROPERTY(EditAnywhere, Category = "FMOD")
+	class UFMODEvent* HitEvent;
 	//사운드 
 	SoundManager* HitSound;
 	FTransform SoundTransform;
@@ -165,8 +178,6 @@ private:
 	float KnockBackTimer;
 	float ShowUITimer;
 	float DeadWaitTimer;
-
-	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
 	bool bIsFlooding;
