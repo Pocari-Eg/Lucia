@@ -12,7 +12,11 @@ UIreneUIManager::UIreneUIManager()
 	{
 		PlayerHudClass = UI_PlayerHud.Class;
 	}
-
+	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/BP_PauseWidget.BP_PauseWidget_C"));
+	if (PAUSEWIDGET.Succeeded())
+	{
+		PauseWidgetClass = PAUSEWIDGET.Class;
+	}
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
 	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
 
@@ -37,6 +41,7 @@ void UIreneUIManager::InitMemberVariable()
 void UIreneUIManager::Begin()
 {
 	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
+	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	PlayerHud->FireAttributesOn();
@@ -143,4 +148,10 @@ bool UIreneUIManager::IsHpFull()
 float UIreneUIManager::GetHpRecoveryRatio()
 {
 	return ((float)RemainingRecovry < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovry) / Irene->IreneData.MaxHP;
+}
+
+void UIreneUIManager::PauseWidgetOn()
+{
+GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+PauseWidget->WidgetOn();
 }
