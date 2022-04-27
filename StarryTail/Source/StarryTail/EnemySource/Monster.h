@@ -139,6 +139,8 @@ protected:
 	bool bIsGroggy;
 	bool bIsDead;
 	bool bDeadWait;
+
+	bool bIsSpark;
 #pragma region Sound
 	//사운드 이벤트
 	//UPROPERTY(EditAnywhere, Category = "FMOD")
@@ -160,11 +162,12 @@ private:
 
 	void Burn();
 	void Flooding();
-	void Shock();
-	void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
-	void Assemble();
-	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void Spark();
 
+	//void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
+	//void Assemble();
+	//void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+	
 	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void SetActive();

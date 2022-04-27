@@ -216,7 +216,15 @@ void AMorbit::AttackCheck()
 		if (nullptr == Player)
 			return;
 
-		UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+		if (bIsSpark)
+		{
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+			
+		}
+		else
+		{
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+		}
 	}
 	//
 }
