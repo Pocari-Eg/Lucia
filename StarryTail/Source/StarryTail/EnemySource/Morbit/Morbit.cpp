@@ -219,7 +219,7 @@ void AMorbit::AttackCheck()
 		if (bIsSpark)
 		{
 			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-			
+			CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 		}
 		else
 		{

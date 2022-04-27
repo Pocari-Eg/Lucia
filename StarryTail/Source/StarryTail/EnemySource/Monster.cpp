@@ -117,7 +117,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LightningHitEffect"));
 	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
 	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
-	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockEffect"));
+	SparkEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkEffect"));
 	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
 	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
@@ -127,7 +127,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent->SetupAttachment(GetMesh());
 	BurnEffectComponent->SetupAttachment(GetMesh());
 	FloodingEffectComponent->SetupAttachment(GetMesh());
-	ShockEffectComponent->SetupAttachment(GetMesh());
+	SparkEffectComponent->SetupAttachment(GetMesh());
 	TransitionEffectComponent->SetupAttachment(GetMesh());
 	AssembleEffectComponent->SetupAttachment(GetMesh());
 	GroggyEffectComponent->SetupAttachment(RootComponent);
@@ -136,7 +136,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
-	ShockEffectComponent->bAutoActivate = false;
+	SparkEffectComponent->bAutoActivate = false;
 	TransitionEffectComponent->bAutoActivate = false;
 	AssembleEffectComponent->bAutoActivate = false;
 	GroggyEffectComponent->bAutoActivate = false;
@@ -215,7 +215,7 @@ void AMonster::SetEffect()
 	LightningHitEffectComponent->SetTemplate(MonsterEffect.LightningHitEffect);
 	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
 	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
-	ShockEffectComponent->SetTemplate(MonsterEffect.ShockEffect);
+	SparkEffectComponent->SetTemplate(MonsterEffect.SparkEffect);
 	TransitionEffectComponent->SetTemplate(MonsterEffect.TransitionEffect);
 	AssembleEffectComponent->SetTemplate(MonsterEffect.AssembleEffect);
 	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
@@ -232,8 +232,8 @@ void AMonster::SetEffect()
 	FloodingEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
 	FloodingEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
 
-	ShockEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
-	ShockEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
+	SparkEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
+	SparkEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
 
 	TransitionEffectComponent->SetRelativeRotation(MonsterEffect.TransitionEffectRotation);
 	TransitionEffectComponent->SetRelativeScale3D(MonsterEffect.TransitionEffectScale);
@@ -450,9 +450,9 @@ void AMonster::CalcDef()
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
-		if (ShockEffectComponent->IsActive())
+		if (SparkEffectComponent->IsActive())
 		{
-			ShockEffectComponent->SetActive(false);
+			SparkEffectComponent->SetActive(false);
 			bIsShock = false;
 		}
 		GroggyEffectComponent->SetActive(true);
@@ -515,7 +515,7 @@ float AMonster::CalcManaAttackDamage(float Damage)
 }
 float AMonster::CalcBurnDamage(float Damage)
 {
-	return CalcNormalAttackDamage(Damage) / Damage;
+	return Damage * 5;
 	/*
 	float NoneDef = 0.0f;
 	float FireDef = 0.0f;
@@ -661,7 +661,7 @@ void AMonster::ResetDef()
 }
 void AMonster::OffShockDebuffEffect()
 {
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
@@ -688,7 +688,7 @@ void AMonster::SetActive()
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
 		FloodingEffectComponent->SetActive(false);
-		ShockEffectComponent->SetActive(false);
+		SparkEffectComponent->SetActive(false);
 		TransitionEffectComponent->SetActive(false);
 		AssembleEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
@@ -710,7 +710,7 @@ void AMonster::Burn()
 	}
 
 	FloodingEffectComponent->SetActive(false);
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 	BurnEffectComponent->SetActive(true);
 
 	MonsterAttributeDebuff.WaterDebuffStack = 0;
@@ -726,7 +726,7 @@ void AMonster::Flooding()
 
 	
 	BurnEffectComponent->SetActive(false);
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 	FloodingEffectComponent->SetActive(true);
 
 	MonsterAttributeDebuff.FireDebuffStack = 0;
@@ -763,7 +763,7 @@ void AMonster::Spark()
 
 	FloodingEffectComponent->SetActive(false);
 	BurnEffectComponent->SetActive(false);
-	// SparkEffectComponent->SetActive(true);
+	SparkEffectComponent->SetActive(true);
 
 	MonsterAttributeDebuff.FireDebuffStack = 0;
 	MonsterAttributeDebuff.WaterDebuffStack = 0;
@@ -1091,7 +1091,7 @@ void AMonster::Tick(float DeltaTime)
 		{
 			MonsterAttributeDebuff.SparkTimer = 0.0f;
 
-			// SparkEffectComponent->SetActive(false);
+			SparkEffectComponent->SetActive(false);
 
 			bIsSpark = false;
 		}

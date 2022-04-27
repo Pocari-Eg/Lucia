@@ -82,11 +82,13 @@ protected:
 	void InitAttackedInfo();
 	void InitEffect();
 
+	void CalcHp(float Damage);
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
 	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
 	float CalcManaAttackDamage(float Damage);
+
 
 	void PrintHitEffect(FVector AttackedPosition);
 	void PrintLightningHitEffect();
@@ -108,7 +110,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* FloodingEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* ShockEffectComponent;
+		UParticleSystemComponent* SparkEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* TransitionEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -151,7 +153,6 @@ protected:
 #pragma endregion Sound
 private:
 	//Function
-	void CalcHp(float Damage);
 	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
 	float CalcBurnDamage(float Damage);
 
