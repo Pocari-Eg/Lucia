@@ -72,15 +72,13 @@ void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKe
 			});
 
 	int num = InputKey.Num();
-	int index;
+	int index = 0;
 	IsEmptyKey = false;
 	IsUpdatekey = true;
 	for (int i = 0; i < num; i++)
 	{
 		
 		FInputChord Update(CurrentAction[i].Key, CurrentAction[i].bShift, CurrentAction[i].bCtrl, CurrentAction[i].bAlt, CurrentAction[i].bCmd);
-
-
 
 		if (Update.Key == NONE)
 		{

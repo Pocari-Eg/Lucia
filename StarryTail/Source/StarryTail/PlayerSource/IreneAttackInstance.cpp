@@ -21,6 +21,11 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
 	}
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormDataTable(TEXT("/Game/Math/BP_FormDataTable.BP_FormDataTable"));
+	if (DT_FormDataTable.Succeeded())
+	{
+		FormDataTable = DT_FormDataTable.Object;
+	}
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -36,8 +41,11 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_Fire;
-	
+	Attribute = EAttributeKeyword::e_None;
+	FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
+	FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
+	FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
+
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -122,6 +130,8 @@ void UIreneAttackInstance::AttackCheck()
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(true);
 		Irene->IreneUIManager->AttackSound->SoundPlay2D();
+
+		
 		Irene->FindNearMonster();
 	}
 }
@@ -191,11 +201,16 @@ void UIreneAttackInstance::DoAttack()
 	// 마나 회복
 	if (bUseMP == false && UseMP != 0.0f)
 	{
-		Irene->IreneData.CurrentMP += UseMP;
-
-		if (Irene->IreneData.CurrentMP > Irene->IreneData.MaxMP)
-			Irene->IreneData.CurrentMP = Irene->IreneData.MaxMP;
-
+		if(GetAttribute() == EAttributeKeyword::e_None)
+		{
+			const int FormGaugeValue = GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+			for(int i : FormGauge)
+			{
+				FormGauge[i] += FormGaugeValue/(GetNameAtFormDataTable(FName("Fire"))->Hit_Gauge_Re/100);
+				if(FormGauge[i] > FormGaugeValue)
+					FormGauge[i] = FormGaugeValue;
+			}
+		}
 		Irene->IreneUIManager->OnMpChanged.Broadcast();
 	}
 

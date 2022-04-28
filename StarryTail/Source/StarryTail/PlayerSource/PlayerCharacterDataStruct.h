@@ -148,14 +148,32 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Main_Keyword;
+	int Form;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int MANA;
+	int Gauge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;
-
 };
+USTRUCT(BlueprintType)
+struct FFormDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Form_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int F_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Recovery;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Hit_Gauge_Re;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Open_Gauge;
+};
 
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct

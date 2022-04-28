@@ -27,7 +27,13 @@ public:
 	
 	UPROPERTY()
 	UDataTable* AttackDataTable;
-
+	UPROPERTY()
+	UDataTable* FormDataTable;
+	
+	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
+	UPROPERTY()
+	TArray<float> FormGauge;
+	
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1
@@ -73,5 +79,6 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
-	FAttackDataTable* GetNameAtDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FFormDataTable* GetNameAtFormDataTable(const FName Value) const { if (Value != FName("")) return (FormDataTable->FindRow<FFormDataTable>(Value, "")); return nullptr; }
 };
