@@ -134,7 +134,18 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
 	HpRecoveryData.Time = 10;
-
+	FireRecoveryData.Amount = 200;
+	FireRecoveryData.Fire_Re_Time = 2;
+	FireRecoveryData.Speed = 0.5f;
+	FireRecoveryData.Time = 0;
+	WaterRecoveryData.Amount = 200;
+	WaterRecoveryData.Water_Re_Time = 2;
+	WaterRecoveryData.Speed = 0.5f;
+	WaterRecoveryData.Time = 0;
+	ElectricRecoveryData.Amount = 200;
+	ElectricRecoveryData.Electric_Re_Time = 2;
+	ElectricRecoveryData.Speed = 0.5f;
+	ElectricRecoveryData.Time = 0;
 }
 
 // Called when the game starts or when spawned
@@ -698,6 +709,12 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		else {
 			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
 			else IreneUIManager->HPRecoveryWaitCancel();
+		}
+		if(NewState == UDeathState::GetInstance())
+		{
+			IreneAttack->FireRecoveryWaitCancel();
+			IreneAttack->WaterRecoveryWaitCancel();
+			IreneAttack->ElectricRecoveryWaitCancel();
 		}
 	}
 }

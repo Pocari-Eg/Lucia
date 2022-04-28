@@ -190,6 +190,56 @@ public:
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
 	int HP_Re_Time;
 	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
-	bool bIsRecovering;
-			
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerFireRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Fire_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerWaterRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Water_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerElectricRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Electric_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
 };

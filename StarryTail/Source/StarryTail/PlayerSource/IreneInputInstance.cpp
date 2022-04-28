@@ -645,6 +645,9 @@ void UIreneInputInstance::FireKeywordReleased()
 	{
 		Irene->IreneUIManager->PlayerHud->FireAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Fire);
+		Irene->IreneAttack->WaterRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitStart();
+		Irene->IreneAttack->FireRecoveryWaitCancel();
 	}
 }
 void UIreneInputInstance::WaterKeywordReleased()
@@ -653,6 +656,9 @@ void UIreneInputInstance::WaterKeywordReleased()
 	{
 		Irene->IreneUIManager->PlayerHud->WaterAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Water);
+		Irene->IreneAttack->FireRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitStart();
+		Irene->IreneAttack->WaterRecoveryWaitCancel();
 	}
 }
 void UIreneInputInstance::ElectricKeywordReleased()
@@ -661,6 +667,9 @@ void UIreneInputInstance::ElectricKeywordReleased()
 	{
 		Irene->IreneUIManager->PlayerHud->ThunderAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Thunder);
+		Irene->IreneAttack->FireRecoveryWaitStart();
+		Irene->IreneAttack->WaterRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitCancel();
 	}
 }
 void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
