@@ -23,6 +23,7 @@ UIreneUIManager::UIreneUIManager()
 	bShowLog = false;
 	IsConsecutiveIdle = false;
 	CurRecoverWaitTime = 0;
+	WalkSoundVolume = 0.7f;
 }
 
 void UIreneUIManager::Init(AIreneCharacter* Value)
