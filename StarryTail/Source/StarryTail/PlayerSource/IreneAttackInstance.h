@@ -16,7 +16,38 @@ class STARRYTAIL_API UIreneAttackInstance : public UObject
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-	
+
+	//현재 회복 대기 시간
+	float CurFireRecoverWaitTime;
+	//현재 회복 시간
+	float CurFireRecoverTime;
+	//남은 회복량
+	int RemainingFireRecovery;
+	//타이머 핸들
+	FTimerHandle FireRecoveryTimerHandle;
+	FTimerHandle FireRecoveryWaitTimerHandle;
+	bool IsConsecutiveFire;
+	//현재 회복 대기 시간
+	float CurWaterRecoverWaitTime;
+	//현재 회복 시간
+	float CurWaterRecoverTime;
+	//남은 회복량
+	int RemainingWaterRecovery;
+	//타이머 핸들
+	FTimerHandle WaterRecoveryTimerHandle;
+	FTimerHandle WaterRecoveryWaitTimerHandle;
+	bool IsConsecutiveWater;
+	//현재 회복 대기 시간
+	float CurElectricRecoverWaitTime;
+	//현재 회복 시간
+	float CurElectricRecoverTime;
+	//남은 회복량
+	int RemainingElectricRecovery;
+	//타이머 핸들
+	FTimerHandle ElectricRecoveryTimerHandle;
+	FTimerHandle ElectricRecoveryWaitTimerHandle;
+	bool IsConsecutiveElectric;
+
 public:
 	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
@@ -27,7 +58,13 @@ public:
 	
 	UPROPERTY()
 	UDataTable* AttackDataTable;
-
+	UPROPERTY()
+	UDataTable* FormDataTable;
+	
+	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
+	UPROPERTY()
+	TArray<float> FormGauge;
+	
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1
@@ -53,7 +90,23 @@ public:
 private:
 	UIreneAttackInstance();
 	int GetAttackDirection();
-
+	
+	void FireRecoveringStart();
+	void FireRecovering();
+	void FireRecoveringCancel();
+	bool IsFireFull();
+	float GetFireRecoveryRatio();
+	void WaterRecoveringStart();
+	void WaterRecovering();
+	void WaterRecoveringCancel();
+	bool IsWaterFull();
+	float GetWaterRecoveryRatio();
+	void ElectricRecoveringStart();
+	void ElectricRecovering();
+	void ElectricRecoveringCancel();
+	bool IsElectricFull();
+	float GetElectricRecoveryRatio();
+	
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -73,5 +126,16 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
-	FAttackDataTable* GetNameAtDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FFormDataTable* GetNameAtFormDataTable(const FName Value) const { if (Value != FName("")) return (FormDataTable->FindRow<FFormDataTable>(Value, "")); return nullptr; }
+
+	void FireRecoveryWaitStart();
+	void FireRecoveryWaiting();
+	void FireRecoveryWaitCancel();
+	void WaterRecoveryWaitStart();
+	void WaterRecoveryWaiting();
+	void WaterRecoveryWaitCancel();
+	void ElectricRecoveryWaitStart();
+	void ElectricRecoveryWaiting();
+	void ElectricRecoveryWaitCancel();
 };

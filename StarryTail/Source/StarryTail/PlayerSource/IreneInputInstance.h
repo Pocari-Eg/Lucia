@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "IreneInputInstance.generated.h"
 
+enum class  EAttributeKeyword :uint8;
 
 UCLASS()
 class STARRYTAIL_API UIreneInputInstance : public UObject
@@ -43,7 +44,8 @@ public:
 	bool bUseRightButton;
 	
 private:
-
+	void ChangeForm(EAttributeKeyword Value);
+	
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -86,7 +88,10 @@ public:
 
 	// 메인키워드 속성변경
 	void MainKeyword();
-
+	void FireKeywordReleased();
+	void WaterKeywordReleased();
+	void ElectricKeywordReleased();
+	
 	// 대쉬
 	void DodgeKeyword();
 
