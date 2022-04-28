@@ -372,6 +372,9 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
 	PlayerInputComponent->BindAxis("RightButtonAxis", IreneInput, &UIreneInputInstance::RightButton);
+	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
+	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
+	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
 
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn);
 
@@ -391,26 +394,51 @@ void AIreneCharacter::FindNearMonster()
 		Mon->MarkerOff();
 		IreneAttack->TargetMonster = nullptr;
 	}
-	
-	FAttackDataTable* table = IreneAttack->GetNameAtDataTable(GetAnimName());
+	FString AttributeForm = GetAnimName().ToString();
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_None && (GetAnimName()!=FName("B_Attack_5_N") && GetAnimName()!=FName("ActionKeyword_1_N")))
+	{
+		AttributeForm = GetAnimName().ToString() + FString("_N");
+	}
+	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
+	{
+		AttributeForm = GetAnimName().ToString() + FString("_F");
+	}
+	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && (GetAnimName()!=FName("B_Attack_5_W")&& GetAnimName()!=FName("ActionKeyword_1_W")))
+	{
+		AttributeForm = GetAnimName().ToString() + FString("_W");
+	}
+	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && (GetAnimName()!=FName("B_Attack_5_E")&& GetAnimName()!=FName("ActionKeyword_1_E")))
+	{
+		AttributeForm = GetAnimName().ToString() + FString("_E");
+	}
+	FAttackDataTable* table = IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm));
 	if (table != nullptr)
 	{
 		IreneData.Strength = table->ATTACK_DAMAGE_1;
 
+		if((IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && IreneAttack->FormGauge[0] < IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)||
+			(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && IreneAttack->FormGauge[1] < IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)||
+			(IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && IreneAttack->FormGauge[2] < IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100))
+		{
+			IreneAttack->Attribute = EAttributeKeyword::e_None;
+			table = IreneAttack->GetNameAtAttackDataTable(FName(GetAnimName().ToString() + FString("_N")));
+			IreneAnim->SetAttribute(IreneAttack->Attribute);
+		}
+
 		// 마나 사용 조건
-		if (table->Main_Keyword != 0 && IreneData.CurrentMP >= table->MANA)
+		if (table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
 			IreneAttack->bUseMP = true;
-			IreneAttack->UseMP = table->MANA;
-			IreneData.CurrentMP -= table->MANA;
+			if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+				IreneAttack->FormGauge[0] -= table->Gauge;
+			else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+				IreneAttack->FormGauge[1] -= table->Gauge;
+			else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+				IreneAttack->FormGauge[2] -= table->Gauge;
+			IreneAttack->UseMP = table->Gauge;
 		}
 		// 마나 회복 조건
-		else
-		{
-			IreneAttack->bUseMP = false;
-			IreneAttack->UseMP = table->MANA;
-		}
-		if (table->Main_Keyword != 0 && IreneData.CurrentMP < table->MANA)
+		if (table->Form < 2)
 		{
 			IreneAttack->bUseMP = false;
 			IreneAttack->UseMP = 0;
