@@ -9,6 +9,7 @@
 #include "IreneUIManager.h"
 
 #include "Kismet/KismetMathLibrary.h"
+#include "DrawDebugHelpers.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
@@ -135,8 +136,6 @@ void UIreneInputInstance::MoveAuto()
 
 		if (FVector::Dist(tar, Irene->IreneAttack->TargetPosVec) <= 50)
 		{
-			if (Irene->GetAnimName() == FName("B_Attack_1"))
-				Irene->GoTargetOn = true;
 			Irene->IreneAttack->DoAttack();
 		}
 	}
@@ -155,7 +154,10 @@ void UIreneInputInstance::MoveAuto()
 			MoveAutoDirection = FVector(0, 0, 0);
 			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
 			if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+			{
 				Irene->IreneState->SetState(UJumpState::GetInstance());
+				//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+			}
 		}
 
 		if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
@@ -190,7 +192,7 @@ void UIreneInputInstance::StartJump()
 		}
 		Direction.Normalize();
 
-		Irene->GetMovementComponent()->Velocity = Irene->GetMovementComponent()->Velocity / 3;
+		Irene->GetMovementComponent()->Velocity = Irene->GetMovementComponent()->Velocity / Irene->IreneData.JumpDrag;
 
 		Irene->bPressedJump = true;
 		bStartJump = true;
@@ -559,30 +561,60 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
 		Irene->IreneAnim->StopAllMontages(0);
-		Irene->ChangeStateAndLog(UDodgeState::GetInstance());
+		//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 
-		constexpr float WaitTime = 0.5f; //시간을 설정
+		constexpr float WaitTime = 0.9f; //시간을 설정
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
+		
+		FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+		ForwardVec.Z = 0;
+		ForwardVec.Normalize();
+		
+		if(Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
+		{
+			MoveAutoDirection = FVector::ZeroVector;
 
-		MoveAutoDirection = FVector::ZeroVector;
-		// w키나 아무방향 없으면 정면으로 이동
-		if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
-		{
-			MoveAutoDirection += Irene->GetActorForwardVector() + Irene->CameraComp->GetForwardVector();
+			// w키나 아무방향 없으면 정면으로 이동
+			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			{
+				MoveAutoDirection += ForwardVec;
+			}
+			if (MoveKey[1] != 0)
+			{
+				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
+			}
+			if (MoveKey[2] != 0)
+			{
+				MoveAutoDirection += -1 * ForwardVec;
+			}
+			if (MoveKey[3] != 0)
+			{
+				MoveAutoDirection += Irene->CameraComp->GetRightVector();
+			}
+			MoveAutoDirection.Normalize();
 		}
-		if (MoveKey[1] != 0)
+		else
 		{
-			MoveAutoDirection += Irene->GetActorForwardVector() + Irene->CameraComp->GetRightVector() * -1;
+			MoveAutoDirection = FVector::ZeroVector;
+			// w키나 아무방향 없으면 정면으로 이동
+			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			{
+				MoveAutoDirection += ForwardVec;
+			}
+			if (MoveKey[1] != 0)
+			{
+				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
+			}
+			if (MoveKey[2] != 0)
+			{
+				MoveAutoDirection += -1 * ForwardVec;
+			}
+			if (MoveKey[3] != 0)
+			{
+				MoveAutoDirection += Irene->CameraComp->GetRightVector();
+			}
+			MoveAutoDirection.Normalize();
 		}
-		if (MoveKey[2] != 0)
-		{
-			MoveAutoDirection += Irene->GetActorForwardVector() + Irene->CameraComp->GetForwardVector() * -2;
-		}
-		if (MoveKey[3] != 0)
-		{
-			MoveAutoDirection += Irene->GetActorForwardVector() + Irene->CameraComp->GetRightVector();
-		}
-		MoveAutoDirection.Normalize();
 
 		const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
@@ -593,28 +625,33 @@ void UIreneInputInstance::DodgeKeyword()
 				if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
 				{
 					Irene->ActionEndChangeMoveState();
+					//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 				}
 			}), WaitTime, false);
+		Irene->ChangeStateAndLog(UDodgeState::GetInstance());
 	}
 	if (Irene->GetMovementComponent()->IsFalling())
 	{
 		if (!IsFallingRoll)
 		{
 			IsFallingRoll = true;
-
+			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+			ForwardVec.Z = 0;
+			ForwardVec.Normalize();
+			
 			MoveAutoDirection = FVector::ZeroVector;
 			// w키나 아무방향 없으면 정면으로 이동
 			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
-				MoveAutoDirection += Irene->CameraComp->GetForwardVector();
+				MoveAutoDirection += ForwardVec;
 			}
 			if (MoveKey[1] != 0)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector() * -1;
+				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
 			}
 			if (MoveKey[2] != 0)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetForwardVector() * -2;
+				MoveAutoDirection += -1 * ForwardVec;
 			}
 			if (MoveKey[3] != 0)
 			{
@@ -631,6 +668,16 @@ void UIreneInputInstance::MouseCursorKeyword()
 		Irene->WorldController->bShowMouseCursor = true;
 	else
 		Irene->WorldController->bShowMouseCursor = false;
+}
+
+void UIreneInputInstance::PauseWidgetOn()
+{
+	for (int i = 0; i < MoveKey.Num(); i++)
+	{
+		MoveKey[i] = 0;
+	}
+	Irene->IreneState->SetState(UIdleState::GetInstance());
+	Irene->IreneUIManager->PauseWidgetOn();
 }
 
 

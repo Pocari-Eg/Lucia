@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "./Morbit/Morbit.h"
 #include "MonsterAIController.h"
+#include "./Morbit/MbAIController.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
@@ -48,14 +49,25 @@ AMonster::AMonster()
 	}
 }
 #pragma region Init
-void AMonster::MarkerOnOff()
+
+void AMonster::MarkerOn()
 {
 	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
-		HpBar->MarkerOnOff();
+		HpBar->MarkerOn();
 	}
 }
+
+void AMonster::MarkerOff()
+{
+	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	if (HpBar != nullptr)
+	{
+		HpBar->MarkerOff();
+	}
+}
+
 void AMonster::InitDebuffInfo()
 {
 	MonsterAttributeDebuff.FireDebuffStack = 0;
@@ -73,6 +85,7 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
+	/*
 	MonsterAttributeDebuff.ShockTime = 2.0f;
 
 	MonsterAttributeDebuff.TransitionRange = 2.0f;
@@ -84,6 +97,7 @@ void AMonster::InitDebuffInfo()
 
 	MonsterAttributeDebuff.ChainRange = 10.0f;
 	MonsterAttributeDebuff.ChainSpeed = 2500.0f;
+	*/
 
 	bIsBurn = false;
 	bIsFlooding = false;
@@ -103,7 +117,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LightningHitEffect"));
 	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
 	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
-	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockEffect"));
+	SparkEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkEffect"));
 	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
 	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
@@ -113,7 +127,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent->SetupAttachment(GetMesh());
 	BurnEffectComponent->SetupAttachment(GetMesh());
 	FloodingEffectComponent->SetupAttachment(GetMesh());
-	ShockEffectComponent->SetupAttachment(GetMesh());
+	SparkEffectComponent->SetupAttachment(GetMesh());
 	TransitionEffectComponent->SetupAttachment(GetMesh());
 	AssembleEffectComponent->SetupAttachment(GetMesh());
 	GroggyEffectComponent->SetupAttachment(RootComponent);
@@ -122,7 +136,7 @@ void AMonster::InitEffect()
 	LightningHitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
-	ShockEffectComponent->bAutoActivate = false;
+	SparkEffectComponent->bAutoActivate = false;
 	TransitionEffectComponent->bAutoActivate = false;
 	AssembleEffectComponent->bAutoActivate = false;
 	GroggyEffectComponent->bAutoActivate = false;
@@ -201,7 +215,7 @@ void AMonster::SetEffect()
 	LightningHitEffectComponent->SetTemplate(MonsterEffect.LightningHitEffect);
 	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
 	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
-	ShockEffectComponent->SetTemplate(MonsterEffect.ShockEffect);
+	SparkEffectComponent->SetTemplate(MonsterEffect.SparkEffect);
 	TransitionEffectComponent->SetTemplate(MonsterEffect.TransitionEffect);
 	AssembleEffectComponent->SetTemplate(MonsterEffect.AssembleEffect);
 	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
@@ -218,8 +232,8 @@ void AMonster::SetEffect()
 	FloodingEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
 	FloodingEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
 
-	ShockEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
-	ShockEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
+	SparkEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
+	SparkEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
 
 	TransitionEffectComponent->SetRelativeRotation(MonsterEffect.TransitionEffectRotation);
 	TransitionEffectComponent->SetRelativeScale3D(MonsterEffect.TransitionEffectScale);
@@ -345,12 +359,14 @@ void AMonster::CalcAttributeDefType()
 	AttributeDefMap.Empty();
 	*/
 }
+
 void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage)
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 
 	if (STGameInstance->GetAttributeEffectMonster() == this)
 	{
+		/*
 		if (bIsBurn)
 		{
 			DebuffTransition(PlayerMainAttribute, Damage);
@@ -363,6 +379,7 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			Chain(PlayerMainAttribute, Damage);
 		}
+		*/
 	}
 	switch (PlayerMainAttribute)
 	{
@@ -380,6 +397,8 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
+		if(MonsterAttributeDebuff.FireDebuffStack < 6)
+			MonsterAttributeDebuff.FireDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Water:
@@ -396,6 +415,8 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
+		if(MonsterAttributeDebuff.WaterDebuffStack < 6)
+			MonsterAttributeDebuff.WaterDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	case EAttributeKeyword::e_Thunder:
@@ -412,6 +433,8 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 		{
 			return;
 		}
+		if(MonsterAttributeDebuff.ThunderDebuffStack < 6)
+			MonsterAttributeDebuff.ThunderDebuffStack++;
 		SetDebuff(PlayerMainAttribute, Damage);
 		break;
 	}
@@ -427,9 +450,9 @@ void AMonster::CalcDef()
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
-		if (ShockEffectComponent->IsActive())
+		if (SparkEffectComponent->IsActive())
 		{
-			ShockEffectComponent->SetActive(false);
+			SparkEffectComponent->SetActive(false);
 			bIsShock = false;
 		}
 		GroggyEffectComponent->SetActive(true);
@@ -447,11 +470,17 @@ void AMonster::CalcDef()
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
-	MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+	if (Cast<AMorbit>(this))
+	{
+		auto Morbit = Cast<AMorbit>(this);
+		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
+
+		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+	}
 	MonsterAIController->StopMovement();
-	if ((MonsterInfo.CurrentDef / 10.0f) < 1)
+	if (MonsterInfo.CurrentDef < 80)
 		return MonsterInfo.ArbitraryConstValueA * (Damage) * (AttackedInfo.AttributeArmor / 100.0f);
-	return MonsterInfo.ArbitraryConstValueA * (Damage / (MonsterInfo.CurrentDef / 10.0f)) * (AttackedInfo.AttributeArmor / 100.0f);
+	return MonsterInfo.ArbitraryConstValueA * (Damage / (MonsterInfo.CurrentDef / 80.0f)) * (AttackedInfo.AttributeArmor / 100.0f);
 }
 float AMonster::CalcManaAttackDamage(float Damage)
 {
@@ -486,6 +515,8 @@ float AMonster::CalcManaAttackDamage(float Damage)
 }
 float AMonster::CalcBurnDamage(float Damage)
 {
+	return Damage * 5;
+	/*
 	float NoneDef = 0.0f;
 	float FireDef = 0.0f;
 	float WaterDef = 0.0f;
@@ -509,6 +540,7 @@ float AMonster::CalcBurnDamage(float Damage)
 	}
 
 	return MonsterInfo.ArbitraryConstValueA * (NoneDef - FireDef - WaterDef - ThunderDef);
+	*/
 }
 void AMonster::CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute)
 {
@@ -629,7 +661,7 @@ void AMonster::ResetDef()
 }
 void AMonster::OffShockDebuffEffect()
 {
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
@@ -656,7 +688,7 @@ void AMonster::SetActive()
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
 		FloodingEffectComponent->SetActive(false);
-		ShockEffectComponent->SetActive(false);
+		SparkEffectComponent->SetActive(false);
 		TransitionEffectComponent->SetActive(false);
 		AssembleEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
@@ -677,14 +709,12 @@ void AMonster::Burn()
 		bIsFlooding = false;
 	}
 
-	if (MonsterAnimInstance->GetShockIsPlaying())
-	{
-		MonsterAIController->ShockCancel();
-		bIsShock = false;
-	}
 	FloodingEffectComponent->SetActive(false);
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 	BurnEffectComponent->SetActive(true);
+
+	MonsterAttributeDebuff.WaterDebuffStack = 0;
+	MonsterAttributeDebuff.ThunderDebuffStack = 0;
 
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
 	bIsBurn = true;
@@ -692,15 +722,15 @@ void AMonster::Burn()
 void AMonster::Flooding()
 {
 	bIsBurn = false;
+	bIsSpark = false;
 
-	if (MonsterAnimInstance->GetShockIsPlaying())
-	{
-		MonsterAIController->ShockCancel();
-		bIsShock = false;
-	}
+	
 	BurnEffectComponent->SetActive(false);
-	ShockEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(false);
 	FloodingEffectComponent->SetActive(true);
+
+	MonsterAttributeDebuff.FireDebuffStack = 0;
+	MonsterAttributeDebuff.ThunderDebuffStack = 0;
 
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
@@ -714,6 +744,35 @@ void AMonster::Flooding()
 	}
 	bIsFlooding = true;
 }
+void AMonster::Spark()
+{
+	bIsBurn = false;
+	bIsFlooding = false;
+
+	if (bIsFlooding)
+	{
+		//이동속도를 원래대로
+		MonsterInfo.MoveSpeed = MonsterInfo.DefaultMoveSpeed;
+		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
+
+		//애니메이션 속도를 원래대로
+		MonsterAnimInstance->SetPlayRate(1.0f);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+		bIsFlooding = false;
+	}
+
+	FloodingEffectComponent->SetActive(false);
+	BurnEffectComponent->SetActive(false);
+	SparkEffectComponent->SetActive(true);
+
+	MonsterAttributeDebuff.FireDebuffStack = 0;
+	MonsterAttributeDebuff.WaterDebuffStack = 0;
+
+	MonsterAttributeDebuff.SparkTimer = 0.0f;
+
+	bIsSpark = true;
+}
+/*
 void AMonster::Shock()
 {
 	bIsBurn = false;
@@ -731,6 +790,9 @@ void AMonster::Shock()
 
 	BurnEffectComponent->SetActive(false);
 	FloodingEffectComponent->SetActive(false);
+
+	MonsterAttributeDebuff.FireDebuffStack = 0;
+	MonsterAttributeDebuff.WaterDebuffStack = 0;
 
 	if (!bIsGroggy)
 	{
@@ -812,7 +874,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 				if (STGameInstance->GetChainMonsterList().Num() < 2)
 					STGameInstance->AddChainMonster(Monster);
 			}
-			/*
+			
 			//몬스터의 속성중
 			for (auto Elem : Monster->GetMainAttributeDef())
 			{
@@ -825,7 +887,7 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 					break;
 				}
 			}
-			*/
+			
 		}
 		if (STGameInstance->GetChainMonsterList().Num() != 0)
 		{
@@ -839,15 +901,16 @@ void AMonster::Chain(EAttributeKeyword PlayerMainAttribute, float Damage)
 			ChainLightning->Init();
 			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
 			ChainLightning->SetDamage(Damage);
-			/*
+			
 			auto ChainLightning = GetWorld()->SpawnActor<AChainLightning>(GetActorLocation(), FRotator::ZeroRotator);
 			ChainLightning->Init();
 			ChainLightning->SetMoveSpeed(MonsterAttributeDebuff.ChainSpeed);
 			ChainLightning->SetDamage(Damage);
-			*/
+			
 		}
 	}
 }
+*/
 void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 {
 	switch (AttackedAttribute)
@@ -859,7 +922,7 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 		Flooding();
 		break;
 	case EAttributeKeyword::e_Thunder:
-		Shock();
+		Spark();
 		break;
 	}
 }
@@ -986,7 +1049,7 @@ void AMonster::Tick(float DeltaTime)
 			//틱 시간 초기화
 			MonsterAttributeDebuff.BurnCycleTimer = 0.0f;
 			//데미지 계산 후 체력감소
-			CalcHp(CalcBurnDamage(MonsterAttributeDebuff.BurnDamage) / 100.0f);
+			CalcHp(CalcBurnDamage(MonsterAttributeDebuff.BurnDamage));
 		}
 		//화상 지속시간이 설정된 시간이 됐을 때
 		if (MonsterAttributeDebuff.BurnTimer >= MonsterAttributeDebuff.BurnTime)
@@ -1020,6 +1083,20 @@ void AMonster::Tick(float DeltaTime)
 			bIsFlooding = false;
 		}
 	}
+	if (bIsSpark)
+	{
+		MonsterAttributeDebuff.SparkTimer += DeltaTime;
+
+		if (MonsterAttributeDebuff.SparkTimer >= MonsterAttributeDebuff.SparkTime)
+		{
+			MonsterAttributeDebuff.SparkTimer = 0.0f;
+
+			SparkEffectComponent->SetActive(false);
+
+			bIsSpark = false;
+		}
+	}
+	/*
 	if (bIsShock)
 	{
 		MonsterAttributeDebuff.ShockTimer += DeltaTime;
@@ -1031,6 +1108,7 @@ void AMonster::Tick(float DeltaTime)
 			bIsShock = false;
 		}
 	}
+	
 	if (bIsAssemble)
 	{
 		//중심 몬스터로 향하는 벡터
@@ -1050,12 +1128,13 @@ void AMonster::Tick(float DeltaTime)
 			bIsAssemble = false;
 		}
 	}
-
+	*/
 	if (bIsAttacked) // 0.2
 	{
 		KnockBackTime += DeltaTime;
 
-		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.8f)) * (DeltaTime * 3));
+		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
+		
 
 		SetActorLocation(NewLocation);
 
@@ -1093,8 +1172,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
 		auto Player = Cast<AIreneCharacter>(OtherActor);
-		Player->HitStopEvent();
-		HitStopEvent();
 		return;
 	}
 
@@ -1171,11 +1248,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 					PrintHitEffect(Component->GetComponentLocation());
 					Player->HitStopEvent();
+					HitStopEvent();
 				}
 			}
 		}
 
 		bIsAttacked = true;
+
 
 		switch (Player->IreneAttack->GetAttribute())
 		{

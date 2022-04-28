@@ -12,11 +12,16 @@ UIreneUIManager::UIreneUIManager()
 	{
 		PlayerHudClass = UI_PlayerHud.Class;
 	}
-
+	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/BP_PauseWidget.BP_PauseWidget_C"));
+	if (PAUSEWIDGET.Succeeded())
+	{
+		PauseWidgetClass = PAUSEWIDGET.Class;
+	}
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
 	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
 
 	bShowLog = false;
+	IsConsecutiveIdle = false;
 	CurRecoverWaitTime = 0;
 }
 
@@ -36,6 +41,7 @@ void UIreneUIManager::InitMemberVariable()
 void UIreneUIManager::Begin()
 {
 	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
+	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	PlayerHud->FireAttributesOn();
@@ -63,22 +69,30 @@ void UIreneUIManager::FootStepSound()
 }
 void UIreneUIManager::HPRecoveryWaitStart()
 {
+
 	if(!Irene->HpRecoveryData.bIsRecovering&& !IsHpFull())
 	GetWorld()->GetTimerManager().SetTimer(HpRecorveryWaitTimerHandle, this, &UIreneUIManager::HPRecoveryWaiting, 1.0f, true, 0.0f);
 }
 void UIreneUIManager::HPRecoveryWaiting()
 {
-    if (Irene->IreneState->GetStateToString().Compare(FString("Idle")) != 0)	HPRecoveryWaitCancel();
-	else {
-		STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
-		CurRecoverWaitTime++;
-		if (CurRecoverWaitTime >= Irene->HpRecoveryData.Time)HPRecoveringStart();
-	}
+
+		if (IsConsecutiveIdle == false) {
+			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			CurRecoverWaitTime++;
+			if (CurRecoverWaitTime >= Irene->HpRecoveryData.Time)HPRecoveringStart();
+		}
+		else {
+			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			CurRecoverWaitTime++;
+			if (CurRecoverWaitTime >= Irene->HpRecoveryData.HP_Re_Time)HPRecoveringStart();
+		}
 }
+
 void UIreneUIManager::HPRecoveryWaitCancel()
 {
 	CurRecoverWaitTime = 0;
 	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryWaitTimerHandle);
+	IsConsecutiveIdle = false;
 }
 void UIreneUIManager::HPRecoveringStart()
 {
@@ -91,11 +105,6 @@ void UIreneUIManager::HPRecoveringStart()
 }
 void UIreneUIManager::HPRecovering()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("Idle")) != 0)
-	{
-		HpRecoveringCancel();
-	}
-
 	if (Irene->HpRecoveryData.bIsRecovering) {
 		int CurRecoveryAmount = RemainingRecovry / CurRecoverTime;
 		RemainingRecovry -= CurRecoveryAmount;
@@ -106,7 +115,15 @@ void UIreneUIManager::HPRecovering()
 			if (IsHpFull()) HpRecoveringCancel();
 		}
 		if (CurRecoverTime > 1)CurRecoverTime--;
-		else HpRecoveringCancel();
+		else {
+			
+			GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
+			RemainingRecovry = 0;
+			Irene->HpRecoveryData.bIsRecovering = false;
+			IsConsecutiveIdle = true;
+			HPRecoveryWaitStart();
+			
+		}
 	}
 }
 void UIreneUIManager::HpRecoveringCancel()
@@ -114,6 +131,7 @@ void UIreneUIManager::HpRecoveringCancel()
 	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
 	RemainingRecovry = 0;
 	Irene->HpRecoveryData.bIsRecovering = false;
+	IsConsecutiveIdle = false;
 	OnHpChanged.Broadcast();
 	if (IsHpFull())Irene->IreneData.CurrentHP = Irene->IreneData.MaxHP;
 	else {
@@ -130,4 +148,10 @@ bool UIreneUIManager::IsHpFull()
 float UIreneUIManager::GetHpRecoveryRatio()
 {
 	return ((float)RemainingRecovry < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovry) / Irene->IreneData.MaxHP;
+}
+
+void UIreneUIManager::PauseWidgetOn()
+{
+GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+PauseWidget->WidgetOn();
 }

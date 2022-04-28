@@ -21,8 +21,10 @@ public:
 	void UpdateHpWidget(float Hp);
 	void UpdateDefWidget(float Def);
 	void SetColor(FLinearColor Color);
-	void MarkerOnOff();
 
+	void MarkerOn();
+
+	void MarkerOff();
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;

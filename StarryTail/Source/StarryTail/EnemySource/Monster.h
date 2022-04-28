@@ -69,8 +69,8 @@ public:
 	TSubclassOf<AChainLightning> ChainBP;
 
 	//UI
-	void MarkerOnOff();
-
+	void MarkerOn();
+    void MarkerOff();
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
@@ -82,15 +82,18 @@ protected:
 	void InitAttackedInfo();
 	void InitEffect();
 
+	void CalcHp(float Damage);
 	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
 	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
 	float CalcManaAttackDamage(float Damage);
 
+
 	void PrintHitEffect(FVector AttackedPosition);
 	void PrintLightningHitEffect();
 	//Variable
+	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
@@ -107,7 +110,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* FloodingEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* ShockEffectComponent;
+		UParticleSystemComponent* SparkEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* TransitionEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -138,6 +141,8 @@ protected:
 	bool bIsGroggy;
 	bool bIsDead;
 	bool bDeadWait;
+
+	bool bIsSpark;
 #pragma region Sound
 	//사운드 이벤트
 	//UPROPERTY(EditAnywhere, Category = "FMOD")
@@ -148,7 +153,6 @@ protected:
 #pragma endregion Sound
 private:
 	//Function
-	void CalcHp(float Damage);
 	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
 	float CalcBurnDamage(float Damage);
 
@@ -159,11 +163,12 @@ private:
 
 	void Burn();
 	void Flooding();
-	void Shock();
-	void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
-	void Assemble();
-	void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+	void Spark();
 
+	//void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
+	//void Assemble();
+	//void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
+	
 	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void SetActive();
@@ -177,8 +182,6 @@ private:
 	float KnockBackTimer;
 	float ShowUITimer;
 	float DeadWaitTimer;
-
-	AMonsterAIController* MonsterAIController;
 
 	bool bIsBurn;
 	bool bIsFlooding;

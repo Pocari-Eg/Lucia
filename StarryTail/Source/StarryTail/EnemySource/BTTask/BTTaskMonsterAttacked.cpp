@@ -10,6 +10,8 @@ UBTTaskMonsterAttacked::UBTTaskMonsterAttacked()
 {
 	NodeName = TEXT("Attacked");
 	bNotifyTick = true;
+	WaitTimer = 0.0f;
+	WaitTime = 2.0f;
 }
 EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -19,7 +21,7 @@ EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& 
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, true);
 
 	bIsAttacked = true;
 	Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });
@@ -30,9 +32,18 @@ void UBTTaskMonsterAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	WaitTimer += DeltaSeconds;
 	if (!bIsAttacked)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
+		WaitTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+	if (WaitTimer >= WaitTime)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
+		WaitTimer = 0.0f;
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+	}
+	
 }

@@ -34,7 +34,8 @@ AIreneCharacter::AIreneCharacter()
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-
+		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
+		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
 		const FName WeaponSocket(TEXT("hand_rSocket"));
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
@@ -128,7 +129,12 @@ AIreneCharacter::AIreneCharacter()
 	IreneData.CurrentMP = IreneData.MaxMP;
 
 	CameraShakeOn = false;
-	GoTargetOn = false;
+
+	HpRecoveryData.Amount = 300;
+	HpRecoveryData.HP_Re_Time = 4;
+	HpRecoveryData.Speed = 5;
+	HpRecoveryData.Time = 10;
+
 }
 
 // Called when the game starts or when spawned
@@ -298,29 +304,34 @@ void AIreneCharacter::Tick(float DeltaTime)
 		if (Mob != nullptr)
 		{
 			if (Mob->GetHp() <= 0 || FVector::Dist(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()) > 700.0f)
+			{
+				auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+				Mon->MarkerOff();
 				IreneAttack->TargetMonster = nullptr;
+			}
+			
 		}
 	}
 
 	// 카메라 회전
-	if (IreneAttack->bFollowCameraTarget)
-	{
-		const float Dist = FVector::Dist(IreneAttack->CameraRot.Vector(), IreneAttack->TargetCameraRot.Vector());
-		IreneAttack->FollowTargetCameraAlpha += GetWorld()->GetDeltaSeconds() * IreneData.TargetCameraFollowSpeed / Dist;
-		if (IreneAttack->FollowTargetCameraAlpha >= 1)
-		{
-			IreneAttack->FollowTargetCameraAlpha = 1;
-		}
-		const FRotator Tar = FMath::Lerp(IreneAttack->CameraRot, IreneAttack->TargetCameraRot, IreneAttack->FollowTargetCameraAlpha);
-		WorldController->SetControlRotation(Tar);
-		if (IreneAttack->FollowTargetCameraAlpha >= 1)
-		{
-			IreneAttack->bFollowCameraTarget = false;
-			IreneAttack->FollowTargetCameraAlpha = 0.0f;
-			IreneAttack->CameraRot = FRotator::ZeroRotator;
-			IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
-		}
-	}
+	// if (IreneAttack->bFollowCameraTarget)
+	// {
+	// 	const float Dist = FVector::Dist(IreneAttack->CameraRot.Vector(), IreneAttack->TargetCameraRot.Vector());
+	// 	IreneAttack->FollowTargetCameraAlpha += GetWorld()->GetDeltaSeconds() * IreneData.TargetCameraFollowSpeed / Dist;
+	// 	if (IreneAttack->FollowTargetCameraAlpha >= 1)
+	// 	{
+	// 		IreneAttack->FollowTargetCameraAlpha = 1;
+	// 	}
+	// 	const FRotator Tar = FMath::Lerp(IreneAttack->CameraRot, IreneAttack->TargetCameraRot, IreneAttack->FollowTargetCameraAlpha);
+	// 	WorldController->SetControlRotation(Tar);
+	// 	if (IreneAttack->FollowTargetCameraAlpha >= 1)
+	// 	{
+	// 		IreneAttack->bFollowCameraTarget = false;
+	// 		IreneAttack->FollowTargetCameraAlpha = 0.0f;
+	// 		IreneAttack->CameraRot = FRotator::ZeroRotator;
+	// 		IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
+	// 	}
+	// }
 	
 	IreneState->Update(DeltaTime);
 }
@@ -362,6 +373,9 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
 	PlayerInputComponent->BindAxis("RightButtonAxis", IreneInput, &UIreneInputInstance::RightButton);
 
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn);
+
+	
 	//박찬영
 	//스탑워치 컨트롤
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);
@@ -371,6 +385,13 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
+	if(IreneAttack->TargetMonster!=nullptr && GetAnimName()==FName("B_Attack_1"))
+	{
+		auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+		Mon->MarkerOff();
+		IreneAttack->TargetMonster = nullptr;
+	}
+	
 	FAttackDataTable* table = IreneAttack->GetNameAtDataTable(GetAnimName());
 	if (table != nullptr)
 	{
@@ -518,22 +539,27 @@ void AIreneCharacter::FindNearMonster()
 
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
-	{
+	{		
 		if(GetAnimName() == FName("B_Attack_1") || IreneInput->bUseRightButton)
 		{
+			auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+			Mon->MarkerOn();
 			//UE_LOG(LogTemp, Error, TEXT("Target Name: %s, Dist: %f"), *TargetMonster->GetName(), FVector::Dist(GetActorLocation(), TargetMonster->GetActorLocation()));
 			float z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 			
-			IreneAttack->bFollowCameraTarget = true;
-			IreneAttack->CameraRot = WorldController->GetControlRotation();
-			FRotator ForwardRotator = GetActorForwardVector().Rotation();
-			//WorldController->SetControlRotation(FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll));
-			IreneAttack->TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
+			//IreneAttack->bFollowCameraTarget = true;
+			//IreneAttack->CameraRot = WorldController->GetControlRotation();
+			//FRotator ForwardRotator = GetActorForwardVector().Rotation();
+			//IreneAttack->TargetCameraRot = FRotator(ForwardRotator.Pitch + WorldController->GetControlRotation().Pitch, ForwardRotator.Yaw, ForwardRotator.Roll);
+
+			auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
+			auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			
+			float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
+
 			// 몬스터가 공격범위 보다 멀리 있다면
-			float TargetPos = FVector::Dist(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()) - IreneData.AttackRange;
-			if (TargetPos > IreneData.AttackRange)
+			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
 				// 추적 세팅
 				IreneAttack->bFollowTarget = true;
@@ -554,11 +580,41 @@ void AIreneCharacter::FindNearMonster()
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if(IreneAttack->bFollowTarget)
+	{
+		if(Cast<AMonster>(OtherActor))
+		{
+			IreneAttack->bFollowTarget = false;
+			IreneAttack->FollowTargetAlpha = 0;
+			IreneAttack->PlayerPosVec = FVector::ZeroVector;
+			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->DoAttack();
+		}
+	}
 }
 void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorEndOverlap(OtherActor);
 }
+void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit)
+{
+	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
+
+	if(IreneAttack->bFollowTarget)
+	{
+		if(Cast<AMonster>(Other))
+		{
+			IreneAttack->bFollowTarget = false;
+			IreneAttack->FollowTargetAlpha = 0;
+			IreneAttack->PlayerPosVec = FVector::ZeroVector;
+			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->DoAttack();
+		}
+	}
+}
+
+
 float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -568,8 +624,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		IreneData.CurrentHP -= DamageAmount - IreneData.Defenses;
 		//hp 바
 		IreneUIManager->OnHpChanged.Broadcast();
-		IreneUIManager->HPRecoveryWaitCancel();
-		if(HpRecoveryData.bIsRecovering) IreneUIManager->HpRecoveringCancel();			
+		ChangeStateAndLog(UHitState::GetInstance());
 		if (IreneData.CurrentHP <= 0)
 		{
 			IreneAnim->StopAllMontages(0);
@@ -612,6 +667,10 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 
 		if(NewState == UIdleState::GetInstance())
 			IreneUIManager->HPRecoveryWaitStart();
+		else {
+			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
+			else IreneUIManager->HPRecoveryWaitCancel();
+		}
 	}
 }
 

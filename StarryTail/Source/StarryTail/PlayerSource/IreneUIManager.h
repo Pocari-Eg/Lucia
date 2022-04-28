@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
 #include "../UI/PlayerHudWidget.h"
+#include"../UI/PauseWidget.h"
 #include "../SoundManager.h"
 #include "PlayerCharacterDataStruct.h"
 
@@ -33,14 +34,23 @@ private:
 public:
 	// 로그 출력용
 	bool bShowLog;
-	
+#pragma region HUD
 	FOnHpChangeDelegate OnHpChanged;
 	FOnMpChangeDelegate OnMpChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
 	UPROPERTY()
 	class UPlayerHudWidget* PlayerHud; // 위젯
-	
+#pragma endregion
+
+#pragma region PauseWidget
+	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
+		TSubclassOf<class UPauseWidget> PauseWidgetClass;   // 위젯 클래스 
+	UPROPERTY()
+		class UPauseWidget* PauseWidget; // 위젯
+#pragma endregion
+
+#pragma region Sound
 	//사운드 이벤트
 	UPROPERTY(EditAnyWhere,Category="SOUND_VOLUME",meta=(ClampMin="0", ClampMax = "1"))
 	float WalkSoundVolume;
@@ -51,15 +61,14 @@ public:
 	SoundManager* AttackSound;
 
 	float AttackSoundParameter;
-	
+#pragma endregion
 private:
 	UIreneUIManager();
-
+#pragma region HUDPrivate
 	//회복 대기 관련
 
 	//회복 대기 기다림
 	void HPRecoveryWaiting();
-
 	//회복 관련
 
 	//회복 중
@@ -67,13 +76,17 @@ private:
 
 	//Hp 확인
 	bool IsHpFull();
-	
+	//Idle 연속 확인
+	bool IsConsecutiveIdle;
+#pragma endregion
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
 	void Begin();
 
+#pragma region HUDPublic
+	// 
 	//회복 대기 시작
 	void HPRecoveryWaitStart();
 	//회보 대기 취소
@@ -93,4 +106,11 @@ public:
 	
 	//Hp RecoveryBar 
 	float GetHpRecoveryRatio();
+#pragma endregion
+
+
+#pragma region PauseWidgetFunc
+public:
+	void PauseWidgetOn();
+#pragma endregion
 };
