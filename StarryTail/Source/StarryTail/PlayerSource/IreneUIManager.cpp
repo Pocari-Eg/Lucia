@@ -45,7 +45,6 @@ void UIreneUIManager::Begin()
 	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
-	PlayerHud->FireAttributesOn();
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.3f);

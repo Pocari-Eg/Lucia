@@ -59,23 +59,14 @@ void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& I
 
 void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKey)
 {
-	UE_LOG(LogTemp, Error, TEXT("IN_FUNC"));
 
 	auto CurrentAction = UInputSettings::GetInputSettings()->GetActionMappings();
 
-		CurrentAction.Sort([](const FInputActionKeyMapping& A, const FInputActionKeyMapping& B) {
-			return A.ActionName.ToString().Len() < B.ActionName.ToString().Len();
-			});
-
-		InputKey.Sort([](const UInputKeySelector& A, const UInputKeySelector& B) {
-			return A.GetName().Len() < B.GetName().Len();
-			});
-
-	int num = InputKey.Num();
-	int index = 0;
+	int InputkeyNum = InputKey.Num();
+	int CurrentKeyNum = CurrentAction.Num();
 	IsEmptyKey = false;
 	IsUpdatekey = true;
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < CurrentKeyNum; i++)
 	{
 		
 		FInputChord Update(CurrentAction[i].Key, CurrentAction[i].bShift, CurrentAction[i].bCtrl, CurrentAction[i].bAlt, CurrentAction[i].bCmd);
@@ -84,14 +75,15 @@ void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKe
 		{
 			IsEmptyKey = true;
 		}
-		for (int j = 0; j < num; j++)
+		for (int j = 0; j < InputkeyNum; j++)
 		{
 			if (InputKey[j]->GetName() == CurrentAction[i].ActionName.ToString())
-				index = j;
+			{
+				InputKey[j]->SetSelectedKey(Update);
+				break;
+			}
 		}
-		InputKey[index]->SetSelectedKey(Update);
-
-		UE_LOG(LogTemp, Error, TEXT("IN_For1"));
+		
 	}
    
 	IsUpdatekey = false;
