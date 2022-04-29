@@ -3,7 +3,7 @@
 
 #include "KeySetWidget.h"
 #include "GameFramework/InputSettings.h"
-#include "Components/InputKeySelector.h"
+#include "Components/Button.h"
 #include "Kismet/KismetInputLibrary.h"
 void UKeySetWidget::WidgetOn(UPauseWidget* widget)
 {
@@ -21,10 +21,6 @@ void UKeySetWidget::WidgetOff()
 
 void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
 {
-
-
-
-
 		TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
 		FName SameKeyName;
 
@@ -54,15 +50,17 @@ void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& I
 		FInputActionKeyMapping Newkey(ActionName, InputKey.Key, InputKey.bShift, InputKey.bCtrl, InputKey.bAlt, InputKey.bCmd);
 		UInputSettings::GetInputSettings()->AddActionMapping(Newkey, true);
 	
+
+		UpdateKeyName();
+		SetExitEnable();
 }
 
 
-void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKey)
+void UKeySetWidget::UpdateKeyName()
 {
-
 	auto CurrentAction = UInputSettings::GetInputSettings()->GetActionMappings();
 
-	int InputkeyNum = InputKey.Num();
+	int InputkeyNum = InputKeyArray.Num();
 	int CurrentKeyNum = CurrentAction.Num();
 	IsEmptyKey = false;
 	IsUpdatekey = true;
@@ -77,9 +75,9 @@ void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKe
 		}
 		for (int j = 0; j < InputkeyNum; j++)
 		{
-			if (InputKey[j]->GetName() == CurrentAction[i].ActionName.ToString())
+			if (InputKeyArray[j]->GetName() == CurrentAction[i].ActionName.ToString())
 			{
-				InputKey[j]->SetSelectedKey(Update);
+				InputKeyArray[j]->SetSelectedKey(Update);
 				break;
 			}
 		}
@@ -87,6 +85,17 @@ void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKe
 	}
    
 	IsUpdatekey = false;
+}
+
+void UKeySetWidget::SetExitEnable()
+{
+	IsEmptyKey == true ? ExitButton->SetIsEnabled(false) : ExitButton->SetIsEnabled(true);
+}
+
+void UKeySetWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("Exit")));
 }
 
 
