@@ -20,6 +20,8 @@ public:
 		Volume = 1.0f;
 	}
 	~SoundManager();
+
+static SoundManager* GetInstance();
 private:
 	UWorld* World;
 	UFMODEvent* Event;

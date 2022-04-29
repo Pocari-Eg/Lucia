@@ -43,6 +43,8 @@ void UIreneUIManager::Begin()
 {
 	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
 	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+	PauseWidget->AddToViewport();
+	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
