@@ -11,6 +11,15 @@ SoundManager::~SoundManager()
 {
 }
 
+SoundManager* SoundManager::GetInstance()
+{
+	static SoundManager* Instance;
+	if (Instance == nullptr) {
+		Instance = new SoundManager();	
+	}
+	return Instance;
+}
+
 void SoundManager::SoundPlay3D(FTransform transform)
 {
 	//사운드가 단발성인 경우 매번 인스턴스가 생성됬다가 사운드가 종료되면 인스턴스가 없어진다.

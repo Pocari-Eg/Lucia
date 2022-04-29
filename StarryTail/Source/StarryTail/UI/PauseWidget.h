@@ -19,6 +19,10 @@ private:
 	//키세팅 위젯
 	TSubclassOf<class UKeySetWidget> KeySetWidgetClass;
 	class UKeySetWidget* KeySetWidget;
+
+	//사운드세팅 위젯
+	TSubclassOf<class USoundSettingWidget> SoundSetWidgetClass;
+	class USoundSettingWidget* SoundSetWidget;
 	
 public:
 
@@ -33,4 +37,8 @@ public:
 	//키세팅 위젯
 	UFUNCTION(BlueprintCallable)
 	void KeySetWidgetOn();
+
+	//사운드세팅 위젯
+	UFUNCTION(BlueprintCallable)
+	void SoundSetWidgetOn();
 };
