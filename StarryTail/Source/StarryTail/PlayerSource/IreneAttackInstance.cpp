@@ -222,6 +222,9 @@ void UIreneAttackInstance::DoAttack()
 				if(FormGauge[i] > FormGaugeValue)
 					FormGauge[i] = FormGaugeValue;
 			}
+			Irene->IreneAttack->FOnFireGaugeChange.Broadcast();
+			Irene->IreneAttack->FOnWaterGaugeChange.Broadcast();
+			Irene->IreneAttack->FOnElectricGaugeChange.Broadcast();
 		}
 		Irene->IreneUIManager->OnMpChanged.Broadcast();
 	}
