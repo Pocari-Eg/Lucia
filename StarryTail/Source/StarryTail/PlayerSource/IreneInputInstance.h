@@ -44,12 +44,12 @@ public:
 	bool bUseRightButton;
 	
 private:
-	void ChangeForm(EAttributeKeyword Value);
 	
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
+	void ChangeForm(EAttributeKeyword Value);
 
 #pragma region Move
 	void MoveForward();

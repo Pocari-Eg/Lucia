@@ -99,17 +99,14 @@ private:
 	
 	void FireRecoveringStart();
 	void FireRecovering();
-	void FireRecoveringCancel();
 	bool IsFireFull();
 
 	void WaterRecoveringStart();
 	void WaterRecovering();
-	void WaterRecoveringCancel();
 	bool IsWaterFull();
 
 	void ElectricRecoveringStart();
 	void ElectricRecovering();
-	void ElectricRecoveringCancel();
 	bool IsElectricFull();
 
 	
@@ -138,12 +135,17 @@ public:
 	void FireRecoveryWaitStart();
 	void FireRecoveryWaiting();
 	void FireRecoveryWaitCancel();
+	void FireRecoveringCancel();
+
 	void WaterRecoveryWaitStart();
 	void WaterRecoveryWaiting();
 	void WaterRecoveryWaitCancel();
+	void WaterRecoveringCancel();
+
 	void ElectricRecoveryWaitStart();
 	void ElectricRecoveryWaiting();
 	void ElectricRecoveryWaitCancel();
+	void ElectricRecoveringCancel();
 
 	float GetFireRatio();
 	float GetWaterRatio();
