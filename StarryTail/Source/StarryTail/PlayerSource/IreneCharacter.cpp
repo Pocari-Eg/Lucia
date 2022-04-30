@@ -136,15 +136,15 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.Time = 10;
 	FireRecoveryData.Amount = 200;
 	FireRecoveryData.Fire_Re_Time = 2;
-	FireRecoveryData.Speed = 0.5f;
+	FireRecoveryData.Speed = 4.0f;
 	FireRecoveryData.Time = 0;
 	WaterRecoveryData.Amount = 200;
 	WaterRecoveryData.Water_Re_Time = 2;
-	WaterRecoveryData.Speed = 0.5f;
+	WaterRecoveryData.Speed = 4.0f;
 	WaterRecoveryData.Time = 0;
 	ElectricRecoveryData.Amount = 200;
 	ElectricRecoveryData.Electric_Re_Time = 2;
-	ElectricRecoveryData.Speed = 0.5f;
+	ElectricRecoveryData.Speed = 4.0f;
 	ElectricRecoveryData.Time = 0;
 }
 
@@ -440,12 +440,18 @@ void AIreneCharacter::FindNearMonster()
 		if (table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
 			IreneAttack->bUseMP = true;
-			if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+			if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire) {
 				IreneAttack->FormGauge[0] -= table->Gauge;
-			else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+				IreneAttack->FOnFireGaugeChange.Broadcast();
+			}
+			else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water) {
 				IreneAttack->FormGauge[1] -= table->Gauge;
-			else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+				IreneAttack->FOnWaterGaugeChange.Broadcast();
+			}
+			else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder) {
 				IreneAttack->FormGauge[2] -= table->Gauge;
+				IreneAttack->FOnElectricGaugeChange.Broadcast();
+			}
 			IreneAttack->UseMP = table->Gauge;
 		}
 		// 마나 회복 조건

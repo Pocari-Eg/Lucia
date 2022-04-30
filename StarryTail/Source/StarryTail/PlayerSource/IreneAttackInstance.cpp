@@ -260,7 +260,9 @@ void UIreneAttackInstance::FireRecoveringStart()
 	Irene->FireRecoveryData.bIsRecovering = true;
 	FireRecoveryWaitCancel();
 	CurFireRecoverTime = Irene->FireRecoveryData.Speed;
+
 	RemainingFireRecovery = Irene->FireRecoveryData.Amount;
+	FOnFireGaugeChange.Broadcast();
 	GetWorld()->GetTimerManager().SetTimer(FireRecoveryTimerHandle, this, &UIreneAttackInstance::FireRecovering,1.0f , true, 0.0f);
 }
 void UIreneAttackInstance::FireRecovering()
@@ -272,6 +274,7 @@ void UIreneAttackInstance::FireRecovering()
 		if (!IsFireFull())
 		{
 			FormGauge[0] += CurRecoveryAmount;
+			FOnFireGaugeChange.Broadcast();
 			if (IsFireFull()) FireRecoveringCancel();
 		}
 		if (CurFireRecoverTime > 1)CurFireRecoverTime--;
@@ -291,6 +294,7 @@ void UIreneAttackInstance::FireRecoveringCancel()
 	RemainingFireRecovery = 0;
 	Irene->FireRecoveryData.bIsRecovering = false;
 	IsConsecutiveFire = false;
+	FOnFireGaugeChange.Broadcast();
 	if (IsFireFull())FormGauge[0] = GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
 	else
 	{
@@ -344,6 +348,7 @@ void UIreneAttackInstance::WaterRecoveringStart()
 	WaterRecoveryWaitCancel();
 	CurWaterRecoverTime = Irene->WaterRecoveryData.Speed;
 	RemainingWaterRecovery = Irene->WaterRecoveryData.Amount;
+	FOnWaterGaugeChange.Broadcast();
 	GetWorld()->GetTimerManager().SetTimer(WaterRecoveryTimerHandle, this, &UIreneAttackInstance::WaterRecovering,1.0f , true, 0.0f);
 }
 void UIreneAttackInstance::WaterRecovering()
@@ -355,6 +360,7 @@ void UIreneAttackInstance::WaterRecovering()
 		if (!IsWaterFull())
 		{
 			FormGauge[1] += CurRecoveryAmount;
+			FOnWaterGaugeChange.Broadcast();
 			if (IsWaterFull()) WaterRecoveringCancel();
 		}
 		if (CurWaterRecoverTime > 1)CurWaterRecoverTime--;
@@ -374,6 +380,7 @@ void UIreneAttackInstance::WaterRecoveringCancel()
 	RemainingWaterRecovery = 0;
 	Irene->WaterRecoveryData.bIsRecovering = false;
 	IsConsecutiveWater = false;
+	FOnWaterGaugeChange.Broadcast();
 	if (IsWaterFull())FormGauge[1] = GetNameAtFormDataTable(FName("Water"))->F_Gauge;
 	else
 	{
@@ -421,12 +428,14 @@ void UIreneAttackInstance::ElectricRecoveryWaitCancel()
 	GetWorld()->GetTimerManager().ClearTimer(ElectricRecoveryWaitTimerHandle);
 	IsConsecutiveElectric = false;
 }
+
 void UIreneAttackInstance::ElectricRecoveringStart()
 {
 	Irene->ElectricRecoveryData.bIsRecovering = true;
 	ElectricRecoveryWaitCancel();
 	CurElectricRecoverTime = Irene->ElectricRecoveryData.Speed;
 	RemainingElectricRecovery = Irene->ElectricRecoveryData.Amount;
+	FOnElectricGaugeChange.Broadcast();
 	GetWorld()->GetTimerManager().SetTimer(ElectricRecoveryTimerHandle, this, &UIreneAttackInstance::ElectricRecovering,1.0f , true, 0.0f);
 }
 void UIreneAttackInstance::ElectricRecovering()
@@ -438,6 +447,7 @@ void UIreneAttackInstance::ElectricRecovering()
 		if (!IsElectricFull())
 		{
 			FormGauge[2] += CurRecoveryAmount;
+			FOnElectricGaugeChange.Broadcast();
 			if (IsElectricFull()) ElectricRecoveringCancel();
 		}
 		if (CurElectricRecoverTime > 1)CurElectricRecoverTime--;
@@ -457,6 +467,7 @@ void UIreneAttackInstance::ElectricRecoveringCancel()
 	RemainingElectricRecovery = 0;
 	Irene->ElectricRecoveryData.bIsRecovering = false;
 	IsConsecutiveElectric = false;
+	FOnElectricGaugeChange.Broadcast();
 	if (IsElectricFull())FormGauge[2] = GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
 	else
 	{
@@ -476,3 +487,19 @@ float UIreneAttackInstance::GetElectricRecoveryRatio()
 	return ((float)RemainingElectricRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (FormGauge[2] + (float)RemainingElectricRecovery) / GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
 }
 #pragma endregion ElectricForm
+
+
+#pragma region GetAttribueRatio
+float UIreneAttackInstance::GetFireRatio()
+{
+	return (FormGauge[0] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[0] / GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+}
+float UIreneAttackInstance::GetWaterRatio()
+{
+	return (FormGauge[1] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[1] / GetNameAtFormDataTable(FName("Water"))->F_Gauge;
+}
+float UIreneAttackInstance::GetElectricRatio()
+{
+	return (FormGauge[2] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[2] / GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
+}
+#pragma endregion GetRatio
