@@ -123,6 +123,9 @@ AIreneCharacter::AIreneCharacter()
 	// 컨트롤러 초기화
 	WorldController = nullptr;
 	HpRecoveryData.bIsRecovering = false;
+	FireRecoveryData.bIsRecovering = false;
+	WaterRecoveryData.bIsRecovering = false;
+	ElectricRecoveryData.bIsRecovering = false;
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
@@ -247,7 +250,7 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
 	{
@@ -426,15 +429,6 @@ void AIreneCharacter::FindNearMonster()
 	if (table != nullptr)
 	{
 		IreneData.Strength = table->ATTACK_DAMAGE_1;
-
-		if((IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && IreneAttack->FormGauge[0] < IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)||
-			(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && IreneAttack->FormGauge[1] < IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)||
-			(IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && IreneAttack->FormGauge[2] < IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100))
-		{
-			IreneAttack->Attribute = EAttributeKeyword::e_None;
-			table = IreneAttack->GetNameAtAttackDataTable(FName(GetAnimName().ToString() + FString("_N")));
-			IreneAnim->SetAttribute(IreneAttack->Attribute);
-		}
 
 		// 마나 사용 조건
 		if (table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
@@ -718,9 +712,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		}
 		if(NewState == UDeathState::GetInstance())
 		{
-			IreneAttack->FireRecoveryWaitCancel();
-			IreneAttack->WaterRecoveryWaitCancel();
-			IreneAttack->ElectricRecoveryWaitCancel();
+			
 		}
 	}
 }

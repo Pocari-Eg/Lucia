@@ -385,12 +385,11 @@ void UIreneInputInstance::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseRightButton == false)
 		{
-			if((Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneAttack->FormGauge[0] < Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)||
-			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneAttack->FormGauge[1] < Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)||
-			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneAttack->FormGauge[2] < Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100))
+			if((Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneAttack->FormGauge[0] < StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100))||
+			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneAttack->FormGauge[1] <StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100))||
+			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneAttack->FormGauge[2] <StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)))
 			{
-				Irene->IreneAttack->Attribute = EAttributeKeyword::e_None;
-				Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
+				ChangeForm(EAttributeKeyword::e_None);
 			}
 			
 			FString AttributeName = "B_Attack_1";
@@ -507,7 +506,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		if (AttackTable != nullptr)
 		{
 			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
-			{				
+			{
 				if(AttackTable->Gauge <= Irene->IreneAttack->FormGauge[AttributeForm])
 				{
 					bUseRightButton = true;
@@ -638,40 +637,76 @@ void UIreneInputInstance::MainKeyword()
 }
 void UIreneInputInstance::FireKeywordReleased()
 {
-	if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)
+	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		ChangeForm(EAttributeKeyword::e_Fire);
-		Irene->IreneAttack->WaterRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitStart();
-		Irene->IreneAttack->FireRecoveryWaitCancel();
+		if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)
+		{
+			ChangeForm(EAttributeKeyword::e_Fire);
+		}
 	}
 }
 void UIreneInputInstance::WaterKeywordReleased()
 {
-	if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)
+	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		ChangeForm(EAttributeKeyword::e_Water);
-		Irene->IreneAttack->FireRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitStart();
-		Irene->IreneAttack->WaterRecoveryWaitCancel();
+		if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)
+		{
+			ChangeForm(EAttributeKeyword::e_Water);
+
+			// Irene->IreneAttack->WaterRecoveryWaitCancel();
+		}
 	}
 }
 void UIreneInputInstance::ElectricKeywordReleased()
 {
-	if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)
+	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		ChangeForm(EAttributeKeyword::e_Thunder);
-		Irene->IreneAttack->FireRecoveryWaitStart();
-		Irene->IreneAttack->WaterRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitCancel();
+		if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)
+		{
+			ChangeForm(EAttributeKeyword::e_Thunder);
+
+			// Irene->IreneAttack->ElectricRecoveryWaitCancel();
+		}
 	}
 }
 void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 {
 	if(Irene->IreneAttack->Attribute == Value)
-		Irene->IreneAttack->Attribute = EAttributeKeyword::e_None;
+	{
+		Irene->IreneAttack->Attribute = EAttributeKeyword::e_None;		
+	}
 	else
 		Irene->IreneAttack->Attribute = Value;
+	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_None)
+	{
+		Irene->IreneAttack->FireRecoveryWaitStart();
+		Irene->IreneAttack->WaterRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitStart();
+	}
+	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
+	{
+		Irene->IreneAttack->WaterRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitStart();
+		if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
+		else Irene->IreneAttack->FireRecoveryWaitCancel();
+	}
+	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
+	{
+		Irene->IreneAttack->FireRecoveryWaitStart();
+		Irene->IreneAttack->ElectricRecoveryWaitStart();
+		if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
+		else Irene->IreneAttack->WaterRecoveryWaitCancel();
+	}
+	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
+	{
+		Irene->IreneAttack->FireRecoveryWaitStart();
+		Irene->IreneAttack->WaterRecoveryWaitStart();
+		if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
+		else Irene->IreneAttack->ElectricRecoveryWaitCancel();
+	}	
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
 	Irene->FOnAttributeChange.Broadcast();
 }
