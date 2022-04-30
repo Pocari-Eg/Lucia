@@ -9,6 +9,8 @@
 
 #include "IreneAttackInstance.generated.h"
 
+
+DECLARE_MULTICAST_DELEGATE(FOnFormGaugeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneAttackInstance : public UObject
 {
@@ -87,6 +89,10 @@ public:
 
 	bool bUseMP;
 	float UseMP;	
+
+	FOnFormGaugeChangeDelegate FOnFireGaugeChange;
+	FOnFormGaugeChangeDelegate FOnWaterGaugeChange;
+	FOnFormGaugeChangeDelegate FOnElectricGaugeChange;
 private:
 	UIreneAttackInstance();
 	int GetAttackDirection();
@@ -95,17 +101,17 @@ private:
 	void FireRecovering();
 	void FireRecoveringCancel();
 	bool IsFireFull();
-	float GetFireRecoveryRatio();
+
 	void WaterRecoveringStart();
 	void WaterRecovering();
 	void WaterRecoveringCancel();
 	bool IsWaterFull();
-	float GetWaterRecoveryRatio();
+
 	void ElectricRecoveringStart();
 	void ElectricRecovering();
 	void ElectricRecoveringCancel();
 	bool IsElectricFull();
-	float GetElectricRecoveryRatio();
+
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -138,4 +144,12 @@ public:
 	void ElectricRecoveryWaitStart();
 	void ElectricRecoveryWaiting();
 	void ElectricRecoveryWaitCancel();
+
+	float GetFireRatio();
+	float GetWaterRatio();
+	float GetElectricRatio();
+
+	float GetFireRecoveryRatio();
+	float GetWaterRecoveryRatio();
+	float GetElectricRecoveryRatio();
 };

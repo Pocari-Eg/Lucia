@@ -621,15 +621,12 @@ void UIreneInputInstance::MainKeyword()
 		switch (Irene->IreneAttack->Attribute)
 		{
 		case EAttributeKeyword::e_Fire:
-			Irene->IreneUIManager->PlayerHud->WaterAttributesOn();
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Water;
 			break;
 		case EAttributeKeyword::e_Water:
-			Irene->IreneUIManager->PlayerHud->ThunderAttributesOn();
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Thunder;
 			break;
 		case EAttributeKeyword::e_Thunder:
-			Irene->IreneUIManager->PlayerHud->FireAttributesOn();
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Fire;
 			break;
 		default:
@@ -643,7 +640,6 @@ void UIreneInputInstance::FireKeywordReleased()
 {
 	if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)
 	{
-		Irene->IreneUIManager->PlayerHud->FireAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Fire);
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
@@ -654,7 +650,6 @@ void UIreneInputInstance::WaterKeywordReleased()
 {
 	if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)
 	{
-		Irene->IreneUIManager->PlayerHud->WaterAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Water);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
@@ -665,7 +660,6 @@ void UIreneInputInstance::ElectricKeywordReleased()
 {
 	if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)
 	{
-		Irene->IreneUIManager->PlayerHud->ThunderAttributesOn();
 		ChangeForm(EAttributeKeyword::e_Thunder);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->WaterRecoveryWaitStart();
