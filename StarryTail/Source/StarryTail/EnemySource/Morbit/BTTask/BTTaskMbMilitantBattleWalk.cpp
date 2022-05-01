@@ -27,10 +27,10 @@ EBTNodeResult::Type UBTTaskMbMilitantBattleWalk::ExecuteTask(UBehaviorTreeCompon
 	if (nullptr == MbAIController)
 		return EBTNodeResult::Failed;
 
-	if (!Morbit->GetMonsterAnimInstance()->GetBattleWalkIsPlaying())
+	if (!Morbit->GetMorbitAnimInstance()->GetBattleWalkIsPlaying())
 	{
 		MbAIController->SetPlayer();
-		Morbit->GetMonsterAnimInstance()->PlayBattleWalkMontage();
+		Morbit->GetMorbitAnimInstance()->PlayBattleWalkMontage();
 	}
 
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMbAIController::PlayerKey));

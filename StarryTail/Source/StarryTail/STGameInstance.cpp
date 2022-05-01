@@ -31,18 +31,6 @@ void USTGameInstance::ResetAttributeEffectMonster()
 {
 	AttributeEffectMonster = nullptr;
 }
-void USTGameInstance::AddChainMonster(AMonster* Monster)
-{
-	ChainMonsterList.Add(Monster);
-}
-TArray<AMonster*> USTGameInstance::GetChainMonsterList()
-{
-	return ChainMonsterList;
-}
-void USTGameInstance::ResetChainMonsterList()
-{
-	ChainMonsterList.Empty();
-}
 #pragma endregion
 
 #pragma region Occupy

@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTaskMonsterSetWalkAnimation::ExecuteTask(UBehaviorTreeCom
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	Monster->GetMonsterAnimInstance()->PlayWalkMontage();
+	Monster->PlayWalkAnim();
 
 	return EBTNodeResult::Succeeded;
 }

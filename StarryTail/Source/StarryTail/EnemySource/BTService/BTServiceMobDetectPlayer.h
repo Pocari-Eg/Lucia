@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
-#include "BTServiceMbDetectPlayer.generated.h"
+#include "BTServiceMobDetectPlayer.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTServiceMbDetectPlayer : public UBTService
+class STARRYTAIL_API UBTServiceMobDetectPlayer : public UBTService
 {
 	GENERATED_BODY()
 public:
-	UBTServiceMbDetectPlayer();
+	UBTServiceMobDetectPlayer();
 	FVector AngleToDir(float angle);
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
