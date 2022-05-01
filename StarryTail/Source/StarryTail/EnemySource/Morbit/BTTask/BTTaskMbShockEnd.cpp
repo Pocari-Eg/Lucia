@@ -17,7 +17,6 @@ EBTNodeResult::Type UBTTaskMbShockEnd::ExecuteTask(UBehaviorTreeComponent& Owner
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	Monster->OffShockDebuffEffect();
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsShockKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
 
 	return EBTNodeResult::Succeeded;

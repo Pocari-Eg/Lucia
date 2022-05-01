@@ -19,7 +19,6 @@ EBTNodeResult::Type UBTTaskMbGroggyEnd::ExecuteTask(UBehaviorTreeComponent& Owne
 
 	Monster->ResetDef();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsGroggyKey, false);
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsShockKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsAttackedKey, false);
 
 	return EBTNodeResult::Succeeded;

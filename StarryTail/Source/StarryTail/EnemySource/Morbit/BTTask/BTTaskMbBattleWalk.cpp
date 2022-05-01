@@ -27,8 +27,8 @@ EBTNodeResult::Type UBTTaskMbBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 
 	Morbit->BattleWalk();
 
-	if (!Morbit->GetMonsterAnimInstance()->GetBattleWalkIsPlaying())
-		Morbit->GetMonsterAnimInstance()->PlayBattleWalkMontage();
+	if (!Morbit->GetMorbitAnimInstance()->GetBattleWalkIsPlaying())
+		Morbit->GetMorbitAnimInstance()->PlayBattleWalkMontage();
 
 	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Morbit->GetController(), Player->GetActorLocation());
 

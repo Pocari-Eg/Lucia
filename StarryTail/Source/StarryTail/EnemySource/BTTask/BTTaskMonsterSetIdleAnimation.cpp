@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTaskMonsterSetIdleAnimation::ExecuteTask(UBehaviorTreeCom
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	Monster->GetMonsterAnimInstance()->PlayIdleMontage();
+	Monster->PlayIdleAnim();
 
 	return EBTNodeResult::Succeeded;
 }

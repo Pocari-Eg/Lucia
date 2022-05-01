@@ -23,25 +23,18 @@ public:
 	UMonsterAnimInstance();
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
-	virtual void PlayMeleeAttackMontage();
-	virtual void PlayIdleMontage();
-	void PlayWalkMontage();
-	void PlayDetectMontage();
-	void PlayBattleIdleMontage();
-	void PlayBattleWalkMontage();
-	void PlayAttackedMontage();
-	void PlayGroggyMontage();
-	void PlayShockMontage();
-	void PlayDeathMontage();
-	void PlayAttackedRightMontage();
-	void PlayAttackedLeftMontage();
-	void PlayAttackedCriticalRightMontage();
-	void PlayAttackedCriticalLeftMontage();
-	void PlayRollingMontage();
+	virtual void PlayAttackMontage() {};
+	virtual void PlayIdleMontage() {};
+	virtual void PlayWalkMontage();
+	virtual void PlayDetectMontage();
+	virtual void PlayBattleIdleMontage();
+	virtual void PlayBattleWalkMontage();
+	virtual void PlayAttackedMontage();
+	virtual void PlayGroggyMontage();
+	virtual void PlayDeathMontage() {};
 
 	bool GetBattleIdleIsPlaying();
-	bool GetAttackIsPlaying();
-	bool GetShockIsPlaying();
+	virtual bool GetAttackIsPlaying() { return true;  };
 	bool GetBattleWalkIsPlaying();
 
 	void SetPlayRate(float Value);
@@ -67,10 +60,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AnimationSpeed, Meta = (AllowPrivateAccess = true))
 		float PlayRate;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* IdleMontage1;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* IdleMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = WalkAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* WalkMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DetectAnimation, Meta = (AllowPrivateAccess = true))
@@ -79,30 +68,14 @@ protected:
 		UAnimMontage* BattleIdleMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleWalkAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* BattleWalkMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* MeleeAttackMontage1;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* MeleeAttackMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackedMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* AttackedRightMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* AttackedLeftMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* AttackedCriticalRightMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* AttackedCriticalLeftMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* RollingMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = GroggyAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* GroggyMontage;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = ShockAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* ShockMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* DeathMontage;
 private:
-	bool CheckAttackedMontagePlaying();
+	virtual bool CheckAttackedMontagePlaying() { return true; };
 	/*
 	bool bIsWalk;
 	bool bIsBattleWalk;

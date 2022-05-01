@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Monster.h"
 #include"../../SoundManager.h"
+#include "MorbitAnimInstance.h"
 #include "Morbit.generated.h"
 
 UCLASS()
@@ -16,10 +17,7 @@ public:
 	// Sets default values for this character's properties
 	AMorbit();
 
-	float GetViewAngle();
-	float GetViewRange();
-
-	bool GetTestMode();
+	UMorbitAnimInstance* GetMorbitAnimInstance() const;
 
 	void Walk();
 	void BattleWalk();
@@ -27,22 +25,13 @@ public:
 
 	void AttackCheck();
 
-
-
 private:
-	//Function
-	UFUNCTION(BlueprintCallable)
-		void InitMorbitInfo();
-
-	void InitMorbitMaterial();
-	void InitOccupationAI();
 	//Variable
+	UPROPERTY()
+		class UMorbitAnimInstance* MorbitAnimInstance;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;

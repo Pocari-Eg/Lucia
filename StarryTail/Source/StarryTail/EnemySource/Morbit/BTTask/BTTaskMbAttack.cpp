@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTaskMbAttack::ExecuteTask(UBehaviorTreeComponent& OwnerCo
 	bIsAttacking = true;
 	Morbit->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
 
-	auto MorbitAnimInstance = Morbit->GetMonsterAnimInstance();
+	auto MorbitAnimInstance = Morbit->GetMorbitAnimInstance();
 	if (!MorbitAnimInstance->GetAttackIsPlaying())
 		return EBTNodeResult::Failed;
 

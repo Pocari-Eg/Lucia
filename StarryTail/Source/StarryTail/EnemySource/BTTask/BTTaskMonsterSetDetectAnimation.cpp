@@ -16,7 +16,7 @@ EBTNodeResult::Type UBTTaskMonsterSetDetectAnimation::ExecuteTask(UBehaviorTreeC
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	Monster->GetMonsterAnimInstance()->PlayDetectMontage();
+	Monster->PlayDetectAnim();
 
 	return EBTNodeResult::Succeeded;
 }

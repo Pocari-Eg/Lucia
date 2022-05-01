@@ -2,7 +2,7 @@
 
 
 #include "BTTaskMbPatrolEnd.h"
-#include "../../MonsterAIController.h"
+#include "../MbAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskMbPatrolEnd::UBTTaskMbPatrolEnd()
@@ -13,7 +13,7 @@ EBTNodeResult::Type UBTTaskMbPatrolEnd::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto MbAIController = Cast<AMonsterAIController>(OwnerComp.GetAIOwner()->GetPawn()->GetController());
+	auto MbAIController = Cast<AMbAIController>(OwnerComp.GetAIOwner()->GetPawn()->GetController());
 	if (MbAIController == nullptr)
 	{
 		STARRYLOG(Error, TEXT("Not Found MonsterController"));
