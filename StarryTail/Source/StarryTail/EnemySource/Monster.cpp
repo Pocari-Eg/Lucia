@@ -594,6 +594,10 @@ void AMonster::PlayWalkAnim()
 {
 	MonsterAnimInstance->PlayWalkMontage();
 }
+void AMonster::PlayGroggyAnim()
+{
+	MonsterAnimInstance->PlayGroggyMontage();
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {

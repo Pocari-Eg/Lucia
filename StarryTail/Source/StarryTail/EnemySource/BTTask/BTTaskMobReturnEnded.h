@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskMbPatrolEnd.generated.h"
+#include "BTTaskMobReturnEnded.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskMbPatrolEnd : public UBTTaskNode
+class STARRYTAIL_API UBTTaskMobReturnEnded : public UBTTaskNode
 {
 	GENERATED_BODY()
 public:
-	UBTTaskMbPatrolEnd();
+	UBTTaskMobReturnEnded();
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

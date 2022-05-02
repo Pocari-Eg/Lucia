@@ -14,5 +14,9 @@ class STARRYTAIL_API ABdAIController : public AMonsterAIController
 {
 	GENERATED_BODY()
 public:
+	ABdAIController();
+
 	void Attacked();
+private:
+	void OnPossess(APawn* InPawn) override;
 };

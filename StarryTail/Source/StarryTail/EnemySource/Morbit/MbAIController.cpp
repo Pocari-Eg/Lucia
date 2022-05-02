@@ -2,9 +2,6 @@
 
 #include "MbAIController.h"
 #include "Morbit.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardData.h"
-#include "BehaviorTree/BlackboardComponent.h"
 
 AMbAIController::AMbAIController()
 {

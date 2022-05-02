@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskMbShockEnd.generated.h"
+#include "BTTaskMobRotateToTarget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskMbShockEnd : public UBTTaskNode
+class STARRYTAIL_API UBTTaskMobRotateToTarget : public UBTTaskNode
 {
 	GENERATED_BODY()
 public:
-	UBTTaskMbShockEnd();
+	UBTTaskMobRotateToTarget();
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 };
