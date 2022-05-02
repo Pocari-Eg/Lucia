@@ -488,7 +488,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				Irene->ChangeStateAndLog(UBasicAttackState::GetInstance());
 				Irene->IreneAttack->AttackStartComboState();
-				Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
 				Irene->IreneAnim->PlayAttackMontage();
 
 				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
@@ -640,12 +639,15 @@ void UIreneInputInstance::MainKeyword()
 		{
 		case EAttributeKeyword::e_Fire:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Water;
+
 			break;
 		case EAttributeKeyword::e_Water:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Thunder;
+
 			break;
 		case EAttributeKeyword::e_Thunder:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Fire;
+
 			break;
 		default:
 			break;
@@ -701,12 +703,14 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 		Irene->IreneAttack->Attribute = Value;
 	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_None)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 		if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
@@ -714,6 +718,7 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 		if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
@@ -721,6 +726,7 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
