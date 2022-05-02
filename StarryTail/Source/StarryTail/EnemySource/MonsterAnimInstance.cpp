@@ -48,7 +48,6 @@ void UMonsterAnimInstance::PlayGroggyMontage()
 	if(!Montage_IsPlaying(GroggyMontage))
 		Montage_Play(GroggyMontage, PlayRate);
 }
-
 #pragma endregion
 bool UMonsterAnimInstance::GetBattleIdleIsPlaying()
 {

@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "../PlayerSource/IreneCharacter.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "MonsterAIController.generated.h"
 
 /**

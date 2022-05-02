@@ -45,6 +45,7 @@ public:
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
+	void PlayGroggyAnim();
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 

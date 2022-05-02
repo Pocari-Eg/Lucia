@@ -3,11 +3,6 @@
 
 #include "MonsterAIController.h"
 #include "../STGameInstance.h"
-#include "./Morbit/Morbit.h"
-#include "./Bouldelith/Bouldelith.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardData.h"
-#include "BehaviorTree/BlackboardComponent.h"
 
 const FName AMonsterAIController::SpawnPosKey = (TEXT("SpawnPos"));
 const FName AMonsterAIController::PatrolPosKey = (TEXT("PatrolPos"));
@@ -43,16 +38,8 @@ void AMonsterAIController::Groggy()
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 
-	if (Cast<AMorbit>(GetPawn()))
-	{
-		auto Morbit = Cast<AMorbit>(GetPawn());
-		Morbit->GetMorbitAnimInstance()->PlayGroggyMontage();
-	}
-	else if (Cast<ABouldelith>(GetPawn()))
-	{
-		auto Bouldelith = Cast<ABouldelith>(GetPawn());
-		Bouldelith->GetBouldelithAnimInstance()->PlayGroggyMontage();
-	}
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->PlayGroggyAnim();
 }
 void AMonsterAIController::Death()
 {
