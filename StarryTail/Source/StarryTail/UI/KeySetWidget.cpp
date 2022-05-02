@@ -3,7 +3,7 @@
 
 #include "KeySetWidget.h"
 #include "GameFramework/InputSettings.h"
-#include "Components/InputKeySelector.h"
+#include "Components/Button.h"
 #include "Kismet/KismetInputLibrary.h"
 void UKeySetWidget::WidgetOn(UPauseWidget* widget)
 {
@@ -21,10 +21,6 @@ void UKeySetWidget::WidgetOff()
 
 void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
 {
-
-
-
-
 		TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
 		FName SameKeyName;
 
@@ -54,49 +50,52 @@ void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& I
 		FInputActionKeyMapping Newkey(ActionName, InputKey.Key, InputKey.bShift, InputKey.bCtrl, InputKey.bAlt, InputKey.bCmd);
 		UInputSettings::GetInputSettings()->AddActionMapping(Newkey, true);
 	
+
+		UpdateKeyName();
+		SetExitEnable();
 }
 
 
-void UKeySetWidget::UpdateKeyName(UPARAM(ref)TArray<UInputKeySelector*>& InputKey)
+void UKeySetWidget::UpdateKeyName()
 {
-	UE_LOG(LogTemp, Error, TEXT("IN_FUNC"));
-
 	auto CurrentAction = UInputSettings::GetInputSettings()->GetActionMappings();
 
-		CurrentAction.Sort([](const FInputActionKeyMapping& A, const FInputActionKeyMapping& B) {
-			return A.ActionName.ToString().Len() < B.ActionName.ToString().Len();
-			});
-
-		InputKey.Sort([](const UInputKeySelector& A, const UInputKeySelector& B) {
-			return A.GetName().Len() < B.GetName().Len();
-			});
-
-	int num = InputKey.Num();
-	int index;
+	int InputkeyNum = InputKeyArray.Num();
+	int CurrentKeyNum = CurrentAction.Num();
 	IsEmptyKey = false;
 	IsUpdatekey = true;
-	for (int i = 0; i < num; i++)
+	for (int i = 0; i < CurrentKeyNum; i++)
 	{
 		
 		FInputChord Update(CurrentAction[i].Key, CurrentAction[i].bShift, CurrentAction[i].bCtrl, CurrentAction[i].bAlt, CurrentAction[i].bCmd);
-
-
 
 		if (Update.Key == NONE)
 		{
 			IsEmptyKey = true;
 		}
-		for (int j = 0; j < num; j++)
+		for (int j = 0; j < InputkeyNum; j++)
 		{
-			if (InputKey[j]->GetName() == CurrentAction[i].ActionName.ToString())
-				index = j;
+			if (InputKeyArray[j]->GetName() == CurrentAction[i].ActionName.ToString())
+			{
+				InputKeyArray[j]->SetSelectedKey(Update);
+				break;
+			}
 		}
-		InputKey[index]->SetSelectedKey(Update);
-
-		UE_LOG(LogTemp, Error, TEXT("IN_For1"));
+		
 	}
    
 	IsUpdatekey = false;
+}
+
+void UKeySetWidget::SetExitEnable()
+{
+	IsEmptyKey == true ? ExitButton->SetIsEnabled(false) : ExitButton->SetIsEnabled(true);
+}
+
+void UKeySetWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("Exit")));
 }
 
 

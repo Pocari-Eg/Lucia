@@ -27,7 +27,7 @@ AMorbit::AMorbit()
 	SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	InitEffect();
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 }
 #pragma region Init
 void AMorbit::InitMonsterInfo()
@@ -37,11 +37,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.MaxHp = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
-
-	AttributeDef.e_None = 100.0f;
-	AttributeDef.e_Fire = 0.0f;
-	AttributeDef.e_Water = 0.0f;
-	AttributeDef.e_Thunder = 0.0f;
+	MonsterInfo.Barrier = 1.0f;
 
 	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
@@ -51,7 +47,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.TraceRange = 1000.0f;
 
 	MonsterInfo.KnockBackPower = 50.0f;
-	MonsterInfo.DeadWaitTime = 2.0f;
+	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 }
@@ -84,79 +80,11 @@ void AMorbit::InitAnime()
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);
 	}
 }
-void AMorbit::InitMorbitInfo()
-{
-	switch (MonsterInfo.Code)
-	{
-	case 1:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-		break;
-	case 2:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-		break;
-	case 3:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-		break;
-	case 4:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-		break;
-	case 5:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-		break;
-	case 6:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-		break;
-	case 7:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-		break;
-	case 8:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-		break;
-	default:
-		break;
-	}
-}
-void AMorbit::InitMorbitMaterial()
-{
-	UMaterial* Material;
-	switch (MonsterInfo.MonsterAttribute)
-	{
-	case EAttributeKeyword::e_None:
-		Material = LoadObject<UMaterial>(NULL, TEXT("/Game/Model/Monster/Morbit/Material/M_Morbit_Master"), NULL, LOAD_None, NULL);
-		if (Material != nullptr)
-		{
-			GetMesh()->SetMaterial(0, Material);
-			GetMesh()->SetMaterial(1, Material);
-		}
-		break;
-	}
-}
-void AMorbit::InitOccupationAI()
-{
-	auto MbAIController = Cast<AMbAIController>(GetController());
-
-	if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_None)
-	{
-		MbAIController->SetMilitantAI();	
-	}
-	else
-	{
-		MbAIController->SetDefensiveAI();
-	}
-}
 #pragma endregion
 #pragma region GetValue
-bool AMorbit::GetTestMode()
+UMorbitAnimInstance* AMorbit::GetMorbitAnimInstance() const
 {
-	return bTestMode;
-}
-float AMorbit::GetViewAngle()
-{
-	return MonsterInfo.ViewAngle;
-}
-float AMorbit::GetViewRange()
-{
-	return MonsterInfo.ViewRange;
+	return MorbitAnimInstance;
 }
 #pragma endregion
 #pragma region CalledbyBBT
@@ -170,7 +98,7 @@ void AMorbit::BattleWalk()
 }
 void AMorbit::Attack()
 {
-	MonsterAnimInstance->PlayMeleeAttackMontage();
+	MorbitAnimInstance->PlayAttackMontage();
 
 	bIsAttacking = true;
 }
@@ -184,8 +112,8 @@ void AMorbit::AttackCheck()
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		Hit,
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -150),
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -150),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel6,
 		FCollisionShape::MakeSphere(20.0f),
@@ -234,20 +162,35 @@ void AMorbit::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//InitMorbitMaterial();
+	MonsterAnimInstance = MorbitAnimInstance;
+
+	if (MorbitAnimInstance == nullptr)
+		return;
+	//애니메이션 몽타주 종료시 호출
+	MorbitAnimInstance->AttackEnd.AddLambda([this]() -> void {
+		bIsAttacking = false;
+		AttackEnd.Broadcast();
+		});
+	MorbitAnimInstance->AttackedEnd.AddLambda([this]() -> void {
+		bIsAttacked = false;
+		AttackedEnd.Broadcast();
+		});
+	MorbitAnimInstance->Death.AddLambda([this]() -> void {
+		if (bIsDead)
+		{
+			bDeadWait = true;
+			SetActorEnableCollision(false);
+			MorbitAnimInstance->Montage_Stop(1.5f, MorbitAnimInstance->GetCurrentActiveMontage());
+		}
+
+		});
+	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 }
 
 // Called every frame
 void AMorbit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AMorbit::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
@@ -267,25 +210,5 @@ void AMorbit::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	MonsterAnimInstance = Cast<UMonsterAnimInstance>(GetMesh()->GetAnimInstance());
-	if (MonsterAnimInstance == nullptr)
-		return;
-	//애니메이션 몽타주 종료시 호출
-	MonsterAnimInstance->AttackEnd.AddLambda([this]() -> void {
-		bIsAttacking = false;
-		AttackEnd.Broadcast();
-		});
-	MonsterAnimInstance->AttackedEnd.AddLambda([this]() -> void {
-		bIsAttacked = false;
-		AttackedEnd.Broadcast();
-		});
-	MonsterAnimInstance->Death.AddLambda([this]() -> void {
-		if (bIsDead)
-		{
-			bDeadWait = true;
-			SetActorEnableCollision(false);
-		}
-
-		});
-	MonsterAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
+	MorbitAnimInstance = Cast<UMorbitAnimInstance>(GetMesh()->GetAnimInstance());
 }

@@ -2,9 +2,6 @@
 
 #include "MbAIController.h"
 #include "Morbit.h"
-#include "BehaviorTree/BehaviorTree.h"
-#include "BehaviorTree/BlackboardData.h"
-#include "BehaviorTree/BlackboardComponent.h"
 
 AMbAIController::AMbAIController()
 {
@@ -39,15 +36,56 @@ void AMbAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
-void AMbAIController::SetMilitantAI()
+void AMbAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana)
 {
-	BTAsset = LoadObject<UBehaviorTree>(NULL, TEXT("/Game/AI/Morbit/Occupation/BT_MorbitMilitant"), NULL, LOAD_None, NULL);
-	if (!RunBehaviorTree(BTAsset))
-	{
-		STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));
-	}
-}
-void AMbAIController::SetDefensiveAI()
-{
+	if (AttackedPower == EAttackedPower::Halved)
+		return;
 
+	SetPlayer();
+
+	auto Morbit = Cast<AMorbit>(GetPawn());
+	if (Morbit != nullptr)
+	{
+		if (!Morbit->GetMorbitAnimInstance()->GetAttackIsPlaying())
+		{
+			Blackboard->SetValueAsBool(IsAttackedKey, true);
+			if (!bIsPlayerUseMana)
+			{
+				if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Morbit->GetMorbitAnimInstance()->PlayAttackedRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Morbit->GetMorbitAnimInstance()->PlayAttackedLeftMontage();
+				}
+			}
+			else
+			{
+				if (AttackedPower == EAttackedPower::Normal || AttackedPower == EAttackedPower::Critical)
+				{
+					if (AttackedDirection == EAttackedDirection::Left)
+						Morbit->GetMorbitAnimInstance()->PlayAttackedCriticalRightMontage();
+					else if (AttackedDirection == EAttackedDirection::Right)
+						Morbit->GetMorbitAnimInstance()->PlayAttackedCriticalLeftMontage();
+					else if (AttackedDirection == EAttackedDirection::Up || AttackedDirection == EAttackedDirection::Down)
+						Morbit->GetMorbitAnimInstance()->PlayRollingMontage();
+				}
+			}
+		}
+		else
+		{
+			if (bIsPlayerUseMana)
+			{
+				Blackboard->SetValueAsBool(IsAttackingKey, false);
+				Morbit->GetMorbitAnimInstance()->AttackEnd;
+				if (AttackedDirection == EAttackedDirection::Left)
+					Morbit->GetMorbitAnimInstance()->PlayAttackedCriticalRightMontage();
+				else if (AttackedDirection == EAttackedDirection::Right)
+					Morbit->GetMorbitAnimInstance()->PlayAttackedCriticalLeftMontage();
+				else if (AttackedDirection == EAttackedDirection::Up || AttackedDirection == EAttackedDirection::Down)
+					Morbit->GetMorbitAnimInstance()->PlayRollingMontage();
+				Blackboard->SetValueAsBool(IsAttackedKey, true);
+			}
+		}
+	}
 }

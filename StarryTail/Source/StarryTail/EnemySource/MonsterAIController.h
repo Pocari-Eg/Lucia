@@ -5,6 +5,9 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "../PlayerSource/IreneCharacter.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardData.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "MonsterAIController.generated.h"
 
 /**
@@ -18,15 +21,10 @@ public:
 	AMonsterAIController();
 	virtual void OnPossess(APawn* InPawn) override;
 
-	void Init();
-
 	void SetPlayer();
 	void SetFind();
 
-	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana);
 	void Groggy();
-	void Shock();
-	void ShockCancel();
 	void Death();
 
 	static const FName SpawnPosKey;
@@ -42,7 +40,6 @@ public:
 
 	static const FName IsAttackedKey;
 	static const FName IsGroggyKey;
-	static const FName IsShockKey;
 
 	static const FName IsDeadKey;
 

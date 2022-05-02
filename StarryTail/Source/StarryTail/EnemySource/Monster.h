@@ -10,7 +10,6 @@
 #include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
 #include "MonsterAnimInstance.h"
-#include "ChainLightning.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
@@ -36,19 +35,19 @@ public:
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
 	float GetHp() const;
-	// TArray<EAttributeKeyword> GetMainAttributeDef() const;
+	bool GetTestMode() const;
+	float GetViewAngle() const;
+	float GetViewRange() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 
-	UMonsterAnimInstance* GetMonsterAnimInstance() const;
+	void PlayIdleAnim();
+	void PlayDetectAnim();
+	void PlayWalkAnim();
+	void PlayGroggyAnim();
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
-
-	void OnTrueDamage(float Damage);
-	void OnDamage(float Damage);
-
-	void AddDebuffStack(EAttributeKeyword Attribute);
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 
@@ -66,29 +65,22 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
 
-	TSubclassOf<AChainLightning> ChainBP;
-
 	//UI
 	void MarkerOn();
     void MarkerOff();
 protected:
-	virtual void InitMonsterInfo() {};
-	virtual void InitCollision() {};
-	virtual void InitMesh() {};
-	virtual void InitAnime() {};
-
 	//Function
 	void InitDebuffInfo();
 	void InitAttackedInfo();
 	void InitEffect();
+	UFUNCTION(BlueprintCallable)
+		void InitMonsterAttribute();
 
 	void CalcHp(float Damage);
-	void CalcAttributeDefType();
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
 	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
-	float CalcManaAttackDamage(float Damage);
-
+	float CalcBurnDamage();
 
 	void PrintHitEffect(FVector AttackedPosition);
 	void PrintLightningHitEffect();
@@ -97,8 +89,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		FAttributeDefence AttributeDef;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -153,9 +143,6 @@ protected:
 #pragma endregion Sound
 private:
 	//Function
-	void CalcCurrentDebuffAttribute(EAttributeKeyword AttackedAttribute);
-	float CalcBurnDamage(float Damage);
-
 	bool CheckPlayerIsBehindMonster();
 	void RotationToPlayerDirection();
 
@@ -164,10 +151,6 @@ private:
 	void Burn();
 	void Flooding();
 	void Spark();
-
-	//void DebuffTransition(EAttributeKeyword AttackedAttribute, float Damage);
-	//void Assemble();
-	//void Chain(EAttributeKeyword PlayerMainAttribute, float Damage);
 	
 	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
@@ -189,8 +172,15 @@ private:
 	bool bIsAssemble;
 	bool bIsChain;
 	bool bShowUI;
-//Virtual Function
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
 protected:
+	virtual void InitMonsterInfo() {};
+	virtual void InitCollision() {};
+	virtual void InitMesh() {};
+	virtual void InitAnime() {};
+
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
@@ -199,12 +189,4 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-
 };

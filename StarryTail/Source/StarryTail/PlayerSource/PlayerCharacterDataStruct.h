@@ -27,8 +27,9 @@ public:
 	float MinFollowCameraZPosition = 250;
 
 	// 카메라 수평필드 오브 뷰
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float FieldOfView = 75;
+	// 카메라 지연 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxCameraLagSpeed = 5.0f;
 
@@ -148,14 +149,32 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Main_Keyword;
+	int Form;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int MANA;
+	int Gauge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;
-
 };
+USTRUCT(BlueprintType)
+struct FFormDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Form_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int F_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_Recovery;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Hit_Gauge_Re;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Open_Gauge;
+};
 
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct
@@ -172,6 +191,56 @@ public:
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
 	int HP_Re_Time;
 	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
-	bool bIsRecovering;
-			
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerFireRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Fire_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerWaterRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Water_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
+};
+USTRUCT(Atomic, BlueprintType)
+struct FPlayerElectricRecoveryDataStruct
+{
+	GENERATED_BODY()  
+public:
+	//
+	UPROPERTY(EditAnywhere,Category="Form_Recovery")
+	int Amount;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Speed;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	float Time;
+	UPROPERTY(EditAnywhere, Category = "Form_Recovery")
+	int Electric_Re_Time;
+	UPROPERTY(VisibleAnywhere, Category = "Form_Recovery")
+	bool bIsRecovering;			
 };

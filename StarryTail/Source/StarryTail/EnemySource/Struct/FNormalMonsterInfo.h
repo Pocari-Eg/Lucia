@@ -21,6 +21,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Def; //기본 방어력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Barrier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MoveSpeed; //이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BattleWalkMoveSpeed; //전투시 이동속도

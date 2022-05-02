@@ -21,6 +21,12 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
 	}
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormDataTable(TEXT("/Game/Math/BP_FormDataTable.BP_FormDataTable"));
+	if (DT_FormDataTable.Succeeded())
+	{
+		FormDataTable = DT_FormDataTable.Object;
+	}
+	IsConsecutiveFire = false;
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -36,8 +42,11 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_Fire;
-	
+	Attribute = EAttributeKeyword::e_None;
+	FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
+	FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
+	FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
+
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -50,7 +59,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	bUseMP = false;
 	UseMP = 0.0f;
 }
-
+#pragma region Attack
 float UIreneAttackInstance::GetATK()
 {
 	return Irene->IreneData.Strength;
@@ -102,6 +111,17 @@ void UIreneAttackInstance::AttackStartComboState()
 }
 void UIreneAttackInstance::AttackEndComboState()
 {
+	int FormType = 0;
+	if(Attribute == EAttributeKeyword::e_Fire)
+		FormType = 0;
+	else if(Attribute == EAttributeKeyword::e_Water)
+		FormType = 1;
+	else if(Attribute == EAttributeKeyword::e_Thunder)
+		FormType = 2;
+
+	if(FormGauge[FormType] == 0)
+		Irene->IreneInput->ChangeForm(EAttributeKeyword::e_None);
+	
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 	Irene->IreneInput->bUseLeftButton = false;
 	Irene->IreneInput->bUseRightButton = false;
@@ -122,6 +142,8 @@ void UIreneAttackInstance::AttackCheck()
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(true);
 		Irene->IreneUIManager->AttackSound->SoundPlay2D();
+
+		
 		Irene->FindNearMonster();
 	}
 }
@@ -189,13 +211,21 @@ void UIreneAttackInstance::DoAttack()
 	}
 
 	// 마나 회복
-	if (bUseMP == false && UseMP != 0.0f)
+	if (bUseMP == false && UseMP == 0.0f)
 	{
-		Irene->IreneData.CurrentMP += UseMP;
-
-		if (Irene->IreneData.CurrentMP > Irene->IreneData.MaxMP)
-			Irene->IreneData.CurrentMP = Irene->IreneData.MaxMP;
-
+		if(GetAttribute() == EAttributeKeyword::e_None)
+		{
+			const int FormGaugeValue = GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+			for(int i=0;i<3;i++)
+			{
+				FormGauge[i] += FormGaugeValue*1.0/(GetNameAtFormDataTable(FName("Fire"))->Hit_Gauge_Re/100);
+				if(FormGauge[i] > FormGaugeValue)
+					FormGauge[i] = FormGaugeValue;
+			}
+			Irene->IreneAttack->FOnFireGaugeChange.Broadcast();
+			Irene->IreneAttack->FOnWaterGaugeChange.Broadcast();
+			Irene->IreneAttack->FOnElectricGaugeChange.Broadcast();
+		}
 		Irene->IreneUIManager->OnMpChanged.Broadcast();
 	}
 
@@ -209,3 +239,275 @@ void UIreneAttackInstance::DoAttack()
 		}
 	}
 }
+#pragma endregion Attack
+
+#pragma region FireForm
+void UIreneAttackInstance::FireRecoveryWaitStart()
+{
+	if(!Irene->FireRecoveryData.bIsRecovering&& !IsFireFull())
+	GetWorld()->GetTimerManager().SetTimer(FireRecoveryWaitTimerHandle, this, &UIreneAttackInstance::FireRecoveryWaiting, 1.0f, true, 0.0f);
+}
+void UIreneAttackInstance::FireRecoveryWaiting()
+{
+	if (IsConsecutiveFire == false)
+	{
+		CurFireRecoverWaitTime++;
+		if (CurFireRecoverWaitTime >= Irene->FireRecoveryData.Time)FireRecoveringStart();
+	}
+	else
+	{
+		CurFireRecoverWaitTime++;
+		if (CurFireRecoverWaitTime >= Irene->FireRecoveryData.Fire_Re_Time)FireRecoveringStart();
+	}
+}
+
+void UIreneAttackInstance::FireRecoveryWaitCancel()
+{
+	CurFireRecoverWaitTime = 0;
+	GetWorld()->GetTimerManager().ClearTimer(FireRecoveryWaitTimerHandle);
+	IsConsecutiveFire = false;
+}
+void UIreneAttackInstance::FireRecoveringStart()
+{
+	Irene->FireRecoveryData.bIsRecovering = true;
+	FireRecoveryWaitCancel();
+	CurFireRecoverTime = Irene->FireRecoveryData.Speed;
+
+	RemainingFireRecovery = Irene->FireRecoveryData.Amount;
+	FOnFireGaugeChange.Broadcast();
+	GetWorld()->GetTimerManager().SetTimer(FireRecoveryTimerHandle, this, &UIreneAttackInstance::FireRecovering,1.0f , true, 0.0f);
+}
+void UIreneAttackInstance::FireRecovering()
+{
+	if (Irene->FireRecoveryData.bIsRecovering)
+	{
+		int CurRecoveryAmount = RemainingFireRecovery / CurFireRecoverTime;
+		RemainingFireRecovery -= CurRecoveryAmount;
+		if (!IsFireFull())
+		{
+			FormGauge[0] += CurRecoveryAmount;
+			FOnFireGaugeChange.Broadcast();
+			if (IsFireFull()) FireRecoveringCancel();
+		}
+		if (CurFireRecoverTime > 1)CurFireRecoverTime--;
+		else
+		{			
+			GetWorld()->GetTimerManager().ClearTimer(FireRecoveryTimerHandle);
+			RemainingFireRecovery = 0;
+			Irene->FireRecoveryData.bIsRecovering = false;
+			IsConsecutiveFire = true;
+			FireRecoveryWaitStart();			
+		}
+	}
+}
+void UIreneAttackInstance::FireRecoveringCancel()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FireRecoveryTimerHandle);
+	RemainingFireRecovery = 0;
+	Irene->FireRecoveryData.bIsRecovering = false;
+	IsConsecutiveFire = false;
+	FOnFireGaugeChange.Broadcast();
+	if (IsFireFull())FormGauge[0] = GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+	else
+	{
+		//FireRecoveryWaitStart();
+	}
+}
+bool UIreneAttackInstance::IsFireFull()
+{
+	if (FormGauge[0] >= GetNameAtFormDataTable(FName("Fire"))->F_Gauge)	return true;
+	else
+	{
+		return false;
+	}
+}
+float UIreneAttackInstance::GetFireRecoveryRatio()
+{
+	return ((float)RemainingFireRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (FormGauge[0] + (float)RemainingFireRecovery) / GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+}
+#pragma endregion FireForm
+#pragma region WaterForm
+void UIreneAttackInstance::WaterRecoveryWaitStart()
+{
+	if(!Irene->WaterRecoveryData.bIsRecovering&& !IsWaterFull())
+	GetWorld()->GetTimerManager().SetTimer(WaterRecoveryWaitTimerHandle, this, &UIreneAttackInstance::WaterRecoveryWaiting, 1.0f, true, 0.0f);
+}
+void UIreneAttackInstance::WaterRecoveryWaiting()
+{
+	if (IsConsecutiveWater == false)
+	{
+		CurWaterRecoverWaitTime++;
+		if (CurWaterRecoverWaitTime >= Irene->WaterRecoveryData.Time)WaterRecoveringStart();
+	}
+	else
+	{
+		CurWaterRecoverWaitTime++;
+		if (CurWaterRecoverWaitTime >= Irene->WaterRecoveryData.Water_Re_Time)WaterRecoveringStart();
+	}
+}
+
+void UIreneAttackInstance::WaterRecoveryWaitCancel()
+{
+	CurWaterRecoverWaitTime = 0;
+	GetWorld()->GetTimerManager().ClearTimer(WaterRecoveryWaitTimerHandle);
+	IsConsecutiveWater = false;
+}
+void UIreneAttackInstance::WaterRecoveringStart()
+{
+	Irene->WaterRecoveryData.bIsRecovering = true;
+	WaterRecoveryWaitCancel();
+	CurWaterRecoverTime = Irene->WaterRecoveryData.Speed;
+	RemainingWaterRecovery = Irene->WaterRecoveryData.Amount;
+	FOnWaterGaugeChange.Broadcast();
+	GetWorld()->GetTimerManager().SetTimer(WaterRecoveryTimerHandle, this, &UIreneAttackInstance::WaterRecovering,1.0f , true, 0.0f);
+}
+void UIreneAttackInstance::WaterRecovering()
+{
+	if (Irene->WaterRecoveryData.bIsRecovering)
+	{
+		int CurRecoveryAmount = RemainingWaterRecovery / CurWaterRecoverTime;
+		RemainingWaterRecovery -= CurRecoveryAmount;
+		if (!IsWaterFull())
+		{
+			FormGauge[1] += CurRecoveryAmount;
+			FOnWaterGaugeChange.Broadcast();
+			if (IsWaterFull()) WaterRecoveringCancel();
+		}
+		if (CurWaterRecoverTime > 1)CurWaterRecoverTime--;
+		else
+		{			
+			GetWorld()->GetTimerManager().ClearTimer(WaterRecoveryTimerHandle);
+			RemainingWaterRecovery = 0;
+			Irene->WaterRecoveryData.bIsRecovering = false;
+			IsConsecutiveWater = true;
+			WaterRecoveryWaitStart();			
+		}
+	}
+}
+void UIreneAttackInstance::WaterRecoveringCancel()
+{
+	GetWorld()->GetTimerManager().ClearTimer(WaterRecoveryTimerHandle);
+	RemainingWaterRecovery = 0;
+	Irene->WaterRecoveryData.bIsRecovering = false;
+	IsConsecutiveWater = false;
+	FOnWaterGaugeChange.Broadcast();
+	if (IsWaterFull())FormGauge[1] = GetNameAtFormDataTable(FName("Water"))->F_Gauge;
+	else
+	{
+		//WaterRecoveryWaitStart();
+	}
+}
+bool UIreneAttackInstance::IsWaterFull()
+{
+	if (FormGauge[1] >= GetNameAtFormDataTable(FName("Water"))->F_Gauge)	return true;
+	else
+	{
+		return false;
+	}
+}
+float UIreneAttackInstance::GetWaterRecoveryRatio()
+{
+	return ((float)RemainingWaterRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (FormGauge[1] + (float)RemainingWaterRecovery) / GetNameAtFormDataTable(FName("Water"))->F_Gauge;
+}
+#pragma endregion WaterForm
+#pragma region ElectricForm
+void UIreneAttackInstance::ElectricRecoveryWaitStart()
+{
+	if(!Irene->ElectricRecoveryData.bIsRecovering&& !IsElectricFull())
+	GetWorld()->GetTimerManager().SetTimer(ElectricRecoveryWaitTimerHandle, this, &UIreneAttackInstance::ElectricRecoveryWaiting, 1.0f, true, 0.0f);
+}
+void UIreneAttackInstance::ElectricRecoveryWaiting()
+{
+	if (IsConsecutiveElectric == false)
+	{
+		CurElectricRecoverWaitTime++;
+		if (CurElectricRecoverWaitTime >= Irene->ElectricRecoveryData.Time)ElectricRecoveringStart();
+	}
+	else
+	{
+		CurElectricRecoverWaitTime++;
+		if (CurElectricRecoverWaitTime >= Irene->ElectricRecoveryData.Electric_Re_Time)ElectricRecoveringStart();
+	}
+}
+
+void UIreneAttackInstance::ElectricRecoveryWaitCancel()
+{
+	CurElectricRecoverWaitTime = 0;
+	GetWorld()->GetTimerManager().ClearTimer(ElectricRecoveryWaitTimerHandle);
+	IsConsecutiveElectric = false;
+}
+
+void UIreneAttackInstance::ElectricRecoveringStart()
+{
+	Irene->ElectricRecoveryData.bIsRecovering = true;
+	ElectricRecoveryWaitCancel();
+	CurElectricRecoverTime = Irene->ElectricRecoveryData.Speed;
+	RemainingElectricRecovery = Irene->ElectricRecoveryData.Amount;
+	FOnElectricGaugeChange.Broadcast();
+	GetWorld()->GetTimerManager().SetTimer(ElectricRecoveryTimerHandle, this, &UIreneAttackInstance::ElectricRecovering,1.0f , true, 0.0f);
+}
+void UIreneAttackInstance::ElectricRecovering()
+{
+	if (Irene->ElectricRecoveryData.bIsRecovering)
+	{
+		int CurRecoveryAmount = RemainingElectricRecovery / CurElectricRecoverTime;
+		RemainingElectricRecovery -= CurRecoveryAmount;
+		if (!IsElectricFull())
+		{
+			FormGauge[2] += CurRecoveryAmount;
+			FOnElectricGaugeChange.Broadcast();
+			if (IsElectricFull()) ElectricRecoveringCancel();
+		}
+		if (CurElectricRecoverTime > 1)CurElectricRecoverTime--;
+		else
+		{			
+			GetWorld()->GetTimerManager().ClearTimer(ElectricRecoveryTimerHandle);
+			RemainingElectricRecovery = 0;
+			Irene->ElectricRecoveryData.bIsRecovering = false;
+			IsConsecutiveElectric = true;
+			ElectricRecoveryWaitStart();			
+		}
+	}
+}
+void UIreneAttackInstance::ElectricRecoveringCancel()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ElectricRecoveryTimerHandle);
+	RemainingElectricRecovery = 0;
+	Irene->ElectricRecoveryData.bIsRecovering = false;
+	IsConsecutiveElectric = false;
+	FOnElectricGaugeChange.Broadcast();
+	if (IsElectricFull())FormGauge[2] = GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
+	else
+	{
+		//ElectricRecoveryWaitStart();
+	}
+}
+bool UIreneAttackInstance::IsElectricFull()
+{
+	if (FormGauge[2] >= GetNameAtFormDataTable(FName("Electric"))->F_Gauge)	return true;
+	else
+	{
+		return false;
+	}
+}
+float UIreneAttackInstance::GetElectricRecoveryRatio()
+{
+	return ((float)RemainingElectricRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (FormGauge[2] + (float)RemainingElectricRecovery) / GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
+}
+#pragma endregion ElectricForm
+
+
+#pragma region GetAttribueRatio
+float UIreneAttackInstance::GetFireRatio()
+{
+	return (FormGauge[0] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[0] / GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+}
+float UIreneAttackInstance::GetWaterRatio()
+{
+	return (FormGauge[1] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[1] / GetNameAtFormDataTable(FName("Water"))->F_Gauge;
+}
+float UIreneAttackInstance::GetElectricRatio()
+{
+	return (FormGauge[2] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[2] / GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
+}
+#pragma endregion GetRatio

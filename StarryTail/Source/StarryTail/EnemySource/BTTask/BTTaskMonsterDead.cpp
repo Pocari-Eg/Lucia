@@ -14,8 +14,8 @@ EBTNodeResult::Type UBTTaskMonsterDead::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto Morbit = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == Morbit)
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
 	return EBTNodeResult::InProgress;
