@@ -27,8 +27,9 @@ public:
 	float MinFollowCameraZPosition = 250;
 
 	// 카메라 수평필드 오브 뷰
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float FieldOfView = 75;
+	// 카메라 지연 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxCameraLagSpeed = 5.0f;
 
