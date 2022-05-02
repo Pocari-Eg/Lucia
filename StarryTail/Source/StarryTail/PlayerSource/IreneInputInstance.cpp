@@ -160,8 +160,8 @@ void UIreneInputInstance::MoveAuto()
 			}
 		}
 
-		if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
-			Irene->AddMovementInput(MoveAutoDirection, Irene->IreneData.MoveSpeed);
+		//if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
+			//Irene->AddMovementInput(MoveAutoDirection, Irene->IreneData.MoveSpeed);
 	}
 }
 
@@ -720,7 +720,7 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->IreneAnim->StopAllMontages(0);
 		//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 
-		constexpr float WaitTime = 0.9f; //시간을 설정
+		constexpr float WaitTime = 0.6f; //시간을 설정
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		
 		FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
