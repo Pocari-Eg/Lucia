@@ -28,7 +28,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Model/Irene/Irene_Skin.Irene_Skin"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/B_Idle.B_Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -41,7 +41,7 @@ AIreneCharacter::AIreneCharacter()
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Model/Irene/Test_Sw.Test_Sw"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/Irene/sword.sword"));
 			if (SK_WEAPON.Succeeded())
 			{
 				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
@@ -67,7 +67,7 @@ AIreneCharacter::AIreneCharacter()
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Model/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
+		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 		{
