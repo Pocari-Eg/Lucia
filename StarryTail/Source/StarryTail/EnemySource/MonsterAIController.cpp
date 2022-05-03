@@ -45,16 +45,8 @@ void AMonsterAIController::Death()
 {
 	Blackboard->SetValueAsBool(IsDeadKey, true);
 
-	if (Cast<AMorbit>(GetPawn()))
-	{
-		auto Morbit = Cast<AMorbit>(GetPawn());
-		Morbit->GetMorbitAnimInstance()->PlayDeathMontage();
-	}
-	else if (Cast<ABouldelith>(GetPawn()))
-	{
-		auto Bouldelith = Cast<ABouldelith>(GetPawn());
-		Bouldelith->GetBouldelithAnimInstance()->PlayDeathMontage();
-	}
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->PlayDetectAnim();
 }
 void AMonsterAIController::SetPlayer()
 {

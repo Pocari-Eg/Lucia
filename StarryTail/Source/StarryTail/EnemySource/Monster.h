@@ -38,6 +38,7 @@ public:
 	bool GetTestMode() const;
 	float GetViewAngle() const;
 	float GetViewRange() const;
+	float GetViewHeight() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;

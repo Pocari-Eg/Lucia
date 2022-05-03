@@ -30,11 +30,13 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.Atk = 250.0f;
 	MonsterInfo.Def = 250.0f;
 	MonsterInfo.Barrier = 100.0f;
+	MonsterInfo.DetectMonsterRange = 10.0f;
 
 	MonsterInfo.MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;
 	MonsterInfo.ViewAngle = 180.0f;
 	MonsterInfo.ViewRange = 1000.0f;
+	MonsterInfo.ViewHeight = 200.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f;
 	MonsterInfo.TraceRange = 1000.0f;
 
@@ -72,22 +74,52 @@ void ABouldelith::InitAnime()
 	}
 }
 #pragma endregion
+
+void ABouldelith::Walk()
+{
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+}
+void ABouldelith::BattleRun()
+{
+	GetCharacterMovement()->MaxWalkSpeed = DefaultBattleRunSpeed;
+	CurrentBattleRunSpeed = DefaultBattleRunSpeed;
+
+	BdAnimInstance->PlayBattleRunMontage();
+}
+
 UBdAnimInstance* ABouldelith::GetBouldelithAnimInstance() const
 {
-	auto BdAnimInstance = Cast<UBdAnimInstance>(MonsterAnimInstance);
 	return BdAnimInstance;
 }
-void ABouldelith::SetBattleRunSpeed(float Value)
+void ABouldelith::AddBattleRunSpeed(float Value)
 {
-	CurrentBattleRunSpeed = Value;
+	CurrentBattleRunSpeed += Value;
+}
+float ABouldelith::GetBattleRunSpeed()
+{
+	return CurrentBattleRunSpeed;
 }
 void ABouldelith::ResetBattleRunSpeed()
 {
 	CurrentBattleRunSpeed = DefaultBattleRunSpeed;
 }
+TArray<ABouldelithPatrolTarget*> ABouldelith::GetPatrolList()
+{
+	return PatrolList;
+}
+ABouldelithPatrolTarget* ABouldelith::GetUsePatrol()
+{
+	return UsePatrol;
+}
+void ABouldelith::SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget)
+{
+	UsePatrol = PatrolTarget;
+}
 void ABouldelith::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	MonsterAnimInstance = BdAnimInstance;
 }
 void ABouldelith::BeginPlay()
 {
@@ -107,4 +139,6 @@ void ABouldelith::PossessedBy(AController* NewController)
 void ABouldelith::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	BdAnimInstance = Cast<UBdAnimInstance>(GetMesh()->GetAnimInstance());
 }

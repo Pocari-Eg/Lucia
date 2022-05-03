@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "../Monster.h"
 #include "BdAnimInstance.h"
+#include "BouldelithPatrolTarget.h"
 #include "Bouldelith.generated.h"
 
 /**
@@ -18,14 +19,28 @@ public:
 	//Function
 	ABouldelith();
 
+	void Walk();
+	void BattleRun();
+
 	UBdAnimInstance* GetBouldelithAnimInstance() const;
-	void SetBattleRunSpeed(float Value);
+	void AddBattleRunSpeed(float Value);
+	float GetBattleRunSpeed();
 	void ResetBattleRunSpeed();
+	TArray<ABouldelithPatrolTarget*> GetPatrolList();
+	ABouldelithPatrolTarget* GetUsePatrol();
+	void SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget);
+
+	
 	//Var
 private:
 	//Function
 	
 	//Var
+	UBdAnimInstance* BdAnimInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PatrolList, Meta = (AllowPrivateAccess = true))
+		TArray<ABouldelithPatrolTarget*> PatrolList;
+	ABouldelithPatrolTarget* UsePatrol;
+
 	float DefaultBattleRunSpeed;
 	float CurrentBattleRunSpeed;
 public:

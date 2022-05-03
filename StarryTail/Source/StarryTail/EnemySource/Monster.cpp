@@ -19,7 +19,6 @@ AMonster::AMonster()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	MonsterInfo.DetectMonsterRange = 5.0f;
 	MonsterInfo.ArbitraryConstValueA = 2.5f;
 	MonsterInfo.ArbitraryConstValueB = 1.0f;
 	MonsterInfo.ArbitraryConstValueC = 1.0f;
@@ -170,6 +169,10 @@ float AMonster::GetViewAngle() const
 float AMonster::GetViewRange() const
 {
 	return MonsterInfo.ViewRange;
+}
+float AMonster::GetViewHeight() const
+{
+	return MonsterInfo.ViewHeight;
 }
 float AMonster::GetMeleeAttackRange() const
 {

@@ -38,11 +38,13 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
 	MonsterInfo.Barrier = 1.0f;
+	MonsterInfo.DetectMonsterRange = 5.0f;
 
 	MonsterInfo.MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
 	MonsterInfo.ViewAngle = 150.0f;
 	MonsterInfo.ViewRange = 500.0f;
+	MonsterInfo.ViewHeight = 150.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
 	MonsterInfo.TraceRange = 1000.0f;
 
