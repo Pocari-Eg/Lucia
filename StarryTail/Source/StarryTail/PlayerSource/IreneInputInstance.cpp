@@ -49,12 +49,21 @@ void UIreneInputInstance::MoveForward()
 {
 	if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
+		if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
+		{
+			Irene->CameraComp->FieldOfView = 80;			
+		}
+		else
+		{
+			Irene->CameraComp->FieldOfView = 75;			
+			//Irene->SpringArmComp->CameraLagSpeed = 0;			
+		}
 		// 0: 전진, 2: 후진
 		if (MoveKey[0] != 0 && MoveKey[0] < 3)
 		{
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;
+			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
 		}
@@ -62,7 +71,7 @@ void UIreneInputInstance::MoveForward()
 		{
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;
+			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
 		}
@@ -72,12 +81,22 @@ void UIreneInputInstance::MoveRight()
 {
 	if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
+		if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
+		{
+				Irene->CameraComp->FieldOfView = 80;
+			//Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;			
+		}
+		else
+		{
+			Irene->CameraComp->FieldOfView = 75;
+			//Irene->SpringArmComp->CameraLagSpeed = 0;			
+		}
 		// 1: 좌측, 3: 우측
 		if (MoveKey[1] != 0 && MoveKey[1] < 3)
 		{
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed * 2;
+			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
 		}
@@ -85,7 +104,7 @@ void UIreneInputInstance::MoveRight()
 		{
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed * 2;
+			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
 		}
@@ -469,7 +488,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				Irene->ChangeStateAndLog(UBasicAttackState::GetInstance());
 				Irene->IreneAttack->AttackStartComboState();
-				Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
 				Irene->IreneAnim->PlayAttackMontage();
 
 				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
@@ -621,12 +639,15 @@ void UIreneInputInstance::MainKeyword()
 		{
 		case EAttributeKeyword::e_Fire:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Water;
+
 			break;
 		case EAttributeKeyword::e_Water:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Thunder;
+
 			break;
 		case EAttributeKeyword::e_Thunder:
 			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Fire;
+
 			break;
 		default:
 			break;
@@ -682,12 +703,14 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 		Irene->IreneAttack->Attribute = Value;
 	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_None)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 		if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
@@ -695,6 +718,7 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->ElectricRecoveryWaitStart();
 		if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
@@ -702,6 +726,7 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
 	{
+		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
 		Irene->IreneAttack->FireRecoveryWaitStart();
 		Irene->IreneAttack->WaterRecoveryWaitStart();
 		if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
@@ -732,7 +757,7 @@ void UIreneInputInstance::DodgeKeyword()
 			MoveAutoDirection = FVector::ZeroVector;
 
 			// w키나 아무방향 없으면 정면으로 이동
-			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			if (MoveKey[0] != 0) //|| (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
 				MoveAutoDirection += ForwardVec;
 			}

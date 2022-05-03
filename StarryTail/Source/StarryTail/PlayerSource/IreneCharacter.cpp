@@ -778,22 +778,6 @@ FName AIreneCharacter::GetAnimName()
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
 		{
-			switch (IreneAttack->Attribute)
-			{
-			case EAttributeKeyword::e_None:
-				break;
-			case EAttributeKeyword::e_Fire:
-				IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
-				break;
-			case EAttributeKeyword::e_Water:
-				IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
-				break;
-			case EAttributeKeyword::e_Thunder:
-				IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
-				break;
-			default:
-				break;
-			}
 			return FName("B_Attack_4");
 		}
 		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->Attribute == EAttributeKeyword::e_None)
