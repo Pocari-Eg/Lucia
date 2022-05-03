@@ -62,6 +62,8 @@ public:
 	UDataTable* AttackDataTable;
 	UPROPERTY()
 	UDataTable* FormDataTable;
+	UPROPERTY()
+	UDataTable* FormTimeDataTable;
 	
 	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
 	UPROPERTY()
@@ -131,7 +133,10 @@ public:
 
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 	FFormDataTable* GetNameAtFormDataTable(const FName Value) const { if (Value != FName("")) return (FormDataTable->FindRow<FFormDataTable>(Value, "")); return nullptr; }
-
+	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
+	void RecoveryFormGauge(const float DeltaTime);
+	void DecreaseFormGauge(const float DeltaTime);
+	
 	void FireRecoveryWaitStart();
 	void FireRecoveryWaiting();
 	void FireRecoveryWaitCancel();
