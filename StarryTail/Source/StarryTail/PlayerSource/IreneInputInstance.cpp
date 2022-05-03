@@ -757,7 +757,7 @@ void UIreneInputInstance::DodgeKeyword()
 			MoveAutoDirection = FVector::ZeroVector;
 
 			// w키나 아무방향 없으면 정면으로 이동
-			if (MoveKey[0] != 0) //|| (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			if ((MoveKey[0] != 0) || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
 			{
 				MoveAutoDirection += ForwardVec;
 			}
