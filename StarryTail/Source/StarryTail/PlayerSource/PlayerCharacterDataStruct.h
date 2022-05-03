@@ -175,6 +175,26 @@ struct FFormDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Open_Gauge;
 };
+USTRUCT(BlueprintType)
+struct FFormTimeDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Form_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int F_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Recovery_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Decrease_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Hit_Gauge_Re;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_C_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Open_Gauge;
+};
 
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct
