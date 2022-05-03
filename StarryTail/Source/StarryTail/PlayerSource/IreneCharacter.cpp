@@ -346,7 +346,9 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// 		IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
 	// 	}
 	// }
-	
+	IreneAttack->RecoveryFormGauge(DeltaTime);
+	IreneAttack->DecreaseFormGauge(DeltaTime);
+
 	IreneState->Update(DeltaTime);
 }
 
@@ -434,19 +436,19 @@ void AIreneCharacter::FindNearMonster()
 		if (table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
 			IreneAttack->bUseMP = true;
-			if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire) {
-				IreneAttack->FormGauge[0] -= table->Gauge;
-				IreneAttack->FOnFireGaugeChange.Broadcast();
-			}
-			else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water) {
-				IreneAttack->FormGauge[1] -= table->Gauge;
-				IreneAttack->FOnWaterGaugeChange.Broadcast();
-			}
-			else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder) {
-				IreneAttack->FormGauge[2] -= table->Gauge;
-				IreneAttack->FOnElectricGaugeChange.Broadcast();
-			}
-			IreneAttack->UseMP = table->Gauge;
+			// if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire) {
+			// 	IreneAttack->FormGauge[0] -= table->Gauge;
+			// 	IreneAttack->FOnFireGaugeChange.Broadcast();
+			// }
+			// else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water) {
+			// 	IreneAttack->FormGauge[1] -= table->Gauge;
+			// 	IreneAttack->FOnWaterGaugeChange.Broadcast();
+			// }
+			// else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder) {
+			// 	IreneAttack->FormGauge[2] -= table->Gauge;
+			// 	IreneAttack->FOnElectricGaugeChange.Broadcast();
+			// }
+			//IreneAttack->UseMP = table->Gauge;
 		}
 		// 마나 회복 조건
 		if (table->Form < 2)
