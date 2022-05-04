@@ -17,6 +17,7 @@ public:
 	void PlayIdleMontage() override;
 	void PlayDeathMontage() override;
 	void PlayAttackMontage() override;
+	void PlayDetectMontage() override;
 	void PlayAttackedRightMontage();
 	void PlayAttackedLeftMontage();
 	void PlayAttackedCriticalRightMontage();

@@ -31,6 +31,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ViewRange; //시야거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ViewHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MeleeAttackRange; //공격사거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float TraceRange; //최대 추적 거리

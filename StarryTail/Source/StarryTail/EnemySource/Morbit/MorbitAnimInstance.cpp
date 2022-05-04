@@ -65,6 +65,12 @@ void UMorbitAnimInstance::PlayIdleMontage()
 	else
 		Montage_Play(IdleMontage2, PlayRate);
 }
+void UMorbitAnimInstance::PlayDetectMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(DetectMontage, 1.0f);
+}
 bool UMorbitAnimInstance::CheckAttackedMontagePlaying()
 {
 	if (Montage_IsPlaying(AttackedMontage))

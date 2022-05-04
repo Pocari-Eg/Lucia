@@ -26,7 +26,7 @@ public:
 	virtual void PlayAttackMontage() {};
 	virtual void PlayIdleMontage() {};
 	virtual void PlayWalkMontage();
-	virtual void PlayDetectMontage();
+	virtual void PlayDetectMontage() {};
 	virtual void PlayBattleIdleMontage();
 	virtual void PlayBattleWalkMontage();
 	virtual void PlayAttackedMontage();

@@ -4,6 +4,15 @@
 #include "BdAIController.h"
 #include "Bouldelith.h"
 
+const FName ABdAIController::IsBattleIdleKey = (TEXT("bIsBattleIdle"));
+const FName ABdAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
+
+const FName ABdAIController::IsBackstepKey = (TEXT("bIsBackstep"));
+
+const FName ABdAIController::IsAttack1Key = (TEXT("bIsAttack1"));
+const FName ABdAIController::IsAttack2Key = (TEXT("bIsAttack2"));
+const FName ABdAIController::IsAttack3Key = (TEXT("bIsAttack3"));
+const FName ABdAIController::IsAttack4Key = (TEXT("bIsAttack4"));
 
 ABdAIController::ABdAIController()
 {

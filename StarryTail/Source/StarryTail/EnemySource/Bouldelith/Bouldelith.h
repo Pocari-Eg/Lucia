@@ -5,11 +5,17 @@
 #include "CoreMinimal.h"
 #include "../Monster.h"
 #include "BdAnimInstance.h"
+#include "BouldelithPatrolTarget.h"
 #include "Bouldelith.generated.h"
 
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack1EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack2EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack3EndDelegate);
+
 UCLASS()
 class STARRYTAIL_API ABouldelith : public AMonster
 {
@@ -18,16 +24,62 @@ public:
 	//Function
 	ABouldelith();
 
+	void InitBouldelithInfo();
+
+	void Walk();
+	void BattleIdle();
+	void BattleRun();
+	void BattleWalk();
+
+	void Attack1();
+	void Attack2();
+	void Attack3();
+
+	void Backstep();
+
 	UBdAnimInstance* GetBouldelithAnimInstance() const;
-	void SetBattleRunSpeed(float Value);
+
+	void AddBattleRunSpeed(float Value);
+	void UpgradeBattleRunAnim();
+	float GetBattleRunSpeed();
 	void ResetBattleRunSpeed();
+
+	TArray<ABouldelithPatrolTarget*> GetPatrolList();
+	ABouldelithPatrolTarget* GetUsePatrol();
+	void SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget);
+
+	float GetAnotherMonsterStateCheckRange();
+	bool GetIsChangeBattleRunStateToAttackedState();
+
+	int GetAttackFailedStack();
+	void ResetAttackFailedStack();
+
+	float GetHpPercent();
+
+	bool GetIsUseBackstep();
+	void SetIsUseBackstep(bool Value);
 	//Var
+	FBackstepEndDelegate BackstepEnd;
+	FAttack1EndDelegate Attack1End;
+	FAttack2EndDelegate Attack2End;
+	FAttack3EndDelegate Attack3End;
 private:
 	//Function
 	
 	//Var
-	float DefaultBattleRunSpeed;
-	float CurrentBattleRunSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BouldelithInfo, Meta = (AllowPrivateAccess = true))
+		FBouldelithDataStruct BouldelithInfo;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PatrolList, Meta = (AllowPrivateAccess = true))
+		TArray<ABouldelithPatrolTarget*> PatrolList;
+	ABouldelithPatrolTarget* UsePatrol;
+	UBdAnimInstance* BdAnimInstance;
+
+	float BackstepCoolTimer;
+
+	bool bIsChangeBattleRunStateToAttackedState;
+	bool bIsUseBackstep;
+
+	bool bIsRush;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
