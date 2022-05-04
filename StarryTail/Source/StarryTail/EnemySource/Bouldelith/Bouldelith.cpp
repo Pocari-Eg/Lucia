@@ -90,6 +90,11 @@ void ABouldelith::BattleIdle()
 	BdAnimInstance->PlayBattleIdleMontage();
 	MonsterAIController->StopMovement();
 }
+void ABouldelith::BattleWalk()
+{
+	BdAnimInstance->PlayBattleWalkMontage();
+	MonsterAIController->StopMovement();
+}
 #pragma region Attack
 void ABouldelith::Attack1()
 {
@@ -103,6 +108,7 @@ void ABouldelith::Attack1()
 	{
 		BdAnimInstance->PlayAttack1Montage();
 	}
+	MonsterAIController->StopMovement();
 }
 void ABouldelith::Attack2()
 {
@@ -115,6 +121,13 @@ void ABouldelith::Attack2()
 	{
 		BdAnimInstance->PlayAttack2Montage();
 	}
+	MonsterAIController->StopMovement();
+}
+void ABouldelith::Attack3()
+{
+	BdAnimInstance->PlayAttack3Montage();
+	MonsterAIController->StopMovement();
+	bIsRush = true;
 }
 #pragma endregion
 
@@ -227,6 +240,10 @@ void ABouldelith::BeginPlay()
 		});
 	BdAnimInstance->Attack2End.AddLambda([this]() -> void {
 		Attack2End.Broadcast();
+		});
+	BdAnimInstance->Attack3End.AddLambda([this]() -> void {
+		Attack3End.Broadcast();
+		bIsRush = false;
 		});
 }
 void ABouldelith::PossessedBy(AController* NewController)

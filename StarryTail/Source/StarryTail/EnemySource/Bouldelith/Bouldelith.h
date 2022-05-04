@@ -14,6 +14,7 @@
 DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttack1EndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttack2EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack3EndDelegate);
 
 UCLASS()
 class STARRYTAIL_API ABouldelith : public AMonster
@@ -26,11 +27,13 @@ public:
 	void InitBouldelithInfo();
 
 	void Walk();
-	void BattleRun();
 	void BattleIdle();
+	void BattleRun();
+	void BattleWalk();
 
 	void Attack1();
 	void Attack2();
+	void Attack3();
 
 	void Backstep();
 
@@ -59,6 +62,7 @@ public:
 	FBackstepEndDelegate BackstepEnd;
 	FAttack1EndDelegate Attack1End;
 	FAttack2EndDelegate Attack2End;
+	FAttack3EndDelegate Attack3End;
 private:
 	//Function
 	
@@ -74,6 +78,8 @@ private:
 
 	bool bIsChangeBattleRunStateToAttackedState;
 	bool bIsUseBackstep;
+
+	bool bIsRush;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

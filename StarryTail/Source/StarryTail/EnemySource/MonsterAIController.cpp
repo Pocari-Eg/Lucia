@@ -46,7 +46,7 @@ void AMonsterAIController::Death()
 	Blackboard->SetValueAsBool(IsDeadKey, true);
 
 	auto Monster = Cast<AMonster>(GetPawn());
-	Monster->PlayDetectAnim();
+	Monster->PlayDeathAnim();
 }
 void AMonsterAIController::SetPlayer()
 {

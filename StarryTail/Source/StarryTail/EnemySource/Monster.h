@@ -48,6 +48,7 @@ public:
 	void PlayDetectAnim();
 	void PlayWalkAnim();
 	void PlayGroggyAnim();
+	void PlayDeathAnim();
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 	void SetIsBattleState(bool Value);
@@ -86,7 +87,6 @@ protected:
 	float CalcBurnDamage();
 
 	void PrintHitEffect(FVector AttackedPosition);
-	void PrintLightningHitEffect();
 	//Variable
 	AMonsterAIController* MonsterAIController;
 
@@ -105,13 +105,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* SparkEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* TransitionEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* AssembleEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* LightningHitEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI

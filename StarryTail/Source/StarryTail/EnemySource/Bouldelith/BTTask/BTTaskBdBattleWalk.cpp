@@ -1,31 +1,32 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskBdBattleIdle.h"
+#include "BTTaskBdBattleWalk.h"
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
-#include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-UBTTaskBdBattleIdle::UBTTaskBdBattleIdle()
+UBTTaskBdBattleWalk::UBTTaskBdBattleWalk()
 {
-	NodeName = TEXT("BattleIdle");
+	NodeName = TEXT("BattleWalk");
 	bNotifyTick = true;
 }
-EBTNodeResult::Type UBTTaskBdBattleIdle::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskBdBattleWalk::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
-	Bouldelith->BattleIdle();
+	Bouldelith->BattleWalk();
+
+	STARRYLOG(Log, TEXT("1"));
 
 	ChangeStateTime = FMath::RandRange(1, 3);
 	ChangeStateTimer = 0.0f;
 
 	return EBTNodeResult::InProgress;
 }
-void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTaskBdBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -34,22 +35,21 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
 
-	/*
-	if (Bouldelith->GetAttackFailedStack() >= 5 && Bouldelith->GetHpPercent() < 50)
-	{
-		Bouldelith->ResetAttackFailedStack();
-		Bouldelith->Attack4();
-	}
-	*/
+	FVector LookVector = Player->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+
 	if (Bouldelith->GetDistanceToPlayer() >= 1000.0f)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	else if (Bouldelith->GetDistanceToPlayer() <= 300.0f)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
 
 		if (Bouldelith->GetIsUseBackstep())
 		{
@@ -72,25 +72,22 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	
+
 	if (ChangeStateTimer >= ChangeStateTime)
-	{	
-		int Random = FMath::RandRange(0, 2);
+	{
+		int Random = FMath::RandRange(0, 1);
 
 		switch (Random)
 		{
 		case 0:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, true);
-			break;
-		case 1:
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
 			break;
-		case 2:
+		case 1:
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
 			break;
 		}
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
+
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	
 }

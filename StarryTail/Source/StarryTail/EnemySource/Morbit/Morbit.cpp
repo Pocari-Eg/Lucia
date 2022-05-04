@@ -20,7 +20,6 @@ AMorbit::AMorbit()
 	InitCollision();
 	InitMesh();
 	InitAnime();
-	InitDebuffInfo();
 
 	bTestMode = false;
 
