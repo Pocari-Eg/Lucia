@@ -97,9 +97,6 @@ void AMonster::InitDebuffInfo()
 
 	bIsBurn = false;
 	bIsFlooding = false;
-	bIsShock = false;
-	bIsAssemble = false;
-	bIsChain = false;
 }
 void AMonster::InitAttackedInfo()
 {
@@ -204,12 +201,20 @@ float AMonster::GetDistanceToPlayer() const
 	FVector ActorMeshLocation = GetActorLocation() + FVector(0, 0, -150);
 	return (ActorMeshLocation - STGameInstance->GetPlayer()->GetActorLocation()).Size();
 }
+bool AMonster::GetIsBattleState() const
+{
+	return bIsBattleState;
+}
 #pragma endregion
 void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection)
 {
 	AttackedInfo.bIsUseMana = bIsUseMana;
 	AttackedInfo.Mana = Mana;
 	AttackedInfo.AttackedDirection = AttackedDirection;
+}
+void AMonster::SetIsBattleState(bool Value)
+{
+	bIsBattleState = Value;
 }
 void AMonster::SetEffect()
 {
@@ -294,11 +299,6 @@ void AMonster::CalcDef()
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
-		if (SparkEffectComponent->IsActive())
-		{
-			SparkEffectComponent->SetActive(false);
-			bIsShock = false;
-		}
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
 		bIsGroggy = true;

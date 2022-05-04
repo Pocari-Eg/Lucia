@@ -23,14 +23,10 @@ void UMonsterAnimInstance::PlayWalkMontage()
 {
 	Montage_Play(WalkMontage, PlayRate);
 }
-void UMonsterAnimInstance::PlayDetectMontage()
-{
-	if (CheckAttackedMontagePlaying())
-		return;
-	Montage_Play(DetectMontage, 1.0f);
-}
 void UMonsterAnimInstance::PlayBattleIdleMontage()
 {
+	if (Montage_IsPlaying(BattleIdleMontage))
+		return;
 	Montage_Play(BattleIdleMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayBattleWalkMontage()

@@ -11,6 +11,10 @@
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack1EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttack2EndDelegate);
+
 UCLASS()
 class STARRYTAIL_API ABouldelith : public AMonster
 {
@@ -19,30 +23,57 @@ public:
 	//Function
 	ABouldelith();
 
+	void InitBouldelithInfo();
+
 	void Walk();
 	void BattleRun();
+	void BattleIdle();
+
+	void Attack1();
+	void Attack2();
+
+	void Backstep();
 
 	UBdAnimInstance* GetBouldelithAnimInstance() const;
+
 	void AddBattleRunSpeed(float Value);
+	void UpgradeBattleRunAnim();
 	float GetBattleRunSpeed();
 	void ResetBattleRunSpeed();
+
 	TArray<ABouldelithPatrolTarget*> GetPatrolList();
 	ABouldelithPatrolTarget* GetUsePatrol();
 	void SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget);
 
-	
+	float GetAnotherMonsterStateCheckRange();
+	bool GetIsChangeBattleRunStateToAttackedState();
+
+	int GetAttackFailedStack();
+	void ResetAttackFailedStack();
+
+	float GetHpPercent();
+
+	bool GetIsUseBackstep();
+	void SetIsUseBackstep(bool Value);
 	//Var
+	FBackstepEndDelegate BackstepEnd;
+	FAttack1EndDelegate Attack1End;
+	FAttack2EndDelegate Attack2End;
 private:
 	//Function
 	
 	//Var
-	UBdAnimInstance* BdAnimInstance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BouldelithInfo, Meta = (AllowPrivateAccess = true))
+		FBouldelithDataStruct BouldelithInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PatrolList, Meta = (AllowPrivateAccess = true))
 		TArray<ABouldelithPatrolTarget*> PatrolList;
 	ABouldelithPatrolTarget* UsePatrol;
+	UBdAnimInstance* BdAnimInstance;
 
-	float DefaultBattleRunSpeed;
-	float CurrentBattleRunSpeed;
+	float BackstepCoolTimer;
+
+	bool bIsChangeBattleRunStateToAttackedState;
+	bool bIsUseBackstep;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

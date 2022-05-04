@@ -12,6 +12,7 @@ ABouldelith::ABouldelith()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	InitMonsterInfo();
+	InitBouldelithInfo();
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -30,7 +31,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.Atk = 250.0f;
 	MonsterInfo.Def = 250.0f;
 	MonsterInfo.Barrier = 100.0f;
-	MonsterInfo.DetectMonsterRange = 10.0f;
+	MonsterInfo.DetectMonsterRange = 5.0f;
 
 	MonsterInfo.MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;
@@ -38,12 +39,18 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.ViewRange = 1000.0f;
 	MonsterInfo.ViewHeight = 200.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f;
-	MonsterInfo.TraceRange = 1000.0f;
+	MonsterInfo.TraceRange = 3000.0f;
 
 	MonsterInfo.KnockBackPower = 10.0f;
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
+}
+void ABouldelith::InitBouldelithInfo()
+{
+	BouldelithInfo.AnotherMonsterStateCheckRange = 1000.0f;
+	BouldelithInfo.DefaultBattleRunSpeed = 450.0f;
+	BouldelithInfo.BackstepCoolTime = 5.0f;
 }
 void ABouldelith::InitCollision()
 {
@@ -74,35 +81,98 @@ void ABouldelith::InitAnime()
 	}
 }
 #pragma endregion
-
 void ABouldelith::Walk()
 {
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
 }
-void ABouldelith::BattleRun()
+void ABouldelith::BattleIdle()
 {
-	GetCharacterMovement()->MaxWalkSpeed = DefaultBattleRunSpeed;
-	CurrentBattleRunSpeed = DefaultBattleRunSpeed;
-
-	BdAnimInstance->PlayBattleRunMontage();
+	BdAnimInstance->PlayBattleIdleMontage();
+	MonsterAIController->StopMovement();
 }
+#pragma region Attack
+void ABouldelith::Attack1()
+{
+	int Random = FMath::RandRange(0, 9);
+
+	if (Random < 3)
+	{
+		BdAnimInstance->PlayAttack1ComboMontage();
+	}
+	else
+	{
+		BdAnimInstance->PlayAttack1Montage();
+	}
+}
+void ABouldelith::Attack2()
+{
+	int Random = FMath::RandRange(0, 9);
+
+	if (Random < 3)
+	{
+		BdAnimInstance->PlayAttack2ComboMontage();
+	}
+	{
+		BdAnimInstance->PlayAttack2Montage();
+	}
+}
+#pragma endregion
+
+#pragma region Backstep
+void ABouldelith::Backstep()
+{
+	MonsterAIController->StopMovement();
+	BdAnimInstance->PlayBackstepMontage();
+}
+bool ABouldelith::GetIsUseBackstep()
+{
+	return bIsUseBackstep;
+}
+void ABouldelith::SetIsUseBackstep(bool Value)
+{
+	bIsUseBackstep = Value;
+}
+#pragma endregion
 
 UBdAnimInstance* ABouldelith::GetBouldelithAnimInstance() const
 {
 	return BdAnimInstance;
 }
+float ABouldelith::GetAnotherMonsterStateCheckRange()
+{
+	return BouldelithInfo.AnotherMonsterStateCheckRange;
+}
+#pragma region BattleRun
+void ABouldelith::BattleRun()
+{
+	GetCharacterMovement()->MaxWalkSpeed = BouldelithInfo.DefaultBattleRunSpeed;
+	BouldelithInfo.CurrentBattleRunSpeed = BouldelithInfo.DefaultBattleRunSpeed;
+
+	BdAnimInstance->PlayBattleRunMontage();
+}
 void ABouldelith::AddBattleRunSpeed(float Value)
 {
-	CurrentBattleRunSpeed += Value;
+	BouldelithInfo.CurrentBattleRunSpeed += Value;
+	GetCharacterMovement()->MaxWalkSpeed = BouldelithInfo.CurrentBattleRunSpeed;
+}
+void ABouldelith::UpgradeBattleRunAnim()
+{
+	BdAnimInstance->UpgradeBattleRun();
 }
 float ABouldelith::GetBattleRunSpeed()
 {
-	return CurrentBattleRunSpeed;
+	return BouldelithInfo.CurrentBattleRunSpeed;
 }
 void ABouldelith::ResetBattleRunSpeed()
 {
-	CurrentBattleRunSpeed = DefaultBattleRunSpeed;
+	BouldelithInfo.CurrentBattleRunSpeed = BouldelithInfo.DefaultBattleRunSpeed;
 }
+bool ABouldelith::GetIsChangeBattleRunStateToAttackedState()
+{
+	return bIsChangeBattleRunStateToAttackedState;
+}
+#pragma endregion
+#pragma region Patrol
 TArray<ABouldelithPatrolTarget*> ABouldelith::GetPatrolList()
 {
 	return PatrolList;
@@ -115,15 +185,49 @@ void ABouldelith::SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget)
 {
 	UsePatrol = PatrolTarget;
 }
+#pragma endregion
+int ABouldelith::GetAttackFailedStack()
+{
+	return BouldelithInfo.AttackFailedStack;
+}
+void ABouldelith::ResetAttackFailedStack()
+{
+	BouldelithInfo.AttackFailedStack = 0;
+}
+float ABouldelith::GetHpPercent()
+{
+	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
+}
 void ABouldelith::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	MonsterAnimInstance = BdAnimInstance;
+	if (bIsUseBackstep)
+	{
+		BackstepCoolTimer += DeltaTime;
+
+		if (BackstepCoolTimer >= BouldelithInfo.BackstepCoolTime)
+		{
+			bIsUseBackstep = false;
+			BackstepCoolTimer = 0.0f;
+		}
+	}
 }
 void ABouldelith::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MonsterAnimInstance = BdAnimInstance;
+
+	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
+		BackstepEnd.Broadcast();
+		});
+	BdAnimInstance->Attack1End.AddLambda([this]() -> void {
+		Attack1End.Broadcast();
+		});
+	BdAnimInstance->Attack2End.AddLambda([this]() -> void {
+		Attack2End.Broadcast();
+		});
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

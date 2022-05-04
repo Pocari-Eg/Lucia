@@ -4,6 +4,9 @@
 #include "BTTaskBdBattleRun.h"
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
+#include "../../../PlayerSource/IreneCharacter.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTaskBdBattleRun::UBTTaskBdBattleRun()
 {
@@ -17,29 +20,54 @@ EBTNodeResult::Type UBTTaskBdBattleRun::ExecuteTask(UBehaviorTreeComponent& Owne
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
 	Bouldelith->BattleRun();
+	
+	BattleRunTimer = 0.0f;
 
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskBdBattleRun::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	
+	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
+
+	UAIBlueprintHelperLibrary::SimpleMoveToLocation(Bouldelith->GetController(), Player->GetActorLocation());
 
 	BattleRunTimer += DeltaSeconds;
 
-	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-
 	if (BattleRunTimer >= 2.0f)
 	{
-		if(Bouldelith->GetBattleRunSpeed() <= 500.0f)
-			Bouldelith->AddBattleRunSpeed(100);
+		if (Bouldelith->GetBattleRunSpeed() < 700.0f)
+		{
+			Bouldelith->AddBattleRunSpeed(150);
+			Bouldelith->UpgradeBattleRunAnim();
+		}
 		BattleRunTimer = 0.0f;
 	}
 
-	if (Bouldelith->GetDistanceToPlayer() >= 1000.0f)
+	if (Bouldelith->GetDistanceToPlayer() >= 3000.0f)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsObject(ABdAIController::PlayerKey, nullptr);
+		Bouldelith->Walk();
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::ReturnKey, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsObject(ABdAIController::PlayerKey, nullptr);
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+	else if (Bouldelith->GetDistanceToPlayer() >= 2500.0f)
+	{
+		bIsAway = true;
+	}
+	else if (Bouldelith->GetDistanceToPlayer() <= 1000.0f && bIsAway && !Bouldelith->GetIsChangeBattleRunStateToAttackedState())
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack3Key, true);
 		Bouldelith->ResetBattleRunSpeed();
+		bIsAway = false;
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+	else if (Bouldelith->GetDistanceToPlayer() <= 1000.0f)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
+		bIsAway = false;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

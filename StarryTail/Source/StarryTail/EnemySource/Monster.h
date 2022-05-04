@@ -42,6 +42,7 @@ public:
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
+	bool GetIsBattleState() const;
 
 	void PlayIdleAnim();
 	void PlayDetectAnim();
@@ -49,6 +50,7 @@ public:
 	void PlayGroggyAnim();
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
+	void SetIsBattleState(bool Value);
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 
@@ -169,10 +171,9 @@ private:
 
 	bool bIsBurn;
 	bool bIsFlooding;
-	bool bIsShock;
-	bool bIsAssemble;
-	bool bIsChain;
+
 	bool bShowUI;
+	bool bIsBattleState;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
