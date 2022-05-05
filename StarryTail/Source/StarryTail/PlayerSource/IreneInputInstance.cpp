@@ -749,7 +749,7 @@ void UIreneInputInstance::DodgeKeyword()
 			const FVector CurLocation = Irene->GetActorLocation();
 			if(!StaminaWaitHandle.IsValid())
 			{
-				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*50);
+				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*200);
 			}
 			else
 			{
