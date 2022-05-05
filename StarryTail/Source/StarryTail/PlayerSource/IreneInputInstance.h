@@ -47,7 +47,10 @@ public:
 
 	bool bUseLeftButton;
 	bool bUseRightButton;
-	
+
+	float StaminaGauge;
+	FTimerHandle StaminaWaitHandle;
+	float StartWaterDodgeStamina;
 private:
 	
 public:
@@ -99,11 +102,15 @@ public:
 	
 	// 대쉬
 	void DodgeKeyword();
-
+	void WaterDodgeKeyword(float Rate);
+	
 	// 마우스 커서 활성화
 	void MouseCursorKeyword();
 
 	// Pause위젯 on
 	void PauseWidgetOn();
+
+	void RecoveryStaminaGauge(float DeltaTime);
+	bool StaminaGaugeIsFull()const;
 #pragma endregion Other
 };
