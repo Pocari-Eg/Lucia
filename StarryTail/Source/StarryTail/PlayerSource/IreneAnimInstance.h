@@ -54,7 +54,7 @@ public:
 	void PlayEffectAttackMontage();
 	void JumpToAttackMontageSection(const int32 NewSection);
 	void JumpToEffectAttackMontageSection(const int32 NewSection);
-
+	
 	void SetDeadAnim(const bool Value) { IsDead = Value; }
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
 	void SetSprintStopAnim(const bool Value) { IsSprintStop = Value; }
