@@ -177,9 +177,8 @@ void AIreneCharacter::BeginPlay()
 	// 애니메이션 속성 초기화
 	IreneAnim->SetAttribute(IreneAttack->Attribute);
 	IreneUIManager->Begin();
-
-
 }
+
 void AIreneCharacter::Destroyed()
 {
 	Super::Destroyed();
@@ -250,11 +249,18 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
+	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[0]);
+	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[1]);
+	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[2]);
+	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[3]);
+	// STARRYLOG(Error,TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);	
+	
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
 	{
-		if (IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0) {
+		if (IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
+		{
 			IreneInput->MoveForward();
 			IreneInput->MoveRight();
 		}
@@ -346,13 +352,13 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// 		IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
 	// 	}
 	// }
-	IreneAttack->RecoveryFormGauge(DeltaTime);
-	IreneAttack->DecreaseFormGauge(DeltaTime);
-
+	if(IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	{
+		IreneAttack->RecoveryFormGauge(DeltaTime);
+		IreneAttack->DecreaseFormGauge(DeltaTime);
+	}
 	IreneState->Update(DeltaTime);
 }
-
-
 
 // Called to bind functionality to input
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -393,7 +399,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
 
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn);
-
 	
 	//박찬영
 	//스탑워치 컨트롤
@@ -655,7 +660,6 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 	}
 }
 
-
 float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
@@ -700,7 +704,6 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		}
 		IreneState->ChangeState(NewState);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
-
 		if (NewState == URunState::GetInstance() || NewState == USprintState::GetInstance())
 			Weapon->SetVisibility(false);
 		else
@@ -712,16 +715,11 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
 			else IreneUIManager->HPRecoveryWaitCancel();
 		}
-		if(NewState == UDeathState::GetInstance())
-		{
-			
-		}
 	}
 }
 
 void AIreneCharacter::ActionEndChangeMoveState()
 {
-	IreneData.MoveSpeed = 1.0f;
 	IreneInput->MoveAutoDirection = FVector(0, 0, 0);
 
 	if (IreneInput->MoveKey[0] > 2)

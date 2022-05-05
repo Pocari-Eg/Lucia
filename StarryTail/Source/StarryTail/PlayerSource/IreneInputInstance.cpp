@@ -65,7 +65,7 @@ void UIreneInputInstance::MoveForward()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction);
 		}
 		if (MoveKey[2] != 0 && MoveKey[2] < 3)
 		{
@@ -73,7 +73,7 @@ void UIreneInputInstance::MoveForward()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction * -1);
 		}
 	}
 }
@@ -83,14 +83,15 @@ void UIreneInputInstance::MoveRight()
 	{
 		if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
 		{
-				Irene->CameraComp->FieldOfView = 80;
-			//Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;			
+			Irene->CameraComp->FieldOfView = 80;
 		}
 		else
 		{
 			Irene->CameraComp->FieldOfView = 75;
-			//Irene->SpringArmComp->CameraLagSpeed = 0;			
+			//Irene->SpringArmComp->CameraLagSpeed = 0;
 		}
+		Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;			
+
 		// 1: 좌측, 3: 우측
 		if (MoveKey[1] != 0 && MoveKey[1] < 3)
 		{
@@ -98,7 +99,7 @@ void UIreneInputInstance::MoveRight()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction * -1);
 		}
 		if (MoveKey[3] != 0 && MoveKey[3] < 3)
 		{
@@ -106,7 +107,7 @@ void UIreneInputInstance::MoveRight()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction);
 		}
 	}
 }
@@ -120,15 +121,15 @@ void UIreneInputInstance::MoveStop()
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 		{
-			if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
-			{
-				Irene->IreneAnim->SetSprintStopAnim(true);
-				FTimerHandle TimerHandle;
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-					{
-						Irene->IreneAnim->SetSprintStopAnim(false);
-					}, 0.3f, false);
-			}
+			// if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
+			// {
+			// 	Irene->IreneAnim->SetSprintStopAnim(true);
+			// 	FTimerHandle TimerHandle;
+			// 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			// 		{
+			// 			Irene->IreneAnim->SetSprintStopAnim(false);
+			// 		}, 0.3f, false);
+			// }
 			Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		}
 	}
@@ -169,7 +170,6 @@ void UIreneInputInstance::MoveAuto()
 		// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 		if (Irene->GetMovementComponent()->IsFalling())
 		{
-			Irene->IreneData.MoveSpeed = 1.0f;
 			MoveAutoDirection = FVector(0, 0, 0);
 			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
 			if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
@@ -191,30 +191,30 @@ void UIreneInputInstance::StartJump()
 		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		// 키 입력을 바탕으로 점프 방향을 얻는다.
-		FVector Direction = FVector(0, 0, 0);
-		if (MoveKey[0] != 0)
-		{
-			Direction += Irene->CameraComp->GetForwardVector();
-		}
-		if (MoveKey[1] != 0)
-		{
-			Direction += Irene->CameraComp->GetRightVector() * -1;
-		}
-		if (MoveKey[2] != 0)
-		{
-			Direction += Irene->CameraComp->GetForwardVector() * -1;
-		}
-		if (MoveKey[3] != 0)
-		{
-			Direction += Irene->CameraComp->GetRightVector();
-		}
-		Direction.Normalize();
+		// // 키 입력을 바탕으로 점프 방향을 얻는다.
+		// FVector Direction = FVector(0, 0, 0);
+		// if (MoveKey[0] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetForwardVector();
+		// }
+		// if (MoveKey[1] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetRightVector() * -1;
+		// }
+		// if (MoveKey[2] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetForwardVector() * -1;
+		// }
+		// if (MoveKey[3] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetRightVector();
+		// }
+		// Direction.Normalize();
 
 		Irene->GetMovementComponent()->Velocity = Irene->GetMovementComponent()->Velocity / Irene->IreneData.JumpDrag;
 
-		Irene->bPressedJump = true;
 		bStartJump = true;
+		Irene->bPressedJump = true;
 		Irene->ChangeStateAndLog(UJumpState::GetInstance());
 	}
 }
@@ -236,6 +236,8 @@ void UIreneInputInstance::MovePressedW()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[0] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[0] = 2;
 	}
 	else
 		MoveKey[0] = 3;
@@ -252,6 +254,8 @@ void UIreneInputInstance::MovePressedA()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[1] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[1] = 2;
 	}
 	else
 		MoveKey[1] = 3;
@@ -268,6 +272,8 @@ void UIreneInputInstance::MovePressedS()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[2] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[2] = 2;
 	}
 	else
 		MoveKey[2] = 3;
@@ -284,6 +290,8 @@ void UIreneInputInstance::MovePressedD()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[3] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[3] = 2;
 	}
 	else
 		MoveKey[3] = 3;
@@ -298,7 +306,6 @@ void UIreneInputInstance::MoveDoubleClickW()
 		MoveKey[0] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[0] = 4;
@@ -312,7 +319,6 @@ void UIreneInputInstance::MoveDoubleClickA()
 		MoveKey[1] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[1] = 4;
@@ -326,7 +332,6 @@ void UIreneInputInstance::MoveDoubleClickS()
 		MoveKey[2] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[2] = 4;
@@ -340,7 +345,6 @@ void UIreneInputInstance::MoveDoubleClickD()
 		MoveKey[3] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[3] = 4;
@@ -349,30 +353,18 @@ void UIreneInputInstance::MoveDoubleClickD()
 void UIreneInputInstance::MoveReleasedW()
 {
 	MoveKey[0] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedA()
 {
 	MoveKey[1] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedS()
 {
 	MoveKey[2] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedD()
 {
 	MoveKey[3] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[2] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 #pragma endregion MoveInput
 
@@ -890,6 +882,4 @@ void UIreneInputInstance::PauseWidgetOn()
 	Irene->IreneState->SetState(UIdleState::GetInstance());
 	Irene->IreneUIManager->PauseWidgetOn();
 }
-
-
 #pragma endregion Input
