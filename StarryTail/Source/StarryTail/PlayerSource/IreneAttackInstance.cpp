@@ -182,30 +182,8 @@ void UIreneAttackInstance::DoAttack()
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
-		FCollisionQueryParams Params(NAME_None, false, Irene);
-		if(!TargetMonster)
-		{
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				Irene->GetActorLocation() + (Irene->GetActorForwardVector()*Irene->IreneData.AttackRange),
-				Irene->GetActorLocation() + (Irene->GetActorForwardVector()*Irene->IreneData.AttackRange),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeSphere(100),
-				Params);
-		}
-		else
-		{
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				TargetMonster->GetActorLocation(),
-				TargetMonster->GetActorLocation(),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeSphere(100),
-				Params);
-		}
-	}	
+		
+	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
 		FCollisionQueryParams Params(NAME_None, false, Irene);
@@ -230,25 +208,6 @@ void UIreneAttackInstance::DoAttack()
 
 		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
 	}
-	if(Attribute == EAttributeKeyword::e_Water)
-	{
-		if(!TargetMonster)
-		{
-			FVector Center = Irene->GetActorLocation();
-			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-			float DebugLifeTime = 5.0f;
-
-			DrawDebugSphere(GetWorld(), Center, 100, 50, DrawColor, false, DebugLifeTime);
-		}
-		else
-		{
-			FVector Center = TargetMonster->GetActorLocation();
-			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-			float DebugLifeTime = 5.0f;
-
-			DrawDebugSphere(GetWorld(), Center, 100, 50, DrawColor, false, DebugLifeTime);
-		}
-	}	
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
 		FVector TraceVec = Irene->GetActorForwardVector() * Irene->IreneData.AttackRange;

@@ -19,6 +19,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
+#include "WaterBasicAttack.h"
 
 #pragma region Setting
 // Sets default values
@@ -469,6 +470,8 @@ void AIreneCharacter::FindNearMonster()
 	// }
 
 	float far = 300;
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		far = 500;
 	// 가로, 높이, 세로
 	FVector BoxSize = FVector(200, 50, far);
 	// 최대거리
@@ -574,7 +577,18 @@ void AIreneCharacter::FindNearMonster()
 			}
 		}
 	}
-
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	{
+		FCollisionQueryParams QParams(NAME_None, false, this);
+		if(IreneAttack->TargetMonster)
+		{
+			AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(IreneAttack->TargetMonster->GetActorLocation() - GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+		}
+		else
+		{
+			AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(GetActorLocation() + GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+		}
+	}
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
 	{		

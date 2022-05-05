@@ -808,7 +808,6 @@ void UIreneInputInstance::PauseWidgetOn()
 
 void UIreneInputInstance::RecoveryStaminaGauge(float DeltaTime)
 {
-	STARRYLOG(Error,TEXT("%f"), StaminaGauge);
 	StaminaGauge += DeltaTime * 5;
 	if(StaminaGaugeIsFull()) StaminaGauge = 150;
 }
