@@ -19,11 +19,7 @@ EBTNodeResult::Type UBTTaskMbBattleIdle::ExecuteTask(UBehaviorTreeComponent& Own
 	if (nullptr == Morbit)
 		return EBTNodeResult::Failed;
 
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMbAIController::PlayerKey));
-	if (nullptr == Player)
-		return EBTNodeResult::Failed;
-
-	if (!Morbit->GetMorbitAnimInstance()->GetBattleIdleIsPlaying() && !Morbit->GetMorbitAnimInstance()->GetAttackIsPlaying())
+	if (!Morbit->GetMorbitAnimInstance()->GetAttackIsPlaying())
 		Morbit->GetMorbitAnimInstance()->PlayBattleIdleMontage();
 
 	if (Morbit->GetDistanceToPlayer() > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))

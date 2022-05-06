@@ -36,9 +36,9 @@ public:
 	// 점프시작파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float JumpStartPower = 450;
-	// 점프시작파워
+	// 점프저항파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpDrag = 2;
+	float JumpDrag = 4;
 	
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -73,10 +73,6 @@ public:
 	// 마나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentMP;
-
-	// 이동속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MoveSpeed = 1.0f;
 
 	// Run 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -172,6 +168,26 @@ struct FFormDataTable : public FTableRowBase
 	int Gauge_Recovery;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Hit_Gauge_Re;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Open_Gauge;
+};
+USTRUCT(BlueprintType)
+struct FFormTimeDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Form_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int F_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Recovery_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Decrease_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Hit_Gauge_Re;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Gauge_C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Open_Gauge;
 };

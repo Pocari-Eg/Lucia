@@ -17,6 +17,16 @@ public:
 	ABdAIController();
 
 	void Attacked();
+
+	static const FName IsBattleIdleKey;
+	static const FName IsBattleWalkKey;
+
+	static const FName IsBackstepKey;
+
+	static const FName IsAttack1Key;
+	static const FName IsAttack2Key;
+	static const FName IsAttack3Key;
+	static const FName IsAttack4Key;
 private:
 	void OnPossess(APawn* InPawn) override;
 };

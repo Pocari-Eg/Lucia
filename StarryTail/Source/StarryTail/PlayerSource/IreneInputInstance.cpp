@@ -65,7 +65,7 @@ void UIreneInputInstance::MoveForward()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction);
 		}
 		if (MoveKey[2] != 0 && MoveKey[2] < 3)
 		{
@@ -73,7 +73,7 @@ void UIreneInputInstance::MoveForward()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction * -1);
 		}
 	}
 }
@@ -83,14 +83,15 @@ void UIreneInputInstance::MoveRight()
 	{
 		if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
 		{
-				Irene->CameraComp->FieldOfView = 80;
-			//Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;			
+			Irene->CameraComp->FieldOfView = 80;
 		}
 		else
 		{
 			Irene->CameraComp->FieldOfView = 75;
-			//Irene->SpringArmComp->CameraLagSpeed = 0;			
+			//Irene->SpringArmComp->CameraLagSpeed = 0;
 		}
+		Irene->SpringArmComp->CameraLagSpeed = Irene->IreneData.MaxCameraLagSpeed;			
+
 		// 1: 좌측, 3: 우측
 		if (MoveKey[1] != 0 && MoveKey[1] < 3)
 		{
@@ -98,7 +99,7 @@ void UIreneInputInstance::MoveRight()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			Irene->AddMovementInput(Direction * -1, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction * -1);
 		}
 		if (MoveKey[3] != 0 && MoveKey[3] < 3)
 		{
@@ -106,7 +107,7 @@ void UIreneInputInstance::MoveRight()
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
 			//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
 			const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			Irene->AddMovementInput(Direction, Irene->IreneData.MoveSpeed);
+			Irene->AddMovementInput(Direction);
 		}
 	}
 }
@@ -120,15 +121,15 @@ void UIreneInputInstance::MoveStop()
 	{
 		if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 		{
-			if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
-			{
-				Irene->IreneAnim->SetSprintStopAnim(true);
-				FTimerHandle TimerHandle;
-				GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-					{
-						Irene->IreneAnim->SetSprintStopAnim(false);
-					}, 0.3f, false);
-			}
+			// if (Irene->IreneState->GetStateToString().Compare(FString("Sprint")) == 0)
+			// {
+			// 	Irene->IreneAnim->SetSprintStopAnim(true);
+			// 	FTimerHandle TimerHandle;
+			// 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			// 		{
+			// 			Irene->IreneAnim->SetSprintStopAnim(false);
+			// 		}, 0.3f, false);
+			// }
 			Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		}
 	}
@@ -169,7 +170,6 @@ void UIreneInputInstance::MoveAuto()
 		// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 		if (Irene->GetMovementComponent()->IsFalling())
 		{
-			Irene->IreneData.MoveSpeed = 1.0f;
 			MoveAutoDirection = FVector(0, 0, 0);
 			GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
 			if (Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
@@ -191,30 +191,30 @@ void UIreneInputInstance::StartJump()
 		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		// 키 입력을 바탕으로 점프 방향을 얻는다.
-		FVector Direction = FVector(0, 0, 0);
-		if (MoveKey[0] != 0)
-		{
-			Direction += Irene->CameraComp->GetForwardVector();
-		}
-		if (MoveKey[1] != 0)
-		{
-			Direction += Irene->CameraComp->GetRightVector() * -1;
-		}
-		if (MoveKey[2] != 0)
-		{
-			Direction += Irene->CameraComp->GetForwardVector() * -1;
-		}
-		if (MoveKey[3] != 0)
-		{
-			Direction += Irene->CameraComp->GetRightVector();
-		}
-		Direction.Normalize();
+		// // 키 입력을 바탕으로 점프 방향을 얻는다.
+		// FVector Direction = FVector(0, 0, 0);
+		// if (MoveKey[0] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetForwardVector();
+		// }
+		// if (MoveKey[1] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetRightVector() * -1;
+		// }
+		// if (MoveKey[2] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetForwardVector() * -1;
+		// }
+		// if (MoveKey[3] != 0)
+		// {
+		// 	Direction += Irene->CameraComp->GetRightVector();
+		// }
+		// Direction.Normalize();
 
 		Irene->GetMovementComponent()->Velocity = Irene->GetMovementComponent()->Velocity / Irene->IreneData.JumpDrag;
 
-		Irene->bPressedJump = true;
 		bStartJump = true;
+		Irene->bPressedJump = true;
 		Irene->ChangeStateAndLog(UJumpState::GetInstance());
 	}
 }
@@ -236,6 +236,8 @@ void UIreneInputInstance::MovePressedW()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[0] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[0] = 2;
 	}
 	else
 		MoveKey[0] = 3;
@@ -252,6 +254,8 @@ void UIreneInputInstance::MovePressedA()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[1] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[1] = 2;
 	}
 	else
 		MoveKey[1] = 3;
@@ -268,6 +272,8 @@ void UIreneInputInstance::MovePressedS()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[2] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[2] = 2;
 	}
 	else
 		MoveKey[2] = 3;
@@ -284,6 +290,8 @@ void UIreneInputInstance::MovePressedD()
 			Irene->ChangeStateAndLog(URunState::GetInstance());
 		}
 		MoveKey[3] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+			MoveKey[3] = 2;
 	}
 	else
 		MoveKey[3] = 3;
@@ -298,7 +306,6 @@ void UIreneInputInstance::MoveDoubleClickW()
 		MoveKey[0] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[0] = 4;
@@ -312,7 +319,6 @@ void UIreneInputInstance::MoveDoubleClickA()
 		MoveKey[1] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[1] = 4;
@@ -326,7 +332,6 @@ void UIreneInputInstance::MoveDoubleClickS()
 		MoveKey[2] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[2] = 4;
@@ -340,7 +345,6 @@ void UIreneInputInstance::MoveDoubleClickD()
 		MoveKey[3] = 2;
 		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
 		Irene->ChangeStateAndLog(USprintState::GetInstance());
-		Irene->IreneData.MoveSpeed = 2;
 	}
 	else
 		MoveKey[3] = 4;
@@ -349,30 +353,18 @@ void UIreneInputInstance::MoveDoubleClickD()
 void UIreneInputInstance::MoveReleasedW()
 {
 	MoveKey[0] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[1] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedA()
 {
 	MoveKey[1] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[2] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedS()
 {
 	MoveKey[2] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[3] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 void UIreneInputInstance::MoveReleasedD()
 {
 	MoveKey[3] = 0;
-	// 다른 키 중 달리기가 없어야 걷기 속도로 움직인다.
-	if (MoveKey[0] != 2 && MoveKey[1] != 2 && MoveKey[2] != 2)
-		Irene->IreneData.MoveSpeed = 1;
 }
 #pragma endregion MoveInput
 
@@ -404,12 +396,12 @@ void UIreneInputInstance::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseRightButton == false)
 		{
-			if((Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneAttack->FormGauge[0] < StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100))||
-			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneAttack->FormGauge[1] <StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100))||
-			(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneAttack->FormGauge[2] <StaticCast<float>(Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)))
-			{
-				ChangeForm(EAttributeKeyword::e_None);
-			}
+			// if((Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneAttack->FormGauge[0] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Open_Gauge/10000.0f)||
+			// (Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneAttack->FormGauge[1] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Open_Gauge/10000.0f)||
+			// (Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneAttack->FormGauge[2] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Open_Gauge/10000.0f))
+			// {
+			// 	ChangeForm(EAttributeKeyword::e_None);
+			// }
 			
 			FString AttributeName = "B_Attack_1";
 			FString NextAttributeName = "B_Attack_1";
@@ -477,7 +469,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 				{
 					if(Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 					{
-						if (!(Irene->IreneAttack->FormGauge[AttributeForm]-NextTable->Gauge < NextTable->Gauge+Table->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
+						//if (!(Irene->IreneAttack->FormGauge[AttributeForm]-NextTable->Gauge < NextTable->Gauge+Table->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
 							Irene->IreneData.IsComboInputOn = true;
 					}
 					else
@@ -504,73 +496,66 @@ void UIreneInputInstance::RightButton(float Rate)
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
 		FName ActionForm = FName("");
-		int AttributeForm = 0;
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			ActionForm = FName("ActionKeyword_1_F");
-			AttributeForm = 0;
 		}
 		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
 			ActionForm = FName("ActionKeyword_1_W");
-			AttributeForm = 1;
 		}
 		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
 			ActionForm = FName("ActionKeyword_1_E");
-			AttributeForm = 2;
 		}
 		const FAttackDataTable* AttackTable = Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm);
 		if (AttackTable != nullptr)
 		{
 			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
-			{
-				if(AttackTable->Gauge <= Irene->IreneAttack->FormGauge[AttributeForm])
+			{				
+				bUseRightButton = true;
+				// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+				constexpr float WaitTime = 0.15f;
+
+				GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+					{
+						AttackWaitHandle.Invalidate();
+					}), WaitTime, false);
+
+				if (Irene->IreneData.IsAttacking)
 				{
-					bUseRightButton = true;
-					// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
-					constexpr float WaitTime = 0.15f;
-
-					GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-						{
-							AttackWaitHandle.Invalidate();
-						}), WaitTime, false);
-
-					if (Irene->IreneData.IsAttacking)
+					if (Irene->IreneData.CanNextCombo)
 					{
-						if (Irene->IreneData.CanNextCombo)
-						{
-							if (!(Irene->IreneAttack->FormGauge[AttributeForm]-AttackTable->Gauge < AttackTable->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
-								Irene->IreneData.IsComboInputOn = true;
-						}
-					}
-					else
-					{
-						Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
-						Irene->IreneAttack->AttackStartComboState();
-
-						switch (Irene->IreneAttack->Attribute)
-						{
-						case EAttributeKeyword::e_None:
-							break;
-						case EAttributeKeyword::e_Fire:
-							Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
-							break;
-						case EAttributeKeyword::e_Water:
-							Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
-							break;
-						case EAttributeKeyword::e_Thunder:
-							Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
-							break;
-						default:
-							break;
-						}
-
-						Irene->IreneAnim->PlayEffectAttackMontage();
-						Irene->IreneAnim->JumpToEffectAttackMontageSection(Irene->IreneData.CurrentCombo);
-						Irene->IreneData.IsAttacking = true;
+						//if (!(Irene->IreneAttack->FormGauge[AttributeForm]-AttackTable->Gauge < AttackTable->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
+						Irene->IreneData.IsComboInputOn = true;
 					}
 				}
+				else
+				{
+					Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
+					Irene->IreneAttack->AttackStartComboState();
+
+					switch (Irene->IreneAttack->Attribute)
+					{
+					case EAttributeKeyword::e_None:
+						break;
+					case EAttributeKeyword::e_Fire:
+						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
+						break;
+					case EAttributeKeyword::e_Water:
+						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
+						break;
+					case EAttributeKeyword::e_Thunder:
+						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
+						break;
+					default:
+						break;
+					}
+
+					Irene->IreneAnim->PlayEffectAttackMontage();
+					Irene->IreneAnim->JumpToEffectAttackMontageSection(Irene->IreneData.CurrentCombo);
+					Irene->IreneData.IsAttacking = true;
+				}				
 			}
 		}
 	}
@@ -661,9 +646,21 @@ void UIreneInputInstance::FireKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Fire"))->Open_Gauge/100)
+		if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Open_Gauge/10000.0f))
 		{
-			ChangeForm(EAttributeKeyword::e_Fire);
+			if(!GetWorld()->GetTimerManager().IsTimerActive(FireStartTimer))
+				ChangeForm(EAttributeKeyword::e_Fire);
+		}
+		else
+		{
+			if(!FireStartTimer.IsValid())
+			{
+				ChangeForm(EAttributeKeyword::e_None);
+				GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
+				{
+					FireStartTimer.Invalidate();
+				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Gauge_C_Time, false);
+			}
 		}
 	}
 }
@@ -672,11 +669,23 @@ void UIreneInputInstance::WaterKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Water"))->Open_Gauge/100)
+		if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Open_Gauge/10000.0f))
 		{
-			ChangeForm(EAttributeKeyword::e_Water);
+			if(!GetWorld()->GetTimerManager().IsTimerActive(WaterStartTimer))
+				ChangeForm(EAttributeKeyword::e_Water);
 
 			// Irene->IreneAttack->WaterRecoveryWaitCancel();
+		}
+		else
+		{
+			if(!GetWorld()->GetTimerManager().IsTimerActive(WaterStartTimer))
+			{
+				ChangeForm(EAttributeKeyword::e_None);
+				GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, FTimerDelegate::CreateLambda([&]()
+				{
+					WaterStartTimer.Invalidate();
+				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Gauge_C_Time, false);
+			}
 		}
 	}
 }
@@ -685,11 +694,23 @@ void UIreneInputInstance::ElectricKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormDataTable(FName("Electric"))->Open_Gauge/100)
+		if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Open_Gauge/10000.0f))
 		{
-			ChangeForm(EAttributeKeyword::e_Thunder);
+			if(!GetWorld()->GetTimerManager().IsTimerActive(ElectricStartTimer))
+				ChangeForm(EAttributeKeyword::e_Thunder);
 
 			// Irene->IreneAttack->ElectricRecoveryWaitCancel();
+		}
+		else
+		{
+			if(!GetWorld()->GetTimerManager().IsTimerActive(ElectricStartTimer))
+			{
+				ChangeForm(EAttributeKeyword::e_None);
+				GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, FTimerDelegate::CreateLambda([&]()
+				{
+					ElectricStartTimer.Invalidate();
+				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Gauge_C_Time, false);
+			}
 		}
 	}
 }
@@ -704,33 +725,33 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_None)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
-		Irene->IreneAttack->FireRecoveryWaitStart();
-		Irene->IreneAttack->WaterRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitStart();
+		//Irene->IreneAttack->FireRecoveryWaitStart();
+		//Irene->IreneAttack->WaterRecoveryWaitStart();
+		//Irene->IreneAttack->ElectricRecoveryWaitStart();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
-		Irene->IreneAttack->WaterRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitStart();
-		if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
-		else Irene->IreneAttack->FireRecoveryWaitCancel();
+		// Irene->IreneAttack->WaterRecoveryWaitStart();
+		// Irene->IreneAttack->ElectricRecoveryWaitStart();
+		// if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
+		// else Irene->IreneAttack->FireRecoveryWaitCancel();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
-		Irene->IreneAttack->FireRecoveryWaitStart();
-		Irene->IreneAttack->ElectricRecoveryWaitStart();
-		if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
-		else Irene->IreneAttack->WaterRecoveryWaitCancel();
+		// Irene->IreneAttack->FireRecoveryWaitStart();
+		// Irene->IreneAttack->ElectricRecoveryWaitStart();
+		// if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
+		// else Irene->IreneAttack->WaterRecoveryWaitCancel();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
-		Irene->IreneAttack->FireRecoveryWaitStart();
-		Irene->IreneAttack->WaterRecoveryWaitStart();
-		if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
-		else Irene->IreneAttack->ElectricRecoveryWaitCancel();
+		// Irene->IreneAttack->FireRecoveryWaitStart();
+		// Irene->IreneAttack->WaterRecoveryWaitStart();
+		// if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
+		// else Irene->IreneAttack->ElectricRecoveryWaitCancel();
 	}	
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
 	Irene->FOnAttributeChange.Broadcast();
@@ -861,6 +882,4 @@ void UIreneInputInstance::PauseWidgetOn()
 	Irene->IreneState->SetState(UIdleState::GetInstance());
 	Irene->IreneUIManager->PauseWidgetOn();
 }
-
-
 #pragma endregion Input

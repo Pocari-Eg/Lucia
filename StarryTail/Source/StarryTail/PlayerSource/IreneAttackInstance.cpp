@@ -26,6 +26,11 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		FormDataTable = DT_FormDataTable.Object;
 	}
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormTimeDataTable(TEXT("/Game/Math/BP_FormTimeDataTable.BP_FormTimeDataTable"));
+	if (DT_FormTimeDataTable.Succeeded())
+	{
+		FormTimeDataTable = DT_FormTimeDataTable.Object;
+	}
 	IsConsecutiveFire = false;
 }
 
@@ -43,10 +48,13 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetMonster = nullptr;
 	//초기 속성
 	Attribute = EAttributeKeyword::e_None;
-	FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
-	FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
-	FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
-
+	// FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
+	// FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
+	// FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
+	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100);
+	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100);
+	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100);
+	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -215,10 +223,10 @@ void UIreneAttackInstance::DoAttack()
 	{
 		if(GetAttribute() == EAttributeKeyword::e_None)
 		{
-			const int FormGaugeValue = GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+			const float FormGaugeValue = GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100;
 			for(int i=0;i<3;i++)
 			{
-				FormGauge[i] += FormGaugeValue*1.0/(GetNameAtFormDataTable(FName("Fire"))->Hit_Gauge_Re/100);
+				FormGauge[i] += FormGaugeValue/(GetNameAtFormTimeDataTable(FName("Fire_Form"))->Hit_Gauge_Re/100);
 				if(FormGauge[i] > FormGaugeValue)
 					FormGauge[i] = FormGaugeValue;
 			}
@@ -238,6 +246,87 @@ void UIreneAttackInstance::DoAttack()
 			STGameInstance->ResetAttributeEffectMonster();
 		}
 	}
+}
+void UIreneAttackInstance::RecoveryFormGauge(const float DeltaTime)
+{
+	if(Attribute == EAttributeKeyword::e_None)
+	{
+		for(int i=0;i<3;i++)
+		{
+			if(i==0 && !IsFireFull())
+			{
+				const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Fire_Form"))->Recovery_Speed;
+				FormGauge[0] += DeltaTime*RecoveryPower;
+			}
+			if(i==1 && !IsWaterFull())
+			{
+				const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Water_Form"))->Recovery_Speed;
+				FormGauge[1] += DeltaTime*RecoveryPower;
+			}
+			if(i==2 && !IsElectricFull())
+			{
+				const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Electric_Form"))->Recovery_Speed;
+				FormGauge[2] += DeltaTime*RecoveryPower;
+			}
+		}
+	}
+	if(Attribute != EAttributeKeyword::e_Fire&& !IsFireFull())
+	{
+		const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Fire_Form"))->Recovery_Speed;
+		FormGauge[0] += DeltaTime*RecoveryPower;
+	}
+	if(Attribute != EAttributeKeyword::e_Water&& !IsWaterFull())
+	{
+		const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Water_Form"))->Recovery_Speed;
+		FormGauge[1] += DeltaTime*RecoveryPower;
+	}
+	if(Attribute != EAttributeKeyword::e_Thunder&& !IsElectricFull())
+	{
+		const float RecoveryPower = GetNameAtFormTimeDataTable(FName("Electric_Form"))->Recovery_Speed;
+		FormGauge[2] += DeltaTime*RecoveryPower;
+	}
+	FOnFireGaugeChange.Broadcast();
+	FOnWaterGaugeChange.Broadcast();
+	FOnElectricGaugeChange.Broadcast();
+}
+void UIreneAttackInstance::DecreaseFormGauge(const float DeltaTime)
+{
+	if(Attribute == EAttributeKeyword::e_Fire)
+	{
+		const float DecreasePower = GetNameAtFormTimeDataTable(FName("Fire_Form"))->Decrease_Speed;
+		FormGauge[0] -= DeltaTime*DecreasePower;
+	}
+	if(Attribute == EAttributeKeyword::e_Water)
+	{
+		const float DecreasePower = GetNameAtFormTimeDataTable(FName("Water_Form"))->Decrease_Speed;
+		FormGauge[1] -= DeltaTime*DecreasePower;
+	}
+	if(Attribute == EAttributeKeyword::e_Thunder)
+	{
+		const float DecreasePower = GetNameAtFormTimeDataTable(FName("Electric_Form"))->Decrease_Speed;
+		FormGauge[2] -= DeltaTime*DecreasePower;
+	}
+	if(Attribute == EAttributeKeyword::e_Fire && FormGauge[0] <= 0)
+	{
+		FormGauge[0] = 0;
+		Irene->IreneInput->FireKeywordReleased();
+		//Irene->IreneInput->ChangeForm(EAttributeKeyword::e_None);
+	}
+	if(Attribute == EAttributeKeyword::e_Water && FormGauge[1] <= 0)
+	{
+		FormGauge[1] = 0;
+		Irene->IreneInput->WaterKeywordReleased();
+		Irene->IreneInput->ChangeForm(EAttributeKeyword::e_None);
+	}
+	if(Attribute == EAttributeKeyword::e_Thunder && FormGauge[2] <= 0)
+	{
+		FormGauge[2] = 0;
+		Irene->IreneInput->ElectricKeywordReleased();
+		Irene->IreneInput->ChangeForm(EAttributeKeyword::e_None);
+	}
+	FOnFireGaugeChange.Broadcast();
+	FOnWaterGaugeChange.Broadcast();
+	FOnElectricGaugeChange.Broadcast();
 }
 #pragma endregion Attack
 
@@ -315,7 +404,7 @@ void UIreneAttackInstance::FireRecoveringCancel()
 }
 bool UIreneAttackInstance::IsFireFull()
 {
-	if (FormGauge[0] >= GetNameAtFormDataTable(FName("Fire"))->F_Gauge)	return true;
+	if (FormGauge[0] >= GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100)	return true;
 	else
 	{
 		return false;
@@ -399,7 +488,7 @@ void UIreneAttackInstance::WaterRecoveringCancel()
 }
 bool UIreneAttackInstance::IsWaterFull()
 {
-	if (FormGauge[1] >= GetNameAtFormDataTable(FName("Water"))->F_Gauge)	return true;
+	if (FormGauge[1] >=  GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100)	return true;
 	else
 	{
 		return false;
@@ -484,7 +573,7 @@ void UIreneAttackInstance::ElectricRecoveringCancel()
 }
 bool UIreneAttackInstance::IsElectricFull()
 {
-	if (FormGauge[2] >= GetNameAtFormDataTable(FName("Electric"))->F_Gauge)	return true;
+	if (FormGauge[2] >= GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100)	return true;
 	else
 	{
 		return false;
@@ -500,14 +589,15 @@ float UIreneAttackInstance::GetElectricRecoveryRatio()
 #pragma region GetAttribueRatio
 float UIreneAttackInstance::GetFireRatio()
 {
-	return (FormGauge[0] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[0] / GetNameAtFormDataTable(FName("Fire"))->F_Gauge;
+	return (FormGauge[0] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[0] / (GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100.0f);
 }
 float UIreneAttackInstance::GetWaterRatio()
 {
-	return (FormGauge[1] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[1] / GetNameAtFormDataTable(FName("Water"))->F_Gauge;
+	return (FormGauge[1] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[1] / (GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100.0f);
 }
 float UIreneAttackInstance::GetElectricRatio()
 {
-	return (FormGauge[2] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[2] / GetNameAtFormDataTable(FName("Electric"))->F_Gauge;
+	
+	return (FormGauge[2] < KINDA_SMALL_NUMBER) ? 0.0f : FormGauge[2] / (GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100.0f);
 }
 #pragma endregion GetRatio

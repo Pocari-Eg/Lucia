@@ -38,16 +38,20 @@ public:
 	bool GetTestMode() const;
 	float GetViewAngle() const;
 	float GetViewRange() const;
+	float GetViewHeight() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
+	bool GetIsBattleState() const;
 
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
 	void PlayGroggyAnim();
+	void PlayDeathAnim();
 
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
+	void SetIsBattleState(bool Value);
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 
@@ -83,7 +87,6 @@ protected:
 	float CalcBurnDamage();
 
 	void PrintHitEffect(FVector AttackedPosition);
-	void PrintLightningHitEffect();
 	//Variable
 	AMonsterAIController* MonsterAIController;
 
@@ -102,13 +105,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* SparkEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* TransitionEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* AssembleEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* LightningHitEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI
@@ -168,10 +165,9 @@ private:
 
 	bool bIsBurn;
 	bool bIsFlooding;
-	bool bIsShock;
-	bool bIsAssemble;
-	bool bIsChain;
+
 	bool bShowUI;
+	bool bIsBattleState;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

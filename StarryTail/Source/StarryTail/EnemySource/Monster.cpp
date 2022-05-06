@@ -19,12 +19,12 @@ AMonster::AMonster()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	MonsterInfo.DetectMonsterRange = 5.0f;
 	MonsterInfo.ArbitraryConstValueA = 2.5f;
 	MonsterInfo.ArbitraryConstValueB = 1.0f;
 	MonsterInfo.ArbitraryConstValueC = 1.0f;
 
 	InitAttackedInfo();
+	InitDebuffInfo();
 
 	KnockBackTime = 0.15f;
 	ShowUITime = 5.0f;
@@ -96,11 +96,12 @@ void AMonster::InitDebuffInfo()
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 	MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue = 0.5f;
 
+	MonsterAttributeDebuff.SparkTime = 10.0f;
+	MonsterAttributeDebuff.SparkReduction = 5.0f;
+	MonsterAttributeDebuff.SparkDamage = 50.0f;
+
 	bIsBurn = false;
 	bIsFlooding = false;
-	bIsShock = false;
-	bIsAssemble = false;
-	bIsChain = false;
 }
 void AMonster::InitAttackedInfo()
 {
@@ -111,47 +112,29 @@ void AMonster::InitAttackedInfo()
 void AMonster::InitEffect()
 {
 	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
-	LightningHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("LightningHitEffect"));
 	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
 	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
 	SparkEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkEffect"));
-	TransitionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("TransitionEffect"));
-	AssembleEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AssembleEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
 
 
 	HitEffectComponent->SetupAttachment(GetMesh());
-	LightningHitEffectComponent->SetupAttachment(GetMesh());
 	BurnEffectComponent->SetupAttachment(GetMesh());
 	FloodingEffectComponent->SetupAttachment(GetMesh());
 	SparkEffectComponent->SetupAttachment(GetMesh());
-	TransitionEffectComponent->SetupAttachment(GetMesh());
-	AssembleEffectComponent->SetupAttachment(GetMesh());
 	GroggyEffectComponent->SetupAttachment(RootComponent);
 
 	HitEffectComponent->bAutoActivate = false;
-	LightningHitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
 	SparkEffectComponent->bAutoActivate = false;
-	TransitionEffectComponent->bAutoActivate = false;
-	AssembleEffectComponent->bAutoActivate = false;
 	GroggyEffectComponent->bAutoActivate = false;
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
-	MonsterEffect.LightningHitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	MonsterEffect.LightningHitEffectScale = FVector(1.0f, 1.0f, 1.0f);
-
 	MonsterEffect.DebuffEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.DebuffEffectScale = FVector(1.0f, 1.0f, 1.0f);
-
-	MonsterEffect.TransitionEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	MonsterEffect.TransitionEffectScale = FVector(1.0f, 1.0f, 1.0f);
-
-	MonsterEffect.AssembleEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	MonsterEffect.AssembleEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
 	MonsterEffect.GroggyEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.GroggyEffectScale = FVector(1.0f, 1.0f, 1.0f);
@@ -170,6 +153,10 @@ float AMonster::GetViewAngle() const
 float AMonster::GetViewRange() const
 {
 	return MonsterInfo.ViewRange;
+}
+float AMonster::GetViewHeight() const
+{
+	return MonsterInfo.ViewHeight;
 }
 float AMonster::GetMeleeAttackRange() const
 {
@@ -201,6 +188,10 @@ float AMonster::GetDistanceToPlayer() const
 	FVector ActorMeshLocation = GetActorLocation() + FVector(0, 0, -150);
 	return (ActorMeshLocation - STGameInstance->GetPlayer()->GetActorLocation()).Size();
 }
+bool AMonster::GetIsBattleState() const
+{
+	return bIsBattleState;
+}
 #pragma endregion
 void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection)
 {
@@ -208,22 +199,20 @@ void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection A
 	AttackedInfo.Mana = Mana;
 	AttackedInfo.AttackedDirection = AttackedDirection;
 }
+void AMonster::SetIsBattleState(bool Value)
+{
+	bIsBattleState = Value;
+}
 void AMonster::SetEffect()
 {
 	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
-	LightningHitEffectComponent->SetTemplate(MonsterEffect.LightningHitEffect);
 	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
 	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
 	SparkEffectComponent->SetTemplate(MonsterEffect.SparkEffect);
-	TransitionEffectComponent->SetTemplate(MonsterEffect.TransitionEffect);
-	AssembleEffectComponent->SetTemplate(MonsterEffect.AssembleEffect);
 	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
 
 	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
 	HitEffectComponent->SetRelativeScale3D(MonsterEffect.HitEffectScale);
-
-	LightningHitEffectComponent->SetRelativeRotation(MonsterEffect.LightningHitEffectRotation);
-	LightningHitEffectComponent->SetRelativeScale3D(MonsterEffect.LightningHitEffectScale);
 
 	BurnEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
 	BurnEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
@@ -233,12 +222,6 @@ void AMonster::SetEffect()
 
 	SparkEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
 	SparkEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
-
-	TransitionEffectComponent->SetRelativeRotation(MonsterEffect.TransitionEffectRotation);
-	TransitionEffectComponent->SetRelativeScale3D(MonsterEffect.TransitionEffectScale);
-
-	AssembleEffectComponent->SetRelativeRotation(MonsterEffect.AssembleEffectRotation);
-	AssembleEffectComponent->SetRelativeScale3D(MonsterEffect.AssembleEffectScale);
 
 	GroggyEffectComponent->SetRelativeRotation(MonsterEffect.GroggyEffectRotation);
 	GroggyEffectComponent->SetRelativeScale3D(MonsterEffect.GroggyEffectScale);
@@ -291,11 +274,6 @@ void AMonster::CalcDef()
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
-		if (SparkEffectComponent->IsActive())
-		{
-			SparkEffectComponent->SetActive(false);
-			bIsShock = false;
-		}
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
 		bIsGroggy = true;
@@ -442,8 +420,6 @@ void AMonster::SetActive()
 		BurnEffectComponent->SetActive(false);
 		FloodingEffectComponent->SetActive(false);
 		SparkEffectComponent->SetActive(false);
-		TransitionEffectComponent->SetActive(false);
-		AssembleEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
 	}
 }
@@ -569,11 +545,6 @@ void AMonster::PrintHitEffect(FVector AttackedPosition)
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
 }
-void AMonster::PrintLightningHitEffect()
-{
-	LightningHitEffectComponent->SetActive(true);
-	LightningHitEffectComponent->ForceReset();
-}
 void AMonster::OffShockDebuffEffect()
 {
 	SparkEffectComponent->SetActive(false);
@@ -597,6 +568,10 @@ void AMonster::PlayWalkAnim()
 void AMonster::PlayGroggyAnim()
 {
 	MonsterAnimInstance->PlayGroggyMontage();
+}
+void AMonster::PlayDeathAnim()
+{
+	MonsterAnimInstance->PlayDeathMontage();
 }
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()

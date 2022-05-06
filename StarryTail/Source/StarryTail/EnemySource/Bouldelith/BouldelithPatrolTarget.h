@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "../../StarryTail.h"
+#include "./Struct/FBouldelithDataStruct.h"
 #include "BouldelithPatrolTarget.generated.h"
 
 UCLASS()
@@ -18,5 +19,4 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Collision, Meta = (AllowPrivateAccess = true))
 		UCapsuleComponent* Collision;
-
 };
