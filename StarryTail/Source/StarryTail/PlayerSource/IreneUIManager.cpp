@@ -30,10 +30,8 @@ void UIreneUIManager::PlayerHudInit()
 {
 	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
 	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
-	PauseWidget->AddToViewport();
-	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-	PlayerHud->AddToViewport();
-	PlayerHud->BindCharacter(Irene);
+
+	
 }
 
 void UIreneUIManager::Init(AIreneCharacter* Value)
@@ -52,7 +50,10 @@ void UIreneUIManager::InitMemberVariable()
 }
 void UIreneUIManager::Begin()
 {
-
+	PauseWidget->AddToViewport();
+	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	PlayerHud->AddToViewport();
+	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	AttackSound->SetVolume(0.3f);
