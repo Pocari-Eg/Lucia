@@ -12,6 +12,24 @@ class AIreneCharacter;
 
 DECLARE_MULTICAST_DELEGATE(FOnSpawnDelegate);
 
+
+//사운드 세팅 정보 저장
+USTRUCT()
+struct FSoundSetting
+{
+	GENERATED_BODY()
+	public:
+	UPROPERTY(EditAnywhere, Category = "Volume")
+	float BGM_Volume;
+	UPROPERTY(EditAnywhere, Category = "State")
+	bool BGM_Mute;
+	UPROPERTY(EditAnywhere, Category = "Volume")
+	float SFX_Volume;
+	UPROPERTY(EditAnywhere, Category = "State")
+	bool SFX_Mute;
+
+};
+
 //김재섭
 //싱글톤과 비슷하게구현가능, 나중에 확인
 /**
@@ -28,7 +46,33 @@ public:
 	void SetAttributeEffectMonster(AMonster* Monster);
 	void ResetAttributeEffectMonster();
 
+
+	FSoundSetting* GetSoundSetting();
+
+protected:
+	virtual void Init()override;
+
+private:
+	void InitSoundSetting();
+public:
+	int32 EnemyCount;
+	int32 EnemyMaxCount;
+	
+private:
+	AIreneCharacter* Player;
+	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
+
+	UPROPERTY()
+	FSoundSetting SoundSettingData;
+
 #pragma region Occupy
+	//점령 컨텐츠
+	bool IsFirstOccupied;
+	int32 SpawnTime;
+#pragma endregion
+
+#pragma region Occupy
+public:
 	//점령 컨텐츠
 	void OnFirstOccupy();
 	void SpawnTimeCheck();
@@ -41,21 +85,4 @@ public:
 
 	FOnSpawnDelegate OnEnemySpawn;
 #pragma endregion
-protected:
-	virtual void Init()override;
-
-public:
-	int32 EnemyCount;
-	int32 EnemyMaxCount;
-	
-private:
-	AIreneCharacter* Player;
-	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
-
-#pragma region Occupy
-	//점령 컨텐츠
-	bool IsFirstOccupied;
-	int32 SpawnTime;
-#pragma endregion
-	
 };
