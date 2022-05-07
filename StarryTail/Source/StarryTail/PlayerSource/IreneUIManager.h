@@ -80,6 +80,8 @@ private:
 	bool IsHpFull();
 	//Idle 연속 확인
 	bool IsConsecutiveIdle;
+
+	void PlayerHudInit();
 #pragma endregion
 public:
 	void Init(AIreneCharacter* Value);
