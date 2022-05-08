@@ -3,6 +3,8 @@
 #include "IreneFSMInterface.h"
 #include "IreneFSM.generated.h"
 
+class AIreneCharacter;
+
 #pragma region State
 UCLASS()
 class STARRYTAIL_API UIdleState final : public UObject, public IState
@@ -167,6 +169,9 @@ public:
 
 	virtual void SetStateEnum(const EStateEnum Value) override { StateEnumValue = Value; }
 
+	void Init(AIreneCharacter* Value);
+	void SetIreneCharacter(AIreneCharacter* Value);
+	
 	EStateEnum GetState() const { return StateEnumValue; }
 	void SetState(IState* Value) {
 		StateValue = Value;

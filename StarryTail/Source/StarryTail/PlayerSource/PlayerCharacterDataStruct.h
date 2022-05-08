@@ -92,7 +92,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	int32 MaxCombo = 5;
+	int32 MaxCombo = 3;
 	// Ä¸½¶ °ø°Ý »ç°Å¸®
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRange = 200.0f;
