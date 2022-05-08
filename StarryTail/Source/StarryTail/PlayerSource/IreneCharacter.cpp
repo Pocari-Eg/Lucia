@@ -19,6 +19,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
+#include "WaterBasicAttack.h"
 
 #pragma region Setting
 // Sets default values
@@ -216,7 +217,7 @@ void AIreneCharacter::PostInitializeComponents()
 	Super::PostInitializeComponents();
 	IreneState = NewObject<UIreneFSM>(this);
 	IreneState->SetState(UIdleState::GetInstance());
-	
+	IreneState->Init(this);
 	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
@@ -249,12 +250,6 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[0]);
-	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[1]);
-	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[2]);
-	// STARRYLOG(Error,TEXT("%d"), IreneInput->MoveKey[3]);
-	// STARRYLOG(Error,TEXT("%f"), GetCharacterMovement()->MaxWalkSpeed);	
 	
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
@@ -352,11 +347,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// 		IreneAttack->TargetCameraRot = FRotator::ZeroRotator;
 	// 	}
 	// }
-	if(IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		IreneAttack->RecoveryFormGauge(DeltaTime);
-		IreneAttack->DecreaseFormGauge(DeltaTime);
-	}
+
+	IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
 }
 
@@ -384,6 +376,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("MainKeyword", IE_Pressed, IreneInput, &UIreneInputInstance::MainKeyword);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
+	PlayerInputComponent->BindAxis("WaterDodge", IreneInput, &UIreneInputInstance::WaterDodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 
 	// 마우스
@@ -477,6 +470,8 @@ void AIreneCharacter::FindNearMonster()
 	// }
 
 	float far = 300;
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		far = 500;
 	// 가로, 높이, 세로
 	FVector BoxSize = FVector(200, 50, far);
 	// 최대거리
@@ -582,7 +577,17 @@ void AIreneCharacter::FindNearMonster()
 			}
 		}
 	}
-
+	// if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	// {
+	// 	if(IreneAttack->TargetMonster)
+	// 	{
+	// 		AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(IreneAttack->TargetMonster->GetActorLocation() - GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+	// 	}
+	// 	else
+	// 	{
+	// 		AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(GetActorLocation() + GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+	// 	}
+	// }
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
 	{		
@@ -605,7 +610,7 @@ void AIreneCharacter::FindNearMonster()
 			float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
 
 			// 몬스터가 공격범위 보다 멀리 있다면
-			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
+			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange && IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)
 			{
 				// 추적 세팅
 				IreneAttack->bFollowTarget = true;
@@ -704,6 +709,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		}
 		IreneState->ChangeState(NewState);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
+
 		if (NewState == URunState::GetInstance() || NewState == USprintState::GetInstance())
 			Weapon->SetVisibility(false);
 		else

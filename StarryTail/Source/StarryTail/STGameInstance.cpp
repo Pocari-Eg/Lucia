@@ -31,6 +31,10 @@ void USTGameInstance::ResetAttributeEffectMonster()
 {
 	AttributeEffectMonster = nullptr;
 }
+
+
+
+
 #pragma endregion
 
 #pragma region Occupy
@@ -92,7 +96,28 @@ void USTGameInstance::DeleteEnemyCount()
 #pragma endregion
 void USTGameInstance::Init()
 {
+
+	Super::Init();
 	IsFirstOccupied = false;
 	EnemyCount = 0;
 	EnemyMaxCount = 20;
+
+	InitSoundSetting();
 }
+
+void USTGameInstance::InitSoundSetting()
+{
+	
+	SoundSettingData.BGM_Mute = false;
+	SoundSettingData.BGM_Volume = 1.0f;
+	SoundSettingData.SFX_Mute = false;
+	SoundSettingData.SFX_Volume = 1.0f;
+}
+
+
+FSoundSetting* USTGameInstance::GetSoundSetting()
+{
+	return &SoundSettingData;
+}
+
+

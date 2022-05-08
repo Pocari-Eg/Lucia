@@ -39,7 +39,9 @@ public:
 	FOnMpChangeDelegate OnMpChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
-	UPROPERTY()
+public:
+
+	UPROPERTY(BluePrintReadOnly, Category = UI)
 	class UPlayerHudWidget* PlayerHud; // 위젯
 #pragma endregion
 
@@ -78,6 +80,8 @@ private:
 	bool IsHpFull();
 	//Idle 연속 확인
 	bool IsConsecutiveIdle;
+
+	void PlayerHudInit();
 #pragma endregion
 public:
 	void Init(AIreneCharacter* Value);

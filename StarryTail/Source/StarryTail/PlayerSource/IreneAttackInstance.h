@@ -19,37 +19,6 @@ private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
 
-	//현재 회복 대기 시간
-	float CurFireRecoverWaitTime;
-	//현재 회복 시간
-	float CurFireRecoverTime;
-	//남은 회복량
-	int RemainingFireRecovery;
-	//타이머 핸들
-	FTimerHandle FireRecoveryTimerHandle;
-	FTimerHandle FireRecoveryWaitTimerHandle;
-	bool IsConsecutiveFire;
-	//현재 회복 대기 시간
-	float CurWaterRecoverWaitTime;
-	//현재 회복 시간
-	float CurWaterRecoverTime;
-	//남은 회복량
-	int RemainingWaterRecovery;
-	//타이머 핸들
-	FTimerHandle WaterRecoveryTimerHandle;
-	FTimerHandle WaterRecoveryWaitTimerHandle;
-	bool IsConsecutiveWater;
-	//현재 회복 대기 시간
-	float CurElectricRecoverWaitTime;
-	//현재 회복 시간
-	float CurElectricRecoverTime;
-	//남은 회복량
-	int RemainingElectricRecovery;
-	//타이머 핸들
-	FTimerHandle ElectricRecoveryTimerHandle;
-	FTimerHandle ElectricRecoveryWaitTimerHandle;
-	bool IsConsecutiveElectric;
-
 public:
 	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
@@ -99,19 +68,6 @@ private:
 	UIreneAttackInstance();
 	int GetAttackDirection();
 	
-	void FireRecoveringStart();
-	void FireRecovering();
-	bool IsFireFull();
-
-	void WaterRecoveringStart();
-	void WaterRecovering();
-	bool IsWaterFull();
-
-	void ElectricRecoveringStart();
-	void ElectricRecovering();
-	bool IsElectricFull();
-
-	
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -134,29 +90,4 @@ public:
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 	FFormDataTable* GetNameAtFormDataTable(const FName Value) const { if (Value != FName("")) return (FormDataTable->FindRow<FFormDataTable>(Value, "")); return nullptr; }
 	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
-	void RecoveryFormGauge(const float DeltaTime);
-	void DecreaseFormGauge(const float DeltaTime);
-	
-	void FireRecoveryWaitStart();
-	void FireRecoveryWaiting();
-	void FireRecoveryWaitCancel();
-	void FireRecoveringCancel();
-
-	void WaterRecoveryWaitStart();
-	void WaterRecoveryWaiting();
-	void WaterRecoveryWaitCancel();
-	void WaterRecoveringCancel();
-
-	void ElectricRecoveryWaitStart();
-	void ElectricRecoveryWaiting();
-	void ElectricRecoveryWaitCancel();
-	void ElectricRecoveringCancel();
-
-	float GetFireRatio();
-	float GetWaterRatio();
-	float GetElectricRatio();
-
-	float GetFireRecoveryRatio();
-	float GetWaterRecoveryRatio();
-	float GetElectricRecoveryRatio();
 };

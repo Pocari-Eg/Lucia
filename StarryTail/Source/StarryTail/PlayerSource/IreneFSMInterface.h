@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "../StarryTail.h"
@@ -10,6 +12,7 @@
 
 class IBaseGameEntity;
 class IState;
+class AIreneCharacter;
 
 #pragma region StateInterface
 UINTERFACE()
@@ -35,6 +38,7 @@ class IBaseGameEntity
 {
 	GENERATED_BODY()
 public:
+	TScriptInterface<AIreneCharacter> Irene;
 	float PlayTime;
 	bool bIsEnd;
 public:

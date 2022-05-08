@@ -1,6 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "IreneFSM.h"
+#include "IreneCharacter.h"
+#include "IreneInputInstance.h"
+#include "IreneUIManager.h"
 
 #pragma region IreneFSM
 void UIreneFSM::Update(const float Value)
@@ -274,6 +277,14 @@ bool UIreneFSM::CanSprintJump()
 		return false;
 }
 
+void UIreneFSM::Init(AIreneCharacter* Value)
+{
+	SetIreneCharacter(Value);
+}
+void UIreneFSM::SetIreneCharacter(AIreneCharacter* Value)
+{
+	Irene = Value;
+}
 FString UIreneFSM::GetStateToString() const
 {
 	switch (StateEnumValue)
@@ -319,7 +330,7 @@ void UIdleState::Enter(IBaseGameEntity* CurState)
 
 void UIdleState::Execute(IBaseGameEntity* CurState)
 {
-
+	
 }
 
 void UIdleState::Exit(IBaseGameEntity* CurState)
@@ -504,11 +515,15 @@ void URunState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Run);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 }
 
 void URunState::Execute(IBaseGameEntity* CurState)
 {
-
+	if(CurState->PlayTime >= 3)
+	{
+		CurState->Irene->ChangeStateAndLog(USprintState::GetInstance());
+	}
 }
 
 void URunState::Exit(IBaseGameEntity* CurState)
@@ -531,6 +546,7 @@ void USprintState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sprint);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 }
 
 void USprintState::Execute(IBaseGameEntity* CurState)
