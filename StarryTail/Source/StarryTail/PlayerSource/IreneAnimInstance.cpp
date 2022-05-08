@@ -13,6 +13,8 @@ UIreneAnimInstance::UIreneAnimInstance()
 	IsSprintState = false;
 	IsSprintStop = false;
 	IreneState = EStateEnum::Idle;
+	IsHaveTargetMonster = false;
+	TargetMonster = FVector::ZeroVector;
 	//static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
 	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
