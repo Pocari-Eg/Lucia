@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+#include "DialogWidget.h"
+
+
 #include "PlayerHudWidget.generated.h"
 
 /**
@@ -73,6 +76,8 @@ private:
 	UPROPERTY()
 	class UProgressBar* MPProgressBar;	
 
+	UPROPERTY()
+	class UDialogWidget* DialogWidget;
 
 	FAttributesUI None;
 	FAttributesUI Fire;
