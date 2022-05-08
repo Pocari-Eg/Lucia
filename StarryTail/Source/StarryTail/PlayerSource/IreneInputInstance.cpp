@@ -42,6 +42,9 @@ void UIreneInputInstance::InitMemberVariable()
 	// 마우스 입력 초기화
 	bUseLeftButton = false;
 	bUseRightButton = false;
+
+	StaminaGauge = 150;
+	StartWaterDodgeStamina = 0;
 }
 
 #pragma region Move
@@ -299,55 +302,55 @@ void UIreneInputInstance::MovePressedD()
 
 void UIreneInputInstance::MoveDoubleClickW()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		MoveKey[0] = 2;
-		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
-		Irene->ChangeStateAndLog(USprintState::GetInstance());
-	}
-	else
-		MoveKey[0] = 4;
+	// if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	// {
+	// 	MoveKey[0] = 2;
+	// 	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
+	// 	Irene->ChangeStateAndLog(USprintState::GetInstance());
+	// }
+	// else
+	// 	MoveKey[0] = 4;
 }
 void UIreneInputInstance::MoveDoubleClickA()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		MoveKey[1] = 2;
-		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
-		Irene->ChangeStateAndLog(USprintState::GetInstance());
-	}
-	else
-		MoveKey[1] = 4;
+	// if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	// {
+	// 	MoveKey[1] = 2;
+	// 	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
+	// 	Irene->ChangeStateAndLog(USprintState::GetInstance());
+	// }
+	// else
+	// 	MoveKey[1] = 4;
 }
 void UIreneInputInstance::MoveDoubleClickS()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		MoveKey[2] = 2;
-		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
-		Irene->ChangeStateAndLog(USprintState::GetInstance());
-	}
-	else
-		MoveKey[2] = 4;
+	// if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	// {
+	// 	MoveKey[2] = 2;
+	// 	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
+	// 	Irene->ChangeStateAndLog(USprintState::GetInstance());
+	// }
+	// else
+	// 	MoveKey[2] = 4;
 }
 void UIreneInputInstance::MoveDoubleClickD()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		MoveKey[3] = 2;
-		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
-		Irene->ChangeStateAndLog(USprintState::GetInstance());
-	}
-	else
-		MoveKey[3] = 4;
+	// if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	// {
+	// 	MoveKey[3] = 2;
+	// 	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
+	// 	Irene->ChangeStateAndLog(USprintState::GetInstance());
+	// }
+	// else
+	// 	MoveKey[3] = 4;
 }
 
 void UIreneInputInstance::MoveReleasedW()
@@ -396,13 +399,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseRightButton == false)
 		{
-			// if((Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneAttack->FormGauge[0] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Open_Gauge/10000.0f)||
-			// (Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneAttack->FormGauge[1] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Open_Gauge/10000.0f)||
-			// (Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneAttack->FormGauge[2] < Irene->IreneAttack->FormGauge[0] * Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Open_Gauge/10000.0f))
-			// {
-			// 	ChangeForm(EAttributeKeyword::e_None);
-			// }
-			
 			FString AttributeName = "B_Attack_1";
 			FString NextAttributeName = "B_Attack_1";
 			if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
@@ -616,52 +612,15 @@ void UIreneInputInstance::MouseWheel(float Rate)
 
 void UIreneInputInstance::MainKeyword()
 {
-	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		//속상변환 차례대로 속성이 변환
-		switch (Irene->IreneAttack->Attribute)
-		{
-		case EAttributeKeyword::e_Fire:
-			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Water;
 
-			break;
-		case EAttributeKeyword::e_Water:
-			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Thunder;
-
-			break;
-		case EAttributeKeyword::e_Thunder:
-			Irene->IreneAttack->Attribute = EAttributeKeyword::e_Fire;
-
-			break;
-		default:
-			break;
-		}
-		Irene->FOnAttributeChange.Broadcast();
-		Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
-	}
 }
 void UIreneInputInstance::FireKeywordReleased()
 {
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(Irene->IreneAttack->FormGauge[0] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Open_Gauge/10000.0f))
-		{
-			if(!GetWorld()->GetTimerManager().IsTimerActive(FireStartTimer))
-				ChangeForm(EAttributeKeyword::e_Fire);
-		}
-		else
-		{
-			if(!FireStartTimer.IsValid())
-			{
-				ChangeForm(EAttributeKeyword::e_None);
-				GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
-				{
-					FireStartTimer.Invalidate();
-				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Gauge_C_Time, false);
-			}
-		}
+		if(!FireStartTimer.IsValid())
+			ChangeForm(EAttributeKeyword::e_Fire);
 	}
 }
 void UIreneInputInstance::WaterKeywordReleased()
@@ -669,90 +628,47 @@ void UIreneInputInstance::WaterKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(Irene->IreneAttack->FormGauge[1] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Open_Gauge/10000.0f))
-		{
-			if(!GetWorld()->GetTimerManager().IsTimerActive(WaterStartTimer))
-				ChangeForm(EAttributeKeyword::e_Water);
-
-			// Irene->IreneAttack->WaterRecoveryWaitCancel();
-		}
-		else
-		{
-			if(!GetWorld()->GetTimerManager().IsTimerActive(WaterStartTimer))
-			{
-				ChangeForm(EAttributeKeyword::e_None);
-				GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, FTimerDelegate::CreateLambda([&]()
-				{
-					WaterStartTimer.Invalidate();
-				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Gauge_C_Time, false);
-			}
-		}
+		if(!WaterStartTimer.IsValid())
+			ChangeForm(EAttributeKeyword::e_Water);
 	}
 }
 void UIreneInputInstance::ElectricKeywordReleased()
 {
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-	{
-		if(Irene->IreneAttack->FormGauge[2] >= Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100 * (Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Open_Gauge/10000.0f))
-		{
-			if(!GetWorld()->GetTimerManager().IsTimerActive(ElectricStartTimer))
-				ChangeForm(EAttributeKeyword::e_Thunder);
-
-			// Irene->IreneAttack->ElectricRecoveryWaitCancel();
-		}
-		else
-		{
-			if(!GetWorld()->GetTimerManager().IsTimerActive(ElectricStartTimer))
-			{
-				ChangeForm(EAttributeKeyword::e_None);
-				GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, FTimerDelegate::CreateLambda([&]()
-				{
-					ElectricStartTimer.Invalidate();
-				}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Gauge_C_Time, false);
-			}
-		}
+	{		
+		if(!ElectricStartTimer.IsValid())
+			ChangeForm(EAttributeKeyword::e_Thunder);
 	}
 }
 void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 {
-	if(Irene->IreneAttack->Attribute == Value)
-	{
-		Irene->IreneAttack->Attribute = EAttributeKeyword::e_None;		
-	}
-	else
-		Irene->IreneAttack->Attribute = Value;
-	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_None)
-	{
-		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 0.0f);
-		//Irene->IreneAttack->FireRecoveryWaitStart();
-		//Irene->IreneAttack->WaterRecoveryWaitStart();
-		//Irene->IreneAttack->ElectricRecoveryWaitStart();
-	}
-	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
+	Irene->IreneAttack->Attribute = Value;
+
+	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
-		// Irene->IreneAttack->WaterRecoveryWaitStart();
-		// Irene->IreneAttack->ElectricRecoveryWaitStart();
-		// if (Irene->FireRecoveryData.bIsRecovering == true)Irene->IreneAttack->FireRecoveringCancel();
-		// else Irene->IreneAttack->FireRecoveryWaitCancel();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
-		// Irene->IreneAttack->FireRecoveryWaitStart();
-		// Irene->IreneAttack->ElectricRecoveryWaitStart();
-		// if (Irene->WaterRecoveryData.bIsRecovering == true)Irene->IreneAttack->WaterRecoveringCancel();
-		// else Irene->IreneAttack->WaterRecoveryWaitCancel();
 	}
 	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
-		// Irene->IreneAttack->FireRecoveryWaitStart();
-		// Irene->IreneAttack->WaterRecoveryWaitStart();
-		// if (Irene->ElectricRecoveryData.bIsRecovering == true)Irene->IreneAttack->ElectricRecoveringCancel();
-		// else Irene->IreneAttack->ElectricRecoveryWaitCancel();
-	}	
+	}
+	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
+	{
+		FireStartTimer.Invalidate();
+	}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form"))->Gauge_C_Time, false);
+	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, FTimerDelegate::CreateLambda([&]()
+	{
+		WaterStartTimer.Invalidate();
+	}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form"))->Gauge_C_Time, false);
+	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, FTimerDelegate::CreateLambda([&]()
+	{
+		ElectricStartTimer.Invalidate();
+	}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Gauge_C_Time, false);
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
 	Irene->FOnAttributeChange.Broadcast();
 }
@@ -763,18 +679,54 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		Irene->IreneAnim->StopAllMontages(0);
-		//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-
-		constexpr float WaitTime = 0.6f; //시간을 설정
-		Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;
-		
-		FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
-		ForwardVec.Z = 0;
-		ForwardVec.Normalize();
-		
-		if(Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
 		{
+			Irene->IreneAnim->StopAllMontages(0);
+			StaminaGauge -= 75;
+			constexpr float WaitTime = 0.6f; //시간을 설정
+			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+			ForwardVec.Z = 0;
+			ForwardVec.Normalize();
+			MoveAutoDirection = FVector::ZeroVector;
+
+			// w키나 아무방향 없으면 정면으로 이동
+			MoveAutoDirection += ForwardVec*-1;
+			MoveAutoDirection.Normalize();
+			
+			const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
+			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+
+			GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					// 도중에 추락 안하고 정상적으로 진행됬을 때
+					if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
+					{
+						Irene->ActionEndChangeMoveState();
+						Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+					}
+				}), WaitTime, false);
+			Irene->ChangeStateAndLog(UDodgeState::GetInstance());
+		}
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		{
+			StartWaterDodgeStamina = StaminaGauge;
+			if(WaterDodgeEffect == nullptr)
+			{
+				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
+				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,30),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
+			}
+		}
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && StaminaGauge >= 37.5f)
+		{
+			Irene->IreneAnim->StopAllMontages(0);
+			StaminaGauge -= 37.5f;
+			constexpr float WaitTime = 1.0; //시간을 설정
+			
+			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;		
+			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+			ForwardVec.Z = 0;
+			ForwardVec.Normalize();
+		
 			MoveAutoDirection = FVector::ZeroVector;
 
 			// w키나 아무방향 없으면 정면으로 이동
@@ -795,72 +747,53 @@ void UIreneInputInstance::DodgeKeyword()
 				MoveAutoDirection += Irene->CameraComp->GetRightVector();
 			}
 			MoveAutoDirection.Normalize();
-		}
-		else
-		{
-			MoveAutoDirection = FVector::ZeroVector;
-			// w키나 아무방향 없으면 정면으로 이동
-			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
-			{
-				MoveAutoDirection += ForwardVec;
-			}
-			if (MoveKey[1] != 0)
-			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
-			}
-			if (MoveKey[2] != 0)
-			{
-				MoveAutoDirection += -1 * ForwardVec;
-			}
-			if (MoveKey[3] != 0)
-			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector();
-			}
-			MoveAutoDirection.Normalize();
-		}
 
-		const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
-		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+			const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
+			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
 
-		GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
+			const FVector CurLocation = Irene->GetActorLocation();
+			if(!StaminaWaitHandle.IsValid())
 			{
-				// 도중에 추락 안하고 정상적으로 진행됬을 때
-				if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
-				{
-					Irene->ActionEndChangeMoveState();
-					//Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-				}
+				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*200);
+			}
+			else
+			{
+				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*600);
+			}
+			GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+				StaminaWaitHandle.Invalidate();
 			}), WaitTime, false);
-		Irene->ChangeStateAndLog(UDodgeState::GetInstance());
-	}
-	if (Irene->GetMovementComponent()->IsFalling())
+		}
+	}	
+}
+void UIreneInputInstance::WaterDodgeKeyword(float Rate)
+{
+	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && StaminaGauge > 0 && !StaminaWaitHandle.IsValid())
 	{
-		if (!IsFallingRoll)
+		Irene->IreneAnim->StopAllMontages(0);
+		Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+		//Irene->GetMesh()->SetVisibility(false);
+		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -180));
+		StaminaGauge -= Rate/10;
+		if(StartWaterDodgeStamina-75 > StaminaGauge || StaminaGauge <= 0)
 		{
-			IsFallingRoll = true;
-			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
-			ForwardVec.Z = 0;
-			ForwardVec.Normalize();
-			
-			MoveAutoDirection = FVector::ZeroVector;
-			// w키나 아무방향 없으면 정면으로 이동
-			if (MoveKey[0] != 0 || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
 			{
-				MoveAutoDirection += ForwardVec;
-			}
-			if (MoveKey[1] != 0)
-			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
-			}
-			if (MoveKey[2] != 0)
-			{
-				MoveAutoDirection += -1 * ForwardVec;
-			}
-			if (MoveKey[3] != 0)
-			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector();
-			}
-			MoveAutoDirection.Normalize();
+				StaminaWaitHandle.Invalidate();
+			}), 1, false);
+		}
+	}
+	else
+	{
+		Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+		//Irene->GetMesh()->SetVisibility(true);
+		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -80));
+		StartWaterDodgeStamina = StaminaGauge;
+		if(WaterDodgeEffect != nullptr)
+		{
+			WaterDodgeEffect->DestroyComponent(true);
+			WaterDodgeEffect = nullptr;
 		}
 	}
 }
@@ -881,5 +814,15 @@ void UIreneInputInstance::PauseWidgetOn()
 	}
 	Irene->IreneState->SetState(UIdleState::GetInstance());
 	Irene->IreneUIManager->PauseWidgetOn();
+}
+
+void UIreneInputInstance::RecoveryStaminaGauge(float DeltaTime)
+{
+	StaminaGauge += DeltaTime * 5;
+	if(StaminaGaugeIsFull()) StaminaGauge = 150;
+}
+bool UIreneInputInstance::StaminaGaugeIsFull()const
+{
+	return StaminaGauge >= 150 ? true :false;
 }
 #pragma endregion Input

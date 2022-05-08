@@ -327,9 +327,9 @@ void AIreneCharacter::Tick(float DeltaTime)
 			{
 				auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
 				Mon->MarkerOff();
+				IreneAnim->SetIsHaveTargetMonster(false);
 				IreneAttack->TargetMonster = nullptr;
-			}
-			
+			}			
 		}
 	}
 
@@ -413,6 +413,7 @@ void AIreneCharacter::FindNearMonster()
 	{
 		auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
 		Mon->MarkerOff();
+		IreneAnim->SetIsHaveTargetMonster(false);
 		IreneAttack->TargetMonster = nullptr;
 	}
 	FString AttributeForm = GetAnimName().ToString();
@@ -539,6 +540,8 @@ void AIreneCharacter::FindNearMonster()
 					if (IreneAttack->TargetMonster == nullptr)
 					{
 						IreneAttack->TargetMonster = RayHit.GetActor();
+						IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+						IreneAnim->SetIsHaveTargetMonster(true);
 						NearPosition = FindNearTarget;
 					}
 
@@ -556,26 +559,42 @@ void AIreneCharacter::FindNearMonster()
 							{
 								NearPosition = FindNearTarget;
 								if (IreneAttack->TargetMonster == nullptr)
+									{
 									IreneAttack->TargetMonster = RayHit.GetActor();
+									IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+									IreneAnim->SetIsHaveTargetMonster(true);
+								}
 							}
 							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)
 							{
 								NearPosition = FindNearTarget;
 								if (IreneAttack->TargetMonster == nullptr)
+								{
 									IreneAttack->TargetMonster = RayHit.GetActor();
+									IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+									IreneAnim->SetIsHaveTargetMonster(true);
+								}
 							}
 							else if (TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile)
 							{
 								NearPosition = FindNearTarget;
 								if (IreneAttack->TargetMonster == nullptr)
+								{
 									IreneAttack->TargetMonster = RayHit.GetActor();
+									IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+									IreneAnim->SetIsHaveTargetMonster(true);
+								}
 							}
 						}
 						else
 						{
 							NearPosition = FindNearTarget;
 							if (IreneAttack->TargetMonster == nullptr)
+							{
 								IreneAttack->TargetMonster = RayHit.GetActor();
+								IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+								IreneAnim->SetIsHaveTargetMonster(true);
+							}
 						}
 					}
 				}
@@ -680,6 +699,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	if (IreneAttack->TargetMonster == nullptr)
 	{
 		IreneAttack->TargetMonster = DamageCauser;
+		IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+		IreneAnim->SetIsHaveTargetMonster(true);
 	}
 	return FinalDamage;
 }
