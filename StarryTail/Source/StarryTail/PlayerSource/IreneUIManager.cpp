@@ -26,10 +26,19 @@ UIreneUIManager::UIreneUIManager()
 	WalkSoundVolume = 0.7f;
 }
 
+void UIreneUIManager::PlayerHudInit()
+{
+	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
+	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+
+	
+}
+
 void UIreneUIManager::Init(AIreneCharacter* Value)
 {
 	SetIreneCharacter(Value);
 	InitMemberVariable();
+	PlayerHudInit();
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
@@ -41,8 +50,6 @@ void UIreneUIManager::InitMemberVariable()
 }
 void UIreneUIManager::Begin()
 {
-	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
-	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
 	PauseWidget->AddToViewport();
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	PlayerHud->AddToViewport();
