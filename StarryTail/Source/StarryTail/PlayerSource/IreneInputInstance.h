@@ -19,6 +19,9 @@ private:
 	FTimerHandle FireStartTimer;
 	FTimerHandle WaterStartTimer;
 	FTimerHandle ElectricStartTimer;
+
+	UPROPERTY()
+	UParticleSystemComponent* WaterDodgeEffect;
 	
 public:
 	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
