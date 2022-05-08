@@ -710,6 +710,11 @@ void UIreneInputInstance::DodgeKeyword()
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
 			StartWaterDodgeStamina = StaminaGauge;
+			if(WaterDodgeEffect == nullptr)
+			{
+				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
+				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,30),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
+			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && StaminaGauge >= 37.5f)
 		{
@@ -785,6 +790,11 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		//Irene->GetMesh()->SetVisibility(true);
 		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -80));
 		StartWaterDodgeStamina = StaminaGauge;
+		if(WaterDodgeEffect != nullptr)
+		{
+			WaterDodgeEffect->DestroyComponent(true);
+			WaterDodgeEffect = nullptr;
+		}
 	}
 }
 

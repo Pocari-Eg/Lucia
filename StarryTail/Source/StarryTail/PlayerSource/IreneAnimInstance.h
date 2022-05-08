@@ -45,7 +45,11 @@ private:
 	UAnimMontage* EffectAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EAttributeKeyword Attribute;
-	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsHaveTargetMonster;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	FVector TargetMonster;
+    	
 public:
 	UIreneAnimInstance();
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
@@ -60,7 +64,9 @@ public:
 	void SetSprintStopAnim(const bool Value) { IsSprintStop = Value; }
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
 	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
-
+	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
+	void SetTargetMonster(const FVector Value) { TargetMonster = Value; }
+	
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnAttackStopCheckDelegate OnAttackStopCheck;
