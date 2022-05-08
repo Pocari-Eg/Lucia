@@ -245,6 +245,10 @@ void ABouldelith::BeginPlay()
 		Attack3End.Broadcast();
 		bIsRush = false;
 		});
+	BdAnimInstance->AttackedEnd.AddLambda([this]() -> void {
+		bIsAttacked = false;
+		AttackedEnd.Broadcast();
+		});
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

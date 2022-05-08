@@ -29,7 +29,7 @@ public:
 	virtual void PlayDetectMontage() {};
 	virtual void PlayBattleIdleMontage();
 	virtual void PlayBattleWalkMontage();
-	virtual void PlayAttackedMontage();
+	virtual void PlayAttackedMontage() {};
 	virtual void PlayGroggyMontage();
 	virtual void PlayDeathMontage() {};
 

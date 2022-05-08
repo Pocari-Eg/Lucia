@@ -27,12 +27,16 @@ public:
 	void PlayAttack2Montage();
 	void PlayAttack3Montage();
 
+	void PlayAttackedMontage() override;
+
 	void PlayAttack1ComboMontage();
 	void PlayAttack2ComboMontage();
 
 	void PlayBattleWalkMontage() override;
 
 	void UpgradeBattleRun();
+	bool CheckAttackedMontagePlaying() override;
+	bool GetAttackIsPlaying() override;
 	//Var
 	FBackstepEndDelegate BackstepEnd;
 	FAttack1EndDelegate Attack1End;

@@ -70,6 +70,13 @@ void UBdAnimInstance::PlayAttack2ComboMontage()
 	Montage_Play(AttackComboMontage2);
 }
 #pragma endregion
+void UBdAnimInstance::PlayAttackedMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+	Montage_Play(AttackedMontage, 1.0f);
+}
+
 void UBdAnimInstance::UpgradeBattleRun()
 {
 	if (Montage_IsPlaying(BattleRunMontage3))
@@ -79,6 +86,27 @@ void UBdAnimInstance::UpgradeBattleRun()
 		Montage_Play(BattleRunMontage2);
 	else if (Montage_IsPlaying(BattleRunMontage2))
 		Montage_Play(BattleRunMontage3);
+}
+bool UBdAnimInstance::CheckAttackedMontagePlaying()
+{
+	if (Montage_IsPlaying(AttackedMontage))
+		return true;
+	if (Montage_IsPlaying(GroggyMontage))
+		return true;
+
+	return false;
+}
+bool UBdAnimInstance::GetAttackIsPlaying()
+{
+	if (Montage_IsPlaying(AttackMontage1))
+		return true;
+	if (Montage_IsPlaying(AttackMontage2))
+		return true;
+	if (Montage_IsPlaying(AttackMontage3))
+		return true;
+
+	return false;
+
 }
 void UBdAnimInstance::AnimNotify_BackstepEnd()
 {

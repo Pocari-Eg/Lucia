@@ -30,7 +30,16 @@ ABdAIController::ABdAIController()
 }
 void ABdAIController::Attacked()
 {
+	SetPlayer();
 
+	auto Bouldelith = Cast<ABouldelith>(GetPawn());
+
+	if (Bouldelith->GetBouldelithAnimInstance()->GetAttackIsPlaying())
+		return;
+
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
+
+	Bouldelith->GetBouldelithAnimInstance()->PlayAttackedMontage();
 }
 void ABdAIController::OnPossess(APawn* InPawn)
 {

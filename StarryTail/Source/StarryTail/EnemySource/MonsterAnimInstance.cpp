@@ -33,12 +33,6 @@ void UMonsterAnimInstance::PlayBattleWalkMontage()
 {
 	Montage_Play(BattleWalkMontage, PlayRate);
 }
-void UMonsterAnimInstance::PlayAttackedMontage()
-{
-	if (CheckAttackedMontagePlaying())
-		return;
-	Montage_Play(AttackedMontage, 1.0f);
-}
 void UMonsterAnimInstance::PlayGroggyMontage()
 {
 	if(!Montage_IsPlaying(GroggyMontage))
