@@ -577,18 +577,17 @@ void AIreneCharacter::FindNearMonster()
 			}
 		}
 	}
-	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-	{
-		FCollisionQueryParams QParams(NAME_None, false, this);
-		if(IreneAttack->TargetMonster)
-		{
-			AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(IreneAttack->TargetMonster->GetActorLocation() - GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
-		}
-		else
-		{
-			AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(GetActorLocation() + GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
-		}
-	}
+	// if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	// {
+	// 	if(IreneAttack->TargetMonster)
+	// 	{
+	// 		AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(IreneAttack->TargetMonster->GetActorLocation() - GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+	// 	}
+	// 	else
+	// 	{
+	// 		AWaterBasicAttack* WaterBasic = GetWorld()->SpawnActor<AWaterBasicAttack>(GetActorLocation() + GetActorForwardVector() * 300, GetActorForwardVector().Rotation());
+	// 	}
+	// }
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
 	{		

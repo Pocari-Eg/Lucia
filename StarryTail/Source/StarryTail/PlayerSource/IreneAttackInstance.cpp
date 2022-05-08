@@ -182,7 +182,15 @@ void UIreneAttackInstance::DoAttack()
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
-		
+		FCollisionQueryParams Params(NAME_None, false, Irene);
+		bResult = GetWorld()->SweepMultiByChannel(
+			MonsterList,
+			TargetMonster->GetActorLocation(),
+			TargetMonster->GetActorLocation(),
+			FQuat::Identity,
+			ECollisionChannel::ECC_GameTraceChannel1,
+			FCollisionShape::MakeSphere(50.0f),
+			Params);
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
@@ -207,6 +215,14 @@ void UIreneAttackInstance::DoAttack()
 		float DebugLifeTime = 5.0f;
 
 		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+	}
+	if(Attribute == EAttributeKeyword::e_Water)
+	{
+		FVector Center = TargetMonster->GetActorLocation();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugSphere(GetWorld(), Center, 50.0f, 10, DrawColor, false, DebugLifeTime);
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
