@@ -46,7 +46,7 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_None;
+	Attribute = EAttributeKeyword::e_Fire;
 	// FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
 	// FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
 	// FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
