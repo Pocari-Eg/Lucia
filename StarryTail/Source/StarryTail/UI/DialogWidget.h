@@ -35,7 +35,7 @@ private:
 	//현재까지 출력된 메시지의 길이
 	int32 Length;
 	FTimerHandle TimerHandle; // TimerHandle;
-	
+	float CurrentTextKeeptime;
 	
 
 public:

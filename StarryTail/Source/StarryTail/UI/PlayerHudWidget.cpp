@@ -22,6 +22,11 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 }
 
+void UPlayerHudWidget::SetDialog(FString dialog)
+{
+	DialogWidget->SetDialog(*dialog);
+}
+
 void UPlayerHudWidget::UpdateHp()
 {
 	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
@@ -138,8 +143,6 @@ void UPlayerHudWidget::UpdateEeletricRecovery()
 
 void UPlayerHudWidget::UpdateAttributes()
 {
-	FString text = TEXT("당근을 흔들어 주세요...");
-	DialogWidget->SetDialog(*text);
 	switch (CurrentIrene->IreneAttack->GetAttribute())
 	{
 	case EAttributeKeyword::e_None:

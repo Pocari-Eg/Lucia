@@ -36,7 +36,7 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-
+	void SetDialog(FString dialog);
 private:
 
 	void UpdateHp();
