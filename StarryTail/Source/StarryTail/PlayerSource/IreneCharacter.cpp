@@ -178,6 +178,8 @@ void AIreneCharacter::BeginPlay()
 	// 애니메이션 속성 초기화
 	IreneAnim->SetAttribute(IreneAttack->Attribute);
 	IreneUIManager->Begin();
+
+	FOnAttributeChange.Broadcast();
 }
 
 void AIreneCharacter::Destroyed()
@@ -215,6 +217,7 @@ void AIreneCharacter::CallRestartPlayer()
 void AIreneCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+		
 	IreneState = NewObject<UIreneFSM>(this);
 	IreneState->SetState(UIdleState::GetInstance());
 	IreneState->Init(this);
@@ -222,10 +225,10 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
-	IreneInput->Init(this);
-	
+	IreneInput->Init(this);	
+
 	IreneUIManager = NewObject<UIreneUIManager>(this);
-	IreneUIManager->Init(this);	
+	IreneUIManager->Init(this);
 	
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void

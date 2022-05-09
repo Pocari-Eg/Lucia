@@ -619,7 +619,7 @@ void UIreneInputInstance::FireKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(!FireStartTimer.IsValid())
+		if(!FireStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Fire)
 			ChangeForm(EAttributeKeyword::e_Fire);
 	}
 }
@@ -628,7 +628,7 @@ void UIreneInputInstance::WaterKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(!WaterStartTimer.IsValid())
+		if(!WaterStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)
 			ChangeForm(EAttributeKeyword::e_Water);
 	}
 }
@@ -637,7 +637,7 @@ void UIreneInputInstance::ElectricKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{		
-		if(!ElectricStartTimer.IsValid())
+		if(!ElectricStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Thunder)
 			ChangeForm(EAttributeKeyword::e_Thunder);
 	}
 }
