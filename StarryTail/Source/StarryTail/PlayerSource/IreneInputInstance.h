@@ -23,13 +23,6 @@ private:
 	UPROPERTY()
 	UParticleSystemComponent* WaterDodgeEffect;
 	
-public:
-	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
-	UPROPERTY()
-	TArray<uint8> MoveKey;
-
-	// 구르기 같은 자동이동 방향
-	FVector MoveAutoDirection;
 	// 자동이동용 핸들
 	FTimerHandle MoveAutoWaitHandle;
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
@@ -48,9 +41,20 @@ public:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 
+	float StaminaGauge;
+	FTimerHandle StaminaWaitHandle;
+	float StartWaterDodgeStamina;
+	
+public:
+	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
+	UPROPERTY()
+	TArray<uint8> MoveKey;
+
+	// 구르기 같은 자동이동 방향
+	FVector MoveAutoDirection;
+	
 	bool bUseLeftButton;
 	bool bUseRightButton;
-	
 private:
 	
 public:
@@ -82,7 +86,7 @@ public:
 	void MoveReleasedD();
 #pragma endregion Move
 
-#pragma region Other
+#pragma region OtherInput
 	// 카메라 회전 관련 함수
 	void Turn(float Rate);
 	void LookUp(float Rate);
@@ -95,18 +99,34 @@ public:
 	void RightButton(float Rate);
 
 	// 메인키워드 속성변경
-	void MainKeyword();
 	void FireKeywordReleased();
 	void WaterKeywordReleased();
 	void ElectricKeywordReleased();
 	
 	// 대쉬
 	void DodgeKeyword();
+	void WaterDodgeKeyword(float Rate);	
+#pragma endregion OtherInput
 
+#pragma region UIandStamina
 	// 마우스 커서 활성화
 	void MouseCursorKeyword();
 
 	// Pause위젯 on
 	void PauseWidgetOn();
-#pragma endregion Other
+
+	void RecoveryStaminaGauge(float DeltaTime);
+	bool StaminaGaugeIsFull()const;
+#pragma endregion UIandStamina
+
+#pragma region GetSet
+	bool GetStartJump()const{return bStartJump;}
+	float GetJumpingTime()const{return JumpingTime;}
+	bool GetFallingRoll()const{return IsFallingRoll;}
+	
+	void SetStartJump(const bool Value){bStartJump = Value;}
+	void SetJumpingTime(const float Value){JumpingTime = Value;}
+	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
+#pragma endregion GetSet
+
 };

@@ -22,6 +22,11 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 }
 
+void UPlayerHudWidget::SetDialog(FString dialog)
+{
+	DialogWidget->SetDialog(*dialog);
+}
+
 void UPlayerHudWidget::UpdateHp()
 {
 	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
@@ -138,7 +143,6 @@ void UPlayerHudWidget::UpdateEeletricRecovery()
 
 void UPlayerHudWidget::UpdateAttributes()
 {
-	
 	switch (CurrentIrene->IreneAttack->GetAttribute())
 	{
 	case EAttributeKeyword::e_None:
@@ -152,6 +156,7 @@ void UPlayerHudWidget::UpdateAttributes()
 		FireSetScale(SelectScale);
 		WaterSetScale(BaseScale);
 		ElectricSetScale(BaseScale);
+		
 		break;
 	case EAttributeKeyword::e_Water:
 		NoneSetScale(BaseScale);
@@ -193,6 +198,8 @@ void UPlayerHudWidget::ElectricSetScale(FVector2D Scale)
 {
 	Electric.Attribute->SetRenderScale(Scale);
 	Electric.Base->SetRenderScale(Scale);
+
+	
 }
 
 
@@ -222,6 +229,8 @@ void UPlayerHudWidget::NativeOnInitialized()
 	 Electric.Attribute = Cast<UImage>(GetWidgetFromName(TEXT("Electric")));
 	 Electric.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricBase")));
 	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
+
+	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 
 	 NoneSetScale(SelectScale);
 }

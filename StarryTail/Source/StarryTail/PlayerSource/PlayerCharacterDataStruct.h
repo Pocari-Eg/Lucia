@@ -18,13 +18,13 @@ public:
 	
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FollowCameraZPosition = 550;
+	float FollowCameraZPosition = 800;
 	// 스프링암과 플레이어 간 최대 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxFollowCameraZPosition = 550;
+	float MaxFollowCameraZPosition = 10000;
 	// 스프링암과 플레이어 간 최소 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinFollowCameraZPosition = 250;
+	float MinFollowCameraZPosition = 0;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)

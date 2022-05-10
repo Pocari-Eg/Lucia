@@ -6,6 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+#include "DialogWidget.h"
+
+
 #include "PlayerHudWidget.generated.h"
 
 /**
@@ -33,7 +36,7 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-
+	void SetDialog(FString dialog);
 private:
 
 	void UpdateHp();
@@ -74,6 +77,8 @@ private:
 	UPROPERTY()
 	class UProgressBar* MPProgressBar;	
 
+	UPROPERTY()
+	class UDialogWidget* DialogWidget;
 
 	FAttributesUI None;
 	FAttributesUI Fire;

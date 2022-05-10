@@ -101,12 +101,6 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	//Called when our Actor is destroyed during Gameplay.
-	virtual void Destroyed() override;
-
-	//Call Game mode class to Restart Player Character.
-	void CallRestartPlayer();
-
 public:
 
 #pragma region State

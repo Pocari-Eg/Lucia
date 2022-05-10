@@ -27,10 +27,10 @@ private:
 	//현재 회복 시간
 	int CurRecoverTime;
 	//남은 회복량
-	int RemainingRecovry;
+	int RemainingRecovery;
 	//타이머 핸들
-	FTimerHandle HpRecorveryTimerHandle;
-	FTimerHandle HpRecorveryWaitTimerHandle;
+	FTimerHandle HpRecoveryTimerHandle;
+	FTimerHandle HpRecoveryWaitTimerHandle;
 public:
 	// 로그 출력용
 	bool bShowLog;
@@ -39,16 +39,18 @@ public:
 	FOnMpChangeDelegate OnMpChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
-	UPROPERTY()
+public:
+
+	UPROPERTY(BluePrintReadOnly, Category = UI)
 	class UPlayerHudWidget* PlayerHud; // 위젯
-#pragma endregion
+#pragma endregion HUD
 
 #pragma region PauseWidget
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 		TSubclassOf<class UPauseWidget> PauseWidgetClass;   // 위젯 클래스 
 	UPROPERTY()
 		class UPauseWidget* PauseWidget; // 위젯
-#pragma endregion
+#pragma endregion PauseWidget
 
 #pragma region Sound
 	//사운드 이벤트
@@ -61,7 +63,7 @@ public:
 	SoundManager* AttackSound;
 
 	float AttackSoundParameter;
-#pragma endregion
+#pragma endregion Sound
 private:
 	UIreneUIManager();
 #pragma region HUDPrivate
@@ -78,7 +80,9 @@ private:
 	bool IsHpFull();
 	//Idle 연속 확인
 	bool IsConsecutiveIdle;
-#pragma endregion
+
+	void PlayerHudInit();
+#pragma endregion HUDPrivate
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -106,11 +110,11 @@ public:
 	
 	//Hp RecoveryBar 
 	float GetHpRecoveryRatio();
-#pragma endregion
+#pragma endregion HUDPublic
 
 
 #pragma region PauseWidgetFunc
 public:
 	void PauseWidgetOn();
-#pragma endregion
+#pragma endregion PauseWidgetFunc
 };

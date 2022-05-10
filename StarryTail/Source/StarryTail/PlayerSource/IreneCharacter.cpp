@@ -175,45 +175,16 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->Attribute);
+	IreneAnim->SetAttribute(IreneAttack->GetAttribute());
 	IreneUIManager->Begin();
-}
 
-void AIreneCharacter::Destroyed()
-{
-	Super::Destroyed();
-
-	// Example to bind to OnPlayerDied event in GameMode. 
-	if (const UWorld* World = GetWorld())
-	{
-		if (const AStarryTailGameMode* GameMode = Cast<AStarryTailGameMode>(World->GetAuthGameMode()))
-		{
-			GameMode->GetOnPlayerDied().Broadcast(this);
-		}
-	}
-}
-
-void AIreneCharacter::CallRestartPlayer()
-{
-	//Get a reference to the Pawn Controller.
-	AController* ControllerRef = GetController();
-
-	//Destroy the Player.   
-	Destroy();
-
-	//Get the World and GameMode in the world to invoke its restart player function.
-	if (const UWorld* World = GetWorld())
-	{
-		if (AStarryTailGameMode* GameMode = Cast<AStarryTailGameMode>(World->GetAuthGameMode()))
-		{
-			GameMode->RestartPlayer(ControllerRef);
-		}
-	}
+	FOnAttributeChange.Broadcast();
 }
 
 void AIreneCharacter::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+		
 	IreneState = NewObject<UIreneFSM>(this);
 	IreneState->SetState(UIdleState::GetInstance());
 	
@@ -221,10 +192,10 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
-	IreneInput->Init(this);
-	
+	IreneInput->Init(this);	
+
 	IreneUIManager = NewObject<UIreneUIManager>(this);
-	IreneUIManager->Init(this);	
+	IreneUIManager->Init(this);
 	
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
@@ -271,10 +242,10 @@ void AIreneCharacter::Tick(float DeltaTime)
 	{
 		IreneInput->MoveAuto();
 	}
-	if (IreneInput->IsFallingRoll && !GetMovementComponent()->IsFalling())
+	if (IreneInput->GetFallingRoll() && !GetMovementComponent()->IsFalling())
 	{
 		//구르다가 땅에 도착
-		IreneInput->IsFallingRoll = false;
+		IreneInput->SetFallingRoll(false);
 		IreneInput->DodgeKeyword();
 	}
 	IreneInput->MoveStop();
@@ -283,28 +254,30 @@ void AIreneCharacter::Tick(float DeltaTime)
 		SetActorEnableCollision(false);
 
 	// 점프 그래프 사용
-	if (IreneInput->bStartJump)
+	if (IreneInput->GetStartJump())
 	{
-		IreneInput->JumpingTime += DeltaTime;
-		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(IreneInput->JumpingTime);
+		const float JumpTime = IreneInput->GetJumpingTime();
+		IreneInput->SetJumpingTime(JumpTime+DeltaTime);
+		GetCharacterMovement()->GravityScale = JumpGravityCurve->GetFloatValue(JumpTime);
 	}
 	if (!GetCharacterMovement()->IsFalling())
 	{
-		IreneInput->JumpingTime = 0.0f;
-		IreneInput->bStartJump = false;
+		IreneInput->SetJumpingTime(0);
+		IreneInput->SetStartJump(false);
 	}
 
 	// 카메라 쉐이크 그래프 사용
 	if (IreneData.IsAttacking && IreneData.CurrentCombo == IreneData.MaxCombo && CameraShakeOn)
 	{
-		IreneAttack->CameraShakeTime += DeltaTime;
+		const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
+		IreneAttack->SetCameraShakeTime(DeltaTime);
 		FRotator CameraRotate = CameraComp->GetRelativeRotation();
-		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(IreneAttack->CameraShakeTime * 50);
+		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime * 50);
 		CameraComp->SetRelativeRotation(CameraRotate);
 	}
 	else
 	{
-		IreneAttack->CameraShakeTime = 0;
+		IreneAttack->SetCameraShakeTime(0);
 		CameraShakeOn = false;
 		CameraComp->SetRelativeRotation(FRotator::ZeroRotator);
 	}
@@ -382,7 +355,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD);
 
 	// 움직임 외 키보드 입력
-	PlayerInputComponent->BindAction("MainKeyword", IE_Pressed, IreneInput, &UIreneInputInstance::MainKeyword);
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 
@@ -433,15 +405,15 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
-	FAttackDataTable* table = IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm));
-	if (table != nullptr)
+	TSharedPtr<FAttackDataTable> Table = MakeShared<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
+	if (Table != nullptr)
 	{
-		IreneData.Strength = table->ATTACK_DAMAGE_1;
+		IreneData.Strength = Table->ATTACK_DAMAGE_1;
 
 		// 마나 사용 조건
-		if (table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
+		if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
-			IreneAttack->bUseMP = true;
+			IreneAttack->SetUseMP(true);
 			// if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire) {
 			// 	IreneAttack->FormGauge[0] -= table->Gauge;
 			// 	IreneAttack->FOnFireGaugeChange.Broadcast();
@@ -457,10 +429,10 @@ void AIreneCharacter::FindNearMonster()
 			//IreneAttack->UseMP = table->Gauge;
 		}
 		// 마나 회복 조건
-		if (table->Form < 2)
+		if (Table->Form < 2)
 		{
-			IreneAttack->bUseMP = false;
-			IreneAttack->UseMP = 0;
+			IreneAttack->SetUseMP(false);
+			IreneAttack->SetUseMPSize(0);
 		}
 
 		IreneUIManager->OnMpChanged.Broadcast();
@@ -627,9 +599,9 @@ void AIreneCharacter::FindNearMonster()
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
 				// 추적 세팅
-				IreneAttack->bFollowTarget = true;
-				IreneAttack->PlayerPosVec = GetActorLocation();
-				IreneAttack->TargetPosVec = GetActorLocation() + GetActorForwardVector() * (TargetPos);
+				IreneAttack->SetFollowTarget(true);
+				IreneAttack->SetPlayerPosVec(GetActorLocation());
+				IreneAttack->SetTargetPosVec(GetActorLocation() + GetActorForwardVector() * TargetPos);
 			}
 			else
 			{
@@ -646,14 +618,14 @@ void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 
-	if(IreneAttack->bFollowTarget)
+	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(OtherActor))
 		{
-			IreneAttack->bFollowTarget = false;
-			IreneAttack->FollowTargetAlpha = 0;
-			IreneAttack->PlayerPosVec = FVector::ZeroVector;
-			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->SetFollowTarget(false);
+			IreneAttack->SetFollowTargetAlpha(0);
+			IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
+			IreneAttack->SetTargetPosVec(FVector::ZeroVector);
 			IreneAttack->DoAttack();
 		}
 	}
@@ -666,14 +638,14 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	if(IreneAttack->bFollowTarget)
+	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(Other))
 		{
-			IreneAttack->bFollowTarget = false;
-			IreneAttack->FollowTargetAlpha = 0;
-			IreneAttack->PlayerPosVec = FVector::ZeroVector;
-			IreneAttack->TargetPosVec = FVector::ZeroVector;
+			IreneAttack->SetFollowTarget(false);
+			IreneAttack->SetFollowTargetAlpha(0);
+			IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
+			IreneAttack->SetTargetPosVec(FVector::ZeroVector);
 			IreneAttack->DoAttack();
 		}
 	}
@@ -801,34 +773,34 @@ FName AIreneCharacter::GetAnimName()
 		{
 			return FName("B_Attack_4");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->Attribute == EAttributeKeyword::e_None)
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->GetAttribute() == EAttributeKeyword::e_None)
 		{
 			return FName("B_Attack_5_N");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->Attribute == EAttributeKeyword::e_Fire)
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			return FName("B_Attack_5_F");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->Attribute == EAttributeKeyword::e_Water)
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
 			return FName("B_Attack_5_W");
 		}
-		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
+		if (IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack5") && IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
 			return FName("B_Attack_5_E");
 		}
 	}
 	if (IreneInput->bUseRightButton)
 	{
-		if (IreneAttack->Attribute == EAttributeKeyword::e_Fire)
+		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			return FName("ActionKeyword_1_F");
 		}
-		if (IreneAttack->Attribute == EAttributeKeyword::e_Water)
+		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
 			return FName("ActionKeyword_1_W");
 		}
-		if (IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
+		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
 			return FName("ActionKeyword_1_E");
 		}

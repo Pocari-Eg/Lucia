@@ -149,15 +149,16 @@ void UIreneInputInstance::MoveStop()
 void UIreneInputInstance::MoveAuto()
 {
 	// 이동 후 공격
-	if (Irene->IreneAttack->bFollowTarget)
+	if (Irene->IreneAttack->GetFollowTarget())
 	{
-		Irene->IreneAttack->FollowTargetAlpha += GetWorld()->GetDeltaSeconds() * 2 * Irene->IreneData.TargetFollowSpeed;
-		if (Irene->IreneAttack->FollowTargetAlpha >= 1)
-			Irene->IreneAttack->FollowTargetAlpha = 1;
-		const FVector tar = FMath::Lerp(Irene->IreneAttack->PlayerPosVec, Irene->IreneAttack->TargetPosVec, Irene->IreneAttack->FollowTargetAlpha);
-		Irene->GetCapsuleComponent()->SetRelativeLocation(tar);
+		const float TargetAlpha = Irene->IreneAttack->GetFollowTargetAlpha();
+		Irene->IreneAttack->SetFollowTargetAlpha(TargetAlpha + GetWorld()->GetDeltaSeconds() * 2 * Irene->IreneData.TargetFollowSpeed);
+		if (TargetAlpha >= 1)
+			Irene->IreneAttack->SetFollowTargetAlpha(1);
+		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
+		Irene->GetCapsuleComponent()->SetRelativeLocation(Target);
 
-		if (FVector::Dist(tar, Irene->IreneAttack->TargetPosVec) <= 50)
+		if (FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50)
 		{
 			Irene->IreneAttack->DoAttack();
 		}
@@ -447,9 +448,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 				AttributeForm = 2;
 			}
 
-			FAttackDataTable* Table =  Irene->IreneAttack->GetNameAtAttackDataTable(FName(AttributeName));	
-			FAttackDataTable* NextTable =  Irene->IreneAttack->GetNameAtAttackDataTable(FName(AttributeName));	
-
 			bUseLeftButton = true;
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.15f;
@@ -504,7 +502,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		{
 			ActionForm = FName("ActionKeyword_1_E");
 		}
-		const FAttackDataTable* AttackTable = Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm);
+		const TSharedPtr<FAttackDataTable> AttackTable = MakeShared<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
 		if (AttackTable != nullptr)
 		{
 			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
@@ -531,7 +529,7 @@ void UIreneInputInstance::RightButton(float Rate)
 					Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
 					Irene->IreneAttack->AttackStartComboState();
 
-					switch (Irene->IreneAttack->Attribute)
+					switch (Irene->IreneAttack->GetAttribute())
 					{
 					case EAttributeKeyword::e_None:
 						break;
@@ -610,16 +608,12 @@ void UIreneInputInstance::MouseWheel(float Rate)
 	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
 }
 
-void UIreneInputInstance::MainKeyword()
-{
-
-}
 void UIreneInputInstance::FireKeywordReleased()
 {
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(!FireStartTimer.IsValid())
+		if(!FireStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Fire)
 			ChangeForm(EAttributeKeyword::e_Fire);
 	}
 }
@@ -628,7 +622,7 @@ void UIreneInputInstance::WaterKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{
-		if(!WaterStartTimer.IsValid())
+		if(!WaterStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)
 			ChangeForm(EAttributeKeyword::e_Water);
 	}
 }
@@ -637,23 +631,23 @@ void UIreneInputInstance::ElectricKeywordReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
 		   Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
 	{		
-		if(!ElectricStartTimer.IsValid())
+		if(!ElectricStartTimer.IsValid() && Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_Thunder)
 			ChangeForm(EAttributeKeyword::e_Thunder);
 	}
 }
 void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 {
-	Irene->IreneAttack->Attribute = Value;
+	Irene->IreneAttack->SetAttribute(Value);
 
-	if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Fire)
+	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
 	}
-	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Water)
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
 	}
-	else if(Irene->IreneAttack->Attribute == EAttributeKeyword::e_Thunder)
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
 	}
@@ -669,7 +663,7 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	{
 		ElectricStartTimer.Invalidate();
 	}) , Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Electric_Form"))->Gauge_C_Time, false);
-	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->Attribute);
+	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
 	Irene->FOnAttributeChange.Broadcast();
 }
 
