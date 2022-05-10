@@ -276,6 +276,7 @@ void AMonster::CalcDef()
 	{
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
+		PlayGroggyAnim();
 		bIsGroggy = true;
 	}
 
@@ -301,7 +302,9 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Bouldelith = Cast<ABouldelith>(this);
 		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
 
-		BdAIController->Attacked();
+
+		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
+			BdAIController->Attacked();
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)
@@ -345,6 +348,7 @@ void AMonster::CalcHp(float Damage)
 		SetActive();
 
 		MonsterAIController->Death();
+		PlayDeathAnim();
 		return;
 	}
 }

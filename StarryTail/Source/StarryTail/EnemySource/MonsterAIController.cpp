@@ -37,16 +37,10 @@ void AMonsterAIController::Groggy()
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
-
-	auto Monster = Cast<AMonster>(GetPawn());
-	Monster->PlayGroggyAnim();
 }
 void AMonsterAIController::Death()
 {
 	Blackboard->SetValueAsBool(IsDeadKey, true);
-
-	auto Monster = Cast<AMonster>(GetPawn());
-	Monster->PlayDeathAnim();
 }
 void AMonsterAIController::SetPlayer()
 {
@@ -58,6 +52,8 @@ void AMonsterAIController::SetPlayer()
 	{
 		STARRYLOG(Error, TEXT("Not Found STGameInstance"));
 	}
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->SetIsBattleState(true);
 	Blackboard->SetValueAsObject(PlayerKey, GameInstance->GetPlayer());
 }
 void AMonsterAIController::SetFind()

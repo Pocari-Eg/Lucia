@@ -12,9 +12,7 @@
  * 
  */
 DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack1EndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack2EndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack3EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 
 UCLASS()
 class STARRYTAIL_API ABouldelith : public AMonster
@@ -34,6 +32,9 @@ public:
 	void Attack1();
 	void Attack2();
 	void Attack3();
+	void Attack4();
+
+	void AttackCheck1();
 
 	void Backstep();
 
@@ -49,6 +50,8 @@ public:
 	void SetUsePatrol(ABouldelithPatrolTarget* PatrolTarget);
 
 	float GetAnotherMonsterStateCheckRange();
+
+	void SetIsChangeBattleRunStateToAttackedState(bool Value);
 	bool GetIsChangeBattleRunStateToAttackedState();
 
 	int GetAttackFailedStack();
@@ -60,9 +63,10 @@ public:
 	void SetIsUseBackstep(bool Value);
 	//Var
 	FBackstepEndDelegate BackstepEnd;
-	FAttack1EndDelegate Attack1End;
-	FAttack2EndDelegate Attack2End;
-	FAttack3EndDelegate Attack3End;
+	FAttackEndDelegate Attack1End;
+	FAttackEndDelegate Attack2End;
+	FAttackEndDelegate Attack3End;
+	FAttackEndDelegate Attack4End;
 private:
 	//Function
 	

@@ -10,9 +10,7 @@
  * 
  */
 DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack1EndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack2EndDelegate);
-DECLARE_MULTICAST_DELEGATE(FAttack3EndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 
 
 UCLASS()
@@ -26,8 +24,10 @@ public:
 	void PlayAttack1Montage();
 	void PlayAttack2Montage();
 	void PlayAttack3Montage();
+	void PlayAttack4Montage();
 
 	void PlayAttackedMontage() override;
+	void PlayBrokenMontage();
 
 	void PlayAttack1ComboMontage();
 	void PlayAttack2ComboMontage();
@@ -37,11 +37,14 @@ public:
 	void UpgradeBattleRun();
 	bool CheckAttackedMontagePlaying() override;
 	bool GetAttackIsPlaying() override;
+	bool GetBackstepIsPlaying();
+	bool GetBattleRunIsPlaying();
 	//Var
 	FBackstepEndDelegate BackstepEnd;
-	FAttack1EndDelegate Attack1End;
-	FAttack2EndDelegate Attack2End;
-	FAttack3EndDelegate Attack3End;
+	FAttackEndDelegate Attack1End;
+	FAttackEndDelegate Attack2End;
+	FAttackEndDelegate Attack3End;
+	FAttackEndDelegate Attack4End;
 private:
 	UFUNCTION()
 		void AnimNotify_BackstepEnd();
@@ -51,6 +54,8 @@ private:
 		void AnimNotify_Attack2End();
 	UFUNCTION()
 		void AnimNotify_Attack3End();
+	UFUNCTION()
+		void AnimNotify_Attack4End();
 	//Var
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* IdleMontage1;
@@ -62,6 +67,8 @@ private:
 		UAnimMontage* AttackMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackMontage3;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackMontage4;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackComboAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackComboMontage1;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackComboAnimation, Meta = (AllowPrivateAccess = true))
@@ -78,6 +85,8 @@ private:
 		UAnimMontage* BattleRightWalkMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BackstepAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* BackstepMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BrokenAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* BrokenMontage;
 
 
 public:

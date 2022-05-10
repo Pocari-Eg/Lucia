@@ -38,7 +38,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.ViewAngle = 180.0f;
 	MonsterInfo.ViewRange = 1000.0f;
 	MonsterInfo.ViewHeight = 200.0f;
-	MonsterInfo.MeleeAttackRange = 100.0f;
+	MonsterInfo.MeleeAttackRange = 300.0f;
 	MonsterInfo.TraceRange = 3000.0f;
 
 	MonsterInfo.KnockBackPower = 10.0f;
@@ -129,6 +129,66 @@ void ABouldelith::Attack3()
 	MonsterAIController->StopMovement();
 	bIsRush = true;
 }
+void ABouldelith::Attack4()
+{
+	BdAnimInstance->PlayAttack4Montage();
+	MonsterAIController->StopMovement();
+}
+void ABouldelith::AttackCheck1()
+{
+	FHitResult Hit;
+
+	//By ¼º¿­Çö
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeSphere(150.0f),
+		Params);
+
+	if (bTestMode)
+	{
+		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
+		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			150.0f,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
+	}
+
+	if (bResult)
+	{
+		auto Player = Cast<AIreneCharacter>(Hit.Actor);
+		if (nullptr == Player)
+			return;
+
+		if (bIsSpark)
+		{
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+			CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
+		}
+		else
+		{
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+		}
+	}
+	else
+	{
+		BouldelithInfo.AttackFailedStack++;
+	}
+}
 #pragma endregion
 
 #pragma region Backstep
@@ -179,6 +239,10 @@ float ABouldelith::GetBattleRunSpeed()
 void ABouldelith::ResetBattleRunSpeed()
 {
 	BouldelithInfo.CurrentBattleRunSpeed = BouldelithInfo.DefaultBattleRunSpeed;
+}
+void ABouldelith::SetIsChangeBattleRunStateToAttackedState(bool Value)
+{
+	bIsChangeBattleRunStateToAttackedState = Value;
 }
 bool ABouldelith::GetIsChangeBattleRunStateToAttackedState()
 {
@@ -245,10 +309,26 @@ void ABouldelith::BeginPlay()
 		Attack3End.Broadcast();
 		bIsRush = false;
 		});
+	BdAnimInstance->Attack4End.AddLambda([this]() -> void {
+		Attack4End.Broadcast();
+
+		});
 	BdAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
 		AttackedEnd.Broadcast();
 		});
+	/*
+	BdAnimInstance->Death.AddLambda([this]() -> void {
+		if (bIsDead)
+		{
+			bDeadWait = true;
+			SetActorEnableCollision(false);
+			BdAnimInstance->Montage_Stop(500.0f, BdAnimInstance->GetCurrentActiveMontage());
+		}
+		});
+		*/
+
+	BdAnimInstance->Attack.AddUObject(this, &ABouldelith::AttackCheck1);
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

@@ -36,6 +36,11 @@ void ABdAIController::Attacked()
 
 	if (Bouldelith->GetBouldelithAnimInstance()->GetAttackIsPlaying())
 		return;
+	if (Bouldelith->GetBouldelithAnimInstance()->GetBackstepIsPlaying())
+		return;
+
+	if (Bouldelith->GetBouldelithAnimInstance()->GetBattleRunIsPlaying())
+		Bouldelith->SetIsChangeBattleRunStateToAttackedState(true);
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 

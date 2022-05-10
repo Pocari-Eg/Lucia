@@ -61,6 +61,10 @@ void UBdAnimInstance::PlayAttack3Montage()
 {
 	Montage_Play(AttackMontage3);
 }
+void UBdAnimInstance::PlayAttack4Montage()
+{
+	Montage_Play(AttackMontage4);
+}
 void UBdAnimInstance::PlayAttack1ComboMontage()
 {
 	Montage_Play(AttackComboMontage1);
@@ -75,6 +79,10 @@ void UBdAnimInstance::PlayAttackedMontage()
 	if (CheckAttackedMontagePlaying())
 		return;
 	Montage_Play(AttackedMontage, 1.0f);
+}
+void UBdAnimInstance::PlayBrokenMontage()
+{
+	Montage_Play(BrokenMontage, 1.0f);
 }
 
 void UBdAnimInstance::UpgradeBattleRun()
@@ -93,6 +101,8 @@ bool UBdAnimInstance::CheckAttackedMontagePlaying()
 		return true;
 	if (Montage_IsPlaying(GroggyMontage))
 		return true;
+	if (Montage_IsPlaying(BrokenMontage))
+		return true;
 
 	return false;
 }
@@ -104,9 +114,29 @@ bool UBdAnimInstance::GetAttackIsPlaying()
 		return true;
 	if (Montage_IsPlaying(AttackMontage3))
 		return true;
+	if (Montage_IsPlaying(AttackMontage4))
+		return true;
 
 	return false;
 
+}
+bool UBdAnimInstance::GetBackstepIsPlaying()
+{
+	if (Montage_IsPlaying(BackstepMontage))
+		return true;
+
+	return false;
+}
+bool UBdAnimInstance::GetBattleRunIsPlaying()
+{
+	if (Montage_IsPlaying(BattleRunMontage1))
+		return true;
+	if (Montage_IsPlaying(BattleRunMontage2))
+		return true;
+	if (Montage_IsPlaying(BattleRunMontage3))
+		return true;
+
+	return false;
 }
 void UBdAnimInstance::AnimNotify_BackstepEnd()
 {
@@ -123,4 +153,8 @@ void UBdAnimInstance::AnimNotify_Attack2End()
 void UBdAnimInstance::AnimNotify_Attack3End()
 {
 	Attack3End.Broadcast();
+}
+void UBdAnimInstance::AnimNotify_Attack4End()
+{
+	Attack4End.Broadcast();
 }
