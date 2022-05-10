@@ -80,7 +80,7 @@ void UIreneUIManager::HPRecoveryWaitStart()
 {
 
 	if(!Irene->HpRecoveryData.bIsRecovering&& !IsHpFull())
-	GetWorld()->GetTimerManager().SetTimer(HpRecorveryWaitTimerHandle, this, &UIreneUIManager::HPRecoveryWaiting, 1.0f, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(HpRecoveryWaitTimerHandle, this, &UIreneUIManager::HPRecoveryWaiting, 1.0f, true, 0.0f);
 }
 void UIreneUIManager::HPRecoveryWaiting()
 {
@@ -100,7 +100,7 @@ void UIreneUIManager::HPRecoveryWaiting()
 void UIreneUIManager::HPRecoveryWaitCancel()
 {
 	CurRecoverWaitTime = 0;
-	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryWaitTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(HpRecoveryWaitTimerHandle);
 	IsConsecutiveIdle = false;
 }
 void UIreneUIManager::HPRecoveringStart()
@@ -108,15 +108,15 @@ void UIreneUIManager::HPRecoveringStart()
 	Irene->HpRecoveryData.bIsRecovering = true;
 	HPRecoveryWaitCancel();
 	CurRecoverTime = Irene->HpRecoveryData.Speed;
-	RemainingRecovry = Irene->HpRecoveryData.Amount;
+	RemainingRecovery = Irene->HpRecoveryData.Amount;
 	OnHpChanged.Broadcast();
-	GetWorld()->GetTimerManager().SetTimer(HpRecorveryTimerHandle, this, &UIreneUIManager::HPRecovering,1.0f , true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(HpRecoveryTimerHandle, this, &UIreneUIManager::HPRecovering,1.0f , true, 0.0f);
 }
 void UIreneUIManager::HPRecovering()
 {
 	if (Irene->HpRecoveryData.bIsRecovering) {
-		int CurRecoveryAmount = RemainingRecovry / CurRecoverTime;
-		RemainingRecovry -= CurRecoveryAmount;
+		const int CurRecoveryAmount = RemainingRecovery / CurRecoverTime;
+		RemainingRecovery -= CurRecoveryAmount;
 		if (!IsHpFull())
 		{
 			Irene->IreneData.CurrentHP += CurRecoveryAmount;
@@ -126,8 +126,8 @@ void UIreneUIManager::HPRecovering()
 		if (CurRecoverTime > 1)CurRecoverTime--;
 		else {
 			
-			GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
-			RemainingRecovry = 0;
+			GetWorld()->GetTimerManager().ClearTimer(HpRecoveryTimerHandle);
+			RemainingRecovery = 0;
 			Irene->HpRecoveryData.bIsRecovering = false;
 			IsConsecutiveIdle = true;
 			HPRecoveryWaitStart();
@@ -137,8 +137,8 @@ void UIreneUIManager::HPRecovering()
 }
 void UIreneUIManager::HpRecoveringCancel()
 {
-	GetWorld()->GetTimerManager().ClearTimer(HpRecorveryTimerHandle);
-	RemainingRecovry = 0;
+	GetWorld()->GetTimerManager().ClearTimer(HpRecoveryTimerHandle);
+	RemainingRecovery = 0;
 	Irene->HpRecoveryData.bIsRecovering = false;
 	IsConsecutiveIdle = false;
 	OnHpChanged.Broadcast();
@@ -156,7 +156,7 @@ bool UIreneUIManager::IsHpFull()
 }
 float UIreneUIManager::GetHpRecoveryRatio()
 {
-	return ((float)RemainingRecovry < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovry) / Irene->IreneData.MaxHP;
+	return ((float)RemainingRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovery) / Irene->IreneData.MaxHP;
 }
 
 void UIreneUIManager::PauseWidgetOn()
