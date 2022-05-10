@@ -64,17 +64,14 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetCameraRot = FRotator::ZeroRotator;
 
 	bUseMP = false;
-	UseMP = 0.0f;
+	UseMPSize = 0.0f;
 }
 #pragma region Attack
-float UIreneAttackInstance::GetATK()
+float UIreneAttackInstance::GetATK()const
 {
 	return Irene->IreneData.Strength;
 }
-EAttributeKeyword UIreneAttackInstance::GetAttribute()
-{
-	return Attribute;
-}
+
 int UIreneAttackInstance::GetAttackDirection()
 {
 	// 0 == Right to Left
@@ -130,7 +127,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneInput->bUseLeftButton = false;
 	Irene->IreneInput->bUseRightButton = false;
 	bUseMP = false;
-	UseMP = 0.0f;
+	UseMPSize = 0.0f;
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
@@ -255,7 +252,7 @@ void UIreneAttackInstance::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 				{
-					Mob->SetAttackedInfo(bUseMP, UseMP, (EAttackedDirection)GetAttackDirection());
+					Mob->SetAttackedInfo(bUseMP, UseMPSize, (EAttackedDirection)GetAttackDirection());
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}
@@ -263,7 +260,7 @@ void UIreneAttackInstance::DoAttack()
 	}
 
 	// 마나 회복
-	if (bUseMP == false && UseMP == 0.0f)
+	if (bUseMP == false && UseMPSize == 0.0f)
 	{
 		if(GetAttribute() == EAttributeKeyword::e_None)
 		{
