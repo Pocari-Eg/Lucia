@@ -275,6 +275,36 @@ float ABouldelith::GetHpPercent()
 {
 	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
 }
+void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (bIsRush)
+	{
+		if (!bIsPlayerRushHit)
+		{
+			if (Cast<AIreneCharacter>(OtherActor))
+			{
+				auto Player = Cast<AIreneCharacter>(OtherActor);
+
+				if (bIsSpark)
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3), NULL, this, NULL);
+				}
+				bIsPlayerRushHit = true;
+			}
+		}
+		if (!bIsWallRushHit)
+		{
+			
+			//UGameplayStatics::ApplyDamage(this, (MonsterInfo.Atk * 3), NULL, this, NULL);
+			//bIsWallRushHit = true;
+		}
+	}
+}
 void ABouldelith::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -308,6 +338,8 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Attack3End.AddLambda([this]() -> void {
 		Attack3End.Broadcast();
 		bIsRush = false;
+		bIsPlayerRushHit = false;
+		bIsWallRushHit = false;
 		});
 	BdAnimInstance->Attack4End.AddLambda([this]() -> void {
 		Attack4End.Broadcast();
@@ -317,7 +349,6 @@ void ABouldelith::BeginPlay()
 		bIsAttacked = false;
 		AttackedEnd.Broadcast();
 		});
-	/*
 	BdAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
 		{
@@ -326,8 +357,6 @@ void ABouldelith::BeginPlay()
 			BdAnimInstance->Montage_Stop(500.0f, BdAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-		*/
-
 	BdAnimInstance->Attack.AddUObject(this, &ABouldelith::AttackCheck1);
 }
 void ABouldelith::PossessedBy(AController* NewController)
@@ -340,6 +369,8 @@ void ABouldelith::PossessedBy(AController* NewController)
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABouldelith::OnHit);
 }
 void ABouldelith::PostInitializeComponents()
 {

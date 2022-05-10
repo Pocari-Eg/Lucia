@@ -69,7 +69,8 @@ public:
 	FAttackEndDelegate Attack4End;
 private:
 	//Function
-	
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 	//Var
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BouldelithInfo, Meta = (AllowPrivateAccess = true))
 		FBouldelithDataStruct BouldelithInfo;
@@ -84,6 +85,8 @@ private:
 	bool bIsUseBackstep;
 
 	bool bIsRush;
+	bool bIsPlayerRushHit;
+	bool bIsWallRushHit;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

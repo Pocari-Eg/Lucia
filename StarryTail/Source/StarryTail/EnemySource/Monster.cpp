@@ -319,7 +319,7 @@ void AMonster::CalcHp(float Damage)
 {
 	Damage = FMath::Abs(Damage);
 
-	if (CheckPlayerIsBehindMonster())
+	if (CheckPlayerIsBehindMonster() && !bIsBattleState)
 	{
 		MonsterInfo.CurrentHp -= Damage * 1.5f;
 	}
