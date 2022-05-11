@@ -190,6 +190,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneState->SetState(UIdleState::GetInstance());
 	IreneState->Init(this);
 	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
+	IreneAnim->Init(this);
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
@@ -398,11 +399,12 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
+
 	TSharedPtr<FAttackDataTable> Table = MakeShared<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
 	if (Table != nullptr)
 	{
 		IreneData.Strength = Table->ATTACK_DAMAGE_1;
-
+	
 		// 마나 사용 조건
 		if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
@@ -427,7 +429,7 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->SetUseMP(false);
 			IreneAttack->SetUseMPSize(0);
 		}
-
+	
 		IreneUIManager->OnMpChanged.Broadcast();
 	}
 

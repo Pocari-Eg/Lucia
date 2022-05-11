@@ -23,7 +23,9 @@ class STARRYTAIL_API UIreneAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 public:
-
+	UPROPERTY()
+	class AIreneCharacter* Irene;
+	
 protected:
 
 private:
@@ -40,9 +42,17 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EStateEnum IreneState;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* AttackMontage;
+	UAnimMontage* FireAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* EffectAttackMontage;
+	UAnimMontage* WaterAttackMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* ThunderAttackMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* FireSkillMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* WaterSkillMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* ThunderSkillMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EAttributeKeyword Attribute;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -51,6 +61,10 @@ private:
 	FVector TargetMonster;
     	
 public:
+	void Init(AIreneCharacter* Value);
+	void SetIreneCharacter(AIreneCharacter* Value);
+	void InitMemberVariable();
+	
 	UIreneAnimInstance();
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 

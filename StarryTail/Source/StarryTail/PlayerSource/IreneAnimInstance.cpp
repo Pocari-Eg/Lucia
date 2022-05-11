@@ -3,9 +3,20 @@
 #pragma once
 
 #include "IreneAnimInstance.h"
-#include "IreneFSM.h"
 
-UIreneAnimInstance::UIreneAnimInstance()
+#include "IreneAttackInstance.h"
+#include "IreneCharacter.h"
+
+void UIreneAnimInstance::Init(AIreneCharacter* Value)
+{
+	SetIreneCharacter(Value);
+	InitMemberVariable();
+}
+void UIreneAnimInstance::SetIreneCharacter(AIreneCharacter* Value)
+{
+	Irene = Value;
+}
+void UIreneAnimInstance::InitMemberVariable()
 {
 	CurrentPawnSpeed = 0.0f;
 	IsInAir = false;
@@ -15,19 +26,40 @@ UIreneAnimInstance::UIreneAnimInstance()
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
 	TargetMonster = FVector::ZeroVector;
-	//static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_ATTACK_MONTAGE(TEXT("/Game/Animation/Irene/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+}
 
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Effect_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+UIreneAnimInstance::UIreneAnimInstance()
+{
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
 
-	if(Attack_Montage.Succeeded())
+	if(Fire_Attack_Montage.Succeeded())
 	{
-		AttackMontage = Attack_Montage.Object;
+		FireAttackMontage = Fire_Attack_Montage.Object;
 	}
-	if (Effect_Attack_Montage.Succeeded())
+	if (Fire_Skill_Montage.Succeeded())
 	{
-		EffectAttackMontage = Effect_Attack_Montage.Object;
+		FireSkillMontage = Fire_Skill_Montage.Object;
+	}
+	if(Water_Attack_Montage.Succeeded())
+	{
+		WaterAttackMontage = Water_Attack_Montage.Object;
+	}
+	if (Water_Skill_Montage.Succeeded())
+	{
+		WaterSkillMontage = Water_Skill_Montage.Object;
+	}
+	if(Thunder_Attack_Montage.Succeeded())
+	{
+		ThunderAttackMontage = Thunder_Attack_Montage.Object;
+	}
+	if (Thunder_Skill_Montage.Succeeded())
+	{
+		ThunderSkillMontage = Thunder_Skill_Montage.Object;
 	}
 }
 
@@ -49,22 +81,47 @@ void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 
 void UIreneAnimInstance::PlayAttackMontage()
 {
-	Montage_Play(AttackMontage, 1.0f);
+	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		Montage_Play(FireAttackMontage, 1.0f);
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		Montage_Play(WaterAttackMontage, 1.0f);
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		Montage_Play(ThunderAttackMontage, 1.0f);
+
 }
 void UIreneAnimInstance::PlayEffectAttackMontage()
 {
-	Montage_Play(EffectAttackMontage, 1.0f);
+	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		Montage_Play(FireSkillMontage, 1.0f);
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		Montage_Play(WaterSkillMontage, 1.0f);
+	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		Montage_Play(ThunderSkillMontage, 1.0f);
 }
 
 void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), AttackMontage);
+	{
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireAttackMontage);
+		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterAttackMontage);
+		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
+	}
 }
 void UIreneAnimInstance::JumpToEffectAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), EffectAttackMontage);
+	{
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireSkillMontage);
+		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterSkillMontage);
+		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderSkillMontage);
+	}
 }
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck() const
