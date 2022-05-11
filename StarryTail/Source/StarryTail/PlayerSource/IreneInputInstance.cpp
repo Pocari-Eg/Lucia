@@ -709,7 +709,6 @@ void UIreneInputInstance::DodgeKeyword()
 						Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 					}
 				}), WaitTime, false);
-			Irene->ChangeStateAndLog(UDodgeState::GetInstance());
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
@@ -799,6 +798,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 			WaterDodgeEffect->DestroyComponent(true);
 			WaterDodgeEffect = nullptr;
 		}
+		Irene->GetMesh()->SetVisibility(true);
 	}
 }
 

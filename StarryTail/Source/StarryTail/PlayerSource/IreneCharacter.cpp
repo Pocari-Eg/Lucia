@@ -29,7 +29,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/B_Idle.B_Idle"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Animation/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -38,16 +38,19 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
-		const FName WeaponSocket(TEXT("hand_rSocket"));
+		const FName WeaponSocket(TEXT("hand_rSwordSocket"));
 		if (GetMesh()->DoesSocketExist(WeaponSocket))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/Irene/sword.sword"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/Irene/Weapon/Sword.Sword"));
 			if (SK_WEAPON.Succeeded())
 			{
 				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
 			}
 			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+			//콜리전 적용
+			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+			Weapon->SetGenerateOverlapEvents(false);
 		}
 		
 		//카메라
@@ -61,10 +64,6 @@ AIreneCharacter::AIreneCharacter()
 			//SpringArmComp->CameraLagSpeed = 0.0f;
 			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
 		//}
-
-		//콜리전 적용
-		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
-		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

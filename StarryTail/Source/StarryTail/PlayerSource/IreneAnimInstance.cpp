@@ -30,12 +30,12 @@ void UIreneAnimInstance::InitMemberVariable()
 
 UIreneAnimInstance::UIreneAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneBaseAttack_Montage.IreneBaseAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneMagicAttack1_Montage.IreneMagicAttack1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireAttack_Montage.IreneFireAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireAttack_Montage.IreneFireAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneWaterAttack_Montage.IreneWaterAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneWaterAttack_Montage.IreneWaterAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderAttack_Montage.IreneThunderAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderAttack_Montage.IreneThunderAttack_Montage"));
 
 	if(Fire_Attack_Montage.Succeeded())
 	{
