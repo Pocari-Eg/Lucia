@@ -41,7 +41,9 @@ private:
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-
+	// 공격 연속 입력 지연
+	FTimerHandle SkillWaitHandle;
+	
 	// 차징 중인지
 	bool IsCharging;
 	// 차징 시간
@@ -123,10 +125,9 @@ public:
 	bool GetStartJump()const{return bStartJump;}
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
-	
+
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
-#pragma endregion GetSet
-	
+#pragma endregion GetSet	
 };

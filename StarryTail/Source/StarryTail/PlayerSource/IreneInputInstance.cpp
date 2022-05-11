@@ -502,7 +502,7 @@ void UIreneInputInstance::RightButton(float Rate)
 	// 	{
 	// 		ActionForm = FName("ActionKeyword_1_E");
 	// 	}
-	// 	const TSharedPtr<FAttackDataTable> AttackTable = MakeShared<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
+	// 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
 	// 	if (AttackTable != nullptr)
 	// 	{
 	// 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
@@ -560,7 +560,7 @@ void UIreneInputInstance::RightButtonPressed()
 		Irene->IreneState->GetStateToString().Compare(FString("Fall")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton)
+		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton && !SkillWaitHandle.IsValid())
 	{
 		Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
 		IsCharging = true;
@@ -573,8 +573,14 @@ void UIreneInputInstance::RightButtonReleased()
 	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Fall")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton)
+		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton && !SkillWaitHandle.IsValid())
 	{
+		// 우클릭 쿨타임
+		GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			SkillWaitHandle.Invalidate();
+		}) , 10, false);
+		
 		FName ActionForm = FName("");
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
@@ -588,24 +594,24 @@ void UIreneInputInstance::RightButtonReleased()
 		{
 			ActionForm = FName("ActionKeyword_1_E");
 		}
-		const TSharedPtr<FAttackDataTable> AttackTable = MakeShared<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
-		if (AttackTable != nullptr)
+		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
+		if (AttackTable != nullptr && bUseRightButton)
 		{
 			IsCharging = false;
 			if(ChargingTime > 4.0f)
 			{
 				//Irene->IreneData.Strength = 100;
-				Irene->IreneAnim->PlayEffectAttackMontage();
+				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
 			else if(ChargingTime > 2.0f)
 			{
 				//Irene->IreneData.Strength = 60;
-				Irene->IreneAnim->PlayEffectAttackMontage();
+				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
 			else
 			{
 				//Irene->IreneData.Strength = 5;
-				Irene->IreneAnim->PlayEffectAttackMontage();
+				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
 			ChargingTime = 0.0f;
 		}		

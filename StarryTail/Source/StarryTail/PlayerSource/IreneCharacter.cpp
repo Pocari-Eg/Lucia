@@ -382,11 +382,8 @@ void AIreneCharacter::FindNearMonster()
 		IreneAttack->TargetMonster = nullptr;
 	}
 	FString AttributeForm = GetAnimName().ToString();
-	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_None && (GetAnimName()!=FName("B_Attack_5_N") && GetAnimName()!=FName("ActionKeyword_1_N")))
-	{
-		AttributeForm = GetAnimName().ToString() + FString("_N");
-	}
-	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
+
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_F");
 	}
@@ -398,8 +395,7 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
-
-	TSharedPtr<FAttackDataTable> Table = MakeShared<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
+	TUniquePtr<FAttackDataTable> Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
 	if (Table != nullptr)
 	{
 		IreneData.Strength = Table->ATTACK_DAMAGE_1;
@@ -619,6 +615,7 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->DoAttack();
 		}
 	}
+	IreneInput->bUseRightButton = false;
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {

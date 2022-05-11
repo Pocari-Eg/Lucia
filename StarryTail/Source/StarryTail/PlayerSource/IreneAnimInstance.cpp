@@ -89,7 +89,7 @@ void UIreneAnimInstance::PlayAttackMontage()
 		Montage_Play(ThunderAttackMontage, 1.0f);
 
 }
-void UIreneAnimInstance::PlayEffectAttackMontage()
+void UIreneAnimInstance::PlaySkillAttackMontage()
 {
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		Montage_Play(FireSkillMontage, 1.0f);

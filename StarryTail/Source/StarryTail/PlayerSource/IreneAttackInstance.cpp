@@ -125,7 +125,6 @@ void UIreneAttackInstance::AttackEndComboState()
 	
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 	Irene->IreneInput->bUseLeftButton = false;
-	Irene->IreneInput->bUseRightButton = false;
 	bUseMP = false;
 	UseMPSize = 0.0f;
 	Irene->IreneData.CanNextCombo = false;

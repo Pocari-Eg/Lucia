@@ -69,7 +69,7 @@ public:
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 
 	void PlayAttackMontage();
-	void PlayEffectAttackMontage();
+	void PlaySkillAttackMontage();
 	void JumpToAttackMontageSection(const int32 NewSection);
 	void JumpToEffectAttackMontageSection(const int32 NewSection);
 	
