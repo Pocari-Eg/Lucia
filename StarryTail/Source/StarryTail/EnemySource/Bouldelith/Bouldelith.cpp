@@ -50,7 +50,8 @@ void ABouldelith::InitBouldelithInfo()
 {
 	BouldelithInfo.AnotherMonsterStateCheckRange = 1000.0f;
 	BouldelithInfo.DefaultBattleRunSpeed = 450.0f;
-	BouldelithInfo.BackstepCoolTime = 5.0f;
+	BouldelithInfo.BackstepCoolTime = 10.0f;
+	BouldelithInfo.BrokenAnimePlayRate = 1.3f;
 }
 void ABouldelith::InitCollision()
 {
@@ -189,6 +190,30 @@ void ABouldelith::AttackCheck1()
 		BouldelithInfo.AttackFailedStack++;
 	}
 }
+void ABouldelith::AttackCheck4()
+{
+	TArray<FOverlapResult> OverlapResults = DetectPlayer(10);
+	if (OverlapResults.Num() != 0)
+	{
+		for (auto const& Result : OverlapResults)
+		{
+			auto Player = Cast<AIreneCharacter>(Result.Actor);
+
+			if (!Player->GetMovementComponent()->IsFalling())
+			{
+				if (bIsSpark)
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2), NULL, this, NULL);
+				}
+			}
+		}
+	}
+}
 #pragma endregion
 
 #pragma region Backstep
@@ -299,9 +324,24 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 		}
 		if (!bIsWallRushHit)
 		{
-			
-			//UGameplayStatics::ApplyDamage(this, (MonsterInfo.Atk * 3), NULL, this, NULL);
-			//bIsWallRushHit = true;
+			if (Cast<UStaticMeshComponent>(OtherComponent))
+			{
+				auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
+				FString FindName = "Wall";
+				FString CompCollisionName = MeshComponent->GetCollisionProfileName().ToString();
+
+				if (FindName == CompCollisionName)
+				{
+					STARRYLOG(Log, TEXT("2"));
+					CalcHp(MonsterInfo.Atk * 3);
+					if (!bIsDead)
+					{
+						MonsterAIController->Groggy();
+						MonsterAnimInstance->PlayGroggyMontage();
+					}
+					bIsWallRushHit = true;
+				}
+			}
 		}
 	}
 }
@@ -317,6 +357,21 @@ void ABouldelith::Tick(float DeltaTime)
 		{
 			bIsUseBackstep = false;
 			BackstepCoolTimer = 0.0f;
+		}
+	}
+	if (!bIsBroken)
+	{
+		if (bIsDead)
+			return;
+
+		if (GetHpPercent() <= 40)
+		{
+			auto BdAIController = Cast<ABdAIController>(MonsterAIController);
+			BdAIController->Broken();
+			BdAnimInstance->PlayBrokenMontage();
+			MonsterInfo.DefaultAnimePlayRate = BouldelithInfo.BrokenAnimePlayRate;
+			BdAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
+			bIsBroken = true;
 		}
 	}
 }
@@ -358,6 +413,7 @@ void ABouldelith::BeginPlay()
 		}
 		});
 	BdAnimInstance->Attack.AddUObject(this, &ABouldelith::AttackCheck1);
+	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

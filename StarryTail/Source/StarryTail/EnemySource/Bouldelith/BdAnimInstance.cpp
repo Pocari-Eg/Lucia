@@ -5,24 +5,24 @@
 
 void UBdAnimInstance::PlayDetectMontage()
 {
-	Montage_Play(DetectMontage);
+	Montage_Play(DetectMontage, 1.0f);
 }
 void UBdAnimInstance::PlayDeathMontage()
 {
-	Montage_Play(DeathMontage);
+	Montage_Play(DeathMontage, 1.0f);
 }
 void UBdAnimInstance::PlayBattleRunMontage()
 {
 	if (Montage_IsPlaying(BattleRunMontage1))
 		return;
 
-	Montage_Play(BattleRunMontage1);
+	Montage_Play(BattleRunMontage1, PlayRate);
 }
 void UBdAnimInstance::PlayBackstepMontage()
 {
 	if (Montage_IsPlaying(BackstepMontage))
 		return;
-	Montage_Play(BackstepMontage);
+	Montage_Play(BackstepMontage, PlayRate);
 }
 void UBdAnimInstance::PlayIdleMontage()
 {
@@ -44,34 +44,34 @@ void UBdAnimInstance::PlayBattleWalkMontage()
 	auto Random = FMath::RandRange(0, 1);
 
 	if (Random == 0)
-		Montage_Play(BattleLeftWalkMontage);
+		Montage_Play(BattleLeftWalkMontage, PlayRate);
 	else
-		Montage_Play(BattleRightWalkMontage);
+		Montage_Play(BattleRightWalkMontage, PlayRate);
 }
 #pragma region Attack
 void UBdAnimInstance::PlayAttack1Montage()
 {
-	Montage_Play(AttackMontage1);
+	Montage_Play(AttackMontage1, PlayRate);
 }
 void UBdAnimInstance::PlayAttack2Montage()
 {
-	Montage_Play(AttackMontage2);
+	Montage_Play(AttackMontage2, PlayRate);
 }
 void UBdAnimInstance::PlayAttack3Montage()
 {
-	Montage_Play(AttackMontage3);
+	Montage_Play(AttackMontage3, PlayRate);
 }
 void UBdAnimInstance::PlayAttack4Montage()
 {
-	Montage_Play(AttackMontage4);
+	Montage_Play(AttackMontage4, PlayRate);
 }
 void UBdAnimInstance::PlayAttack1ComboMontage()
 {
-	Montage_Play(AttackComboMontage1);
+	Montage_Play(AttackComboMontage1, PlayRate);
 }
 void UBdAnimInstance::PlayAttack2ComboMontage()
 {
-	Montage_Play(AttackComboMontage2);
+	Montage_Play(AttackComboMontage2, PlayRate);
 }
 #pragma endregion
 void UBdAnimInstance::PlayAttackedMontage()
@@ -91,9 +91,9 @@ void UBdAnimInstance::UpgradeBattleRun()
 		return;
 
 	if (Montage_IsPlaying(BattleRunMontage1))
-		Montage_Play(BattleRunMontage2);
+		Montage_Play(BattleRunMontage2, PlayRate);
 	else if (Montage_IsPlaying(BattleRunMontage2))
-		Montage_Play(BattleRunMontage3);
+		Montage_Play(BattleRunMontage3, PlayRate);
 }
 bool UBdAnimInstance::CheckAttackedMontagePlaying()
 {
@@ -137,6 +137,10 @@ bool UBdAnimInstance::GetBattleRunIsPlaying()
 		return true;
 
 	return false;
+}
+void UBdAnimInstance::AnimNotify_Attack4()
+{
+	Attack4.Broadcast();
 }
 void UBdAnimInstance::AnimNotify_BackstepEnd()
 {

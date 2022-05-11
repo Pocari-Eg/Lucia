@@ -40,12 +40,15 @@ public:
 	bool GetBackstepIsPlaying();
 	bool GetBattleRunIsPlaying();
 	//Var
+	FAttackDelegate Attack4;
 	FBackstepEndDelegate BackstepEnd;
 	FAttackEndDelegate Attack1End;
 	FAttackEndDelegate Attack2End;
 	FAttackEndDelegate Attack3End;
 	FAttackEndDelegate Attack4End;
 private:
+	UFUNCTION()
+		void AnimNotify_Attack4();
 	UFUNCTION()
 		void AnimNotify_BackstepEnd();
 	UFUNCTION()

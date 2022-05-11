@@ -35,6 +35,7 @@ public:
 	void Attack4();
 
 	void AttackCheck1();
+	void AttackCheck4();
 
 	void Backstep();
 
@@ -84,6 +85,7 @@ private:
 	bool bIsChangeBattleRunStateToAttackedState;
 	bool bIsUseBackstep;
 
+	bool bIsBroken;
 	bool bIsRush;
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;

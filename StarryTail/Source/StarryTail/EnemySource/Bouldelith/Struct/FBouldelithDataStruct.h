@@ -20,6 +20,8 @@ public:
 		float DefaultBattleRunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BackstepCoolTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float BrokenAnimePlayRate;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CurrentBattleRunSpeed;

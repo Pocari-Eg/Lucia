@@ -54,6 +54,8 @@ public:
 	void SetIsBattleState(bool Value);
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
+	TArray<FOverlapResult> DetectPlayer(float DetectRange);
+
 
 	void ResetDef();
 

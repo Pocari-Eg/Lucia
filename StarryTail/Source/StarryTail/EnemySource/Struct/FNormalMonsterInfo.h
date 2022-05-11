@@ -64,4 +64,6 @@ public:
 		float DefaultMoveSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultBattleWalkMoveSpeed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float DefaultAnimePlayRate;
 };

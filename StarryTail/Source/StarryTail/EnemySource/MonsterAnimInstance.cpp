@@ -6,7 +6,6 @@
 UMonsterAnimInstance::UMonsterAnimInstance()
 {
 	PlayRate = 1.0f;
-
 	
 }
 void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
