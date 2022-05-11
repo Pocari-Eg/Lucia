@@ -15,8 +15,10 @@ class STARRYTAIL_API ABdAIController : public AMonsterAIController
 	GENERATED_BODY()
 public:
 	ABdAIController();
-
+	
+	void WallGroggy();
 	void Attacked();
+	void Broken();
 
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
@@ -27,6 +29,9 @@ public:
 	static const FName IsAttack2Key;
 	static const FName IsAttack3Key;
 	static const FName IsAttack4Key;
+
+	static const FName IsBrokenKey;
+	static const FName IsWallGroggyKey;
 private:
 	void OnPossess(APawn* InPawn) override;
 };

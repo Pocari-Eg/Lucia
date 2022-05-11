@@ -6,7 +6,6 @@
 UMonsterAnimInstance::UMonsterAnimInstance()
 {
 	PlayRate = 1.0f;
-
 	
 }
 void UMonsterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -32,12 +31,6 @@ void UMonsterAnimInstance::PlayBattleIdleMontage()
 void UMonsterAnimInstance::PlayBattleWalkMontage()
 {
 	Montage_Play(BattleWalkMontage, PlayRate);
-}
-void UMonsterAnimInstance::PlayAttackedMontage()
-{
-	if (CheckAttackedMontagePlaying())
-		return;
-	Montage_Play(AttackedMontage, 1.0f);
 }
 void UMonsterAnimInstance::PlayGroggyMontage()
 {

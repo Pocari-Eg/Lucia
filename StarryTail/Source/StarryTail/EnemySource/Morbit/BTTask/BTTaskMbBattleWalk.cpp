@@ -40,6 +40,7 @@ EBTNodeResult::Type UBTTaskMbBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 	if (Morbit->GetDistanceToPlayer() > OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::TraceRangeKey))
 	{
 		Morbit->Walk();
+		Morbit->SetIsBattleState(false);
 		OwnerComp.GetBlackboardComponent()->SetValueAsObject(AMbAIController::PlayerKey, nullptr);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::ReturnKey, true);
 		return EBTNodeResult::Succeeded;
