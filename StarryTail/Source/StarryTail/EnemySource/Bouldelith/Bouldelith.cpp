@@ -332,11 +332,11 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (FindName == CompCollisionName)
 				{
-					STARRYLOG(Log, TEXT("2"));
 					CalcHp(MonsterInfo.Atk * 3);
 					if (!bIsDead)
 					{
-						MonsterAIController->Groggy();
+						auto BdAIController = Cast<ABdAIController>(MonsterAIController);
+						BdAIController->WallGroggy();
 						MonsterAnimInstance->PlayGroggyMontage();
 					}
 					bIsWallRushHit = true;
