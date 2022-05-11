@@ -131,8 +131,6 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	Irene->IreneUIManager->AttackSoundParameter = 0.0f;
-	Irene->IreneUIManager->AttackSound->SetParameter("Attributes", Irene->IreneUIManager->AttackSoundParameter);
 	if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
 		Irene->ActionEndChangeMoveState();
 }

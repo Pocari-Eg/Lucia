@@ -39,6 +39,9 @@ void UIreneUIManager::Init(AIreneCharacter* Value)
 	SetIreneCharacter(Value);
 	InitMemberVariable();
 	PlayerHudInit();
+
+	AttackSound = new SoundManager(AttackEvent, GetWorld());
+	WalkSound = new SoundManager(WalkEvent, GetWorld());
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
@@ -55,12 +58,14 @@ void UIreneUIManager::Begin()
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
-	AttackSound = new SoundManager(AttackEvent, GetWorld());
-	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 0.0f);
-	WalkSound = new SoundManager(WalkEvent, GetWorld());
+
+
+
 	WalkSound->SetVolume(WalkSoundVolume);
 	AttackSound->SetParameter("Material", 0.0f);
+
+	AttackSound->SetVolume(0.3f);
+	AttackSound->SetParameter("Attributes", 1.0f);
 }
 
 float UIreneUIManager::GetHpRatio()
