@@ -15,6 +15,18 @@ UCLASS()
 class STARRYTAIL_API UIreneAttackInstance : public UObject
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY()
+	// 타겟 몬스터 또는 오브젝트
+	AActor* TargetMonster;
+	
+	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
+	TArray<float> FormGauge;
+
+	FOnFormGaugeChangeDelegate FOnFireGaugeChange;
+	FOnFormGaugeChangeDelegate FOnWaterGaugeChange;
+	FOnFormGaugeChangeDelegate FOnElectricGaugeChange;
+	
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -50,20 +62,6 @@ private:
 
 	bool bUseMP;
 	float UseMPSize;
-	
-public:
-	UPROPERTY()
-	// 타겟 몬스터 또는 오브젝트
-	AActor* TargetMonster;
-	
-	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
-	TArray<float> FormGauge;
-
-	FOnFormGaugeChangeDelegate FOnFireGaugeChange;
-	FOnFormGaugeChangeDelegate FOnWaterGaugeChange;
-	FOnFormGaugeChangeDelegate FOnElectricGaugeChange;
-private:
-	UIreneAttackInstance();
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -106,5 +104,7 @@ public:
 	void SetUseMP(const bool Value){bUseMP = Value;}
 	void SetUseMPSize(const float Value){UseMPSize = Value;}
 #pragma endregion GetSet
-	
+
+private:
+	UIreneAttackInstance();
 };

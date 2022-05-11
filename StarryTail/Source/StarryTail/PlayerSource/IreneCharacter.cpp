@@ -29,7 +29,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/B_Idle.B_Idle"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Animation/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -38,16 +38,33 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
-		const FName WeaponSocket(TEXT("hand_rSocket"));
-		if (GetMesh()->DoesSocketExist(WeaponSocket))
+		WeaponSocketNameArray.Add(TEXT("hand_rSwordSocket"));
+		WeaponSocketNameArray.Add(TEXT("hand_lWandSocket"));
+		WeaponSocketNameArray.Add(TEXT("hand_rSpearSocket"));
+
+		if (GetMesh()->DoesSocketExist(WeaponSocketNameArray[0]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[1]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[2]))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/Irene/sword.sword"));
-			if (SK_WEAPON.Succeeded())
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Sword(TEXT("/Game/Animation/Irene/Weapon/Sword.Sword"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Wand(TEXT("/Game/Animation/Irene/Weapon/Wand.Wand"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Spear(TEXT("/Game/Animation/Irene/Weapon/Spear.Spear"));
+
+			if (SK_Sword.Succeeded())
 			{
-				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+				WeaponMeshArray.Add(SK_Sword.Object);
 			}
-			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+			if(SK_Wand.Succeeded())
+			{
+				WeaponMeshArray.Add(SK_Wand.Object);
+			}
+			if(SK_Spear.Succeeded())
+			{
+				WeaponMeshArray.Add(SK_Spear.Object);
+			}	
+			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
+			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
+			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+			Weapon->SetGenerateOverlapEvents(false);
 		}
 		
 		//카메라
@@ -61,10 +78,6 @@ AIreneCharacter::AIreneCharacter()
 			//SpringArmComp->CameraLagSpeed = 0.0f;
 			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
 		//}
-
-		//콜리전 적용
-		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
-		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -190,6 +203,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneState->SetState(UIdleState::GetInstance());
 	IreneState->Init(this);
 	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
+	IreneAnim->Init(this);
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
@@ -382,11 +396,8 @@ void AIreneCharacter::FindNearMonster()
 		IreneAttack->TargetMonster = nullptr;
 	}
 	FString AttributeForm = GetAnimName().ToString();
-	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_None && (GetAnimName()!=FName("B_Attack_5_N") && GetAnimName()!=FName("ActionKeyword_1_N")))
-	{
-		AttributeForm = GetAnimName().ToString() + FString("_N");
-	}
-	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
+
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_F");
 	}
@@ -398,11 +409,11 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
-	TSharedPtr<FAttackDataTable> Table = MakeShared<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
+	TUniquePtr<FAttackDataTable> Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
 	if (Table != nullptr)
 	{
 		IreneData.Strength = Table->ATTACK_DAMAGE_1;
-
+	
 		// 마나 사용 조건
 		if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
@@ -427,7 +438,7 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->SetUseMP(false);
 			IreneAttack->SetUseMPSize(0);
 		}
-
+	
 		IreneUIManager->OnMpChanged.Broadcast();
 	}
 
@@ -618,6 +629,7 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->DoAttack();
 		}
 	}
+	IreneInput->bUseRightButton = false;
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -704,13 +716,18 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 
 		if (NewState == URunState::GetInstance() || NewState == USprintState::GetInstance())
+		{
 			Weapon->SetVisibility(false);
+		}
 		else
+		{
 			Weapon->SetVisibility(true);
-
+		}
+		
 		if(NewState == UIdleState::GetInstance())
 			IreneUIManager->HPRecoveryWaitStart();
-		else {
+		else
+		{
 			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
 			else IreneUIManager->HPRecoveryWaitCancel();
 		}
