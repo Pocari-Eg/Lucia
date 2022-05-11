@@ -17,6 +17,7 @@ public:
 	ABdAIController();
 
 	void Attacked();
+	void Broken();
 
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
@@ -27,6 +28,8 @@ public:
 	static const FName IsAttack2Key;
 	static const FName IsAttack3Key;
 	static const FName IsAttack4Key;
+
+	static const FName IsBrokenKey;
 private:
 	void OnPossess(APawn* InPawn) override;
 };
