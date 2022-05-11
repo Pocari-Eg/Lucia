@@ -122,7 +122,7 @@ void UIreneAttackInstance::AttackEndComboState()
 		FormType = 1;
 	else if(Attribute == EAttributeKeyword::e_Thunder)
 		FormType = 2;
-	
+
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 	Irene->IreneInput->bUseLeftButton = false;
 	bUseMP = false;

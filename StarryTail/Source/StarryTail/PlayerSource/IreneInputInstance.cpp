@@ -658,14 +658,20 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[0]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[1]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[2]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[2]);
 	}
 	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
 	{
