@@ -125,9 +125,11 @@ public:
 	bool GetStartJump()const{return bStartJump;}
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
-
+	bool GetCharging()const{return IsCharging;}
+	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
+	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
 #pragma endregion GetSet	
 };
