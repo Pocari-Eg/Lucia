@@ -484,11 +484,103 @@ void UIreneInputInstance::LeftButton(float Rate)
 }
 void UIreneInputInstance::RightButton(float Rate)
 {
+	// if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Fall")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
+	// 	Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+	// {
+	// 	FName ActionForm = FName("");
+	// 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	// 	{
+	// 		ActionForm = FName("ActionKeyword_1_F");
+	// 	}
+	// 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	// 	{
+	// 		ActionForm = FName("ActionKeyword_1_W");
+	// 	}
+	// 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	// 	{
+	// 		ActionForm = FName("ActionKeyword_1_E");
+	// 	}
+	// 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
+	// 	if (AttackTable != nullptr)
+	// 	{
+	// 		if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
+	// 		{				
+	// 			bUseRightButton = true;
+	// 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+	// 			constexpr float WaitTime = 0.15f;
+	//
+	// 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+	// 				{
+	// 					AttackWaitHandle.Invalidate();
+	// 				}), WaitTime, false);
+	//
+	// 			if (Irene->IreneData.IsAttacking)
+	// 			{
+	// 				if (Irene->IreneData.CanNextCombo)
+	// 				{
+	// 					//if (!(Irene->IreneAttack->FormGauge[AttributeForm]-AttackTable->Gauge < AttackTable->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
+	// 					Irene->IreneData.IsComboInputOn = true;
+	// 				}
+	// 			}
+	// 			else
+	// 			{
+	// 				Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
+	// 				Irene->IreneAttack->AttackStartComboState();
+	//
+	// 				switch (Irene->IreneAttack->GetAttribute())
+	// 				{
+	// 				case EAttributeKeyword::e_None:
+	// 					break;
+	// 				case EAttributeKeyword::e_Fire:
+	// 					Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
+	// 					break;
+	// 				case EAttributeKeyword::e_Water:
+	// 					Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
+	// 					break;
+	// 				case EAttributeKeyword::e_Thunder:
+	// 					Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
+	// 					break;
+	// 				default:
+	// 					break;
+	// 				}
+	//
+	// 				Irene->IreneAnim->PlayEffectAttackMontage();
+	// 				Irene->IreneAnim->JumpToEffectAttackMontageSection(Irene->IreneData.CurrentCombo);
+	// 				Irene->IreneData.IsAttacking = true;
+	// 			}				
+	// 		}
+	// 	}
+	// }
+}
+void UIreneInputInstance::RightButtonPressed()
+{
 	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Fall")) != 0 &&
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
-		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
+		Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton && !SkillWaitHandle.IsValid())
 	{
+		Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
+		IsCharging = true;
+		ChargingTime = 0.0f;
+		bUseRightButton = true;
+	}
+}
+void UIreneInputInstance::RightButtonReleased()
+{
+	if (Irene->IreneState->GetStateToString().Compare(FString("Jump")) != 0 &&
+		Irene->IreneState->GetStateToString().Compare(FString("Fall")) != 0 &&
+		Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
+		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0 && !bUseLeftButton && !SkillWaitHandle.IsValid())
+	{
+		// 우클릭 쿨타임
+		GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			SkillWaitHandle.Invalidate();
+		}) , 10, false);
+		
 		FName ActionForm = FName("");
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
@@ -502,104 +594,28 @@ void UIreneInputInstance::RightButton(float Rate)
 		{
 			ActionForm = FName("ActionKeyword_1_E");
 		}
-		const TSharedPtr<FAttackDataTable> AttackTable = MakeShared<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
-		if (AttackTable != nullptr)
+		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(ActionForm));
+		if (AttackTable != nullptr && bUseRightButton)
 		{
-			if (Rate >= 1.0 && !AttackWaitHandle.IsValid() && bUseLeftButton == false)
-			{				
-				bUseRightButton = true;
-				// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
-				constexpr float WaitTime = 0.15f;
-
-				GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-					{
-						AttackWaitHandle.Invalidate();
-					}), WaitTime, false);
-
-				if (Irene->IreneData.IsAttacking)
-				{
-					if (Irene->IreneData.CanNextCombo)
-					{
-						//if (!(Irene->IreneAttack->FormGauge[AttributeForm]-AttackTable->Gauge < AttackTable->Gauge && Irene->IreneAnim->GetCurrentActiveMontage()))
-						Irene->IreneData.IsComboInputOn = true;
-					}
-				}
-				else
-				{
-					Irene->ChangeStateAndLog(UActionAttackState::GetInstance());
-					Irene->IreneAttack->AttackStartComboState();
-
-					switch (Irene->IreneAttack->GetAttribute())
-					{
-					case EAttributeKeyword::e_None:
-						break;
-					case EAttributeKeyword::e_Fire:
-						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
-						break;
-					case EAttributeKeyword::e_Water:
-						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
-						break;
-					case EAttributeKeyword::e_Thunder:
-						Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
-						break;
-					default:
-						break;
-					}
-
-					Irene->IreneAnim->PlayEffectAttackMontage();
-					Irene->IreneAnim->JumpToEffectAttackMontageSection(Irene->IreneData.CurrentCombo);
-					Irene->IreneData.IsAttacking = true;
-				}				
+			IsCharging = false;
+			if(ChargingTime > 4.0f)
+			{
+				//Irene->IreneData.Strength = 100;
+				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
-		}
+			else if(ChargingTime > 2.0f)
+			{
+				//Irene->IreneData.Strength = 60;
+				Irene->IreneAnim->PlaySkillAttackMontage();
+			}
+			else
+			{
+				//Irene->IreneData.Strength = 5;
+				Irene->IreneAnim->PlaySkillAttackMontage();
+			}
+			ChargingTime = 0.0f;
+		}		
 	}
-}
-void UIreneInputInstance::RightButtonPressed()
-{
-	/*
-	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("BasicAttack")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Death")) != 0)
-	{
-		ChangeStateAndLog(AttackState::getInstance());
-		IsCharging = true;
-		ChargingTime = 0.0f;
-	}
-	*/
-}
-void UIreneInputInstance::RightButtonReleased()
-{
-	/*
-	if (CharacterState->getStateToString().Compare(FString("Jump")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Fall")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Dodge")) != 0 &&
-		CharacterState->getStateToString().Compare(FString("Death")) != 0)
-	{
-		IsCharging = false;
-		if(ChargingTime > 7.0f)
-		{
-			CharacterDataStruct.Strength = 100;
-			IreneAnim->PlayEffectAttackMontage();
-		}
-		else if(ChargingTime > 4.0f)
-		{
-			CharacterDataStruct.Strength = 60;
-			IreneAnim->PlayEffectAttackMontage();
-		}
-		else if (ChargingTime > 1.0f)
-		{
-			CharacterDataStruct.Strength = 40;
-			IreneAnim->PlayEffectAttackMontage();
-		}
-		else
-		{
-			CharacterDataStruct.Strength = 5;
-			IreneAnim->PlayEffectAttackMontage();
-		}
-		ChargingTime = 0.0f;
-	}*/
 }
 
 void UIreneInputInstance::MouseWheel(float Rate)
@@ -642,14 +658,20 @@ void UIreneInputInstance::ChangeForm(EAttributeKeyword Value)
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[0]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[1]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[2]);
+		Irene->Weapon->SetupAttachment(Irene->GetMesh(), Irene->WeaponSocketNameArray[2]);
 	}
 	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
 	{
@@ -699,7 +721,6 @@ void UIreneInputInstance::DodgeKeyword()
 						Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 					}
 				}), WaitTime, false);
-			Irene->ChangeStateAndLog(UDodgeState::GetInstance());
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
@@ -789,6 +810,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 			WaterDodgeEffect->DestroyComponent(true);
 			WaterDodgeEffect = nullptr;
 		}
+		Irene->GetMesh()->SetVisibility(true);
 	}
 }
 

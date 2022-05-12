@@ -8,15 +8,10 @@
 UBTTaskMonsterDead::UBTTaskMonsterDead()
 {
 	NodeName = TEXT("Dead");
-	bNotifyTick = true;
 }
 EBTNodeResult::Type UBTTaskMonsterDead::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
-
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == Monster)
-		return EBTNodeResult::Failed;
 
 	return EBTNodeResult::InProgress;
 }

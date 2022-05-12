@@ -76,7 +76,11 @@ public:
 	// 무기 매쉬
 	UPROPERTY()
 	USkeletalMeshComponent* Weapon;
-
+	UPROPERTY()
+	TArray<USkeletalMesh*> WeaponMeshArray;
+	UPROPERTY()
+	TArray<FName> WeaponSocketNameArray;
+	
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
 #pragma endregion GetClassOrObject
