@@ -13,7 +13,10 @@ class STARRYTAIL_API AEnemySpawnTrigger : public AActor
 {
 	GENERATED_BODY()
 	
+private:
+	int32 WaveMonsterCount;
 
+	
 public:
 	UPROPERTY(EditAnywhere, Category = Trigger)
 		UBoxComponent* Trigger;
@@ -22,7 +25,11 @@ public:
 		UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere, Category = SpawnPoint)
-		TArray<AEnemySpawnPoint*> SpawnPoint;
+	 TArray<AEnemySpawnPoint*> SpawnPoint;
+
+	UPROPERTY(EditAnywhere, Category = SpawnPoint, meta = (ClampMin = "0", ClampMax = "100"))
+	int32 NextWavePercent;
+	//Function
 public:
 	// Sets default values for this actor's properties
 	AEnemySpawnTrigger();
@@ -31,13 +38,15 @@ public:
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 
-public:
 	//트리거 Off
 	void TriggerOff();
 	//트리거 On
 	void TriggerOn();
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+	void WaveStart();
 };
