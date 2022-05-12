@@ -45,7 +45,11 @@ AMonster::AMonster()
 		HpBarWidget->bAutoActivate = false;
 	}
 
+	bIsSpawnEnemy = false;
+
 	InitEffect();
+
+
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -353,6 +357,12 @@ void AMonster::CalcHp(float Damage)
 
 		MonsterAIController->Death();
 		PlayDeathAnim();
+
+		if (bIsSpawnEnemy) {
+			auto instnace = Cast<USTGameInstance>(GetGameInstance());
+			if(instnace!=nullptr)
+			instnace->SubEnemyCount();
+		}
 		return;
 	}
 }
@@ -461,6 +471,10 @@ void AMonster::MarkerOff()
 	{
 		HpBar->MarkerOff();
 	}
+}
+void AMonster::SetSpawnEnemy()
+{
+	bIsSpawnEnemy = true;
 }
 #pragma region Debuff
 void AMonster::Burn()

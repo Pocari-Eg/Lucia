@@ -74,6 +74,10 @@ public:
 	//UI
 	void MarkerOn();
     void MarkerOff();
+
+	//스폰 생성 몬스터 설정
+	void SetSpawnEnemy();
+	
 protected:
 	//Function
 	void InitDebuffInfo();
@@ -170,6 +174,9 @@ private:
 
 	bool bShowUI;
 	bool bIsBattleState;
+
+	//스폰 으로 생성된 몬스터인지;
+	bool bIsSpawnEnemy;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
