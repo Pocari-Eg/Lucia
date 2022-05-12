@@ -28,7 +28,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.Code = 1;
 
 	MonsterInfo.MaxHp = 1000.0f;
-	MonsterInfo.Atk = 250.0f;
+	MonsterInfo.Atk = 50.0f;
 	MonsterInfo.Def = 250.0f;
 	MonsterInfo.Barrier = 100.0f;
 	MonsterInfo.DetectMonsterRange = 5.0f;
