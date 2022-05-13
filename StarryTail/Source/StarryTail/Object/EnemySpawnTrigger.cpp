@@ -33,6 +33,7 @@ void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 {
 	STARRYLOG(Warning, TEXT("Monster Trigger Overlap"));
 	TriggerOff();
+	if(SpawnPoint.Num()!=0)
 	WaveStart();
 }
 
@@ -45,9 +46,26 @@ void AEnemySpawnTrigger::BeginPlay()
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
 	if (Instance != nullptr)
 	{
-		Instance->WaveStart.AddUObject(this ,&AEnemySpawnTrigger::WaveStart);
+		Instance->WaveStart.AddUObject(this ,&AEnemySpawnTrigger::WaveManager);
 	}
 	
+}
+
+void AEnemySpawnTrigger::WaveManager()
+{
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
+	{
+		if (Instance->IsLastWave())
+		{
+			WaveClear();
+		}
+		else {
+			WaveStart();
+		}
+	}
+
 }
 
 void AEnemySpawnTrigger::WaveStart()
@@ -73,6 +91,11 @@ void AEnemySpawnTrigger::WaveStart()
 			Instance->SetNextWaveCount(WaveMonsterCount * NextWavePercent / 100);
 		}
 	}
+}
+
+void AEnemySpawnTrigger::WaveClear()
+{
+	STARRYLOG(Error, TEXT("WAVE CLEAR"));
 }
 
 

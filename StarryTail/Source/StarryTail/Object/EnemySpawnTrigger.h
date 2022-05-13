@@ -48,5 +48,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	void WaveManager();
 	void WaveStart();
+	void WaveClear();
 };

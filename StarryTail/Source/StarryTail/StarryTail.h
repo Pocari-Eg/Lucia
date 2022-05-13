@@ -63,3 +63,12 @@ enum class EStateEnum : uint8
 	Fall,
 	SprintJump
 };
+
+UENUM(BluePrintType)
+enum class  EEnemyRank :uint8
+{
+	e_Normal = 0 UMETA(DisplayName = "Normal"),
+	e_Unique   UMETA(DisplayName = "Unique"),
+	e_Boss  UMETA(DisplayName = "Boss"),
+
+};
