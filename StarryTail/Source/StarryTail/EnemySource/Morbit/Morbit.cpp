@@ -181,7 +181,7 @@ void AMorbit::BeginPlay()
 		{
 			bDeadWait = true;
 			SetActorEnableCollision(false);
-			MorbitAnimInstance->Montage_Stop(1.5f, MorbitAnimInstance->GetCurrentActiveMontage());
+			MorbitAnimInstance->Montage_Stop(500.f, MorbitAnimInstance->GetCurrentActiveMontage());
 		}
 
 		});

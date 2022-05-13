@@ -12,6 +12,17 @@ UCLASS()
 class STARRYTAIL_API UIreneInputInstance : public UObject
 {
 	GENERATED_BODY()
+public:
+	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
+	UPROPERTY()
+	TArray<uint8> MoveKey;
+
+	// 구르기 같은 자동이동 방향
+	FVector MoveAutoDirection;
+	
+	bool bUseLeftButton;
+	bool bUseRightButton;
+	
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -30,7 +41,9 @@ private:
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-
+	// 공격 연속 입력 지연
+	FTimerHandle SkillWaitHandle;
+	
 	// 차징 중인지
 	bool IsCharging;
 	// 차징 시간
@@ -43,20 +56,11 @@ private:
 
 	float StaminaGauge;
 	FTimerHandle StaminaWaitHandle;
-	float StartWaterDodgeStamina;
-	
-public:
-	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
-	UPROPERTY()
-	TArray<uint8> MoveKey;
+	float StartWaterDodgeStamina;	
 
-	// 구르기 같은 자동이동 방향
-	FVector MoveAutoDirection;
-	
-	bool bUseLeftButton;
-	bool bUseRightButton;
-private:
-	
+	bool bUseThunderDodge;
+	FTimerHandle ThunderDodgeWaitHandle;
+	FVector ThunderDodgeTargetDir;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -120,13 +124,15 @@ public:
 #pragma endregion UIandStamina
 
 #pragma region GetSet
+public:
 	bool GetStartJump()const{return bStartJump;}
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
+	bool GetCharging()const{return IsCharging;}
 	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
-#pragma endregion GetSet
-
+	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
+#pragma endregion GetSet	
 };

@@ -10,7 +10,6 @@ UBTTaskMonsterAttacked::UBTTaskMonsterAttacked()
 {
 	NodeName = TEXT("Attacked");
 	bNotifyTick = true;
-	WaitTimer = 0.0f;
 	WaitTime = 2.0f;
 }
 EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -21,7 +20,7 @@ EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& 
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, true);
+	WaitTimer = 0.0f;
 
 	bIsAttacked = true;
 	Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });

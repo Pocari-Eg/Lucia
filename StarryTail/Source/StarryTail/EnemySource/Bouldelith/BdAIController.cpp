@@ -14,6 +14,9 @@ const FName ABdAIController::IsAttack2Key = (TEXT("bIsAttack2"));
 const FName ABdAIController::IsAttack3Key = (TEXT("bIsAttack3"));
 const FName ABdAIController::IsAttack4Key = (TEXT("bIsAttack4"));
 
+const FName ABdAIController::IsBrokenKey = (TEXT("bIsBroken"));
+const FName ABdAIController::IsWallGroggyKey = (TEXT("bIsWallGroggy"));
+
 ABdAIController::ABdAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Bouldelith/BB_Bouldelith"));
@@ -30,7 +33,31 @@ ABdAIController::ABdAIController()
 }
 void ABdAIController::Attacked()
 {
+	SetPlayer();
 
+	auto Bouldelith = Cast<ABouldelith>(GetPawn());
+
+	if (Bouldelith->GetBouldelithAnimInstance()->GetAttackIsPlaying())
+		return;
+	if (Bouldelith->GetBouldelithAnimInstance()->GetBackstepIsPlaying())
+		return;
+
+	if (Bouldelith->GetBouldelithAnimInstance()->GetBattleRunIsPlaying())
+		Bouldelith->SetIsChangeBattleRunStateToAttackedState(true);
+
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
+
+	Bouldelith->GetBouldelithAnimInstance()->PlayAttackedMontage();
+}
+void ABdAIController::Broken()
+{
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
+	Blackboard->SetValueAsBool(IsBrokenKey, true);
+}
+void ABdAIController::WallGroggy()
+{
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
+	Blackboard->SetValueAsBool(IsWallGroggyKey, true);
 }
 void ABdAIController::OnPossess(APawn* InPawn)
 {

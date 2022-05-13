@@ -28,7 +28,7 @@ AIreneCharacter::AIreneCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 스켈레톤 메쉬 설정
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/B_Idle.B_Idle"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -37,16 +37,33 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		//무기
-		const FName WeaponSocket(TEXT("hand_rSocket"));
-		if (GetMesh()->DoesSocketExist(WeaponSocket))
+		WeaponSocketNameArray.Add(TEXT("hand_rSwordSocket"));
+		WeaponSocketNameArray.Add(TEXT("hand_lWandSocket"));
+		WeaponSocketNameArray.Add(TEXT("hand_rSpearSocket"));
+
+		if (GetMesh()->DoesSocketExist(WeaponSocketNameArray[0]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[1]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[2]))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_WEAPON(TEXT("/Game/Animation/Irene/sword.sword"));
-			if (SK_WEAPON.Succeeded())
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Sword(TEXT("/Game/Animation/Irene/Weapon/Sword.Sword"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Wand(TEXT("/Game/Animation/Irene/Weapon/Wand.Wand"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Spear(TEXT("/Game/Animation/Irene/Weapon/Spear.Spear"));
+
+			if (SK_Sword.Succeeded())
 			{
-				Weapon->SetSkeletalMesh(SK_WEAPON.Object);
+				WeaponMeshArray.Add(SK_Sword.Object);
 			}
-			Weapon->SetupAttachment(GetMesh(), WeaponSocket);
+			if(SK_Wand.Succeeded())
+			{
+				WeaponMeshArray.Add(SK_Wand.Object);
+			}
+			if(SK_Spear.Succeeded())
+			{
+				WeaponMeshArray.Add(SK_Spear.Object);
+			}	
+			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
+			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
+			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
+			Weapon->SetGenerateOverlapEvents(false);
 		}
 		
 		//카메라
@@ -60,10 +77,6 @@ AIreneCharacter::AIreneCharacter()
 			//SpringArmComp->CameraLagSpeed = 0.0f;
 			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
 		//}
-
-		//콜리전 적용
-		Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
-		Weapon->SetGenerateOverlapEvents(false);
 
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -123,9 +136,6 @@ AIreneCharacter::AIreneCharacter()
 	// 컨트롤러 초기화
 	WorldController = nullptr;
 	HpRecoveryData.bIsRecovering = false;
-	FireRecoveryData.bIsRecovering = false;
-	WaterRecoveryData.bIsRecovering = false;
-	ElectricRecoveryData.bIsRecovering = false;
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
@@ -137,18 +147,6 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
 	HpRecoveryData.Time = 10;
-	FireRecoveryData.Amount = 200;
-	FireRecoveryData.Fire_Re_Time = 2;
-	FireRecoveryData.Speed = 4.0f;
-	FireRecoveryData.Time = 0;
-	WaterRecoveryData.Amount = 200;
-	WaterRecoveryData.Water_Re_Time = 2;
-	WaterRecoveryData.Speed = 4.0f;
-	WaterRecoveryData.Time = 0;
-	ElectricRecoveryData.Amount = 200;
-	ElectricRecoveryData.Electric_Re_Time = 2;
-	ElectricRecoveryData.Speed = 4.0f;
-	ElectricRecoveryData.Time = 0;
 }
 
 // Called when the game starts or when spawned
@@ -189,6 +187,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneState->SetState(UIdleState::GetInstance());
 	
 	IreneAnim = Cast<UIreneAnimInstance>(GetMesh()->GetAnimInstance());
+	IreneAnim->Init(this);
 	IreneAttack = NewObject<UIreneAttackInstance>(this);
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
@@ -230,7 +229,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 	// 대쉬상태일땐 MoveAuto로 강제 이동을 시킴
 	if (IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
 	{
-		if (IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
+		if (IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0 &&
+			IreneState->GetStateToString().Compare(FString("ActionAttack")) != 0)
 		{
 			IreneInput->MoveForward();
 			IreneInput->MoveRight();
@@ -283,10 +283,10 @@ void AIreneCharacter::Tick(float DeltaTime)
 	}
 
 	// 차징 사용
-	//if(IsCharging)
-	//{
-	//	ChargingTime += DeltaTime;
-	//}
+	if(IreneInput->GetCharging())
+	{
+		IreneInput->SetDeltaTimeChargingTime(DeltaTime);
+	}
 
 	if (IreneAttack->TargetMonster != nullptr)
 	{
@@ -389,11 +389,8 @@ void AIreneCharacter::FindNearMonster()
 		IreneAttack->TargetMonster = nullptr;
 	}
 	FString AttributeForm = GetAnimName().ToString();
-	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_None && (GetAnimName()!=FName("B_Attack_5_N") && GetAnimName()!=FName("ActionKeyword_1_N")))
-	{
-		AttributeForm = GetAnimName().ToString() + FString("_N");
-	}
-	else if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
+
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && (GetAnimName()!=FName("B_Attack_5_F")&& GetAnimName()!=FName("ActionKeyword_1_F")))
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_F");
 	}
@@ -405,11 +402,12 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
-	TSharedPtr<FAttackDataTable> Table = MakeShared<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
+	
+	TUniquePtr<FAttackDataTable> Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
 	if (Table != nullptr)
 	{
 		IreneData.Strength = Table->ATTACK_DAMAGE_1;
-
+	
 		// 마나 사용 조건
 		if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 		{
@@ -434,7 +432,6 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->SetUseMP(false);
 			IreneAttack->SetUseMPSize(0);
 		}
-
 		IreneUIManager->OnMpChanged.Broadcast();
 	}
 
@@ -451,7 +448,7 @@ void AIreneCharacter::FindNearMonster()
 
 	float far = 300;
 	// 가로, 높이, 세로
-	FVector BoxSize = FVector(200, 50, far);
+	FVector BoxSize = FVector(300, 50, far);
 	// 최대거리
 	float NearPosition = far;
 
@@ -613,6 +610,7 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->DoAttack();
 		}
 	}
+	IreneInput->bUseRightButton = false;
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -655,24 +653,27 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (IreneData.CurrentHP > 0)
+	if(!IreneData.IsInvincibility)
 	{
-		IreneData.CurrentHP -= DamageAmount - IreneData.Defenses;
-		//hp 바
-		IreneUIManager->OnHpChanged.Broadcast();
-		ChangeStateAndLog(UHitState::GetInstance());
-		if (IreneData.CurrentHP <= 0)
+		if (IreneData.CurrentHP > 0)
 		{
-			IreneAnim->StopAllMontages(0);
-			IreneAnim->SetDeadAnim(true);
-			ChangeStateAndLog(UDeathState::GetInstance());
+			IreneData.CurrentHP -= DamageAmount - IreneData.Defenses;
+			//hp 바
+			IreneUIManager->OnHpChanged.Broadcast();
+			ChangeStateAndLog(UHitState::GetInstance());
+			if (IreneData.CurrentHP <= 0)
+			{
+				IreneAnim->StopAllMontages(0);
+				IreneAnim->SetDeadAnim(true);
+				ChangeStateAndLog(UDeathState::GetInstance());
+			}
 		}
-	}
-	if (IreneAttack->TargetMonster == nullptr)
-	{
-		IreneAttack->TargetMonster = DamageCauser;
-		IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
-		IreneAnim->SetIsHaveTargetMonster(true);
+		if (IreneAttack->TargetMonster == nullptr)
+		{
+			IreneAttack->TargetMonster = DamageCauser;
+			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+			IreneAnim->SetIsHaveTargetMonster(true);
+		}
 	}
 	return FinalDamage;
 }
@@ -683,8 +684,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 {
 	if ((IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
-		IreneState->GetStateToString().Compare(FString("Death")) != 0) ||
-		NewState == UDeathState::GetInstance())
+		IreneState->GetStateToString().Compare(FString("Death")) != 0))
 	{
 		if (IreneState->GetStateToString().Compare(FString("Sprint")) != 0)
 		{
@@ -698,13 +698,18 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 		IreneState->ChangeState(NewState);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 		if (NewState == URunState::GetInstance() || NewState == USprintState::GetInstance())
+		{
 			Weapon->SetVisibility(false);
+		}
 		else
+		{
 			Weapon->SetVisibility(true);
-
+		}
+		
 		if(NewState == UIdleState::GetInstance())
 			IreneUIManager->HPRecoveryWaitStart();
-		else {
+		else
+		{
 			if (HpRecoveryData.bIsRecovering == true)IreneUIManager->HpRecoveringCancel();
 			else IreneUIManager->HPRecoveryWaitCancel();
 		}
@@ -790,21 +795,20 @@ FName AIreneCharacter::GetAnimName()
 			return FName("B_Attack_5_E");
 		}
 	}
-	if (IreneInput->bUseRightButton)
+
+	if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && IreneAnim->GetCurrentActiveMontage()->GetName() == FString("IreneFireSkill_Montage"))
 	{
-		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-		{
-			return FName("ActionKeyword_1_F");
-		}
-		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-		{
-			return FName("ActionKeyword_1_W");
-		}
-		if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
-		{
-			return FName("ActionKeyword_1_E");
-		}
+		return FName("ActionKeyword_1_F");
 	}
+	if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && IreneAnim->GetCurrentActiveMontage()->GetName() == FString("IreneWaterSkill_Montage"))
+	{
+		return FName("ActionKeyword_1_W");
+	}
+	if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && IreneAnim->GetCurrentActiveMontage()->GetName() == FString("IreneThunderSkill_Montage"))
+	{
+		return FName("ActionKeyword_1_E");
+	}
+	
 	return FName("");
 }
 #pragma endregion State

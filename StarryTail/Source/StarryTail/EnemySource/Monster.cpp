@@ -22,6 +22,7 @@ AMonster::AMonster()
 	MonsterInfo.ArbitraryConstValueA = 2.5f;
 	MonsterInfo.ArbitraryConstValueB = 1.0f;
 	MonsterInfo.ArbitraryConstValueC = 1.0f;
+	MonsterInfo.DefaultAnimePlayRate = 1.0f;
 
 	InitAttackedInfo();
 	InitDebuffInfo();
@@ -44,7 +45,11 @@ AMonster::AMonster()
 		HpBarWidget->bAutoActivate = false;
 	}
 
+	bIsSpawnEnemy = false;
+
 	InitEffect();
+
+
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -265,17 +270,20 @@ void AMonster::CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float 
 }
 void AMonster::CalcDef()
 {
-	auto Morbit = Cast<AMorbit>(this);
-	if (Morbit != nullptr)
+	if (Cast<AMorbit>(this))
 	{
-		MonsterInfo.CurrentDef -= ((AttackedInfo.Mana * MonsterInfo.ArbitraryConstValueB) / 2.5f);
+		MonsterInfo.CurrentDef -= (AttackedInfo.AttributeArmor / 10);
 	}
-
+	else if (Cast<ABouldelith>(this))
+	{
+		MonsterInfo.CurrentDef -= (AttackedInfo.AttributeArmor / 5);
+	}
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
+		PlayGroggyAnim();
 		bIsGroggy = true;
 	}
 
@@ -301,7 +309,9 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Bouldelith = Cast<ABouldelith>(this);
 		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
 
-		BdAIController->Attacked();
+
+		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
+			BdAIController->Attacked();
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)
@@ -316,8 +326,9 @@ void AMonster::CalcHp(float Damage)
 {
 	Damage = FMath::Abs(Damage);
 
-	if (CheckPlayerIsBehindMonster())
+	if (CheckPlayerIsBehindMonster() && !bIsBattleState)
 	{
+		RotationToPlayerDirection();
 		MonsterInfo.CurrentHp -= Damage * 1.5f;
 	}
 	else
@@ -345,6 +356,13 @@ void AMonster::CalcHp(float Damage)
 		SetActive();
 
 		MonsterAIController->Death();
+		PlayDeathAnim();
+
+		if (bIsSpawnEnemy) {
+			auto instnace = Cast<USTGameInstance>(GetGameInstance());
+			if(instnace!=nullptr)
+			instnace->SubEnemyCount();
+		}
 		return;
 	}
 }
@@ -367,7 +385,6 @@ bool AMonster::CheckPlayerIsBehindMonster()
 	}
 	else
 	{
-		RotationToPlayerDirection();
 		return true;
 	}
 }
@@ -410,6 +427,22 @@ TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 
 	return OverlapResults;
 }
+TArray<FOverlapResult> AMonster::DetectPlayer(float DetectRange)
+{
+	TArray<FOverlapResult> OverlapResults;
+
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		GetActorLocation(),
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel5, // 채널 변경
+		FCollisionShape::MakeSphere(DetectRange * 100.0f),
+		CollisionQueryParam
+	);
+
+	return OverlapResults;
+}
 void AMonster::SetActive()
 {
 	if (bIsDead)
@@ -439,6 +472,10 @@ void AMonster::MarkerOff()
 		HpBar->MarkerOff();
 	}
 }
+void AMonster::SetSpawnEnemy()
+{
+	bIsSpawnEnemy = true;
+}
 #pragma region Debuff
 void AMonster::Burn()
 {
@@ -449,8 +486,8 @@ void AMonster::Burn()
 		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
 
 		//애니메이션 속도를 원래대로
-		MonsterAnimInstance->SetPlayRate(1.0f);
-		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+		MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate);
 		bIsFlooding = false;
 	}
 
@@ -484,8 +521,8 @@ void AMonster::Flooding()
 		MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
 		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
 
-		MonsterAnimInstance->SetPlayRate(MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue);
-		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue);
+		MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate / 2.0f);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate / 2.0f);
 	}
 	bIsFlooding = true;
 }
@@ -501,8 +538,8 @@ void AMonster::Spark()
 		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
 
 		//애니메이션 속도를 원래대로
-		MonsterAnimInstance->SetPlayRate(1.0f);
-		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+		MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate);
 		bIsFlooding = false;
 	}
 
@@ -699,8 +736,8 @@ void AMonster::Tick(float DeltaTime)
 			MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.DefaultBattleWalkMoveSpeed;
 
 			//애니메이션 속도를 원래대로
-			MonsterAnimInstance->SetPlayRate(1.0f);
-			MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), 1.0f);
+			MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
+			MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate);
 
 			FloodingEffectComponent->SetActive(false);
 			//침수 상태 해제

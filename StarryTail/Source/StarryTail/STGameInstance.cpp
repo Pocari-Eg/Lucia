@@ -31,9 +31,66 @@ void USTGameInstance::ResetAttributeEffectMonster()
 {
 	AttributeEffectMonster = nullptr;
 }
+
+
+
+
 #pragma endregion
 
+
+void USTGameInstance::Init()
+{
+
+	Super::Init();
+	//Á¡·É ÄÁÅÙÃ÷
+	/*IsFirstOccupied = false;
+	EnemyCount = 0;
+	EnemyMaxCount = 20;*/
+
+	EnemyCount = 0;
+	InitSoundSetting();
+}
+
+void USTGameInstance::InitSoundSetting()
+{
+	
+	SoundSettingData.BGM_Mute = false;
+	SoundSettingData.BGM_Volume = 1.0f;
+	SoundSettingData.SFX_Mute = false;
+	SoundSettingData.SFX_Volume = 1.0f;
+}
+
+void USTGameInstance::AddEnemyCount()
+{
+	EnemyCount++;
+}
+
+void USTGameInstance::SubEnemyCount()
+{
+	EnemyCount--;
+	STARRYLOG(Warning, TEXT("Current EnemyCount : %d"), EnemyCount);
+	if (EnemyCount <= NextWaveCount)
+	{
+		WaveStart.Broadcast();
+	}
+}
+
+void USTGameInstance::SetNextWaveCount(int32 count)
+{
+	
+	NextWaveCount = count;
+	STARRYLOG(Warning, TEXT("NextWaveCount : %d"), NextWaveCount);
+}
+
+
+
+FSoundSetting* USTGameInstance::GetSoundSetting()
+{
+	return &SoundSettingData;
+}
+
 #pragma region Occupy
+/*
 void USTGameInstance::OnFirstOccupy()
 {
 	if (IsFirstOccupied == false)
@@ -42,14 +99,14 @@ void USTGameInstance::OnFirstOccupy()
 		SpawnTime = UKismetMathLibrary::RandomIntegerInRange(0, 5);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USTGameInstance::SpawnTimeCheck, 1.0f, true, 0.0f);
 	}
-	else{
+	else {
 	}
 }
 
 void USTGameInstance::SpawnTimeCheck()
 {
 	STARRYLOG(Error, TEXT("SpawnTime : %d"), SpawnTime);
-	
+
 	if (SpawnTime > 0)
 	{
 		SpawnTime--;
@@ -59,12 +116,13 @@ void USTGameInstance::SpawnTimeCheck()
 	}
 }
 void USTGameInstance::AddEnemyCount()
-{	EnemyCount++;
+{
+	EnemyCount++;
 	if (EnemyCount >= EnemyMaxCount)
 	{
 		STARRYLOG(Warning, TEXT("EnemyCountMax"));
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-	
+
 	}
 	else {
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
@@ -89,10 +147,6 @@ void USTGameInstance::DeleteEnemyCount()
 		}
 	}
 }
+*/
 #pragma endregion
-void USTGameInstance::Init()
-{
-	IsFirstOccupied = false;
-	EnemyCount = 0;
-	EnemyMaxCount = 20;
-}
+
