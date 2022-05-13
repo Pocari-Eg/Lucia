@@ -45,6 +45,9 @@ void UIreneInputInstance::InitMemberVariable()
 
 	StaminaGauge = 150;
 	StartWaterDodgeStamina = 0;
+
+	bUseThunderDodge = false;
+	ThunderDodgeTargetDir = FVector::ZeroVector;
 }
 
 #pragma region Move
@@ -166,6 +169,11 @@ void UIreneInputInstance::MoveAuto()
 			Irene->IreneAttack->DoAttack();
 		}
 	}
+	// 전기 대쉬 이동
+	if (bUseThunderDodge)
+	{
+		Irene->GetCharacterMovement()->Velocity = ThunderDodgeTargetDir*2*Irene->IreneData.ThunderDodgeSpeed;
+	}	
 	if (Irene->IreneState->GetStateToString().Compare(FString("BasicAttack")) != 0)
 	{
 		if (MoveAutoDirection == FVector(0, 0, 0))
@@ -602,6 +610,7 @@ void UIreneInputInstance::RightButtonPressed()
 				Irene->Weapon->SetVisibility(false);
 				Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 
+				// MoveAuto()에서 자동이동 작동하게 설정
 				Irene->IreneAttack->SetFollowTarget(true);
 				Irene->IreneAttack->SetFollowTargetAlpha(0);
 				Irene->IreneAttack->SetPlayerPosVec(Irene->GetActorLocation());
@@ -783,54 +792,98 @@ void UIreneInputInstance::DodgeKeyword()
 				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,30),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
 			}
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && StaminaGauge >= 37.5f)
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && StaminaGauge >= 37.5f && !ThunderDodgeWaitHandle.IsValid())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			StaminaGauge -= 37.5f;
-			constexpr float WaitTime = 1.0; //시간을 설정
 			
-			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;		
-			FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
-			ForwardVec.Z = 0;
-			ForwardVec.Normalize();
-		
-			MoveAutoDirection = FVector::ZeroVector;
+			Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+			bUseThunderDodge = true;
+			Irene->ChangeStateAndLog(UDodgeState::GetInstance());
 
-			// w키나 아무방향 없으면 정면으로 이동
-			if ((MoveKey[0] != 0) || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			if (MoveKey[0] != 0 && MoveKey[0] < 3)
 			{
-				MoveAutoDirection += ForwardVec;
+				const FRotator Rotation = Irene->Controller->GetControlRotation();
+				const FRotator YawRotation(0, Rotation.Yaw, 0);
+				//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
+				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 			}
-			if (MoveKey[1] != 0)
+			if (MoveKey[2] != 0 && MoveKey[2] < 3)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
+				const FRotator Rotation = Irene->Controller->GetControlRotation();
+				const FRotator YawRotation(0, Rotation.Yaw, 0);
+				//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed;
+				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
 			}
-			if (MoveKey[2] != 0)
+			if (MoveKey[1] != 0 && MoveKey[1] < 3)
 			{
-				MoveAutoDirection += -1 * ForwardVec;
+				const FRotator Rotation = Irene->Controller->GetControlRotation();
+				const FRotator YawRotation(0, Rotation.Yaw, 0);
+				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
 			}
-			if (MoveKey[3] != 0)
+			if (MoveKey[3] != 0 && MoveKey[3] < 3)
 			{
-				MoveAutoDirection += Irene->CameraComp->GetRightVector();
+				const FRotator Rotation = Irene->Controller->GetControlRotation();
+				const FRotator YawRotation(0, Rotation.Yaw, 0);
+				//Irene->SpringArmComp->CameraLagSpeed = 0;//Irene->IreneData.MaxCameraLagSpeed * 2;
+				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 			}
-			MoveAutoDirection.Normalize();
-
-			const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
-			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-
-			const FVector CurLocation = Irene->GetActorLocation();
-			if(!StaminaWaitHandle.IsValid())
-			{
-				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*200);
-			}
-			else
-			{
-				Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*600);
-			}
-			GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
-			{
-				StaminaWaitHandle.Invalidate();
-			}), WaitTime, false);
+			if(ThunderDodgeTargetDir == FVector::ZeroVector)
+				ThunderDodgeTargetDir = Irene->GetActorForwardVector();
+			ThunderDodgeTargetDir.Normalize();
+			
+			 GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+			 {
+			 	Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+				bUseThunderDodge = false;
+			 	Irene->ActionEndChangeMoveState();
+			 	ThunderDodgeTargetDir = FVector::ZeroVector;
+				 ThunderDodgeWaitHandle.Invalidate();
+			 }), Irene->IreneData.ThunderDodgeTime, false);
+			// constexpr float WaitTime = 1.0; //시간을 설정
+			//
+			// Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.SprintMaxSpeed;		
+			// FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
+			// ForwardVec.Z = 0;
+			// ForwardVec.Normalize();
+			//
+			// MoveAutoDirection = FVector::ZeroVector;
+			//
+			// // w키나 아무방향 없으면 정면으로 이동
+			// if ((MoveKey[0] != 0) || (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0))
+			// {
+			// 	MoveAutoDirection += ForwardVec;
+			// }
+			// if (MoveKey[1] != 0)
+			// {
+			// 	MoveAutoDirection += Irene->CameraComp->GetRightVector()*-1;
+			// }
+			// if (MoveKey[2] != 0)
+			// {
+			// 	MoveAutoDirection += -1 * ForwardVec;
+			// }
+			// if (MoveKey[3] != 0)
+			// {
+			// 	MoveAutoDirection += Irene->CameraComp->GetRightVector();
+			// }
+			// MoveAutoDirection.Normalize();
+			//
+			// const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
+			// GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
+			//
+			// const FVector CurLocation = Irene->GetActorLocation();
+			// if(!StaminaWaitHandle.IsValid())
+			// {
+			// 	Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*200);
+			// }
+			// else
+			// {
+			// 	Irene->SetActorLocation(CurLocation+Irene->GetActorForwardVector()*600);
+			// }
+			// GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
+			// {
+			// 	StaminaWaitHandle.Invalidate();
+			// }), WaitTime, false);
 		}
 	}	
 }
@@ -863,7 +916,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		FString AnimName = "";
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 			AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
-		if(AnimName != FString("IreneThunderSkill_Montage"))
+		if(AnimName != FString("IreneThunderSkill_Montage") && !bUseThunderDodge)
 		{
 			Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 			Irene->GetMesh()->SetVisibility(true);

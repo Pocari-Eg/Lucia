@@ -58,6 +58,9 @@ private:
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
+	bool bUseThunderDodge;
+	FTimerHandle ThunderDodgeWaitHandle;
+	FVector ThunderDodgeTargetDir;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
