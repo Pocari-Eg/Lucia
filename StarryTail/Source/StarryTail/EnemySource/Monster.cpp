@@ -361,7 +361,7 @@ void AMonster::CalcHp(float Damage)
 		if (bIsSpawnEnemy) {
 			auto instnace = Cast<USTGameInstance>(GetGameInstance());
 			if(instnace!=nullptr)
-			instnace->SubEnemyCount();
+			instnace->SubEnemyCount(GetRank());
 		}
 		return;
 	}
@@ -475,6 +475,10 @@ void AMonster::MarkerOff()
 void AMonster::SetSpawnEnemy()
 {
 	bIsSpawnEnemy = true;
+}
+EEnemyRank AMonster::GetRank()
+{
+	return MonsterInfo.EnemyRank;
 }
 #pragma region Debuff
 void AMonster::Burn()

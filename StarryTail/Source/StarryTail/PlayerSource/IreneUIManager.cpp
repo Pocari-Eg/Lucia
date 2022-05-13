@@ -91,12 +91,12 @@ void UIreneUIManager::HPRecoveryWaiting()
 {
 
 		if (IsConsecutiveIdle == false) {
-			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			//STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
 			CurRecoverWaitTime++;
 			if (CurRecoverWaitTime >= Irene->HpRecoveryData.Time)HPRecoveringStart();
 		}
 		else {
-			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			//STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
 			CurRecoverWaitTime++;
 			if (CurRecoverWaitTime >= Irene->HpRecoveryData.HP_Re_Time)HPRecoveringStart();
 		}
