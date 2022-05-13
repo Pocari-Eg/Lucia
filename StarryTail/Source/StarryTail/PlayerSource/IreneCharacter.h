@@ -65,13 +65,6 @@ public:
 	//회복 구조체
 	UPROPERTY(EditAnywhere,Category=HpRecorvery)
 	FPlayerRecoveryDataStruct HpRecoveryData;
-
-	UPROPERTY(EditAnywhere,Category=FireRecorvery)
-	FPlayerFireRecoveryDataStruct FireRecoveryData;
-	UPROPERTY(EditAnywhere,Category=WaterRecorvery)
-	FPlayerWaterRecoveryDataStruct WaterRecoveryData;
-	UPROPERTY(EditAnywhere,Category=ElectricRecorvery)
-	FPlayerElectricRecoveryDataStruct ElectricRecoveryData;
 	
 	// 무기 매쉬
 	UPROPERTY()

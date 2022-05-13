@@ -137,9 +137,6 @@ AIreneCharacter::AIreneCharacter()
 	// 컨트롤러 초기화
 	WorldController = nullptr;
 	HpRecoveryData.bIsRecovering = false;
-	FireRecoveryData.bIsRecovering = false;
-	WaterRecoveryData.bIsRecovering = false;
-	ElectricRecoveryData.bIsRecovering = false;
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
@@ -151,18 +148,6 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
 	HpRecoveryData.Time = 10;
-	FireRecoveryData.Amount = 200;
-	FireRecoveryData.Fire_Re_Time = 2;
-	FireRecoveryData.Speed = 4.0f;
-	FireRecoveryData.Time = 0;
-	WaterRecoveryData.Amount = 200;
-	WaterRecoveryData.Water_Re_Time = 2;
-	WaterRecoveryData.Speed = 4.0f;
-	WaterRecoveryData.Time = 0;
-	ElectricRecoveryData.Amount = 200;
-	ElectricRecoveryData.Electric_Re_Time = 2;
-	ElectricRecoveryData.Speed = 4.0f;
-	ElectricRecoveryData.Time = 0;
 }
 
 // Called when the game starts or when spawned
@@ -704,8 +689,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AIreneCharacter::ChangeStateAndLog(IState* NewState)
 {
 	if ((IreneState->GetStateToString().Compare(FString("Dodge")) != 0 &&
-		IreneState->GetStateToString().Compare(FString("Death")) != 0) ||
-		NewState == UDeathState::GetInstance())
+		IreneState->GetStateToString().Compare(FString("Death")) != 0))
 	{
 		if (IreneState->GetStateToString().Compare(FString("Sprint")) != 0)
 		{
