@@ -337,10 +337,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA);
 	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS);
 	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD);
-	PlayerInputComponent->BindAction("MoveW", IE_DoubleClick, IreneInput, &UIreneInputInstance::MoveDoubleClickW);
-	PlayerInputComponent->BindAction("MoveA", IE_DoubleClick, IreneInput, &UIreneInputInstance::MoveDoubleClickA);
-	PlayerInputComponent->BindAction("MoveS", IE_DoubleClick, IreneInput, &UIreneInputInstance::MoveDoubleClickS);
-	PlayerInputComponent->BindAction("MoveD", IE_DoubleClick, IreneInput, &UIreneInputInstance::MoveDoubleClickD);
 	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW);
 	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA);
 	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS);
@@ -358,7 +354,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("RightButton", IE_Pressed, IreneInput, &UIreneInputInstance::RightButtonPressed);
 	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
-	PlayerInputComponent->BindAxis("RightButtonAxis", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
 	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
 	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
@@ -395,48 +390,25 @@ void AIreneCharacter::FindNearMonster()
 	{
 		AttributeForm = GetAnimName().ToString() + FString("_E");
 	}
-	
-	TUniquePtr<FAttackDataTable> Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
-	if (Table != nullptr)
-	{
-		IreneData.Strength = Table->ATTACK_DAMAGE_1;
-	
-		// 마나 사용 조건
-		if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
-		{
-			IreneAttack->SetUseMP(true);
-			// if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire) {
-			// 	IreneAttack->FormGauge[0] -= table->Gauge;
-			// 	IreneAttack->FOnFireGaugeChange.Broadcast();
-			// }
-			// else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Water) {
-			// 	IreneAttack->FormGauge[1] -= table->Gauge;
-			// 	IreneAttack->FOnWaterGaugeChange.Broadcast();
-			// }
-			// else if (IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder) {
-			// 	IreneAttack->FormGauge[2] -= table->Gauge;
-			// 	IreneAttack->FOnElectricGaugeChange.Broadcast();
-			// }
-			//IreneAttack->UseMP = table->Gauge;
-		}
-		// 마나 회복 조건
-		if (Table->Form < 2)
-		{
-			IreneAttack->SetUseMP(false);
-			IreneAttack->SetUseMPSize(0);
-		}
-		IreneUIManager->OnMpChanged.Broadcast();
-	}
+	STARRYLOG(Error,TEXT("%s"),*AttributeForm);
 
-	// if (TargetMonster != nullptr)
+	//TUniquePtr<FAttackDataTable> Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName(AttributeForm)));
+	// if (Table != nullptr)
 	// {
-	// 	// 타겟이 캐릭터의 뒤에 있다면 추적 취소
-	// 	FVector targetData = TargetMonster->GetActorLocation() - GetActorLocation();
-	// 	targetData.Normalize();
-	// 	if (FVector::DotProduct(GetActorForwardVector(), targetData) < 0)
+	// 	IreneData.Strength = Table->ATTACK_DAMAGE_1;
+	//
+	// 	// 마나 사용 조건
+	// 	if (Table->Form > 1 && IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
 	// 	{
-	// 		TargetMonster = nullptr;
+	// 		IreneAttack->SetUseMP(true);
 	// 	}
+	// 	// 마나 회복 조건
+	// 	if (Table->Form < 2)
+	// 	{
+	// 		IreneAttack->SetUseMP(false);
+	// 		IreneAttack->SetUseMPSize(0);
+	// 	}
+	// 	IreneUIManager->OnMpChanged.Broadcast();
 	// }
 
 	float far = 300;
@@ -601,9 +573,7 @@ void AIreneCharacter::FindNearMonster()
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange && IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)
 			{
 				// 추적 세팅
-				IreneAttack->SetFollowTarget(true);
-				IreneAttack->SetPlayerPosVec(GetActorLocation());
-				IreneAttack->SetTargetPosVec(GetActorLocation() + GetActorForwardVector() * TargetPos);
+				IreneInput->SetStartMoveAutoTarget(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * TargetPos);
 			}
 			else
 			{
@@ -615,7 +585,6 @@ void AIreneCharacter::FindNearMonster()
 			IreneAttack->DoAttack();
 		}
 	}
-	IreneInput->bUseRightButton = false;
 }
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
@@ -625,10 +594,7 @@ void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 	{
 		if(Cast<AMonster>(OtherActor))
 		{
-			IreneAttack->SetFollowTarget(false);
-			IreneAttack->SetFollowTargetAlpha(0);
-			IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
-			IreneAttack->SetTargetPosVec(FVector::ZeroVector);
+			IreneInput->SetStopMoveAutoTarget();
 			IreneAttack->DoAttack();
 		}
 	}
@@ -645,10 +611,7 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 	{
 		if(Cast<AMonster>(Other))
 		{
-			IreneAttack->SetFollowTarget(false);
-			IreneAttack->SetFollowTargetAlpha(0);
-			IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
-			IreneAttack->SetTargetPosVec(FVector::ZeroVector);
+			IreneInput->SetStopMoveAutoTarget();
 			IreneAttack->DoAttack();
 		}
 	}

@@ -58,6 +58,8 @@ private:
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
+	bool bUseWaterDodge;
+	
 	bool bUseThunderDodge;
 	FTimerHandle ThunderDodgeWaitHandle;
 	FVector ThunderDodgeTargetDir;
@@ -80,10 +82,6 @@ public:
 	void MovePressedA();
 	void MovePressedS();
 	void MovePressedD();
-	void MoveDoubleClickW();
-	void MoveDoubleClickA();
-	void MoveDoubleClickS();
-	void MoveDoubleClickD();
 	void MoveReleasedW();
 	void MoveReleasedA();
 	void MoveReleasedS();
@@ -100,7 +98,6 @@ public:
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);
-	void RightButton(float Rate);
 
 	// 메인키워드 속성변경
 	void FireKeywordReleased();
@@ -134,5 +131,7 @@ public:
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
+	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec);
+	void SetStopMoveAutoTarget();
 #pragma endregion GetSet	
 };
