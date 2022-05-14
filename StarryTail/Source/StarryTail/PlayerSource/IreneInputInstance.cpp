@@ -318,7 +318,7 @@ void UIreneInputInstance::Turn(float Rate)
 {
 	if (Irene->WorldController->bShowMouseCursor == false &&
 		Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI);
+		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 3);
 }
 void UIreneInputInstance::LookUp(float Rate)
 {
@@ -328,7 +328,7 @@ void UIreneInputInstance::LookUp(float Rate)
 	{
 		if (Irene->WorldController->bShowMouseCursor == false &&
 			Irene->IreneState->GetStateToString().Compare(FString("Death")) != 0)
-			Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI);
+			Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI / 4);
 	}
 }
 

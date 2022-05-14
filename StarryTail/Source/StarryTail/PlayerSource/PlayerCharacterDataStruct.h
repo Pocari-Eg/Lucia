@@ -76,10 +76,10 @@ public:
 
 	// Run 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RunMaxSpeed = 600.0f;
+	float RunMaxSpeed = 540.0f;
 	// Sprint 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float SprintMaxSpeed = 900.0f;
+	float SprintMaxSpeed = 720.0f;
 
 	// 전기 대쉬 시간 임시값
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
