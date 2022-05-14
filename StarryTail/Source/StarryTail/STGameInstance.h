@@ -10,7 +10,7 @@
 
 class AIreneCharacter;
 
-DECLARE_MULTICAST_DELEGATE(FOnSpawnDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnWaveDelegate);
 
 
 //사운드 세팅 정보 저장
@@ -54,9 +54,7 @@ protected:
 
 private:
 	void InitSoundSetting();
-public:
-	int32 EnemyCount;
-	int32 EnemyMaxCount;
+
 	
 private:
 	AIreneCharacter* Player;
@@ -65,13 +63,38 @@ private:
 	UPROPERTY()
 	FSoundSetting SoundSettingData;
 
+
+#pragma region MonsterSpawn
+
+public:
+	FOnWaveDelegate WaveStart;
+private:
+    int32 UniqueCount;
+	int32 EnemyCount;
+	int32 NextWaveCount;
+
+	bool bIsLastWave;
+public:
+	void AddEnemyCount(EEnemyRank Rank);
+	void SubEnemyCount(EEnemyRank Rank);
+
+	void SetNextWaveCount(int32 count);
+
+	void SetLastWave(bool State);
+	bool IsLastWave();
+private:
+
+#pragma endregion
+
+
 #pragma region Occupy
+/*
 	//점령 컨텐츠
 	bool IsFirstOccupied;
 	int32 SpawnTime;
-#pragma endregion
 
-#pragma region Occupy
+
+
 public:
 	//점령 컨텐츠
 	void OnFirstOccupy();
@@ -84,5 +107,7 @@ public:
 	FTimerHandle TimerHandle;
 
 	FOnSpawnDelegate OnEnemySpawn;
+	*/
 #pragma endregion
+
 };

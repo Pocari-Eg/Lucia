@@ -41,6 +41,7 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 void ADialogTrigger::BeginPlay()
 {
+	Super::BeginPlay();
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADialogTrigger::OnBeginOverlap);
 }
 

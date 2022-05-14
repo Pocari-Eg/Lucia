@@ -49,7 +49,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ArbitraryConstValueB; // 임의의 상수 B
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ArbitraryConstValueC; // 임의의 상수 C
+	float ArbitraryConstValueC; // 임의의 상수 C
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EEnemyRank EnemyRank; // 몬스터 등급
+   
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

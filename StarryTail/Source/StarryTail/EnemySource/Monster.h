@@ -74,6 +74,10 @@ public:
 	//UI
 	void MarkerOn();
     void MarkerOff();
+
+	//스폰 생성 몬스터 설정
+	void SetSpawnEnemy();
+	EEnemyRank GetRank();
 protected:
 	//Function
 	void InitDebuffInfo();
@@ -93,7 +97,7 @@ protected:
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		FNormalMonsterInfo MonsterInfo;
+	FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -170,6 +174,9 @@ private:
 
 	bool bShowUI;
 	bool bIsBattleState;
+
+	//스폰 으로 생성된 몬스터인지;
+	bool bIsSpawnEnemy;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

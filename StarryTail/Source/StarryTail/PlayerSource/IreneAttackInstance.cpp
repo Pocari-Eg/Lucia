@@ -130,8 +130,6 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	Irene->IreneUIManager->AttackSoundParameter = 0.0f;
-	Irene->IreneUIManager->AttackSound->SetParameter("Attributes", Irene->IreneUIManager->AttackSoundParameter);
 	if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
 		Irene->ActionEndChangeMoveState();
 }
@@ -178,15 +176,30 @@ void UIreneAttackInstance::DoAttack()
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
-		FCollisionQueryParams Params(NAME_None, false, Irene);
-		bResult = GetWorld()->SweepMultiByChannel(
-			MonsterList,
-			TargetMonster->GetActorLocation(),
-			TargetMonster->GetActorLocation(),
-			FQuat::Identity,
-			ECollisionChannel::ECC_GameTraceChannel1,
-			FCollisionShape::MakeSphere(50.0f),
-			Params);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				TargetMonster->GetActorLocation(),
+				TargetMonster->GetActorLocation(),
+				FQuat::Identity,
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeSphere(50.0f),
+				Params);
+		}
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200),
+				FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200),
+				FQuat::Identity,
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeSphere(500.0f),
+				Params);			
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
@@ -214,11 +227,21 @@ void UIreneAttackInstance::DoAttack()
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
-		FVector Center = TargetMonster->GetActorLocation();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
-
-		DrawDebugSphere(GetWorld(), Center, 50.0f, 10, DrawColor, false, DebugLifeTime);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FVector Center = FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200);
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugSphere(GetWorld(), Center, 50.0f, 10, DrawColor, false, DebugLifeTime);
+		}
+		
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FVector Center = FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200);
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugSphere(GetWorld(), Center, 500.0f, 20, DrawColor, false, DebugLifeTime);
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
