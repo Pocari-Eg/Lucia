@@ -547,6 +547,8 @@ void USprintState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->CameraComp->FieldOfView = 80;
+	STARRYLOG_S(Error);
 }
 
 void USprintState::Execute(IBaseGameEntity* CurState)
@@ -556,6 +558,8 @@ void USprintState::Execute(IBaseGameEntity* CurState)
 
 void USprintState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraComp->FieldOfView = 75;
+	STARRYLOG_S(Error);
 	CurState->bIsEnd = true;
 }
 #pragma endregion SprintState
