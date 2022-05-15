@@ -33,11 +33,9 @@ void AScientia::InitMonsterInfo()
 	MonsterInfo.BattleWalkMoveSpeed = 400.0f;
 
 	MonsterInfo.DeadWaitTime = 3.0f;
-
-	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-	auto Player = STGameInstance->GetPlayer();
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Boss;
 }
 void AScientia::InitCollision()
 {

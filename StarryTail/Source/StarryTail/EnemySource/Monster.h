@@ -50,6 +50,7 @@ public:
 	void PlayGroggyAnim();
 	void PlayDeathAnim();
 
+	void SetSpawnPos();
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 	void SetIsBattleState(bool Value);
 

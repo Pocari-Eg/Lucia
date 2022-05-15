@@ -198,6 +198,10 @@ bool AMonster::GetIsBattleState() const
 	return bIsBattleState;
 }
 #pragma endregion
+void AMonster::SetSpawnPos()
+{
+	MonsterAIController->SetSpawnPos(GetLocation());
+}
 void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection)
 {
 	AttackedInfo.bIsUseMana = bIsUseMana;
