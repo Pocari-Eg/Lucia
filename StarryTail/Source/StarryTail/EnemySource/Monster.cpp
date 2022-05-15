@@ -12,6 +12,8 @@
 #include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "../UI/HPBarWidget.h"
+//object
+#include "../Object/AttributeObject.h"
 
 // Sets default values
 AMonster::AMonster()
@@ -46,7 +48,7 @@ AMonster::AMonster()
 	}
 
 	bIsSpawnEnemy = false;
-
+	bIsObject = true;
 	InitEffect();
 
 
@@ -794,6 +796,7 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	FString FindName = "WEAPON";
 	if (CompName == FindName)
 	{
+		
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
 		auto Player = Cast<AIreneCharacter>(OtherActor);
@@ -812,6 +815,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	auto Player = Cast<AIreneCharacter>(DamageCauser);
 
+
 	if (Player != nullptr)
 	{
 		SoundTransform = Player->GetTransform();
@@ -820,14 +824,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		{
 			FString FindName = "WEAPON";
 			FString ElemName;
-
 			for (auto& Elem : Player->GetComponents())
 			{
 				ElemName = Elem->GetName();
 				if (ElemName == FindName)
 				{
 					auto Component = Cast<UPrimitiveComponent>(Elem);
-
+	
 					PrintHitEffect(Component->GetComponentLocation());
 					Player->HitStopEvent();
 					HitStopEvent();
@@ -898,15 +901,27 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			HitSound->SoundPlay3D(SoundTransform);
 		}
 
-		if (AttackedInfo.bIsUseMana)
-		{
-			CalcDef();
-			CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
-			CalcHp(CalcNormalAttackDamage(DamageAmount));
+		//몬스터인지 아닌지
+		if (bIsObject) {
+			if (AttackedInfo.bIsUseMana)
+			{
+				CalcDef();
+				CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
+				CalcHp(CalcNormalAttackDamage(DamageAmount));
+			}
+			else
+			{
+				CalcHp(CalcNormalAttackDamage(DamageAmount));
+			}
 		}
-		else
-		{
-			CalcHp(CalcNormalAttackDamage(DamageAmount));
+		//몬스터가 아니면
+		else {
+
+			OffIsAttacked();
+			if (Cast<AAttributeObject>(this))
+			{
+				HitCheck(Player);
+			}
 		}
 		InitAttackedInfo();
 		return FinalDamage;
