@@ -103,6 +103,7 @@ void AMorbit::BattleWalk()
 void AMorbit::Attack()
 {
 	MorbitAnimInstance->PlayAttackMontage();
+	MonsterAIController->StopMovement();
 
 	bIsAttacking = true;
 }
