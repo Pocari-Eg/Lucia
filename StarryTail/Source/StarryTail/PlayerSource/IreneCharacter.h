@@ -73,7 +73,7 @@ public:
 	TArray<USkeletalMesh*> WeaponMeshArray;
 	UPROPERTY()
 	TArray<FName> WeaponSocketNameArray;
-	
+
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
 #pragma endregion GetClassOrObject
@@ -89,6 +89,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void TargetReset()const;
 #pragma endregion Setting
 
 	// Called every frame
@@ -102,15 +104,15 @@ public:
 
 #pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(class IState* NewState);
-	void ActionEndChangeMoveState();
-	FName GetAnimName();
+	void ChangeStateAndLog(class IState* NewState)const;
+	void ActionEndChangeMoveState()const;
 #pragma endregion State
 	
 #pragma region Collision
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
-
+	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const;
+	void SetNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
@@ -125,6 +127,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
 
+	void LastAttackCameraShake(const float DeltaTime);
+	
 	UPROPERTY(BluePrintReadWrite)
 	bool CameraShakeOn;
 

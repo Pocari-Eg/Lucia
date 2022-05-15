@@ -16,13 +16,10 @@ public:
 	// 움직임에 사용하는 키 0: 정지, 1: 걷기, 2: 달리기, 3: 걷기 예약키, 4: 달리기 예약키
 	UPROPERTY()
 	TArray<uint8> MoveKey;
-
-	// 구르기 같은 자동이동 방향
-	FVector MoveAutoDirection;
 	
 	bool bUseLeftButton;
 	bool bUseRightButton;
-	
+
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -32,10 +29,8 @@ private:
 	FTimerHandle ElectricStartTimer;
 
 	UPROPERTY()
-	UParticleSystemComponent* WaterDodgeEffect;
-	
-	// 자동이동용 핸들
-	FTimerHandle MoveAutoWaitHandle;
+	UParticleSystemComponent* WaterDodgeEffect;	
+
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
@@ -54,7 +49,6 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 
-	float StaminaGauge;
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
@@ -67,17 +61,17 @@ public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
-	void ChangeForm(EAttributeKeyword Value);
+	void ChangeForm(const EAttributeKeyword Value);
 
 #pragma region Move
 	void MoveForward();
 	void MoveRight();
-	void MoveStop();
-	void MoveAuto();
+	void MoveAuto()const;
 
 	void StartJump();
 	void StopJump();
 
+	void MovePressedKey(const int Value);
 	void MovePressedW();
 	void MovePressedA();
 	void MovePressedS();
@@ -100,6 +94,7 @@ public:
 	void MouseWheel(float Rate);
 
 	// 메인키워드 속성변경
+	void AttributeKeywordReleased(const EAttributeKeyword Attribute);
 	void FireKeywordReleased();
 	void WaterKeywordReleased();
 	void ElectricKeywordReleased();
@@ -116,9 +111,15 @@ public:
 	// Pause위젯 on
 	void PauseWidgetOn();
 
-	void RecoveryStaminaGauge(float DeltaTime);
+	void RecoveryStaminaGauge(const float DeltaTime)const;
 	bool StaminaGaugeIsFull()const;
 #pragma endregion UIandStamina
+
+#pragma region CheckStateChange
+	bool CanJumpState()const;
+	bool CanRunState()const;
+	bool CanAttackState()const;
+#pragma endregion CheckStateChange
 
 #pragma region GetSet
 public:
@@ -131,7 +132,7 @@ public:
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
-	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec);
-	void SetStopMoveAutoTarget();
+	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
+	void SetStopMoveAutoTarget()const;
 #pragma endregion GetSet	
 };

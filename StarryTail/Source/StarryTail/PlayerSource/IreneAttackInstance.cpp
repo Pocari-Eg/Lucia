@@ -21,16 +21,6 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
 	}
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormDataTable(TEXT("/Game/Math/BP_FormDataTable.BP_FormDataTable"));
-	if (DT_FormDataTable.Succeeded())
-	{
-		FormDataTable = DT_FormDataTable.Object;
-	}
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormTimeDataTable(TEXT("/Game/Math/BP_FormTimeDataTable.BP_FormTimeDataTable"));
-	if (DT_FormTimeDataTable.Succeeded())
-	{
-		FormTimeDataTable = DT_FormTimeDataTable.Object;
-	}
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -47,12 +37,6 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetMonster = nullptr;
 	//초기 속성
 	Attribute = EAttributeKeyword::e_Fire;
-	// FormGauge.Add(GetNameAtFormDataTable(FName("Fire"))->F_Gauge);
-	// FormGauge.Add(GetNameAtFormDataTable(FName("Water"))->F_Gauge);
-	// FormGauge.Add(GetNameAtFormDataTable(FName("Electric"))->F_Gauge);
-	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100);
-	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Water_Form"))->F_Gauge/100);
-	FormGauge.Add(GetNameAtFormTimeDataTable(FName("Electric_Form"))->F_Gauge/100);
 	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
@@ -64,7 +48,6 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetCameraRot = FRotator::ZeroRotator;
 
 	bUseMP = false;
-	UseMPSize = 0.0f;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -117,46 +100,34 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	{
 		AttributeName = "B_Attack_3";
 	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
-	{
-		AttributeName = "B_Attack_4";
-	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack5"))
-	{
-		AttributeName = "B_Attack_5";
-	}
-	if( Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_None)
-	{
-		AttributeName =  AttributeName + FString("_N");
-	}
-	else if( Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		AttributeName = AttributeName + FString("_F");
 	}
-	else if( Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	else if(Attribute == EAttributeKeyword::e_Water)
 	{
 		AttributeName = AttributeName + FString("_W");
 	}
-	else if( Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	else if(Attribute == EAttributeKeyword::e_Thunder)
 	{
-		AttributeName = AttributeName + FString("_E");
+		AttributeName = AttributeName + FString("_T");
 	}
 	return FName(AttributeName);
 }
 FName UIreneAttackInstance::GetActionAttackDataTableName()
 {
 	FName ActionForm = FName("");
-	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		ActionForm = FName("ActionKeyword_1_F");
 	}
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	else if(Attribute == EAttributeKeyword::e_Water)
 	{
 		ActionForm = FName("ActionKeyword_1_W");
 	}
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	else if(Attribute == EAttributeKeyword::e_Thunder)
 	{
-		ActionForm = FName("ActionKeyword_1_E");
+		ActionForm = FName("ActionKeyword_1_T");
 	}
 	return ActionForm;
 }
@@ -178,7 +149,6 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneInput->bUseLeftButton = false;
 	Irene->IreneInput->bUseRightButton = false;
 	bUseMP = false;
-	UseMPSize = 0.0f;
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
@@ -212,9 +182,6 @@ void UIreneAttackInstance::AttackStopCheck()
 }
 void UIreneAttackInstance::DoAttack()
 {
-	// 나중에 카메라 쉐이크 데이터 사용할 때 사용할 것(사용한다면...)
-	//WorldController->ClientStartCameraShake(CameraShakeCurve);	
-
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
 	FollowTargetAlpha = 0;
@@ -351,7 +318,12 @@ void UIreneAttackInstance::DoAttack()
 		}
 	}
 	#endif
-
+	
+	if(Irene->IreneState->IsSkillState())
+		bUseMP = true;
+	else
+		bUseMP = false;
+	
 	for (FHitResult Monster : MonsterList)
 	{
 		if (bResult)
@@ -363,32 +335,13 @@ void UIreneAttackInstance::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 				{
-					Mob->SetAttackedInfo(bUseMP, UseMPSize, (EAttackedDirection)GetAttackDirection());
+					Mob->SetAttackedInfo(bUseMP, 0, (EAttackedDirection)GetAttackDirection());
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}
 		}
 	}
-
-	// 마나 회복
-	if (bUseMP == false && UseMPSize == 0.0f)
-	{
-		if(GetAttribute() == EAttributeKeyword::e_None)
-		{
-			const float FormGaugeValue = GetNameAtFormTimeDataTable(FName("Fire_Form"))->F_Gauge/100;
-			for(int i=0;i<3;i++)
-			{
-				FormGauge[i] += FormGaugeValue/(GetNameAtFormTimeDataTable(FName("Fire_Form"))->Hit_Gauge_Re/100);
-				if(FormGauge[i] > FormGaugeValue)
-					FormGauge[i] = FormGaugeValue;
-			}
-			Irene->IreneAttack->FOnFireGaugeChange.Broadcast();
-			Irene->IreneAttack->FOnWaterGaugeChange.Broadcast();
-			Irene->IreneAttack->FOnElectricGaugeChange.Broadcast();
-		}
-		Irene->IreneUIManager->OnMpChanged.Broadcast();
-	}
-
+	
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)
 	{
@@ -400,3 +353,92 @@ void UIreneAttackInstance::DoAttack()
 	}
 }
 #pragma endregion Attack
+
+#pragma region State
+void UIreneAttackInstance::SetAttackState()const
+{
+	if(Attribute == EAttributeKeyword::e_Fire)
+	{
+		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack1FireState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_F")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack2FireState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack3FireState::GetInstance());
+		}
+	}
+	if(Attribute == EAttributeKeyword::e_Water)
+	{
+		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0)
+
+		{
+			Irene->ChangeStateAndLog(UBasicAttack1WaterState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack2WaterState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack3WaterState::GetInstance());
+		}
+	}
+	if(Attribute == EAttributeKeyword::e_Thunder)
+	{
+		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack2ThunderState::GetInstance());
+		}
+		else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")) != 0)
+		{
+			Irene->ChangeStateAndLog(UBasicAttack3ThunderState::GetInstance());
+		}
+	}
+}
+void UIreneAttackInstance::SetSkillState()const
+{
+	if(Attribute == EAttributeKeyword::e_Fire)
+	{
+		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_F_Start")) != 0
+			&&Irene->IreneState->GetStateToString().Compare(FString("Skill_F_End")) != 0)
+		{
+			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+		}		
+	}
+	if(Attribute == EAttributeKeyword::e_Water)
+	{
+		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_W_Start")) != 0
+		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_W_End")) != 0)
+		{
+			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+		}	
+	}
+	if(Attribute == EAttributeKeyword::e_Thunder)
+	{
+		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
+		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0)
+		{
+			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+		}
+	}
+}
+
+#pragma endregion State
