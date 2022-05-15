@@ -44,22 +44,9 @@ public:
 public:
 	virtual void Update(const float Value) = 0;
 	virtual void ChangeState(IState* NewState) = 0;
-	
-	virtual void SetStateEnum(EStateEnum Value) = 0;
+	virtual void ThrowState(IState* NewState) = 0;
 
-	virtual bool CanIdle() = 0;
-	virtual bool CanDeath() = 0;
-	virtual bool CanDodge() = 0;
-	virtual bool CanHit() = 0;
-	virtual bool CanBasicAttack() = 0;
-	virtual bool CanActionAttack() = 0;
-	virtual bool CanBattleIdle() = 0;
-	virtual bool CanRun() = 0;
-	virtual bool CanSprint() = 0;
-	virtual bool CanSprintEnd() = 0;
-	virtual bool CanJump() = 0;
-	virtual bool CanFall() = 0;
-	virtual bool CanSprintJump() = 0;	
+	virtual void SetStateEnum(EStateEnum Value) = 0;
 };
 
 #pragma endregion StateInterface

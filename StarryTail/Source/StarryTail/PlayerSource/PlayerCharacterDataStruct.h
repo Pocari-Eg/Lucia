@@ -64,15 +64,15 @@ public:
 	// 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHP = 2000;
-	// 최대 마나
+	// 최대 스테미나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxMP = 1500;
+	float MaxStamina = 150;
 	// 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CurrentHP;
-	// 마나
+	// 스테미나
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float CurrentMP;
+	float CurrentStamina;
 
 	// Run 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

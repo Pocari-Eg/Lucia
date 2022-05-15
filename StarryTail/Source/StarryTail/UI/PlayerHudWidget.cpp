@@ -14,12 +14,8 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->IreneUIManager->OnMpChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
+	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 	NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
-	NewIrene->IreneAttack->FOnFireGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateFire);
-	NewIrene->IreneAttack->FOnWaterGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateWater);
-	NewIrene->IreneAttack->FOnElectricGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateEeletric);
-
 }
 
 void UPlayerHudWidget::SetDialog(FString dialog)
@@ -48,7 +44,7 @@ void UPlayerHudWidget::UpdateMp()
 	{
 		if (nullptr != MPProgressBar)
 		{
-			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetMpRatio());
+			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetStaminaRatio());
 		}
 	}
 }

@@ -36,7 +36,7 @@ public:
 	bool bShowLog;
 #pragma region HUD
 	FOnHpChangeDelegate OnHpChanged;
-	FOnMpChangeDelegate OnMpChanged;
+	FOnMpChangeDelegate OnStaminaChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
 public:
@@ -102,8 +102,8 @@ public:
 	
 	//현재 체력 비율 전환
 	float GetHpRatio();
-	//현재 마나 비율 전환
-	float GetMpRatio();
+	//현재 스테미나 비율 전환
+	float GetStaminaRatio();
 
 	//사운드 출력
 	void FootStepSound();
