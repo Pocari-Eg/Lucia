@@ -48,7 +48,11 @@ private:
 	FVector PlayerPosVec;
 	// 보간을 위한 목표 위치
 	FVector TargetPosVec;
-
+	// 전기 스킬 이동 전 위치
+	FVector CurrentPosVec;
+	// 전기 스킬 이동 후 위치
+	FVector NowPosVec;
+	
 	// 카메라 쉐이크 시간
 	float CameraShakeTime;
 	// 타켓 추적 유무
@@ -84,6 +88,9 @@ public:
 	//공격력 반환
 	float GetATK()const;
 	int GetAttackDirection();
+	FName GetBasicAttackDataTableName();
+	FName GetActionAttackDataTableName();
+
 	//속성 반환
 	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetAttribute()const{return Attribute;}
@@ -91,6 +98,8 @@ public:
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
 	FVector GetPlayerPosVec()const {return PlayerPosVec;}
 	FVector GetTargetPosVec()const {return TargetPosVec;}
+	FVector GetCurrentPosVec()const {return CurrentPosVec;}
+	FVector GetNowPosVec()const {return NowPosVec;}
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetUseMP()const {return bUseMP;}
 	float GetUseMPSize()const {return UseMPSize;}
@@ -103,6 +112,9 @@ public:
 	void SetCameraShakeTime(const float Value){CameraShakeTime = Value;}
 	void SetUseMP(const bool Value){bUseMP = Value;}
 	void SetUseMPSize(const float Value){UseMPSize = Value;}
+	void SetCurrentPosVec(const FVector Value){CurrentPosVec = Value;}
+	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
+
 #pragma endregion GetSet
 
 private:
