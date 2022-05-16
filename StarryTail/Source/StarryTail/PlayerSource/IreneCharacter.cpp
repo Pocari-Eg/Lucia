@@ -540,14 +540,17 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 	
 	if (IreneInput->MoveKey[0] == 0 && IreneInput->MoveKey[1] == 0 && IreneInput->MoveKey[2] == 0 && IreneInput->MoveKey[3] == 0)
 	{
+		STARRYLOG_S(Error);
 		ChangeStateAndLog(UIdleState::GetInstance());
 	}
-	else if (IreneInput->MoveKey[0] == 2 || IreneInput->MoveKey[1] == 2 || IreneInput->MoveKey[2] == 2 || IreneInput->MoveKey[3] == 2)
+	else if (GetCharacterMovement()->MaxWalkSpeed == IreneData.SprintMaxSpeed)
 	{
+		STARRYLOG_S(Error);
 		ChangeStateAndLog(USprintLoopState::GetInstance());
 	}
 	else
 	{
+		STARRYLOG_S(Error);
 		ChangeStateAndLog(URunLoopState::GetInstance());
 	}
 }
