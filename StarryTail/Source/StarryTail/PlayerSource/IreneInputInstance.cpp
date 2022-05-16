@@ -130,7 +130,7 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 			Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
 		MoveKey[Value] = 1;
-		if(Irene->GetCharacterMovement()->MaxWalkSpeed == 900)
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
 			MoveKey[Value] = 2;
 	}
 	else
@@ -496,7 +496,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		Irene->GetMesh()->SetVisibility(false);
 		Irene->Weapon->SetVisibility(false);
 		bUseWaterDodge = true;
-		Irene->IreneData.CurrentStamina -= Rate/10;
+		Irene->IreneData.CurrentStamina -= Rate/5;
 		if(StartWaterDodgeStamina-75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
 		{
 			GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()

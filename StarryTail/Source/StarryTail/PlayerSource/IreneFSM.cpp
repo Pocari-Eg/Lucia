@@ -317,7 +317,6 @@ void USprintEndState::Execute(IBaseGameEntity* CurState)
 void USprintEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
 	CurState->Irene->CameraComp->FieldOfView = 75;
@@ -621,11 +620,10 @@ void UJumpEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetJumpingTime(0);
 	CurState->Irene->IreneInput->SetStartJump(false);
 	CurState->Irene->IreneInput->SetFallingRoll(false);
-
 	CurState->bIsEnd = true;
 }
 #pragma endregion UJumpEndState
-#pragma endregion SprintState
+#pragma endregion JumpState
 
 #pragma region AttackState
 #pragma region UBasicAttack1FireState
