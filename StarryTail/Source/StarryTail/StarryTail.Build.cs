@@ -9,7 +9,7 @@ public class StarryTail : ModuleRules
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay" ,"UMG", "GameplayTasks",
-			"NavigationSystem", "AIModule","FMODStudio"});
+			"NavigationSystem", "AIModule","FMODStudio","LevelSequence","MovieScene"});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 	}

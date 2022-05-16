@@ -95,7 +95,7 @@ void AEnemySpawnTrigger::WaveStart()
 
 void AEnemySpawnTrigger::WaveClear()
 {
-	STARRYLOG(Error, TEXT("WAVE CLEAR"));
+	SequenceActor->SequencePlayer->Play();
 }
 
 
