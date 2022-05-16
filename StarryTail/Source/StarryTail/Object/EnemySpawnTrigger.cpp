@@ -99,7 +99,9 @@ void AEnemySpawnTrigger::WaveClear()
 {
 	STARRYLOG(Warning, TEXT("Wave Clear"));
 	IsCurrentSpawn = false;
-	SequenceActor->SequencePlayer->Play();
+	if (SequenceActor != nullptr) {
+		SequenceActor->SequencePlayer->Play();
+	}
 }
 
 
