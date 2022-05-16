@@ -27,6 +27,7 @@ AEnemySpawnTrigger::AEnemySpawnTrigger()
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 
+	IsCurrentSpawn = false;
 }
 
 void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -54,18 +55,19 @@ void AEnemySpawnTrigger::BeginPlay()
 void AEnemySpawnTrigger::WaveManager()
 {
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)
-	{
-		if (Instance->IsLastWave())
+	if (IsCurrentSpawn == true) {
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (Instance != nullptr)
 		{
-			WaveClear();
-		}
-		else {
-			WaveStart();
+			if (Instance->IsLastWave())
+			{
+				WaveClear();
+			}
+			else {
+				WaveStart();
+			}
 		}
 	}
-
 }
 
 void AEnemySpawnTrigger::WaveStart()
@@ -96,6 +98,7 @@ void AEnemySpawnTrigger::WaveStart()
 void AEnemySpawnTrigger::WaveClear()
 {
 	STARRYLOG(Warning, TEXT("Wave Clear"));
+	IsCurrentSpawn = false;
 	SequenceActor->SequencePlayer->Play();
 }
 
@@ -106,6 +109,7 @@ void AEnemySpawnTrigger::WaveClear()
 void AEnemySpawnTrigger::TriggerOff()
 {
 	//트리거 충돌을 켜기
+	IsCurrentSpawn = true;
 	Trigger->SetGenerateOverlapEvents(false);
 }
 

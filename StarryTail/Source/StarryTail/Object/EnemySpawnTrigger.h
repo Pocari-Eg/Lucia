@@ -18,6 +18,8 @@ private:
 	int32 WaveMonsterCount;
 
 	ULevelSequencePlayer* SequncePlayer;
+
+	bool IsCurrentSpawn;
 public:
 	UPROPERTY(EditAnywhere, Category = Trigger)
 		UBoxComponent* Trigger;
