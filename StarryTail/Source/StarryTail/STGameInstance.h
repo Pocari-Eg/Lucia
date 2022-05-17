@@ -57,7 +57,9 @@ private:
 
 	
 private:
+	UPROPERTY()
 	AIreneCharacter* Player;
+	UPROPERTY()
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
 
 	UPROPERTY()
