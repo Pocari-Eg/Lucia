@@ -99,7 +99,7 @@ void UIreneAnimInstance::PlaySkillAttackMontage()
 		Montage_Play(ThunderSkillMontage, 1.0f);
 }
 
-void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
+void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 	{
@@ -109,6 +109,17 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterAttackMontage);
 		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
+	}
+}
+void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
+{
+	if (NewSection > 1)
+	{
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		{
+			STARRYLOG_S(Error);
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), WaterAttackMontage);
+		}
 	}
 }
 void UIreneAnimInstance::JumpToEffectAttackMontageSection(const int32 NewSection)

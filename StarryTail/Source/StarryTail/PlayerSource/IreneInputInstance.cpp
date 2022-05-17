@@ -118,6 +118,7 @@ void UIreneInputInstance::StopJump()
 {
 	Irene->bPressedJump = false;
 }
+#pragma endregion Move
 
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
@@ -223,12 +224,18 @@ void UIreneInputInstance::LeftButton(float Rate)
 					else
 						Irene->IreneData.IsComboInputOn = true;
 				}
+				else
+				{
+					Irene->IreneData.CurrentCombo += 1;
+					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+				}
 			}
 			else
 			{
 				Irene->IreneAttack->AttackStartComboState();
 				Irene->IreneAnim->PlayAttackMontage();
-
+				
+				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
 			}

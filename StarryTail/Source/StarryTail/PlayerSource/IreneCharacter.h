@@ -76,6 +76,8 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraShakeCurve;
+private:
+	FTimerHandle FixedUpdateTimer;
 #pragma endregion GetClassOrObject
 
 	//스탑워치
