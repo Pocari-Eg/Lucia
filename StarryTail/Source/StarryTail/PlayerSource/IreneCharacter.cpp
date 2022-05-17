@@ -205,7 +205,7 @@ void AIreneCharacter::PostInitializeComponents()
 			{
 				IreneAttack->AttackStartComboState();
 				if (IreneInput->bUseLeftButton)
-					IreneAnim->JumpToAttackMontageSection(IreneData.CurrentCombo);
+					IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
 				if (IreneInput->bUseRightButton)
 					IreneAnim->JumpToEffectAttackMontageSection(IreneData.CurrentCombo);
 			}

@@ -70,6 +70,7 @@ public:
 
 	void PlayAttackMontage();
 	void PlaySkillAttackMontage();
+	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
 	void JumpToEffectAttackMontageSection(const int32 NewSection);
 	
