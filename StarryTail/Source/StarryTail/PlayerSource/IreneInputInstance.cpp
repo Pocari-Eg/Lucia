@@ -118,6 +118,7 @@ void UIreneInputInstance::StopJump()
 {
 	Irene->bPressedJump = false;
 }
+#pragma endregion Move
 
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)

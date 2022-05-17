@@ -540,17 +540,14 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 	
 	if (IreneInput->MoveKey[0] == 0 && IreneInput->MoveKey[1] == 0 && IreneInput->MoveKey[2] == 0 && IreneInput->MoveKey[3] == 0)
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(UIdleState::GetInstance());
 	}
 	else if (GetCharacterMovement()->MaxWalkSpeed == IreneData.SprintMaxSpeed)
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(USprintLoopState::GetInstance());
 	}
 	else
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(URunLoopState::GetInstance());
 	}
 }
@@ -559,19 +556,29 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 #pragma region HitFeel
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
-	if (IreneData.IsAttacking && IreneData.CurrentCombo == IreneData.MaxCombo && CameraShakeOn)
+	if (CameraShakeOn)
 	{
-		const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
-		IreneAttack->SetCameraShakeTime(DeltaTime);
+		if(!FixedUpdateTimer.IsValid())
+		{
+			constexpr float TimeSpeed = 0.01f;
+			GetWorld()->GetTimerManager().SetTimer(FixedUpdateTimer, FTimerDelegate::CreateLambda([&]()
+			{
+				const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
+				IreneAttack->SetCameraShakeTime(CameraShakeTime + 0.1f);
+				STARRYLOG(Error,TEXT("%f"), IreneAttack->GetCameraShakeTime());
+			}), TimeSpeed, true);
+		}
 		FRotator CameraRotate = CameraComp->GetRelativeRotation();
-		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime * 50);
+		CameraRotate.Pitch = CameraShakeCurve[0]->GetFloatValue(IreneAttack->GetCameraShakeTime());
 		CameraComp->SetRelativeRotation(CameraRotate);
 	}
 	else
 	{
 		IreneAttack->SetCameraShakeTime(0);
-		CameraShakeOn = false;
+		//CameraShakeOn = false;
 		CameraComp->SetRelativeRotation(FRotator::ZeroRotator);
+		if(FixedUpdateTimer.IsValid())
+			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateTimer);
 	}
 }
 #pragma endregion HitFeel
