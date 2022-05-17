@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskScBattleIdle.generated.h"
+#include "BTTaskScBattleWalk.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskScBattleIdle : public UBTTaskNode
+class STARRYTAIL_API UBTTaskScBattleWalk : public UBTTaskNode
 {
 	GENERATED_BODY()
-private:
-	UBTTaskScBattleIdle();
+public:
+	UBTTaskScBattleWalk();
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

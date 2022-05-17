@@ -5,7 +5,6 @@
 #include "StarryTail.h"
 #include "Engine/GameInstance.h"
 #include "./EnemySource/Monster.h"
- 
 #include "STGameInstance.generated.h"
 
 class AIreneCharacter;
@@ -41,7 +40,11 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	AIreneCharacter* GetPlayer();
+	EAttributeKeyword GetPlayerAttribute();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
+	
+
+
 	AMonster* GetAttributeEffectMonster();
 	void SetAttributeEffectMonster(AMonster* Monster);
 	void ResetAttributeEffectMonster();
@@ -57,8 +60,11 @@ private:
 
 	
 private:
-	AIreneCharacter* Player;
-	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
+	UPROPERTY()
+		AIreneCharacter* Player;
+	UPROPERTY()
+		AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
+
 
 	UPROPERTY()
 	FSoundSetting SoundSettingData;

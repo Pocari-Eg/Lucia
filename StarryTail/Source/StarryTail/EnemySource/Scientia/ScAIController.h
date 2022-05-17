@@ -13,5 +13,11 @@ UCLASS()
 class STARRYTAIL_API AScAIController : public AMonsterAIController
 {
 	GENERATED_BODY()
-	
+public:
+	AScAIController();
+
+	static const FName IsChangeKey;
+	static const FName IsBattleWalkKey;
+private:
+	void OnPossess(APawn* InPawn) override;
 };

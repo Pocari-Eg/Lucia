@@ -22,6 +22,7 @@ AScientia::AScientia()
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
 }
+#pragma region Init
 void AScientia::InitMonsterInfo()
 {
 	MonsterInfo.Code = 1;
@@ -40,7 +41,7 @@ void AScientia::InitMonsterInfo()
 void AScientia::InitCollision()
 {
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
-	GetCapsuleComponent()->SetCapsuleHalfHeight(200.0f);
+	GetCapsuleComponent()->SetCapsuleHalfHeight(140.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(88.0f);
 }
 void AScientia::InitMesh()
@@ -64,4 +65,115 @@ void AScientia::InitAnime()
 	{
 		GetMesh()->SetAnimInstanceClass(BouldelithAnim.Class);
 	}
+}
+void AScientia::InitScInfo()
+{
+	ScInfo.AttributeSettingTime = 1.0f;
+}
+#pragma endregion
+#pragma region Get
+FString AScientia::GetState()
+{
+	return State;
+}
+int AScientia::GetBarrierCount()
+{
+	return ScInfo.BarrierCount;
+}
+#pragma endregion
+#pragma region Set
+void AScientia::SetState(FString string)
+{
+	State = string;
+}
+#pragma endregion
+
+
+void AScientia::BattleIdle()
+{
+	ScAnimInstance->PlayBattleIdleMontage();
+	MonsterAIController->StopMovement();
+}
+void AScientia::BattleWalk()
+{
+	ScAnimInstance->PlayBattleWalkMontage();
+}
+bool AScientia::ScAttributeIsPlayerAttributeCounter()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	auto PlayerAttribute = STGameInstance->GetPlayerAttribute();
+
+	switch (ScInfo.CurrentAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		if (PlayerAttribute != EAttributeKeyword::e_Water)
+			return false;
+		break;
+	case EAttributeKeyword::e_Water:
+		if (PlayerAttribute != EAttributeKeyword::e_Thunder)
+			return false;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		if (PlayerAttribute != EAttributeKeyword::e_Fire)
+			return false;
+		break;
+	}
+
+	return true;
+}
+
+void AScientia::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (!SetAttribute)
+	{
+		AttributeSettingTimer += DeltaTime;
+
+		if (AttributeSettingTimer >= ScInfo.AttributeSettingTime)
+		{
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+
+			switch (STGameInstance->GetPlayerAttribute())
+			{
+			case EAttributeKeyword::e_Fire:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				break;
+			case EAttributeKeyword::e_Water:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				break;
+			case EAttributeKeyword::e_Thunder:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				break;
+			}
+			MonsterAIController->SetPlayer();
+
+			SetAttribute = true;
+		}
+	}
+}
+	// Called when the game starts or when spawned
+void AScientia::BeginPlay()
+{
+	Super::BeginPlay();
+
+}
+
+void AScientia::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	bUseControllerRotationYaw = false;
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
+
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
+}
+
+void AScientia::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+
+	ScAnimInstance = Cast<UScAnimInstance>(GetMesh()->GetAnimInstance());
 }

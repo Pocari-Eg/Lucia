@@ -3,11 +3,16 @@
 
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PlayerSource/IreneAttackInstance.h"
 #include "PlayerSource/IreneCharacter.h"
 
 AIreneCharacter* USTGameInstance::GetPlayer()
 {
 	return Player;
+}
+EAttributeKeyword USTGameInstance::GetPlayerAttribute()
+{
+	return Player->IreneAttack->GetAttribute();
 }
 void USTGameInstance::SetPlayer(AIreneCharacter* IreneCharacter)
 {
