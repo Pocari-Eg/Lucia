@@ -179,6 +179,21 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
+	
+	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+	if(MoveKey[0] != 0 && MoveKey[1] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+	}
+	if(MoveKey[2] != 0 && MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
+	}
+	if((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+		(MoveKey[1] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
+	}
 }
 
 void URunLoopState::Execute(IBaseGameEntity* CurState)
@@ -238,6 +253,7 @@ void URunEndState::Execute(IBaseGameEntity* CurState)
 void URunEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->SetCameraLagTime(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion URunEndState
@@ -263,6 +279,21 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	CurState->Irene->CameraComp->FieldOfView = 80;
+	
+	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+	if(MoveKey[0] != 0 && MoveKey[1] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+	}
+	if(MoveKey[2] != 0 && MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+	}
+	if((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+	(MoveKey[1] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+	}
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -283,7 +314,7 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		// }
 		CurState->ThrowState(USprintEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
-	}
+	}	
 }
 
 void USprintLoopState::Exit(IBaseGameEntity* CurState)
@@ -320,6 +351,7 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
 	CurState->Irene->CameraComp->FieldOfView = 75;
+	CurState->Irene->SetCameraLagTime(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion USprintEndState
@@ -404,6 +436,9 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -180));
+	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->CameraComp->FieldOfView = 80;
 }
@@ -452,6 +487,8 @@ void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->CameraComp->FieldOfView = 75;
 	CurState->bIsEnd = true;
@@ -472,6 +509,16 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_T_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
+	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
+	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
+	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
+	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->Weapon->SetVisibility(false);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -516,6 +563,12 @@ void UDodgeThunderEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	CurState->Irene->GetMesh()->SetVisibility(true);
+	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->SetCameraLagTime(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeThunderEndState
@@ -641,6 +694,7 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -668,6 +722,7 @@ void UBasicAttack2FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
 }
 
 void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
@@ -695,6 +750,7 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
@@ -722,6 +778,7 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[3]);
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
@@ -749,6 +806,7 @@ void UBasicAttack2WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[4]);
 }
 
 void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
@@ -776,6 +834,7 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[5]);
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
@@ -803,6 +862,7 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[6]);
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
@@ -830,6 +890,7 @@ void UBasicAttack2ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[7]);
 }
 
 void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
@@ -857,6 +918,7 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[8]);
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
@@ -887,6 +949,7 @@ void USkillFireStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_F_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
 }
 
 void USkillFireStartState::Execute(IBaseGameEntity* CurState)
@@ -943,6 +1006,7 @@ void USkillWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_W_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[10]);
 }
 
 void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
@@ -998,6 +1062,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_T_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
