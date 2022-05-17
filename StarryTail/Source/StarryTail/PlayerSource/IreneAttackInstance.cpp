@@ -192,15 +192,30 @@ void UIreneAttackInstance::DoAttack()
 	TArray<FHitResult> MonsterList;
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
-		FCollisionQueryParams Params(NAME_None, false, Irene);
-		bResult = GetWorld()->SweepMultiByChannel(
-			MonsterList,
-			Irene->GetActorLocation(),
-			Irene->GetActorLocation(),
-			FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
-			ECollisionChannel::ECC_GameTraceChannel1,
-			FCollisionShape::MakeBox(FVector(200, 50, 150)),
-			Params);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				Irene->GetActorLocation(),
+				Irene->GetActorLocation(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeBox(FVector(200, 50, 150)),
+				Params);
+		}
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				Irene->GetActorLocation(),
+				Irene->GetActorLocation(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeBox(FVector(200, 50, 150)),
+				Params);
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
@@ -260,13 +275,24 @@ void UIreneAttackInstance::DoAttack()
 	#if ENABLE_DRAW_DEBUG
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
-		FVector TraceVec = Irene->GetActorForwardVector() * 150;
-		FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
-		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
-
-		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FVector TraceVec = Irene->GetActorForwardVector() * 150;
+			FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
+			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		}
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FVector TraceVec = Irene->GetActorForwardVector() * 150;
+			FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
+			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
