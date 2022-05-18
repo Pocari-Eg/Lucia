@@ -179,21 +179,6 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
-	
-	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-	if(MoveKey[0] != 0 && MoveKey[1] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
-	}
-	if(MoveKey[2] != 0 && MoveKey[3] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
-	}
-	if((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
-		(MoveKey[1] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0))
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
-	}
 }
 
 void URunLoopState::Execute(IBaseGameEntity* CurState)
@@ -219,6 +204,19 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 		// }
 		CurState->ThrowState(URunEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
+	if(MoveKey[0] != 0 || MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+	}
+	if(MoveKey[1] != 0 || MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
+	}
+	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
 	}
 }
 
@@ -278,22 +276,6 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
-	CurState->Irene->CameraComp->FieldOfView = 80;
-	
-	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-	if(MoveKey[0] != 0 && MoveKey[1] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
-	}
-	if(MoveKey[2] != 0 && MoveKey[3] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
-	}
-	if((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
-	(MoveKey[1] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0))
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
-	}
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -314,7 +296,20 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		// }
 		CurState->ThrowState(USprintEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
-	}	
+	}
+	if(MoveKey[0] != 0 || MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+	}
+	if(MoveKey[1] != 0 || MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+	}
+	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+	}
 }
 
 void USprintLoopState::Exit(IBaseGameEntity* CurState)
@@ -350,7 +345,6 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
-	CurState->Irene->CameraComp->FieldOfView = 75;
 	CurState->Irene->SetCameraLagTime(0);
 	CurState->bIsEnd = true;
 }
@@ -440,7 +434,6 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -180));
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
-	CurState->Irene->CameraComp->FieldOfView = 80;
 }
 
 void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
@@ -490,7 +483,6 @@ void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->CameraComp->FieldOfView = 75;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeWaterEndState
@@ -508,13 +500,7 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Dodge_T_Start);
 	CurState->PlayTime = 0.0f;
-	CurState->bIsEnd = false;
-	
-	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
-	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
-	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
-	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->bIsEnd = false;	
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
@@ -694,16 +680,26 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_F")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack1FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1FireState
@@ -722,16 +718,26 @@ void UBasicAttack2FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->CameraShakeOn = true;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
 }
 
 void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
 }
 
 void UBasicAttack2FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2FireState
@@ -750,16 +756,21 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->CameraShakeOn = true;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack3FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3FireState
@@ -778,16 +789,26 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[3]);
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack1WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1WaterState
@@ -806,16 +827,26 @@ void UBasicAttack2WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[4]);
 }
 
 void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack2WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2WaterState
@@ -834,16 +865,21 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[5]);
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack3WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3WaterState
@@ -862,16 +898,26 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[6]);
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack1ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1ThunderState
@@ -890,16 +936,26 @@ void UBasicAttack2ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[7]);
 }
 
 void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+	&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack2ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2ThunderState
@@ -918,16 +974,21 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->CameraShakeOn = true;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[8]);
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 0.2f)
+		CurState->Irene->CameraShakeOn = false;
 }
 
 void UBasicAttack3ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3ThunderState
@@ -1012,6 +1073,8 @@ void USkillWaterStartState::Enter(IBaseGameEntity* CurState)
 void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 1.77f)
+		CurState->Irene->ActionEndChangeMoveState();
 }
 
 void USkillWaterStartState::Exit(IBaseGameEntity* CurState)
@@ -1059,15 +1122,26 @@ USkillThunderStartState* USkillThunderStartState::GetInstance()
 }
 void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 {
+	STARRYLOG_S(Error);
 	CurState->SetStateEnum(EStateEnum::Skill_T_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
+	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
+	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
+	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->Weapon->SetVisibility(false);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->PlayTime >= 0.7f)
+		CurState->Irene->ActionEndChangeMoveState();
 }
 
 void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
@@ -1100,6 +1174,11 @@ void USkillThunderEndState::Execute(IBaseGameEntity* CurState)
 
 void USkillThunderEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	CurState->Irene->GetMesh()->SetVisibility(true);
+	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->bIsEnd = true;
 }
 #pragma endregion USkillThunderEndState
@@ -1216,6 +1295,8 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
+	if(CurState->PlayTime >= 0.1f)
+		CurState->Irene->ActionEndChangeMoveState();
 }
 
 void UHit1State::Exit(IBaseGameEntity* CurState)

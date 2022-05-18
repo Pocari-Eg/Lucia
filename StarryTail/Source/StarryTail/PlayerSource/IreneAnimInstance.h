@@ -58,8 +58,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	FVector TargetMonster;
-    	
+	AActor* TargetMonster;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -80,7 +80,7 @@ public:
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
 	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
-	void SetTargetMonster(const FVector Value) { TargetMonster = Value; }
+	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 	
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;

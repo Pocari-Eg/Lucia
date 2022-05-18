@@ -386,7 +386,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0)
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1FireState::GetInstance());
 		}
@@ -404,8 +404,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0)
-
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")))
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1WaterState::GetInstance());
 		}
@@ -423,7 +422,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0)
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")))
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
 		}
@@ -454,7 +453,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_W_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_W_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillWaterStartState::GetInstance());
 		}	
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
@@ -462,7 +461,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillThunderStartState::GetInstance());
 		}
 	}
 }

@@ -49,14 +49,20 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 
+	// 스테미나 관련
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
 	bool bUseWaterDodge;
-	
+
+	// 번개 닷지 관련
 	bool bUseThunderDodge;
 	FTimerHandle ThunderDodgeWaitHandle;
 	FVector ThunderDodgeTargetDir;
+
+	// 번개 스킬 갯수
+	FTimerHandle ThunderSkillWaitHandle;
+	int ThunderSkillCount;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -127,7 +133,8 @@ public:
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetCharging()const{return IsCharging;}
-	
+	int GetThunderSkillCount()const{return ThunderSkillCount;}
+
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
