@@ -290,6 +290,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	TargetReset();
 	IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
+	//STARRYLOG(Error,TEXT("%s"),*IreneState->GetStateToString());
 }
 
 // Called to bind functionality to input
@@ -613,8 +614,7 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 				IreneAttack->SetCameraShakeTime(CameraShakeTime + 0.1f);
 			}), TimeSpeed, true);
 		}
-		FVector CameraRotate = CameraComp->GetRelativeLocation();
-		CameraRotate = UseShakeCurve->GetVectorValue(IreneAttack->GetCameraShakeTime());
+		const FVector CameraRotate = UseShakeCurve->GetVectorValue(IreneAttack->GetCameraShakeTime());
 		CameraComp->SetRelativeLocation(CameraRotate);
 	}
 	else
@@ -623,7 +623,10 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 		//CameraShakeOn = false;
 		CameraComp->SetRelativeLocation(FVector::ZeroVector);
 		if(FixedUpdateCameraShakeTimer.IsValid())
+		{
 			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraShakeTimer);
+			FixedUpdateCameraShakeTimer.Invalidate();
+		}
 	}
 }
 void AIreneCharacter::SetUseShakeCurve(UCurveVector* Curve)
@@ -650,7 +653,10 @@ void AIreneCharacter::DoCameraLagCurve(const float DeltaTime)
 		CameraLagTime = 0;
 		SpringArmComp->CameraLagSpeed = 0;
 		if(FixedUpdateCameraLagTimer.IsValid())
+		{
 			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraLagTimer);
+			FixedUpdateCameraLagTimer.Invalidate();
+		}
 	}
 }
 void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)

@@ -125,14 +125,14 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 {
 	if (CanRunState())
 	{
+		MoveKey[Value] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
+			MoveKey[Value] = 2;
 		if (Irene->IreneState->IsIdleState())
 		{
 			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
 			Irene->ChangeStateAndLog(URunLoopState::GetInstance());
-		}
-		MoveKey[Value] = 1;
-		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
-			MoveKey[Value] = 2;
+		}		
 	}
 	else
 		MoveKey[Value] = 3;
@@ -234,7 +234,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				Irene->IreneAttack->AttackStartComboState();
 				Irene->IreneAnim->PlayAttackMontage();
-				
+
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
