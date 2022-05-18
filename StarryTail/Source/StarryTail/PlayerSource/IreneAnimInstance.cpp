@@ -26,7 +26,7 @@ void UIreneAnimInstance::InitMemberVariable()
 	IsSprintStop = false;
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
-	TargetMonster = FVector::ZeroVector;
+	TargetMonster = nullptr;
 }
 
 UIreneAnimInstance::UIreneAnimInstance()
@@ -116,10 +116,17 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 	{
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		{
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), FireAttackMontage);
+		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
-			STARRYLOG_S(Error);
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), WaterAttackMontage);
+		}
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		{
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
 		}
 	}
 }

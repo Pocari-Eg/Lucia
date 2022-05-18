@@ -462,7 +462,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 					if (IreneAttack->TargetMonster == nullptr)
 					{
 						IreneAttack->TargetMonster = RayHit.GetActor();
-						IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+						IreneAnim->SetTargetMonster(RayHit.GetActor());
 						IreneAnim->SetIsHaveTargetMonster(true);
 						NearPosition = FindNearTarget;
 					}
@@ -500,7 +500,7 @@ void AIreneCharacter::SetNearMonster(const FHitResult RayHit, float& NearPositio
 	if (IreneAttack->TargetMonster == nullptr)
 	{
 		IreneAttack->TargetMonster = RayHit.GetActor();
-		IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+		IreneAnim->SetTargetMonster(RayHit.GetActor());
 		IreneAnim->SetIsHaveTargetMonster(true);
 	}
 }
@@ -558,8 +558,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		{
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->TargetMonster = DamageCauser;
-			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster);
 			IreneAnim->SetIsHaveTargetMonster(true);
+			const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+			Mon->MarkerOn();
 		}
 	}
 	return FinalDamage;

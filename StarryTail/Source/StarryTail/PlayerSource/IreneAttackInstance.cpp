@@ -453,7 +453,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_W_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_W_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillWaterStartState::GetInstance());
 		}	
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
@@ -461,7 +461,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillThunderStartState::GetInstance());
 		}
 	}
 }

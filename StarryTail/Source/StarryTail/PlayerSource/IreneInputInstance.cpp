@@ -45,6 +45,8 @@ void UIreneInputInstance::InitMemberVariable()
 	bUseWaterDodge = false;
 	bUseThunderDodge = false;
 	ThunderDodgeTargetDir = FVector::ZeroVector;
+
+	ThunderSkillCount = 2;
 }
 
 #pragma region Move
@@ -254,13 +256,12 @@ void UIreneInputInstance::RightButtonPressed()
 		IsCharging = true;
 		ChargingTime = 0.0f;
 		bUseRightButton = true;
-
-		Irene->IreneAttack->SetSkillState();
-
-		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 		
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
+			Irene->IreneAttack->SetSkillState();
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
 			if (AttackTable != nullptr && bUseRightButton)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
@@ -269,6 +270,9 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
+			Irene->IreneAttack->SetSkillState();
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
 			if (AttackTable != nullptr && bUseRightButton)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
@@ -277,10 +281,35 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
-			if (AttackTable != nullptr && bUseRightButton)
+			if(ThunderSkillCount > 0)
 			{
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->IreneAnim->PlaySkillAttackMontage();
+				Irene->IreneAttack->SetSkillState();
+				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
+				if (AttackTable != nullptr && bUseRightButton)
+				{
+					ThunderSkillCount--;
+					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
+					Irene->IreneAnim->PlaySkillAttackMontage();
+					if(ThunderSkillCount < 2 && !ThunderSkillWaitHandle.IsValid())
+					{
+						GetWorld()->GetTimerManager().SetTimer(ThunderSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+						{
+							ThunderSkillCount++;
+							if(ThunderSkillCount == 2)
+							{
+								GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
+								ThunderSkillWaitHandle.Invalidate();
+							}
+						}) , 10, true);					
+					}
+				}
+			}
+			else
+			{
+				IsCharging = false;
+				ChargingTime = 0.0f;
+				bUseRightButton = false;
 			}
 		}
 	}
