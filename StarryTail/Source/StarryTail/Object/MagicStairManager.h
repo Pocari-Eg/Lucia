@@ -20,11 +20,11 @@ public:
 	
 
 	UPROPERTY(EditAnywhere, Category = Trigger)
-	AMagicStairTrigger* FirstTrigger;
+	AMagicStairTrigger* StartTrigger;
 
 
 	UPROPERTY(EditAnywhere, Category = Trigger)
-	AMagicStairTrigger* SecondTrigger;
+	AMagicStairTrigger* EndTrigger;
 
 private:
 	float min = 2000.0f;
@@ -41,5 +41,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 private:
-	void MagicStairControl();
+	void TickStart();
+	void TickEnd();
 };

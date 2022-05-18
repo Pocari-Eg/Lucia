@@ -5,35 +5,39 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include "MagicStairTrigger.generated.h"
-
-DECLARE_MULTICAST_DELEGATE(FOnTickControlDelegate);
+#include <LevelSequence/Public/LevelSequenceActor.h>
+#include "SequenceTrigger.generated.h"
 
 UCLASS()
-class STARRYTAIL_API AMagicStairTrigger : public AActor
+class STARRYTAIL_API ASequenceTrigger : public AActor
 {
 	GENERATED_BODY()
 	
-	//충돌 트리거
+		//충돌 트리거
 	UPROPERTY(EditAnywhere, Category = Trigger)
 	UBoxComponent* Trigger;
 	//메쉬
 	UPROPERTY(EditAnywhere, Category = Trigger)
-	UStaticMeshComponent* Mesh;
-
+		UStaticMeshComponent* Mesh;
 
 public:
 	// Sets default values for this actor's properties
-	AMagicStairTrigger();
-	FOnTickControlDelegate OnTickControl;
+	ASequenceTrigger();
+
+	UPROPERTY(EditAnywhere, Category = Sequence)
+	TArray<ALevelSequenceActor*> SequenceActor;
 	//충돌 체크
 	UFUNCTION()
-	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+public:
+	//트리거 Off
+	void TriggerOff();
+	//트리거 On
+	void TriggerOn();
 
 };

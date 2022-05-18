@@ -30,8 +30,9 @@ void AMagicStairManager::BeginPlay()
 		}
 		NewMaterial[i]->SetScalarParameterValue(TEXT("Transparency_Amount"), 0.0f);
 	}
-	FirstTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::MagicStairControl);
-	SecondTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::MagicStairControl);
+	StartTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickStart);
+	EndTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickEnd);
+
 }
 
 
@@ -81,13 +82,18 @@ void AMagicStairManager::Tick(float DeltaTime)
 
 }
 
-void AMagicStairManager::MagicStairControl()
+void AMagicStairManager::TickStart()
 {
 	if (IsActorTickEnabled() == false) {
 		STARRYLOG(Error, TEXT("Tick Start"));
 		SetActorTickEnabled(true);
 	}
-	else {
+}
+
+void AMagicStairManager::TickEnd()
+{
+	if(IsActorTickEnabled()==true)
+	{
 		STARRYLOG(Error, TEXT("Tick Pause"));
 		SetActorTickEnabled(false);
 		for (int i = 0; i < StairArray.Num(); i++)
@@ -96,5 +102,15 @@ void AMagicStairManager::MagicStairControl()
 
 		}
 	}
+
+	
+
+	StartTrigger->OnTickControl.Clear();
+	EndTrigger->OnTickControl.Clear();
+	Swap(StartTrigger, EndTrigger);
+	StartTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickStart);
+	EndTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickEnd);
 }
+
+
 
