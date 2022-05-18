@@ -160,5 +160,6 @@ float UIreneUIManager::GetHpRecoveryRatio()
 void UIreneUIManager::PauseWidgetOn()
 {
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+	PlayerHud->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->WidgetOn();
 }
