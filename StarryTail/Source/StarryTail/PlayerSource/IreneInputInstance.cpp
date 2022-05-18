@@ -279,17 +279,6 @@ void UIreneInputInstance::RightButtonPressed()
 		{
 			if (AttackTable != nullptr && bUseRightButton)
 			{
-				const FVector CurrentPosVec = Irene->GetActorLocation();
-				const FVector NowPosVec = Irene->GetActorLocation()+Irene->GetActorForwardVector()*400;
-
-				Irene->GetMesh()->SetVisibility(false);
-				Irene->Weapon->SetVisibility(false);
-				Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-				Irene->IreneAttack->SetNowPosVec(NowPosVec);
-				Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-
-				SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
-				
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
@@ -498,10 +487,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 && !StaminaWaitHandle.IsValid())
 	{
 		Irene->IreneAnim->StopAllMontages(0);
-		Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -180));
-		Irene->GetMesh()->SetVisibility(false);
-		Irene->Weapon->SetVisibility(false);
 		bUseWaterDodge = true;
 		Irene->IreneData.CurrentStamina -= Rate/5;
 		if(StartWaterDodgeStamina-75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
@@ -525,15 +510,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		{
 			WaterDodgeEffect->DestroyComponent(true);
 			WaterDodgeEffect = nullptr;
-		}
-		FString AnimName = "";
-		if(Irene->IreneAnim->GetCurrentActiveMontage())
-			AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
-		if(AnimName != FString("IreneThunderSkill_Montage") && !bUseThunderDodge)
-		{
-			Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-			Irene->GetMesh()->SetVisibility(true);
-			Irene->Weapon->SetVisibility(true);
 		}
 	}
 }
