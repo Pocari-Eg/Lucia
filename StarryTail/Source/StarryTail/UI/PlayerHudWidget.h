@@ -6,8 +6,9 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
-#include "DialogWidget.h"
 
+#include "DialogWidget.h"
+#include "RaidMonsterWidget.h"
 
 #include "PlayerHudWidget.generated.h"
 
@@ -78,6 +79,8 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class URaidMonsterWidget* RMWidget;
 
 	FAttributesUI None;
 	FAttributesUI Fire;

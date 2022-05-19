@@ -4,7 +4,6 @@
 #include "Scientia.h"
 #include "ScAIController.h"
 #include "../../STGameInstance.h"
-
 AScientia::AScientia()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -35,7 +34,7 @@ void AScientia::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Boss;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Raid;
 }
 void AScientia::InitCollision()
 {

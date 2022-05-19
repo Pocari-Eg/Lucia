@@ -199,6 +199,14 @@ bool AMonster::GetIsBattleState() const
 {
 	return bIsBattleState;
 }
+float AMonster::GetHpRatio()
+{
+	return MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp;
+}
+float AMonster::GetDefRatio()
+{
+	return MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def;
+}
 #pragma endregion
 void AMonster::SetSpawnPos()
 {
@@ -294,12 +302,7 @@ void AMonster::CalcDef()
 	}
 
 	//방어력 게이지 업데이트
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
-	}
-	//
+	OnDefChanged.Broadcast();
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
@@ -349,11 +352,7 @@ void AMonster::CalcHp(float Damage)
 	ShowUITimer = 0.0f;
 	HpBarWidget->SetHiddenInGame(false);
 
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateHpWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
-	}
+	OnHpChanged.Broadcast();
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
@@ -411,11 +410,7 @@ void AMonster::ResetDef()
 	GroggyEffectComponent->SetActive(false);
 
 	HpBarWidget->ToggleActive();
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
-	}
+	OnDefChanged.Broadcast();
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
@@ -632,15 +627,8 @@ void AMonster::BeginPlay()
 
 	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
 	MonsterInfo.CurrentDef = MonsterInfo.Def;
-
 	MonsterAIController = Cast<AMonsterAIController>(GetController());
 
-	//방어력 게이지 최대치 설정
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget(1.0f);
-	}
 
 	//사운드 세팅
 	HitSound = new SoundManager(HitEvent, GetWorld());
@@ -655,6 +643,8 @@ void AMonster::BeginPlay()
 
 	}
 
+	auto HPBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	HPBar->BindMonster(this);
 }
 void AMonster::PossessedBy(AController* NewController)
 {
