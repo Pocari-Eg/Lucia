@@ -2,31 +2,33 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
-
-#include "HPBarWidget.generated.h"
+#include "../EnemySource/Monster.h"
+#include "RaidMonsterWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UHPBarWidget : public UUserWidget
+class STARRYTAIL_API URaidMonsterWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
 public:
 
 	// Object 엑터를 바인드 할떄 사용 
 	void BindMonster(class AMonster* NewMonster);
-	void UpdateHpWidget();
-	void UpdateDefWidget();
 
-	void SetColor(FLinearColor Color);
+	void UpdateHp();
 
-	void MarkerOn();
 
-	void MarkerOff();
+	void UpdateFireDef();
+	void UpdateWaterDef();
+	void UpdateThunderDef();
+	void ChangeDefWidget();
+
+private:
+	bool CheckDefWidget();
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
@@ -38,9 +40,11 @@ private:
 
 	//위젯 안 HP Bar 데이터
 	UPROPERTY()
-	class UProgressBar* HPProgressBar;	
+		class UProgressBar* HPProgressBar;
 	UPROPERTY()
-	class UProgressBar* DefProgressBar;
+		class UProgressBar* FireDefBar;
 	UPROPERTY()
-	class UImage* MarkerImage;
+		class UProgressBar* WaterDefBar;
+	UPROPERTY()
+		class UProgressBar* ThunderDefBar;
 };

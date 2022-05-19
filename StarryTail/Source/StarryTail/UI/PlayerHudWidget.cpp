@@ -227,6 +227,10 @@ void UPlayerHudWidget::NativeOnInitialized()
 	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
+	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 
-	 NoneSetScale(SelectScale);
+
+	//RMWidget->SetVisibility(ESlateVisibility::Hidden);
+	 
+	NoneSetScale(SelectScale);
 }
