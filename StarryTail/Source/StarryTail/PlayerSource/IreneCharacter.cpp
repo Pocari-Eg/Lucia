@@ -527,6 +527,7 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
+	STARRYLOG(Error,TEXT("%s"),*Other->GetName());
 	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(Other))

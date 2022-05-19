@@ -544,7 +544,7 @@ void UDodgeThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->ActionEndChangeMoveState();
+
 }
 
 void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)

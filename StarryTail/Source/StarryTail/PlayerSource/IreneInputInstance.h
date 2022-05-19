@@ -56,7 +56,6 @@ private:
 	bool bUseWaterDodge;
 
 	// 번개 닷지 관련
-	bool bUseThunderDodge;
 	FTimerHandle ThunderDodgeWaitHandle;
 	FVector ThunderDodgeTargetDir;
 

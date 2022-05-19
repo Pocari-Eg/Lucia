@@ -165,8 +165,11 @@ void UIreneAttackInstance::AttackCheck()
 
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 		{
-			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage"))
+			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage")&&
+				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill_Montage"))
+			{
 				Irene->FindNearMonster();
+			}
 			else
 			{
 				SetUseMP(true);
@@ -213,7 +216,7 @@ void UIreneAttackInstance::DoAttack()
 				Irene->GetActorLocation(),
 				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeBox(FVector(200, 50, 150)),
+				FCollisionShape::MakeBox(FVector(400, 50, 400)),
 				Params);
 		}
 	}
@@ -287,11 +290,11 @@ void UIreneAttackInstance::DoAttack()
 		if(Irene->IreneInput->bUseRightButton)
 		{
 			FVector TraceVec = Irene->GetActorForwardVector() * 150;
-			FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
+			FVector Center = Irene->GetActorLocation();
 			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 			float DebugLifeTime = 5.0f;
-			DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+			DrawDebugBox(GetWorld(), Center, FVector(400, 50, 400), CapsuleRot, DrawColor, false, DebugLifeTime);
 		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
