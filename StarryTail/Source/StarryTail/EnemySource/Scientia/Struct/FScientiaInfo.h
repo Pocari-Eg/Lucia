@@ -11,10 +11,13 @@ struct FScientiaInfo
 {
 	GENERATED_USTRUCT_BODY()
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float AttributeSettingTime;
+public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		int FeatherCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AttributeSettingTime;
 };

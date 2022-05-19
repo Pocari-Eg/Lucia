@@ -173,6 +173,10 @@ float AMonster::GetTraceRange() const
 {
 	return MonsterInfo.TraceRange;
 }
+float AMonster::GetBattleWalkSpeed() const
+{
+	return MonsterInfo.BattleWalkMoveSpeed;
+}
 float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
@@ -448,6 +452,13 @@ TArray<FOverlapResult> AMonster::DetectPlayer(float DetectRange)
 	);
 
 	return OverlapResults;
+}
+FVector AMonster::AngleToDir(float angle)
+{
+	float radian = FMath::DegreesToRadians(angle);
+	FVector Dir = FVector(FMath::Cos(radian), FMath::Sin(radian), 0.f);
+
+	return Dir;
 }
 void AMonster::SetActive()
 {
@@ -850,7 +861,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		case EAttributeKeyword::e_Fire:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
@@ -864,13 +875,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			break;
 		case EAttributeKeyword::e_Thunder:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{

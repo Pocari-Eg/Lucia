@@ -7,6 +7,10 @@
 const FName AScAIController::IsChangeKey = (TEXT("bIsChange"));
 const FName AScAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
 
+const FName AScAIController::IsAttack1Key = (TEXT("bIsAttack1"));
+const FName AScAIController::IsAttack2Key = (TEXT("bIsAttack2"));
+const FName AScAIController::IsAttack3Key = (TEXT("bIsAttack3"));
+
 AScAIController::AScAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Scientia/BB_Scientia"));

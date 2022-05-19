@@ -17,10 +17,17 @@ AScientia::AScientia()
 	InitMesh();
 	InitAnime();
 
+	static ConstructorHelpers::FClassFinder<AFeather> FeatherBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Feather'"));
+
 	bTestMode = false;
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
+
+	if (FeatherBlueprint.Succeeded())
+	{
+		FeatherBP = FeatherBlueprint.Class;
+	}
 }
 #pragma region Init
 void AScientia::InitMonsterInfo()
@@ -80,6 +87,14 @@ int AScientia::GetBarrierCount()
 {
 	return ScInfo.BarrierCount;
 }
+int AScientia::GetFeatherCount()
+{
+	return ScInfo.FeatherCount;
+}
+float AScientia::GetHpPercent()
+{
+	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
+}
 #pragma endregion
 #pragma region Set
 void AScientia::SetState(FString string)
@@ -87,7 +102,66 @@ void AScientia::SetState(FString string)
 	State = string;
 }
 #pragma endregion
+#pragma region Attack1
+void AScientia::Attack1()
+{
+	if (ScInfo.FeatherCount == 0)
+	{
+		ScAnimInstance->PlayFeatherLMontage();
+	}
+	else if (ScInfo.FeatherCount == 1)
+	{
+		ScAnimInstance->PlayFeatherRMontage();
+	}
+	else if (ScInfo.FeatherCount == 2)
+	{
+		ScAnimInstance->PlayFeatherMMontage();
+	}
 
+	MonsterAIController->StopMovement();
+}
+void AScientia::Feather()
+{
+	FVector BaseDir;
+	FVector RightDir;
+	FVector LeftDir;
+
+	float Angle = 0;
+
+	if (ScInfo.FeatherCount == 0)
+	{
+		Angle = 20;
+	}
+	else if (ScInfo.FeatherCount == 1)
+	{
+		Angle = -20;
+
+	}
+	else if (ScInfo.FeatherCount == 2)
+	{
+		Angle = 0;
+	}
+
+	BaseDir = AngleToDir(GetActorRotation().Euler().Z + Angle);
+	RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + 30);
+	LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - 30);
+
+	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
+	BaseFeather->SetMoveDir(BaseDir);
+	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
+	RightFeather->SetMoveDir(RightDir);
+	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
+	LeftFeather->SetMoveDir(LeftDir);
+}
+void AScientia::AddFeatherCount()
+{
+	ScInfo.FeatherCount++;
+}
+void AScientia::ResetFeatherCount()
+{
+	ScInfo.FeatherCount = 0;
+}
+#pragma endregion
 
 void AScientia::BattleIdle()
 {
@@ -156,6 +230,12 @@ void AScientia::Tick(float DeltaTime)
 void AScientia::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ScAnimInstance->Attack1End.AddLambda([this]() -> void {
+		Attack1End.Broadcast();
+		});
+	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
+	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
 
 }
 

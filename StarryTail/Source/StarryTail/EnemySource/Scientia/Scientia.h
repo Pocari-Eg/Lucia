@@ -6,11 +6,14 @@
 #include "../Monster.h"
 #include "./Struct/FScientiaInfo.h"
 #include "ScAnimInstance.h"
+#include "Feather.h"
 #include "Scientia.generated.h"
 
 /**
  * 
  */
+DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
+
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
 {
@@ -20,6 +23,12 @@ public:
 
 	void InitScInfo();
 
+	void Attack1();
+
+	void Feather();
+	void AddFeatherCount();
+	void ResetFeatherCount();
+
 	void BattleIdle();
 	void BattleWalk();
 
@@ -27,11 +36,19 @@ public:
 
 	FString GetState();
 	int GetBarrierCount();
+	int GetFeatherCount();
+	float GetHpPercent();
+
 	void SetState(FString string);
+
+	//Var
+	FAttackEndDelegate Attack1End;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		FScientiaInfo ScInfo;
 	FString State;
+
+	TSubclassOf<AFeather> FeatherBP;
 
 	UScAnimInstance* ScAnimInstance;
 

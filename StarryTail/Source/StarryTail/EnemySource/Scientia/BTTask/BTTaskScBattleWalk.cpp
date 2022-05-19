@@ -4,6 +4,7 @@
 #include "BTTaskScBattleWalk.h"
 #include "../ScAIController.h"
 #include "../Scientia.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTaskScBattleWalk::UBTTaskScBattleWalk()
 {
@@ -32,25 +33,42 @@ void UBTTaskScBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
 
-	FVector LookVector = Player->GetActorLocation() - Scientia->GetLocation();
+	FVector LookVector = Player->GetActorLocation() - Scientia->GetActorLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 
+	Scientia->SetActorRotation(FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+
+	const FRotator YawRotation(0, TargetRot.Yaw, 0);
+	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+	Scientia->SetActorLocation(Scientia->GetActorLocation() - (Direction * Scientia->GetBattleWalkSpeed() * DeltaSeconds));
+	
 	if (WaitTimer >= WaitTime)
 	{
 		float Distance = Scientia->GetDistanceToPlayer();
 
 		if (Distance < 1000)
 		{
-			// Attack2
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack2Key, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 		else if (Distance >= 1000 && Distance < 2000)
 		{
-			// Attack3
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack3Key, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 		else if (Distance >= 2000)
 		{
-			// Attack1
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack1Key, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
+	
 }
