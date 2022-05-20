@@ -12,6 +12,8 @@ DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackStopCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFootStepDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnRadialDelegate);
+
 /**
  * 
  */
@@ -58,8 +60,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	FVector TargetMonster;
-    	
+	AActor* TargetMonster;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -70,8 +72,9 @@ public:
 
 	void PlayAttackMontage();
 	void PlaySkillAttackMontage();
+	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
-	void JumpToEffectAttackMontageSection(const int32 NewSection);
+	void NextToEffectAttackMontageSection(const int32 NewSection);
 	
 	void SetDeadAnim(const bool Value) { IsDead = Value; }
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
@@ -79,12 +82,13 @@ public:
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
 	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
-	void SetTargetMonster(const FVector Value) { TargetMonster = Value; }
+	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 	
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnAttackStopCheckDelegate OnAttackStopCheck;
 	FOnFootStepDelegate OnFootStep;
+	FOnRadialDelegate OnRadialBlur;
 protected:
 
 private:
@@ -96,5 +100,7 @@ private:
 	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()
 	void AnimNotify_FootStep() const;
+	UFUNCTION()
+	void AnimNotify_RadialBlur	() const;
 	FName GetAttackMontageSectionName(const int32 Section);
 };

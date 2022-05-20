@@ -14,17 +14,18 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->IreneUIManager->OnMpChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
+	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 	NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
-	NewIrene->IreneAttack->FOnFireGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateFire);
-	NewIrene->IreneAttack->FOnWaterGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateWater);
-	NewIrene->IreneAttack->FOnElectricGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateEeletric);
-
 }
 
 void UPlayerHudWidget::SetDialog(FString dialog)
 {
 	DialogWidget->SetDialog(*dialog);
+}
+
+void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+{
+	RMWidget->BindMonster(RadiMonster);
 }
 
 void UPlayerHudWidget::UpdateHp()
@@ -48,7 +49,7 @@ void UPlayerHudWidget::UpdateMp()
 	{
 		if (nullptr != MPProgressBar)
 		{
-			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetMpRatio());
+			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetStaminaRatio());
 		}
 	}
 }
@@ -231,6 +232,9 @@ void UPlayerHudWidget::NativeOnInitialized()
 	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
+	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 
-	 NoneSetScale(SelectScale);
+	RMWidget->SetVisibility(ESlateVisibility::Hidden);
+	 
+	NoneSetScale(SelectScale);
 }

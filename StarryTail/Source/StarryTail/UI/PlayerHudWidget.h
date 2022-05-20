@@ -6,8 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
-#include "DialogWidget.h"
 
+#include "DialogWidget.h"
+#include "RaidMonsterWidget.h"
+#include "../EnemySource/Monster.h"
 
 #include "PlayerHudWidget.generated.h"
 
@@ -37,6 +39,8 @@ public:
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
 	void SetDialog(FString dialog);
+
+	void RaidWidgetbind(AMonster* RadiMonster);
 private:
 
 	void UpdateHp();
@@ -79,6 +83,8 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class URaidMonsterWidget* RMWidget;
 
 	FAttributesUI None;
 	FAttributesUI Fire;
