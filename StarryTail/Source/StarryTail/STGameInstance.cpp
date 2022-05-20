@@ -66,14 +66,14 @@ void USTGameInstance::AddEnemyCount(EEnemyRank Rank)
 {
 	switch (Rank)
 	{
-	case EEnemyRank::e_Normal:
+	case EEnemyRank::e_Common:
 		EnemyCount++;
 		break;
 	case EEnemyRank::e_Unique:
 		EnemyCount++;
 		UniqueCount++;
 		break;
-	case EEnemyRank::e_Boss:
+	case EEnemyRank::e_Raid:
 		break;
 	default:
 		break;
@@ -85,14 +85,14 @@ void USTGameInstance::SubEnemyCount(EEnemyRank Rank)
 {
 	switch (Rank)
 	{
-	case EEnemyRank::e_Normal:
+	case EEnemyRank::e_Common:
 		EnemyCount--;
 		break;
 	case EEnemyRank::e_Unique:
 		EnemyCount--;
 		UniqueCount--;
 		break;
-	case EEnemyRank::e_Boss:
+	case EEnemyRank::e_Raid:
 		break;
 	default:
 		break;

@@ -43,8 +43,9 @@ void UIreneInputInstance::InitMemberVariable()
 	StartWaterDodgeStamina = 0;
 
 	bUseWaterDodge = false;
-	bUseThunderDodge = false;
 	ThunderDodgeTargetDir = FVector::ZeroVector;
+
+	ThunderSkillCount = 2;
 }
 
 #pragma region Move
@@ -89,7 +90,7 @@ void UIreneInputInstance::MoveAuto()const
 		if (TargetAlpha >= 1)
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
-		Irene->GetCapsuleComponent()->SetRelativeLocation(Target);
+		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
 		
 		FString AnimName = "";
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
@@ -98,11 +99,6 @@ void UIreneInputInstance::MoveAuto()const
 		{
 			Irene->IreneAttack->DoAttack();
 		}
-	}
-	// 전기 대쉬 이동
-	if (bUseThunderDodge)
-	{
-		Irene->GetCharacterMovement()->Velocity = ThunderDodgeTargetDir*2*Irene->IreneData.ThunderDodgeSpeed;
 	}
 }
 
@@ -125,14 +121,14 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 {
 	if (CanRunState())
 	{
+		MoveKey[Value] = 1;
+		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
+			MoveKey[Value] = 2;
 		if (Irene->IreneState->IsIdleState())
 		{
 			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
 			Irene->ChangeStateAndLog(URunLoopState::GetInstance());
-		}
-		MoveKey[Value] = 1;
-		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
-			MoveKey[Value] = 2;
+		}		
 	}
 	else
 		MoveKey[Value] = 3;
@@ -217,12 +213,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if (Irene->IreneData.CanNextCombo)
 				{
-					if(Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
-					{
-						Irene->IreneData.IsComboInputOn = true;
-					}
-					else
-						Irene->IreneData.IsComboInputOn = true;
+					Irene->IreneData.IsComboInputOn = true;
 				}
 				else
 				{
@@ -234,7 +225,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				Irene->IreneAttack->AttackStartComboState();
 				Irene->IreneAnim->PlayAttackMontage();
-				
+
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
@@ -254,13 +245,12 @@ void UIreneInputInstance::RightButtonPressed()
 		IsCharging = true;
 		ChargingTime = 0.0f;
 		bUseRightButton = true;
-
-		Irene->IreneAttack->SetSkillState();
-
-		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 		
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
+			Irene->IreneAttack->SetSkillState();
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
 			if (AttackTable != nullptr && bUseRightButton)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
@@ -269,6 +259,9 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
+			Irene->IreneAttack->SetSkillState();
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
 			if (AttackTable != nullptr && bUseRightButton)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
@@ -277,21 +270,35 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 		{
-			if (AttackTable != nullptr && bUseRightButton)
+			if(ThunderSkillCount > 0)
 			{
-				const FVector CurrentPosVec = Irene->GetActorLocation();
-				const FVector NowPosVec = Irene->GetActorLocation()+Irene->GetActorForwardVector()*400;
+				Irene->IreneAttack->SetSkillState();
+				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
-				Irene->GetMesh()->SetVisibility(false);
-				Irene->Weapon->SetVisibility(false);
-				Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-				Irene->IreneAttack->SetNowPosVec(NowPosVec);
-				Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-
-				SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
-				
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->IreneAnim->PlaySkillAttackMontage();
+				if (AttackTable != nullptr && bUseRightButton)
+				{
+					ThunderSkillCount--;
+					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
+					Irene->IreneAnim->PlaySkillAttackMontage();
+					if(ThunderSkillCount < 2 && !ThunderSkillWaitHandle.IsValid())
+					{
+						GetWorld()->GetTimerManager().SetTimer(ThunderSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+						{
+							ThunderSkillCount++;
+							if(ThunderSkillCount == 2)
+							{
+								GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
+								ThunderSkillWaitHandle.Invalidate();
+							}
+						}) , 10, true);					
+					}
+				}
+			}
+			else
+			{
+				IsCharging = false;
+				ChargingTime = 0.0f;
+				bUseRightButton = false;
 			}
 		}
 	}
@@ -445,22 +452,19 @@ void UIreneInputInstance::DodgeKeyword()
 			if(WaterDodgeEffect == nullptr)
 			{
 				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
-				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,30),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
+				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
 			}
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f && !ThunderDodgeWaitHandle.IsValid())
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f)
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 37.5f;
 			Irene->ChangeStateAndLog(UDodgeThunderStartState::GetInstance());
 
-			Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-			Irene->GetCharacterMovement()->MaxWalkSpeed = 99999999;
-			bUseThunderDodge = true;
-			//Irene->ChangeStateAndLog(UDodgeState::GetInstance());
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			
+			ThunderDodgeTargetDir = FVector::ZeroVector;
+
 			if (MoveKey[0] != 0 && MoveKey[0] < 3)
 			{
 				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -480,14 +484,18 @@ void UIreneInputInstance::DodgeKeyword()
 			if(ThunderDodgeTargetDir == FVector::ZeroVector)
 				ThunderDodgeTargetDir = Irene->GetActorForwardVector();
 			ThunderDodgeTargetDir.Normalize();
-			
+
+			FVector Target;
+			if(!ThunderDodgeWaitHandle.IsValid())
+				Target = Irene->GetActorLocation() + ThunderDodgeTargetDir*Irene->IreneData.FirstThunderDodgeSpeed;
+			else
+				Target = Irene->GetActorLocation() + ThunderDodgeTargetDir*Irene->IreneData.DoubleThunderDodgeSpeed;
+			Irene->SetActorRelativeLocation(Target,true,nullptr,ETeleportType::TeleportPhysics);
+			ThunderDodgeTargetDir = FVector::ZeroVector;
+			Irene->ActionEndChangeMoveState();
+
 			 GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
-			 	Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-				bUseThunderDodge = false;
-			 	Irene->ActionEndChangeMoveState();
-			 	ThunderDodgeTargetDir = FVector::ZeroVector;
-			 	Irene->ChangeStateAndLog(UDodgeThunderEndState::GetInstance());
 				 ThunderDodgeWaitHandle.Invalidate();
 			 }), Irene->IreneData.ThunderDodgeTime, false);
 		}
@@ -498,10 +506,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 && !StaminaWaitHandle.IsValid())
 	{
 		Irene->IreneAnim->StopAllMontages(0);
-		Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -180));
-		Irene->GetMesh()->SetVisibility(false);
-		Irene->Weapon->SetVisibility(false);
 		bUseWaterDodge = true;
 		Irene->IreneData.CurrentStamina -= Rate/5;
 		if(StartWaterDodgeStamina-75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
@@ -514,7 +518,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	}
 	else
 	{
-		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -80));
 		StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 		if(bUseWaterDodge)
 		{
@@ -525,15 +528,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		{
 			WaterDodgeEffect->DestroyComponent(true);
 			WaterDodgeEffect = nullptr;
-		}
-		FString AnimName = "";
-		if(Irene->IreneAnim->GetCurrentActiveMontage())
-			AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
-		if(AnimName != FString("IreneThunderSkill_Montage") && !bUseThunderDodge)
-		{
-			Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-			Irene->GetMesh()->SetVisibility(true);
-			Irene->Weapon->SetVisibility(true);
 		}
 	}
 }
