@@ -23,6 +23,11 @@ void UPlayerHudWidget::SetDialog(FString dialog)
 	DialogWidget->SetDialog(*dialog);
 }
 
+void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+{
+	RMWidget->BindMonster(RadiMonster);
+}
+
 void UPlayerHudWidget::UpdateHp()
 {
 	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
@@ -229,8 +234,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 
-
-	//RMWidget->SetVisibility(ESlateVisibility::Hidden);
+	RMWidget->SetVisibility(ESlateVisibility::Hidden);
 	 
 	NoneSetScale(SelectScale);
 }
