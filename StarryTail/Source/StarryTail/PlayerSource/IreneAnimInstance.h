@@ -74,7 +74,7 @@ public:
 	void PlaySkillAttackMontage();
 	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
-	void JumpToEffectAttackMontageSection(const int32 NewSection);
+	void NextToEffectAttackMontageSection(const int32 NewSection);
 	
 	void SetDeadAnim(const bool Value) { IsDead = Value; }
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }

@@ -130,7 +130,7 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 		}
 	}
 }
-void UIreneAnimInstance::JumpToEffectAttackMontageSection(const int32 NewSection)
+void UIreneAnimInstance::NextToEffectAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 	{
