@@ -81,12 +81,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
 
-	// 전기 대쉬 시간 임시값
+	// 전기 대쉬 쿨타임
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ThunderDodgeTime = 1.0f;
 	// 전기 대쉬 속력 임시값
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderDodgeSpeed = 1000.0f;
+	float FirstThunderDodgeSpeed = 300.0f;
+	// 전기 대쉬 속력 임시값
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DoubleThunderDodgeSpeed = 600.0f;
 	
 public:
 	// 공격 관련 변수들
