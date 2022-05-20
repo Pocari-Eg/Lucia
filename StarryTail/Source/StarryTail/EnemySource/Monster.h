@@ -80,6 +80,8 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
+	void  HitStopEvent();
+	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
 
 	//UI

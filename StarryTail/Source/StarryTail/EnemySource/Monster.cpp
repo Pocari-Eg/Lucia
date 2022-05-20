@@ -828,6 +828,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					auto Component = Cast<UPrimitiveComponent>(Elem);
 	
 					PrintHitEffect(Component->GetComponentLocation());
+					HitStopEvent();
 				}
 			}
 		}
