@@ -21,6 +21,8 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -44,6 +46,11 @@ public:
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
 
+	//현재 체력 비율 전환
+	float GetHpRatio();
+	//현재 방어막 비율 전환
+	float GetDefRatio();
+
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
@@ -66,6 +73,9 @@ public:
 	FAttackEndDelegate AttackEnd;
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
+
+	FOnHpDelegate OnHpChanged;
+	FOnDefDelegate OnDefChanged;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  HitStopEvent();
@@ -118,7 +128,7 @@ protected:
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
-	//
+
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 

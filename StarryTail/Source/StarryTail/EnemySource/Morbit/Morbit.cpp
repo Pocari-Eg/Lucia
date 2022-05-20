@@ -53,7 +53,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Normal;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
 }
 void AMorbit::InitCollision()
 {
@@ -190,6 +190,7 @@ void AMorbit::BeginPlay()
 
 		});
 	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
+
 }
 
 // Called every frame

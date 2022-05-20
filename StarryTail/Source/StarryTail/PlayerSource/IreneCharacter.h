@@ -142,6 +142,8 @@ public:
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void RadialBlurEvent();
 
 	void LastAttackCameraShake(const float DeltaTime);
 	void SetUseShakeCurve(UCurveVector* Curve);
