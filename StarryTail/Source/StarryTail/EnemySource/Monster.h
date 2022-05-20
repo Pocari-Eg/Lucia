@@ -78,7 +78,7 @@ public:
 	FOnDefDelegate OnDefChanged;
 
 	UFUNCTION(BlueprintImplementableEvent)
-	void  HitStopEvent();
+	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
 

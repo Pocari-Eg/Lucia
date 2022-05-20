@@ -8,7 +8,7 @@
 
 void UHPBarWidget::BindMonster(class AMonster* NewMonster)
 {
-	//새로들어온 object를 CurrentObject에 할당
+	//새로들어온 Monster를 CurrentMonster에 할당
 	CurrentMonster = Cast<AMonster>(NewMonster);
 
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 

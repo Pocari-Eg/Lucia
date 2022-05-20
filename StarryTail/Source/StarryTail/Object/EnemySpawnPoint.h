@@ -54,9 +54,6 @@ public:
 	int getWaveMonsterCount();
 	int getCurrentWave();
 
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void MonsterSpawnEvent();
 	virtual void Tick(float DeltaTime) override;
 
 
