@@ -12,6 +12,8 @@ DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackStopCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFootStepDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnRadialDelegate);
+
 /**
  * 
  */
@@ -86,6 +88,7 @@ public:
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnAttackStopCheckDelegate OnAttackStopCheck;
 	FOnFootStepDelegate OnFootStep;
+	FOnRadialDelegate OnRadialBlur;
 protected:
 
 private:
@@ -97,5 +100,7 @@ private:
 	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()
 	void AnimNotify_FootStep() const;
+	UFUNCTION()
+	void AnimNotify_RadialBlur	() const;
 	FName GetAttackMontageSectionName(const int32 Section);
 };

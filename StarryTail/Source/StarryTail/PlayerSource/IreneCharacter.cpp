@@ -258,6 +258,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
 	IreneAnim->OnAttackStopCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackStopCheck);
 	IreneAnim->OnFootStep.AddUObject(IreneUIManager, &UIreneUIManager::FootStepSound);
+	IreneAnim->OnRadialBlur.AddUObject(this, &AIreneCharacter::OnRadialBlur);
 }
 
 void AIreneCharacter::TargetReset()const
@@ -603,6 +604,10 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 #pragma endregion State
 
 #pragma region HitFeel
+void AIreneCharacter::OnRadialBlur()
+{
+	RadialBlurEvent();
+}
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
 	if (CameraShakeOn)
