@@ -163,6 +163,11 @@ void UIreneAnimInstance::AnimNotify_FootStep() const
 	OnFootStep.Broadcast();
 }
 
+void UIreneAnimInstance::AnimNotify_RadialBlur() const
+{
+	OnRadialBlur.Broadcast();
+}
+
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));

@@ -44,6 +44,7 @@ void AEnemySpawnPoint::RandomSpawn()
 				NewMonster->SetActorLocation(SpawnLocation);
 				NewMonster->SetSpawnPos();
 
+				MonsterSpawnEvent();
 				//플레이어를 바라보도록
 				FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(NewMonster->GetLocation(),
 					UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());

@@ -11,6 +11,7 @@
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
+#include "Kismet/GameplayStatics.h"
 #include "../UI/HPBarWidget.h"
 //object
 #include "../Object/AttributeObject.h"
@@ -292,17 +293,20 @@ void AMonster::CalcDef()
 	{
 		MonsterInfo.CurrentDef -= (AttackedInfo.AttributeArmor / 5);
 	}
+	//방어력 게이지 업데이트
+	OnDefChanged.Broadcast();
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
+		auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		Irene->HitStopEvent();
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
 		PlayGroggyAnim();
 		bIsGroggy = true;
 	}
 
-	//방어력 게이지 업데이트
-	OnDefChanged.Broadcast();
+	
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
@@ -792,8 +796,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	{
 		
 		PrintHitEffect(OtherComp->GetComponentLocation());
-
-		auto Player = Cast<AIreneCharacter>(OtherActor);
 		return;
 	}
 }
@@ -826,8 +828,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					auto Component = Cast<UPrimitiveComponent>(Elem);
 	
 					PrintHitEffect(Component->GetComponentLocation());
-					Player->HitStopEvent();
-					HitStopEvent();
 				}
 			}
 		}
