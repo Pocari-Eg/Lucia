@@ -185,6 +185,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack1FireState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack1FireState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -195,6 +196,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack2FireState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack2FireState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -205,6 +207,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack3FireState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack3FireState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -215,6 +218,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack1WaterState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack1WaterState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -225,6 +229,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack2WaterState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack2WaterState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -235,6 +240,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack3WaterState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack3WaterState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -245,6 +251,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack1ThunderState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack1ThunderState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -255,6 +262,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack2ThunderState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack2ThunderState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -265,6 +273,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack3ThunderState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UBasicAttack3ThunderState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -278,6 +287,7 @@ UCLASS()
 class STARRYTAIL_API USkillFireStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static USkillFireStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -298,6 +308,7 @@ UCLASS()
 class STARRYTAIL_API USkillWaterStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static USkillWaterStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
@@ -318,6 +329,7 @@ UCLASS()
 class STARRYTAIL_API USkillThunderStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static USkillThunderStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;

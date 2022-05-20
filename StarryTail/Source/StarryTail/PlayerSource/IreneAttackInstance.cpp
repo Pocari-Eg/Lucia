@@ -370,6 +370,8 @@ void UIreneAttackInstance::DoAttack()
 			}
 		}
 	}
+	if (bResult)
+		Irene->CameraShakeOn = true;
 	
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)

@@ -213,12 +213,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if (Irene->IreneData.CanNextCombo)
 				{
-					if(Irene->IreneAttack->GetAttribute() != EAttributeKeyword::e_None)
-					{
-						Irene->IreneData.IsComboInputOn = true;
-					}
-					else
-						Irene->IreneData.IsComboInputOn = true;
+					Irene->IreneData.IsComboInputOn = true;
 				}
 				else
 				{
@@ -457,7 +452,7 @@ void UIreneInputInstance::DodgeKeyword()
 			if(WaterDodgeEffect == nullptr)
 			{
 				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
-				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,30),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
+				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
 			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f)
@@ -523,7 +518,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	}
 	else
 	{
-		Irene->GetMesh()->SetRelativeLocation(FVector(0, 0, -80));
 		StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 		if(bUseWaterDodge)
 		{

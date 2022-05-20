@@ -252,7 +252,7 @@ void AIreneCharacter::PostInitializeComponents()
 				if (IreneInput->bUseLeftButton)
 					IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
 				if (IreneInput->bUseRightButton)
-					IreneAnim->JumpToEffectAttackMontageSection(IreneData.CurrentCombo);
+					IreneAnim->NextToEffectAttackMontageSection(IreneData.CurrentCombo);
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
@@ -527,7 +527,7 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	STARRYLOG(Error,TEXT("%s"),*Other->GetName());
+	//STARRYLOG(Error,TEXT("%s"),*Other->GetName());
 	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(Other))
@@ -608,6 +608,7 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
 	if (CameraShakeOn)
 	{
+		STARRYLOG_S(Warning);
 		if(!FixedUpdateCameraShakeTimer.IsValid())
 		{
 			constexpr float TimeSpeed = 0.01f;
