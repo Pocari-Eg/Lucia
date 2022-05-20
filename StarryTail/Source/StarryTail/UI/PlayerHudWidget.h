@@ -9,6 +9,7 @@
 
 #include "DialogWidget.h"
 #include "RaidMonsterWidget.h"
+#include "../EnemySource/Monster.h"
 
 #include "PlayerHudWidget.generated.h"
 
@@ -38,6 +39,8 @@ public:
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
 	void SetDialog(FString dialog);
+
+	void RaidWidgetbind(AMonster* RadiMonster);
 private:
 
 	void UpdateHp();
