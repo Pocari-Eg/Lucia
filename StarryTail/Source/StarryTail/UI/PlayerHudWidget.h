@@ -68,6 +68,7 @@ private:
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
+	//위젯 업데이트
 private:
 
 	//현재 오브젝트

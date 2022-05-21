@@ -57,7 +57,7 @@ public:
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere)
 	FPlayerCharacterDataStruct IreneData;
-	UPROPERTY(BluePrintReadOnly)
+	UPROPERTY()
 	class UIreneUIManager* IreneUIManager;
 	UPROPERTY()
 	class UIreneFSM* IreneState;
