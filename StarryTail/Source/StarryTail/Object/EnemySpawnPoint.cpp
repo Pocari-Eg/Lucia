@@ -4,7 +4,6 @@
 #include "EnemySpawnPoint.h"
 #include "../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-#include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "../EnemySource/Morbit/Morbit.h"
 // Sets default values
 AEnemySpawnPoint::AEnemySpawnPoint()
@@ -26,7 +25,7 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 
 void AEnemySpawnPoint::RandomSpawn()
 {
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	
 		for (int Monster_Index = 0; Monster_Index < SpawnWave[CurrentWave].Monster.Num(); Monster_Index++)
 		{
 			for (int SpawnCount = 0; SpawnCount < SpawnWave[CurrentWave].Monster[Monster_Index].Count; SpawnCount++)
@@ -37,28 +36,16 @@ void AEnemySpawnPoint::RandomSpawn()
 				//새로운 좌표 생성
 				FVector SpawnLocation = GetActorLocation() + FVector(random, 130.0f);
 
-				
-
 				//새로운 몬스터 생성
 				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, FVector::ZeroVector, FRotator::ZeroRotator); 
 				NewMonster->SetActorLocation(SpawnLocation);
-				NewMonster->SetSpawnPos();
-				NewMonster->OnSpawnEffectEvent();
-				
-				//플레이어를 바라보도록
-				FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(NewMonster->GetLocation(),
-					UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-				NewMonster->SetActorRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
-			
 				NewMonster->SetSpawnEnemy();
-
-				if (Instance != nullptr)Instance->AddEnemyCount(NewMonster->GetRank());
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				if (Instance != nullptr)Instance->AddEnemyCount();
 			}
 		}
 
 	CurrentWave++;
-	CurrentWave >= SpawnWave.Num()? Instance->SetLastWave(true): Instance->SetLastWave(false);
-	
 }
 
 int AEnemySpawnPoint::getWaveMonsterCount()

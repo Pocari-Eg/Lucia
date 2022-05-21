@@ -29,7 +29,9 @@ UIreneUIManager::UIreneUIManager()
 void UIreneUIManager::PlayerHudInit()
 {
 	PlayerHud = CreateWidget<UPlayerHudWidget>(Irene->GetGameInstance(), PlayerHudClass);
-	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);	
+	PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+
+	
 }
 
 void UIreneUIManager::Init(AIreneCharacter* Value)
@@ -56,6 +58,9 @@ void UIreneUIManager::Begin()
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
+
+
+
 	WalkSound->SetVolume(WalkSoundVolume);
 	AttackSound->SetParameter("Material", 0.0f);
 
@@ -68,9 +73,9 @@ float UIreneUIManager::GetHpRatio()
 	// 비율변환 0.0 ~ 1.0
 	return (Irene->IreneData.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentHP / Irene->IreneData.MaxHP;
 }
-float UIreneUIManager::GetStaminaRatio()
+float UIreneUIManager::GetMpRatio()
 {
-	return (Irene->IreneData.CurrentStamina < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentStamina / Irene->IreneData.MaxStamina;
+	return (Irene->IreneData.CurrentMP < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentMP / Irene->IreneData.MaxMP;
 }
 void UIreneUIManager::FootStepSound()
 {
@@ -78,23 +83,23 @@ void UIreneUIManager::FootStepSound()
 }
 void UIreneUIManager::HPRecoveryWaitStart()
 {
+
 	if(!Irene->HpRecoveryData.bIsRecovering&& !IsHpFull())
 	GetWorld()->GetTimerManager().SetTimer(HpRecoveryWaitTimerHandle, this, &UIreneUIManager::HPRecoveryWaiting, 1.0f, true, 0.0f);
 }
 void UIreneUIManager::HPRecoveryWaiting()
 {
-	if (IsConsecutiveIdle == false)
-	{
-		//STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
-		CurRecoverWaitTime++;
-		if (CurRecoverWaitTime >= Irene->HpRecoveryData.Time)HPRecoveringStart();
-	}
-	else
-	{
-		//STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
-		CurRecoverWaitTime++;
-		if (CurRecoverWaitTime >= Irene->HpRecoveryData.HP_Re_Time)HPRecoveringStart();
-	}
+
+		if (IsConsecutiveIdle == false) {
+			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			CurRecoverWaitTime++;
+			if (CurRecoverWaitTime >= Irene->HpRecoveryData.Time)HPRecoveringStart();
+		}
+		else {
+			STARRYLOG(Warning, TEXT("CurRecoverWaitTime : %d"), CurRecoverWaitTime);
+			CurRecoverWaitTime++;
+			if (CurRecoverWaitTime >= Irene->HpRecoveryData.HP_Re_Time)HPRecoveringStart();
+		}
 }
 
 void UIreneUIManager::HPRecoveryWaitCancel()
@@ -114,8 +119,7 @@ void UIreneUIManager::HPRecoveringStart()
 }
 void UIreneUIManager::HPRecovering()
 {
-	if (Irene->HpRecoveryData.bIsRecovering)
-	{
+	if (Irene->HpRecoveryData.bIsRecovering) {
 		const int CurRecoveryAmount = RemainingRecovery / CurRecoverTime;
 		RemainingRecovery -= CurRecoveryAmount;
 		if (!IsHpFull())
@@ -125,8 +129,8 @@ void UIreneUIManager::HPRecovering()
 			if (IsHpFull()) HpRecoveringCancel();
 		}
 		if (CurRecoverTime > 1)CurRecoverTime--;
-		else
-		{
+		else {
+			
 			GetWorld()->GetTimerManager().ClearTimer(HpRecoveryTimerHandle);
 			RemainingRecovery = 0;
 			Irene->HpRecoveryData.bIsRecovering = false;
@@ -144,13 +148,16 @@ void UIreneUIManager::HpRecoveringCancel()
 	IsConsecutiveIdle = false;
 	OnHpChanged.Broadcast();
 	if (IsHpFull())Irene->IreneData.CurrentHP = Irene->IreneData.MaxHP;
-	else
+	else {
 		HPRecoveryWaitStart();
+	}
 }
 bool UIreneUIManager::IsHpFull()
 {
-	if (Irene->IreneData.CurrentHP >= Irene->IreneData.MaxHP) return true;
-	return false;
+	if (Irene->IreneData.CurrentHP >= Irene->IreneData.MaxHP)	return true;
+	else {
+		return false;
+	}
 }
 float UIreneUIManager::GetHpRecoveryRatio()
 {
@@ -159,7 +166,6 @@ float UIreneUIManager::GetHpRecoveryRatio()
 
 void UIreneUIManager::PauseWidgetOn()
 {
-	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
-	PlayerHud->SetVisibility(ESlateVisibility::Hidden);
-	PauseWidget->WidgetOn();
+GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+PauseWidget->WidgetOn();
 }

@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-
 #include "HPBarWidget.generated.h"
 
 /**
@@ -18,10 +17,9 @@ class STARRYTAIL_API UHPBarWidget : public UUserWidget
 public:
 
 	// Object 엑터를 바인드 할떄 사용 
-	void BindMonster(class AMonster* NewMonster);
-	void UpdateHpWidget();
-	void UpdateDefWidget();
-
+	void BindObjectHp(class ATestObject* NewObject);
+	void UpdateHpWidget(float Hp);
+	void UpdateDefWidget(float Def);
 	void SetColor(FLinearColor Color);
 
 	void MarkerOn();
@@ -34,7 +32,7 @@ protected:
 private:
 
 	//현재 오브젝트
-	class AMonster* CurrentMonster;
+	class ATestObject* CurrentObject;
 
 	//위젯 안 HP Bar 데이터
 	UPROPERTY()

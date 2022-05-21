@@ -19,14 +19,13 @@ class STARRYTAIL_API AMonsterAIController : public AAIController
 	GENERATED_BODY()
 public:
 	AMonsterAIController();
+	virtual void OnPossess(APawn* InPawn) override;
 
 	void SetPlayer();
 	void SetFind();
 
 	void Groggy();
 	void Death();
-
-	void SetSpawnPos(FVector Position);
 
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
@@ -50,6 +49,4 @@ protected:
 		class UBehaviorTree* BTAsset;
 	UPROPERTY()
 		class UBlackboardData* BBAsset;
-
-	virtual void OnPossess(APawn* InPawn) override;
 };

@@ -9,6 +9,8 @@
 
 #include "IreneAttackInstance.generated.h"
 
+
+DECLARE_MULTICAST_DELEGATE(FOnFormGaugeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneAttackInstance : public UObject
 {
@@ -18,6 +20,13 @@ public:
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
 	
+	// 폼 게이지 0 = Fire, 1 = Water, 2 = Electric
+	TArray<float> FormGauge;
+
+	FOnFormGaugeChangeDelegate FOnFireGaugeChange;
+	FOnFormGaugeChangeDelegate FOnWaterGaugeChange;
+	FOnFormGaugeChangeDelegate FOnElectricGaugeChange;
+	
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -26,6 +35,10 @@ private:
 
 	UPROPERTY()
 	UDataTable* AttackDataTable;
+	UPROPERTY()
+	UDataTable* FormDataTable;
+	UPROPERTY()
+	UDataTable* FormTimeDataTable;
 
 	// 타켓 추적 유무
 	bool bFollowTarget;
@@ -35,11 +48,7 @@ private:
 	FVector PlayerPosVec;
 	// 보간을 위한 목표 위치
 	FVector TargetPosVec;
-	// 전기 스킬 이동 전 위치
-	FVector CurrentPosVec;
-	// 전기 스킬 이동 후 위치
-	FVector NowPosVec;
-	
+
 	// 카메라 쉐이크 시간
 	float CameraShakeTime;
 	// 타켓 추적 유무
@@ -52,6 +61,7 @@ private:
 	FRotator TargetCameraRot;	
 
 	bool bUseMP;
+	float UseMPSize;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -66,18 +76,14 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
-	void SetAttackState()const;
-	void SetSkillState()const;
-	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FFormDataTable* GetNameAtFormDataTable(const FName Value) const { if (Value != FName("")) return (FormDataTable->FindRow<FFormDataTable>(Value, "")); return nullptr; }
+	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
 
 #pragma region GetSet
 	//공격력 반환
 	float GetATK()const;
 	int GetAttackDirection();
-	FName GetBasicAttackDataTableName();
-	FName GetActionAttackDataTableName();
-
 	//속성 반환
 	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetAttribute()const{return Attribute;}
@@ -85,10 +91,9 @@ public:
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
 	FVector GetPlayerPosVec()const {return PlayerPosVec;}
 	FVector GetTargetPosVec()const {return TargetPosVec;}
-	FVector GetCurrentPosVec()const {return CurrentPosVec;}
-	FVector GetNowPosVec()const {return NowPosVec;}
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetUseMP()const {return bUseMP;}
+	float GetUseMPSize()const {return UseMPSize;}
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
@@ -97,9 +102,7 @@ public:
 	void SetTargetPosVec(const FVector Value){TargetPosVec = Value;}
 	void SetCameraShakeTime(const float Value){CameraShakeTime = Value;}
 	void SetUseMP(const bool Value){bUseMP = Value;}
-	void SetCurrentPosVec(const FVector Value){CurrentPosVec = Value;}
-	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
-
+	void SetUseMPSize(const float Value){UseMPSize = Value;}
 #pragma endregion GetSet
 
 private:

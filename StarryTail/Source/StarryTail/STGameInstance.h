@@ -57,9 +57,7 @@ private:
 
 	
 private:
-	UPROPERTY()
 	AIreneCharacter* Player;
-	UPROPERTY()
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
 
 	UPROPERTY()
@@ -71,21 +69,15 @@ private:
 public:
 	FOnWaveDelegate WaveStart;
 private:
-    int32 UniqueCount;
 	int32 EnemyCount;
 	int32 NextWaveCount;
 
-	bool bIsLastWave;
+
 public:
-	void AddEnemyCount(EEnemyRank Rank);
-	void SubEnemyCount(EEnemyRank Rank);
+	void AddEnemyCount();
+	void SubEnemyCount();
 
 	void SetNextWaveCount(int32 count);
-
-	void SetLastWave(bool State);
-	bool IsLastWave();
-private:
-
 #pragma endregion
 
 

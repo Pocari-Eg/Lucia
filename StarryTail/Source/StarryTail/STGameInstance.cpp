@@ -48,8 +48,6 @@ void USTGameInstance::Init()
 	EnemyMaxCount = 20;*/
 
 	EnemyCount = 0;
-	UniqueCount = 0;
-	bIsLastWave = false;
 	InitSoundSetting();
 }
 
@@ -62,56 +60,18 @@ void USTGameInstance::InitSoundSetting()
 	SoundSettingData.SFX_Volume = 1.0f;
 }
 
-void USTGameInstance::AddEnemyCount(EEnemyRank Rank)
+void USTGameInstance::AddEnemyCount()
 {
-	switch (Rank)
-	{
-	case EEnemyRank::e_Common:
-		EnemyCount++;
-		break;
-	case EEnemyRank::e_Unique:
-		EnemyCount++;
-		UniqueCount++;
-		break;
-	case EEnemyRank::e_Raid:
-		break;
-	default:
-		break;
-	}
-
+	EnemyCount++;
 }
 
-void USTGameInstance::SubEnemyCount(EEnemyRank Rank)
+void USTGameInstance::SubEnemyCount()
 {
-	switch (Rank)
-	{
-	case EEnemyRank::e_Common:
-		EnemyCount--;
-		break;
-	case EEnemyRank::e_Unique:
-		EnemyCount--;
-		UniqueCount--;
-		break;
-	case EEnemyRank::e_Raid:
-		break;
-	default:
-		break;
-	}
+	EnemyCount--;
 	STARRYLOG(Warning, TEXT("Current EnemyCount : %d"), EnemyCount);
-
-	if (bIsLastWave)
+	if (EnemyCount <= NextWaveCount)
 	{
-		if (EnemyCount <= 0 && UniqueCount <= 0)
-		{
-			WaveStart.Broadcast();
-	   }
-	}
-	else
-	{
-		if (EnemyCount <= NextWaveCount&&UniqueCount<=0)
-		{
-			WaveStart.Broadcast();
-		}
+		WaveStart.Broadcast();
 	}
 }
 
@@ -120,16 +80,6 @@ void USTGameInstance::SetNextWaveCount(int32 count)
 	
 	NextWaveCount = count;
 	STARRYLOG(Warning, TEXT("NextWaveCount : %d"), NextWaveCount);
-}
-
-void USTGameInstance::SetLastWave(bool State)
-{
-	bIsLastWave = State;
-}
-
-bool USTGameInstance::IsLastWave()
-{
-	return bIsLastWave;
 }
 
 

@@ -60,7 +60,3 @@ void AMonsterAIController::SetFind()
 {
 	Blackboard->SetValueAsBool(IsFindKey, true);
 }
-void AMonsterAIController::SetSpawnPos(FVector Position)
-{
-	Blackboard->SetValueAsVector(SpawnPosKey, Position);
-}

@@ -31,8 +31,8 @@ public:
 	FOnAttributeChangeDelegate FOnAttributeChange;
 protected:
 
-#pragma region GetClassOrObject
 public:
+#pragma region GetClassOrObject
 	// 플레이어 컨트롤러
 	UPROPERTY()
 	APlayerController* WorldController;
@@ -73,31 +73,15 @@ public:
 	TArray<USkeletalMesh*> WeaponMeshArray;
 	UPROPERTY()
 	TArray<FName> WeaponSocketNameArray;
-
+	
 	UPROPERTY(EditAnywhere)
-	TArray<UCurveVector*> CameraShakeCurve;
-	UPROPERTY(EditAnywhere)
-	TArray<UCurveFloat*> CameraLagCurve;
-private:
-	FTimerHandle FixedUpdateCameraShakeTimer;
-	FTimerHandle FixedUpdateCameraLagTimer;
-
-	// 카메라 쉐이크에 사용할 커브
-	UPROPERTY()
-	UCurveVector* UseShakeCurve;
-	// 카메라 렉에 사용할 커브
-	UPROPERTY()
-	UCurveFloat* UseLagCurve;
-
-	float CameraLagTime;
-
+	TArray<UCurveFloat*> CameraShakeCurve;
 #pragma endregion GetClassOrObject
 
 	//스탑워치
 	//AStopWatch* StopWatch;
-	
-#pragma region Setting
 public:
+#pragma region Setting
 	// Sets default values for this character's properties
 	AIreneCharacter();
 
@@ -105,10 +89,8 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	void TargetReset()const;
 #pragma endregion Setting
-	
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -116,19 +98,19 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-#pragma region State
 public:
+
+#pragma region State
 	// 상태 변화 후 로그 출력
-	void ChangeStateAndLog(class IState* NewState)const;
-	void ActionEndChangeMoveState()const;
+	void ChangeStateAndLog(class IState* NewState);
+	void ActionEndChangeMoveState();
+	FName GetAnimName();
 #pragma endregion State
 	
 #pragma region Collision
-public:
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
-	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const;
-	void SetNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
+
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
@@ -142,16 +124,7 @@ public:
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
-	UFUNCTION(BlueprintImplementableEvent)
-	void RadialBlurEvent	();
 
-	void OnRadialBlur();
-
-	void LastAttackCameraShake(const float DeltaTime);
-	void SetUseShakeCurve(UCurveVector* Curve);
-	void DoCameraLagCurve(const float DeltaTime);
-	void SetUseCameraLag(UCurveFloat* Curve);
-	
 	UPROPERTY(BluePrintReadWrite)
 	bool CameraShakeOn;
 
@@ -162,5 +135,4 @@ public:
 	//void WatchControl();
 	//void WatchReset();
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
-	void SetCameraLagTime(const float Value){CameraLagTime = Value;}
 };

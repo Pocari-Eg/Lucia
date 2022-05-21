@@ -5,7 +5,6 @@
 #include "../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
-#include <LevelSequence/Public/LevelSequenceActor.h>
 #include"EnemySpawnPoint.h"
 #include "EnemySpawnTrigger.generated.h"
 
@@ -17,9 +16,7 @@ class STARRYTAIL_API AEnemySpawnTrigger : public AActor
 private:
 	int32 WaveMonsterCount;
 
-	ULevelSequencePlayer* SequncePlayer;
-
-	bool IsCurrentSpawn;
+	
 public:
 	UPROPERTY(EditAnywhere, Category = Trigger)
 		UBoxComponent* Trigger;
@@ -32,9 +29,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = SpawnPoint, meta = (ClampMin = "0", ClampMax = "100"))
 	int32 NextWavePercent;
-
-	UPROPERTY(EditAnywhere, Category = Sequence)
-	ALevelSequenceActor* SequenceActor;
 	//Function
 public:
 	// Sets default values for this actor's properties
@@ -54,7 +48,5 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-	void WaveManager();
 	void WaveStart();
-	void WaveClear();
 };
