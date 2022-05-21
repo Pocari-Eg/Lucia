@@ -222,6 +222,11 @@ void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection A
 void AMonster::SetIsBattleState(bool Value)
 {
 	bIsBattleState = Value;
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr) {
+		bIsBattleState == true ? Instance->AddDetectedMonster() : Instance->SubDetectedMonster();
+	}
 }
 void AMonster::SetEffect()
 {
@@ -367,10 +372,17 @@ void AMonster::CalcHp(float Damage)
 		MonsterAIController->Death();
 		PlayDeathAnim();
 
+
 		if (bIsSpawnEnemy) {
 			auto instnace = Cast<USTGameInstance>(GetGameInstance());
 			if(instnace!=nullptr)
 			instnace->SubEnemyCount(GetRank());
+		}
+		if (bIsBattleState)
+		{
+			auto instnace = Cast<USTGameInstance>(GetGameInstance());
+			if (instnace != nullptr)
+				instnace->SubDetectedMonster();
 		}
 		return;
 	}

@@ -112,4 +112,14 @@ public:
 	*/
 #pragma endregion
 
+
+#pragma region DetectedMonster
+private:
+	bool bIsPlayerBattleState;
+	int32 DetectedMonsterCount;
+public:
+	void AddDetectedMonster();
+	void SubDetectedMonster();
+	bool GetPlayerBattleState();
+#pragma endregion DetectedMonster
 };

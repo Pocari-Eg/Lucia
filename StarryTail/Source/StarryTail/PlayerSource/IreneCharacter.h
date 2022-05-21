@@ -42,7 +42,7 @@ public:
 	UCurveFloat* JumpGravityCurve;
 
 	// 카메라 암과 카메라
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
@@ -55,7 +55,7 @@ public:
 	class UIreneInputInstance* IreneInput;
 
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BluePrintReadOnly)
 	FPlayerCharacterDataStruct IreneData;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneUIManager* IreneUIManager;
@@ -143,7 +143,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
-	void RadialBlurEvent	();
+	void RadialBlurEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CameraOutEvent();
 
 	void OnRadialBlur();
 
