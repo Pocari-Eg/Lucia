@@ -33,8 +33,6 @@ void USTGameInstance::ResetAttributeEffectMonster()
 }
 
 
-
-
 #pragma endregion
 
 
@@ -51,6 +49,10 @@ void USTGameInstance::Init()
 	UniqueCount = 0;
 	bIsLastWave = false;
 	InitSoundSetting();
+
+	//detect
+	bIsPlayerBattleState = false;
+	DetectedMonsterCount = 0;
 }
 
 void USTGameInstance::InitSoundSetting()
@@ -132,7 +134,42 @@ bool USTGameInstance::IsLastWave()
 	return bIsLastWave;
 }
 
+void USTGameInstance::AddDetectedMonster()
+{
+	if (DetectedMonsterCount == 0)
+	{
+		//플레이어 카메라 줌 아웃 이벤트
+		//캐릭터 대치상태 변경
+		DetectedMonsterCount++;
+		bIsPlayerBattleState = true;
+		Player->CameraOutEvent();
+		STARRYLOG(Error, TEXT("Battle State On"));
+	}
+	else
+	{
+		DetectedMonsterCount++;
+	}
 
+}
+
+void USTGameInstance::SubDetectedMonster()
+{
+	if (DetectedMonsterCount > 0)
+	{
+		DetectedMonsterCount--;
+	}
+
+	if (DetectedMonsterCount == 0) {
+		//캐릭터 대치상태 변경
+		bIsPlayerBattleState = false;
+		STARRYLOG(Error, TEXT("Battle State Off"));
+	}
+}
+
+bool USTGameInstance::GetPlayerBattleState()
+{
+	return bIsPlayerBattleState;
+}
 
 FSoundSetting* USTGameInstance::GetSoundSetting()
 {
