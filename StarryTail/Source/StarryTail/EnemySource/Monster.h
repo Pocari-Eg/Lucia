@@ -21,6 +21,8 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -44,12 +46,18 @@ public:
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
 
+	//현재 체력 비율 전환
+	float GetHpRatio();
+	//현재 방어막 비율 전환
+	float GetDefRatio();
+
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
 	void PlayGroggyAnim();
 	void PlayDeathAnim();
 
+	void SetSpawnPos();
 	void SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection AttackedDirection);
 	void SetIsBattleState(bool Value);
 
@@ -66,6 +74,11 @@ public:
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 
+	FOnHpDelegate OnHpChanged;
+	FOnDefDelegate OnDefChanged;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -77,7 +90,7 @@ public:
 
 	//스폰 생성 몬스터 설정
 	void SetSpawnEnemy();
-	
+	EEnemyRank GetRank();
 protected:
 	//Function
 	void InitDebuffInfo();
@@ -97,7 +110,7 @@ protected:
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-		FNormalMonsterInfo MonsterInfo;
+	FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -117,7 +130,7 @@ protected:
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
-	//
+
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 
@@ -136,6 +149,7 @@ protected:
 	bool bDeadWait;
 
 	bool bIsSpark;
+	bool bIsObject;
 #pragma region Sound
 	//사운드 이벤트
 	//UPROPERTY(EditAnywhere, Category = "FMOD")
@@ -177,6 +191,7 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -194,4 +209,8 @@ protected:
 	virtual void PostInitializeComponents() override;
 
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
+
+
+	//object
+	virtual void HitCheck(AIreneCharacter* Irene) {};
 };

@@ -14,17 +14,18 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->IreneUIManager->OnMpChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
+	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 	NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
-	NewIrene->IreneAttack->FOnFireGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateFire);
-	NewIrene->IreneAttack->FOnWaterGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateWater);
-	NewIrene->IreneAttack->FOnElectricGaugeChange.AddUObject(this, &UPlayerHudWidget::UpdateEeletric);
-
 }
 
 void UPlayerHudWidget::SetDialog(FString dialog)
 {
 	DialogWidget->SetDialog(*dialog);
+}
+
+void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+{
+	RMWidget->BindMonster(RadiMonster);
 }
 
 void UPlayerHudWidget::UpdateHp()
@@ -48,7 +49,7 @@ void UPlayerHudWidget::UpdateMp()
 	{
 		if (nullptr != MPProgressBar)
 		{
-			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetMpRatio());
+			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetStaminaRatio());
 		}
 	}
 }
@@ -72,10 +73,10 @@ void UPlayerHudWidget::UpdateFire()
 
 		if (nullptr != Fire.Base)
 		{
-			Fire.Base->SetPercent(CurrentIrene->IreneAttack->GetFireRatio());
+			//Fire.Base->SetPercent(CurrentIrene->IreneAttack->GetFireRatio());
 		}
 	}
-	UpdateFireRecovery();
+	//UpdateFireRecovery();
 }
 
 void UPlayerHudWidget::UpdateFireRecovery()
@@ -85,7 +86,7 @@ void UPlayerHudWidget::UpdateFireRecovery()
 
 		if (nullptr != Fire.Recovery)
 		{
-			Fire.Recovery->SetPercent(CurrentIrene->IreneAttack->GetFireRecoveryRatio());
+			//Fire.Recovery->SetPercent(CurrentIrene->IreneAttack->GetFireRecoveryRatio());
 		}
 	}
 }
@@ -97,10 +98,10 @@ void UPlayerHudWidget::UpdateWater()
 
 		if (nullptr != Water.Base)
 		{
-			Water.Base->SetPercent(CurrentIrene->IreneAttack->GetWaterRatio());
+			//Water.Base->SetPercent(CurrentIrene->IreneAttack->GetWaterRatio());
 		}
 	}
-	UpdateWaterRecovery();
+	//UpdateWaterRecovery();
 }
 
 void UPlayerHudWidget::UpdateWaterRecovery()
@@ -110,7 +111,7 @@ void UPlayerHudWidget::UpdateWaterRecovery()
 
 		if (nullptr != Water.Recovery)
 		{
-			Water.Recovery->SetPercent(CurrentIrene->IreneAttack->GetWaterRecoveryRatio());
+			//Water.Recovery->SetPercent(CurrentIrene->IreneAttack->GetWaterRecoveryRatio());
 		}
 	}
 }
@@ -122,10 +123,10 @@ void UPlayerHudWidget::UpdateEeletric()
 
 		if (nullptr != Electric.Base)
 		{
-			Electric.Base->SetPercent(CurrentIrene->IreneAttack->GetElectricRatio());
+			//Electric.Base->SetPercent(CurrentIrene->IreneAttack->GetElectricRatio());
 		}
 	}
-	UpdateEeletricRecovery();
+	//UpdateEeletricRecovery();
 }
 
 void UPlayerHudWidget::UpdateEeletricRecovery()
@@ -135,7 +136,7 @@ void UPlayerHudWidget::UpdateEeletricRecovery()
 
 		if (nullptr != Electric.Recovery)
 		{
-			Electric.Recovery->SetPercent(CurrentIrene->IreneAttack->GetElectricRecoveryRatio());
+			//Electric.Recovery->SetPercent(CurrentIrene->IreneAttack->GetElectricRecoveryRatio());
 		}
 	}
 }
@@ -231,6 +232,9 @@ void UPlayerHudWidget::NativeOnInitialized()
 	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
+	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 
-	 NoneSetScale(SelectScale);
+	RMWidget->SetVisibility(ESlateVisibility::Hidden);
+	 
+	NoneSetScale(SelectScale);
 }

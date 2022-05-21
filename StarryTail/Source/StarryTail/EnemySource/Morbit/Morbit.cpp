@@ -27,6 +27,8 @@ AMorbit::AMorbit()
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
+
+
 }
 #pragma region Init
 void AMorbit::InitMonsterInfo()
@@ -51,6 +53,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
 }
 void AMorbit::InitCollision()
 {
@@ -100,6 +103,7 @@ void AMorbit::BattleWalk()
 void AMorbit::Attack()
 {
 	MorbitAnimInstance->PlayAttackMontage();
+	MonsterAIController->StopMovement();
 
 	bIsAttacking = true;
 }
@@ -186,6 +190,7 @@ void AMorbit::BeginPlay()
 
 		});
 	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
+
 }
 
 // Called every frame
