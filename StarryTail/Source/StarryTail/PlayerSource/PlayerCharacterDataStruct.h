@@ -26,6 +26,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MinFollowCameraZPosition = 120;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxBattleCameraZPosition = 700;
+
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float FieldOfView = 75;

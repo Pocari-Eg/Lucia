@@ -7,6 +7,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
+#include "../STGameInstance.h"
 
 #include "DrawDebugHelpers.h"
 
@@ -345,7 +346,11 @@ void UIreneInputInstance::RightButtonReleased()
 void UIreneInputInstance::MouseWheel(float Rate)
 {
 	Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
-	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+
+	Irene->STGameInstance->GetPlayerBattleState()==true?
+	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition)
+	:Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+
 }
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)

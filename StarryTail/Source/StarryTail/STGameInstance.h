@@ -121,5 +121,6 @@ public:
 	void AddDetectedMonster();
 	void SubDetectedMonster();
 	bool GetPlayerBattleState();
+	
 #pragma endregion DetectedMonster
 };

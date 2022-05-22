@@ -823,6 +823,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	auto Player = Cast<AIreneCharacter>(DamageCauser);
 
+	if (Player->bIsRadialBlurOn)
+	{
+		Player->RadialBlurEvent();
+		Player->bIsRadialBlurOn = false;
+	}
+	else {
+
+	}
 
 	if (Player != nullptr)
 	{
@@ -907,6 +915,8 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			STGameInstance->SetAttributeEffectMonster(this);
 			HitSound->SoundPlay3D(SoundTransform);
 		}
+
+
 
 		//몬스터인지 아닌지
 		if (bIsObject) {
