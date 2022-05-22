@@ -193,6 +193,8 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
 	HpRecoveryData.Time = 10;
+
+	bIsRadialBlurOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -204,14 +206,14 @@ void AIreneCharacter::BeginPlay()
 	WorldController = GetWorld()->GetFirstPlayerController();
 
 	//±èÀç¼·
-	const auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-	if (nullptr == GameInstance)
+	 STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (nullptr == STGameInstance)
 	{
 		STARRYLOG(Error, TEXT("GameInstance is Not STGameInstance"));
 	}
 	else
 	{
-		GameInstance->SetPlayer(this);
+		STGameInstance->SetPlayer(this);
 	}
 
 	//½ºÅ¾¿öÄ¡ »ý¼º 
@@ -607,7 +609,7 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 #pragma region HitFeel
 void AIreneCharacter::OnRadialBlur()
 {
-	RadialBlurEvent();
+	bIsRadialBlurOn = true;
 }
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {

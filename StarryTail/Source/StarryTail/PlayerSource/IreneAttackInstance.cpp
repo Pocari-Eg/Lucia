@@ -185,14 +185,13 @@ void UIreneAttackInstance::AttackStopCheck()
 }
 void UIreneAttackInstance::DoAttack()
 {
-	if (Irene->SpringArmComp->TargetArmLength < Irene->IreneData.MaxFollowCameraZPosition)
-	{
-		auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
-		if (STGameInstance->GetPlayerBattleState())
+
+	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	if (STGameInstance->GetPlayerBattleState())
 		{
-			Irene->CameraOutEvent();
-		}
+		Irene->CameraOutEvent();
 	}
+
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
@@ -385,7 +384,7 @@ void UIreneAttackInstance::DoAttack()
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)
 	{
-		auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
 		{
 			STGameInstance->ResetAttributeEffectMonster();

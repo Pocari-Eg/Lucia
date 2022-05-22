@@ -161,6 +161,7 @@ void USTGameInstance::SubDetectedMonster()
 
 	if (DetectedMonsterCount == 0) {
 		//캐릭터 대치상태 변경
+		Player->CameraInEvent();
 		bIsPlayerBattleState = false;
 		STARRYLOG(Error, TEXT("Battle State Off"));
 	}

@@ -53,6 +53,8 @@ public:
 	class UIreneAttackInstance* IreneAttack;
 	UPROPERTY()
 	class UIreneInputInstance* IreneInput;
+	UPROPERTY()
+	class USTGameInstance* STGameInstance;
 
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
 	UPROPERTY(EditAnywhere, BluePrintReadOnly)
@@ -146,8 +148,12 @@ public:
 	void RadialBlurEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void CameraOutEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CameraInEvent();
 
 	void OnRadialBlur();
+
+	bool bIsRadialBlurOn;
 
 	void LastAttackCameraShake(const float DeltaTime);
 	void SetUseShakeCurve(UCurveVector* Curve);
