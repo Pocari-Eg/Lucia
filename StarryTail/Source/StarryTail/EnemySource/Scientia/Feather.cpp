@@ -14,7 +14,6 @@ AFeather::AFeather()
 
 	ProjectileMovementComponent = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovementComponent"));
 	ProjectileMovementComponent->SetUpdatedComponent(Collision);
-	ProjectileMovementComponent->InitialSpeed = MoveSpeed;
 	ProjectileMovementComponent->MaxSpeed = MoveSpeed;
 	// ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->ProjectileGravityScale = 0;
@@ -44,20 +43,21 @@ void AFeather::InitMesh()
 }
 void AFeather::SetMoveDir(FVector Direction)
 {
-	MoveDir = Direction;
-	// ProjectileMovementComponent->Velocity = GetTransform().GetLocation() + (Direction * ProjectileMovementComponent->InitialSpeed * GetWorld()->GetDeltaSeconds());
+	ProjectileMovementComponent->Velocity = (Direction * MoveSpeed);
 }
 
 void AFeather::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	/*
 	if (!bIsDeadWait)
 	{
 		NewLocation = GetTransform().GetLocation() + (MoveDir * MoveSpeed * DeltaTime);
 	
 		RootComponent->SetWorldLocation(NewLocation);
 	}
+	*/
 	
 }
 void AFeather::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
@@ -66,8 +66,9 @@ void AFeather::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveC
 
 	if (Cast<AIreneCharacter>(Other))
 	{
+		auto Player = Cast<AIreneCharacter>(Other);
+		UGameplayStatics::ApplyDamage(Player, Damage, NULL, this, NULL);
 		Destroy();
-		return;
 	}
 }
 

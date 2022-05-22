@@ -5,6 +5,7 @@
 #include "ScAIController.h"
 #include "../../STGameInstance.h"
 
+
 AScientia::AScientia()
 {
 	PrimaryActorTick.bCanEverTick = true;
@@ -95,6 +96,22 @@ float AScientia::GetHpPercent()
 {
 	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
 }
+float AScientia::GetAttack2Speed()
+{
+	return ScInfo.Attack2Speed;
+}
+float AScientia::GetAttack3Speed()
+{
+	return ScInfo.Attack3Speed;
+}
+float AScientia::GetRushTime()
+{
+	return ScInfo.RushTime;
+}
+int AScientia::GetClawSuccessedCount()
+{
+	return ScInfo.ClawSuccessedCount;
+}
 #pragma endregion
 #pragma region Set
 void AScientia::SetState(FString string)
@@ -162,7 +179,22 @@ void AScientia::ResetFeatherCount()
 	ScInfo.FeatherCount = 0;
 }
 #pragma endregion
-
+#pragma region Attack2
+void AScientia::Attack2()
+{
+	ScAnimInstance->PlayClawFMontage();
+}
+void AScientia::ResetClawSuccessedCount()
+{
+	ScInfo.ClawSuccessedCount = 0;
+}
+#pragma endregion
+#pragma region Attack3
+void AScientia::Attack3()
+{
+	ScAnimInstance->PlayRushMontage();
+}
+#pragma endregion
 void AScientia::BattleIdle()
 {
 	ScAnimInstance->PlayBattleIdleMontage();
@@ -171,6 +203,10 @@ void AScientia::BattleIdle()
 void AScientia::BattleWalk()
 {
 	ScAnimInstance->PlayBattleWalkMontage();
+}
+void AScientia::PlayStuckAnim()
+{
+	ScAnimInstance->PlayStuckMontage();
 }
 bool AScientia::ScAttributeIsPlayerAttributeCounter()
 {
@@ -195,7 +231,54 @@ bool AScientia::ScAttributeIsPlayerAttributeCounter()
 
 	return true;
 }
+void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+	if (bIsClaw)
+	{
+		if (!bIsPlayerClawHit)
+		{
+			STARRYLOG(Log, TEXT("2"));
+			if (Cast<AIreneCharacter>(OtherActor))
+			{
+				auto Player = Cast<AIreneCharacter>(OtherActor);
 
+				ScInfo.ClawSuccessedCount++;
+
+				if (bIsSpark)
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2), NULL, this, NULL);
+				}
+				bIsPlayerClawHit = true;
+			}
+		}
+		if (Cast<UStaticMeshComponent>(OtherComponent))
+		{
+			auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
+			FString FindName = "Wall";
+			FString CompCollisionName = MeshComponent->GetCollisionProfileName().ToString();
+
+			if (FindName == CompCollisionName)
+			{
+				CalcHp(MonsterInfo.Atk * 2);
+				if (!bIsDead)
+				{
+					auto ScAIController = Cast<AScAIController>(MonsterAIController);
+					ScAIController->Attacked();
+					ResetClawSuccessedCount();
+					// ScAnimInstance->PlayAttackedMontage();
+				}
+				bIsPlayerClawHit = false;
+				bIsClaw = false;
+			}
+		}
+		
+	}
+}
 void AScientia::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -234,9 +317,17 @@ void AScientia::BeginPlay()
 	ScAnimInstance->Attack1End.AddLambda([this]() -> void {
 		Attack1End.Broadcast();
 		});
+	ScAnimInstance->Attack2End.AddLambda([this]() -> void {
+		Attack2End.Broadcast();
+		bIsClaw = false;
+		bIsPlayerClawHit = false;
+		});
+	ScAnimInstance->ClawStart.AddLambda([this]() -> void {
+		ClawStart.Broadcast();
+		bIsClaw = true;
+		});
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
-
 }
 
 void AScientia::PossessedBy(AController* NewController)
@@ -249,6 +340,8 @@ void AScientia::PossessedBy(AController* NewController)
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
+
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AScientia::OnHit);
 }
 
 void AScientia::PostInitializeComponents()

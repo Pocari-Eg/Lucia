@@ -16,12 +16,16 @@ class STARRYTAIL_API AScAIController : public AMonsterAIController
 public:
 	AScAIController();
 
+	void Attacked();
+
 	static const FName IsChangeKey;
 	static const FName IsBattleWalkKey;
 
 	static const FName IsAttack1Key;
 	static const FName IsAttack2Key;
 	static const FName IsAttack3Key;
+
+	static const FName IsStuckKey;
 private:
 	void OnPossess(APawn* InPawn) override;
 };

@@ -11,6 +11,7 @@ const FName AScAIController::IsAttack1Key = (TEXT("bIsAttack1"));
 const FName AScAIController::IsAttack2Key = (TEXT("bIsAttack2"));
 const FName AScAIController::IsAttack3Key = (TEXT("bIsAttack3"));
 
+const FName AScAIController::IsStuckKey = (TEXT("bIsStuck"));
 AScAIController::AScAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Scientia/BB_Scientia"));
@@ -24,6 +25,12 @@ AScAIController::AScAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+}
+void AScAIController::Attacked()
+{
+	Blackboard->SetValueAsBool(IsAttackingKey, false);
+	Blackboard->SetValueAsBool(IsAttack2Key, false);
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }
 void AScAIController::OnPossess(APawn* InPawn)
 {

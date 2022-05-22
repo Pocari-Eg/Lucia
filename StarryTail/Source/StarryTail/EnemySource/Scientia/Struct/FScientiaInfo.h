@@ -13,9 +13,17 @@ struct FScientiaInfo
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float AttributeSettingTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack2Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack3Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float RushTime;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int FeatherCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		int ClawSuccessedCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

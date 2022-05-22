@@ -28,7 +28,6 @@ EBTNodeResult::Type UBTTaskMbFindPatrolPos::ExecuteTask(UBehaviorTreeComponent& 
 	FVector Origin = OwnerComp.GetBlackboardComponent()->GetValueAsVector(AMbAIController::SpawnPosKey);
 	FNavLocation NextPatrol;
 	
-
 	// Orgin을 중심점으로 반지름이 600인 원 안에서 랜덤 좌표 생성
 	if (NavSystem->GetRandomPointInNavigableRadius(Origin, 600.0f, NextPatrol))
 	{

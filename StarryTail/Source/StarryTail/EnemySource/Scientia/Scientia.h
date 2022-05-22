@@ -13,6 +13,7 @@
  * 
  */
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawStartDelegate);
 
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
@@ -24,10 +25,15 @@ public:
 	void InitScInfo();
 
 	void Attack1();
+	void Attack2();
+	void Attack3();
 
 	void Feather();
 	void AddFeatherCount();
 	void ResetFeatherCount();
+
+	void ResetClawSuccessedCount();
+	void PlayStuckAnim();
 
 	void BattleIdle();
 	void BattleWalk();
@@ -38,12 +44,21 @@ public:
 	int GetBarrierCount();
 	int GetFeatherCount();
 	float GetHpPercent();
+	float GetAttack2Speed();
+	float GetAttack3Speed();
+	float GetRushTime();
+	int GetClawSuccessedCount();
 
 	void SetState(FString string);
 
 	//Var
 	FAttackEndDelegate Attack1End;
+	FAttackEndDelegate Attack2End;
+	FClawStartDelegate ClawStart;
 private:
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		FScientiaInfo ScInfo;
 	FString State;
@@ -53,7 +68,13 @@ private:
 	UScAnimInstance* ScAnimInstance;
 
 	bool SetAttribute;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
+		bool bIsClaw;
+	bool bIsPlayerClawHit;
+
 	float AttributeSettingTimer;
+
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
