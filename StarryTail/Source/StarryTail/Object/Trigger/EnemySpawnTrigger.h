@@ -2,11 +2,11 @@
 
 #pragma once
 
-#include "../StarryTail.h"
+#include "../../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include <LevelSequence/Public/LevelSequenceActor.h>
-#include"EnemySpawnPoint.h"
+#include"../EnemySpawnPoint.h"
 #include "EnemySpawnTrigger.generated.h"
 
 UCLASS()

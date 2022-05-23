@@ -13,7 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 
 #include "Monster.generated.h"
 

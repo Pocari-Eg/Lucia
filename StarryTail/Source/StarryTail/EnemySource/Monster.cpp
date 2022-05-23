@@ -39,7 +39,7 @@ AMonster::AMonster()
 	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/BP_HPBar.BP_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_HPBar.BP_HPBar_C"));
 
 	if (UI_HPBARWIDGET.Succeeded()) {
 

@@ -1,6 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "EnemySpawnTrigger.h"
-#include"../STGameInstance.h"
+#include"../../STGameInstance.h"
 
 
 // Sets default values

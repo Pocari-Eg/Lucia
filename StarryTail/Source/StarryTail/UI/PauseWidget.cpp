@@ -33,7 +33,7 @@ void UPauseWidget::NativeConstruct()
     UE_LOG(LogTemp, Error, TEXT("Init UMG"));
 
    //KeySet widget
-    KeySetWidgetClass = LoadClass<UKeySetWidget>(NULL, TEXT("/Game/UI/BluePrint/BP_KeysettingWidget.BP_KeysettingWidget_C"), NULL, LOAD_None, NULL);
+    KeySetWidgetClass = LoadClass<UKeySetWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_KeysettingWidget.BP_KeysettingWidget_C"), NULL, LOAD_None, NULL);
     
 
     if (KeySetWidgetClass !=nullptr)
@@ -44,7 +44,7 @@ void UPauseWidget::NativeConstruct()
     }
 
     // widget
-    SoundSetWidgetClass = LoadClass<USoundSettingWidget>(NULL, TEXT("/Game/UI/BluePrint/BP_SoundSettingWidget.BP_SoundSettingWidget_C"), NULL, LOAD_None, NULL);
+    SoundSetWidgetClass = LoadClass<USoundSettingWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_SoundSettingWidget.BP_SoundSettingWidget_C"), NULL, LOAD_None, NULL);
 
 
     if (SoundSetWidgetClass != nullptr)
