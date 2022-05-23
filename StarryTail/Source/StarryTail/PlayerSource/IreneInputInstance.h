@@ -20,6 +20,7 @@ public:
 	bool bUseLeftButton;
 	bool bUseRightButton;
 
+	bool bActionKeyActive;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -62,6 +63,7 @@ private:
 	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
 	int ThunderSkillCount;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -108,6 +110,8 @@ public:
 	// 대쉬
 	void DodgeKeyword();
 	void WaterDodgeKeyword(float Rate);	
+	// 액션 
+	void DialogAction();
 #pragma endregion OtherInput
 
 #pragma region UIandStamina
