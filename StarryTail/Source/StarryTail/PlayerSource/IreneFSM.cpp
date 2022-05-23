@@ -205,9 +205,13 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 		CurState->ThrowState(URunEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 	}
-	if(MoveKey[0] != 0 || MoveKey[2] != 0)
+	if(MoveKey[0] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+	}
+	if(MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
 	}
 	if(MoveKey[1] != 0 || MoveKey[3] != 0)
 	{
@@ -297,18 +301,22 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		CurState->ThrowState(USprintEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 	}
-	if(MoveKey[0] != 0 || MoveKey[2] != 0)
+	if(MoveKey[0] != 0)
 	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+	}
+	if( MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[7]);
 	}
 	if(MoveKey[1] != 0 || MoveKey[3] != 0)
 	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
 	}
 	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
 		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
 	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
 	}
 }
 
@@ -429,7 +437,7 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_W_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
@@ -478,6 +486,7 @@ void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
@@ -502,7 +511,7 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -615,9 +624,7 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
 	if (!CurState->Irene->GetCharacterMovement()->IsFalling())
 	{
-		CurState->ThrowState(UJumpEndState::GetInstance());
-		CurState->Irene->ActionEndChangeMoveState();
-		CurState->Irene->GetCharacterMovement()->GravityScale = 2;
+		CurState->Irene->ChangeStateAndLog(UJumpEndState::GetInstance());
 	}
 }
 
@@ -641,6 +648,7 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Jump_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->GetCharacterMovement()->GravityScale = 2;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
@@ -650,6 +658,10 @@ void UJumpEndState::Execute(IBaseGameEntity* CurState)
 	// 	// 공중에서 구르기 키 입력 이후 땅에 도착하면 구르기 실행
 	// 	CurState->Irene->IreneInput->DodgeKeyword();
 	// }
+	if(CurState->PlayTime >= 0.6f)
+	{
+		CurState->Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UJumpEndState::Exit(IBaseGameEntity* CurState)
@@ -1394,6 +1406,7 @@ void UCharge1State::Execute(IBaseGameEntity* CurState)
 
 void UCharge1State::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAnim->SetFireChargeCount(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UCharge1State

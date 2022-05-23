@@ -61,7 +61,7 @@ AIreneCharacter::AIreneCharacter()
 			if(SK_Spear.Succeeded())
 			{
 				WeaponMeshArray.Add(SK_Spear.Object);
-			}	
+			}
 			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
 			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
 			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
@@ -130,9 +130,11 @@ AIreneCharacter::AIreneCharacter()
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunForwardCameraLag(TEXT("/Game/Math/CameraLag/RunForwardCameraLag.RunForwardCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunRightCameraLag(TEXT("/Game/Math/CameraLag/RunRightCameraLag.RunRightCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunDiagonalCameraLag(TEXT("/Game/Math/CameraLag/RunDiagonalCameraLag.RunDiagonalCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunBackWordCameraLag(TEXT("/Game/Math/CameraLag/RunBackwordCameraLag.RunBackwordCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintForwardCameraLag(TEXT("/Game/Math/CameraLag/SprintForwardCameraLag.SprintForwardCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintRightCameraLag(TEXT("/Game/Math/CameraLag/SprintRightCameraLag.SprintRightCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintDiagonalCameraLag(TEXT("/Game/Math/CameraLag/SprintDiagonalCameraLag.SprintDiagonalCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintBackWordCameraLag(TEXT("/Game/Math/CameraLag/SprintBackwordCameraLag.SprintBackwordCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>ThunderDodgeCameraLag(TEXT("/Game/Math/CameraLag/ThunderDodgeCameraLag.ThunderDodgeCameraLag"));
 	if (RunForwardCameraLag.Succeeded() && RunRightCameraLag.Succeeded() && RunDiagonalCameraLag.Succeeded() &&
 		SprintForwardCameraLag.Succeeded() && SprintRightCameraLag.Succeeded() && SprintDiagonalCameraLag.Succeeded() && ThunderDodgeCameraLag.Succeeded())
@@ -140,9 +142,11 @@ AIreneCharacter::AIreneCharacter()
 		CameraLagCurve.Add(RunForwardCameraLag.Object);
 		CameraLagCurve.Add(RunRightCameraLag.Object);
 		CameraLagCurve.Add(RunDiagonalCameraLag.Object);
+		CameraLagCurve.Add(RunBackWordCameraLag.Object);
 		CameraLagCurve.Add(SprintForwardCameraLag.Object);
 		CameraLagCurve.Add(SprintRightCameraLag.Object);
 		CameraLagCurve.Add(SprintDiagonalCameraLag.Object);
+		CameraLagCurve.Add(SprintBackWordCameraLag.Object);
 		CameraLagCurve.Add(ThunderDodgeCameraLag.Object);
 		UseLagCurve = CameraLagCurve[0];
 	}
@@ -204,7 +208,9 @@ void AIreneCharacter::BeginPlay()
 
 	// 컨트롤러 받아오기
 	WorldController = GetWorld()->GetFirstPlayerController();
-
+	Weapon->SetSkeletalMesh(WeaponMeshArray[1]);
+	Weapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, WeaponSocketNameArray[1]);
+	
 	//김재섭
 	 STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	if (nullptr == STGameInstance)
@@ -291,6 +297,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	LastAttackCameraShake(DeltaTime);
 	DoCameraLagCurve(DeltaTime);
 	TargetReset();
+	IreneInput->RightButton(DeltaTime);
 	IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
 	//STARRYLOG(Error,TEXT("%s"),*IreneState->GetStateToString());

@@ -94,6 +94,7 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
+	void RightButton(const float DeltaTime)const;
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);

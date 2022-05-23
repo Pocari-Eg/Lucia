@@ -234,6 +234,29 @@ void UIreneInputInstance::LeftButton(float Rate)
 		}
 	}
 }
+void UIreneInputInstance::RightButton(const float DeltaTime)const
+{
+	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	{
+		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+
+		if(AttackTable != nullptr)
+		{
+			if(ChargingTime > AttackTable->Charge_Time_3/100.0f)
+			{
+				Irene->IreneAnim->SetFireChargeCount(2);
+			}
+			else if(ChargingTime > AttackTable->Charge_Time_2/100.0f)
+			{
+				Irene->IreneAnim->SetFireChargeCount(1);
+			}
+			else if(ChargingTime > AttackTable->Charge_Time_1/100.0f)
+			{
+				Irene->IreneAnim->SetFireChargeCount(0);
+			}
+		}
+	}
+}
 void UIreneInputInstance::RightButtonPressed()
 {
 	if (CanAttackState() && !bUseLeftButton && !SkillWaitHandle.IsValid())
@@ -292,6 +315,11 @@ void UIreneInputInstance::RightButtonPressed()
 								ThunderSkillWaitHandle.Invalidate();
 							}
 						}) , 10, true);					
+					}
+					if(SkillWaitHandle.IsValid())
+					{
+						GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+						SkillWaitHandle.Invalidate();						
 					}
 				}
 			}
@@ -460,7 +488,7 @@ void UIreneInputInstance::DodgeKeyword()
 				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
 			}
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f)
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f && !Irene->IreneState->IsJumpState())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 37.5f;
