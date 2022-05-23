@@ -20,7 +20,12 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(FString dialog)
 {
-	DialogWidget->SetDialog(*dialog);
+	DialogText=dialog;
+}
+
+void UPlayerHudWidget::PlayDialog()
+{
+	DialogWidget->SetDialog(*DialogText);
 }
 
 void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
@@ -203,6 +208,16 @@ void UPlayerHudWidget::ElectricSetScale(FVector2D Scale)
 	
 }
 
+void UPlayerHudWidget::ActionWidgetOn()
+{
+	ActionWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UPlayerHudWidget::ActionWidgetOff()
+{
+	ActionWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
 
 
 void UPlayerHudWidget::NativeOnInitialized()
@@ -233,8 +248,11 @@ void UPlayerHudWidget::NativeOnInitialized()
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
-
+	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
 	RMWidget->SetVisibility(ESlateVisibility::Hidden);
-	 
+
+
+	ActionWidgetOff();
+
 	NoneSetScale(SelectScale);
 }

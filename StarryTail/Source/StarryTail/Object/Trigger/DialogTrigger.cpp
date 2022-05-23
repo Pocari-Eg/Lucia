@@ -4,6 +4,7 @@
 
 #include "../../PlayerSource/IreneUIManager.h"
 #include "../../PlayerSource/IreneCharacter.h"
+#include"../../PlayerSource/IreneInputInstance.h"
 ADialogTrigger::ADialogTrigger()
 {
 
@@ -35,14 +36,30 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr)
 	{
+		Irene->IreneInput->bActionKeyActive = true;
 		Irene->IreneUIManager->PlayerHud->SetDialog(DialogText);
+		Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 	}
+}
+
+void ADialogTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	STARRYLOG_S(Error);
+auto Irene = Cast<AIreneCharacter>(OtherActor);
+if (Irene != nullptr)
+{
+	Irene->IreneInput->bActionKeyActive = false;
+	Irene->IreneUIManager->PlayerHud->ActionWidgetOff();
+}
+
 }
 
 void ADialogTrigger::BeginPlay()
 {
 	Super::BeginPlay();
 	Trigger->OnComponentBeginOverlap.AddDynamic(this, &ADialogTrigger::OnBeginOverlap);
+
+	Trigger->OnComponentEndOverlap.AddDynamic(this, &ADialogTrigger::OnEndOverlap);
 }
 
 void ADialogTrigger::TriggerOff()

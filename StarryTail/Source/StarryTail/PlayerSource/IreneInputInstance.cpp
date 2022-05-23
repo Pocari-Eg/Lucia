@@ -47,6 +47,8 @@ void UIreneInputInstance::InitMemberVariable()
 	ThunderDodgeTargetDir = FVector::ZeroVector;
 
 	ThunderSkillCount = 2;
+
+	bActionKeyActive = false;
 }
 
 #pragma region Move
@@ -534,6 +536,14 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 			WaterDodgeEffect->DestroyComponent(true);
 			WaterDodgeEffect = nullptr;
 		}
+	}
+}
+
+void UIreneInputInstance::DialogAction()
+{
+	if (bActionKeyActive) {
+		Irene->IreneUIManager->PlayerHud->PlayDialog();
+		bActionKeyActive = false;
 	}
 }
 

@@ -331,7 +331,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// 그 외
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn);
-	
+	PlayerInputComponent->BindAction("Action", IE_Pressed, IreneInput, &UIreneInputInstance::DialogAction);
 	//박찬영
 	//스탑워치 컨트롤
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);

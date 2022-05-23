@@ -5,6 +5,7 @@
 #include "../../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "Blueprint/UserWidget.h"
 #include "DialogTrigger.generated.h"
 
 UCLASS()
@@ -17,9 +18,11 @@ class STARRYTAIL_API ADialogTrigger : public AActor
 	UBoxComponent* Trigger;
 	//¸Þ½¬
 	UPROPERTY(EditAnywhere, Category = Trigger)
-		UStaticMeshComponent* Mesh;
+	UStaticMeshComponent* Mesh;
+
 	UPROPERTY(EditAnywhere, Category = Dialog)
 	FString DialogText;
+
 
 public:
 	// Sets default values for this actor's properties
@@ -29,6 +32,9 @@ public:
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
