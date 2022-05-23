@@ -6,7 +6,7 @@
 #include "UObject/Object.h"
 #include "../UI/PlayerHudWidget.h"
 #include"../UI/PauseWidget.h"
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 #include "PlayerCharacterDataStruct.h"
 
 #include "IreneUIManager.generated.h"

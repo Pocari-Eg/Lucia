@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "../StarryTail.h"
+#include "../../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "DialogTrigger.generated.h"

@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 
-#include "MagicStairTrigger.h"
+#include "Trigger/MagicStairTrigger.h"
 #include "MagicStairManager.generated.h"
 
 UCLASS()

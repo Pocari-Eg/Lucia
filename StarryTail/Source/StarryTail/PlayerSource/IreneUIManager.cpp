@@ -7,12 +7,12 @@
 
 UIreneUIManager::UIreneUIManager()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/UI/BluePrint/BP_PlayerHud.BP_PlayerHud_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/UI/BluePrint/Player/BP_PlayerHud.BP_PlayerHud_C"));
 	if (UI_PlayerHud.Succeeded())
 	{
 		PlayerHudClass = UI_PlayerHud.Class;
 	}
-	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/BP_PauseWidget.BP_PauseWidget_C"));
+	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/Setting/BP_PauseWidget.BP_PauseWidget_C"));
 	if (PAUSEWIDGET.Succeeded())
 	{
 		PauseWidgetClass = PAUSEWIDGET.Class;
