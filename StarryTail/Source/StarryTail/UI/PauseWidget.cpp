@@ -12,18 +12,17 @@ void UPauseWidget::WidgetOn()
 {
  
     SetVisibility(ESlateVisibility::Visible);
-    GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeUIOnly());
+    GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameAndUI());
     GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
     UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
 void UPauseWidget::WidgetOff()
 {
-
+    UGameplayStatics::SetGamePaused(GetWorld(), false);
     SetVisibility(ESlateVisibility::Hidden);
     GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
     GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
-    UGameplayStatics::SetGamePaused(GetWorld(), false);
   
 }
 

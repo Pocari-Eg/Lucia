@@ -122,6 +122,7 @@ protected:
 public:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(class IState* NewState)const;
+	UFUNCTION(BlueprintCallable)
 	void ActionEndChangeMoveState()const;
 #pragma endregion State
 	
