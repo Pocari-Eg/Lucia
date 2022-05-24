@@ -850,7 +850,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		case EAttributeKeyword::e_Fire:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
@@ -864,13 +864,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			break;
 		case EAttributeKeyword::e_Thunder:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 50.0f;
+				AttackedInfo.AttributeArmor = 10.0f;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{
@@ -878,7 +878,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
-		if (AttackedInfo.AttributeArmor == 50)
+		if (AttackedInfo.AttributeArmor == 10)
 		{
 			AttackedInfo.AttackedPower = EAttackedPower::Halved;
 		}
