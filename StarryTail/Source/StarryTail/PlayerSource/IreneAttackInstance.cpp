@@ -152,7 +152,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
+	if (!Irene->IreneState->IsDodgeState())
 		Irene->ActionEndChangeMoveState();
 }
 
@@ -185,13 +185,11 @@ void UIreneAttackInstance::AttackStopCheck()
 }
 void UIreneAttackInstance::DoAttack()
 {
-
 	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	if (STGameInstance->GetPlayerBattleState())
-		{
+	{
 		Irene->CameraOutEvent();
 	}
-
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
