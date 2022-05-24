@@ -71,81 +71,6 @@ void UPlayerHudWidget::UpdateHpRecovery()
 	}
 }
 
-void UPlayerHudWidget::UpdateFire()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Fire.Base)
-		{
-			//Fire.Base->SetPercent(CurrentIrene->IreneAttack->GetFireRatio());
-		}
-	}
-	//UpdateFireRecovery();
-}
-
-void UPlayerHudWidget::UpdateFireRecovery()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Fire.Recovery)
-		{
-			//Fire.Recovery->SetPercent(CurrentIrene->IreneAttack->GetFireRecoveryRatio());
-		}
-	}
-}
-
-void UPlayerHudWidget::UpdateWater()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Water.Base)
-		{
-			//Water.Base->SetPercent(CurrentIrene->IreneAttack->GetWaterRatio());
-		}
-	}
-	//UpdateWaterRecovery();
-}
-
-void UPlayerHudWidget::UpdateWaterRecovery()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Water.Recovery)
-		{
-			//Water.Recovery->SetPercent(CurrentIrene->IreneAttack->GetWaterRecoveryRatio());
-		}
-	}
-}
-
-void UPlayerHudWidget::UpdateEeletric()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Electric.Base)
-		{
-			//Electric.Base->SetPercent(CurrentIrene->IreneAttack->GetElectricRatio());
-		}
-	}
-	//UpdateEeletricRecovery();
-}
-
-void UPlayerHudWidget::UpdateEeletricRecovery()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Electric.Recovery)
-		{
-			//Electric.Recovery->SetPercent(CurrentIrene->IreneAttack->GetElectricRecoveryRatio());
-		}
-	}
-}
-
 
 void UPlayerHudWidget::UpdateAttributes()
 {
@@ -220,21 +145,6 @@ void UPlayerHudWidget::NativeOnInitialized()
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
 	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
 	HPRecoveryProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_RecoverBar")));
-
-	//¼Ó¼º
-	
-
-	 Fire.Attribute = Cast<UImage>(GetWidgetFromName(TEXT("fire")));
-	 Fire.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireBase")));
-	 Fire.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireRecovery")));
-
-	 Water.Attribute = Cast<UImage>(GetWidgetFromName(TEXT("water")));
-	 Water.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterBase")));
-	 Water.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterRecovery")));
-
-	 Electric.Attribute = Cast<UImage>(GetWidgetFromName(TEXT("Electric")));
-	 Electric.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricBase")));
-	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
