@@ -117,18 +117,10 @@ public:
 private:
 	bool bIsPlayerBattleState;
 	int32 DetectedMonsterCount;
-
-	int32 StateTime;
-	int32 CurStateTime;
-	FTimerHandle StateChangeTimer;
 public:
 	void AddDetectedMonster();
 	void SubDetectedMonster();
 	bool GetPlayerBattleState();
-
-private:
-	void CountStateTimer();
-	void ChangeState();
 	
 #pragma endregion DetectedMonster
 };

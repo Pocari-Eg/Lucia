@@ -186,10 +186,10 @@ void UIreneAttackInstance::AttackStopCheck()
 void UIreneAttackInstance::DoAttack()
 {
 	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
-	//if (STGameInstance->GetPlayerBattleState())
-	//{
-	//	Irene->CameraOutEvent();
-	//}
+	if (STGameInstance->GetPlayerBattleState())
+	{
+		Irene->CameraOutEvent();
+	}
 
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
