@@ -61,7 +61,6 @@ private:
 
 	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
-	FVector ThunderDodgeTargetDir;
 
 	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
