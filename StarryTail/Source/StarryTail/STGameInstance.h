@@ -41,6 +41,7 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	AIreneCharacter* GetPlayer();
+	EAttributeKeyword GetPlayerAttribute();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
 	AMonster* GetAttributeEffectMonster();
 	void SetAttributeEffectMonster(AMonster* Monster);
