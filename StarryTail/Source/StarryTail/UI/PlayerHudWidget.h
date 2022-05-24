@@ -6,8 +6,10 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
-#include "DialogWidget.h"
 
+#include "DialogWidget.h"
+#include "RaidMonsterWidget.h"
+#include "../EnemySource/Monster.h"
 
 #include "PlayerHudWidget.generated.h"
 
@@ -27,6 +29,7 @@ struct FAttributesUI
 	class UProgressBar* Base;
 	UPROPERTY()
 	class UProgressBar* Recovery;
+
 };
 UCLASS()
 class STARRYTAIL_API UPlayerHudWidget : public UUserWidget
@@ -37,6 +40,11 @@ public:
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
 	void SetDialog(FString dialog);
+	void PlayDialog();
+	void RaidWidgetbind(AMonster* RadiMonster);
+
+	void ActionWidgetOn();
+	void ActionWidgetOff();
 private:
 
 	void UpdateHp();
@@ -61,6 +69,9 @@ private:
 	void FireSetScale(FVector2D Scale);
 	void WaterSetScale(FVector2D Scale);
 	void ElectricSetScale(FVector2D Scale);
+
+
+
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
@@ -78,6 +89,10 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class URaidMonsterWidget* RMWidget;
+	UPROPERTY()
+	class UUserWidget* ActionWidget;
 
 	FAttributesUI None;
 	FAttributesUI Fire;
@@ -86,5 +101,8 @@ private:
 
 	FVector2D BaseScale= FVector2D(1.0f, 1.0f);
 	FVector2D SelectScale = FVector2D(1.5f, 1.5f);
+
+
+	FString DialogText;
 
 };

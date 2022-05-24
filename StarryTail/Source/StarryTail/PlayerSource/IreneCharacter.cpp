@@ -20,6 +20,7 @@
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
 #include "WaterBasicAttack.h"
+#include "Curves/CurveVector.h"
 
 #pragma region Setting
 // Sets default values
@@ -60,7 +61,7 @@ AIreneCharacter::AIreneCharacter()
 			if(SK_Spear.Succeeded())
 			{
 				WeaponMeshArray.Add(SK_Spear.Object);
-			}	
+			}
 			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
 			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
 			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
@@ -96,10 +97,58 @@ AIreneCharacter::AIreneCharacter()
 	}
 
 	// 카메라 쉐이크 커브
-	const ConstructorHelpers::FObjectFinder<UCurveFloat>CameraCurveDataObject(TEXT("/Game/Math/CameraShakeCurve.CameraShakeCurve"));
-	if (CameraCurveDataObject.Succeeded())
+	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack1(TEXT("/Game/Math/AttackCurve/FireAttack1.FireAttack1"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack2(TEXT("/Game/Math/AttackCurve/FireAttack2.FireAttack2"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack3(TEXT("/Game/Math/AttackCurve/FireAttack3.FireAttack3"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>WaterAttack1(TEXT("/Game/Math/AttackCurve/WaterAttack1.WaterAttack1"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>WaterAttack2(TEXT("/Game/Math/AttackCurve/WaterAttack2.WaterAttack2"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>WaterAttack3(TEXT("/Game/Math/AttackCurve/WaterAttack3.WaterAttack3"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>ThunderAttack1(TEXT("/Game/Math/AttackCurve/ThunderAttack1.ThunderAttack1"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>ThunderAttack2(TEXT("/Game/Math/AttackCurve/ThunderAttack2.ThunderAttack2"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>ThunderAttack3(TEXT("/Game/Math/AttackCurve/ThunderAttack3.ThunderAttack3"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>FireSkill1(TEXT("/Game/Math/AttackCurve/FireSkill1.FireSkill1"));
+	const ConstructorHelpers::FObjectFinder<UCurveVector>WaterSkill1(TEXT("/Game/Math/AttackCurve/WaterSkill1.WaterSkill1"));	
+	const ConstructorHelpers::FObjectFinder<UCurveVector>ThunderSkill1(TEXT("/Game/Math/AttackCurve/ThunderSkill1.ThunderSkill1"));
+	if (FireAttack1.Succeeded() && FireAttack2.Succeeded() && FireAttack3.Succeeded() && FireSkill1.Succeeded() &&
+	WaterAttack1.Succeeded() && WaterAttack2.Succeeded() && WaterAttack3.Succeeded() && WaterSkill1.Succeeded() &&
+	ThunderAttack1.Succeeded() && ThunderAttack2.Succeeded() && ThunderAttack3.Succeeded() && ThunderSkill1.Succeeded())
 	{
-		CameraShakeCurve.Add(CameraCurveDataObject.Object);
+		CameraShakeCurve.Add(FireAttack1.Object);
+		CameraShakeCurve.Add(FireAttack2.Object);
+		CameraShakeCurve.Add(FireAttack3.Object);
+		CameraShakeCurve.Add(WaterAttack1.Object);
+		CameraShakeCurve.Add(WaterAttack2.Object);
+		CameraShakeCurve.Add(WaterAttack3.Object);
+		CameraShakeCurve.Add(ThunderAttack1.Object);
+		CameraShakeCurve.Add(ThunderAttack2.Object);
+		CameraShakeCurve.Add(ThunderAttack3.Object);
+		CameraShakeCurve.Add(FireSkill1.Object);
+		CameraShakeCurve.Add(WaterSkill1.Object);
+		CameraShakeCurve.Add(ThunderSkill1.Object);
+		UseShakeCurve = CameraShakeCurve[0];
+	}
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunForwardCameraLag(TEXT("/Game/Math/CameraLag/RunForwardCameraLag.RunForwardCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunRightCameraLag(TEXT("/Game/Math/CameraLag/RunRightCameraLag.RunRightCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunDiagonalCameraLag(TEXT("/Game/Math/CameraLag/RunDiagonalCameraLag.RunDiagonalCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>RunBackWordCameraLag(TEXT("/Game/Math/CameraLag/RunBackwordCameraLag.RunBackwordCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintForwardCameraLag(TEXT("/Game/Math/CameraLag/SprintForwardCameraLag.SprintForwardCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintRightCameraLag(TEXT("/Game/Math/CameraLag/SprintRightCameraLag.SprintRightCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintDiagonalCameraLag(TEXT("/Game/Math/CameraLag/SprintDiagonalCameraLag.SprintDiagonalCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintBackWordCameraLag(TEXT("/Game/Math/CameraLag/SprintBackwordCameraLag.SprintBackwordCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>ThunderDodgeCameraLag(TEXT("/Game/Math/CameraLag/ThunderDodgeCameraLag.ThunderDodgeCameraLag"));
+	if (RunForwardCameraLag.Succeeded() && RunRightCameraLag.Succeeded() && RunDiagonalCameraLag.Succeeded() &&
+		SprintForwardCameraLag.Succeeded() && SprintRightCameraLag.Succeeded() && SprintDiagonalCameraLag.Succeeded() && ThunderDodgeCameraLag.Succeeded())
+	{
+		CameraLagCurve.Add(RunForwardCameraLag.Object);
+		CameraLagCurve.Add(RunRightCameraLag.Object);
+		CameraLagCurve.Add(RunDiagonalCameraLag.Object);
+		CameraLagCurve.Add(RunBackWordCameraLag.Object);
+		CameraLagCurve.Add(SprintForwardCameraLag.Object);
+		CameraLagCurve.Add(SprintRightCameraLag.Object);
+		CameraLagCurve.Add(SprintDiagonalCameraLag.Object);
+		CameraLagCurve.Add(SprintBackWordCameraLag.Object);
+		CameraLagCurve.Add(ThunderDodgeCameraLag.Object);
+		UseLagCurve = CameraLagCurve[0];
 	}
 
 	// 콜라이더 설정
@@ -148,6 +197,8 @@ AIreneCharacter::AIreneCharacter()
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
 	HpRecoveryData.Time = 10;
+
+	bIsRadialBlurOn = false;
 }
 
 // Called when the game starts or when spawned
@@ -157,16 +208,18 @@ void AIreneCharacter::BeginPlay()
 
 	// 컨트롤러 받아오기
 	WorldController = GetWorld()->GetFirstPlayerController();
-
+	Weapon->SetSkeletalMesh(WeaponMeshArray[1]);
+	Weapon->AttachToComponent(GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, WeaponSocketNameArray[1]);
+	
 	//김재섭
-	const auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-	if (nullptr == GameInstance)
+	 STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (nullptr == STGameInstance)
 	{
 		STARRYLOG(Error, TEXT("GameInstance is Not STGameInstance"));
 	}
 	else
 	{
-		GameInstance->SetPlayer(this);
+		STGameInstance->SetPlayer(this);
 	}
 
 	//스탑워치 생성 
@@ -205,14 +258,15 @@ void AIreneCharacter::PostInitializeComponents()
 			{
 				IreneAttack->AttackStartComboState();
 				if (IreneInput->bUseLeftButton)
-					IreneAnim->JumpToAttackMontageSection(IreneData.CurrentCombo);
+					IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
 				if (IreneInput->bUseRightButton)
-					IreneAnim->JumpToEffectAttackMontageSection(IreneData.CurrentCombo);
+					IreneAnim->NextToEffectAttackMontageSection(IreneData.CurrentCombo);
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
 	IreneAnim->OnAttackStopCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackStopCheck);
 	IreneAnim->OnFootStep.AddUObject(IreneUIManager, &UIreneUIManager::FootStepSound);
+	IreneAnim->OnRadialBlur.AddUObject(this, &AIreneCharacter::OnRadialBlur);
 }
 
 void AIreneCharacter::TargetReset()const
@@ -240,10 +294,13 @@ void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	LastAttackCameraShake(DeltaTime);	
+	LastAttackCameraShake(DeltaTime);
+	DoCameraLagCurve(DeltaTime);
 	TargetReset();
+	IreneInput->RightButton(DeltaTime);
 	IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
+	//STARRYLOG(Error,TEXT("%s"),*IreneState->GetStateToString());
 }
 
 // Called to bind functionality to input
@@ -254,14 +311,14 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, IreneInput, &UIreneInputInstance::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, IreneInput, &UIreneInputInstance::StopJump);
 
-	PlayerInputComponent->BindAction("MoveW", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedW);
-	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA);
-	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS);
-	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD);
-	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW);
-	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA);
-	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS);
-	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD);
+	PlayerInputComponent->BindAction("MoveW", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedW).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD).bExecuteWhenPaused=true;
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
@@ -281,7 +338,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 
 	// 그 외
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn);
-	
+	PlayerInputComponent->BindAction("Action", IE_Pressed, IreneInput, &UIreneInputInstance::DialogAction);
 	//박찬영
 	//스탑워치 컨트롤
 	/*PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);
@@ -415,7 +472,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 					if (IreneAttack->TargetMonster == nullptr)
 					{
 						IreneAttack->TargetMonster = RayHit.GetActor();
-						IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+						IreneAnim->SetTargetMonster(RayHit.GetActor());
 						IreneAnim->SetIsHaveTargetMonster(true);
 						NearPosition = FindNearTarget;
 					}
@@ -453,7 +510,7 @@ void AIreneCharacter::SetNearMonster(const FHitResult RayHit, float& NearPositio
 	if (IreneAttack->TargetMonster == nullptr)
 	{
 		IreneAttack->TargetMonster = RayHit.GetActor();
-		IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+		IreneAnim->SetTargetMonster(RayHit.GetActor());
 		IreneAnim->SetIsHaveTargetMonster(true);
 	}
 }
@@ -480,6 +537,7 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
+	//STARRYLOG(Error,TEXT("%s"),*Other->GetName());
 	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(Other))
@@ -503,16 +561,23 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			IreneUIManager->OnHpChanged.Broadcast();
 			
 			if (IreneData.CurrentHP <= 0)
+			{
 				ChangeStateAndLog(UDeathState::GetInstance());
+			}
 			else
-				ChangeStateAndLog(UHit1State::GetInstance());
+			{
+				if(!IreneState->IsChargeState())
+					ChangeStateAndLog(UHit1State::GetInstance());
+			}
 		}
 		if (IreneAttack->TargetMonster == nullptr)
 		{
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->TargetMonster = DamageCauser;
-			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster->GetActorLocation());
+			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster);
 			IreneAnim->SetIsHaveTargetMonster(true);
+			const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+			Mon->MarkerOn();
 		}
 	}
 	return FinalDamage;
@@ -524,6 +589,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 {
 	IreneState->ChangeState(NewState);
+	//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 	IreneAnim->SetIreneStateAnim(IreneState->GetState());
 }
 
@@ -540,39 +606,86 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 	
 	if (IreneInput->MoveKey[0] == 0 && IreneInput->MoveKey[1] == 0 && IreneInput->MoveKey[2] == 0 && IreneInput->MoveKey[3] == 0)
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(UIdleState::GetInstance());
 	}
 	else if (GetCharacterMovement()->MaxWalkSpeed == IreneData.SprintMaxSpeed)
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(USprintLoopState::GetInstance());
 	}
 	else
 	{
-		STARRYLOG_S(Error);
 		ChangeStateAndLog(URunLoopState::GetInstance());
 	}
 }
 #pragma endregion State
 
 #pragma region HitFeel
+void AIreneCharacter::OnRadialBlur()
+{
+	bIsRadialBlurOn = true;
+}
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
-	if (IreneData.IsAttacking && IreneData.CurrentCombo == IreneData.MaxCombo && CameraShakeOn)
+	if (CameraShakeOn)
 	{
-		const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
-		IreneAttack->SetCameraShakeTime(DeltaTime);
-		FRotator CameraRotate = CameraComp->GetRelativeRotation();
-		CameraRotate.Pitch += CameraShakeCurve[0]->GetFloatValue(CameraShakeTime * 50);
-		CameraComp->SetRelativeRotation(CameraRotate);
+		STARRYLOG_S(Warning);
+		if(!FixedUpdateCameraShakeTimer.IsValid())
+		{
+			constexpr float TimeSpeed = 0.01f;
+			GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraShakeTimer, FTimerDelegate::CreateLambda([&]()
+			{
+				const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
+				IreneAttack->SetCameraShakeTime(CameraShakeTime + 0.1f);
+			}), TimeSpeed, true);
+		}
+		const FVector CameraRotate = UseShakeCurve->GetVectorValue(IreneAttack->GetCameraShakeTime());
+		CameraComp->SetRelativeLocation(CameraRotate);
 	}
 	else
 	{
 		IreneAttack->SetCameraShakeTime(0);
-		CameraShakeOn = false;
-		CameraComp->SetRelativeRotation(FRotator::ZeroRotator);
+		//CameraShakeOn = false;
+		CameraComp->SetRelativeLocation(FVector::ZeroVector);
+		if(FixedUpdateCameraShakeTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraShakeTimer);
+			FixedUpdateCameraShakeTimer.Invalidate();
+		}
 	}
+}
+void AIreneCharacter::SetUseShakeCurve(UCurveVector* Curve)
+{
+	UseShakeCurve = Curve;
+}
+void AIreneCharacter::DoCameraLagCurve(const float DeltaTime)
+{
+	if (IreneState->IsRunState() || IreneState->IsSprintState() || IreneState->GetStateToString().Compare(FString("Dodge_T_Start")) == 0)
+	{
+		if(!FixedUpdateCameraLagTimer.IsValid())
+		{
+			constexpr float TimeSpeed = 0.01f;
+			GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraLagTimer, FTimerDelegate::CreateLambda([&]()
+			{
+				const float CameraShakeTime = CameraLagTime;
+				CameraLagTime = CameraShakeTime + 0.1f;
+			}), TimeSpeed, true);
+		}
+		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime);
+	}
+	else
+	{
+		CameraLagTime = 0;
+		SpringArmComp->CameraLagSpeed = 0;
+		if(FixedUpdateCameraLagTimer.IsValid())
+		{
+			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraLagTimer);
+			FixedUpdateCameraLagTimer.Invalidate();
+		}
+	}
+}
+void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
+{
+	UseLagCurve = Curve;
 }
 #pragma endregion HitFeel
 

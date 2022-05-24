@@ -20,6 +20,7 @@ public:
 	bool bUseLeftButton;
 	bool bUseRightButton;
 
+	bool bActionKeyActive;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -49,14 +50,22 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 
+	// 스테미나 관련
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
 	bool bUseWaterDodge;
-	
-	bool bUseThunderDodge;
+
+	// 닷지 쿨타임
+	FTimerHandle DodgeWaitHandle;
+
+	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
-	FVector ThunderDodgeTargetDir;
+
+	// 번개 스킬 갯수
+	FTimerHandle ThunderSkillWaitHandle;
+	int ThunderSkillCount;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -66,7 +75,7 @@ public:
 #pragma region Move
 	void MoveForward();
 	void MoveRight();
-	void MoveAuto()const;
+	void MoveAuto(const float EndTimer = 1.0f)const;
 
 	void StartJump();
 	void StopJump();
@@ -89,6 +98,7 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
+	void RightButton(const float DeltaTime)const;
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);
@@ -102,6 +112,8 @@ public:
 	// 대쉬
 	void DodgeKeyword();
 	void WaterDodgeKeyword(float Rate);	
+	// 액션 
+	void DialogAction();
 #pragma endregion OtherInput
 
 #pragma region UIandStamina
@@ -127,7 +139,8 @@ public:
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetCharging()const{return IsCharging;}
-	
+	int GetThunderSkillCount()const{return ThunderSkillCount;}
+
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}

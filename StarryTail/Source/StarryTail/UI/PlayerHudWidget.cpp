@@ -20,7 +20,17 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(FString dialog)
 {
-	DialogWidget->SetDialog(*dialog);
+	DialogText=dialog;
+}
+
+void UPlayerHudWidget::PlayDialog()
+{
+	DialogWidget->SetDialog(*DialogText);
+}
+
+void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+{
+	RMWidget->BindMonster(RadiMonster);
 }
 
 void UPlayerHudWidget::UpdateHp()
@@ -198,6 +208,16 @@ void UPlayerHudWidget::ElectricSetScale(FVector2D Scale)
 	
 }
 
+void UPlayerHudWidget::ActionWidgetOn()
+{
+	ActionWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UPlayerHudWidget::ActionWidgetOff()
+{
+	ActionWidget->SetVisibility(ESlateVisibility::Hidden);
+}
+
 
 
 void UPlayerHudWidget::NativeOnInitialized()
@@ -227,6 +247,12 @@ void UPlayerHudWidget::NativeOnInitialized()
 	 Electric.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("ElectricRecovery")));
 
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
+	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
+	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
+	RMWidget->SetVisibility(ESlateVisibility::Hidden);
 
-	 NoneSetScale(SelectScale);
+
+	ActionWidgetOff();
+
+	NoneSetScale(SelectScale);
 }

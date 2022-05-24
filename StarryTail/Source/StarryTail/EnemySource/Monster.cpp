@@ -12,6 +12,7 @@
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
+#include "Kismet/GameplayStatics.h"
 #include "../UI/HPBarWidget.h"
 //object
 #include "../Object/AttributeObject.h"
@@ -39,7 +40,7 @@ AMonster::AMonster()
 	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/BP_HPBar.BP_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_HPBar.BP_HPBar_C"));
 
 	if (UI_HPBARWIDGET.Succeeded()) {
 
@@ -204,6 +205,14 @@ bool AMonster::GetIsBattleState() const
 {
 	return bIsBattleState;
 }
+float AMonster::GetHpRatio()
+{
+	return MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp;
+}
+float AMonster::GetDefRatio()
+{
+	return MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def;
+}
 #pragma endregion
 void AMonster::SetSpawnPos()
 {
@@ -218,6 +227,11 @@ void AMonster::SetAttackedInfo(bool bIsUseMana, float Mana, EAttackedDirection A
 void AMonster::SetIsBattleState(bool Value)
 {
 	bIsBattleState = Value;
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr) {
+		bIsBattleState == true ? Instance->AddDetectedMonster() : Instance->SubDetectedMonster();
+	}
 }
 void AMonster::SetEffect()
 {
@@ -289,22 +303,20 @@ void AMonster::CalcDef()
 	{
 		MonsterInfo.CurrentDef -= (AttackedInfo.AttributeArmor / 5);
 	}
+	//방어력 게이지 업데이트
+	OnDefChanged.Broadcast();
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
+		auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		Irene->HitStopEvent();
 		GroggyEffectComponent->SetActive(true);
 		MonsterAIController->Groggy();
 		PlayGroggyAnim();
 		bIsGroggy = true;
 	}
 
-	//방어력 게이지 업데이트
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
-	}
-	//
+	
 }
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
@@ -354,11 +366,7 @@ void AMonster::CalcHp(float Damage)
 	ShowUITimer = 0.0f;
 	HpBarWidget->SetHiddenInGame(false);
 
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateHpWidget((MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp);
-	}
+	OnHpChanged.Broadcast();
 
 	if (MonsterInfo.CurrentHp <= 0.0f)
 	{
@@ -369,10 +377,17 @@ void AMonster::CalcHp(float Damage)
 		MonsterAIController->Death();
 		PlayDeathAnim();
 
+
 		if (bIsSpawnEnemy) {
 			auto instnace = Cast<USTGameInstance>(GetGameInstance());
 			if(instnace!=nullptr)
 			instnace->SubEnemyCount(GetRank());
+		}
+		if (bIsBattleState)
+		{
+			auto instnace = Cast<USTGameInstance>(GetGameInstance());
+			if (instnace != nullptr)
+				instnace->SubDetectedMonster();
 		}
 		return;
 	}
@@ -416,11 +431,7 @@ void AMonster::ResetDef()
 	GroggyEffectComponent->SetActive(false);
 
 	HpBarWidget->ToggleActive();
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget((MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER) ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def);
-	}
+	OnDefChanged.Broadcast();
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {
@@ -644,15 +655,8 @@ void AMonster::BeginPlay()
 
 	MonsterInfo.CurrentHp = MonsterInfo.MaxHp;
 	MonsterInfo.CurrentDef = MonsterInfo.Def;
-
 	MonsterAIController = Cast<AMonsterAIController>(GetController());
 
-	//방어력 게이지 최대치 설정
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
-	if (HpBar != nullptr)
-	{
-		HpBar->UpdateDefWidget(1.0f);
-	}
 
 	//사운드 세팅
 	HitSound = new SoundManager(HitEvent, GetWorld());
@@ -667,6 +671,8 @@ void AMonster::BeginPlay()
 
 	}
 
+	auto HPBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	HPBar->BindMonster(this);
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -813,8 +819,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	if (CompName == FindName)
 	{
 		PrintHitEffect(OtherComp->GetComponentLocation());
-
-		auto Player = Cast<AIreneCharacter>(OtherActor);
 		return;
 	}
 }
@@ -830,6 +834,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	auto Player = Cast<AIreneCharacter>(DamageCauser);
 
+	if (Player->bIsRadialBlurOn)
+	{
+		Player->RadialBlurEvent();
+		Player->bIsRadialBlurOn = false;
+	}
+	else {
+
+	}
 
 	if (Player != nullptr)
 	{
@@ -847,7 +859,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					auto Component = Cast<UPrimitiveComponent>(Elem);
 	
 					PrintHitEffect(Component->GetComponentLocation());
-					Player->HitStopEvent();
 					HitStopEvent();
 				}
 			}
@@ -889,7 +900,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
-		if (AttackedInfo.AttributeArmor == 50)
+		if (AttackedInfo.AttributeArmor == 10)
 		{
 			AttackedInfo.AttackedPower = EAttackedPower::Halved;
 		}
@@ -915,6 +926,8 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			STGameInstance->SetAttributeEffectMonster(this);
 			HitSound->SoundPlay3D(SoundTransform);
 		}
+
+
 
 		//몬스터인지 아닌지
 		if (bIsObject) {

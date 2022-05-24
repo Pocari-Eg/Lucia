@@ -13,7 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 
 #include "Monster.generated.h"
 
@@ -21,6 +21,8 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -45,6 +47,11 @@ public:
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
 
+	//현재 체력 비율 전환
+	float GetHpRatio();
+	//현재 방어막 비율 전환
+	float GetDefRatio();
+
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
@@ -68,6 +75,11 @@ public:
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 
+	FOnHpDelegate OnHpChanged;
+	FOnDefDelegate OnDefChanged;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -119,7 +131,7 @@ protected:
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
-	//
+
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 

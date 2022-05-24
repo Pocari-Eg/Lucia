@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../Monster.h"
-#include"../../SoundManager.h"
+#include"../../Sound/SoundManager.h"
 #include "MorbitAnimInstance.h"
 #include "Morbit.generated.h"
 

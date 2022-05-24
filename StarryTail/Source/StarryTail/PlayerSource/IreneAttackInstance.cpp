@@ -36,7 +36,7 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_Fire;
+	Attribute = EAttributeKeyword::e_Water;
 	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
@@ -152,7 +152,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) != 0)
+	if (!Irene->IreneState->IsDodgeState())
 		Irene->ActionEndChangeMoveState();
 }
 
@@ -165,8 +165,11 @@ void UIreneAttackInstance::AttackCheck()
 
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 		{
-			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage"))
+			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage")&&
+				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill_Montage"))
+			{
 				Irene->FindNearMonster();
+			}
 			else
 			{
 				SetUseMP(true);
@@ -182,6 +185,12 @@ void UIreneAttackInstance::AttackStopCheck()
 }
 void UIreneAttackInstance::DoAttack()
 {
+	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	if (STGameInstance->GetPlayerBattleState())
+	{
+		Irene->CameraOutEvent();
+	}
+
 	// 몬스터 추적 초기화
 	bFollowTarget = false;
 	FollowTargetAlpha = 0;
@@ -192,15 +201,30 @@ void UIreneAttackInstance::DoAttack()
 	TArray<FHitResult> MonsterList;
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
-		FCollisionQueryParams Params(NAME_None, false, Irene);
-		bResult = GetWorld()->SweepMultiByChannel(
-			MonsterList,
-			Irene->GetActorLocation(),
-			Irene->GetActorLocation(),
-			FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
-			ECollisionChannel::ECC_GameTraceChannel1,
-			FCollisionShape::MakeBox(FVector(200, 50, 150)),
-			Params);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				Irene->GetActorLocation(),
+				Irene->GetActorLocation(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeBox(FVector(200, 50, 150)),
+				Params);
+		}
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FCollisionQueryParams Params(NAME_None, false, Irene);
+			bResult = GetWorld()->SweepMultiByChannel(
+				MonsterList,
+				Irene->GetActorLocation(),
+				Irene->GetActorLocation(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				ECollisionChannel::ECC_GameTraceChannel1,
+				FCollisionShape::MakeBox(FVector(400, 50, 400)),
+				Params);
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
@@ -260,13 +284,24 @@ void UIreneAttackInstance::DoAttack()
 	#if ENABLE_DRAW_DEBUG
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
-		FVector TraceVec = Irene->GetActorForwardVector() * 150;
-		FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
-		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
-
-		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		if(Irene->IreneInput->bUseLeftButton)
+		{
+			FVector TraceVec = Irene->GetActorForwardVector() * 150;
+			FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
+			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		}
+		if(Irene->IreneInput->bUseRightButton)
+		{
+			FVector TraceVec = Irene->GetActorForwardVector() * 150;
+			FVector Center = Irene->GetActorLocation();
+			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+			float DebugLifeTime = 5.0f;
+			DrawDebugBox(GetWorld(), Center, FVector(400, 50, 400), CapsuleRot, DrawColor, false, DebugLifeTime);
+		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
@@ -341,11 +376,13 @@ void UIreneAttackInstance::DoAttack()
 			}
 		}
 	}
+	if (bResult)
+		Irene->CameraShakeOn = true;
 	
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)
 	{
-		auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
 		{
 			STGameInstance->ResetAttributeEffectMonster();
@@ -360,7 +397,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0)
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1FireState::GetInstance());
 		}
@@ -378,8 +415,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0)
-
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")))
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1WaterState::GetInstance());
 		}
@@ -397,7 +433,7 @@ void UIreneAttackInstance::SetAttackState()const
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
-		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0)
+		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")))
 		{
 			Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
 		}
@@ -428,7 +464,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_W_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_W_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillWaterStartState::GetInstance());
 		}	
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
@@ -436,7 +472,7 @@ void UIreneAttackInstance::SetSkillState()const
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0)
 		{
-			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
+			Irene->ChangeStateAndLog(USkillThunderStartState::GetInstance());
 		}
 	}
 }
