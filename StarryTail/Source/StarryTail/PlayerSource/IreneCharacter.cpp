@@ -311,14 +311,14 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, IreneInput, &UIreneInputInstance::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, IreneInput, &UIreneInputInstance::StopJump);
 
-	PlayerInputComponent->BindAction("MoveW", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedW);
-	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA);
-	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS);
-	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD);
-	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW);
-	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA);
-	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS);
-	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD);
+	PlayerInputComponent->BindAction("MoveW", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedW).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS).bExecuteWhenPaused=true;
+	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD).bExecuteWhenPaused=true;
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
@@ -561,9 +561,14 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			IreneUIManager->OnHpChanged.Broadcast();
 			
 			if (IreneData.CurrentHP <= 0)
+			{
 				ChangeStateAndLog(UDeathState::GetInstance());
+			}
 			else
-				ChangeStateAndLog(UHit1State::GetInstance());
+			{
+				if(!IreneState->IsChargeState())
+					ChangeStateAndLog(UHit1State::GetInstance());
+			}
 		}
 		if (IreneAttack->TargetMonster == nullptr)
 		{
@@ -584,6 +589,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 {
 	IreneState->ChangeState(NewState);
+	//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 	IreneAnim->SetIreneStateAnim(IreneState->GetState());
 }
 

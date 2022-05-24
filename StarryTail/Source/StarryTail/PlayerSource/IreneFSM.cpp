@@ -1295,27 +1295,28 @@ USkillThunderStartState* USkillThunderStartState::GetInstance()
 }
 void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 {
-	STARRYLOG_S(Error);
 	CurState->SetStateEnum(EStateEnum::Skill_T_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
 	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
 	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
 	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
 	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);	
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));	
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
-	StartShakeTime = 0.0f;
+	StartShakeTime = 0.0f;	
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
+	STARRYLOG(Error,TEXT("ThunderStart"));
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto();
+	CurState->Irene->IreneInput->MoveAuto(0.7f);
 	
 	if(CurState->PlayTime >= 0.7f)
 		CurState->Irene->ActionEndChangeMoveState();
@@ -1361,7 +1362,8 @@ void USkillThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void USkillThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	
+	//STARRYLOG(Error,TEXT("%f,   %f,   %f"),CurrentPosVec.X,CurrentPosVec.Y,CurrentPosVec.Z);
+	//STARRYLOG(Error,TEXT("%f,   %f,   %f"),NowPosVec.X,NowPosVec.Y,NowPosVec.Z);
 }
 
 void USkillThunderEndState::Exit(IBaseGameEntity* CurState)

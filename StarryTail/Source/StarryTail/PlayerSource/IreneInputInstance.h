@@ -56,6 +56,9 @@ private:
 
 	bool bUseWaterDodge;
 
+	// 닷지 쿨타임
+	FTimerHandle DodgeWaitHandle;
+
 	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
 	FVector ThunderDodgeTargetDir;
@@ -73,7 +76,7 @@ public:
 #pragma region Move
 	void MoveForward();
 	void MoveRight();
-	void MoveAuto()const;
+	void MoveAuto(const float EndTimer = 1.0f)const;
 
 	void StartJump();
 	void StopJump();
