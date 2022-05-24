@@ -19,6 +19,8 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	AttackCount = 0;
 
+	Scientia->SetState(TEXT("Attack2"));
+
 	Scientia->Attack2End.Clear();
 	Scientia->ClawStart.AddLambda([this]() -> void
 		{
@@ -49,6 +51,7 @@ void UBTTaskScAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			{
 				Scientia->PlayStuckAnim();
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsStuckKey, true);
+				Scientia->SetState(TEXT("Stuck"));
 			}
 
 			Scientia->ResetClawSuccessedCount();

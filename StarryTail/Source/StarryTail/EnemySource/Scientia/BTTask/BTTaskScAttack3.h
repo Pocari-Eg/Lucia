@@ -32,6 +32,7 @@ private:
 	FVector NewLocation;
 
 	bool bCanMove;
+	bool bIsTurn;
 
 	float RushTimer;
 };

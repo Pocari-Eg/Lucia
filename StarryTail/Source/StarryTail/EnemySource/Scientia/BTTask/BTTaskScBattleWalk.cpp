@@ -19,6 +19,19 @@ EBTNodeResult::Type UBTTaskScBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
 	Scientia->BattleWalk();
 
+	Scientia->SetState(TEXT("BattleWalk"));
+
+	MoveRandom = FMath::RandRange(0, 1);
+
+	if (MoveRandom)
+	{
+		DirValue = 1;
+	}
+	else
+	{
+		DirValue = -1;
+	}
+
 	WaitTimer = 0.0f;
 	WaitTime = FMath::RandRange(1.f, 3.f);
 
@@ -42,7 +55,7 @@ void UBTTaskScBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	const FRotator YawRotation(0, TargetRot.Yaw, 0);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	Scientia->SetActorLocation(Scientia->GetActorLocation() - (Direction * Scientia->GetBattleWalkSpeed() * DeltaSeconds));
+	Scientia->SetActorLocation(Scientia->GetActorLocation() - ((DirValue * Direction) * Scientia->GetBattleWalkSpeed() * DeltaSeconds));
 	
 	if (WaitTimer >= WaitTime)
 	{

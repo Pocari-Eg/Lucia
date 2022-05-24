@@ -18,7 +18,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Attack3Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DodgeSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float RushTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ChangeCoolTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float FireBarrier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float WaterBarrier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ThunderBarrier;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int FeatherCount;
@@ -28,4 +38,6 @@ public:
 		EAttributeKeyword CurrentAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		FString State;
 };

@@ -12,6 +12,7 @@ const FName AScAIController::IsAttack2Key = (TEXT("bIsAttack2"));
 const FName AScAIController::IsAttack3Key = (TEXT("bIsAttack3"));
 
 const FName AScAIController::IsStuckKey = (TEXT("bIsStuck"));
+const FName AScAIController::IsDodgeKey = (TEXT("bIsDodge"));
 AScAIController::AScAIController()
 {
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Scientia/BB_Scientia"));

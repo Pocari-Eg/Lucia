@@ -4,24 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskScBattleIdle.generated.h"
+#include "BTTaskScDodge.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskScBattleIdle : public UBTTaskNode
+class STARRYTAIL_API UBTTaskScDodge : public UBTTaskNode
 {
 	GENERATED_BODY()
-private:
-	UBTTaskScBattleIdle();
+public:
+	UBTTaskScDodge();
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	bool bIsCanDodge;
-	bool bIsUseDodge;
+	UNavigationSystemV1* NavSys;
+	ANavigationData* NavData;
 
-	float WaitTime;
-	float WaitTimer;
+	TSubclassOf<UNavigationQueryFilter> FilterClass;
+	FSharedConstNavQueryFilter QueryFilter;
+	FPathFindingQuery MyAIQuery;
+
+	FVector MoveDir;
+	FVector NewLocation;
+
+	float DodgeTimer;
+
+	bool bIsDodge;
+	bool bCanMove;
 };

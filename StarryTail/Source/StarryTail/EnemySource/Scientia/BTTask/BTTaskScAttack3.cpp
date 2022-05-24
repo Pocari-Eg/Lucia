@@ -20,6 +20,8 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Scientia->Attack3();
 
+	Scientia->SetState(TEXT("Attack3"));
+
 	MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 
 	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
@@ -27,8 +29,12 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
-
-	RushTimer = 0.0f;
+	
+	Scientia->TurnEnd.Clear();
+	Scientia->TurnEnd.AddLambda([this]() -> void
+		{
+			bIsTurn = false;
+		});
 	
 	return EBTNodeResult::InProgress;
 }
@@ -36,34 +42,39 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	if (bIsTurn)
+		return;
+
 	RushTimer += DeltaSeconds;
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
 
 	if (RushTimer >= Scientia->GetRushTime())
 	{
+		Scientia->RushEnd();
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, false);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack3Key, false);
+		RushTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
 	}
 
-	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetAttack3Speed() * DeltaSeconds);
+	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * 300);
 	
 	if (NavData)
 	{
-		
 		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), NewLocation, QueryFilter);
 		bCanMove = NavSys->TestPathSync(MyAIQuery, EPathFindingMode::Regular);
 	}
 	
 	if (bCanMove)
 	{
-		// Scientia->SetActorLocation(NewLocation);
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(Scientia->GetController(), Scientia->GetTransform().GetLocation() + MoveDir.GetSafeNormal() * Scientia->GetAttack3Speed());
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(Scientia->GetController(), Scientia->GetTransform().GetLocation() + MoveDir.GetSafeNormal() * 300);
 	}
 	else
 	{
-		STARRYLOG(Log, TEXT("2"));
+		bIsTurn = true;
+		Scientia->Turn();
+		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 	}
 }

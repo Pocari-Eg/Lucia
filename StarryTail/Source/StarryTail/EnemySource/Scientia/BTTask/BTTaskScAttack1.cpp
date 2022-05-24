@@ -18,6 +18,8 @@ EBTNodeResult::Type UBTTaskScAttack1::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Scientia->Attack1();
 
+	Scientia->SetState(TEXT("Attack1"));
+
 	bIsAttacking = true;
 
 	WaitTime = 1.4f;

@@ -6,6 +6,7 @@
 #include "./Morbit/MbAIController.h"
 #include "./Bouldelith/Bouldelith.h"
 #include "./Bouldelith/BdAIController.h"
+#include "./Scientia/Scientia.h"
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
@@ -811,7 +812,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	FString FindName = "WEAPON";
 	if (CompName == FindName)
 	{
-		
 		PrintHitEffect(OtherComp->GetComponentLocation());
 
 		auto Player = Cast<AIreneCharacter>(OtherActor);

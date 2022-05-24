@@ -21,6 +21,8 @@ AScientia::AScientia()
 	static ConstructorHelpers::FClassFinder<AFeather> FeatherBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Feather'"));
 
 	bTestMode = false;
+	bIsCanChange = true;
+	ScInfo.BarrierCount = 3;
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
@@ -82,7 +84,7 @@ void AScientia::InitScInfo()
 #pragma region Get
 FString AScientia::GetState()
 {
-	return State;
+	return ScInfo.State;
 }
 int AScientia::GetBarrierCount()
 {
@@ -104,6 +106,10 @@ float AScientia::GetAttack3Speed()
 {
 	return ScInfo.Attack3Speed;
 }
+float AScientia::GetDodgeSpeed()
+{
+	return ScInfo.DodgeSpeed;
+}
 float AScientia::GetRushTime()
 {
 	return ScInfo.RushTime;
@@ -112,11 +118,15 @@ int AScientia::GetClawSuccessedCount()
 {
 	return ScInfo.ClawSuccessedCount;
 }
+bool AScientia::GetIsCanChange()
+{
+	return bIsCanChange;
+}
 #pragma endregion
 #pragma region Set
 void AScientia::SetState(FString string)
 {
-	State = string;
+	ScInfo.State = string;
 }
 #pragma endregion
 #pragma region Attack1
@@ -193,6 +203,7 @@ void AScientia::ResetClawSuccessedCount()
 void AScientia::Attack3()
 {
 	ScAnimInstance->PlayRushMontage();
+	GetCharacterMovement()->MaxWalkSpeed = ScInfo.Attack3Speed;
 }
 #pragma endregion
 void AScientia::BattleIdle()
@@ -203,6 +214,134 @@ void AScientia::BattleIdle()
 void AScientia::BattleWalk()
 {
 	ScAnimInstance->PlayBattleWalkMontage();
+}
+void AScientia::Change()
+{
+	ScAnimInstance->PlayChangeMontage();
+	ChangeTimer = 0.0f;
+}
+void AScientia::Dodge()
+{
+	ScAnimInstance->PlayDodgeMontage();
+}
+void AScientia::ChangeAttribute()
+{
+	int Random = FMath::RandRange(0, 9);
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	auto PlayerAttribute = STGameInstance->GetPlayerAttribute();
+
+	if (ScInfo.BarrierCount == 3)
+	{
+		if (Random >= 3)
+		{
+			switch (PlayerAttribute)
+			{
+			case EAttributeKeyword::e_Fire:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				break;
+			case EAttributeKeyword::e_Water:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				break;
+			case EAttributeKeyword::e_Thunder:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				break;
+			}
+		}
+		else
+		{
+			switch (PlayerAttribute)
+			{
+			case EAttributeKeyword::e_Fire:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				break;
+			case EAttributeKeyword::e_Water:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				break;
+			case EAttributeKeyword::e_Thunder:
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				break;
+			case EAttributeKeyword::e_None:
+				break;
+			}
+		}
+	}
+	else if (ScInfo.BarrierCount == 2)
+	{
+		if (Random >= 3)
+		{
+			switch (PlayerAttribute)
+			{
+			case EAttributeKeyword::e_Fire:
+				if (ScInfo.ThunderBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				break;
+			case EAttributeKeyword::e_Water:
+				if (ScInfo.FireBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				break;
+			case EAttributeKeyword::e_Thunder:
+				if (ScInfo.WaterBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				break;
+			case EAttributeKeyword::e_None:
+				break;
+			}
+		}
+		else
+		{
+			switch (PlayerAttribute)
+			{
+			case EAttributeKeyword::e_Fire:
+				if (ScInfo.WaterBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				break;
+			case EAttributeKeyword::e_Water:
+				if (ScInfo.ThunderBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				break;
+			case EAttributeKeyword::e_Thunder:
+				if (ScInfo.FireBarrier < 0)
+					break;
+				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				break;
+			case EAttributeKeyword::e_None:
+				break;
+			}
+		}
+	}
+	if (PlayerAttribute == EAttributeKeyword::e_None)
+	{
+		Random = FMath::RandRange(0, 2);
+
+		switch (Random)
+		{
+		case 0:
+			ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+			break;
+		case 1:
+			ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+			break;
+		case 2:
+			ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+			break;
+		}
+	}
+	// ChangeModel
+}
+void AScientia::RushEnd()
+{
+	bIsRush = false;
+	bIsPlayerRushHit = false;
+}
+void AScientia::Turn()
+{
+	ScAnimInstance->PlayTurnMontage();
+	bIsRush = false;
 }
 void AScientia::PlayStuckAnim()
 {
@@ -237,7 +376,6 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 	{
 		if (!bIsPlayerClawHit)
 		{
-			STARRYLOG(Log, TEXT("2"));
 			if (Cast<AIreneCharacter>(OtherActor))
 			{
 				auto Player = Cast<AIreneCharacter>(OtherActor);
@@ -256,6 +394,7 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				bIsPlayerClawHit = true;
 			}
 		}
+		/*
 		if (Cast<UStaticMeshComponent>(OtherComponent))
 		{
 			auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
@@ -276,7 +415,28 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				bIsClaw = false;
 			}
 		}
-		
+		*/
+	}
+	if (bIsRush)
+	{
+		if (!bIsPlayerRushHit)
+		{
+			if (Cast<AIreneCharacter>(OtherActor))
+			{
+				auto Player = Cast<AIreneCharacter>(OtherActor);
+
+				if (bIsSpark)
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
+				}
+				else
+				{
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3), NULL, this, NULL);
+				}
+				bIsPlayerRushHit = true;
+			}
+		}
 	}
 }
 void AScientia::Tick(float DeltaTime)
@@ -308,6 +468,14 @@ void AScientia::Tick(float DeltaTime)
 			SetAttribute = true;
 		}
 	}
+	if (!bIsCanChange)
+	{
+		ChangeTimer += DeltaTime;
+		if (ChangeTimer >= ScInfo.ChangeCoolTime)
+		{
+			bIsCanChange = true;
+		}
+	}
 }
 	// Called when the game starts or when spawned
 void AScientia::BeginPlay()
@@ -326,6 +494,23 @@ void AScientia::BeginPlay()
 		ClawStart.Broadcast();
 		bIsClaw = true;
 		});
+	ScAnimInstance->RushStart.AddLambda([this]() -> void {
+		bIsRush = true;
+		});
+	ScAnimInstance->TurnEnd.AddLambda([this]() -> void {
+		TurnEnd.Broadcast();
+		Attack3();
+		bIsRush = true;
+		bIsPlayerRushHit = false;
+		});
+	ScAnimInstance->ChangeEnd.AddLambda([this]() -> void {
+		ChangeEnd.Broadcast();
+		bIsCanChange = false;
+		});
+	ScAnimInstance->DodgeEnd.AddLambda([this]() -> void {
+		DodgeEnd.Broadcast();
+		});
+	ScAnimInstance->Change.AddUObject(this, &AScientia::ChangeAttribute);
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
 }

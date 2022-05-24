@@ -14,6 +14,9 @@
  */
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FClawStartDelegate);
+DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
 
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
@@ -35,8 +38,14 @@ public:
 	void ResetClawSuccessedCount();
 	void PlayStuckAnim();
 
+	void RushEnd();
+	void Turn();
+
 	void BattleIdle();
 	void BattleWalk();
+	void Change();
+	void Dodge();
+	void ChangeAttribute();
 
 	bool ScAttributeIsPlayerAttributeCounter();
 
@@ -46,8 +55,11 @@ public:
 	float GetHpPercent();
 	float GetAttack2Speed();
 	float GetAttack3Speed();
+	float GetDodgeSpeed();
 	float GetRushTime();
 	int GetClawSuccessedCount();
+	bool GetIsCanChange();
+	
 
 	void SetState(FString string);
 
@@ -55,13 +67,15 @@ public:
 	FAttackEndDelegate Attack1End;
 	FAttackEndDelegate Attack2End;
 	FClawStartDelegate ClawStart;
+	FTurnEndDelegate TurnEnd;
+	FChangeEndDelegate ChangeEnd;
+	FDodgeEndDelegate DodgeEnd;
 private:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		FScientiaInfo ScInfo;
-	FString State;
 
 	TSubclassOf<AFeather> FeatherBP;
 
@@ -71,10 +85,14 @@ private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		bool bIsClaw;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
+		bool bIsRush;
 	bool bIsPlayerClawHit;
+	bool bIsPlayerRushHit;
+	bool bIsCanChange;
 
 	float AttributeSettingTimer;
-
+	float ChangeTimer;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
