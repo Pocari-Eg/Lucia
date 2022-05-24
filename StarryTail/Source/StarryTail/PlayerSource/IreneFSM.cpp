@@ -624,7 +624,29 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
 	if (!CurState->Irene->GetCharacterMovement()->IsFalling())
 	{
-		CurState->Irene->ChangeStateAndLog(UJumpEndState::GetInstance());
+		if (CurState->Irene->IreneInput->MoveKey[0] > 2)
+			CurState->Irene->IreneInput->MoveKey[0] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[1] > 2)
+			CurState->Irene->IreneInput->MoveKey[1] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[2] > 2)
+			CurState->Irene->IreneInput->MoveKey[2] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[3] > 2)
+			CurState->Irene->IreneInput->MoveKey[3] -= 2;
+	
+		if (CurState->Irene->IreneInput->MoveKey[0] == 0 && CurState->Irene->IreneInput->MoveKey[1] == 0 && CurState->Irene->IreneInput->MoveKey[2] == 0 && CurState->Irene->IreneInput->MoveKey[3] == 0)
+		{
+			CurState->Irene->ChangeStateAndLog(UJumpEndState::GetInstance());
+		}
+		else if (CurState->Irene->GetCharacterMovement()->MaxWalkSpeed == CurState->Irene->IreneData.SprintMaxSpeed)
+		{
+			CurState->ThrowState(UJumpEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		}
+		else
+		{
+			CurState->ThrowState(UJumpEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
 	}
 }
 
@@ -649,6 +671,7 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->GravityScale = 2;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
@@ -1643,4 +1666,13 @@ bool UIreneFSM::IsFirstAttack()const
 		return true;
 	return false;
 }
+bool UIreneFSM::IsKnockBackState() const
+{
+	if(StateEnumValue == EStateEnum::B_Attack_3_F || StateEnumValue == EStateEnum::B_Attack_3_W ||
+		StateEnumValue == EStateEnum::Skill_F_Start ||StateEnumValue == EStateEnum::Skill_F_End ||
+		StateEnumValue == EStateEnum::Skill_W_Start ||StateEnumValue == EStateEnum::Skill_W_End)
+		return true;
+	return false;
+}
+
 #pragma endregion  FindState
