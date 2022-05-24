@@ -152,26 +152,25 @@ void UPlayerHudWidget::UpdateAttributes()
 	switch (CurrentIrene->IreneAttack->GetAttribute())
 	{
 	case EAttributeKeyword::e_None:
-		 NoneSetScale(SelectScale);
 		 FireSetScale(BaseScale);
 		 WaterSetScale(BaseScale);
 		 ElectricSetScale(BaseScale);
 		break;
 	case EAttributeKeyword::e_Fire:
-		NoneSetScale(BaseScale);
+		
 		FireSetScale(SelectScale);
 		WaterSetScale(BaseScale);
 		ElectricSetScale(BaseScale);
 		
 		break;
 	case EAttributeKeyword::e_Water:
-		NoneSetScale(BaseScale);
+		
 		FireSetScale(BaseScale);
 		WaterSetScale(SelectScale);
 		ElectricSetScale(BaseScale);
 		break;
 	case EAttributeKeyword::e_Thunder:
-		NoneSetScale(BaseScale);
+		
 		FireSetScale(BaseScale);
 		WaterSetScale(BaseScale);
 		ElectricSetScale(SelectScale);
@@ -180,13 +179,6 @@ void UPlayerHudWidget::UpdateAttributes()
 }
 
 
-
-void UPlayerHudWidget::NoneSetScale(FVector2D Scale)
-{
-	None.Attribute->SetRenderScale(Scale);
-	None.Base->SetRenderScale(Scale);
-
-}
 
 void UPlayerHudWidget::FireSetScale(FVector2D Scale)
 {
@@ -230,9 +222,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	HPRecoveryProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_RecoverBar")));
 
 	//¼Ó¼º
-	 None.Attribute= Cast<UImage>(GetWidgetFromName(TEXT("NoneUi")));
-	 None.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("NoneBase")));
-	 None.Recovery = Cast<UProgressBar>(GetWidgetFromName(TEXT("NoneBase")));
+	
 
 	 Fire.Attribute = Cast<UImage>(GetWidgetFromName(TEXT("fire")));
 	 Fire.Base = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireBase")));
@@ -254,5 +244,4 @@ void UPlayerHudWidget::NativeOnInitialized()
 
 	ActionWidgetOff();
 
-	NoneSetScale(SelectScale);
 }

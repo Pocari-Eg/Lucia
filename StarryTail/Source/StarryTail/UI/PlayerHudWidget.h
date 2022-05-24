@@ -65,7 +65,6 @@ private:
 	void UpdateEeletric();
 	void UpdateEeletricRecovery();
 
-	void NoneSetScale(FVector2D Scale);
 	void FireSetScale(FVector2D Scale);
 	void WaterSetScale(FVector2D Scale);
 	void ElectricSetScale(FVector2D Scale);
@@ -94,7 +93,6 @@ private:
 	UPROPERTY()
 	class UUserWidget* ActionWidget;
 
-	FAttributesUI None;
 	FAttributesUI Fire;
 	FAttributesUI Water;
 	FAttributesUI Electric;
