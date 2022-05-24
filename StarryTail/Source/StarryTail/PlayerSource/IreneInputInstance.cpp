@@ -44,7 +44,6 @@ void UIreneInputInstance::InitMemberVariable()
 	StartWaterDodgeStamina = 0;
 
 	bUseWaterDodge = false;
-	ThunderDodgeTargetDir = FVector::ZeroVector;
 
 	ThunderSkillCount = 2;
 
@@ -265,7 +264,32 @@ void UIreneInputInstance::RightButtonPressed()
 	{
 		IsCharging = true;
 		ChargingTime = 0.0f;
+		
+		const FRotator Rotation = Irene->Controller->GetControlRotation();
+		const FRotator YawRotation(0, Rotation.Yaw, 0);
+		FVector LookDir = FVector::ZeroVector;
+		if (MoveKey[0] != 0 && MoveKey[0] < 3)
+		{
+			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+		}
+		if (MoveKey[2] != 0 && MoveKey[2] < 3)
+		{
+			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
+		}
+		if (MoveKey[1] != 0 && MoveKey[1] < 3)
+		{
+			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
+		}
+		if (MoveKey[3] != 0 && MoveKey[3] < 3)
+		{
+			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+		}
+		if(LookDir == FVector::ZeroVector)
+			LookDir = Irene->GetActorForwardVector();
+		LookDir.Normalize();
 
+		Irene->SetActorRotation(LookDir.Rotation());
+		
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			bUseRightButton = true;
@@ -507,7 +531,7 @@ void UIreneInputInstance::DodgeKeyword()
 
 			const FRotator Rotation = Irene->Controller->GetControlRotation();
 			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			ThunderDodgeTargetDir = FVector::ZeroVector;
+			FVector ThunderDodgeTargetDir = FVector::ZeroVector;
 
 			if (MoveKey[0] != 0 && MoveKey[0] < 3)
 			{

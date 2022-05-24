@@ -473,5 +473,6 @@ public:
 	bool IsDeathState()const;
 
 	bool IsFirstAttack()const;
-
+	
+	bool IsKnockBackState()const;
 };
