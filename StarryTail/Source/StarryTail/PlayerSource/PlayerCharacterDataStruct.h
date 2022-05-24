@@ -38,10 +38,10 @@ public:
 
 	// 점프시작파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpStartPower = 450;
+	float JumpStartPower = 550;
 	// 점프저항파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpDrag = 4;
+	float JumpDrag = 1.2f;
 	
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
