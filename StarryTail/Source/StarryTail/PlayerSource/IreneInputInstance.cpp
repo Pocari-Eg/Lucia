@@ -48,6 +48,19 @@ void UIreneInputInstance::InitMemberVariable()
 	ThunderSkillCount = 2;
 
 	bActionKeyActive = false;
+
+	 FireMaxCoolTime = 10.0f;
+	 FireCurCoolTime = 0.0f;
+
+	 WaterMaxCoolTime = 10.0f;
+	 WaterCurCoolTime = 0.0f;
+
+	 ThunderMaxCoolTime = 10.0f;
+	 ThunderCurCoolTime = 0.0f;
+
+	  bIsFireAttributeOn = true;
+	  bIsWaterAttributeOn = true;
+	  bIsThunderAttributeOn = true;
 }
 
 #pragma region Move
@@ -419,12 +432,13 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 {
 	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
 	{
-		if(Attribute == EAttributeKeyword::e_Fire && !FireStartTimer.IsValid())
+		if(Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
 			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Water && !WaterStartTimer.IsValid())
+		if(Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
 			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Thunder && !ElectricStartTimer.IsValid())
+		if(Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
 			ChangeForm(Attribute);
+
 	}
 }
 
@@ -466,18 +480,15 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[2]);
 	}
 	// 속성 마다 변화 쿨타임 타이머 시작
-	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, FTimerDelegate::CreateLambda([&]()
-	{
-		FireStartTimer.Invalidate();
-	}) , 10, false);
-	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, FTimerDelegate::CreateLambda([&]()
-	{
-		WaterStartTimer.Invalidate();
-	}) , 10, false);
-	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, FTimerDelegate::CreateLambda([&]()
-	{
-		ElectricStartTimer.Invalidate();
-	}) , 10, false);	
+ 	bIsThunderAttributeOn = false;
+	bIsWaterAttributeOn = false;
+	bIsFireAttributeOn = false;
+	//Fire
+	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::FireCoolTime, 0.5f , true, 0.0f);
+	//Water
+	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, this, &UIreneInputInstance::WaterCoolTime, 0.5f , true, 0.0f);
+	//Thunder
+	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, this, &UIreneInputInstance::ThunderCoolTime, 0.5f , true, 0.0f);
 }
 
 void UIreneInputInstance::DodgeKeyword()
@@ -686,5 +697,50 @@ void UIreneInputInstance::SetStopMoveAutoTarget()const
 	Irene->IreneAttack->SetFollowTargetAlpha(0);
 	Irene->IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
 	Irene->IreneAttack->SetTargetPosVec(FVector::ZeroVector);	
+}
+void UIreneInputInstance::FireCoolTime()
+{
+	if (FireCurCoolTime < FireMaxCoolTime)
+	{
+		FireCurCoolTime += 0.5f;
+	}
+	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
+	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
+	if(FireCurCoolTime == FireMaxCoolTime){
+		bIsFireAttributeOn = true;
+		FireCurCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(FireStartTimer);
+		
+	}
+}
+void UIreneInputInstance::WaterCoolTime()
+{
+	if (WaterCurCoolTime < WaterMaxCoolTime)
+	{
+		WaterCurCoolTime += 0.5f;;
+	}
+	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
+	Irene->IreneUIManager->OnWaterCoolChange.Broadcast();
+	if (WaterCurCoolTime == WaterMaxCoolTime) {
+		bIsWaterAttributeOn = true;
+		WaterCurCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(WaterStartTimer);
+
+	}
+}
+void UIreneInputInstance::ThunderCoolTime()
+{
+	if (ThunderCurCoolTime < ThunderMaxCoolTime)
+	{
+		ThunderCurCoolTime += 0.5f;;
+	}
+	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
+	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
+	if (ThunderCurCoolTime == ThunderMaxCoolTime) {
+		bIsThunderAttributeOn = true;
+		ThunderCurCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(ElectricStartTimer);
+
+	}
 }
 #pragma endregion GetSet

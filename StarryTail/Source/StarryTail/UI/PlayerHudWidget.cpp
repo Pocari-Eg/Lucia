@@ -16,6 +16,11 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
 	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 	NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
+
+	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
+	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
+	NewIrene->IreneUIManager->OnThunderCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderCoolTime);
+
 }
 
 void UPlayerHudWidget::SetDialog(FString dialog)
@@ -110,25 +115,58 @@ void UPlayerHudWidget::InitSkillUI()
 
 }
 
-void UPlayerHudWidget::UpdateCooTime()
+void UPlayerHudWidget::UpdateFireCoolTime()
 {
 	if (CurrentIrene != nullptr)
 	{
 
 		if (nullptr != Fire.CoolTimeBar)
 		{
-			//Fire.CoolTimeBar->SetPercent(CurrentIrene->IreneUIManager->GetHpRatio());
-		}
-		if (nullptr != Water.CoolTimeBar)
-		{
-			//Water.CoolTimeBar->SetPercent(CurrentIrene->IreneUIManager->GetHpRatio());
-		}
-		if (nullptr != Thunder.CoolTimeBar)
-		{
-			//Thunder.CoolTimeBar->SetPercent(CurrentIrene->IreneUIManager->GetHpRatio());
+			float Ratio = CurrentIrene->IreneUIManager->GetFireCoolRatio();
+			Fire.CoolTimeBar->SetPercent(Ratio);
+			if (Ratio >= 1.0f)
+			{
+				Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
+			}
 		}
 	}
 }
+
+void UPlayerHudWidget::UpdateWaterCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != Water.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetWaterCoolRatio();
+			Water.CoolTimeBar->SetPercent(Ratio);
+			if (Ratio >= 1.0f)
+			{
+				Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+	}
+}
+
+void UPlayerHudWidget::UpdateThunderCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != Thunder.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetThunderCoolRatio();
+			Thunder.CoolTimeBar->SetPercent(Ratio);
+			if (Ratio >= 1.0f)
+			{
+				Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+	}
+}
+
+
 
 void UPlayerHudWidget::FireSelect()
 {
