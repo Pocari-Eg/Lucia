@@ -157,6 +157,39 @@ float UIreneUIManager::GetHpRecoveryRatio()
 	return ((float)RemainingRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovery) / Irene->IreneData.MaxHP;
 }
 
+void UIreneUIManager::UpdateFireCool(float CurCool, float MaxCool)
+{
+	FireCurCoolTime = CurCool;
+	FireMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateWaterCool(float CurCool, float MaxCool)
+{
+	WaterCurCoolTime = CurCool;
+	WaterMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateThunderCool(float CurCool, float MaxCool)
+{
+	ThunderCurCoolTime = CurCool;
+	ThunderMaxCoolTime = MaxCool;
+}
+
+float UIreneUIManager::GetFireCoolRatio()
+{
+	return (FireCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (FireCurCoolTime / FireMaxCoolTime);
+}
+
+float UIreneUIManager::GetWaterCoolRatio()
+{
+	return (WaterCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (WaterCurCoolTime / WaterMaxCoolTime);
+}
+
+float UIreneUIManager::GetThunderCoolRatio()
+{
+	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
+}
+
 void UIreneUIManager::PauseWidgetOn()
 {
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;

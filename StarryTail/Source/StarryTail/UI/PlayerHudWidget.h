@@ -57,7 +57,9 @@ private:
 
 	void InitSkillUI();
 
-	void UpdateCooTime();
+	void UpdateFireCoolTime();
+	void UpdateWaterCoolTime();
+	void UpdateThunderCoolTime();
 
 	void FireSelect();
 	void WaterSelect();

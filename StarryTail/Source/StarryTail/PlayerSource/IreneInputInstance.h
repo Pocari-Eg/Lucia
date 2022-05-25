@@ -29,6 +29,17 @@ private:
 	FTimerHandle WaterStartTimer;
 	FTimerHandle ElectricStartTimer;
 
+
+	float FireMaxCoolTime;
+	float FireCurCoolTime;
+
+	float WaterMaxCoolTime;
+	float WaterCurCoolTime;
+
+	float ThunderMaxCoolTime;
+	float ThunderCurCoolTime;
+	
+
 	UPROPERTY()
 	UParticleSystemComponent* WaterDodgeEffect;	
 
@@ -148,4 +159,15 @@ public:
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
 #pragma endregion GetSet	
+
+#pragma region CoolTime
+private:
+		void FireCoolTime();
+		void WaterCoolTime();
+		void ThunderCoolTime();
+
+		bool bIsFireAttributeOn;
+		bool bIsWaterAttributeOn;
+		bool bIsThunderAttributeOn;
+#pragma endregion CoolTime
 };
