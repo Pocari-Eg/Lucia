@@ -24,8 +24,6 @@ EBTNodeResult::Type UBTTaskScDodge::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	Scientia->SetState(TEXT("Dodge"));
 
-	DodgeTimer = 0.0f;
-
 	bIsDodge = true;
 
 	MoveDir = (Scientia->GetActorLocation() - Player->GetActorLocation());

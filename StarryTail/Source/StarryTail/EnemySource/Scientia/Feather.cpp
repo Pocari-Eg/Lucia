@@ -24,6 +24,7 @@ void AFeather::InitCollision()
 	Collision = CreateDefaultSubobject<USphereComponent>(TEXT("RootComponent"));
 	RootComponent = Collision;
 	Collision->InitSphereRadius(20.f);
+	Collision->SetRelativeLocation(FVector(0.0f, 0.0f, -70.0f));
 	Collision->BodyInstance.SetCollisionProfileName(TEXT("Feather"));
 }
 void AFeather::InitMesh()
@@ -38,7 +39,6 @@ void AFeather::InitMesh()
 	}
 
 	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
-	Mesh->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	Mesh->SetWorldScale3D(FVector(0.3f));
 }
 void AFeather::SetMoveDir(FVector Direction)

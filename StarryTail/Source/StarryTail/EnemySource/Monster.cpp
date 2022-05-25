@@ -345,10 +345,29 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	}
 	if (Cast<AScientia>(this))
 	{
-		auto Scientia = Cast<AScientia>(this);
-		auto ScAIController = Cast<AScAIController>(Scientia->GetController());
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
 
-		ScAIController->Attacked();
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
+		if (IsKnockback)
+		{
+			bool IsSkill = Player->IreneState->IsSkillState();
+
+			if (IsSkill)
+			{
+				auto Scientia = Cast<AScientia>(this);
+				FString BattleIdleName = "BattleIdle";
+				FString BattleWalkName = "BattleWalk";
+
+				if (Scientia->GetState() == BattleIdleName || Scientia->GetState() == BattleWalkName)
+				{
+					auto ScAIController = Cast<AScAIController>(Scientia->GetController());
+					Scientia->SetState("Attacked");
+					ScAIController->Attacked();
+				}
+			}
+		}
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)

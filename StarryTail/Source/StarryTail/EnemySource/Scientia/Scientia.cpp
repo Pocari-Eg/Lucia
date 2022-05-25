@@ -24,6 +24,11 @@ AScientia::AScientia()
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
+
+	if (FeatherBlueprint.Succeeded())
+	{
+		FeatherBP = FeatherBlueprint.Class;
+	}
 }
 void AScientia::InitMonsterInfo()
 {

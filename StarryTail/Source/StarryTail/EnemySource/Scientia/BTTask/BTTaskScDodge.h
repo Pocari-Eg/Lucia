@@ -29,8 +29,6 @@ private:
 	FVector MoveDir;
 	FVector NewLocation;
 
-	float DodgeTimer;
-
 	bool bIsDodge;
 	bool bCanMove;
 };
