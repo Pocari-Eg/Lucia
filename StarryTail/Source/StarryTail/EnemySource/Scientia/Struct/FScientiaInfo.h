@@ -35,8 +35,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int ClawSuccessedCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		EAttributeKeyword CurrentAttribute;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FString State;

@@ -18,6 +18,7 @@ DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FCrushedEndDelegate);
 
 UCLASS()
 class STARRYTAIL_API UScAnimInstance : public UMonsterAnimInstance
@@ -33,6 +34,9 @@ public:
 	void PlayStuckMontage();
 	void PlayChangeMontage();
 	void PlayDodgeMontage();
+	void PlayAttackedBAnimation();
+	void PlayAttackedFAnimation();
+	void PlayCrushedMontage();
 
 	FAttackEndDelegate Attack1End;
 	FAttackEndDelegate Attack2End;
@@ -44,6 +48,7 @@ public:
 	FChangeDelegate Change;
 	FChangeEndDelegate ChangeEnd;
 	FDodgeEndDelegate DodgeEnd;
+	FCrushedEndDelegate CrushedEnd;
 private:
 	UFUNCTION()
 		void AnimNotify_Feather();
@@ -65,6 +70,8 @@ private:
 		void AnimNotify_ChangeEnd();
 	UFUNCTION()
 		void AnimNotify_DodgeEnd();
+	UFUNCTION()
+		void AnimNotify_CrushedEnd();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* FeatherMontageR;
@@ -84,4 +91,10 @@ private:
 		UAnimMontage* ChangeMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = DodgeAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* DodgeMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedFMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackedBMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = CrushedAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* CrushedMontage;
 };

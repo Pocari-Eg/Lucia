@@ -17,6 +17,7 @@ DECLARE_MULTICAST_DELEGATE(FClawStartDelegate);
 DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FCrushedEndDelegate);
 
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
@@ -30,6 +31,9 @@ public:
 	void Attack1();
 	void Attack2();
 	void Attack3();
+
+	void PlayAttackedBAnimation();
+	void PlayAttackedFAnimation();
 
 	void Feather();
 	void AddFeatherCount();
@@ -45,9 +49,14 @@ public:
 	void BattleWalk();
 	void Change();
 	void Dodge();
+	void Crushed();
 	void ChangeAttribute();
 
 	bool ScAttributeIsPlayerAttributeCounter();
+	bool PlayerAttributeIsScAttributeCounter();
+
+	void CalcCurrentBarrier(float Value);
+	bool IsBarrierCrushed();
 
 	FString GetState();
 	int GetBarrierCount();
@@ -62,6 +71,7 @@ public:
 	
 
 	void SetState(FString string);
+	void SetAttribute(EAttributeKeyword Attribute);
 
 	//Var
 	FAttackEndDelegate Attack1End;
@@ -70,6 +80,7 @@ public:
 	FTurnEndDelegate TurnEnd;
 	FChangeEndDelegate ChangeEnd;
 	FDodgeEndDelegate DodgeEnd;
+	FCrushedEndDelegate CrushedEnd;
 private:
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
@@ -81,7 +92,7 @@ private:
 
 	UScAnimInstance* ScAnimInstance;
 
-	bool SetAttribute;
+	bool IsSetAttribute;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		bool bIsClaw;

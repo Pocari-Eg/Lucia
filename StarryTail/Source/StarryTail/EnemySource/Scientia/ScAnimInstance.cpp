@@ -39,6 +39,18 @@ void UScAnimInstance::PlayDodgeMontage()
 {
 	Montage_Play(DodgeMontage);
 }
+void UScAnimInstance::PlayAttackedBAnimation()
+{
+	Montage_Play(AttackedBMontage);
+}
+void UScAnimInstance::PlayAttackedFAnimation()
+{
+	Montage_Play(AttackedFMontage);
+}
+void UScAnimInstance::PlayCrushedMontage()
+{
+	Montage_Play(CrushedMontage);
+}
 void UScAnimInstance::AnimNotify_Feather()
 {
 	Feather.Broadcast();
@@ -79,4 +91,8 @@ void UScAnimInstance::AnimNotify_ChangeEnd()
 void UScAnimInstance::AnimNotify_DodgeEnd()
 {
 	DodgeEnd.Broadcast();
+}
+void UScAnimInstance::AnimNotify_CrushedEnd()
+{
+	CrushedEnd.Broadcast();
 }

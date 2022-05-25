@@ -17,6 +17,7 @@ public:
 	AScAIController();
 
 	void Attacked();
+	void Crushed();
 
 	static const FName IsChangeKey;
 	static const FName IsBattleWalkKey;
@@ -27,6 +28,8 @@ public:
 
 	static const FName IsStuckKey;
 	static const FName IsDodgeKey;
+
+	static const FName IsCrushedKey;
 private:
 	void OnPossess(APawn* InPawn) override;
 };

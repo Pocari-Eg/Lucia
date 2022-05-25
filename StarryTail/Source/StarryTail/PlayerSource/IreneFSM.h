@@ -475,6 +475,8 @@ public:
 	bool IsDeathState()const;
 
 	bool IsFirstAttack()const;
+	bool IsSecondAttack() const;
+	bool IsThirdAttack() const;
 	
 	bool IsKnockBackState()const;
 };

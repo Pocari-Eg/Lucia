@@ -35,13 +35,11 @@ void UBTTaskMonsterAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 	if (!bIsAttacked)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
-		WaitTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	if (WaitTimer >= WaitTime)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
-		WaitTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 	}
 	

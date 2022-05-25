@@ -1726,6 +1726,18 @@ bool UIreneFSM::IsFirstAttack()const
 		return true;
 	return false;
 }
+bool UIreneFSM::IsSecondAttack() const
+{
+	if (StateEnumValue == EStateEnum::B_Attack_2_F || StateEnumValue == EStateEnum::B_Attack_2_W || StateEnumValue == EStateEnum::B_Attack_2_T)
+		return true;
+	return false;
+}
+bool UIreneFSM::IsThirdAttack() const
+{
+	if (StateEnumValue == EStateEnum::B_Attack_3_F || StateEnumValue == EStateEnum::B_Attack_3_W || StateEnumValue == EStateEnum::B_Attack_3_T)
+		return true;
+	return false;
+}
 bool UIreneFSM::IsKnockBackState() const
 {
 	if(StateEnumValue == EStateEnum::B_Attack_3_F || StateEnumValue == EStateEnum::B_Attack_3_W ||

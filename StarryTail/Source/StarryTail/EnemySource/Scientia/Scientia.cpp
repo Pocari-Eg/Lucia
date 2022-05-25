@@ -125,6 +125,15 @@ void AScientia::SetState(FString string)
 {
 	ScInfo.State = string;
 }
+void AScientia::SetAttribute(EAttributeKeyword Attribute)
+{
+	MonsterInfo.MonsterAttribute = Attribute;
+
+	if (Attribute == EAttributeKeyword::e_None)
+	{
+		MonsterAttributeDebuff.BurnDamage *= 2;
+	}
+}
 #pragma endregion
 #pragma region Attack1
 void AScientia::Attack1()
@@ -203,6 +212,14 @@ void AScientia::Attack3()
 	GetCharacterMovement()->MaxWalkSpeed = ScInfo.Attack3Speed;
 }
 #pragma endregion
+void AScientia::PlayAttackedBAnimation()
+{
+	ScAnimInstance->PlayAttackedBAnimation();
+}
+void AScientia::PlayAttackedFAnimation()
+{
+	ScAnimInstance->PlayAttackedFAnimation();
+}
 void AScientia::BattleIdle()
 {
 	ScAnimInstance->PlayBattleIdleMontage();
@@ -221,6 +238,12 @@ void AScientia::Dodge()
 {
 	ScAnimInstance->PlayDodgeMontage();
 }
+void AScientia::Crushed()
+{
+	ScAnimInstance->PlayCrushedMontage();
+	ScInfo.BarrierCount--;
+}
+#pragma region Barrier
 void AScientia::ChangeAttribute()
 {
 	int Random = FMath::RandRange(0, 9);
@@ -234,13 +257,13 @@ void AScientia::ChangeAttribute()
 			switch (PlayerAttribute)
 			{
 			case EAttributeKeyword::e_Fire:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			case EAttributeKeyword::e_Water:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			case EAttributeKeyword::e_Thunder:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
 			}
 		}
@@ -249,13 +272,13 @@ void AScientia::ChangeAttribute()
 			switch (PlayerAttribute)
 			{
 			case EAttributeKeyword::e_Fire:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
 			case EAttributeKeyword::e_Water:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			case EAttributeKeyword::e_Thunder:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			case EAttributeKeyword::e_None:
 				break;
@@ -271,17 +294,17 @@ void AScientia::ChangeAttribute()
 			case EAttributeKeyword::e_Fire:
 				if (ScInfo.ThunderBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			case EAttributeKeyword::e_Water:
 				if (ScInfo.FireBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			case EAttributeKeyword::e_Thunder:
 				if (ScInfo.WaterBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
 			case EAttributeKeyword::e_None:
 				break;
@@ -294,17 +317,17 @@ void AScientia::ChangeAttribute()
 			case EAttributeKeyword::e_Fire:
 				if (ScInfo.WaterBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
 			case EAttributeKeyword::e_Water:
 				if (ScInfo.ThunderBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			case EAttributeKeyword::e_Thunder:
 				if (ScInfo.FireBarrier < 0)
 					break;
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			case EAttributeKeyword::e_None:
 				break;
@@ -318,18 +341,50 @@ void AScientia::ChangeAttribute()
 		switch (Random)
 		{
 		case 0:
-			ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 			break;
 		case 1:
-			ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 			break;
 		case 2:
-			ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 			break;
 		}
 	}
 	// ChangeModel
 }
+void AScientia::CalcCurrentBarrier(float Value)
+{
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		ScInfo.FireBarrier -= Value;
+		break;
+	case EAttributeKeyword::e_Water:
+		ScInfo.WaterBarrier -= Value;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		ScInfo.ThunderBarrier -= Value;
+		break;
+	}
+}
+bool AScientia::IsBarrierCrushed()
+{
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		if (ScInfo.FireBarrier <= 0)
+			return true;
+	case EAttributeKeyword::e_Water:
+		if (ScInfo.WaterBarrier <= 0)
+			return true;
+	case EAttributeKeyword::e_Thunder:
+		if (ScInfo.ThunderBarrier <= 0)
+			return true;
+	}
+	return false;
+}
+#pragma endregion 
 void AScientia::RushEnd()
 {
 	bIsRush = false;
@@ -349,7 +404,7 @@ bool AScientia::ScAttributeIsPlayerAttributeCounter()
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	auto PlayerAttribute = STGameInstance->GetPlayerAttribute();
 
-	switch (ScInfo.CurrentAttribute)
+	switch (MonsterInfo.MonsterAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		if (PlayerAttribute != EAttributeKeyword::e_Water)
@@ -366,6 +421,27 @@ bool AScientia::ScAttributeIsPlayerAttributeCounter()
 	}
 
 	return true;
+}
+bool AScientia::PlayerAttributeIsScAttributeCounter()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	auto PlayerAttribute = STGameInstance->GetPlayerAttribute();
+
+	switch (MonsterInfo.MonsterAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		if (PlayerAttribute == EAttributeKeyword::e_Thunder)
+			return true;
+		break;
+	case EAttributeKeyword::e_Water:
+		if (PlayerAttribute == EAttributeKeyword::e_Fire)
+			return true;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		if (PlayerAttribute == EAttributeKeyword::e_Water)
+			return true;
+	}
+	return false;
 }
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -440,7 +516,7 @@ void AScientia::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (!SetAttribute)
+	if (!IsSetAttribute)
 	{
 		AttributeSettingTimer += DeltaTime;
 
@@ -451,18 +527,18 @@ void AScientia::Tick(float DeltaTime)
 			switch (STGameInstance->GetPlayerAttribute())
 			{
 			case EAttributeKeyword::e_Fire:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Thunder;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			case EAttributeKeyword::e_Water:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Fire;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			case EAttributeKeyword::e_Thunder:
-				ScInfo.CurrentAttribute = EAttributeKeyword::e_Water;
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
 			}
 			MonsterAIController->SetPlayer();
 
-			SetAttribute = true;
+			IsSetAttribute = true;
 		}
 	}
 	if (!bIsCanChange)
@@ -478,6 +554,8 @@ void AScientia::Tick(float DeltaTime)
 void AScientia::BeginPlay()
 {
 	Super::BeginPlay();
+
+	MonsterAnimInstance = ScAnimInstance;
 
 	ScAnimInstance->Attack1End.AddLambda([this]() -> void {
 		Attack1End.Broadcast();
@@ -506,6 +584,10 @@ void AScientia::BeginPlay()
 		});
 	ScAnimInstance->DodgeEnd.AddLambda([this]() -> void {
 		DodgeEnd.Broadcast();
+		});
+	ScAnimInstance->CrushedEnd.AddLambda([this]() -> void {
+		//Change Texture
+		CrushedEnd.Broadcast();
 		});
 	ScAnimInstance->Change.AddUObject(this, &AScientia::ChangeAttribute);
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
