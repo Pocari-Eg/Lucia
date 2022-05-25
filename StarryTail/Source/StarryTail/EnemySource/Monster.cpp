@@ -6,10 +6,13 @@
 #include "./Morbit/MbAIController.h"
 #include "./Bouldelith/Bouldelith.h"
 #include "./Bouldelith/BdAIController.h"
+#include "./Scientia/Scientia.h"
+#include "./Scientia/ScAIController.h"
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
+#include "../PlayerSource/IreneFSM.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
 #include "../UI/HPBarWidget.h"
@@ -174,6 +177,10 @@ float AMonster::GetTraceRange() const
 {
 	return MonsterInfo.TraceRange;
 }
+float AMonster::GetBattleWalkSpeed() const
+{
+	return MonsterInfo.BattleWalkMoveSpeed;
+}
 float AMonster::GetDetectMonsterRange() const
 {
 	return MonsterInfo.DetectMonsterRange;
@@ -317,10 +324,15 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	if (Cast<AMorbit>(this))
 	{
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
+
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
 		auto Morbit = Cast<AMorbit>(this);
 		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
 
-		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 	}
 	if (Cast<ABouldelith>(this))
 	{
@@ -330,6 +342,32 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
 			BdAIController->Attacked();
+	}
+	if (Cast<AScientia>(this))
+	{
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
+
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
+		if (IsKnockback)
+		{
+			bool IsSkill = Player->IreneState->IsSkillState();
+
+			if (IsSkill)
+			{
+				auto Scientia = Cast<AScientia>(this);
+				FString BattleIdleName = "BattleIdle";
+				FString BattleWalkName = "BattleWalk";
+
+				if (Scientia->GetState() == BattleIdleName || Scientia->GetState() == BattleWalkName)
+				{
+					auto ScAIController = Cast<AScAIController>(Scientia->GetController());
+					Scientia->SetState("Attacked");
+					ScAIController->Attacked();
+				}
+			}
+		}
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)
@@ -459,6 +497,13 @@ TArray<FOverlapResult> AMonster::DetectPlayer(float DetectRange)
 	);
 
 	return OverlapResults;
+}
+FVector AMonster::AngleToDir(float angle)
+{
+	float radian = FMath::DegreesToRadians(angle);
+	FVector Dir = FVector(FMath::Cos(radian), FMath::Sin(radian), 0.f);
+
+	return Dir;
 }
 void AMonster::SetActive()
 {
@@ -808,7 +853,6 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	FString FindName = "WEAPON";
 	if (CompName == FindName)
 	{
-		
 		PrintHitEffect(OtherComp->GetComponentLocation());
 		return;
 	}
