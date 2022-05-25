@@ -91,7 +91,7 @@ private:
 	FSkillImageData Water;
 	FSkillImageData Thunder;
 
-
+	bool isFirst;
 	FString DialogText;
 
 };
