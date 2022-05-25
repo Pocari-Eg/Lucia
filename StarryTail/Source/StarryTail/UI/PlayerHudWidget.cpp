@@ -192,6 +192,10 @@ void UPlayerHudWidget::FireSelect()
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
+
+	
+    OnFireAttribute();
+
 }
 
 void UPlayerHudWidget::WaterSelect()
@@ -212,6 +216,11 @@ void UPlayerHudWidget::WaterSelect()
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
+
+
+
+	  OnWaterAttribute();
+
 }
 
 void UPlayerHudWidget::ThunderSelect()
@@ -232,6 +241,9 @@ void UPlayerHudWidget::ThunderSelect()
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Visible);
+
+	
+	  OnThunderAttribute();
 }
 
 
@@ -261,7 +273,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
-	RMWidget->SetVisibility(ESlateVisibility::Hidden);
+	RMWidget->SetVisibility(ESlateVisibility::Visible);
 
 
 	Fire.SelectIcon=Cast<UImage>(GetWidgetFromName(TEXT("Fire_Select")));
