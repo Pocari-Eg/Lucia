@@ -179,6 +179,7 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
+	//CurState->Irene->SetCameraLagTime(0);
 }
 
 void URunLoopState::Execute(IBaseGameEntity* CurState)
@@ -208,19 +209,38 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 	if(MoveKey[0] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
 	}
 	if(MoveKey[2] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
 	}
 	if(MoveKey[1] != 0 || MoveKey[3] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 14;
 	}
 	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
 		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+	}
+
+	//대각선이 아니면
+	if(!((MoveKey[0] != 0 && (MoveKey[1] != 0 || MoveKey[3] != 0))||(MoveKey[2] != 0 && (MoveKey[1] != 0 || MoveKey[3] != 0))))
+	{
+		if(MoveKey[0] != 0 && MoveKey[2] != 0)
+		{
+			CurState->ThrowState(URunEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		}
+		if(MoveKey[1] != 0 && MoveKey[3] != 0)
+		{
+			CurState->ThrowState(URunEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		}
 	}
 }
 
@@ -255,7 +275,10 @@ void URunEndState::Execute(IBaseGameEntity* CurState)
 void URunEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion URunEndState
@@ -280,6 +303,8 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
+	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
+	//CurState->Irene->SetCameraLagTime(0);
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -304,19 +329,46 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 	if(MoveKey[0] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
 	}
 	if( MoveKey[2] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[7]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
 	}
 	if(MoveKey[1] != 0 || MoveKey[3] != 0)
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
 	}
 	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
 		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
 	{
 		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	}
+	// w,a,s,d -> 0,1,2,3
+	//대각선이면
+	if((ChangeMoveKey[0] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0))||(ChangeMoveKey[2] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)))
+	{
+		if((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
+	else
+	{
+		if((ChangeMoveKey[0] != 0 && MoveKey[2] != 0) || (ChangeMoveKey[2] != 0 && MoveKey[0] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+		if((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
 	}
 }
 
@@ -353,7 +405,10 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
-	CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion USprintEndState
@@ -511,6 +566,8 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	//CurState->Irene->SetCameraLagTime(0);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
 }
 
@@ -561,7 +618,10 @@ void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-	CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeThunderEndState

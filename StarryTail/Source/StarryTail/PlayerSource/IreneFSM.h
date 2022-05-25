@@ -58,6 +58,8 @@ UCLASS()
 class STARRYTAIL_API USprintLoopState final : public UObject, public IState
 {
 	GENERATED_BODY()
+private:
+	TArray<uint8> ChangeMoveKey;
 public:
 	static USprintLoopState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;

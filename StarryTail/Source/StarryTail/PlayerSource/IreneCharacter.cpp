@@ -136,8 +136,11 @@ AIreneCharacter::AIreneCharacter()
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintDiagonalCameraLag(TEXT("/Game/Math/CameraLag/SprintDiagonalCameraLag.SprintDiagonalCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>SprintBackWordCameraLag(TEXT("/Game/Math/CameraLag/SprintBackwordCameraLag.SprintBackwordCameraLag"));
 	const ConstructorHelpers::FObjectFinder<UCurveFloat>ThunderDodgeCameraLag(TEXT("/Game/Math/CameraLag/ThunderDodgeCameraLag.ThunderDodgeCameraLag"));
+	const ConstructorHelpers::FObjectFinder<UCurveFloat>ReturnDodgeCameraLag(TEXT("/Game/Math/CameraLag/ReturnCameraLag.ReturnCameraLag"));
+
 	if (RunForwardCameraLag.Succeeded() && RunRightCameraLag.Succeeded() && RunDiagonalCameraLag.Succeeded() &&
-		SprintForwardCameraLag.Succeeded() && SprintRightCameraLag.Succeeded() && SprintDiagonalCameraLag.Succeeded() && ThunderDodgeCameraLag.Succeeded())
+		SprintForwardCameraLag.Succeeded() && SprintRightCameraLag.Succeeded() &&
+		SprintDiagonalCameraLag.Succeeded() && ThunderDodgeCameraLag.Succeeded() && ReturnDodgeCameraLag.Succeeded())
 	{
 		CameraLagCurve.Add(RunForwardCameraLag.Object);
 		CameraLagCurve.Add(RunRightCameraLag.Object);
@@ -148,6 +151,7 @@ AIreneCharacter::AIreneCharacter()
 		CameraLagCurve.Add(SprintDiagonalCameraLag.Object);
 		CameraLagCurve.Add(SprintBackWordCameraLag.Object);
 		CameraLagCurve.Add(ThunderDodgeCameraLag.Object);
+		CameraLagCurve.Add(ReturnDodgeCameraLag.Object);
 		UseLagCurve = CameraLagCurve[0];
 	}
 
@@ -192,7 +196,8 @@ AIreneCharacter::AIreneCharacter()
 	IreneData.CurrentStamina = IreneData.MaxStamina;
 
 	CameraShakeOn = false;
-
+	//LastLagTime = 0.0f;
+	
 	HpRecoveryData.Amount = 300;
 	HpRecoveryData.HP_Re_Time = 4;
 	HpRecoveryData.Speed = 5;
@@ -295,7 +300,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 	
 	LastAttackCameraShake(DeltaTime);
-	DoCameraLagCurve(DeltaTime);
+	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
 	IreneInput->RightButton(DeltaTime);
 	IreneInput->RecoveryStaminaGauge(DeltaTime);
@@ -657,32 +662,27 @@ void AIreneCharacter::SetUseShakeCurve(UCurveVector* Curve)
 {
 	UseShakeCurve = Curve;
 }
-void AIreneCharacter::DoCameraLagCurve(const float DeltaTime)
-{
-	if (IreneState->IsRunState() || IreneState->IsSprintState() || IreneState->GetStateToString().Compare(FString("Dodge_T_Start")) == 0)
-	{
-		if(!FixedUpdateCameraLagTimer.IsValid())
-		{
-			constexpr float TimeSpeed = 0.01f;
-			GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraLagTimer, FTimerDelegate::CreateLambda([&]()
-			{
-				const float CameraShakeTime = CameraLagTime;
-				CameraLagTime = CameraShakeTime + 0.1f;
-			}), TimeSpeed, true);
-		}
-		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime);
-	}
-	else
-	{
-		CameraLagTime = 0;
-		SpringArmComp->CameraLagSpeed = 0;
-		if(FixedUpdateCameraLagTimer.IsValid())
-		{
-			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraLagTimer);
-			FixedUpdateCameraLagTimer.Invalidate();
-		}
-	}
-}
+// void AIreneCharacter::DoCameraLagCurve(const float DeltaTime)
+// {
+// 	if(!FixedUpdateCameraLagTimer.IsValid())
+// 	{
+// 		constexpr float TimeSpeed = 0.01f;
+// 		GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraLagTimer, FTimerDelegate::CreateLambda([&]()
+// 		{
+// 			const float CameraShakeTime = CameraLagTime;
+// 			CameraLagTime = CameraShakeTime + 0.1f / 10.0f;
+// 		}), TimeSpeed, true);
+// 	}
+// 	
+// 	if(UseLagCurve->GetName().Compare(FString("ReturnCameraLag"))==0)
+// 	{
+// 		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime) * LastLagTime;		
+// 	}
+// 	else
+// 	{
+// 		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime);
+// 	}
+// }
 void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;
