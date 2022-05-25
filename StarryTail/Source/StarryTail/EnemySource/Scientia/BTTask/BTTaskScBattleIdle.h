@@ -13,5 +13,15 @@ UCLASS()
 class STARRYTAIL_API UBTTaskScBattleIdle : public UBTTaskNode
 {
 	GENERATED_BODY()
-	
+private:
+	UBTTaskScBattleIdle();
+private:
+	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+	bool bIsCanDodge;
+	bool bIsUseDodge;
+
+	float WaitTime;
+	float WaitTimer;
 };

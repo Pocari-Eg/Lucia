@@ -37,6 +37,7 @@ public:
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
 	float GetHp() const;
+	float GetBattleWalkSpeed() const;
 	bool GetTestMode() const;
 	float GetViewAngle() const;
 	float GetViewRange() const;
@@ -63,7 +64,7 @@ public:
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 	TArray<FOverlapResult> DetectPlayer(float DetectRange);
-
+	FVector AngleToDir(float angle);
 
 	void ResetDef();
 
@@ -110,7 +111,7 @@ protected:
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-	FNormalMonsterInfo MonsterInfo;
+		FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
