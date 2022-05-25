@@ -706,6 +706,8 @@ void AMonster::BeginPlay()
 
 	auto HPBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
 	HPBar->BindMonster(this);
+
+	OnSpawnEffectEvent();
 }
 void AMonster::PossessedBy(AController* NewController)
 {

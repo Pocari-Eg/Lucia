@@ -91,8 +91,8 @@ private:
 	UPROPERTY()
 	UCurveFloat* UseLagCurve;
 
-	float CameraLagTime;
-
+	//float CameraLagTime;
+	//float LastLagTime;
 #pragma endregion GetClassOrObject
 
 	//스탑워치
@@ -158,7 +158,7 @@ public:
 
 	void LastAttackCameraShake(const float DeltaTime);
 	void SetUseShakeCurve(UCurveVector* Curve);
-	void DoCameraLagCurve(const float DeltaTime);
+	//void DoCameraLagCurve(const float DeltaTime);
 	void SetUseCameraLag(UCurveFloat* Curve);
 	
 	UPROPERTY(BluePrintReadWrite)
@@ -171,5 +171,6 @@ public:
 	//void WatchControl();
 	//void WatchReset();
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
-	void SetCameraLagTime(const float Value){CameraLagTime = Value;}
+	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}
+	//void SetLastLagTime(const float Value){LastLagTime = Value;}
 };

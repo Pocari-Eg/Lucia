@@ -19,16 +19,18 @@
 
 
 USTRUCT()
-struct FAttributesUI
+struct FSkillImageData
 {
 	GENERATED_BODY()
-	//속성 관련 데이터
+		//속성 관련 데이터
 	UPROPERTY()
-	class UImage* Attribute;
+	class UImage* SelectIcon;
 	UPROPERTY()
-	class UProgressBar* Base;
+	class UImage* NoneSelectIcon;
 	UPROPERTY()
-	class UProgressBar* Recovery;
+	class UProgressBar* CoolTimeBar;
+	UPROPERTY()
+	class UImage* Active;
 
 };
 UCLASS()
@@ -53,24 +55,15 @@ private:
 
 	void UpdateAttributes();
 
-	//fire
-	void UpdateFire();
-	void UpdateFireRecovery();
+	void InitSkillUI();
 
-	//Water
-	void UpdateWater();
-	void UpdateWaterRecovery();
+	void UpdateFireCoolTime();
+	void UpdateWaterCoolTime();
+	void UpdateThunderCoolTime();
 
-	//Electric
-	void UpdateEeletric();
-	void UpdateEeletricRecovery();
-
-	void NoneSetScale(FVector2D Scale);
-	void FireSetScale(FVector2D Scale);
-	void WaterSetScale(FVector2D Scale);
-	void ElectricSetScale(FVector2D Scale);
-
-
+	void FireSelect();
+	void WaterSelect();
+	void ThunderSelect();
 
 protected:
 	// 위젯을 초기화
@@ -94,13 +87,9 @@ private:
 	UPROPERTY()
 	class UUserWidget* ActionWidget;
 
-	FAttributesUI None;
-	FAttributesUI Fire;
-	FAttributesUI Water;
-	FAttributesUI Electric;
-
-	FVector2D BaseScale= FVector2D(1.0f, 1.0f);
-	FVector2D SelectScale = FVector2D(1.5f, 1.5f);
+	FSkillImageData Fire;
+	FSkillImageData Water;
+	FSkillImageData Thunder;
 
 
 	FString DialogText;
