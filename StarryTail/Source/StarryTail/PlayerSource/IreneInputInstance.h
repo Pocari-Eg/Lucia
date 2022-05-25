@@ -92,14 +92,10 @@ public:
 	void StopJump();
 
 	void MovePressedKey(const int Value);
-	void MovePressedW();
-	void MovePressedA();
-	void MovePressedS();
-	void MovePressedD();
-	void MoveReleasedW();
-	void MoveReleasedA();
-	void MoveReleasedS();
-	void MoveReleasedD();
+	void MoveW(float Rate);
+	void MoveA(float Rate);
+	void MoveS(float Rate);
+	void MoveD(float Rate);
 #pragma endregion Move
 
 #pragma region OtherInput

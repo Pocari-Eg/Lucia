@@ -316,15 +316,11 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, IreneInput, &UIreneInputInstance::StartJump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, IreneInput, &UIreneInputInstance::StopJump);
 
-	PlayerInputComponent->BindAction("MoveW", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedW).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveA", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedA).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveS", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedS).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveD", IE_Pressed, IreneInput, &UIreneInputInstance::MovePressedD).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveW", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedW).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveA", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedA).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveS", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedS).bExecuteWhenPaused=true;
-	PlayerInputComponent->BindAction("MoveD", IE_Released, IreneInput, &UIreneInputInstance::MoveReleasedD).bExecuteWhenPaused=true;
-
+	PlayerInputComponent->BindAxis("MoveW", IreneInput, &UIreneInputInstance::MoveW);
+	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA);
+	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS);
+	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD);
+	
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAxis("WaterDodge", IreneInput, &UIreneInputInstance::WaterDodgeKeyword);
