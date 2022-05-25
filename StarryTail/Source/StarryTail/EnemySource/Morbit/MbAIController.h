@@ -16,7 +16,7 @@ class STARRYTAIL_API AMbAIController : public AMonsterAIController
 public:
 	AMbAIController();
 
-	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana);
+	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback);
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 };

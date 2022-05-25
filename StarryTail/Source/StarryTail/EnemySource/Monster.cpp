@@ -7,10 +7,12 @@
 #include "./Bouldelith/Bouldelith.h"
 #include "./Bouldelith/BdAIController.h"
 #include "./Scientia/Scientia.h"
+#include "./Scientia/ScAIController.h"
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
+#include "../PlayerSource/IreneFSM.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
 #include "../UI/HPBarWidget.h"
@@ -322,10 +324,15 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	if (Cast<AMorbit>(this))
 	{
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
+
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
 		auto Morbit = Cast<AMorbit>(this);
 		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
 
-		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana);
+		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 	}
 	if (Cast<ABouldelith>(this))
 	{
@@ -335,6 +342,13 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
 			BdAIController->Attacked();
+	}
+	if (Cast<AScientia>(this))
+	{
+		auto Scientia = Cast<AScientia>(this);
+		auto ScAIController = Cast<AScAIController>(Scientia->GetController());
+
+		ScAIController->Attacked();
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)
