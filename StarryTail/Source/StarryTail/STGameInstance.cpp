@@ -53,6 +53,9 @@ void USTGameInstance::Init()
 	//detect
 	bIsPlayerBattleState = false;
 	DetectedMonsterCount = 0;
+
+	 StateTime=2;
+	 CurStateTime = StateTime;
 }
 
 void USTGameInstance::InitSoundSetting()
@@ -140,10 +143,15 @@ void USTGameInstance::AddDetectedMonster()
 	{
 		//플레이어 카메라 줌 아웃 이벤트
 		//캐릭터 대치상태 변경
+		GetWorld()->GetTimerManager().ClearTimer(StateChangeTimer);
 		DetectedMonsterCount++;
-		bIsPlayerBattleState = true;
-		Player->CameraOutEvent();
-		STARRYLOG(Error, TEXT("Battle State On"));
+		if (!bIsPlayerBattleState)
+		{
+			bIsPlayerBattleState = true;
+			Player->CameraOutEvent();
+			STARRYLOG(Error, TEXT("Battle State On"));
+		}
+		
 	}
 	else
 	{
@@ -161,15 +169,35 @@ void USTGameInstance::SubDetectedMonster()
 
 	if (DetectedMonsterCount == 0) {
 		//캐릭터 대치상태 변경
-		Player->CameraInEvent();
-		bIsPlayerBattleState = false;
-		STARRYLOG(Error, TEXT("Battle State Off"));
+		STARRYLOG(Error, TEXT("Battle State Count"));
+		CurStateTime = StateTime;
+		GetWorld()->GetTimerManager().SetTimer(StateChangeTimer, this, &USTGameInstance::CountStateTimer, 1.0f, true, 0.0f);
 	}
 }
 
 bool USTGameInstance::GetPlayerBattleState()
 {
 	return bIsPlayerBattleState;
+}
+
+void USTGameInstance::CountStateTimer()
+{
+	if (CurStateTime <= 0)
+	{
+		ChangeState();
+	}
+	else {
+		CurStateTime--;
+	}
+}
+
+void USTGameInstance::ChangeState()
+{
+	Player->CameraInEvent();
+	bIsPlayerBattleState = false;
+	STARRYLOG(Error, TEXT("Battle State Off"));
+	GetWorld()->GetTimerManager().ClearTimer(StateChangeTimer);
+	CurStateTime = StateTime;
 }
 
 FSoundSetting* USTGameInstance::GetSoundSetting()
