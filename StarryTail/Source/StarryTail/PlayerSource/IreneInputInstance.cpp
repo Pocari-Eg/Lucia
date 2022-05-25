@@ -141,46 +141,44 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 			MoveKey[Value] = 2;
 		if (Irene->IreneState->IsIdleState())
 		{
-			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
-			Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			// 반대 방향키 아니면
+			if(!((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0)))
+			{
+				Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
+				Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			}
 		}		
 	}
 	else
 		MoveKey[Value] = 3;
 }
-
-void UIreneInputInstance::MovePressedW()
+void UIreneInputInstance::MoveW(float Rate)
 {
-	MovePressedKey(0);
+	if(Rate >= 1)
+		MovePressedKey(0);
+	else
+		MoveKey[0] = 0;
 }
-void UIreneInputInstance::MovePressedA()
+void UIreneInputInstance::MoveA(float Rate)
 {
-	MovePressedKey(1);
+	if(Rate >= 1)
+		MovePressedKey(1);
+	else
+		MoveKey[1] = 0;
 }
-void UIreneInputInstance::MovePressedS()
+void UIreneInputInstance::MoveS(float Rate)
 {
-	MovePressedKey(2);
+	if(Rate >= 1)
+		MovePressedKey(2);
+	else
+		MoveKey[2] = 0;
 }
-void UIreneInputInstance::MovePressedD()
+void UIreneInputInstance::MoveD(float Rate)
 {
-	MovePressedKey(3);
-}
-
-void UIreneInputInstance::MoveReleasedW()
-{
-	MoveKey[0] = 0;
-}
-void UIreneInputInstance::MoveReleasedA()
-{
-	MoveKey[1] = 0;
-}
-void UIreneInputInstance::MoveReleasedS()
-{
-	MoveKey[2] = 0;
-}
-void UIreneInputInstance::MoveReleasedD()
-{
-	MoveKey[3] = 0;
+	if(Rate >= 1)
+		MovePressedKey(3);
+	else
+		MoveKey[3] = 0;
 }
 #pragma endregion MoveInput
 
