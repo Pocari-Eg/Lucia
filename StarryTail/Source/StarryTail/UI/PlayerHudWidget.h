@@ -47,6 +47,13 @@ public:
 
 	void ActionWidgetOn();
 	void ActionWidgetOff();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnFireAttribute();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnWaterAttribute();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnThunderAttribute();
 private:
 
 	void UpdateHp();
