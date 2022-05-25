@@ -91,6 +91,12 @@ void UPlayerHudWidget::UpdateAttributes()
 		ThunderSelect();
 		break;
 	}
+
+	if (isFirst)
+	{
+		InitSkillUI();
+		isFirst = false;
+	}
 }
 
 void UPlayerHudWidget::InitSkillUI()
@@ -275,6 +281,8 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
 
 	InitSkillUI();
+
+	isFirst = true;
 	ActionWidgetOff();
 
 }
