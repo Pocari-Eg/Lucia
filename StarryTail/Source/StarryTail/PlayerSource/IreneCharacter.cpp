@@ -633,7 +633,6 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
 	if (CameraShakeOn)
 	{
-		STARRYLOG_S(Warning);
 		if(!FixedUpdateCameraShakeTimer.IsValid())
 		{
 			constexpr float TimeSpeed = 0.01f;

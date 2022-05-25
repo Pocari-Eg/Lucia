@@ -336,6 +336,11 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	}
 	if (Cast<ABouldelith>(this))
 	{
+		if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_None)
+			MonsterInfo.Barrier -= 10;
+		else
+			MonsterInfo.Barrier -= 20;
+		
 		auto Bouldelith = Cast<ABouldelith>(this);
 		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
 
@@ -345,29 +350,65 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	}
 	if (Cast<AScientia>(this))
 	{
+		auto Scientia = Cast<AScientia>(this);
+
 		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
+		bool IsFirstOrSecondAttack = Player->IreneState->IsFirstAttack() || Player->IreneState->IsSecondAttack();
+		bool IsThirdAttack = Player->IreneState->IsThirdAttack();
+		bool IsSkill = Player->IreneState->IsSkillState();
+
+		if (Scientia->PlayerAttributeIsScAttributeCounter())
+		{
+			if (IsFirstOrSecondAttack)
+			{
+				Scientia->CalcCurrentBarrier(10);
+			}
+			else if (IsThirdAttack)
+			{
+				Scientia->CalcCurrentBarrier(15);
+			}
+			else if (IsSkill)
+			{
+				Scientia->CalcCurrentBarrier(20);
+			}
+		}
+
 		if (IsKnockback)
 		{
-			bool IsSkill = Player->IreneState->IsSkillState();
-
 			if (IsSkill)
 			{
-				auto Scientia = Cast<AScientia>(this);
 				FString BattleIdleName = "BattleIdle";
 				FString BattleWalkName = "BattleWalk";
-
+				
 				if (Scientia->GetState() == BattleIdleName || Scientia->GetState() == BattleWalkName)
 				{
 					auto ScAIController = Cast<AScAIController>(Scientia->GetController());
-					Scientia->SetState("Attacked");
-					ScAIController->Attacked();
+					
+					if (Scientia->IsBarrierCrushed())
+					{
+						Scientia->SetState("Crushed");
+						ScAIController->Crushed();
+					}
+					else
+					{
+						Scientia->SetState("Attacked");
+						ScAIController->Attacked();
+
+						if (CheckPlayerIsBehindMonster())
+							Scientia->PlayAttackedBAnimation();
+						else
+							Scientia->PlayAttackedFAnimation();
+					}
 				}
+				
 			}
 		}
+		if (Scientia->GetAttribute() == EAttributeKeyword::e_None)
+			Damage *= 2;
 	}
 	MonsterAIController->StopMovement();
 	if (MonsterInfo.CurrentDef < 80)
