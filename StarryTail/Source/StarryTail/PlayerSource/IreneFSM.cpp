@@ -438,8 +438,7 @@ void UDodgeFireStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 }
@@ -505,8 +504,7 @@ void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 }
@@ -566,6 +564,8 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
+	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
 	//CurState->Irene->SetCameraLagTime(0);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
@@ -577,9 +577,13 @@ void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
+	if(CurState->PlayTime >= 0.03f)
+	{
+		CurState->ThrowState(UDodgeThunderEndState::GetInstance());
+		CurState->Irene->ActionEndChangeMoveState();
 	}
 }
 
@@ -618,6 +622,9 @@ void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
+	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
+	CurState->Irene->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
