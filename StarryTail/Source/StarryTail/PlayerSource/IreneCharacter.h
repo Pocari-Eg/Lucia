@@ -152,6 +152,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CameraInEvent();
 
+	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
+	float BattleCameraRotation(UPARAM(ref) float& Angle);
+
 	void OnRadialBlur();
 
 	bool bIsRadialBlurOn;
