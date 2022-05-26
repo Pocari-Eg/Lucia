@@ -625,6 +625,68 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 #pragma endregion State
 
 #pragma region HitFeel
+float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
+{
+	FVector IreneFoward = GetCapsuleComponent()->GetForwardVector();
+	FVector CameraFoward = -1.0f*(CameraComp->GetForwardVector());
+	FVector CameraUp = CameraComp->GetUpVector();
+
+    FRotator rot(0.0f, Angle,0.0f);
+
+	FVector IreneRight = rot.RotateVector(IreneFoward);
+	rot = FRotator(0.0f, -Angle, 0.0f);
+	FVector IreneLeft = rot.RotateVector(IreneFoward);
+
+
+	
+	
+	float RightAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraFoward, IreneRight)));
+	float LeftAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraFoward, IreneLeft)));
+
+	bool bIsLeftClose = false;
+
+	if (LeftAngle <= RightAngle)bIsLeftClose = true;
+
+	bool bIsLeftRotation = false;
+	if (bIsLeftClose)
+	{
+		FVector cross = FVector::CrossProduct(CameraFoward, IreneLeft);
+
+		float dot = FVector::DotProduct(CameraUp, cross);
+
+		if (dot > 0)bIsLeftRotation = true;
+		else bIsLeftRotation = false;
+	}
+	else {
+		FVector cross = FVector::CrossProduct(CameraFoward, IreneRight);
+
+		float dot = FVector::DotProduct(CameraUp, cross);
+
+		if (dot > 0)bIsLeftRotation = true;
+		else bIsLeftRotation = false;
+	}
+
+	if (bIsLeftClose)
+	{
+		if (bIsLeftRotation)
+		{
+			return (LeftAngle / 2.5f);
+		}
+		else {
+			return (-1.0f* (LeftAngle / 2.5f));
+		}
+
+	}
+	else {
+		if (bIsLeftRotation)
+		{
+			return (RightAngle / 2.5f);
+		}
+		else {
+			return (-1.0f * (RightAngle / 2.5f));
+		}
+	}
+}
 void AIreneCharacter::OnRadialBlur()
 {
 	bIsRadialBlurOn = true;
