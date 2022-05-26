@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 #include "PauseWidget.h"
 #include "Components/InputKeySelector.h"
@@ -36,11 +36,20 @@ public:
 		void WidgetOff();
 
 	UFUNCTION(BlueprintCallable)
-		void ChangeKey(const FName ActionName, UPARAM(ref) FInputChord& InputKey);
+		void ChangeActionKey(const FName ActionName, UPARAM(ref) FInputChord& InputKey);
+
 	UFUNCTION(BlueprintCallable)
-		void UpdateKeyName();
+		void ChangeAxisKey(const FName AxisName, UPARAM(ref) FInputChord& InputKey);
+	UFUNCTION(BlueprintCallable)
+		void UpdateActionKeyName();
+
+	UFUNCTION(BlueprintCallable)
+		void UpdateAxisKeyName();
 	UPROPERTY(BlueprintReadWrite);
-	TArray<class UInputKeySelector*> InputKeyArray;
+	TArray<class UInputKeySelector*> InputActionKeyArray;
+
+	UPROPERTY(BlueprintReadWrite);
+	TArray<class UInputKeySelector*> InputAxisKeyArray;
 
 	void SetExitEnable();
 protected:
