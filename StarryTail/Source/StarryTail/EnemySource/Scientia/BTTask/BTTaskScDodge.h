@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "NavigationSystem.h"
 #include "BTTaskScDodge.generated.h"
 
 /**

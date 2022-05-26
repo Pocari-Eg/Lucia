@@ -351,6 +351,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	if (Cast<AScientia>(this))
 	{
 		auto Scientia = Cast<AScientia>(this);
+		auto ScAIController = Cast<AScAIController>(Scientia->GetController());
 
 		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 		auto Player = GameInstance->GetPlayer();
@@ -363,17 +364,26 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		if (Scientia->PlayerAttributeIsScAttributeCounter())
 		{
-			if (IsFirstOrSecondAttack)
+			if (Scientia->GetBarrierCount() != 0)
 			{
-				Scientia->CalcCurrentBarrier(10);
-			}
-			else if (IsThirdAttack)
-			{
-				Scientia->CalcCurrentBarrier(15);
-			}
-			else if (IsSkill)
-			{
-				Scientia->CalcCurrentBarrier(20);
+				if (IsFirstOrSecondAttack)
+				{
+					Scientia->CalcCurrentBarrier(10);
+				}
+				else if (IsThirdAttack)
+				{
+					Scientia->CalcCurrentBarrier(15);
+				}
+				else if (IsSkill)
+				{
+					Scientia->CalcCurrentBarrier(20);
+				}
+
+				if (Scientia->IsBarrierCrushed())
+				{
+					Scientia->SetState("Crushed");
+					ScAIController->Crushed();
+				}
 			}
 		}
 
@@ -383,26 +393,17 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			{
 				FString BattleIdleName = "BattleIdle";
 				FString BattleWalkName = "BattleWalk";
+				FString CrushedName = "Crushed";
 				
-				if (Scientia->GetState() == BattleIdleName || Scientia->GetState() == BattleWalkName)
+				if (Scientia->GetState() == BattleIdleName || Scientia->GetState() == BattleWalkName && Scientia->GetState() != CrushedName)
 				{
-					auto ScAIController = Cast<AScAIController>(Scientia->GetController());
-					
-					if (Scientia->IsBarrierCrushed())
-					{
-						Scientia->SetState("Crushed");
-						ScAIController->Crushed();
-					}
-					else
-					{
-						Scientia->SetState("Attacked");
-						ScAIController->Attacked();
+					Scientia->SetState("Attacked");
+					ScAIController->Attacked();
 
-						if (CheckPlayerIsBehindMonster())
-							Scientia->PlayAttackedBAnimation();
-						else
-							Scientia->PlayAttackedFAnimation();
-					}
+					if (CheckPlayerIsBehindMonster())
+						Scientia->PlayAttackedBAnimation();
+					else
+						Scientia->PlayAttackedFAnimation();
 				}
 				
 			}

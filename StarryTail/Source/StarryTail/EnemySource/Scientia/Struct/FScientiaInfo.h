@@ -31,11 +31,20 @@ public:
 		float ThunderBarrier;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		EAttributeKeyword CurrentAttribute;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsFireBarrierCrushed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsWaterBarrierCrushed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsThunderBarrierCrushed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int FeatherCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int ClawSuccessedCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FString State;
 };

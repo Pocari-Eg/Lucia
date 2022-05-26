@@ -48,10 +48,12 @@ void UBTTaskScAttack1::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		{
 			Scientia->ResetFeatherCount();
 
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack1Key, false);
 			if (Scientia->GetHpPercent() < 40)
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack4Key, true);
 				return; // Drop
+			}
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}

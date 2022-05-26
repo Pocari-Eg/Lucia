@@ -25,6 +25,7 @@ public:
 	static const FName IsAttack1Key;
 	static const FName IsAttack2Key;
 	static const FName IsAttack3Key;
+	static const FName IsAttack4Key;
 
 	static const FName IsStuckKey;
 	static const FName IsDodgeKey;

@@ -21,6 +21,12 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Scientia->SetState(TEXT("Attack2"));
 
+	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	NavData = NavSys->GetNavDataForProps(Scientia->GetNavAgentPropertiesRef());
+
+	FilterClass = UNavigationQueryFilter::StaticClass();
+	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
+
 	Scientia->Attack2End.Clear();
 	Scientia->ClawStart.AddLambda([this]() -> void
 		{
@@ -79,6 +85,15 @@ void UBTTaskScAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	{
 		NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetAttack2Speed() * DeltaSeconds);
 
-		Scientia->SetActorLocation(NewLocation);
+		if (NavData)
+		{
+			MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), NewLocation, QueryFilter);
+			bCanMove = NavSys->TestPathSync(MyAIQuery, EPathFindingMode::Regular);
+		}
+
+		if (bCanMove)
+		{
+			Scientia->SetActorLocation(NewLocation);
+		}
 	}
 }
