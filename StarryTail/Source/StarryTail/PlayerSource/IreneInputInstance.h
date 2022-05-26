@@ -29,7 +29,6 @@ private:
 	FTimerHandle WaterStartTimer;
 	FTimerHandle ElectricStartTimer;
 
-
 	float FireMaxCoolTime;
 	float FireCurCoolTime;
 
@@ -37,8 +36,7 @@ private:
 	float WaterCurCoolTime;
 
 	float ThunderMaxCoolTime;
-	float ThunderCurCoolTime;
-	
+	float ThunderCurCoolTime;	
 
 	UPROPERTY()
 	UParticleSystemComponent* WaterDodgeEffect;	
@@ -72,7 +70,7 @@ private:
 
 	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
-
+	
 	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
 	int ThunderSkillCount;
