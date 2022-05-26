@@ -20,6 +20,7 @@
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
 #include "WaterBasicAttack.h"
+#include ".././EnemySource/Scientia/Feather.h"
 #include "Curves/CurveVector.h"
 
 #pragma region Setting
@@ -573,6 +574,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->TargetMonster == nullptr)
 		{
+			if (Cast<AFeather>(DamageCauser))
+				return FinalDamage;
+
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->TargetMonster = DamageCauser;
 			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster);

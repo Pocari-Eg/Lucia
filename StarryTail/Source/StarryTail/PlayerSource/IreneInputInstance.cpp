@@ -42,25 +42,25 @@ void UIreneInputInstance::InitMemberVariable()
 	bUseRightButton = false;
 
 	StartWaterDodgeStamina = 0;
-
+	
 	bUseWaterDodge = false;
 
 	ThunderSkillCount = 2;
 
 	bActionKeyActive = false;
 
-	 FireMaxCoolTime = 10.0f;
-	 FireCurCoolTime = 0.0f;
+	FireMaxCoolTime = 10.0f;
+	FireCurCoolTime = 0.0f;
 
-	 WaterMaxCoolTime = 10.0f;
-	 WaterCurCoolTime = 0.0f;
+	WaterMaxCoolTime = 10.0f;
+	WaterCurCoolTime = 0.0f;
 
-	 ThunderMaxCoolTime = 10.0f;
-	 ThunderCurCoolTime = 0.0f;
+	ThunderMaxCoolTime = 10.0f;
+	ThunderCurCoolTime = 0.0f;
 
-	  bIsFireAttributeOn = true;
-	  bIsWaterAttributeOn = true;
-	  bIsThunderAttributeOn = true;
+	bIsFireAttributeOn = true;
+	bIsWaterAttributeOn = true;
+	bIsThunderAttributeOn = true;
 }
 
 #pragma region Move
@@ -491,8 +491,7 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
-		!DodgeWaitHandle.IsValid())
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
 	{
 		// 불닷지 & FireDodge (없앨수도 있음)
 		// if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
@@ -562,24 +561,21 @@ void UIreneInputInstance::DodgeKeyword()
 				ThunderDodgeTargetDir = Irene->GetActorForwardVector();
 			ThunderDodgeTargetDir.Normalize();
 
-			FVector Target;
-			if(!ThunderDodgeWaitHandle.IsValid())
-				Target = Irene->GetActorLocation() + ThunderDodgeTargetDir*Irene->IreneData.FirstThunderDodgeSpeed;
+			if(!DodgeWaitHandle.IsValid())
+				Irene->GetCharacterMovement()->AddImpulse(ThunderDodgeTargetDir*Irene->IreneData.FirstThunderDodgeSpeed);
 			else
-				Target = Irene->GetActorLocation() + ThunderDodgeTargetDir*Irene->IreneData.DoubleThunderDodgeSpeed;
-			// 계단 노말 구하고 타겟을 바꿔서 재실행
-			Irene->SetActorRelativeLocation(Target,true,nullptr,ETeleportType::TeleportPhysics);
-			ThunderDodgeTargetDir = FVector::ZeroVector;
-			Irene->ActionEndChangeMoveState();
-
-			 GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+				Irene->GetCharacterMovement()->AddImpulse(ThunderDodgeTargetDir*Irene->IreneData.DoubleThunderDodgeSpeed);
+			
+			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 ThunderDodgeWaitHandle.Invalidate();
-			 }), Irene->IreneData.ThunderDodgeTime, false);
+				GetWorld()->GetTimerManager().ClearTimer(ThunderDodgeWaitHandle);
+			 }), 0.03f, false);			
 			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 DodgeWaitHandle.Invalidate();
-			 }), 0.2f, false);
+				GetWorld()->GetTimerManager().ClearTimer(DodgeWaitHandle);
+			 }), Irene->IreneData.ThunderDodgeTime, false);
 		}
 	}	
 }
