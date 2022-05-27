@@ -138,6 +138,8 @@ public:
 	float GetWaterCoolRatio();
 	//Thunde Cool
 	float GetThunderCoolRatio();
+
+	void PlayHUDAnimation();
 #pragma endregion HUDPublic
 
 
