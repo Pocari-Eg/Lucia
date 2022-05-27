@@ -290,7 +290,8 @@ void AIreneCharacter::TargetReset()const
 				const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
 				Mon->MarkerOff();
 				IreneAnim->SetIsHaveTargetMonster(false);
-				IreneAttack->TargetMonster = nullptr;
+				IreneAnim->SetTargetMonster(nullptr);
+				IreneAttack->TargetMonster = nullptr;				
 			}			
 		}
 	}
