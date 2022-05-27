@@ -238,7 +238,6 @@ void AIreneCharacter::BeginPlay()
 
 	FOnAttributeChange.Broadcast();
 
-	PlayerSpawnEvent();
 }
 
 void AIreneCharacter::PostInitializeComponents()
@@ -751,9 +750,13 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;
 }
-void AIreneCharacter::PlayHUDAnimation()
+void AIreneCharacter::PlayFadeInAnimation()
 {
 	IreneUIManager->PlayHUDAnimation();
+}
+void AIreneCharacter::PlayFadeOutAnimation()
+{
+	PlayFadeOutEvent();
 }
 #pragma endregion HitFeel
 
