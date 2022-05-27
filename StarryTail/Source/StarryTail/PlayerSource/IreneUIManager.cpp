@@ -190,6 +190,11 @@ float UIreneUIManager::GetThunderCoolRatio()
 	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
 }
 
+void UIreneUIManager::PlayHUDAnimation()
+{
+	PlayerHud->PlayHUDAnimation();
+}
+
 void UIreneUIManager::PauseWidgetOn()
 {
 	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;

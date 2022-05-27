@@ -170,6 +170,14 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region UIManager
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayerSpawnEvent();
+
+	UFUNCTION(BluePrintCallable)
+	void PlayHUDAnimation();
+#pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();

@@ -54,6 +54,9 @@ public:
 	void  OnWaterAttribute();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnThunderAttribute();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHUDAnimation();
 private:
 
 	void UpdateHp();
