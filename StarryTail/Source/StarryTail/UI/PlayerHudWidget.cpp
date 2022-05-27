@@ -23,14 +23,14 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 }
 
-void UPlayerHudWidget::SetDialog(FString dialog)
+void UPlayerHudWidget::SetDialog(FScriptData* Data)
 {
-	DialogText=dialog;
+	ScriptData= Data;
 }
 
 void UPlayerHudWidget::PlayDialog()
 {
-	DialogWidget->SetDialog(*DialogText);
+	DialogWidget->SetDialog(ScriptData);
 }
 
 void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)

@@ -10,7 +10,7 @@
 #include "DialogWidget.h"
 #include "RaidMonsterWidget.h"
 #include "../EnemySource/Monster.h"
-
+#include "ScriptDataTable.h"
 #include "PlayerHudWidget.generated.h"
 
 /**
@@ -41,7 +41,7 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-	void SetDialog(FString dialog);
+	void SetDialog(FScriptData* Data);
 	void PlayDialog();
 	void RaidWidgetbind(AMonster* RadiMonster);
 
@@ -102,6 +102,7 @@ private:
 	FSkillImageData Thunder;
 
 	bool isFirst;
-	FString DialogText;
 
+
+	FScriptData* ScriptData;
 };

@@ -5,6 +5,7 @@
 #include "../../PlayerSource/IreneUIManager.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include"../../PlayerSource/IreneInputInstance.h"
+
 ADialogTrigger::ADialogTrigger()
 {
 
@@ -28,18 +29,33 @@ ADialogTrigger::ADialogTrigger()
 
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
+
+
+	FString ScriptDataPath = TEXT("/Game/UI/Data/DataTable/STARRY_TAIL_Table_-_Script_Master.STARRY_TAIL_Table_-_Script_Master");
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_Script(*ScriptDataPath);
+	if (DT_Script.Succeeded())
+	{
+		ScriptData = DT_Script.Object;
+	}
 }
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	STARRYLOG_S(Error);
-	auto Irene = Cast<AIreneCharacter>(OtherActor);
-	if (Irene != nullptr)
-	{
+
+	if (GetScriptData()->Condition == 1)
+	{	
+		STARRYLOG_S(Error);
+	 auto Irene = Cast<AIreneCharacter>(OtherActor);
+	  if (Irene != nullptr)
+	 {
 		Irene->IreneInput->bActionKeyActive = true;
-		Irene->IreneUIManager->PlayerHud->SetDialog(DialogText);
+		Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData());
 		Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+	  }
+
 	}
+
+
 }
 
 void ADialogTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -74,6 +90,9 @@ void ADialogTrigger::TriggerOn()
 	Trigger->SetGenerateOverlapEvents(true);
 }
 
-
+FScriptData* ADialogTrigger::GetScriptData()
+{
+	return ScriptData->FindRow<FScriptData>(FName(*DalogIndex), FString(""));
+}
 
 

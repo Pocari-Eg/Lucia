@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ScriptDataTable.h"
 
+#include "Components/TextBlock.h"
 #include "DialogWidget.generated.h"
 
 /**
@@ -37,10 +39,13 @@ private:
 	FTimerHandle TimerHandle; // TimerHandle;
 	float CurrentTextKeeptime;
 	
+	class UTextBlock* TextBox;
 
 public:
 	//출력할 메시지 세팅
-	void SetDialog(FString dialog);
+	void SetDialog(FScriptData* ScriptData);
+protected:
+	virtual void NativeOnInitialized() override;
 private:
 
 	//메시지 재생

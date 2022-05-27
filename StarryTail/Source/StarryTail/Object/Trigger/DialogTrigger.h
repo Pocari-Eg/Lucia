@@ -6,13 +6,20 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "Blueprint/UserWidget.h"
+#include "../../UI/ScriptDataTable.h"
+
 #include "DialogTrigger.generated.h"
+
+
+
+
 
 UCLASS()
 class STARRYTAIL_API ADialogTrigger : public AActor
 {
 	GENERATED_BODY()
 	
+public:
 		//충돌 트리거
 	UPROPERTY(EditAnywhere, Category = Trigger)
 	UBoxComponent* Trigger;
@@ -21,8 +28,13 @@ class STARRYTAIL_API ADialogTrigger : public AActor
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere, Category = Dialog)
-	FString DialogText;
+	FString DalogIndex;
+private:
+	UPROPERTY()
+	UDataTable* ScriptData;
 
+	FScriptData* GetScriptData();
+	
 
 public:
 	// Sets default values for this actor's properties
