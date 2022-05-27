@@ -153,7 +153,10 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
 	if (!Irene->IreneState->IsDodgeState())
+	{
+		STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UIreneAttackInstance::AttackCheck()
