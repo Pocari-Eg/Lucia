@@ -173,10 +173,14 @@ public:
 
 #pragma region UIManager
 	UFUNCTION(BlueprintImplementableEvent)
-	void PlayerSpawnEvent();
+	void PlayFadeOutEvent();
 
 	UFUNCTION(BluePrintCallable)
-	void PlayHUDAnimation();
+	void PlayFadeOutAnimation();
+
+
+	UFUNCTION(BluePrintCallable)
+	void PlayFadeInAnimation();
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();
