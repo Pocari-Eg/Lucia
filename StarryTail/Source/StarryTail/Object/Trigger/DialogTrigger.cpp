@@ -41,15 +41,17 @@ ADialogTrigger::ADialogTrigger()
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if (DalogIndex != "") {
-		if (GetScriptData()->Condition == 1)
+	if (DalogIndex.Num()!=0) {
+		if (GetScriptData(DalogIndex.Num())[0]->Condition == 1)
 		{
+
 			STARRYLOG_S(Error);
 			auto Irene = Cast<AIreneCharacter>(OtherActor);
 			if (Irene != nullptr)
 			{
 				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
-					Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData());
+					for(int i=0;i<DalogIndex.Num();i++)
+					Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
 				}
 			}
 			Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
@@ -95,9 +97,15 @@ void ADialogTrigger::TriggerOn()
 	Trigger->SetGenerateOverlapEvents(true);
 }
 
-FScriptData* ADialogTrigger::GetScriptData()
+TArray<FScriptData*> ADialogTrigger::GetScriptData(int32 num)
 {
-	return ScriptData->FindRow<FScriptData>(FName(*DalogIndex), FString(""));
+	
+	TArray<FScriptData*> NewData;
+	for (int i = 0; i < num; i++)
+	{
+		NewData.Add(ScriptData->FindRow<FScriptData>(FName(DalogIndex[i]), FString("")));
+	}
+	return NewData;
 }
 
 

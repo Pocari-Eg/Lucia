@@ -63,11 +63,12 @@ public:
 	EDialogState GetDialogState();
 	void SetDialogState(EDialogState NewState);
 
-	void SetDialog(FScriptData* Data);
+	void SetDialog(TArray<FScriptData*> Data);
 	void PlayDialog();
 	void SkipDialog();
 	void ExitDialog();
 	
+	bool ContinueDialog();
 private:
 
 	void UpdateHp();
@@ -115,5 +116,7 @@ private:
 	bool isFirst;
 
 
-	FScriptData* ScriptData;
+	TArray<FScriptData*> ScriptData;
+
+	int32 DialogNum;
 };

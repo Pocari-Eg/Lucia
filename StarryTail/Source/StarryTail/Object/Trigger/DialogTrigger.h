@@ -28,13 +28,12 @@ public:
 	UStaticMeshComponent* Mesh;
 
 	UPROPERTY(EditAnywhere, Category = Dialog)
-	FString DalogIndex;
+	TArray<FString> DalogIndex;
 private:
 	UPROPERTY()
 	UDataTable* ScriptData;
 
-	FScriptData* GetScriptData();
-	
+	TArray<FScriptData*> GetScriptData(int32 num);
 
 public:
 	// Sets default values for this actor's properties

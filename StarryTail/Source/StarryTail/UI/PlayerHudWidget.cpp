@@ -23,9 +23,9 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 }
 
-void UPlayerHudWidget::SetDialog(FScriptData* Data)
+void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
 {
-
+	DialogNum = 0;
 	SetDialogState(EDialogState::e_Set);
 	ScriptData= Data;
 }
@@ -33,7 +33,7 @@ void UPlayerHudWidget::SetDialog(FScriptData* Data)
 void UPlayerHudWidget::PlayDialog()
 {
 	SetDialogState(EDialogState::e_Playing);
-	DialogWidget->SetDialog(ScriptData);
+	DialogWidget->SetDialog(ScriptData[DialogNum]);
 }
 
 void UPlayerHudWidget::SkipDialog()
@@ -50,7 +50,20 @@ void UPlayerHudWidget::ExitDialog()
 	{
 		SetDialogState(EDialogState::e_Set);
 	}
+	DialogNum = 0;
 	DialogWidget->EndDialog();
+}
+
+bool UPlayerHudWidget::ContinueDialog()
+{
+	DialogNum++;
+	if (DialogNum < ScriptData.Num()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+	
 }
 
 EDialogState UPlayerHudWidget::GetDialogState()
