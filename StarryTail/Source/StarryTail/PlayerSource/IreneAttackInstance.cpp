@@ -48,6 +48,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetCameraRot = FRotator::ZeroRotator;
 
 	bUseMP = false;
+	bMoveSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -154,7 +155,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CurrentCombo = 0;
 	if (!Irene->IreneState->IsDodgeState())
 	{
-		STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
+		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		Irene->ActionEndChangeMoveState();
 	}
 }

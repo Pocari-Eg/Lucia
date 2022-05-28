@@ -303,18 +303,17 @@ void UIreneInputInstance::RightButtonPressed()
 		
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
-			bUseRightButton = true;
-
-			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-			{
-				SkillWaitHandle.Invalidate();
-			}) , 3, false);
+			bUseRightButton = true;			
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					SkillWaitHandle.Invalidate();
+				}) , AttackTable->C_Time/1000, false);
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
 			}
@@ -322,16 +321,16 @@ void UIreneInputInstance::RightButtonPressed()
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		{
 			bUseRightButton = true;
-
-			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-			{
-				SkillWaitHandle.Invalidate();
-			}) , 3, false);
+			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					SkillWaitHandle.Invalidate();
+				}) , AttackTable->C_Time/1000, false);
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneAnim->PlaySkillAttackMontage();
 			}
@@ -359,7 +358,7 @@ void UIreneInputInstance::RightButtonPressed()
 								GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
 								ThunderSkillWaitHandle.Invalidate();
 							}
-						}) , 10, true);					
+						}) , AttackTable->C_Time/1000, true);					
 					}
 					if(SkillWaitHandle.IsValid())
 					{
@@ -521,15 +520,9 @@ void UIreneInputInstance::DodgeKeyword()
 		// 			}
 		// 		}), WaitTime, false);
 		// }
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina >= 75)
 		{
-			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
-			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
-			if(WaterDodgeEffect == nullptr)
-			{
-				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
-				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
-			}
+			
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f && !Irene->IreneState->IsJumpState())
 		{
@@ -583,20 +576,33 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 && !StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid())
 	{
-		Irene->IreneAnim->StopAllMontages(0);
-		bUseWaterDodge = true;
-		Irene->IreneData.CurrentStamina -= Rate/5;
-		if(StartWaterDodgeStamina - 75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
+		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
 		{
-			GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
+			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
+			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
+			if(WaterDodgeEffect == nullptr)
 			{
-				StaminaWaitHandle.Invalidate();
-			}), 1, false);
+				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
+				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
+			}
+		}
+		if(StartWaterDodgeStamina != 0)
+		{
+			Irene->IreneAnim->StopAllMontages(0);
+			bUseWaterDodge = true;
+			Irene->IreneData.CurrentStamina -= Rate/5;
+			if(StartWaterDodgeStamina - 75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
+			{
+				GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					StaminaWaitHandle.Invalidate();
+				}), 1, false);
+			}
 		}
 	}
 	else
 	{
-		StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
+		StartWaterDodgeStamina = 0;
 		// 켯다가 껏을 때
 		if(bUseWaterDodge)
 		{
