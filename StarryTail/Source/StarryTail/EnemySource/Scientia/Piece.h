@@ -19,8 +19,10 @@ public:
 
 	EAttributeKeyword GetAttribute();
 
+	void StartDrop();
+
 	void SetAttribute(EAttributeKeyword Attribute);
-	void SetNumber(int Value);
+	void SetEffect();
 private:
 	void InitCollision();
 	void InitMesh();
@@ -28,20 +30,38 @@ private:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		EAttributeKeyword PieceAttribute;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision, Meta = (AllowPrivateAccess = true))
-		class UCapsuleComponent* Collision;
+		UCapsuleComponent* Collision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision, Meta = (AllowPrivateAccess = true))
+		UStaticMeshComponent* Mesh;
+
 	UPROPERTY(VisibleAnywhere, Category = Projectile, Meta = (AllowPrivateAccess = true))
 		class UProjectileMovementComponent* ProjectileMovementComponent;
-	class UStaticMeshComponent* Mesh;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* DropFireEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* DropWaterEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* DropThunderEffect;
+
+	UPROPERTY(VisibleAnywhere, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* DropEffect;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		float Damage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		float MoveSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+		float WaitTime;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Info, Meta = (AllowPrivateAccess = true))
+		int Number;
+
+	float WaitTimer;
 
 	FVector MoveDir;
 	FVector NewLocation;
 
-	int Number;
+	bool bIsDrop;
 public:
 protected:
 	// Called every frame

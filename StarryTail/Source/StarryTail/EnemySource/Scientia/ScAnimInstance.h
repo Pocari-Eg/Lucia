@@ -40,6 +40,8 @@ public:
 	void PlayCrushedMontage();
 	void PlayDropMontage();
 
+	void PlayDeathMontage() override;
+
 	FAttackEndDelegate Attack1End;
 	FAttackEndDelegate Attack2End;
 	FAddFeatherDelegate AddFeather;

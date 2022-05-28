@@ -55,6 +55,10 @@ void UScAnimInstance::PlayCrushedMontage()
 {
 	Montage_Play(CrushedMontage);
 }
+void UScAnimInstance::PlayDeathMontage()
+{
+	Montage_Play(DeathMontage);
+}
 void UScAnimInstance::AnimNotify_Feather()
 {
 	Feather.Broadcast();

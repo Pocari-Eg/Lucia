@@ -127,6 +127,10 @@ bool AScientia::GetIsCanChange()
 {
 	return bIsCanChange;
 }
+bool AScientia::GetIsRush()
+{
+	return bIsRush;
+}
 #pragma endregion
 #pragma region Set
 void AScientia::SetState(FString string)
@@ -498,35 +502,16 @@ bool AScientia::PlayerAttributeIsScAttributeCounter()
 	}
 	return false;
 }
-void AScientia::SpawnDropEffect()
+void AScientia::SpawnPiece()
 {
 	int Random = FMath::RandRange(0, 3);
 
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	auto Player = Cast<AIreneCharacter>(STGameInstance->GetPlayer());
 
-	ScInfo.DropLocationList.Add(Player->GetActorLocation());
-	ScInfo.DropAttributeList.Add(Random);
-	switch (Random)
-	{
-	case 0:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
-		break;
-	case 1:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropWaterEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
-		break;
-	case 2:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropThunderEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
-		break;
-	}
-}
-void AScientia::SpawnPiece()
-{
-	FVector DropLocation = ScInfo.DropLocationList[ScInfo.DropActorCount];
-
+	FVector DropLocation = Player->GetActorLocation();
 	auto ChassPiece = GetWorld()->SpawnActor<APiece>(PieceBP, DropLocation + FVector(0, 0, 1000), FRotator::ZeroRotator);
-
-	switch (ScInfo.DropAttributeList[ScInfo.DropActorCount])
+	switch (Random)
 	{
 	case 0:
 		ChassPiece->SetAttribute(EAttributeKeyword::e_Fire);
@@ -538,6 +523,7 @@ void AScientia::SpawnPiece()
 		ChassPiece->SetAttribute(EAttributeKeyword::e_Thunder);
 		break;
 	}
+	ChassPiece->SetEffect();
 }
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -563,28 +549,6 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				bIsPlayerClawHit = true;
 			}
 		}
-		/*
-		if (Cast<UStaticMeshComponent>(OtherComponent))
-		{
-			auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
-			FString FindName = "Wall";
-			FString CompCollisionName = MeshComponent->GetCollisionProfileName().ToString();
-
-			if (FindName == CompCollisionName)
-			{
-				CalcHp(MonsterInfo.Atk * 2);
-				if (!bIsDead)
-				{
-					auto ScAIController = Cast<AScAIController>(MonsterAIController);
-					ScAIController->Attacked();
-					ResetClawSuccessedCount();
-					// ScAnimInstance->PlayAttackedMontage();
-				}
-				bIsPlayerClawHit = false;
-				bIsClaw = false;
-			}
-		}
-		*/
 	}
 	if (bIsRush)
 	{
@@ -651,41 +615,23 @@ void AScientia::Tick(float DeltaTime)
 	}
 	if (bIsDrop)
 	{
-		ScInfo.DropEffectTimer += DeltaTime;
-		if (ScInfo.DropEffectCount > 0)
-			ScInfo.StartDropActorTimer += DeltaTime;
+		ScInfo.DropTimer += DeltaTime;
 
-		if (ScInfo.DropEffectTimer >= ScInfo.DropEffectTime)
+		if (ScInfo.DropTimer >= ScInfo.DropTime)
 		{
-			if (ScInfo.DropEffectCount == 10)
-				ScInfo.DropEffectTimer = 0.0f;
+			if (ScInfo.DropCount == 10)
+				ScInfo.DropTimer = 0.0f;
 
-			SpawnDropEffect();
+			SpawnPiece();
 			
-			ScInfo.DropEffectTimer = 0.0f;
-			ScInfo.DropEffectCount++;
-		}
-		if (ScInfo.StartDropActorTimer >= ScInfo.StartDropActorTime)
-		{
-			ScInfo.DropActorTimer += DeltaTime;
+			ScInfo.DropTimer = 0.0f;
+			ScInfo.DropCount++;
 
-			if (ScInfo.DropActorTimer >= ScInfo.DropActorTime)
+			if (ScInfo.DropCount == 10)
 			{
-				SpawnPiece();
-				
-				ScInfo.DropActorTimer = 0.0f;
-				ScInfo.DropActorCount++;
-
-				if (ScInfo.DropActorCount == 10)
-				{
-					ScInfo.DropLocationList.Empty();
-					ScInfo.DropEffectTimer = 0.0f;
-					ScInfo.StartDropActorTimer = 0.0f;
-					ScInfo.DropActorTimer = 0.0f;
-					ScInfo.DropEffectCount = 0;
-					ScInfo.DropActorCount = 0;
-					bIsDrop = false;
-				}
+				ScInfo.DropTimer = 0.0f;
+				ScInfo.DropCount = 0;
+				bIsDrop = false;
 			}
 		}
 	}

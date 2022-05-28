@@ -906,6 +906,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
+	if (Cast<AScientia>(this))
+	{
+		auto Scientia = Cast<AScientia>(this);
+
+		if (Scientia->GetIsRush())
+			return FinalDamage;
+	}
+
 	if (bIsAttacking)
 		bIsAttacking = false;
 

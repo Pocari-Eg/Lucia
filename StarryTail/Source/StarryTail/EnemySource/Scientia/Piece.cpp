@@ -19,26 +19,39 @@ APiece::APiece()
 	ProjectileMovementComponent->SetUpdatedComponent(Collision);
 	ProjectileMovementComponent->MaxSpeed = MoveSpeed;
 	// ProjectileMovementComponent->bRotationFollowsVelocity = true;
-	
-
-	MoveDir = ((-FVector::UpVector) - GetActorLocation());
-
+	ProjectileMovementComponent->ProjectileGravityScale = 0;
+}
+void APiece::StartDrop()
+{
+	MoveDir = -FVector::UpVector;
+	ProjectileMovementComponent->Velocity = (MoveDir * MoveSpeed);
 }
 void APiece::SetAttribute(EAttributeKeyword Attribute)
 {
 	PieceAttribute = Attribute;
 }
+void APiece::SetEffect()
+{
+	switch (PieceAttribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, GetActorLocation() + FVector(0, 0, -1000));
+		break;
+	case EAttributeKeyword::e_Water:
+		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropWaterEffect, GetActorLocation() + FVector(0, 0, -1000));
+		break;
+	case EAttributeKeyword::e_Thunder:
+		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropThunderEffect, GetActorLocation() + FVector(0, 0, -1000));
+		break;
+	}
+}
 EAttributeKeyword APiece::GetAttribute()
 {
 	return PieceAttribute;
 }
-void APiece::SetNumber(int Value)
-{
-	Number = Value;
-}
 void APiece::InitCollision()
 {
-	Collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("RootComponent"));
+	Collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("Collision"));
 	RootComponent = Collision;
 	Collision->SetCapsuleHalfHeight(100);
 	Collision->SetCapsuleRadius(30);
@@ -61,13 +74,23 @@ void APiece::InitMesh()
 
 void APiece::BeginPlay()
 {
-	STARRYLOG(Log, TEXT("%f"), MoveSpeed);
-	ProjectileMovementComponent->Velocity = (MoveDir * MoveSpeed);
+	Super::BeginPlay();
 }
 // Called every frame
 void APiece::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (!bIsDrop)
+	{
+		WaitTimer += DeltaTime;
+
+		if (WaitTimer >= WaitTime)
+		{
+			StartDrop();
+			bIsDrop = true;
+		}
+	}
 }
 void APiece::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {

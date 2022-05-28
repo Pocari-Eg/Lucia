@@ -71,7 +71,7 @@ public:
 	float GetRushTime();
 	int GetClawSuccessedCount();
 	bool GetIsCanChange();
-	
+	bool GetIsRush();
 
 	void SetState(FString string);
 	void SetAttribute(EAttributeKeyword Attribute);
@@ -86,7 +86,6 @@ public:
 	FCrushedEndDelegate CrushedEnd;
 	FDropEndDelegate DropEnd;
 private:
-	void SpawnDropEffect();
 	void SpawnPiece();
 
 	UFUNCTION()
@@ -97,13 +96,6 @@ private:
 
 	TSubclassOf<AFeather> FeatherBP;
 	TSubclassOf<APiece> PieceBP;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystem* DropFireEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystem* DropWaterEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystem* DropThunderEffect;
 
 	UScAnimInstance* ScAnimInstance;
 
