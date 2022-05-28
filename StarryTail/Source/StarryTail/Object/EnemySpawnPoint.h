@@ -30,6 +30,9 @@ UCLASS()
 class STARRYTAIL_API AEnemySpawnPoint : public AActor
 {
 	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnyWhere, Category = SPAWN)
+	TArray<FWaveData> SpawnWave;
 private:
 	//¸Þ½¬
     UPROPERTY(VisibleAnyWhere, Category = Mesh, meta=(AllowPrivateAccess="ture"))
@@ -53,8 +56,7 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditAnyWhere, Category = SPAWN)
-	TArray<FWaveData> SpawnWave;
+
 private:
 	void DrawSpawnArea();
 };

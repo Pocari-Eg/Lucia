@@ -13,7 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 
 #include "Monster.generated.h"
 
@@ -21,6 +21,8 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -35,6 +37,7 @@ public:
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
 	float GetHp() const;
+	float GetBattleWalkSpeed() const;
 	bool GetTestMode() const;
 	float GetViewAngle() const;
 	float GetViewRange() const;
@@ -43,6 +46,11 @@ public:
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
+
+	//현재 체력 비율 전환
+	float GetHpRatio();
+	//현재 방어막 비율 전환
+	float GetDefRatio();
 
 	void PlayIdleAnim();
 	void PlayDetectAnim();
@@ -56,7 +64,7 @@ public:
 
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 	TArray<FOverlapResult> DetectPlayer(float DetectRange);
-
+	FVector AngleToDir(float angle);
 
 	void ResetDef();
 
@@ -67,6 +75,11 @@ public:
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 
+	FOnHpDelegate OnHpChanged;
+	FOnDefDelegate OnDefChanged;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -98,7 +111,7 @@ protected:
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-	FNormalMonsterInfo MonsterInfo;
+		FNormalMonsterInfo MonsterInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
 		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -118,7 +131,7 @@ protected:
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* HpBarWidget;
-	//
+
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 

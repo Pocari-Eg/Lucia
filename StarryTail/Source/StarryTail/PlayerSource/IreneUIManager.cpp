@@ -7,12 +7,12 @@
 
 UIreneUIManager::UIreneUIManager()
 {
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/UI/BluePrint/BP_PlayerHud.BP_PlayerHud_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_PlayerHud(TEXT("/Game/UI/BluePrint/Player/BP_PlayerHud.BP_PlayerHud_C"));
 	if (UI_PlayerHud.Succeeded())
 	{
 		PlayerHudClass = UI_PlayerHud.Class;
 	}
-	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/BP_PauseWidget.BP_PauseWidget_C"));
+	static ConstructorHelpers::FClassFinder<UPauseWidget>PAUSEWIDGET(TEXT("/Game/UI/BluePrint/Setting/BP_PauseWidget.BP_PauseWidget_C"));
 	if (PAUSEWIDGET.Succeeded())
 	{
 		PauseWidgetClass = PAUSEWIDGET.Class;
@@ -61,6 +61,8 @@ void UIreneUIManager::Begin()
 
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 1.0f);
+
+	bIsOnPauseWidget = false;
 }
 
 float UIreneUIManager::GetHpRatio()
@@ -157,8 +159,61 @@ float UIreneUIManager::GetHpRecoveryRatio()
 	return ((float)RemainingRecovery < KINDA_SMALL_NUMBER) ? 0.0f : (Irene->IreneData.CurrentHP + (float)RemainingRecovery) / Irene->IreneData.MaxHP;
 }
 
+void UIreneUIManager::UpdateFireCool(float CurCool, float MaxCool)
+{
+	FireCurCoolTime = CurCool;
+	FireMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateWaterCool(float CurCool, float MaxCool)
+{
+	WaterCurCoolTime = CurCool;
+	WaterMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateThunderCool(float CurCool, float MaxCool)
+{
+	ThunderCurCoolTime = CurCool;
+	ThunderMaxCoolTime = MaxCool;
+}
+
+float UIreneUIManager::GetFireCoolRatio()
+{
+	return (FireCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (FireCurCoolTime / FireMaxCoolTime);
+}
+
+float UIreneUIManager::GetWaterCoolRatio()
+{
+	return (WaterCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (WaterCurCoolTime / WaterMaxCoolTime);
+}
+
+float UIreneUIManager::GetThunderCoolRatio()
+{
+	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
+}
+
+void UIreneUIManager::PlayHUDAnimation()
+{
+	PlayerHud->PlayHUDAnimation();
+}
+
 void UIreneUIManager::PauseWidgetOn()
 {
-	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+	bIsOnPauseWidget = true;
+	PlayerHud->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->WidgetOn();
 }
+
+void UIreneUIManager::PauseWidgetOff()
+{
+	if (PauseWidget->WidgetOff() == true) {
+		bIsOnPauseWidget = false;
+		PlayerHud->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+bool UIreneUIManager::GetIsPauseOnScreen()
+{
+	return bIsOnPauseWidget;
+}
+

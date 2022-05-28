@@ -4,16 +4,40 @@
 #include "DialogWidget.h"
 
 
-void UDialogWidget::SetDialog(FString dialog)
+void UDialogWidget::SetDialog(FScriptData* ScriptData)
 {
-	SetVisibility(ESlateVisibility::Visible);
+	if (TextBox != nullptr)
+	{
+		TextBox->Font.Size = ScriptData->Size;
+		FColor NewColor = FColor(ScriptData->R, ScriptData->G, ScriptData->B,255.0f);
+		TextBox->SetColorAndOpacity(FSlateColor(NewColor));
+		if (ScriptData->Style == 0)
+		{
+			//TextBox->Font.TypefaceFontName = FName("Bold");
+			STARRYLOG(Warning, TEXT("Font %s"), *TextBox->Font.TypefaceFontName.ToString());
+			
+		}
+		else {
+			//TextBox->Font.TypefaceFontName = FName("Regular");
+		}
+
+	}
+
+
 	//메시지를 담아온다
-	InputDialog = dialog;
+	InputDialog = *ScriptData->String;
 	Length = 0;
 	CurrentTextKeeptime = TextKeepTime;
 	SetVisibility(ESlateVisibility::Visible);
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
+}
+
+void UDialogWidget::NativeOnInitialized()
+{
+	Super::NativeOnInitialized();
+	
+	TextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBox")));
 }
 
 void UDialogWidget::PlayDialog()

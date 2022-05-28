@@ -179,6 +179,7 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
+	//CurState->Irene->SetCameraLagTime(0);
 }
 
 void URunLoopState::Execute(IBaseGameEntity* CurState)
@@ -204,6 +205,42 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 		// }
 		CurState->ThrowState(URunEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
+	if(MoveKey[0] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+	}
+	if(MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+	}
+	if(MoveKey[1] != 0 || MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 14;
+	}
+	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+	}
+
+	//대각선이 아니면
+	if(!((MoveKey[0] != 0 && (MoveKey[1] != 0 || MoveKey[3] != 0))||(MoveKey[2] != 0 && (MoveKey[1] != 0 || MoveKey[3] != 0))))
+	{
+		if(MoveKey[0] != 0 && MoveKey[2] != 0)
+		{
+			CurState->ThrowState(URunEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		}
+		if(MoveKey[1] != 0 && MoveKey[3] != 0)
+		{
+			CurState->ThrowState(URunEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		}
 	}
 }
 
@@ -238,6 +275,10 @@ void URunEndState::Execute(IBaseGameEntity* CurState)
 void URunEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->Weapon->SetVisibility(true);
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion URunEndState
@@ -262,7 +303,8 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
-	CurState->Irene->CameraComp->FieldOfView = 80;
+	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
+	//CurState->Irene->SetCameraLagTime(0);
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -283,6 +325,50 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		// }
 		CurState->ThrowState(USprintEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
+	if(MoveKey[0] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	}
+	if( MoveKey[2] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[7]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	}
+	if(MoveKey[1] != 0 || MoveKey[3] != 0)
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+	}
+	if((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0)||
+		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+	{
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	}
+	// w,a,s,d -> 0,1,2,3
+	//대각선이면
+	if((ChangeMoveKey[0] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0))||(ChangeMoveKey[2] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)))
+	{
+		if((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
+	else
+	{
+		if((ChangeMoveKey[0] != 0 && MoveKey[2] != 0) || (ChangeMoveKey[2] != 0 && MoveKey[0] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+		if((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+		{
+			CurState->ThrowState(USprintEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
 	}
 }
 
@@ -319,7 +405,10 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
-	CurState->Irene->CameraComp->FieldOfView = 75;
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion USprintEndState
@@ -349,8 +438,7 @@ void UDodgeFireStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 }
@@ -403,9 +491,10 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_W_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
-	CurState->Irene->CameraComp->FieldOfView = 80;
 }
 
 void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
@@ -415,8 +504,7 @@ void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 }
@@ -451,9 +539,10 @@ void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->CameraComp->FieldOfView = 75;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeWaterEndState
@@ -471,7 +560,15 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Dodge_T_Start);
 	CurState->PlayTime = 0.0f;
-	CurState->bIsEnd = false;
+	CurState->bIsEnd = false;	
+	CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->Weapon->SetVisibility(false);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
+	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
+	//CurState->Irene->SetCameraLagTime(0);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -480,9 +577,13 @@ void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(MoveAutoWaitHandle);
-		CurState->Irene->IreneState->SetState(UJumpLoopState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
+	if(CurState->PlayTime >= 0.03f)
+	{
+		CurState->ThrowState(UDodgeThunderEndState::GetInstance());
+		CurState->Irene->ActionEndChangeMoveState();
 	}
 }
 
@@ -511,11 +612,23 @@ void UDodgeThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->ActionEndChangeMoveState();
+
 }
 
 void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	CurState->Irene->GetMesh()->SetVisibility(true);
+	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
+	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
+	CurState->Irene->GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	//CurState->Irene->SetCameraLagTime(0);
+	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeThunderEndState
@@ -578,9 +691,29 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
 	if (!CurState->Irene->GetCharacterMovement()->IsFalling())
 	{
-		CurState->ThrowState(UJumpEndState::GetInstance());
-		CurState->Irene->ActionEndChangeMoveState();
-		CurState->Irene->GetCharacterMovement()->GravityScale = 2;
+		if (CurState->Irene->IreneInput->MoveKey[0] > 2)
+			CurState->Irene->IreneInput->MoveKey[0] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[1] > 2)
+			CurState->Irene->IreneInput->MoveKey[1] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[2] > 2)
+			CurState->Irene->IreneInput->MoveKey[2] -= 2;
+		if (CurState->Irene->IreneInput->MoveKey[3] > 2)
+			CurState->Irene->IreneInput->MoveKey[3] -= 2;
+	
+		if (CurState->Irene->IreneInput->MoveKey[0] == 0 && CurState->Irene->IreneInput->MoveKey[1] == 0 && CurState->Irene->IreneInput->MoveKey[2] == 0 && CurState->Irene->IreneInput->MoveKey[3] == 0)
+		{
+			CurState->Irene->ChangeStateAndLog(UJumpEndState::GetInstance());
+		}
+		else if (CurState->Irene->GetCharacterMovement()->MaxWalkSpeed == CurState->Irene->IreneData.SprintMaxSpeed)
+		{
+			CurState->ThrowState(UJumpEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		}
+		else
+		{
+			CurState->ThrowState(UJumpEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
 	}
 }
 
@@ -604,6 +737,8 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Jump_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->GetCharacterMovement()->GravityScale = 2;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
@@ -613,6 +748,10 @@ void UJumpEndState::Execute(IBaseGameEntity* CurState)
 	// 	// 공중에서 구르기 키 입력 이후 땅에 도착하면 구르기 실행
 	// 	CurState->Irene->IreneInput->DodgeKeyword();
 	// }
+	if(CurState->PlayTime >= 0.6f)
+	{
+		CurState->Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UJumpEndState::Exit(IBaseGameEntity* CurState)
@@ -641,15 +780,40 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_F")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}	
 }
 
 void UBasicAttack1FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1FireState
@@ -668,15 +832,40 @@ void UBasicAttack2FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack2FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2FireState
@@ -695,15 +884,37 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_F);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+
+	CurState->Irene->IreneData.IsComboInputOn = false;
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack3FireState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3FireState
@@ -722,15 +933,41 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[3]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack1WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1WaterState
@@ -749,15 +986,41 @@ void UBasicAttack2WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[4]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack2WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2WaterState
@@ -776,15 +1039,37 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_W);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[5]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	CurState->Irene->IreneData.IsComboInputOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack3WaterState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3WaterState
@@ -803,15 +1088,41 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[6]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack1ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack1ThunderState
@@ -830,15 +1141,41 @@ void UBasicAttack2ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[7]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
+	&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")) != 0)
+	{
+		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack2ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack2ThunderState
@@ -857,15 +1194,37 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3_T);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[8]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	CurState->Irene->IreneData.IsComboInputOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void UBasicAttack3ThunderState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBasicAttack3ThunderState
@@ -887,12 +1246,30 @@ void USkillFireStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_F_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void USkillFireStartState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
 	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void USkillFireStartState::Exit(IBaseGameEntity* CurState)
@@ -925,6 +1302,9 @@ void USkillFireEndState::Execute(IBaseGameEntity* CurState)
 
 void USkillFireEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion USkillFireEndState
@@ -943,11 +1323,33 @@ void USkillWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_W_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[10]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	
+	if(CurState->PlayTime >= 1.77f)
+		CurState->Irene->ActionEndChangeMoveState();
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void USkillWaterStartState::Exit(IBaseGameEntity* CurState)
@@ -980,6 +1382,9 @@ void USkillWaterEndState::Execute(IBaseGameEntity* CurState)
 
 void USkillWaterEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion USkillWaterEndState
@@ -998,11 +1403,42 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_T_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
+	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
+	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
+	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
+	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);	
+	CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->Weapon->SetVisibility(false);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));	
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
+	StartShakeTime = 0.0f;	
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = true;
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto();
+	CurState->Irene->IreneInput->MoveAuto(0.7f);
+	
+	if(CurState->PlayTime >= 0.7f)
+		CurState->Irene->ActionEndChangeMoveState();
+	
+	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+		}
+	}
 }
 
 void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
@@ -1030,11 +1466,20 @@ void USkillThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void USkillThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	
+	//STARRYLOG(Error,TEXT("%f,   %f,   %f"),CurrentPosVec.X,CurrentPosVec.Y,CurrentPosVec.Z);
+	//STARRYLOG(Error,TEXT("%f,   %f,   %f"),NowPosVec.X,NowPosVec.Y,NowPosVec.Z);
 }
 
 void USkillThunderEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	CurState->Irene->GetMesh()->SetVisibility(true);
+	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->bIsEnd = true;
 }
 #pragma endregion USkillThunderEndState
@@ -1067,6 +1512,7 @@ void UCharge1State::Execute(IBaseGameEntity* CurState)
 
 void UCharge1State::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAnim->SetFireChargeCount(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UCharge1State
@@ -1151,6 +1597,8 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
+	if(CurState->PlayTime >= 0.1f)
+		CurState->Irene->ActionEndChangeMoveState();
 }
 
 void UHit1State::Exit(IBaseGameEntity* CurState)
@@ -1299,4 +1747,25 @@ bool UIreneFSM::IsFirstAttack()const
 		return true;
 	return false;
 }
+bool UIreneFSM::IsSecondAttack() const
+{
+	if (StateEnumValue == EStateEnum::B_Attack_2_F || StateEnumValue == EStateEnum::B_Attack_2_W || StateEnumValue == EStateEnum::B_Attack_2_T)
+		return true;
+	return false;
+}
+bool UIreneFSM::IsThirdAttack() const
+{
+	if (StateEnumValue == EStateEnum::B_Attack_3_F || StateEnumValue == EStateEnum::B_Attack_3_W || StateEnumValue == EStateEnum::B_Attack_3_T)
+		return true;
+	return false;
+}
+bool UIreneFSM::IsKnockBackState() const
+{
+	if(StateEnumValue == EStateEnum::B_Attack_3_F || StateEnumValue == EStateEnum::B_Attack_3_W ||
+		StateEnumValue == EStateEnum::Skill_F_Start ||StateEnumValue == EStateEnum::Skill_F_End ||
+		StateEnumValue == EStateEnum::Skill_W_Start ||StateEnumValue == EStateEnum::Skill_W_End)
+		return true;
+	return false;
+}
+
 #pragma endregion  FindState

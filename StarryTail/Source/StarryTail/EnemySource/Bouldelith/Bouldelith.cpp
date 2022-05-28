@@ -69,14 +69,17 @@ void ABouldelith::InitMesh()
 
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight()), FRotator(0.0f, 270.0f, 0.0f));
-	GetMesh()->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+	
+	float Scale = FMath::RandRange(0.9f, 1.1f);
+	
+	GetMesh()->SetRelativeScale3D(FVector(Scale, Scale, Scale));
 }
 void ABouldelith::InitAnime()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> BouldelithAnim(TEXT("/Game/BluePrint/Monster/Bouldelith/BouldelithAnimBlueprint"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> BouldelithAnim(TEXT("/Game/BluePrint/Monster/Bouldelith/BouldelithAnim"));
 	if (BouldelithAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(BouldelithAnim.Class);

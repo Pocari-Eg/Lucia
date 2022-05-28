@@ -155,8 +155,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 	if (Monster->GetTestMode())
 	{
-		FVector RightDir = AngleToDir(Monster->GetActorRotation().Euler().Z + Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
-		FVector LeftDir = AngleToDir(Monster->GetActorRotation().Euler().Z - Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
+		FVector RightDir = Monster->AngleToDir(Monster->GetActorRotation().Euler().Z + Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
+		FVector LeftDir = Monster->AngleToDir(Monster->GetActorRotation().Euler().Z - Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
 		FVector LookDir = Monster->GetActorForwardVector() * Monster->GetViewRange();
 		
 		DrawDebugLine(World, CenterTop, CenterBottom, FColor::Red, false, 0.2f);
@@ -176,11 +176,4 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		DrawDebugLine(World, CenterTop + LeftDir, CenterTop + LookDir, FColor::Blue, false, 0.2f);
 		DrawDebugLine(World, CenterTop + LookDir, CenterTop + RightDir, FColor::Blue, false, 0.2f);
 	}
-}
-FVector UBTServiceMobDetectPlayer::AngleToDir(float angle)
-{
-	float radian = FMath::DegreesToRadians(angle);
-	FVector Dir = FVector(FMath::Cos(radian), FMath::Sin(radian), 0.f);
-
-	return Dir;
 }

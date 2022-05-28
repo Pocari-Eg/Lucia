@@ -31,8 +31,8 @@ public:
 	FOnAttributeChangeDelegate FOnAttributeChange;
 protected:
 
-public:
 #pragma region GetClassOrObject
+public:
 	// 플레이어 컨트롤러
 	UPROPERTY()
 	APlayerController* WorldController;
@@ -42,7 +42,7 @@ public:
 	UCurveFloat* JumpGravityCurve;
 
 	// 카메라 암과 카메라
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
@@ -51,11 +51,13 @@ public:
 	class UIreneAnimInstance* IreneAnim;
 	UPROPERTY()
 	class UIreneAttackInstance* IreneAttack;
-	UPROPERTY()
+	UPROPERTY(BluePrintReadOnly)
 	class UIreneInputInstance* IreneInput;
+	UPROPERTY()
+	class USTGameInstance* STGameInstance;
 
 	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BluePrintReadOnly)
 	FPlayerCharacterDataStruct IreneData;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneUIManager* IreneUIManager;
@@ -75,13 +77,29 @@ public:
 	TArray<FName> WeaponSocketNameArray;
 
 	UPROPERTY(EditAnywhere)
-	TArray<UCurveFloat*> CameraShakeCurve;
+	TArray<UCurveVector*> CameraShakeCurve;
+	UPROPERTY(EditAnywhere)
+	TArray<UCurveFloat*> CameraLagCurve;
+private:
+	FTimerHandle FixedUpdateCameraShakeTimer;
+	FTimerHandle FixedUpdateCameraLagTimer;
+
+	// 카메라 쉐이크에 사용할 커브
+	UPROPERTY()
+	UCurveVector* UseShakeCurve;
+	// 카메라 렉에 사용할 커브
+	UPROPERTY()
+	UCurveFloat* UseLagCurve;
+
+	//float CameraLagTime;
+	//float LastLagTime;
 #pragma endregion GetClassOrObject
 
 	//스탑워치
 	//AStopWatch* StopWatch;
-public:
+	
 #pragma region Setting
+public:
 	// Sets default values for this character's properties
 	AIreneCharacter();
 
@@ -92,7 +110,7 @@ public:
 
 	void TargetReset()const;
 #pragma endregion Setting
-
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
@@ -100,15 +118,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:
-
 #pragma region State
+public:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(class IState* NewState)const;
+	UFUNCTION(BlueprintCallable)
 	void ActionEndChangeMoveState()const;
 #pragma endregion State
 	
 #pragma region Collision
+public:
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
 	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const;
@@ -126,8 +145,24 @@ public:
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void RadialBlurEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CameraOutEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void CameraInEvent();
+
+	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
+	float BattleCameraRotation(UPARAM(ref) float& Angle);
+
+	void OnRadialBlur();
+
+	bool bIsRadialBlurOn;
 
 	void LastAttackCameraShake(const float DeltaTime);
+	void SetUseShakeCurve(UCurveVector* Curve);
+	//void DoCameraLagCurve(const float DeltaTime);
+	void SetUseCameraLag(UCurveFloat* Curve);
 	
 	UPROPERTY(BluePrintReadWrite)
 	bool CameraShakeOn;
@@ -135,8 +170,22 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region UIManager
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayFadeOutEvent();
+
+	UFUNCTION(BluePrintCallable)
+	void PlayFadeOutAnimation();
+
+
+	UFUNCTION(BluePrintCallable)
+	void PlayFadeInAnimation();
+#pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
+	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}
+	//void SetLastLagTime(const float Value){LastLagTime = Value;}
 };

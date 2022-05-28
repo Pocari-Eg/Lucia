@@ -6,9 +6,11 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+
 #include "DialogWidget.h"
-
-
+#include "RaidMonsterWidget.h"
+#include "../EnemySource/Monster.h"
+#include "ScriptDataTable.h"
 #include "PlayerHudWidget.generated.h"
 
 /**
@@ -17,16 +19,19 @@
 
 
 USTRUCT()
-struct FAttributesUI
+struct FSkillImageData
 {
 	GENERATED_BODY()
-	//속성 관련 데이터
+		//속성 관련 데이터
 	UPROPERTY()
-	class UImage* Attribute;
+	class UImage* SelectIcon;
 	UPROPERTY()
-	class UProgressBar* Base;
+	class UImage* NoneSelectIcon;
 	UPROPERTY()
-	class UProgressBar* Recovery;
+	class UProgressBar* CoolTimeBar;
+	UPROPERTY()
+	class UImage* Active;
+
 };
 UCLASS()
 class STARRYTAIL_API UPlayerHudWidget : public UUserWidget
@@ -36,7 +41,22 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-	void SetDialog(FString dialog);
+	void SetDialog(FScriptData* Data);
+	void PlayDialog();
+	void RaidWidgetbind(AMonster* RadiMonster);
+
+	void ActionWidgetOn();
+	void ActionWidgetOff();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnFireAttribute();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnWaterAttribute();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnThunderAttribute();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayHUDAnimation();
 private:
 
 	void UpdateHp();
@@ -45,22 +65,16 @@ private:
 
 	void UpdateAttributes();
 
-	//fire
-	void UpdateFire();
-	void UpdateFireRecovery();
+	void InitSkillUI();
 
-	//Water
-	void UpdateWater();
-	void UpdateWaterRecovery();
+	void UpdateFireCoolTime();
+	void UpdateWaterCoolTime();
+	void UpdateThunderCoolTime();
 
-	//Electric
-	void UpdateEeletric();
-	void UpdateEeletricRecovery();
+	void FireSelect();
+	void WaterSelect();
+	void ThunderSelect();
 
-	void NoneSetScale(FVector2D Scale);
-	void FireSetScale(FVector2D Scale);
-	void WaterSetScale(FVector2D Scale);
-	void ElectricSetScale(FVector2D Scale);
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
@@ -78,13 +92,17 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class URaidMonsterWidget* RMWidget;
+	UPROPERTY()
+	class UUserWidget* ActionWidget;
 
-	FAttributesUI None;
-	FAttributesUI Fire;
-	FAttributesUI Water;
-	FAttributesUI Electric;
+	FSkillImageData Fire;
+	FSkillImageData Water;
+	FSkillImageData Thunder;
 
-	FVector2D BaseScale= FVector2D(1.0f, 1.0f);
-	FVector2D SelectScale = FVector2D(1.5f, 1.5f);
+	bool isFirst;
 
+
+	FScriptData* ScriptData;
 };

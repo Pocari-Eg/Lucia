@@ -36,14 +36,20 @@ void AMbAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
-void AMbAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana)
+void AMbAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)
 {
-	if (AttackedPower == EAttackedPower::Halved)
+	if (AttackedPower == EAttackedPower::Halved && !bIsKnockback)
+	{
+		STARRYLOG(Log, TEXT("1"));
 		return;
+	}
 
 	SetPlayer();
 
 	auto Morbit = Cast<AMorbit>(GetPawn());
+
+	bIsPlayerUseMana = bIsKnockback;
+
 	if (Morbit != nullptr)
 	{
 		if (!Morbit->GetMorbitAnimInstance()->GetAttackIsPlaying())

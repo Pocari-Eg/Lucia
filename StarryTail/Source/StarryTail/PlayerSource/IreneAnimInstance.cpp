@@ -5,6 +5,7 @@
 #include "IreneAnimInstance.h"
 
 #include "IreneAttackInstance.h"
+#include "IreneFSM.h"
 #include "IreneCharacter.h"
 
 void UIreneAnimInstance::Init(AIreneCharacter* Value)
@@ -25,7 +26,7 @@ void UIreneAnimInstance::InitMemberVariable()
 	IsSprintStop = false;
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
-	TargetMonster = FVector::ZeroVector;
+	TargetMonster = nullptr;
 }
 
 UIreneAnimInstance::UIreneAnimInstance()
@@ -99,7 +100,7 @@ void UIreneAnimInstance::PlaySkillAttackMontage()
 		Montage_Play(ThunderSkillMontage, 1.0f);
 }
 
-void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
+void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 	{
@@ -111,7 +112,25 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
 	}
 }
-void UIreneAnimInstance::JumpToEffectAttackMontageSection(const int32 NewSection)
+void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
+{
+	if (NewSection > 1)
+	{
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		{
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), FireAttackMontage);
+		}
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		{
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), WaterAttackMontage);
+		}
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		{
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
+		}
+	}
+}
+void UIreneAnimInstance::NextToEffectAttackMontageSection(const int32 NewSection)
 {
 	if (NewSection > 1)
 	{
@@ -142,6 +161,11 @@ void UIreneAnimInstance::AnimNotify_AttackStopCheck() const
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
+}
+
+void UIreneAnimInstance::AnimNotify_RadialBlur() const
+{
+	OnRadialBlur.Broadcast();
 }
 
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)

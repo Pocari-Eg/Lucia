@@ -41,6 +41,7 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 	GENERATED_BODY()
 public:
 	AIreneCharacter* GetPlayer();
+	EAttributeKeyword GetPlayerAttribute();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
 	AMonster* GetAttributeEffectMonster();
 	void SetAttributeEffectMonster(AMonster* Monster);
@@ -57,7 +58,9 @@ private:
 
 	
 private:
+	UPROPERTY()
 	AIreneCharacter* Player;
+	UPROPERTY()
 	AMonster* AttributeEffectMonster; //속성 효과를 발생시킬 몬스터
 
 	UPROPERTY()
@@ -110,4 +113,23 @@ public:
 	*/
 #pragma endregion
 
+
+#pragma region DetectedMonster
+private:
+	bool bIsPlayerBattleState;
+	int32 DetectedMonsterCount;
+
+	int32 StateTime;
+	int32 CurStateTime;
+	FTimerHandle StateChangeTimer;
+public:
+	void AddDetectedMonster();
+	void SubDetectedMonster();
+	bool GetPlayerBattleState();
+
+private:
+	void CountStateTimer();
+	void ChangeState();
+	
+#pragma endregion DetectedMonster
 };

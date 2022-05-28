@@ -22,7 +22,7 @@ void UBdAnimInstance::PlayBackstepMontage()
 {
 	if (Montage_IsPlaying(BackstepMontage))
 		return;
-	Montage_Play(BackstepMontage, PlayRate);
+	Montage_Play(BackstepMontage, 1.0f);
 }
 void UBdAnimInstance::PlayIdleMontage()
 {
@@ -63,7 +63,7 @@ void UBdAnimInstance::PlayAttack3Montage()
 }
 void UBdAnimInstance::PlayAttack4Montage()
 {
-	Montage_Play(AttackMontage4, PlayRate);
+	Montage_Play(AttackMontage4, 1.0f);
 }
 void UBdAnimInstance::PlayAttack1ComboMontage()
 {

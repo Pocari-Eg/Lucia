@@ -3,11 +3,16 @@
 
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "PlayerSource/IreneAttackInstance.h"
 #include "PlayerSource/IreneCharacter.h"
 
 AIreneCharacter* USTGameInstance::GetPlayer()
 {
 	return Player;
+}
+EAttributeKeyword USTGameInstance::GetPlayerAttribute()
+{
+	return Player->IreneAttack->GetAttribute();
 }
 void USTGameInstance::SetPlayer(AIreneCharacter* IreneCharacter)
 {
@@ -33,8 +38,6 @@ void USTGameInstance::ResetAttributeEffectMonster()
 }
 
 
-
-
 #pragma endregion
 
 
@@ -51,6 +54,13 @@ void USTGameInstance::Init()
 	UniqueCount = 0;
 	bIsLastWave = false;
 	InitSoundSetting();
+
+	//detect
+	bIsPlayerBattleState = false;
+	DetectedMonsterCount = 0;
+
+	 StateTime=2;
+	 CurStateTime = StateTime;
 }
 
 void USTGameInstance::InitSoundSetting()
@@ -66,14 +76,14 @@ void USTGameInstance::AddEnemyCount(EEnemyRank Rank)
 {
 	switch (Rank)
 	{
-	case EEnemyRank::e_Normal:
+	case EEnemyRank::e_Common:
 		EnemyCount++;
 		break;
 	case EEnemyRank::e_Unique:
 		EnemyCount++;
 		UniqueCount++;
 		break;
-	case EEnemyRank::e_Boss:
+	case EEnemyRank::e_Raid:
 		break;
 	default:
 		break;
@@ -85,14 +95,14 @@ void USTGameInstance::SubEnemyCount(EEnemyRank Rank)
 {
 	switch (Rank)
 	{
-	case EEnemyRank::e_Normal:
+	case EEnemyRank::e_Common:
 		EnemyCount--;
 		break;
 	case EEnemyRank::e_Unique:
 		EnemyCount--;
 		UniqueCount--;
 		break;
-	case EEnemyRank::e_Boss:
+	case EEnemyRank::e_Raid:
 		break;
 	default:
 		break;
@@ -132,7 +142,68 @@ bool USTGameInstance::IsLastWave()
 	return bIsLastWave;
 }
 
+void USTGameInstance::AddDetectedMonster()
+{
+	if (DetectedMonsterCount == 0)
+	{
+		//플레이어 카메라 줌 아웃 이벤트
+		//캐릭터 대치상태 변경
+		GetWorld()->GetTimerManager().ClearTimer(StateChangeTimer);
+		DetectedMonsterCount++;
+		if (!bIsPlayerBattleState)
+		{
+			bIsPlayerBattleState = true;
+			Player->CameraOutEvent();
+			STARRYLOG(Error, TEXT("Battle State On"));
+		}
+		
+	}
+	else
+	{
+		DetectedMonsterCount++;
+	}
 
+}
+
+void USTGameInstance::SubDetectedMonster()
+{
+	if (DetectedMonsterCount > 0)
+	{
+		DetectedMonsterCount--;
+	}
+
+	if (DetectedMonsterCount == 0) {
+		//캐릭터 대치상태 변경
+		STARRYLOG(Error, TEXT("Battle State Count"));
+		CurStateTime = StateTime;
+		GetWorld()->GetTimerManager().SetTimer(StateChangeTimer, this, &USTGameInstance::CountStateTimer, 1.0f, true, 0.0f);
+	}
+}
+
+bool USTGameInstance::GetPlayerBattleState()
+{
+	return bIsPlayerBattleState;
+}
+
+void USTGameInstance::CountStateTimer()
+{
+	if (CurStateTime <= 0)
+	{
+		ChangeState();
+	}
+	else {
+		CurStateTime--;
+	}
+}
+
+void USTGameInstance::ChangeState()
+{
+	Player->CameraInEvent();
+	bIsPlayerBattleState = false;
+	STARRYLOG(Error, TEXT("Battle State Off"));
+	GetWorld()->GetTimerManager().ClearTimer(StateChangeTimer);
+	CurStateTime = StateTime;
+}
 
 FSoundSetting* USTGameInstance::GetSoundSetting()
 {

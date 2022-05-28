@@ -6,14 +6,16 @@
 #include "UObject/Object.h"
 #include "../UI/PlayerHudWidget.h"
 #include"../UI/PauseWidget.h"
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 #include "PlayerCharacterDataStruct.h"
 
 #include "IreneUIManager.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
 {
@@ -31,6 +33,17 @@ private:
 	//타이머 핸들
 	FTimerHandle HpRecoveryTimerHandle;
 	FTimerHandle HpRecoveryWaitTimerHandle;
+
+
+	float FireMaxCoolTime;
+	float FireCurCoolTime;
+
+	float WaterMaxCoolTime;
+	float WaterCurCoolTime;
+
+	float ThunderMaxCoolTime;
+	float ThunderCurCoolTime;
+
 public:
 	// 로그 출력용
 	bool bShowLog;
@@ -39,6 +52,10 @@ public:
 	FOnMpChangeDelegate OnStaminaChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
+
+	FOnFireCoolChangeDelegate OnFireCoolChange;
+	FOnWaterCoolChangeDelegate OnWaterCoolChange;
+	FOnThunderCoolChangeDelegate OnThunderCoolChange;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -50,6 +67,8 @@ public:
 		TSubclassOf<class UPauseWidget> PauseWidgetClass;   // 위젯 클래스 
 	UPROPERTY()
 		class UPauseWidget* PauseWidget; // 위젯
+
+	bool bIsOnPauseWidget;
 #pragma endregion PauseWidget
 
 #pragma region Sound
@@ -110,11 +129,26 @@ public:
 	
 	//Hp RecoveryBar 
 	float GetHpRecoveryRatio();
+
+	void UpdateFireCool(float CurCool,float MaxCool);
+	void UpdateWaterCool(float CurCool, float MaxCool);
+	void UpdateThunderCool(float CurCool, float MaxCool);
+
+	//Fire Cool
+	float GetFireCoolRatio();
+	//Water Cool
+	float GetWaterCoolRatio();
+	//Thunde Cool
+	float GetThunderCoolRatio();
+
+	void PlayHUDAnimation();
 #pragma endregion HUDPublic
 
 
 #pragma region PauseWidgetFunc
 public:
 	void PauseWidgetOn();
+	void PauseWidgetOff();
+	bool GetIsPauseOnScreen();
 #pragma endregion PauseWidgetFunc
 };

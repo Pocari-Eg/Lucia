@@ -18,13 +18,16 @@ public:
 	
 	// 스프링암과 플레이어 간 기본 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FollowCameraZPosition = 800;
+	float FollowCameraZPosition = 425;
 	// 스프링암과 플레이어 간 최대 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxFollowCameraZPosition = 10000;
+	float MaxFollowCameraZPosition = 550;
 	// 스프링암과 플레이어 간 최소 거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinFollowCameraZPosition = 0;
+	float MinFollowCameraZPosition = 120;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxBattleCameraZPosition = 700;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
@@ -35,10 +38,10 @@ public:
 
 	// 점프시작파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpStartPower = 450;
+	float JumpStartPower = 550;
 	// 점프저항파워
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpDrag = 4;
+	float JumpDrag = 1.2f;
 	
 	// 마우스 휠 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -81,12 +84,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
 
-	// 전기 대쉬 시간 임시값
+	// 전기 대쉬 재사용 쿨타임
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ThunderDodgeTime = 1.0f;
 	// 전기 대쉬 속력 임시값
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderDodgeSpeed = 1000.0f;
+	float FirstThunderDodgeSpeed = 800000.0f;
+	// 전기 대쉬 속력 임시값
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float DoubleThunderDodgeSpeed = 1500000.0f;
 	
 public:
 	// 공격 관련 변수들

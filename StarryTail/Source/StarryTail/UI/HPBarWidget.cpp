@@ -2,18 +2,18 @@
 
 
 #include "HPBarWidget.h"
-#include "../Object/TestObject.h"
+#include "../EnemySource/Monster.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 
-void UHPBarWidget::BindObjectHp(class ATestObject* NewObject)
+void UHPBarWidget::BindMonster(class AMonster* NewMonster)
 {
-	//새로들어온 object를 CurrentObject에 할당
-	CurrentObject = Cast<ATestObject>(NewObject);
+	//새로들어온 Monster를 CurrentMonster에 할당
+	CurrentMonster = Cast<AMonster>(NewMonster);
 
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
-	// NewObject->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateWidget);
-	
+	CurrentMonster->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateHpWidget);
+	CurrentMonster->OnDefChanged.AddUObject(this, &UHPBarWidget::UpdateDefWidget);
 
 }
 
@@ -29,30 +29,31 @@ void UHPBarWidget::NativeOnInitialized()
 }
 
 
-void UHPBarWidget::UpdateHpWidget(float UpdateHp)
+void UHPBarWidget::UpdateHpWidget()
 {
-	if (nullptr != HPProgressBar)
-	{
-		HPProgressBar->SetPercent(UpdateHp);
-	}
-	/*
-	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
-	if (CurrentObject != nullptr)
+
+
+	if (CurrentMonster != nullptr)
 	{
 		if (nullptr != HPProgressBar)
 		{
-				HPProgressBar->SetPercent(Object->GetHpRatio());
+			STARRYLOG_S(Error);
+			HPProgressBar->SetPercent(CurrentMonster->GetHpRatio());
 		}
 	}
-	*/
+	
 }
 
-void UHPBarWidget::UpdateDefWidget(float Def)
+void UHPBarWidget::UpdateDefWidget()
 {
 
-	if (nullptr != DefProgressBar)
+	
+	if (CurrentMonster != nullptr)
 	{
-		DefProgressBar->SetPercent(Def);
+		if (nullptr != DefProgressBar)
+		{
+			DefProgressBar->SetPercent(CurrentMonster->GetDefRatio());
+		}
 	}
 }
 

@@ -53,7 +53,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Normal;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
 }
 void AMorbit::InitCollision()
 {
@@ -70,7 +70,10 @@ void AMorbit::InitMesh()
 
 	GetMesh()->SetCollisionProfileName(TEXT("NoCollision"));
 	GetMesh()->SetRelativeLocationAndRotation(FVector(0.0f, 0.0f, -150.0f), FRotator(0.0f, 270.0f, 0.0f));
-	GetMesh()->SetRelativeScale3D(FVector(1.0f, 1.0f, 1.0f));
+
+	float Scale = FMath::RandRange(0.9f, 1.1f);
+
+	GetMesh()->SetRelativeScale3D(FVector(Scale, Scale, Scale));
 }
 void AMorbit::InitAnime()
 {
@@ -190,6 +193,7 @@ void AMorbit::BeginPlay()
 
 		});
 	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
+
 }
 
 // Called every frame

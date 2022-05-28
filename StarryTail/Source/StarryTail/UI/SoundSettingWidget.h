@@ -7,7 +7,7 @@
 #include "Blueprint/UserWidget.h"
 #include "PauseWidget.h"
 
-#include "../SoundManager.h"
+#include "../Sound/SoundManager.h"
 #include "../STGameInstance.h"
 
 #include "Components/CheckBox.h"

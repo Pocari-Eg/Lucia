@@ -43,7 +43,8 @@ void AEnemySpawnPoint::RandomSpawn()
 				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, FVector::ZeroVector, FRotator::ZeroRotator); 
 				NewMonster->SetActorLocation(SpawnLocation);
 				NewMonster->SetSpawnPos();
-
+				NewMonster->OnSpawnEffectEvent();
+				
 				//플레이어를 바라보도록
 				FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(NewMonster->GetLocation(),
 					UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());

@@ -20,6 +20,7 @@ public:
 	bool bUseLeftButton;
 	bool bUseRightButton;
 
+	bool bActionKeyActive;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -27,6 +28,15 @@ private:
 	FTimerHandle FireStartTimer;
 	FTimerHandle WaterStartTimer;
 	FTimerHandle ElectricStartTimer;
+
+	float FireMaxCoolTime;
+	float FireCurCoolTime;
+
+	float WaterMaxCoolTime;
+	float WaterCurCoolTime;
+
+	float ThunderMaxCoolTime;
+	float ThunderCurCoolTime;	
 
 	UPROPERTY()
 	UParticleSystemComponent* WaterDodgeEffect;	
@@ -49,14 +59,22 @@ private:
 	// 점프 중력 그래프용 시간
 	float JumpingTime;
 
+	// 스테미나 관련
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
 	bool bUseWaterDodge;
-	
-	bool bUseThunderDodge;
+
+	// 닷지 쿨타임
+	FTimerHandle DodgeWaitHandle;
+
+	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
-	FVector ThunderDodgeTargetDir;
+	
+	// 번개 스킬 갯수
+	FTimerHandle ThunderSkillWaitHandle;
+	int ThunderSkillCount;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -66,20 +84,16 @@ public:
 #pragma region Move
 	void MoveForward();
 	void MoveRight();
-	void MoveAuto()const;
+	void MoveAuto(const float EndTimer = 1.0f)const;
 
 	void StartJump();
 	void StopJump();
 
 	void MovePressedKey(const int Value);
-	void MovePressedW();
-	void MovePressedA();
-	void MovePressedS();
-	void MovePressedD();
-	void MoveReleasedW();
-	void MoveReleasedA();
-	void MoveReleasedS();
-	void MoveReleasedD();
+	void MoveW(float Rate);
+	void MoveA(float Rate);
+	void MoveS(float Rate);
+	void MoveD(float Rate);
 #pragma endregion Move
 
 #pragma region OtherInput
@@ -89,6 +103,7 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
+	void RightButton(const float DeltaTime)const;
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);
@@ -102,6 +117,8 @@ public:
 	// 대쉬
 	void DodgeKeyword();
 	void WaterDodgeKeyword(float Rate);	
+	// 액션 
+	void DialogAction();
 #pragma endregion OtherInput
 
 #pragma region UIandStamina
@@ -109,6 +126,8 @@ public:
 	void MouseCursorKeyword();
 
 	// Pause위젯 on
+	public:
+	UFUNCTION(BluePrintcallable)
 	void PauseWidgetOn();
 
 	void RecoveryStaminaGauge(const float DeltaTime)const;
@@ -127,7 +146,8 @@ public:
 	float GetJumpingTime()const{return JumpingTime;}
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetCharging()const{return IsCharging;}
-	
+	int GetThunderSkillCount()const{return ThunderSkillCount;}
+
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
@@ -135,4 +155,15 @@ public:
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
 #pragma endregion GetSet	
+
+#pragma region CoolTime
+private:
+		void FireCoolTime();
+		void WaterCoolTime();
+		void ThunderCoolTime();
+
+		bool bIsFireAttributeOn;
+		bool bIsWaterAttributeOn;
+		bool bIsThunderAttributeOn;
+#pragma endregion CoolTime
 };

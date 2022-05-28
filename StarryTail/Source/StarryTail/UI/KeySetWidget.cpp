@@ -15,11 +15,12 @@ void UKeySetWidget::WidgetOn(UPauseWidget* widget)
 
 void UKeySetWidget::WidgetOff()
 {
+	PauseWidget->IsKeySetWidgetOn = false;
 	this->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
+void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
 {
 		TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
 		FName SameKeyName;
@@ -51,16 +52,52 @@ void UKeySetWidget::ChangeKey(const FName ActionName,  UPARAM(ref)FInputChord& I
 		UInputSettings::GetInputSettings()->AddActionMapping(Newkey, true);
 	
 
-		UpdateKeyName();
+		UpdateActionKeyName();
 		SetExitEnable();
 }
 
 
-void UKeySetWidget::UpdateKeyName()
+void UKeySetWidget::ChangeAxisKey(const FName AxisName, UPARAM(ref)FInputChord& InputKey)
+{
+	TArray< FInputAxisKeyMapping> CurrentAxisMapping = UInputSettings::GetInputSettings()->GetAxisMappings();
+	FName SameKeyName;
+
+	for (int i = 0; i < CurrentAxisMapping.Num(); i++)
+	{
+		FInputChord currentkey(CurrentAxisMapping[i].Key);
+
+		if (InputKey == currentkey)
+		{
+			SameKeyName = CurrentAxisMapping[i].AxisName;
+			TArray<FInputAxisKeyMapping> Refresh;
+			UInputSettings::GetInputSettings()->GetAxisMappingByName(SameKeyName, Refresh);
+			UInputSettings::GetInputSettings()->RemoveAxisMapping(Refresh[0], false);
+			FInputAxisKeyMapping Rfreshkey(SameKeyName);
+			UInputSettings::GetInputSettings()->AddAxisMapping(Rfreshkey, false);
+
+
+		}
+		else {
+
+		}
+	}
+
+	TArray<FInputAxisKeyMapping> OutMap;
+	UInputSettings::GetInputSettings()->GetAxisMappingByName(AxisName, OutMap);
+	UInputSettings::GetInputSettings()->RemoveAxisMapping(OutMap[0], false);
+	FInputAxisKeyMapping Newkey(AxisName, InputKey.Key);
+	UInputSettings::GetInputSettings()->AddAxisMapping(Newkey, true);
+
+
+	UpdateAxisKeyName();
+	SetExitEnable();
+}
+
+void UKeySetWidget::UpdateActionKeyName()
 {
 	auto CurrentAction = UInputSettings::GetInputSettings()->GetActionMappings();
 
-	int InputkeyNum = InputKeyArray.Num();
+	int InputkeyNum = InputActionKeyArray.Num();
 	int CurrentKeyNum = CurrentAction.Num();
 	IsEmptyKey = false;
 	IsUpdatekey = true;
@@ -75,15 +112,47 @@ void UKeySetWidget::UpdateKeyName()
 		}
 		for (int j = 0; j < InputkeyNum; j++)
 		{
-			if (InputKeyArray[j]->GetName() == CurrentAction[i].ActionName.ToString())
+			if (InputActionKeyArray[j]->GetName() == CurrentAction[i].ActionName.ToString())
 			{
-				InputKeyArray[j]->SetSelectedKey(Update);
+				InputActionKeyArray[j]->SetSelectedKey(Update);
 				break;
 			}
 		}
 		
 	}
    
+	IsUpdatekey = false;
+}
+
+void UKeySetWidget::UpdateAxisKeyName()
+{
+	auto CurrentAxis = UInputSettings::GetInputSettings()->GetAxisMappings();
+
+	int InputkeyNum = InputAxisKeyArray.Num();
+	int CurrentKeyNum = CurrentAxis.Num();
+	IsEmptyKey = false;
+	IsUpdatekey = true;
+	for (int i = 0; i < CurrentKeyNum; i++)
+	{
+
+		FInputChord Update(CurrentAxis[i].Key);
+
+		if (Update.Key == NONE)
+		{
+			IsEmptyKey = true;
+			STARRYLOG_S(Error);
+		}
+		for (int j = 0; j < InputkeyNum; j++)
+		{
+			if (InputAxisKeyArray[j]->GetName() == CurrentAxis[i].AxisName.ToString())
+			{
+				InputAxisKeyArray[j]->SetSelectedKey(Update);
+				break;
+			}
+		}
+
+	}
+
 	IsUpdatekey = false;
 }
 
