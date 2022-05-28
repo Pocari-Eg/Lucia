@@ -424,10 +424,13 @@ void AMonster::CalcHp(float Damage)
 {
 	Damage = FMath::Abs(Damage);
 
-	if (CheckPlayerIsBehindMonster() && !bIsBattleState)
+	if (!Cast<AScientia>(this))
 	{
-		RotationToPlayerDirection();
-		MonsterInfo.CurrentHp -= Damage * 1.5f;
+		if (CheckPlayerIsBehindMonster() && !bIsBattleState)
+		{
+			RotationToPlayerDirection();
+			MonsterInfo.CurrentHp -= Damage * 1.5f;
+		}
 	}
 	else
 	{
@@ -909,42 +912,10 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (bIsDead)
 		return FinalDamage;
 
-	auto Player = Cast<AIreneCharacter>(DamageCauser);
-
-	if (Player->bIsRadialBlurOn)
+	if (Cast<APiece>(DamageCauser))
 	{
-		Player->RadialBlurEvent();
-		Player->bIsRadialBlurOn = false;
-	}
-	else {
-
-	}
-
-	if (Player != nullptr)
-	{
-		SoundTransform = Player->GetTransform();
-
-		if (!bIsAttacked)
-		{
-			FString FindName = "WEAPON";
-			FString ElemName;
-			for (auto& Elem : Player->GetComponents())
-			{
-				ElemName = Elem->GetName();
-				if (ElemName == FindName)
-				{
-					auto Component = Cast<UPrimitiveComponent>(Elem);
-	
-					PrintHitEffect(Component->GetComponentLocation());
-					HitStopEvent();
-				}
-			}
-		}
-
-		bIsAttacked = true;
-
-
-		switch (Player->IreneAttack->GetAttribute())
+		auto ChessPiece = Cast<APiece>(DamageCauser);
+		switch (ChessPiece->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
@@ -977,59 +948,130 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
-		if (AttackedInfo.AttributeArmor == 10)
+		float Damage = MonsterInfo.ArbitraryConstValueA * (DamageAmount / (MonsterInfo.CurrentDef / 80.0f)) * (AttackedInfo.AttributeArmor / 100.0f);
+		CalcHp(Damage);
+	}
+	
+	if (Cast<AIreneCharacter>(DamageCauser))
+	{
+		auto Player = Cast<AIreneCharacter>(DamageCauser);
+		if (Player->bIsRadialBlurOn)
 		{
-			AttackedInfo.AttackedPower = EAttackedPower::Halved;
-		}
-		else if (AttackedInfo.AttributeArmor == 100)
-		{
-			AttackedInfo.AttackedPower = EAttackedPower::Normal;
-		}
-		else if (AttackedInfo.AttributeArmor == 200)
-		{
-			AttackedInfo.AttackedPower = EAttackedPower::Critical;
-		}
-
-		//넉백
-		KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
-		KnockBackDir.Normalize();
-		KnockBackDir.Z = 0.0f;
-
-		//
-
-		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		if (STGameInstance->GetAttributeEffectMonster() == nullptr)
-		{
-			STGameInstance->SetAttributeEffectMonster(this);
-			HitSound->SoundPlay3D(SoundTransform);
+			Player->RadialBlurEvent();
+			Player->bIsRadialBlurOn = false;
 		}
 
+		if (Player != nullptr)
+		{
+			SoundTransform = Player->GetTransform();
 
-
-		//몬스터인지 아닌지
-		if (bIsObject) {
-			if (AttackedInfo.bIsUseMana)
+			if (!bIsAttacked)
 			{
-				CalcDef();
-				CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
-				CalcHp(CalcNormalAttackDamage(DamageAmount));
-			}
-			else
-			{
-				CalcHp(CalcNormalAttackDamage(DamageAmount));
-			}
-		}
-		//몬스터가 아니면
-		else {
+				FString FindName = "WEAPON";
+				FString ElemName;
+				for (auto& Elem : Player->GetComponents())
+				{
+					ElemName = Elem->GetName();
+					if (ElemName == FindName)
+					{
+						auto Component = Cast<UPrimitiveComponent>(Elem);
 
-			OffIsAttacked();
-			if (Cast<AAttributeObject>(this))
-			{
-				HitCheck(Player);
+						PrintHitEffect(Component->GetComponentLocation());
+						HitStopEvent();
+					}
+				}
 			}
+
+			bIsAttacked = true;
+
+
+			switch (Player->IreneAttack->GetAttribute())
+			{
+			case EAttributeKeyword::e_Fire:
+				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+				{
+					AttackedInfo.AttributeArmor = 10.0f;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
+				{
+					AttackedInfo.AttributeArmor = 200.0f;
+				}
+				break;
+			case EAttributeKeyword::e_Water:
+				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
+				{
+					AttackedInfo.AttributeArmor = 200.0f;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
+				{
+					AttackedInfo.AttributeArmor = 10.0f;
+				}
+				break;
+			case EAttributeKeyword::e_Thunder:
+				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
+				{
+					AttackedInfo.AttributeArmor = 10.0f;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+				{
+					AttackedInfo.AttributeArmor = 200.0f;
+				}
+			}
+
+			if (AttackedInfo.AttributeArmor == 10)
+			{
+				AttackedInfo.AttackedPower = EAttackedPower::Halved;
+			}
+			else if (AttackedInfo.AttributeArmor == 100)
+			{
+				AttackedInfo.AttackedPower = EAttackedPower::Normal;
+			}
+			else if (AttackedInfo.AttributeArmor == 200)
+			{
+				AttackedInfo.AttackedPower = EAttackedPower::Critical;
+			}
+
+			//넉백
+			KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
+			KnockBackDir.Normalize();
+			KnockBackDir.Z = 0.0f;
+
+			//
+
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			if (STGameInstance->GetAttributeEffectMonster() == nullptr)
+			{
+				STGameInstance->SetAttributeEffectMonster(this);
+				HitSound->SoundPlay3D(SoundTransform);
+			}
+
+
+
+			//몬스터인지 아닌지
+			if (bIsObject) {
+				if (AttackedInfo.bIsUseMana)
+				{
+					CalcDef();
+					CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
+					CalcHp(CalcNormalAttackDamage(DamageAmount));
+				}
+				else
+				{
+					CalcHp(CalcNormalAttackDamage(DamageAmount));
+				}
+			}
+			//몬스터가 아니면
+			else {
+
+				OffIsAttacked();
+				if (Cast<AAttributeObject>(this))
+				{
+					HitCheck(Player);
+				}
+			}
+			InitAttackedInfo();
+			return FinalDamage;
 		}
-		InitAttackedInfo();
-		return FinalDamage;
 	}
 
 	return FinalDamage;

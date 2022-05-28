@@ -12,7 +12,7 @@ AScientia::AScientia()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	static ConstructorHelpers::FClassFinder<AFeather> FeatherBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Feather'"));
-
+	static ConstructorHelpers::FClassFinder<APiece> PieceBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Piece'"));
 	InitMonsterInfo();
 	InitCollision();
 	InitMesh();
@@ -28,6 +28,10 @@ AScientia::AScientia()
 	if (FeatherBlueprint.Succeeded())
 	{
 		FeatherBP = FeatherBlueprint.Class;
+	}
+	if (PieceBlueprint.Succeeded())
+	{
+		PieceBP = PieceBlueprint.Class;
 	}
 }
 void AScientia::InitMonsterInfo()
@@ -102,6 +106,10 @@ float AScientia::GetAttack2Speed()
 float AScientia::GetAttack3Speed()
 {
 	return ScInfo.Attack3Speed;
+}
+float AScientia::GetAttack4Speed()
+{
+	return ScInfo.Attack4Speed;
 }
 float AScientia::GetDodgeSpeed()
 {
@@ -213,6 +221,12 @@ void AScientia::Attack3()
 	GetCharacterMovement()->MaxWalkSpeed = ScInfo.Attack3Speed;
 }
 #pragma endregion
+void AScientia::Attack4()
+{
+	ScAnimInstance->PlayDropMontage();
+	MonsterAIController->StopMovement();
+	bIsDrop = true;
+}
 void AScientia::PlayAttackedBAnimation()
 {
 	ScAnimInstance->PlayAttackedBAnimation();
@@ -484,6 +498,47 @@ bool AScientia::PlayerAttributeIsScAttributeCounter()
 	}
 	return false;
 }
+void AScientia::SpawnDropEffect()
+{
+	int Random = FMath::RandRange(0, 3);
+
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	auto Player = Cast<AIreneCharacter>(STGameInstance->GetPlayer());
+
+	ScInfo.DropLocationList.Add(Player->GetActorLocation());
+	ScInfo.DropAttributeList.Add(Random);
+	switch (Random)
+	{
+	case 0:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
+		break;
+	case 1:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropWaterEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
+		break;
+	case 2:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropThunderEffect, ScInfo.DropLocationList[ScInfo.DropActorCount]);
+		break;
+	}
+}
+void AScientia::SpawnPiece()
+{
+	FVector DropLocation = ScInfo.DropLocationList[ScInfo.DropActorCount];
+
+	auto ChassPiece = GetWorld()->SpawnActor<APiece>(PieceBP, DropLocation + FVector(0, 0, 1000), FRotator::ZeroRotator);
+
+	switch (ScInfo.DropAttributeList[ScInfo.DropActorCount])
+	{
+	case 0:
+		ChassPiece->SetAttribute(EAttributeKeyword::e_Fire);
+		break;
+	case 1:
+		ChassPiece->SetAttribute(EAttributeKeyword::e_Water);
+		break;
+	case 2:
+		ChassPiece->SetAttribute(EAttributeKeyword::e_Thunder);
+		break;
+	}
+}
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (bIsClaw)
@@ -594,6 +649,46 @@ void AScientia::Tick(float DeltaTime)
 			bIsCanChange = true;
 		}
 	}
+	if (bIsDrop)
+	{
+		ScInfo.DropEffectTimer += DeltaTime;
+		if (ScInfo.DropEffectCount > 0)
+			ScInfo.StartDropActorTimer += DeltaTime;
+
+		if (ScInfo.DropEffectTimer >= ScInfo.DropEffectTime)
+		{
+			if (ScInfo.DropEffectCount == 10)
+				ScInfo.DropEffectTimer = 0.0f;
+
+			SpawnDropEffect();
+			
+			ScInfo.DropEffectTimer = 0.0f;
+			ScInfo.DropEffectCount++;
+		}
+		if (ScInfo.StartDropActorTimer >= ScInfo.StartDropActorTime)
+		{
+			ScInfo.DropActorTimer += DeltaTime;
+
+			if (ScInfo.DropActorTimer >= ScInfo.DropActorTime)
+			{
+				SpawnPiece();
+				
+				ScInfo.DropActorTimer = 0.0f;
+				ScInfo.DropActorCount++;
+
+				if (ScInfo.DropActorCount == 10)
+				{
+					ScInfo.DropLocationList.Empty();
+					ScInfo.DropEffectTimer = 0.0f;
+					ScInfo.StartDropActorTimer = 0.0f;
+					ScInfo.DropActorTimer = 0.0f;
+					ScInfo.DropEffectCount = 0;
+					ScInfo.DropActorCount = 0;
+					bIsDrop = false;
+				}
+			}
+		}
+	}
 }
 // Called when the game starts or when spawned
 void AScientia::BeginPlay()
@@ -609,6 +704,9 @@ void AScientia::BeginPlay()
 		Attack2End.Broadcast();
 		bIsClaw = false;
 		bIsPlayerClawHit = false;
+		});
+	ScAnimInstance->DropEnd.AddLambda([this]() -> void {
+		DropEnd.Broadcast();
 		});
 	ScAnimInstance->ClawStart.AddLambda([this]() -> void {
 		ClawStart.Broadcast();
@@ -635,6 +733,14 @@ void AScientia::BeginPlay()
 	ScAnimInstance->CrushedEnd.AddLambda([this]() -> void {
 		//Change Texture
 		CrushedEnd.Broadcast();
+		});
+	ScAnimInstance->Death.AddLambda([this]() -> void {
+		if (bIsDead)
+		{
+			bDeadWait = true;
+			SetActorEnableCollision(false);
+			ScAnimInstance->Montage_Stop(500.f, ScAnimInstance->GetCurrentActiveMontage());
+		}
 		});
 	ScAnimInstance->Change.AddUObject(this, &AScientia::ChangeAttribute);
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);

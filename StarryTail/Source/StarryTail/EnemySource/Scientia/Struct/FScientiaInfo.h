@@ -18,6 +18,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Attack3Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack4Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DodgeSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float RushTime;
@@ -29,6 +31,12 @@ public:
 		float WaterBarrier;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ThunderBarrier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DropEffectTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float StartDropActorTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DropActorTime;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentAttribute;
@@ -44,7 +52,20 @@ public:
 		int ClawSuccessedCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
-	
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float DropEffectTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float StartDropActorTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float DropActorTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int DropEffectCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int DropActorCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TArray<FVector> DropLocationList;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		TArray<int> DropAttributeList;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FString State;
 };
