@@ -23,13 +23,17 @@ private:
 	//사운드세팅 위젯
 	TSubclassOf<class USoundSettingWidget> SoundSetWidgetClass;
 	class USoundSettingWidget* SoundSetWidget;
+
+public:
+	bool IsKeySetWidgetOn;
+	bool IsSoundSetwidgetOn;
 	
 public:
 
 	UFUNCTION(BlueprintCallable)
 	void WidgetOn();
 	UFUNCTION(BlueprintCallable)
-	 void WidgetOff();
+	bool WidgetOff();
 
 
 	virtual void NativeConstruct() override;

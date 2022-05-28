@@ -51,7 +51,10 @@ private:
 	// 보간을 위한 목표 위치
 	FRotator TargetCameraRot;	
 
+	// 스킬이면 마나 사용한걸로 취급
 	bool bUseMP;
+	// 후딜 중 이동 가능 타이밍 노티파이
+	bool bMoveSkip;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -89,6 +92,7 @@ public:
 	FVector GetNowPosVec()const {return NowPosVec;}
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetUseMP()const {return bUseMP;}
+	bool GetCanMoveSkip()const{return bMoveSkip;}
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
@@ -99,7 +103,7 @@ public:
 	void SetUseMP(const bool Value){bUseMP = Value;}
 	void SetCurrentPosVec(const FVector Value){CurrentPosVec = Value;}
 	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
-
+	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 #pragma endregion GetSet
 
 private:

@@ -15,6 +15,7 @@ void UKeySetWidget::WidgetOn(UPauseWidget* widget)
 
 void UKeySetWidget::WidgetOff()
 {
+	PauseWidget->IsKeySetWidgetOn = false;
 	this->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->SetVisibility(ESlateVisibility::Visible);
 }

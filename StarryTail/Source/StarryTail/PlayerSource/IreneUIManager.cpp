@@ -57,10 +57,12 @@ void UIreneUIManager::Begin()
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
 	WalkSound->SetVolume(WalkSoundVolume);
-	AttackSound->SetParameter("Material", 0.0f);
+	WalkSound->SetParameter("Material", 0.0f);
 
 	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 1.0f);
+	AttackSound->SetParameter("Attributes", 2.0f);
+
+	bIsOnPauseWidget = false;
 }
 
 float UIreneUIManager::GetHpRatio()
@@ -190,9 +192,28 @@ float UIreneUIManager::GetThunderCoolRatio()
 	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
 }
 
+void UIreneUIManager::PlayHUDAnimation()
+{
+	PlayerHud->PlayHUDAnimation();
+}
+
 void UIreneUIManager::PauseWidgetOn()
 {
-	GetWorld()->GetFirstPlayerController()->bShowMouseCursor;
+	bIsOnPauseWidget = true;
 	PlayerHud->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->WidgetOn();
 }
+
+void UIreneUIManager::PauseWidgetOff()
+{
+	if (PauseWidget->WidgetOff() == true) {
+		bIsOnPauseWidget = false;
+		PlayerHud->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+bool UIreneUIManager::GetIsPauseOnScreen()
+{
+	return bIsOnPauseWidget;
+}
+

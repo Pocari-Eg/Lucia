@@ -102,6 +102,8 @@ private:
 	UFUNCTION()
 	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()
+	void AnimNotify_MoveSkipCheck() const;
+	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
 	void AnimNotify_RadialBlur	() const;

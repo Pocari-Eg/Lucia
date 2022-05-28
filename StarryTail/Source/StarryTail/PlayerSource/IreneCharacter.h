@@ -51,7 +51,7 @@ public:
 	class UIreneAnimInstance* IreneAnim;
 	UPROPERTY()
 	class UIreneAttackInstance* IreneAttack;
-	UPROPERTY()
+	UPROPERTY(BluePrintReadOnly)
 	class UIreneInputInstance* IreneInput;
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
@@ -152,6 +152,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void CameraInEvent();
 
+	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
+	float BattleCameraRotation(UPARAM(ref) float& Angle);
+
 	void OnRadialBlur();
 
 	bool bIsRadialBlurOn;
@@ -167,6 +170,18 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 #pragma endregion HitFeel
+
+#pragma region UIManager
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayFadeOutEvent();
+
+	UFUNCTION(BluePrintCallable)
+	void PlayFadeOutAnimation();
+
+
+	UFUNCTION(BluePrintCallable)
+	void PlayFadeInAnimation();
+#pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();
 	//void WatchReset();

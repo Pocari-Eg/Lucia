@@ -19,8 +19,6 @@ public:
 	
 	bool bUseLeftButton;
 	bool bUseRightButton;
-
-	bool bActionKeyActive;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -126,6 +124,8 @@ public:
 	void MouseCursorKeyword();
 
 	// Pause위젯 on
+	public:
+	UFUNCTION(BluePrintcallable)
 	void PauseWidgetOn();
 
 	void RecoveryStaminaGauge(const float DeltaTime)const;
