@@ -50,15 +50,6 @@ void AFeather::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	/*
-	if (!bIsDeadWait)
-	{
-		NewLocation = GetTransform().GetLocation() + (MoveDir * MoveSpeed * DeltaTime);
-	
-		RootComponent->SetWorldLocation(NewLocation);
-	}
-	*/
-	
 }
 void AFeather::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {

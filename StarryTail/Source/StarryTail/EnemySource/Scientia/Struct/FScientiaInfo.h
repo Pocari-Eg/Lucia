@@ -18,6 +18,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Attack3Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack4Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DodgeSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float RushTime;
@@ -29,13 +31,28 @@ public:
 		float WaterBarrier;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ThunderBarrier;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float DropTime;
+
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		EAttributeKeyword CurrentAttribute;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsFireBarrierCrushed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsWaterBarrierCrushed;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		bool bIsThunderBarrierCrushed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int FeatherCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int ClawSuccessedCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int BarrierCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		float DropTimer;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int DropCount;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		FString State;
 };

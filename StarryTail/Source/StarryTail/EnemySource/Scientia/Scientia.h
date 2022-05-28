@@ -7,6 +7,7 @@
 #include "./Struct/FScientiaInfo.h"
 #include "ScAnimInstance.h"
 #include "Feather.h"
+#include "Piece.h"
 #include "Scientia.generated.h"
 
 /**
@@ -18,7 +19,7 @@ DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FCrushedEndDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FDropEndDelegate);
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
 {
@@ -31,6 +32,7 @@ public:
 	void Attack1();
 	void Attack2();
 	void Attack3();
+	void Attack4();
 
 	void PlayAttackedBAnimation();
 	void PlayAttackedFAnimation();
@@ -64,11 +66,12 @@ public:
 	float GetHpPercent();
 	float GetAttack2Speed();
 	float GetAttack3Speed();
+	float GetAttack4Speed();
 	float GetDodgeSpeed();
 	float GetRushTime();
 	int GetClawSuccessedCount();
 	bool GetIsCanChange();
-	
+	bool GetIsRush();
 
 	void SetState(FString string);
 	void SetAttribute(EAttributeKeyword Attribute);
@@ -81,7 +84,10 @@ public:
 	FChangeEndDelegate ChangeEnd;
 	FDodgeEndDelegate DodgeEnd;
 	FCrushedEndDelegate CrushedEnd;
+	FDropEndDelegate DropEnd;
 private:
+	void SpawnPiece();
+
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 
@@ -89,6 +95,7 @@ private:
 		FScientiaInfo ScInfo;
 
 	TSubclassOf<AFeather> FeatherBP;
+	TSubclassOf<APiece> PieceBP;
 
 	UScAnimInstance* ScAnimInstance;
 
@@ -98,6 +105,8 @@ private:
 		bool bIsClaw;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		bool bIsRush;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
+		bool bIsDrop;
 	bool bIsPlayerClawHit;
 	bool bIsPlayerRushHit;
 	bool bIsCanChange;

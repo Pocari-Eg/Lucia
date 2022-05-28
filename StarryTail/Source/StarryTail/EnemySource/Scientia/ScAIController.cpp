@@ -10,6 +10,7 @@ const FName AScAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
 const FName AScAIController::IsAttack1Key = (TEXT("bIsAttack1"));
 const FName AScAIController::IsAttack2Key = (TEXT("bIsAttack2"));
 const FName AScAIController::IsAttack3Key = (TEXT("bIsAttack3"));
+const FName AScAIController::IsAttack4Key = (TEXT("bIsAttack4"));
 
 const FName AScAIController::IsStuckKey = (TEXT("bIsStuck"));
 const FName AScAIController::IsDodgeKey = (TEXT("bIsDodge"));
@@ -37,8 +38,15 @@ void AScAIController::Attacked()
 }
 void AScAIController::Crushed()
 {
+	Blackboard->SetValueAsBool(IsBattleWalkKey, false);
+	Blackboard->SetValueAsBool(IsChangeKey, false);
+	Blackboard->SetValueAsBool(IsStuckKey, false);
+	Blackboard->SetValueAsBool(IsDodgeKey, false);
 	Blackboard->SetValueAsBool(IsAttackingKey, false);
+	Blackboard->SetValueAsBool(IsAttack1Key, false);
 	Blackboard->SetValueAsBool(IsAttack2Key, false);
+	Blackboard->SetValueAsBool(IsAttack3Key, false);
+	Blackboard->SetValueAsBool(IsAttack4Key, false);
 	Blackboard->SetValueAsBool(IsCrushedKey, true);
 }
 void AScAIController::OnPossess(APawn* InPawn)

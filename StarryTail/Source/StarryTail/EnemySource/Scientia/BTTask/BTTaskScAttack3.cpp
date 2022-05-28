@@ -31,9 +31,10 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 	
 	Scientia->TurnEnd.Clear();
-	Scientia->TurnEnd.AddLambda([this]() -> void
+	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
 		{
 			bIsTurn = false;
+			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 		});
 	
 	return EBTNodeResult::InProgress;
@@ -75,6 +76,5 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	{
 		bIsTurn = true;
 		Scientia->Turn();
-		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 	}
 }
