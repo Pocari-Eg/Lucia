@@ -30,6 +30,10 @@ void AMagicStairManager::BeginPlay()
 		}
 		NewMaterial[i]->SetScalarParameterValue(TEXT("Transparency_Amount"), 0.0f);
 	}
+	for (int i = 0; i < 3; i++)
+	{
+		NewMaterial[i]->SetScalarParameterValue(TEXT("Transparency_Amount"), 0.6f);
+	}
 	StartTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickStart);
 	EndTrigger->OnTickControl.AddUObject(this, &AMagicStairManager::TickEnd);
 

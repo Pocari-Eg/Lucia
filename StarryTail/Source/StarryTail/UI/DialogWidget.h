@@ -37,18 +37,26 @@ private:
 	//현재까지 출력된 메시지의 길이
 	int32 Length;
 	FTimerHandle TimerHandle; // TimerHandle;
-	float CurrentTextKeeptime;
 	
 	class UTextBlock* TextBox;
+
+	UObject* Font;
+
+	EDialogState CurrnetState;
 
 public:
 	//출력할 메시지 세팅
 	void SetDialog(FScriptData* ScriptData);
+	void SkipDialog();
+	void EndDialog();
+	
+
+	EDialogState GetDialogState();
+	void SetDialogState(EDialogState NewState);
 protected:
 	virtual void NativeOnInitialized() override;
 private:
-
 	//메시지 재생
 	void PlayDialog();
-	void EndDialog();
+	
 };
