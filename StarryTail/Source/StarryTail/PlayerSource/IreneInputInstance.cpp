@@ -638,8 +638,14 @@ void UIreneInputInstance::MouseCursorKeyword()
 #pragma region UI
 void UIreneInputInstance::PauseWidgetOn()
 {
-	Irene->IreneState->SetState(UIdleState::GetInstance());
-	Irene->IreneUIManager->PauseWidgetOn();
+	if (Irene->IreneUIManager->GetIsPauseOnScreen()) {
+	  	Irene->IreneUIManager->PauseWidgetOff();
+	}
+	else {
+		Irene->IreneState->SetState(UIdleState::GetInstance());
+		Irene->IreneUIManager->PauseWidgetOn();
+	}
+	Irene->ActionEndChangeMoveState();
 }
 
 void UIreneInputInstance::RecoveryStaminaGauge(const float DeltaTime)const

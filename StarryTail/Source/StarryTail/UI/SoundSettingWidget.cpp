@@ -14,6 +14,7 @@ void USoundSettingWidget::WidgetOn(UPauseWidget* widget)
 
 void USoundSettingWidget::WidgetOff()
 {
+	PauseWidget->IsSoundSetwidgetOn = false;
 	SoundSettingSave();
 	this->SetVisibility(ESlateVisibility::Hidden);
 	PauseWidget->SetVisibility(ESlateVisibility::Visible);

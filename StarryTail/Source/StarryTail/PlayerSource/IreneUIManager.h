@@ -67,6 +67,8 @@ public:
 		TSubclassOf<class UPauseWidget> PauseWidgetClass;   // 위젯 클래스 
 	UPROPERTY()
 		class UPauseWidget* PauseWidget; // 위젯
+
+	bool bIsOnPauseWidget;
 #pragma endregion PauseWidget
 
 #pragma region Sound
@@ -146,5 +148,7 @@ public:
 #pragma region PauseWidgetFunc
 public:
 	void PauseWidgetOn();
+	void PauseWidgetOff();
+	bool GetIsPauseOnScreen();
 #pragma endregion PauseWidgetFunc
 };

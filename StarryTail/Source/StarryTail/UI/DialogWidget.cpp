@@ -13,11 +13,12 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		TextBox->SetColorAndOpacity(FSlateColor(NewColor));
 		if (ScriptData->Style == 0)
 		{
-			TextBox->Font.TypefaceFontName = FName("Bold");
+			//TextBox->Font.TypefaceFontName = FName("Bold");
+			STARRYLOG(Warning, TEXT("Font %s"), *TextBox->Font.TypefaceFontName.ToString());
 			
 		}
 		else {
-			TextBox->Font.TypefaceFontName = FName("Regular");
+			//TextBox->Font.TypefaceFontName = FName("Regular");
 		}
 
 	}

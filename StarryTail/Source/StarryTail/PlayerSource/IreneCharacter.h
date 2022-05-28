@@ -51,7 +51,7 @@ public:
 	class UIreneAnimInstance* IreneAnim;
 	UPROPERTY()
 	class UIreneAttackInstance* IreneAttack;
-	UPROPERTY()
+	UPROPERTY(BluePrintReadOnly)
 	class UIreneInputInstance* IreneInput;
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;

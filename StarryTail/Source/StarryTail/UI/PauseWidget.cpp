@@ -17,12 +17,18 @@ void UPauseWidget::WidgetOn()
     UGameplayStatics::SetGamePaused(GetWorld(), true);
 }
 
-void UPauseWidget::WidgetOff()
+bool UPauseWidget::WidgetOff()
 {
-    UGameplayStatics::SetGamePaused(GetWorld(), false);
-    SetVisibility(ESlateVisibility::Hidden);
-    GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
-    GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+    if (IsSoundSetwidgetOn == false && IsKeySetWidgetOn == false) {
+        UGameplayStatics::SetGamePaused(GetWorld(), false);
+        SetVisibility(ESlateVisibility::Hidden);
+        GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
+        GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(false);
+        return true;
+    }
+    else {
+        return false;
+    }
   
 }
 
@@ -56,12 +62,15 @@ void UPauseWidget::NativeConstruct()
 
 void UPauseWidget::KeySetWidgetOn()
 {
+    IsKeySetWidgetOn = true;
     KeySetWidget->WidgetOn(this);
+  
     
 }
 
 void UPauseWidget::SoundSetWidgetOn()
 {
+    IsSoundSetwidgetOn = true;
     SoundSetWidget->WidgetOn(this);
 }
 

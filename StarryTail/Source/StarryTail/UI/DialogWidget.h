@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 #include "ScriptDataTable.h"
 

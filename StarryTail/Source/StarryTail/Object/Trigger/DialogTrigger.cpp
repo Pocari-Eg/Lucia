@@ -41,17 +41,20 @@ ADialogTrigger::ADialogTrigger()
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (DalogIndex != "") {
+		if (GetScriptData()->Condition == 1)
+		{
+			STARRYLOG_S(Error);
+			auto Irene = Cast<AIreneCharacter>(OtherActor);
+			if (Irene != nullptr)
+			{
+				Irene->IreneInput->bActionKeyActive = true;
+				Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData());
+				Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+			}
 
-	if (GetScriptData()->Condition == 1)
-	{	
-		STARRYLOG_S(Error);
-	 auto Irene = Cast<AIreneCharacter>(OtherActor);
-	  if (Irene != nullptr)
-	 {
-		Irene->IreneInput->bActionKeyActive = true;
-		Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData());
-		Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
-	  }
+		}
+
 
 	}
 
