@@ -95,3 +95,12 @@ enum class  EEnemyRank :uint8
 	e_Raid  UMETA(DisplayName = "Raid"),
 
 };
+
+UENUM(BluePrintType)
+enum class  EDialogState :uint8
+{
+	e_Disable = 0 UMETA(DisplayName = "Disable"),
+	e_Set   UMETA(DisplayName = "Set"),
+	e_Playing   UMETA(DisplayName = "Playing"),
+	e_Complete   UMETA(DisplayName = "Complete")
+};

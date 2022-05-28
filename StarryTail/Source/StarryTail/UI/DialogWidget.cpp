@@ -8,29 +8,45 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 {
 	if (TextBox != nullptr)
 	{
-		TextBox->Font.Size = ScriptData->Size;
+	
 		FColor NewColor = FColor(ScriptData->R, ScriptData->G, ScriptData->B,255.0f);
 		TextBox->SetColorAndOpacity(FSlateColor(NewColor));
+		
+		
 		if (ScriptData->Style == 0)
 		{
-			//TextBox->Font.TypefaceFontName = FName("Bold");
-			STARRYLOG(Warning, TEXT("Font %s"), *TextBox->Font.TypefaceFontName.ToString());
-			
+			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Bold"),FFontOutlineSettings::NoOutline));
 		}
 		else {
-			//TextBox->Font.TypefaceFontName = FName("Regular");
+			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Regular"), FFontOutlineSettings::NoOutline));
 		}
 
 	}
-
+	
 
 	//메시지를 담아온다
 	InputDialog = *ScriptData->String;
 	Length = 0;
-	CurrentTextKeeptime = TextKeepTime;
 	SetVisibility(ESlateVisibility::Visible);
 
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
+}
+
+void UDialogWidget::SkipDialog()
+{
+	SetDialogState(EDialogState::e_Complete);
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	OutputDialog = InputDialog;
+}
+
+EDialogState UDialogWidget::GetDialogState()
+{
+	return CurrnetState;
+}
+
+void UDialogWidget::SetDialogState(EDialogState NewState)
+{
+	CurrnetState = NewState;
 }
 
 void UDialogWidget::NativeOnInitialized()
@@ -38,6 +54,11 @@ void UDialogWidget::NativeOnInitialized()
 	Super::NativeOnInitialized();
 	
 	TextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBox")));
+
+	Font= LoadObject<UObject>(NULL, TEXT("/Engine/EngineFonts/Roboto.Roboto"), NULL, LOAD_None, NULL);
+
+	CurrnetState = EDialogState::e_Disable;
+	
 }
 
 void UDialogWidget::PlayDialog()
@@ -45,21 +66,10 @@ void UDialogWidget::PlayDialog()
 
 	//현재 출력된 메시지가 전부 출력되면
 	 if (InputDialog.Len()+2 <= Length)
-	{
-		 if (CurrentTextKeeptime > 0.0f)
-		 {
-			 CurrentTextKeeptime -= TextPrintTime;
-		
-		 }
-		 else {
-			 CurrentTextKeeptime = TextKeepTime;
-			 OutputDialog = "";
-			 SetVisibility(ESlateVisibility::Hidden);
-			 //타이머 초기화로 
-			 GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		 }
-		
-	}
+	  {
+		 SetDialogState(EDialogState::e_Complete);
+		 GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	  } 
 	 else 	if (InputDialog.Len() + 2 > Length)
 	{
 		for (int i = 0; i < Length; i++)
@@ -73,6 +83,7 @@ void UDialogWidget::PlayDialog()
 }
 void UDialogWidget::EndDialog()
 {
+	OutputDialog = "";
 	SetVisibility(ESlateVisibility::Hidden);
 }
 

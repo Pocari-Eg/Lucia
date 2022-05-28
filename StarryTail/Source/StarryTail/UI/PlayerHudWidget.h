@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
@@ -41,8 +41,6 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-	void SetDialog(FScriptData* Data);
-	void PlayDialog();
 	void RaidWidgetbind(AMonster* RadiMonster);
 
 	void ActionWidgetOn();
@@ -57,6 +55,19 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHUDAnimation();
+
+
+	//다이얼로그
+	
+
+	EDialogState GetDialogState();
+	void SetDialogState(EDialogState NewState);
+
+	void SetDialog(FScriptData* Data);
+	void PlayDialog();
+	void SkipDialog();
+	void ExitDialog();
+	
 private:
 
 	void UpdateHp();

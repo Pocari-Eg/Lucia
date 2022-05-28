@@ -25,12 +25,42 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(FScriptData* Data)
 {
+
+	SetDialogState(EDialogState::e_Set);
 	ScriptData= Data;
 }
 
 void UPlayerHudWidget::PlayDialog()
 {
+	SetDialogState(EDialogState::e_Playing);
 	DialogWidget->SetDialog(ScriptData);
+}
+
+void UPlayerHudWidget::SkipDialog()
+{
+	DialogWidget->SkipDialog();
+}
+
+void UPlayerHudWidget::ExitDialog()
+{
+	if (ActionWidget->Visibility == ESlateVisibility::Hidden) {
+		SetDialogState(EDialogState::e_Disable);
+	}
+	else if (ActionWidget->Visibility == ESlateVisibility::Visible)
+	{
+		SetDialogState(EDialogState::e_Set);
+	}
+	DialogWidget->EndDialog();
+}
+
+EDialogState UPlayerHudWidget::GetDialogState()
+{
+	return DialogWidget->GetDialogState();
+}
+
+void UPlayerHudWidget::SetDialogState(EDialogState NewState)
+{
+	DialogWidget->SetDialogState(NewState);
 }
 
 void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)

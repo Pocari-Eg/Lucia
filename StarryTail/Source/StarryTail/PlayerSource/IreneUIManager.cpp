@@ -57,10 +57,10 @@ void UIreneUIManager::Begin()
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
 	WalkSound->SetVolume(WalkSoundVolume);
-	AttackSound->SetParameter("Material", 0.0f);
+	WalkSound->SetParameter("Material", 0.0f);
 
 	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 1.0f);
+	AttackSound->SetParameter("Attributes", 2.0f);
 
 	bIsOnPauseWidget = false;
 }

@@ -47,8 +47,6 @@ void UIreneInputInstance::InitMemberVariable()
 
 	ThunderSkillCount = 2;
 
-	bActionKeyActive = false;
-
 	FireMaxCoolTime = 10.0f;
 	FireCurCoolTime = 0.0f;
 
@@ -626,10 +624,25 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 
 void UIreneInputInstance::DialogAction()
 {
-	if (bActionKeyActive) {
-		Irene->IreneUIManager->PlayerHud->PlayDialog();
-		bActionKeyActive = false;
+	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+
+	switch (PlayerHud->GetDialogState())
+	{
+	case EDialogState::e_Set:
+		PlayerHud->PlayDialog();
+		break;
+	case EDialogState::e_Playing:
+		PlayerHud->SkipDialog();
+		break;
+	case EDialogState::e_Complete:
+		PlayerHud->ExitDialog();
+		break;
+	case EDialogState::e_Disable:
+		break;
+	default:
+		break;
 	}
+
 }
 
 void UIreneInputInstance::MouseCursorKeyword()
