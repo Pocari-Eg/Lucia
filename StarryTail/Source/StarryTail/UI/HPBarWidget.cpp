@@ -15,6 +15,12 @@ void UHPBarWidget::BindMonster(class AMonster* NewMonster)
 	CurrentMonster->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateHpWidget);
 	CurrentMonster->OnDefChanged.AddUObject(this, &UHPBarWidget::UpdateDefWidget);
 
+	if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
+	{
+		DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+		DefLine->SetVisibility(ESlateVisibility::Hidden);
+	}
+
 }
 
 
@@ -26,6 +32,8 @@ void UHPBarWidget::NativeOnInitialized()
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 	DefProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("DefBar")));
 	MarkerImage = Cast<UImage>(GetWidgetFromName(TEXT("Marker")));
+     HPLine = Cast<UImage>(GetWidgetFromName(TEXT("HPBar_Line")));
+	 DefLine = Cast<UImage>(GetWidgetFromName(TEXT("DefBar_Line")));
 }
 
 
@@ -37,7 +45,6 @@ void UHPBarWidget::UpdateHpWidget()
 	{
 		if (nullptr != HPProgressBar)
 		{
-			STARRYLOG_S(Error);
 			HPProgressBar->SetPercent(CurrentMonster->GetHpRatio());
 		}
 	}

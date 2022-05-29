@@ -635,7 +635,14 @@ void UIreneInputInstance::DialogAction()
 		PlayerHud->SkipDialog();
 		break;
 	case EDialogState::e_Complete:
-		PlayerHud->ExitDialog();
+		if (PlayerHud->ContinueDialog())
+		{
+			PlayerHud->PlayDialog();
+		}
+		else {
+			PlayerHud->ExitDialog();
+		}
+	
 		break;
 	case EDialogState::e_Disable:
 		break;

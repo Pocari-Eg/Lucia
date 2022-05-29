@@ -20,7 +20,8 @@ ABouldelith::ABouldelith()
 	bTestMode = false;
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
+	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 270.0f));
+	HpBarWidget->SetRelativeScale3D(FVector(0.5, 0.5f, 0.5f));
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
