@@ -103,7 +103,7 @@ void APiece::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveCom
 	}
 	else if (Cast<AScientia>(Other))
 	{
-		auto Scientia = Cast<AIreneCharacter>(Other);
+		auto Scientia = Cast<AScientia>(Other);
 		auto ScAIController = Cast<AScAIController>(Scientia->GetController());
 		UGameplayStatics::ApplyDamage(Scientia, Damage, NULL, this, NULL);
 		ScAIController->Attacked();
