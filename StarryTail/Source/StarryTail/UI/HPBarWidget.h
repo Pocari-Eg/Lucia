@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 
 #include "HPBarWidget.generated.h"
@@ -41,6 +41,10 @@ private:
 	class UProgressBar* HPProgressBar;	
 	UPROPERTY()
 	class UProgressBar* DefProgressBar;
+	UPROPERTY()
+	class UImage* HPLine;
+	UPROPERTY()
+	class UImage* DefLine;
 	UPROPERTY()
 	class UImage* MarkerImage;
 };

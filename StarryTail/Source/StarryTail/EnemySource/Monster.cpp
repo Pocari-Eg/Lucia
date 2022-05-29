@@ -47,7 +47,7 @@ AMonster::AMonster()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(260.0f, 200.0f));
+		HpBarWidget->SetDrawSize(FVector2D(230.0f,160.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
 
@@ -430,6 +430,10 @@ void AMonster::CalcHp(float Damage)
 		{
 			RotationToPlayerDirection();
 			MonsterInfo.CurrentHp -= Damage * 1.5f;
+		}
+		else
+		{
+			MonsterInfo.CurrentHp -= Damage;
 		}
 	}
 	else
