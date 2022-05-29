@@ -47,7 +47,7 @@ AMonster::AMonster()
 	if (UI_HPBARWIDGET.Succeeded()) {
 
 		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(96, 80.0f));
+		HpBarWidget->SetDrawSize(FVector2D(260.0f, 200.0f));
 		HpBarWidget->bAutoActivate = false;
 	}
 
