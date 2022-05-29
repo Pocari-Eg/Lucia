@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "NavigationSystem.h"
 #include "BTTaskScAttack2.generated.h"
 
 /**
@@ -19,8 +20,17 @@ private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
+	UNavigationSystemV1* NavSys;
+	ANavigationData* NavData;
+
+	TSubclassOf<UNavigationQueryFilter> FilterClass;
+	FSharedConstNavQueryFilter QueryFilter;
+	FPathFindingQuery MyAIQuery;
+
+
 	bool bIsAttacking;
 	bool bIsMove;
+	bool bCanMove;
 
 	FVector MoveDir;
 	FVector NewLocation;

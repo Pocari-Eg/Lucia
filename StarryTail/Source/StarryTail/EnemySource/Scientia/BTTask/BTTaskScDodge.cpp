@@ -26,7 +26,7 @@ EBTNodeResult::Type UBTTaskScDodge::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 
 	bIsDodge = true;
 
-	MoveDir = (Scientia->GetActorLocation() - Player->GetActorLocation());
+	MoveDir = (Scientia->GetLocation() - Player->GetActorLocation());
 
 	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	NavData = NavSys->GetNavDataForProps(Scientia->GetNavAgentPropertiesRef());
@@ -35,6 +35,7 @@ EBTNodeResult::Type UBTTaskScDodge::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 
 	NewLocation = Scientia->GetActorLocation() + (MoveDir.GetSafeNormal() * Scientia->GetDodgeSpeed());
+	NewLocation.Z = Scientia->GetActorLocation().Z;
 
 	FVector LookVector = MoveDir * -1;
 	LookVector.Z = 0.0f;
@@ -58,12 +59,11 @@ void UBTTaskScDodge::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 
 	if (NavData)
 	{
-		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), MoveDir.GetSafeNormal() * 300, QueryFilter);
+		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * 300), QueryFilter);
 		bCanMove = NavSys->TestPathSync(MyAIQuery, EPathFindingMode::Regular);
 	}
 	if (bCanMove)
-	{
-		Scientia->SetActorLocation(FMath::VInterpTo(Scientia->GetActorLocation(), NewLocation, GetWorld()->GetDeltaSeconds(), 4.0f));
+	{		Scientia->SetActorLocation(FMath::VInterpTo(Scientia->GetActorLocation(), NewLocation, GetWorld()->GetDeltaSeconds(), 4.0f));
 	}
 	if (!bIsDodge)
 	{

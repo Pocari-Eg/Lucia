@@ -4,32 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "NavigationSystem.h"
-#include "BTTaskScDodge.generated.h"
+#include "BTTaskScAttack4.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskScDodge : public UBTTaskNode
+class STARRYTAIL_API UBTTaskScAttack4 : public UBTTaskNode
 {
 	GENERATED_BODY()
 public:
-	UBTTaskScDodge();
+	UBTTaskScAttack4();
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	UNavigationSystemV1* NavSys;
-	ANavigationData* NavData;
-
-	TSubclassOf<UNavigationQueryFilter> FilterClass;
-	FSharedConstNavQueryFilter QueryFilter;
-	FPathFindingQuery MyAIQuery;
-
-	FVector MoveDir;
-	FVector NewLocation;
-
-	bool bIsDodge;
-	bool bCanMove;
+	bool bIsDrop;
+	bool bIsMove;
 };

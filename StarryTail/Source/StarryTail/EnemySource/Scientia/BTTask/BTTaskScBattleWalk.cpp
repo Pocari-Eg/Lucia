@@ -23,6 +23,12 @@ EBTNodeResult::Type UBTTaskScBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 
 	MoveRandom = FMath::RandRange(0, 1);
 
+	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
+	NavData = NavSys->GetNavDataForProps(Scientia->GetNavAgentPropertiesRef());
+
+	FilterClass = UNavigationQueryFilter::StaticClass();
+	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
+
 	if (MoveRandom)
 	{
 		DirValue = 1;
@@ -55,8 +61,19 @@ void UBTTaskScBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	const FRotator YawRotation(0, TargetRot.Yaw, 0);
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 
-	Scientia->SetActorLocation(Scientia->GetActorLocation() - ((DirValue * Direction) * Scientia->GetBattleWalkSpeed() * DeltaSeconds));
-	
+	NewLocation = Scientia->GetActorLocation() - ((DirValue * Direction) * Scientia->GetBattleWalkSpeed() * DeltaSeconds);
+
+	if (NavData)
+	{
+		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), NewLocation, QueryFilter);
+		bCanMove = NavSys->TestPathSync(MyAIQuery, EPathFindingMode::Regular);
+	}
+
+	if (bCanMove)
+	{
+		Scientia->SetActorLocation(NewLocation);
+	}
+
 	if (WaitTimer >= WaitTime)
 	{
 		float Distance = Scientia->GetDistanceToPlayer();

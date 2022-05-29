@@ -23,6 +23,10 @@ void UScAnimInstance::PlayRushMontage()
 {
 	Montage_Play(RushMontage);
 }
+void UScAnimInstance::PlayDropMontage()
+{
+	Montage_Play(DropMontage);
+}
 void UScAnimInstance::PlayStuckMontage()
 {
 	Montage_Play(StuckMontage);
@@ -50,6 +54,10 @@ void UScAnimInstance::PlayAttackedFAnimation()
 void UScAnimInstance::PlayCrushedMontage()
 {
 	Montage_Play(CrushedMontage);
+}
+void UScAnimInstance::PlayDeathMontage()
+{
+	Montage_Play(DeathMontage);
 }
 void UScAnimInstance::AnimNotify_Feather()
 {
@@ -95,4 +103,8 @@ void UScAnimInstance::AnimNotify_DodgeEnd()
 void UScAnimInstance::AnimNotify_CrushedEnd()
 {
 	CrushedEnd.Broadcast();
+}
+void UScAnimInstance::AnimNotify_DropEnd()
+{
+	DropEnd.Broadcast();
 }
