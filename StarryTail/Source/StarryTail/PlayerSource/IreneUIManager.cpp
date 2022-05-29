@@ -52,7 +52,8 @@ void UIreneUIManager::InitMemberVariable()
 void UIreneUIManager::Begin()
 {
 	PauseWidget->AddToViewport();
-	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
+	
+
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
 	//사운드 세팅
@@ -62,6 +63,8 @@ void UIreneUIManager::Begin()
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 2.0f);
 
+
+	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	bIsOnPauseWidget = false;
 }
 
@@ -206,8 +209,9 @@ void UIreneUIManager::PauseWidgetOn()
 
 void UIreneUIManager::PauseWidgetOff()
 {
-	if (PauseWidget->WidgetOff() == true) {
+	if (PauseWidget->WidgetOff()) {
 		bIsOnPauseWidget = false;
+
 		PlayerHud->SetVisibility(ESlateVisibility::Visible);
 	}
 }

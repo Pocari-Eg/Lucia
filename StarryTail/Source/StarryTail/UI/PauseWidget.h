@@ -18,13 +18,21 @@ private:
 
 	//키세팅 위젯
 	class UKeySetWidget* KeySetWidget;
-
 	//사운드세팅 위젯
 	class USoundSettingWidget* SoundSetWidget;
+
+	UPROPERTY()
+	class UButton* ResumButton;
+	UPROPERTY()
+	class UButton* SoundWidgetButton;
+	UPROPERTY()
+	class UButton* QuitButton;
 
 public:
 	bool IsKeySetWidgetOn;
 	bool IsSoundSetwidgetOn;
+
+	bool bIsEnableResume;
 	
 public:
 
@@ -33,8 +41,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool WidgetOff();
 
-
-
 	//키세팅 위젯
 	UFUNCTION(BlueprintCallable)
 	void KeySetWidgetOn();
@@ -42,6 +48,9 @@ public:
 	//사운드세팅 위젯
 	UFUNCTION(BlueprintCallable)
 	void SoundSetWidgetOn();
+
+	void DisableButton();
+	void EnableButton();
 
 protected:
 	virtual void NativeOnInitialized() override;

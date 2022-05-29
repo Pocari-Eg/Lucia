@@ -40,10 +40,7 @@ private:
 	FSoundWidget BGMWidget;
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void WidgetOn(UPauseWidget* widget);
-	UFUNCTION(BlueprintCallable)
-	void WidgetOff();
+	void BindPauseWidget(UPauseWidget* CurrentWidget);
 
 protected:
 	// 위젯을 초기화

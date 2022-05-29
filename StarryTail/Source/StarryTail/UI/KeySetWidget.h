@@ -21,19 +21,16 @@ private:
 
 public:
 	UPROPERTY(BluePrintReadOnly)
-	bool IsEmptyKey;
+	bool IsActionEmptyKey;
+
+	UPROPERTY(BluePrintReadOnly)
+	bool IsAxisEmptyKey;
 	UPROPERTY(BluePrintReadOnly)
 	bool IsUpdatekey;
 
-	UPROPERTY()
-	class UButton* ExitButton;
 public:
 
 
-	UFUNCTION(BlueprintCallable)
-		void WidgetOn(UPauseWidget* widget);
-	UFUNCTION(BlueprintCallable)
-		void WidgetOff();
 
 	UFUNCTION(BlueprintCallable)
 		void ChangeActionKey(const FName ActionName, UPARAM(ref) FInputChord& InputKey);
@@ -52,6 +49,8 @@ public:
 	TArray<class UInputKeySelector*> InputAxisKeyArray;
 
 	void SetExitEnable();
+
+	void BindPauseWidget(UPauseWidget* CurrentWidget);
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
