@@ -17,11 +17,9 @@ class STARRYTAIL_API UPauseWidget : public UUserWidget
 private:
 
 	//키세팅 위젯
-	TSubclassOf<class UKeySetWidget> KeySetWidgetClass;
 	class UKeySetWidget* KeySetWidget;
 
 	//사운드세팅 위젯
-	TSubclassOf<class USoundSettingWidget> SoundSetWidgetClass;
 	class USoundSettingWidget* SoundSetWidget;
 
 public:
@@ -36,7 +34,6 @@ public:
 	bool WidgetOff();
 
 
-	virtual void NativeConstruct() override;
 
 	//키세팅 위젯
 	UFUNCTION(BlueprintCallable)
@@ -45,4 +42,7 @@ public:
 	//사운드세팅 위젯
 	UFUNCTION(BlueprintCallable)
 	void SoundSetWidgetOn();
+
+protected:
+	virtual void NativeOnInitialized() override;
 };

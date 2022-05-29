@@ -32,33 +32,6 @@ bool UPauseWidget::WidgetOff()
   
 }
 
-void UPauseWidget::NativeConstruct()
-{
-    Super::NativeConstruct();
-    UE_LOG(LogTemp, Error, TEXT("Init UMG"));
-
-   //KeySet widget
-    KeySetWidgetClass = LoadClass<UKeySetWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_KeysettingWidget.BP_KeysettingWidget_C"), NULL, LOAD_None, NULL);
-    
-
-    if (KeySetWidgetClass !=nullptr)
-    {
-        KeySetWidget = CreateWidget<UKeySetWidget>(GetWorld(), KeySetWidgetClass);
-        KeySetWidget->AddToViewport();
-        KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
-    }
-
-    // widget
-    SoundSetWidgetClass = LoadClass<USoundSettingWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_SoundSettingWidget.BP_SoundSettingWidget_C"), NULL, LOAD_None, NULL);
-
-
-    if (SoundSetWidgetClass != nullptr)
-    {
-        SoundSetWidget = CreateWidget<USoundSettingWidget>(GetWorld(), SoundSetWidgetClass);
-        SoundSetWidget->AddToViewport();
-        SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
-    }
-}
 
 void UPauseWidget::KeySetWidgetOn()
 {
@@ -72,6 +45,18 @@ void UPauseWidget::SoundSetWidgetOn()
 {
     IsSoundSetwidgetOn = true;
     SoundSetWidget->WidgetOn(this);
+}
+
+void UPauseWidget::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    KeySetWidget = Cast<UKeySetWidget>(GetWidgetFromName(TEXT("BP_KeysettingWidget")));
+    SoundSetWidget = Cast<USoundSettingWidget>(GetWidgetFromName(TEXT("BP_SoundSettingWidget")));
+
+    KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
+    SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 
