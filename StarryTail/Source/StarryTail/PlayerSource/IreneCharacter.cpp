@@ -239,6 +239,10 @@ void AIreneCharacter::BeginPlay()
 	
 	FOnAttributeChange.Broadcast();
 
+
+
+
+	InitComplete();
 }
 
 void AIreneCharacter::PostInitializeComponents()

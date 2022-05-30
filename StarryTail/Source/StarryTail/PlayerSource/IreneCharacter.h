@@ -181,6 +181,9 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	void PlayFadeInAnimation();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void InitComplete();
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();

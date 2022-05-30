@@ -40,6 +40,7 @@ void UIreneUIManager::Init(AIreneCharacter* Value)
 
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
+
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
