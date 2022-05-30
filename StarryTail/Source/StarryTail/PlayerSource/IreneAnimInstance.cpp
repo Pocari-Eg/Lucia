@@ -82,6 +82,7 @@ void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 
 void UIreneAnimInstance::PlayAttackMontage()
 {
+	// 현재 속성에 따라 기본공격 몽타주 실행하는 함수
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		Montage_Play(FireAttackMontage, 1.0f);
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
@@ -92,6 +93,7 @@ void UIreneAnimInstance::PlayAttackMontage()
 }
 void UIreneAnimInstance::PlaySkillAttackMontage()
 {
+	// 현재 속성에 따라 스킬 몽타주를 실행하는 함수
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		Montage_Play(FireSkillMontage, 1.0f);
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
@@ -102,6 +104,7 @@ void UIreneAnimInstance::PlaySkillAttackMontage()
 
 void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 {
+	// 다음 기본공격의 세션을 현재 세션이 종료되면 시작시키는 함수
 	if (NewSection > 1)
 	{
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
@@ -114,32 +117,29 @@ void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 }
 void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 {
+	// 다음 기본공격의 세션을 즉시 시작시키는 함수
 	if (NewSection > 1)
 	{
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-		{
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), FireAttackMontage);
-		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-		{
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), WaterAttackMontage);
-		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
-		{
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
-		}
 	}
 }
 void UIreneAnimInstance::NextToEffectAttackMontageSection(const int32 NewSection)
 {
+	// 다음 스킬의 세션을 현재 세션이 종료되면 시작시키는 함수
+	// 현재 스킬은 한 세션만 사용하므로 수정필요
 	if (NewSection > 1)
 	{
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireSkillMontage);
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireSkillMontage);
 		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterSkillMontage);
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterSkillMontage);
 		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderSkillMontage);
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderSkillMontage);
 	}
 }
 
@@ -162,7 +162,6 @@ void UIreneAnimInstance::AnimNotify_MoveSkipCheck() const
 {
 	Irene->IreneAttack->SetCanMoveSkip(true);
 }
-
 
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {

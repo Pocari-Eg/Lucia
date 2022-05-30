@@ -132,9 +132,15 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Power;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Attack_Count;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Pre_Attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Gage;
+	float Stamina;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Gauge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Charge_Time_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -160,29 +166,7 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Form;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Gauge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;
-};
-USTRUCT(BlueprintType)
-struct FFormDataTable : public FTableRowBase
-{
-	GENERATED_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Form_Type;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int F_Gauge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Gauge_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Gauge_Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Gauge_Recovery;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Hit_Gauge_Re;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Open_Gauge;
 };
 USTRUCT(BlueprintType)
 struct FFormTimeDataTable : public FTableRowBase
@@ -190,19 +174,13 @@ struct FFormTimeDataTable : public FTableRowBase
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Form_Type;
+	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int F_Gauge;
+	int Form_Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Recovery_Speed;
+	int Form_C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Decrease_Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Hit_Gauge_Re;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Gauge_C_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Open_Gauge;
+	int Target_Collision;
 };
 
 USTRUCT(Atomic, BlueprintType)

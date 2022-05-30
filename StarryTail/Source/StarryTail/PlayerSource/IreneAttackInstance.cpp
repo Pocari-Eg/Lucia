@@ -21,6 +21,11 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
 	}
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormTimeDataTable(TEXT("/Game/Math/BP_FormTimeDataTable.BP_FormTimeDataTable"));
+	if (DT_FormTimeDataTable.Succeeded())
+	{
+		FormTimeDataTable = DT_FormTimeDataTable.Object;
+	}
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -58,6 +63,8 @@ float UIreneAttackInstance::GetATK()const
 
 int UIreneAttackInstance::GetAttackDirection()
 {
+	// 공격 방향을 지정하는 함수로 공격 데미지를 보낼 때 같이 보냄
+	// 현재 공격방식에 따라 방향이 달라 수정필요
 	// 0 == Right to Left
 	// 1 == Left to Right
 	// 2 == Down to Up
@@ -75,19 +82,11 @@ int UIreneAttackInstance::GetAttackDirection()
 	{
 		return 0;
 	}
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
-	{
-		return 1;
-	}
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack5"))
-	{
-		return 3;
-	}
-
 	return 0;
 }
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
+	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
 	FString AttributeName = "B_Attack_1";
 	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 	{
@@ -117,35 +116,39 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 }
 FName UIreneAttackInstance::GetActionAttackDataTableName()
 {
+	// 스킬 데이터 테이블 이름 받기 위해 현재 속성에 따라 해당하는 이름을 리턴하는 함수
 	FName ActionForm = FName("");
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
-		ActionForm = FName("ActionKeyword_1_F");
+		ActionForm = FName("Skill_F");
 	}
 	else if(Attribute == EAttributeKeyword::e_Water)
 	{
-		ActionForm = FName("ActionKeyword_1_W");
+		ActionForm = FName("Skill_W");
 	}
 	else if(Attribute == EAttributeKeyword::e_Thunder)
 	{
-		ActionForm = FName("ActionKeyword_1_T");
+		ActionForm = FName("Skill_T");
 	}
 	return ActionForm;
 }
 
 void UIreneAttackInstance::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
+	// 몽타주가 완전히 끝남
 	Irene->IreneData.IsAttacking = false;
 	AttackEndComboState();
 }
 void UIreneAttackInstance::AttackStartComboState()
 {
+	// 노티파이 NextAttackCheck 도달 시 실행
 	Irene->IreneData.CanNextCombo = true;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = FMath::Clamp<int32>(Irene->IreneData.CurrentCombo + 1, 1, Irene->IreneData.MaxCombo);
 }
 void UIreneAttackInstance::AttackEndComboState()
 {
+	// 몽타주가 완전히 끝남
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 	Irene->IreneInput->bUseLeftButton = false;
 	Irene->IreneInput->bUseRightButton = false;
@@ -162,6 +165,7 @@ void UIreneAttackInstance::AttackEndComboState()
 
 void UIreneAttackInstance::AttackCheck()
 {
+	// 노티파이 AttackHitCheck 도달 시 실행
 	if (Irene->IreneAnim->GetCurrentActiveMontage())
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(true);
@@ -169,6 +173,7 @@ void UIreneAttackInstance::AttackCheck()
 
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 		{
+			// 타겟몬스터가 필요 없는 조건
 			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage")&&
 				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill_Montage"))
 			{
@@ -184,11 +189,14 @@ void UIreneAttackInstance::AttackCheck()
 }
 void UIreneAttackInstance::AttackStopCheck()
 {
+	// 노티파이 AttackStopCheck 도달 시 실행
 	Irene->IsTimeStopping = false;
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 }
 void UIreneAttackInstance::DoAttack()
 {
+	// 실제로 공격을 하는 함수로 위에는 속성에 따른 콜라이더 사용과 아래에는 콜라이더를 보여주는 역할을 하는 코드가 있는 함수
+	
 	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	//if (STGameInstance->GetPlayerBattleState())
 	//{
@@ -284,7 +292,7 @@ void UIreneAttackInstance::DoAttack()
 				Params);
 		}
 	}
-
+	// 그리기 시작
 	#if ENABLE_DRAW_DEBUG
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
@@ -357,12 +365,14 @@ void UIreneAttackInstance::DoAttack()
 		}
 	}
 	#endif
-	
+
+	// 스킬이면 마나사용으로 취급 (몬스터 데미지 계산에 필요)
 	if(Irene->IreneState->IsSkillState())
 		bUseMP = true;
 	else
 		bUseMP = false;
-	
+
+	// 모든 충돌된 액터에 데미지 전송
 	for (FHitResult Monster : MonsterList)
 	{
 		if (bResult)
@@ -380,6 +390,7 @@ void UIreneAttackInstance::DoAttack()
 			}
 		}
 	}
+	// 충돌한 액터가 있으면 카메라 쉐이크 시작
 	if (bResult)
 		Irene->CameraShakeOn = true;
 	
@@ -398,6 +409,7 @@ void UIreneAttackInstance::DoAttack()
 #pragma region State
 void UIreneAttackInstance::SetAttackState()const
 {
+	// 현재 속성과 상태를 이용하여 다음 기본공격 상태로 전이 할 수 있는지 확인하는 함수
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
@@ -455,6 +467,7 @@ void UIreneAttackInstance::SetAttackState()const
 }
 void UIreneAttackInstance::SetSkillState()const
 {
+	// 현재 속성을 이용하여 해당하는 스킬 상태로 전이 할 수 있는지 확인하는 함수
 	if(Attribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_F_Start")) != 0
@@ -482,3 +495,17 @@ void UIreneAttackInstance::SetSkillState()const
 }
 
 #pragma endregion State
+
+#pragma region GetSet
+FName UIreneAttackInstance::GetAttributeToFormTimeDataTableName() const
+{
+	// 현재 속성에 따라 FormTimeDataTable에서 사용하는 Name 리턴하는 함수
+	switch (Attribute)
+	{
+	case EAttributeKeyword::e_Fire: return FName("Fire_Form");
+	case EAttributeKeyword::e_Water: return FName("Water_Form");
+	case EAttributeKeyword::e_Thunder: return FName("Thunder_Form");
+	default: return FName("Error GetAttributeToFormTimeDataTableName");
+	}
+}
+#pragma endregion GetSet

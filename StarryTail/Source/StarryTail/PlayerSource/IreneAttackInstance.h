@@ -26,7 +26,9 @@ private:
 
 	UPROPERTY()
 	UDataTable* AttackDataTable;
-
+	UPROPERTY()
+	UDataTable* FormTimeDataTable;
+	
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1
@@ -73,6 +75,7 @@ public:
 	void SetSkillState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
+	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
 
 #pragma region GetSet
 	//공격력 반환
@@ -93,6 +96,7 @@ public:
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetUseMP()const {return bUseMP;}
 	bool GetCanMoveSkip()const{return bMoveSkip;}
+	FName GetAttributeToFormTimeDataTableName()const;
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}

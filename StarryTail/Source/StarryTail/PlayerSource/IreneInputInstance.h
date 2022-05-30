@@ -77,6 +77,7 @@ public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
+	void Begin();
 	void ChangeForm(const EAttributeKeyword Value);
 
 #pragma region Move
@@ -92,6 +93,8 @@ public:
 	void MoveA(float Rate);
 	void MoveS(float Rate);
 	void MoveD(float Rate);
+
+	FVector GetMoveKeyToDirVector();
 #pragma endregion Move
 
 #pragma region OtherInput
