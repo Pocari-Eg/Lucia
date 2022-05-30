@@ -49,8 +49,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float ArbitraryConstValueB; // 임의의 상수 B
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ArbitraryConstValueC; // 임의의 상수 C
-
+		float ArbitraryConstValueC; // 임의의 상수 C
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float HalvedValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float NormalValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float CriticalValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEnemyRank EnemyRank; // 몬스터 등급
    
