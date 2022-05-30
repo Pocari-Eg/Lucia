@@ -37,6 +37,7 @@ bool UPauseWidget::WidgetOff()
 
 void UPauseWidget::KeySetWidgetOn()
 {
+    EnableButton();
     SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
     IsKeySetWidgetOn = true;
     KeySetWidget->SetVisibility(ESlateVisibility::Visible);
@@ -46,6 +47,7 @@ void UPauseWidget::KeySetWidgetOn()
 
 void UPauseWidget::SoundSetWidgetOn()
 {
+    EnableButton();
     KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
     IsSoundSetwidgetOn = true;
     SoundSetWidget->SetVisibility(ESlateVisibility::Visible);
