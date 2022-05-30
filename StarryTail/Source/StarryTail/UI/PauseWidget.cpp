@@ -5,12 +5,14 @@
 #include "Kismet/GameplayStatics.h"
 #include "KeySetWidget.h"
 #include"SoundSettingWidget.h"
+#include "Components/Button.h"
 #include "Components/InputKeySelector.h"
 
 
 void UPauseWidget::WidgetOn()
 {
  
+    bIsEnableResume = true;
     SetVisibility(ESlateVisibility::Visible);
     GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameAndUI());
     GetWorld()->GetFirstPlayerController()->SetShowMouseCursor(true);
@@ -19,7 +21,7 @@ void UPauseWidget::WidgetOn()
 
 bool UPauseWidget::WidgetOff()
 {
-    if (IsSoundSetwidgetOn == false && IsKeySetWidgetOn == false) {
+    if (bIsEnableResume == true) {
         UGameplayStatics::SetGamePaused(GetWorld(), false);
         SetVisibility(ESlateVisibility::Hidden);
         GetWorld()->GetFirstPlayerController()->SetInputMode(FInputModeGameOnly());
@@ -32,46 +34,58 @@ bool UPauseWidget::WidgetOff()
   
 }
 
-void UPauseWidget::NativeConstruct()
-{
-    Super::NativeConstruct();
-    UE_LOG(LogTemp, Error, TEXT("Init UMG"));
-
-   //KeySet widget
-    KeySetWidgetClass = LoadClass<UKeySetWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_KeysettingWidget.BP_KeysettingWidget_C"), NULL, LOAD_None, NULL);
-    
-
-    if (KeySetWidgetClass !=nullptr)
-    {
-        KeySetWidget = CreateWidget<UKeySetWidget>(GetWorld(), KeySetWidgetClass);
-        KeySetWidget->AddToViewport();
-        KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
-    }
-
-    // widget
-    SoundSetWidgetClass = LoadClass<USoundSettingWidget>(NULL, TEXT("/Game/UI/BluePrint/Setting/BP_SoundSettingWidget.BP_SoundSettingWidget_C"), NULL, LOAD_None, NULL);
-
-
-    if (SoundSetWidgetClass != nullptr)
-    {
-        SoundSetWidget = CreateWidget<USoundSettingWidget>(GetWorld(), SoundSetWidgetClass);
-        SoundSetWidget->AddToViewport();
-        SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
-    }
-}
 
 void UPauseWidget::KeySetWidgetOn()
 {
+    EnableButton();
+    SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
     IsKeySetWidgetOn = true;
-    KeySetWidget->WidgetOn(this);
+    KeySetWidget->SetVisibility(ESlateVisibility::Visible);
   
     
 }
 
 void UPauseWidget::SoundSetWidgetOn()
 {
+    EnableButton();
+    KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
     IsSoundSetwidgetOn = true;
-    SoundSetWidget->WidgetOn(this);
+    SoundSetWidget->SetVisibility(ESlateVisibility::Visible);
+}
+
+void UPauseWidget::DisableButton()
+{
+    bIsEnableResume = false;
+    ResumButton->SetIsEnabled(false);
+    SoundWidgetButton->SetIsEnabled(false);
+    QuitButton->SetIsEnabled(false);
+}
+
+void UPauseWidget::EnableButton()
+{
+    bIsEnableResume = true;
+    ResumButton->SetIsEnabled(true);
+    SoundWidgetButton->SetIsEnabled(true);
+    QuitButton->SetIsEnabled(true);
+}
+
+void UPauseWidget::NativeOnInitialized()
+{
+    Super::NativeOnInitialized();
+
+    KeySetWidget = Cast<UKeySetWidget>(GetWidgetFromName(TEXT("BP_KeysettingWidget")));
+    SoundSetWidget = Cast<USoundSettingWidget>(GetWidgetFromName(TEXT("BP_SoundSettingWidget")));
+
+   ResumButton = Cast<UButton>(GetWidgetFromName(TEXT("Resume")));
+   SoundWidgetButton = Cast<UButton>(GetWidgetFromName(TEXT("SoundSetting")));
+   QuitButton = Cast<UButton>(GetWidgetFromName(TEXT("Quit")));
+
+    KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
+    SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
+
+
+    KeySetWidget->BindPauseWidget(this);
+    SoundSetWidget->BindPauseWidget(this);
 }
 
 

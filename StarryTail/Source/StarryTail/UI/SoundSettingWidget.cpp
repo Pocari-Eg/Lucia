@@ -4,20 +4,10 @@
 
 #include "SoundSettingWidget.h"
 
-void USoundSettingWidget::WidgetOn(UPauseWidget* widget)
-{
-	SoundWidgetSet();
-	PauseWidget = widget;
-	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-	this->SetVisibility(ESlateVisibility::Visible);
-}
 
-void USoundSettingWidget::WidgetOff()
+void USoundSettingWidget::BindPauseWidget(UPauseWidget* CurrentWidget)
 {
-	PauseWidget->IsSoundSetwidgetOn = false;
-	SoundSettingSave();
-	this->SetVisibility(ESlateVisibility::Hidden);
-	PauseWidget->SetVisibility(ESlateVisibility::Visible);
+	PauseWidget = CurrentWidget;
 }
 
 void USoundSettingWidget::NativeOnInitialized()

@@ -3,26 +3,14 @@
 
 #include "KeySetWidget.h"
 #include "GameFramework/InputSettings.h"
-#include "Components/Button.h"
 #include "Kismet/KismetInputLibrary.h"
-void UKeySetWidget::WidgetOn(UPauseWidget* widget)
-{
-	PauseWidget = widget;
-	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
-	this->SetVisibility(ESlateVisibility::Visible);
-	IsEmptyKey = false;
-}
 
-void UKeySetWidget::WidgetOff()
-{
-	PauseWidget->IsKeySetWidgetOn = false;
-	this->SetVisibility(ESlateVisibility::Hidden);
-	PauseWidget->SetVisibility(ESlateVisibility::Visible);
-}
 
 void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
 {
 		TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
+		TArray< FInputAxisKeyMapping> CurrentAxisMapping = UInputSettings::GetInputSettings()->GetAxisMappings();
+
 		FName SameKeyName;
 
 		for (int i = 0; i < CurrentActionMapping.Num(); i++)
@@ -40,7 +28,21 @@ void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputCh
 
 
 			}
-			else {
+		}
+
+		for (int i = 0; i < CurrentAxisMapping.Num(); i++)
+		{
+			FInputChord currentkey(CurrentAxisMapping[i].Key);
+
+			if (InputKey.Key == currentkey.Key)
+			{
+				SameKeyName = CurrentAxisMapping[i].AxisName;
+				TArray<FInputAxisKeyMapping> Refresh;
+				UInputSettings::GetInputSettings()->GetAxisMappingByName(SameKeyName, Refresh);
+				UInputSettings::GetInputSettings()->RemoveAxisMapping(Refresh[0], false);
+				FInputAxisKeyMapping Rfreshkey(SameKeyName, NONE);
+				UInputSettings::GetInputSettings()->AddAxisMapping(Rfreshkey, false);
+
 
 			}
 		}
@@ -53,12 +55,14 @@ void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputCh
 	
 
 		UpdateActionKeyName();
+		UpdateAxisKeyName();
 		SetExitEnable();
 }
 
 
 void UKeySetWidget::ChangeAxisKey(const FName AxisName, UPARAM(ref)FInputChord& InputKey)
 {
+	TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
 	TArray< FInputAxisKeyMapping> CurrentAxisMapping = UInputSettings::GetInputSettings()->GetAxisMappings();
 	FName SameKeyName;
 
@@ -72,12 +76,25 @@ void UKeySetWidget::ChangeAxisKey(const FName AxisName, UPARAM(ref)FInputChord& 
 			TArray<FInputAxisKeyMapping> Refresh;
 			UInputSettings::GetInputSettings()->GetAxisMappingByName(SameKeyName, Refresh);
 			UInputSettings::GetInputSettings()->RemoveAxisMapping(Refresh[0], false);
-			FInputAxisKeyMapping Rfreshkey(SameKeyName);
+			FInputAxisKeyMapping Rfreshkey(SameKeyName,NONE);
 			UInputSettings::GetInputSettings()->AddAxisMapping(Rfreshkey, false);
 
 
 		}
-		else {
+	}
+	for (int i = 0; i < CurrentActionMapping.Num(); i++)
+	{
+		FInputChord currentkey(CurrentActionMapping[i].Key, CurrentActionMapping[i].bShift, CurrentActionMapping[i].bCtrl, CurrentActionMapping[i].bAlt, CurrentActionMapping[i].bCmd);
+
+		if (InputKey.Key == currentkey.Key)
+		{
+			SameKeyName = CurrentActionMapping[i].ActionName;
+			TArray<FInputActionKeyMapping> Refresh;
+			UInputSettings::GetInputSettings()->GetActionMappingByName(SameKeyName, Refresh);
+			UInputSettings::GetInputSettings()->RemoveActionMapping(Refresh[0], false);
+			FInputActionKeyMapping Rfreshkey(SameKeyName, NONE, false, false, false, false);
+			UInputSettings::GetInputSettings()->AddActionMapping(Rfreshkey, false);
+
 
 		}
 	}
@@ -90,6 +107,7 @@ void UKeySetWidget::ChangeAxisKey(const FName AxisName, UPARAM(ref)FInputChord& 
 
 
 	UpdateAxisKeyName();
+	UpdateActionKeyName();
 	SetExitEnable();
 }
 
@@ -99,7 +117,7 @@ void UKeySetWidget::UpdateActionKeyName()
 
 	int InputkeyNum = InputActionKeyArray.Num();
 	int CurrentKeyNum = CurrentAction.Num();
-	IsEmptyKey = false;
+	IsActionEmptyKey = false;
 	IsUpdatekey = true;
 	for (int i = 0; i < CurrentKeyNum; i++)
 	{
@@ -108,7 +126,7 @@ void UKeySetWidget::UpdateActionKeyName()
 
 		if (Update.Key == NONE)
 		{
-			IsEmptyKey = true;
+			IsActionEmptyKey = true;
 		}
 		for (int j = 0; j < InputkeyNum; j++)
 		{
@@ -130,7 +148,7 @@ void UKeySetWidget::UpdateAxisKeyName()
 
 	int InputkeyNum = InputAxisKeyArray.Num();
 	int CurrentKeyNum = CurrentAxis.Num();
-	IsEmptyKey = false;
+	IsAxisEmptyKey = false;
 	IsUpdatekey = true;
 	for (int i = 0; i < CurrentKeyNum; i++)
 	{
@@ -139,7 +157,7 @@ void UKeySetWidget::UpdateAxisKeyName()
 
 		if (Update.Key == NONE)
 		{
-			IsEmptyKey = true;
+			IsAxisEmptyKey = true;
 			STARRYLOG_S(Error);
 		}
 		for (int j = 0; j < InputkeyNum; j++)
@@ -158,13 +176,23 @@ void UKeySetWidget::UpdateAxisKeyName()
 
 void UKeySetWidget::SetExitEnable()
 {
-	IsEmptyKey == true ? ExitButton->SetIsEnabled(false) : ExitButton->SetIsEnabled(true);
+	if (IsAxisEmptyKey == false&& IsActionEmptyKey == false)
+	{
+		PauseWidget->EnableButton();
+	}
+	else {
+		PauseWidget->DisableButton();
+	}
+}
+
+void UKeySetWidget::BindPauseWidget(UPauseWidget* CurrentWidget)
+{
+	PauseWidget = CurrentWidget;
 }
 
 void UKeySetWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
-	ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("Exit")));
 }
 
 
