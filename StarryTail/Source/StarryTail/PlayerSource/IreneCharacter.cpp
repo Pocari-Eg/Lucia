@@ -12,14 +12,12 @@
 #include "DrawDebugHelpers.h"
 #include "../STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "Kismet/GameplayStatics.h"
 #include "../StarryTailGameMode.h"
 #include "IreneUIManager.h"
 #include "IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
-#include "WaterBasicAttack.h"
 #include ".././EnemySource/Scientia/Feather.h"
 #include ".././EnemySource/Scientia/Piece.h"
 #include "Curves/CurveVector.h"
@@ -235,8 +233,10 @@ void AIreneCharacter::BeginPlay()
 
 	// 애니메이션 속성 초기화
 	IreneAnim->SetAttribute(IreneAttack->GetAttribute());
+	
 	IreneUIManager->Begin();
-
+	IreneInput->Begin();
+	
 	FOnAttributeChange.Broadcast();
 
 }
@@ -261,6 +261,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
+		STARRYLOG_S(Error);
 			IreneData.CanNextCombo = false;
 			if (IreneData.IsComboInputOn)
 			{
@@ -279,6 +280,7 @@ void AIreneCharacter::PostInitializeComponents()
 
 void AIreneCharacter::TargetReset()const
 {
+	// 타겟을 조건에 따라 초기화하는 함수
 	if (IreneAttack->TargetMonster != nullptr)
 	{
 		// 타겟몹이 죽거나 거리가 멀어지면 초기화
@@ -353,6 +355,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()
 {
+	// 가장 가까운 몬스터를 찾고 공격범위 보다 멀면 다가가게 하고 공격하는 함수
+	
 	if(IreneAttack->TargetMonster!=nullptr && IreneState->IsFirstAttack())
 	{
 		// 기존 타겟팅 취소
@@ -361,19 +365,7 @@ void AIreneCharacter::FindNearMonster()
 		IreneAnim->SetIsHaveTargetMonster(false);
 		IreneAttack->TargetMonster = nullptr;
 	}
-
-	TUniquePtr<FAttackDataTable> Table;
-	if(IreneState->GetStateToAttackDataTableName() != FName("Error GetStateToAttackDataTableName"))	
-		Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(IreneState->GetStateToAttackDataTableName()));	
-	else	
-		Table = MakeUnique<FAttackDataTable>(*IreneAttack->GetNameAtAttackDataTable(FName("B_Attack_1_F")));
 	
-	if (Table != nullptr)
-	{
-		// 공격력 계산
-		IreneData.Strength = Table->ATTACK_DAMAGE_1;
-	}
-
 	// 몹 추적 박스 크기
 	float Far = 300;
 	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
@@ -407,7 +399,8 @@ void AIreneCharacter::FindNearMonster()
 
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
-	{		
+	{
+		// 몹을 따라가는 조건
 		if(IreneState->IsFirstAttack() || IreneInput->bUseRightButton)
 		{
 			const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
@@ -439,6 +432,7 @@ void AIreneCharacter::FindNearMonster()
 }
 void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const
 {
+	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
 	// 최대거리
 	float NearPosition = Far;
 	
@@ -511,6 +505,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 }
 void AIreneCharacter::SetNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const
 {
+	// 가장 가까운 몬스터를 타겟 몬스터로 지정하는 함수
 	NearPosition = FindNearTarget;
 	if (IreneAttack->TargetMonster == nullptr)
 	{
@@ -605,6 +600,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 
 void AIreneCharacter::ActionEndChangeMoveState()const
 {
+	// 현재 키 입력에 따라 상태를 전이하는 함수
 	if (IreneInput->MoveKey[0] > 2)
 		IreneInput->MoveKey[0] -= 2;
 	if (IreneInput->MoveKey[1] > 2)
@@ -632,21 +628,18 @@ void AIreneCharacter::ActionEndChangeMoveState()const
 #pragma region HitFeel
 float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
 {
-	FVector IreneFoward = GetCapsuleComponent()->GetForwardVector();
-	FVector CameraFoward = -1.0f*(CameraComp->GetForwardVector());
-	FVector CameraUp = CameraComp->GetUpVector();
+	const FVector IreneForward = GetCapsuleComponent()->GetForwardVector();
+	const FVector CameraForward = -1.0f*(CameraComp->GetForwardVector());
+	const FVector CameraUp = CameraComp->GetUpVector();
 
-    FRotator rot(0.0f, Angle,0.0f);
+    FRotator Rot(0.0f, Angle,0.0f);
 
-	FVector IreneRight = rot.RotateVector(IreneFoward);
-	rot = FRotator(0.0f, -Angle, 0.0f);
-	FVector IreneLeft = rot.RotateVector(IreneFoward);
-
-
+	const FVector IreneRight = Rot.RotateVector(IreneForward);
+	Rot = FRotator(0.0f, -Angle, 0.0f);
+	const FVector IreneLeft = Rot.RotateVector(IreneForward);	
 	
-	
-	float RightAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraFoward, IreneRight)));
-	float LeftAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraFoward, IreneLeft)));
+	const float RightAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraForward, IreneRight)));
+	const float LeftAngle = FMath::RadiansToDegrees(FMath::Acos(FVector::DotProduct(CameraForward, IreneLeft)));
 
 	bool bIsLeftClose = false;
 
@@ -655,19 +648,19 @@ float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
 	bool bIsLeftRotation = false;
 	if (bIsLeftClose)
 	{
-		FVector cross = FVector::CrossProduct(CameraFoward, IreneLeft);
+		const FVector Cross = FVector::CrossProduct(CameraForward, IreneLeft);
 
-		float dot = FVector::DotProduct(CameraUp, cross);
+		const float Dot = FVector::DotProduct(CameraUp, Cross);
 
-		if (dot > 0)bIsLeftRotation = true;
+		if (Dot > 0)bIsLeftRotation = true;
 		else bIsLeftRotation = false;
 	}
 	else {
-		FVector cross = FVector::CrossProduct(CameraFoward, IreneRight);
+		const FVector Cross = FVector::CrossProduct(CameraForward, IreneRight);
 
-		float dot = FVector::DotProduct(CameraUp, cross);
+		const float Dot = FVector::DotProduct(CameraUp, Cross);
 
-		if (dot > 0)bIsLeftRotation = true;
+		if (Dot > 0)bIsLeftRotation = true;
 		else bIsLeftRotation = false;
 	}
 
@@ -698,6 +691,7 @@ void AIreneCharacter::OnRadialBlur()
 }
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
+	// 공격을 해서 몹과 충돌을 하면 함수가 실행되며 카메라 쉐이크를 하는 함수
 	if (CameraShakeOn)
 	{
 		if(!FixedUpdateCameraShakeTimer.IsValid())

@@ -9,8 +9,6 @@
 #include "IreneUIManager.h"
 #include "../STGameInstance.h"
 
-#include "DrawDebugHelpers.h"
-
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
 	SetIreneCharacter(Value);
@@ -47,18 +45,23 @@ void UIreneInputInstance::InitMemberVariable()
 
 	ThunderSkillCount = 2;
 
-	FireMaxCoolTime = 10.0f;
 	FireCurCoolTime = 0.0f;
-
-	WaterMaxCoolTime = 10.0f;
 	WaterCurCoolTime = 0.0f;
-
-	ThunderMaxCoolTime = 10.0f;
 	ThunderCurCoolTime = 0.0f;
 
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
+}
+void UIreneInputInstance::Begin()
+{
+	const TUniquePtr<FFormTimeDataTable> FormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(Irene->IreneAttack->GetAttributeToFormTimeDataTableName()));
+	if(!FormTimeDataTable)
+	{
+		FireMaxCoolTime = FormTimeDataTable->Form_C_Time;
+		WaterMaxCoolTime = FormTimeDataTable->Form_C_Time;
+		ThunderMaxCoolTime = FormTimeDataTable->Form_C_Time;
+	}
 }
 
 #pragma region Move
@@ -95,6 +98,7 @@ void UIreneInputInstance::MoveRight()
 
 void UIreneInputInstance::MoveAuto(const float EndTimer)const
 {
+	// 자동으로 이동시키는 함수
 	// 이동 후 공격
 	if (Irene->IreneAttack->GetFollowTarget())
 	{
@@ -108,6 +112,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 		FString AnimName = "";
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 			AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
+		// 전기스킬은 다른 방식으로 공격 실행
 		if (FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50 && AnimName != FString("IreneThunderSkill_Montage"))
 		{
 			Irene->IreneAttack->DoAttack();
@@ -132,6 +137,8 @@ void UIreneInputInstance::StopJump()
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
+	// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
+	// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
 	if (CanRunState())
 	{
 		MoveKey[Value] = 1;
@@ -178,18 +185,50 @@ void UIreneInputInstance::MoveD(float Rate)
 	else
 		MoveKey[3] = 0;
 }
+FVector UIreneInputInstance::GetMoveKeyToDirVector()
+{
+	// 현재 키에 따라 방향 리턴 함수
+	const FRotator Rotation = Irene->Controller->GetControlRotation();
+	const FRotator YawRotation(0, Rotation.Yaw, 0);
+	FVector LookDir = FVector::ZeroVector;
+	if (MoveKey[0] != 0 && MoveKey[0] < 3)
+	{
+		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+	}
+	if (MoveKey[2] != 0 && MoveKey[2] < 3)
+	{
+		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
+	}
+	if (MoveKey[1] != 0 && MoveKey[1] < 3)
+	{
+		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
+	}
+	if (MoveKey[3] != 0 && MoveKey[3] < 3)
+	{
+		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+	}
+	if(LookDir == FVector::ZeroVector)
+		LookDir = Irene->GetActorForwardVector();
+	LookDir.Normalize();
+
+	return LookDir;
+}
+
 #pragma endregion MoveInput
 
 #pragma region Input
 void UIreneInputInstance::Turn(float Rate)
 {
+	// 마우스 좌우 이동
 	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
 		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 2);
 }
 void UIreneInputInstance::LookUp(float Rate)
 {
+	// 마우스 상하 이동
 	const float Yaw = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch) + Rate * Irene->IreneData.EDPI * Irene->WorldController->InputPitchScale;
 
+	// 시야각 제한
 	if (Yaw < 50)
 	{
 		if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
@@ -208,6 +247,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 			if(!AttackTable)
 			{
+				// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용하며 불 스킬은 UIreneInputInstance::RightButtonReleased에서 데미지 설정을 함
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
 			}
 			
@@ -228,6 +268,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 				}
 				else
 				{
+					// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
 					Irene->IreneData.CurrentCombo += 1;
 					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				}
@@ -272,32 +313,9 @@ void UIreneInputInstance::RightButtonPressed()
 	if (CanAttackState() && !bUseLeftButton && !SkillWaitHandle.IsValid())
 	{
 		IsCharging = true;
-		ChargingTime = 0.0f;
-		
-		const FRotator Rotation = Irene->Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-		FVector LookDir = FVector::ZeroVector;
-		if (MoveKey[0] != 0 && MoveKey[0] < 3)
-		{
-			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-		}
-		if (MoveKey[2] != 0 && MoveKey[2] < 3)
-		{
-			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
-		}
-		if (MoveKey[1] != 0 && MoveKey[1] < 3)
-		{
-			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
-		}
-		if (MoveKey[3] != 0 && MoveKey[3] < 3)
-		{
-			LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-		}
-		if(LookDir == FVector::ZeroVector)
-			LookDir = Irene->GetActorForwardVector();
-		LookDir.Normalize();
+		ChargingTime = 0.0f;		
 
-		Irene->SetActorRotation(LookDir.Rotation());
+		Irene->SetActorRotation(GetMoveKeyToDirVector().Rotation());
 		
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
@@ -415,6 +433,7 @@ void UIreneInputInstance::RightButtonReleased()
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
+	// 줌인줌아웃
 	Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
 	Irene->STGameInstance->GetPlayerBattleState()==true?
@@ -425,6 +444,7 @@ void UIreneInputInstance::MouseWheel(float Rate)
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
 {
+	// 속성을 변화시키는 함수
 	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
 	{
 		if(Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
@@ -433,7 +453,6 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 			ChangeForm(Attribute);
 		if(Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
 			ChangeForm(Attribute);
-
 	}
 }
 
@@ -451,6 +470,7 @@ void UIreneInputInstance::ElectricKeywordReleased()
 }
 void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 {
+	// 속성을 변화시키고 그에 따른 UI와 사운드 적용
 	Irene->IreneAttack->SetAttribute(Value);
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
 	Irene->FOnAttributeChange.Broadcast();
@@ -518,44 +538,16 @@ void UIreneInputInstance::DodgeKeyword()
 		// 			}
 		// 		}), WaitTime, false);
 		// }
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina >= 75)
-		{
-			
-		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f && !Irene->IreneState->IsJumpState())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 37.5f;
 			Irene->ChangeStateAndLog(UDodgeThunderStartState::GetInstance());
 
-			const FRotator Rotation = Irene->Controller->GetControlRotation();
-			const FRotator YawRotation(0, Rotation.Yaw, 0);
-			FVector ThunderDodgeTargetDir = FVector::ZeroVector;
-
-			if (MoveKey[0] != 0 && MoveKey[0] < 3)
-			{
-				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-			}
-			if (MoveKey[2] != 0 && MoveKey[2] < 3)
-			{
-				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
-			}
-			if (MoveKey[1] != 0 && MoveKey[1] < 3)
-			{
-				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
-			}
-			if (MoveKey[3] != 0 && MoveKey[3] < 3)
-			{
-				ThunderDodgeTargetDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-			}
-			if(ThunderDodgeTargetDir == FVector::ZeroVector)
-				ThunderDodgeTargetDir = Irene->GetActorForwardVector();
-			ThunderDodgeTargetDir.Normalize();
-
 			if(!DodgeWaitHandle.IsValid())
-				Irene->GetCharacterMovement()->AddImpulse(ThunderDodgeTargetDir*Irene->IreneData.FirstThunderDodgeSpeed);
+				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.FirstThunderDodgeSpeed);
 			else
-				Irene->GetCharacterMovement()->AddImpulse(ThunderDodgeTargetDir*Irene->IreneData.DoubleThunderDodgeSpeed);
+				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.DoubleThunderDodgeSpeed);
 			
 			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
@@ -636,24 +628,20 @@ void UIreneInputInstance::DialogAction()
 		break;
 	case EDialogState::e_Complete:
 		if (PlayerHud->ContinueDialog())
-		{
 			PlayerHud->PlayDialog();
-		}
-		else {
+		else
 			PlayerHud->ExitDialog();
-		}
-	
 		break;
 	case EDialogState::e_Disable:
 		break;
 	default:
 		break;
 	}
-
 }
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
+	// 마우스 커서 숨기거나 보이게 하는 함수
 	if (Irene->WorldController->bShowMouseCursor == false)
 		Irene->WorldController->bShowMouseCursor = true;
 	else
@@ -664,10 +652,10 @@ void UIreneInputInstance::MouseCursorKeyword()
 #pragma region UI
 void UIreneInputInstance::PauseWidgetOn()
 {
-	if (Irene->IreneUIManager->GetIsPauseOnScreen()) {
+	if (Irene->IreneUIManager->GetIsPauseOnScreen())
 	  	Irene->IreneUIManager->PauseWidgetOff();
-	}
-	else {
+	else
+	{
 		Irene->IreneState->SetState(UIdleState::GetInstance());
 		Irene->IreneUIManager->PauseWidgetOn();
 	}
@@ -676,12 +664,14 @@ void UIreneInputInstance::PauseWidgetOn()
 
 void UIreneInputInstance::RecoveryStaminaGauge(const float DeltaTime)const
 {
+	// 스테미나를 회복시키는 함수
 	Irene->IreneData.CurrentStamina += DeltaTime * 5;
 	if(StaminaGaugeIsFull()) Irene->IreneData.CurrentStamina = Irene->IreneData.MaxStamina;
 	Irene->IreneUIManager->OnStaminaChanged.Broadcast();
 }
 bool UIreneInputInstance::StaminaGaugeIsFull()const
 {
+	// 스테미나가 가득 찼는지 확인하는 함수
 	return Irene->IreneData.CurrentStamina >= Irene->IreneData.MaxStamina ? true :false;
 }
 #pragma endregion UI
@@ -705,8 +695,6 @@ bool UIreneInputInstance::CanAttackState() const
 		return true;
 	return false;
 }
-
-
 #pragma endregion CheckStateChange
 
 #pragma region GetSet

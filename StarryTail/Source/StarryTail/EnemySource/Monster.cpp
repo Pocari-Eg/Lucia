@@ -930,33 +930,45 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		switch (ChessPiece->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
-			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 10.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
+			}
+			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+			{
+				AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor = 200.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
 			}
 			break;
 		case EAttributeKeyword::e_Water:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 200.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
+			}
+			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+			{
+				AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 			{
-				AttackedInfo.AttributeArmor = 10.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 			}
 			break;
 		case EAttributeKeyword::e_Thunder:
 			if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 			{
-				AttackedInfo.AttributeArmor = 10.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 			}
 			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 			{
-				AttackedInfo.AttributeArmor = 200.0f;
+				AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
+			}
+			else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
+			{
+				AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
 			}
 		}
 
@@ -1000,33 +1012,45 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			switch (Player->IreneAttack->GetAttribute())
 			{
 			case EAttributeKeyword::e_Fire:
-				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 				{
-					AttackedInfo.AttributeArmor = 10.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+				{
+					AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 				}
 				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 				{
-					AttackedInfo.AttributeArmor = 200.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
 				}
 				break;
 			case EAttributeKeyword::e_Water:
 				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 				{
-					AttackedInfo.AttributeArmor = 200.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
+				{
+					AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
 				}
 				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
 				{
-					AttackedInfo.AttributeArmor = 10.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 				}
 				break;
 			case EAttributeKeyword::e_Thunder:
 				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
 				{
-					AttackedInfo.AttributeArmor = 10.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.HalvedValue;
 				}
 				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Water)
 				{
-					AttackedInfo.AttributeArmor = 200.0f;
+					AttackedInfo.AttributeArmor = MonsterInfo.CriticalValue;
+				}
+				else if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Thunder)
+				{
+					AttackedInfo.AttributeArmor = MonsterInfo.NormalValue;
 				}
 			}
 

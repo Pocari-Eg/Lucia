@@ -88,12 +88,12 @@ FName UIreneFSM::GetStateToAttackDataTableName() const
 	case EStateEnum::B_Attack_1_T: return FName("B_Attack_1_T");
 	case EStateEnum::B_Attack_2_T: return FName("B_Attack_2_T");
 	case EStateEnum::B_Attack_3_T: return FName("B_Attack_3_T");
-	case EStateEnum::Skill_F_Start: return FName("ActionKeyword_1_F");
-	case EStateEnum::Skill_F_End: return FName("ActionKeyword_1_F");
-	case EStateEnum::Skill_W_Start: return FName("ActionKeyword_1_W");
-	case EStateEnum::Skill_W_End: return FName("ActionKeyword_1_W");
-	case EStateEnum::Skill_T_Start: return FName("ActionKeyword_1_T");
-	case EStateEnum::Skill_T_End: return FName("ActionKeyword_1_T");
+	case EStateEnum::Skill_F_Start: return FName("Skill_F");
+	case EStateEnum::Skill_F_End: return FName("Skill_F");
+	case EStateEnum::Skill_W_Start: return FName("Skill_W");
+	case EStateEnum::Skill_W_End: return FName("Skill_W");
+	case EStateEnum::Skill_T_Start: return FName("Skill_T");
+	case EStateEnum::Skill_T_End: return FName("Skill_T");
 	default: return FName("Error GetStateToAttackDataTableName");
 	}
 }
@@ -1417,7 +1417,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
 	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
 	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);	
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));	
@@ -1425,13 +1425,21 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;	
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneAnim->StopAllMontages(0);
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto(0.7f);
-	
-	if(CurState->PlayTime >= 0.7f)
+	// 후딜 이전까지의 시간
+	CurState->Irene->IreneInput->MoveAuto(0.35f);
+	// 목적지에 도착
+	if(CurState->PlayTime > 0.35f)
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+	}
+	// 몽타주 시간
+	if(CurState->PlayTime > 1.1f)
 		CurState->Irene->ActionEndChangeMoveState();
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
