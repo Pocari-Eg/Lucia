@@ -23,13 +23,24 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 
 	}
 	
+	if (ScriptData->Condition == 1) {
 
-	//메시지를 담아온다
-	InputDialog = *ScriptData->String;
-	Length = 0;
-	SetVisibility(ESlateVisibility::Visible);
+		//메시지를 담아온다
+		InputDialog = *ScriptData->String;
+		Length = 0;
+		SetVisibility(ESlateVisibility::Visible);
 
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
+	}
+	else if(ScriptData->Condition == 0)
+	{
+		//메시지를 담아온다
+		InputDialog = *ScriptData->String;
+		Length = 0;
+		SetVisibility(ESlateVisibility::Visible);
+		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayPopUpDialog, TextPrintTime, true, 0.0f);
+
+	}
 }
 
 void UDialogWidget::SkipDialog()
@@ -78,8 +89,39 @@ void UDialogWidget::PlayDialog()
 			OutputDialog = *InputDialog.Mid(0, i);
 		}
 		Length++;
+		CurrentTextKeeptime = TextKeepTime;
 	}
 	
+}
+void UDialogWidget::PlayPopUpDialog()
+{
+	//현재 출력된 메시지가 전부 출력되면
+	if (InputDialog.Len() + 2 <= Length)
+	{
+		if (CurrentTextKeeptime > 0.0f)
+		{
+			CurrentTextKeeptime -= TextPrintTime;
+
+		}
+		else {
+			CurrentTextKeeptime = TextKeepTime;
+			//타이머 초기화로 
+			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+
+			OutputDialog = "";
+			SetVisibility(ESlateVisibility::Hidden);
+		}
+
+	}
+	else 	if (InputDialog.Len() + 2 > Length)
+	{
+		for (int i = 0; i < Length; i++)
+		{
+			//Ouptdialog에 있는 문자열이 UI에 표시되므로 Inputdialog에서 한글자씩 받아옴
+			OutputDialog = *InputDialog.Mid(0, i);
+		}
+		Length++;
+	}
 }
 void UDialogWidget::EndDialog()
 {

@@ -44,6 +44,8 @@ private:
 
 	EDialogState CurrnetState;
 
+	float CurrentTextKeeptime;
+
 public:
 	//출력할 메시지 세팅
 	void SetDialog(FScriptData* ScriptData);
@@ -58,5 +60,5 @@ protected:
 private:
 	//메시지 재생
 	void PlayDialog();
-	
+	void PlayPopUpDialog();
 };

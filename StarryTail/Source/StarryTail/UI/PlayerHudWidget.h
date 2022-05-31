@@ -67,6 +67,9 @@ public:
 	void PlayDialog();
 	void SkipDialog();
 	void ExitDialog();
+
+
+	void PlayPopUp(TArray<FScriptData*> Data);
 	
 	bool ContinueDialog();
 private:
@@ -104,6 +107,8 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class UDialogWidget* PopUpWidget;
 	UPROPERTY()
 	class URaidMonsterWidget* RMWidget;
 	UPROPERTY()
