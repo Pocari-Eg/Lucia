@@ -85,6 +85,8 @@ public:
 	FDodgeEndDelegate DodgeEnd;
 	FCrushedEndDelegate CrushedEnd;
 	FDropEndDelegate DropEnd;
+
+	
 private:
 	void SpawnPiece();
 
@@ -116,6 +118,8 @@ private:
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
+
+
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;

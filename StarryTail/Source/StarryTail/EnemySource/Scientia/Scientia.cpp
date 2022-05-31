@@ -396,6 +396,7 @@ void AScientia::ChangeAttribute()
 	
 
 	ScInfo.CurrentAttribute = MonsterInfo.MonsterAttribute;
+	ChangeAttributes();
 	// ChangeModel
 }
 void AScientia::CalcCurrentBarrier(float Value)
