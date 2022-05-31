@@ -55,12 +55,20 @@ void UIreneInputInstance::InitMemberVariable()
 }
 void UIreneInputInstance::Begin()
 {
-	const TUniquePtr<FFormTimeDataTable> FormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(Irene->IreneAttack->GetAttributeToFormTimeDataTableName()));
-	if(!FormTimeDataTable)
+	const TUniquePtr<FFormTimeDataTable> FireFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form")));
+	if(FireFormTimeDataTable != nullptr)
 	{
-		FireMaxCoolTime = FormTimeDataTable->Form_C_Time;
-		WaterMaxCoolTime = FormTimeDataTable->Form_C_Time;
-		ThunderMaxCoolTime = FormTimeDataTable->Form_C_Time;
+		FireMaxCoolTime = FireFormTimeDataTable->Form_C_Time;
+	}
+	const TUniquePtr<FFormTimeDataTable> WaterFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form")));
+	if(WaterFormTimeDataTable != nullptr)
+	{
+		WaterMaxCoolTime = WaterFormTimeDataTable->Form_C_Time;
+	}
+	const TUniquePtr<FFormTimeDataTable> ThunderFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Thunder_Form")));
+	if(ThunderFormTimeDataTable != nullptr)
+	{
+		ThunderMaxCoolTime = ThunderFormTimeDataTable->Form_C_Time;
 	}
 }
 
@@ -122,8 +130,9 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 
 void UIreneInputInstance::StartJump()
 {
-	if (CanJumpState())
+	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
 	{
+		Irene->IreneAnim->StopAllMontages(0.01f);
 		Irene->bPressedJump = true;
 		Irene->ChangeStateAndLog(UJumpStartState::GetInstance());
 	}
@@ -245,7 +254,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-			if(!AttackTable)
+			if(AttackTable != nullptr)
 			{
 				// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용하며 불 스킬은 UIreneInputInstance::RightButtonReleased에서 데미지 설정을 함
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
@@ -279,7 +288,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneAnim->PlayAttackMontage();
 
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
-				Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
 			}
 		}
@@ -408,7 +416,7 @@ void UIreneInputInstance::RightButtonReleased()
 				if(ChargingTime > AttackTable->Charge_Time_3/100.0f)
 				{
 					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_3;
-					Irene->IreneAnim->PlaySkillAttackMontage();
+					Irene->IreneAnim->PlaySkillAttackMontage(2);
 				}
 				else if(ChargingTime > AttackTable->Charge_Time_2/100.0f)
 				{
@@ -437,9 +445,8 @@ void UIreneInputInstance::MouseWheel(float Rate)
 	Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
 	Irene->STGameInstance->GetPlayerBattleState()==true?
-	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition)
-	:Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
-
+	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition):
+	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
 }
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
@@ -508,8 +515,11 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
+	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
 	{
+		Irene->IreneAnim->StopAllMontages(0.01f);
+		bUseDodgeKey = true;
 		// 불닷지 & FireDodge (없앨수도 있음)
 		// if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
 		// {
@@ -564,8 +574,11 @@ void UIreneInputInstance::DodgeKeyword()
 }
 void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
-	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 && !StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid())
+	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
+		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() &&
+		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
 	{
+		Irene->IreneAnim->StopAllMontages(0.01f);
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
 		{
 			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
@@ -593,6 +606,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	else
 	{
 		StartWaterDodgeStamina = 0;
+		bUseDodgeKey = false;
 		// 켯다가 껏을 때
 		if(bUseWaterDodge)
 		{
@@ -622,6 +636,7 @@ void UIreneInputInstance::DialogAction()
 	{
 	case EDialogState::e_Set:
 		PlayerHud->PlayDialog();
+	     
 		break;
 	case EDialogState::e_Playing:
 		PlayerHud->SkipDialog();
@@ -679,7 +694,7 @@ bool UIreneInputInstance::StaminaGaugeIsFull()const
 #pragma region CheckStateChange
 bool UIreneInputInstance::CanJumpState() const
 {
-	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
 			return true;
 	return false;
 }

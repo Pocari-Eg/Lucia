@@ -265,15 +265,12 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
-		STARRYLOG_S(Error);
 			IreneData.CanNextCombo = false;
 			if (IreneData.IsComboInputOn)
 			{
 				IreneAttack->AttackStartComboState();
 				if (IreneInput->bUseLeftButton)
 					IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
-				if (IreneInput->bUseRightButton)
-					IreneAnim->NextToEffectAttackMontageSection(IreneData.CurrentCombo);
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
@@ -597,9 +594,12 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 #pragma region State
 void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 {
-	IreneState->ChangeState(NewState);
-	//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
-	IreneAnim->SetIreneStateAnim(IreneState->GetState());
+	if(!IreneState->IsDeathState())
+	{
+		IreneState->ChangeState(NewState);
+		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		IreneAnim->SetIreneStateAnim(IreneState->GetState());
+	}
 }
 
 void AIreneCharacter::ActionEndChangeMoveState()const

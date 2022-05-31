@@ -61,6 +61,7 @@ private:
 	FTimerHandle StaminaWaitHandle;
 	float StartWaterDodgeStamina;	
 
+	bool bUseDodgeKey;
 	bool bUseWaterDodge;
 
 	// 닷지 쿨타임
@@ -148,7 +149,8 @@ public:
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetCharging()const{return IsCharging;}
 	int GetThunderSkillCount()const{return ThunderSkillCount;}
-
+	bool GetUseDodgeKey()const{return bUseDodgeKey;}
+	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}

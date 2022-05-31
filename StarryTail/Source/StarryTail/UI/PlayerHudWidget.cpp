@@ -25,6 +25,7 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
 {
+
 	DialogNum = 0;
 	SetDialogState(EDialogState::e_Set);
 	ScriptData= Data;
@@ -39,6 +40,29 @@ void UPlayerHudWidget::PlayDialog()
 void UPlayerHudWidget::SkipDialog()
 {
 	DialogWidget->SkipDialog();
+}
+
+void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
+{
+	DialogNum = 0;
+	SetDialogState(EDialogState::e_Set);
+	ScriptData = Data;
+	PopUpWidget->BindPlayerHud(this);
+	PlayPopUp();
+}
+
+void UPlayerHudWidget::PlayPopUp()
+{
+	SetDialogState(EDialogState::e_Playing);
+	PopUpWidget->SetDialog(ScriptData[DialogNum]);
+}
+
+void UPlayerHudWidget::ExitPopUp()
+{
+	
+	SetDialogState(EDialogState::e_Disable);
+	DialogNum = 0;
+	PopUpWidget->EndDialog();
 }
 
 void UPlayerHudWidget::ExitDialog()
@@ -76,9 +100,9 @@ void UPlayerHudWidget::SetDialogState(EDialogState NewState)
 	DialogWidget->SetDialogState(NewState);
 }
 
-void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+void UPlayerHudWidget::Scientiabind(AScientia* CurrentScientia)
 {
-	RMWidget->BindMonster(RadiMonster);
+	RMWidget->BindScientia(CurrentScientia);
 }
 
 void UPlayerHudWidget::UpdateHp()
@@ -317,7 +341,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
 	RMWidget->SetVisibility(ESlateVisibility::Visible);
-
+	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
 
 	Fire.SelectIcon=Cast<UImage>(GetWidgetFromName(TEXT("Fire_Select")));
 	Fire.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Fire_NoneSelect")));

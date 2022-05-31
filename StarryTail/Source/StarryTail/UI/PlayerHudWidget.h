@@ -41,7 +41,7 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-	void RaidWidgetbind(AMonster* RadiMonster);
+	void Scientiabind(AScientia* CurrentScientia);
 
 	void ActionWidgetOn();
 	void ActionWidgetOff();
@@ -67,7 +67,11 @@ public:
 	void PlayDialog();
 	void SkipDialog();
 	void ExitDialog();
-	
+
+
+	void SetPopUp(TArray<FScriptData*> Data);
+	void PlayPopUp();
+	void ExitPopUp();
 	bool ContinueDialog();
 private:
 
@@ -104,6 +108,8 @@ private:
 
 	UPROPERTY()
 	class UDialogWidget* DialogWidget;
+	UPROPERTY()
+	class UDialogWidget* PopUpWidget;
 	UPROPERTY()
 	class URaidMonsterWidget* RMWidget;
 	UPROPERTY()

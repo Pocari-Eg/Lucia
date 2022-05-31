@@ -23,6 +23,7 @@ DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -51,6 +52,8 @@ public:
 	float GetHpRatio();
 	//현재 방어막 비율 전환
 	float GetDefRatio();
+	//속성변환 델리게이트
+	void ChangeAttributes();
 
 	void PlayIdleAnim();
 	void PlayDetectAnim();
@@ -77,6 +80,7 @@ public:
 
 	FOnHpDelegate OnHpChanged;
 	FOnDefDelegate OnDefChanged;
+	FOnAttributeChangeDelegate AttributeChange;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();
