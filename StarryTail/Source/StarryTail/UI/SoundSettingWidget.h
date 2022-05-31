@@ -41,7 +41,8 @@ private:
 
 public:
 	void BindPauseWidget(UPauseWidget* CurrentWidget);
-
+	UFUNCTION(BluePrintcallable)
+	void WidgetOff();
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;

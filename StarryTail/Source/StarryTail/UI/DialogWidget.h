@@ -44,19 +44,25 @@ private:
 
 	EDialogState CurrnetState;
 
+	float CurrentTextKeeptime;
+
+	class UImage* NextArrow;
+
+	class UPlayerHudWidget* PlayerHud;
 public:
 	//출력할 메시지 세팅
 	void SetDialog(FScriptData* ScriptData);
 	void SkipDialog();
 	void EndDialog();
-	
 
 	EDialogState GetDialogState();
 	void SetDialogState(EDialogState NewState);
+
+	void BindPlayerHud(class UPlayerHudWidget* NewPlayerHud);
 protected:
 	virtual void NativeOnInitialized() override;
 private:
 	//메시지 재생
 	void PlayDialog();
-	
+	void PlayPopUpDialog();
 };
