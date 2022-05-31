@@ -81,22 +81,5 @@ int AEnemySpawnPoint::getCurrentWave()
 void AEnemySpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	DrawSpawnArea();
 }
   
-void AEnemySpawnPoint::DrawSpawnArea()
-{
-	//현재 Radius에 변화가 생기면 영역을 다시 그림
-	if (OldRadius != Radius)
-	{
-		FlushPersistentDebugLines(GetWorld());
-#if ENABLE_DRAW_DEBUG
-		DrawDebugCircle(GetWorld(), FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z - 50.f), 
-			Radius, 40, FColor::Green, true, -1.0f, 0, 2.0f, FVector(1.0f, 0.0f, 0.0f), FVector(0.0f, 1.0f, 0.0f), true);
-#endif
-		OldRadius = Radius;
-
-	}
-
-
-}
