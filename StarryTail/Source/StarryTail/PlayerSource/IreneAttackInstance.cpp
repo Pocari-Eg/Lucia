@@ -54,6 +54,7 @@ void UIreneAttackInstance::InitMemberVariable()
 
 	bUseMP = false;
 	bMoveSkip = false;
+	bDodgeJumpSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -159,7 +160,8 @@ void UIreneAttackInstance::AttackEndComboState()
 	if (!Irene->IreneState->IsDodgeState())
 	{
 		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
-		Irene->ActionEndChangeMoveState();
+		//Irene->ActionEndChangeMoveState();
+		Irene->ChangeStateAndLog(UBattleIdleState::GetInstance());
 	}
 }
 

@@ -785,6 +785,7 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -804,7 +805,7 @@ void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -838,6 +839,7 @@ void UBasicAttack2FireState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
@@ -861,12 +863,13 @@ void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
-		}
+		}		
 	}
 }
 
 void UBasicAttack2FireState::Exit(IBaseGameEntity* CurState)
 {
+	STARRYLOG_S(Warning);
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -891,6 +894,7 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
@@ -941,6 +945,7 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
@@ -961,7 +966,7 @@ void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -995,6 +1000,7 @@ void UBasicAttack2WaterState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
@@ -1049,6 +1055,7 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
@@ -1099,6 +1106,7 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1153,6 +1161,7 @@ void UBasicAttack2ThunderState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1207,6 +1216,7 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
