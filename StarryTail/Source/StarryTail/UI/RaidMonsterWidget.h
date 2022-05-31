@@ -4,7 +4,7 @@
 
 #include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
-#include "../EnemySource/Monster.h"
+#include "../EnemySource/Scientia/Scientia.h"
 #include "RaidMonsterWidget.generated.h"
 
 /**
@@ -17,7 +17,7 @@ class STARRYTAIL_API URaidMonsterWidget : public UUserWidget
 public:
 
 	// Object 엑터를 바인드 할떄 사용 
-	void BindMonster(class AMonster* NewMonster);
+	void BindScientia(class AScientia* NewScientiaB);
 
 	void UpdateHp();
 
@@ -25,7 +25,7 @@ public:
 	void UpdateFireDef();
 	void UpdateWaterDef();
 	void UpdateThunderDef();
-	void ChangeDefWidget();
+	void UpdateAttribute();
 
 private:
 	bool CheckDefWidget();
@@ -36,7 +36,7 @@ protected:
 private:
 
 	//현재 오브젝트
-	class AMonster* CurrentMonster;
+	class AScientia* CurrentScientia;
 
 	//위젯 안 HP Bar 데이터
 	UPROPERTY()

@@ -76,6 +76,8 @@ public:
 	void SetState(FString string);
 	void SetAttribute(EAttributeKeyword Attribute);
 
+	FScientiaInfo GetScInfo();
+
 	//Var
 	FAttackEndDelegate Attack1End;
 	FAttackEndDelegate Attack2End;
@@ -119,7 +121,7 @@ public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
 
-
+	
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;

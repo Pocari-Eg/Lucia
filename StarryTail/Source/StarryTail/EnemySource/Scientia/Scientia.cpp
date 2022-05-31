@@ -147,6 +147,10 @@ void AScientia::SetAttribute(EAttributeKeyword Attribute)
 		MonsterAttributeDebuff.BurnDamage *= 2;
 	}
 }
+FScientiaInfo AScientia::GetScInfo()
+{
+	return ScInfo;
+}
 #pragma endregion
 #pragma region Attack1
 void AScientia::Attack1()

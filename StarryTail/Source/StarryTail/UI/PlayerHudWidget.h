@@ -41,7 +41,7 @@ public:
 	// Player 바인드 할떄 사용 
 	void BindCharacter(class AIreneCharacter* NewIrene);
 
-	void RaidWidgetbind(AMonster* RadiMonster);
+	void Scientiabind(AScientia* CurrentScientia);
 
 	void ActionWidgetOn();
 	void ActionWidgetOff();
