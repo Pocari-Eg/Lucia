@@ -111,4 +111,7 @@ private:
 	UFUNCTION()
 	void AnimNotify_RadialBlur	() const;
 	FName GetAttackMontageSectionName(const int32 Section);
+
+public:
+	int GetFireChargeCount()const { return FireChargeCount; }
 };

@@ -177,7 +177,8 @@ void UIreneAttackInstance::AttackCheck()
 		{
 			// 타겟몬스터가 필요 없는 조건
 			if(Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneThunderSkill_Montage")&&
-				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill_Montage"))
+				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill1_Montage")&&
+				Irene->IreneAnim->GetCurrentActiveMontage()->GetName() != FString("IreneFireSkill2_Montage"))
 			{
 				Irene->FindNearMonster();
 			}
@@ -229,6 +230,13 @@ void UIreneAttackInstance::DoAttack()
 		}
 		if(Irene->IreneInput->bUseRightButton)
 		{
+			FVector BoxSize;
+			if(Irene->IreneAnim->GetFireChargeCount() == 0)
+				BoxSize = FVector(250, 50, 250);
+			if(Irene->IreneAnim->GetFireChargeCount() == 1)
+				BoxSize = FVector(300, 50, 300);
+			if(Irene->IreneAnim->GetFireChargeCount() == 2)
+				BoxSize = FVector(400, 50, 400);
 			FCollisionQueryParams Params(NAME_None, false, Irene);
 			bResult = GetWorld()->SweepMultiByChannel(
 				MonsterList,
@@ -236,7 +244,7 @@ void UIreneAttackInstance::DoAttack()
 				Irene->GetActorLocation(),
 				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeBox(FVector(400, 50, 400)),
+				FCollisionShape::MakeBox(BoxSize),
 				Params);
 		}
 	}
@@ -309,12 +317,19 @@ void UIreneAttackInstance::DoAttack()
 		}
 		if(Irene->IreneInput->bUseRightButton)
 		{
+			FVector BoxSize;
+			if(Irene->IreneAnim->GetFireChargeCount() == 0)
+				BoxSize = FVector(250, 50, 250);
+			if(Irene->IreneAnim->GetFireChargeCount() == 1)
+				BoxSize = FVector(300, 50, 300);
+			if(Irene->IreneAnim->GetFireChargeCount() == 2)
+				BoxSize = FVector(400, 50, 400);
 			FVector TraceVec = Irene->GetActorForwardVector() * 150;
 			FVector Center = Irene->GetActorLocation();
 			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 			float DebugLifeTime = 5.0f;
-			DrawDebugBox(GetWorld(), Center, FVector(400, 50, 400), CapsuleRot, DrawColor, false, DebugLifeTime);
+			DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 		}
 	}
 	if(Attribute == EAttributeKeyword::e_Water)
