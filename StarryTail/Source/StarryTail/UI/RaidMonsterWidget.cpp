@@ -11,27 +11,64 @@ void URaidMonsterWidget::BindScientia(class AScientia* NewScientia) {
 	UpdateAttribute();
 
 	CurrentScientia->AttributeChange.AddUObject(this, &URaidMonsterWidget::UpdateAttribute);
+	CurrentScientia->OnHpChanged.AddUObject(this, &URaidMonsterWidget::UpdateHp);
+
+	CurrentScientia->OnFireBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateFireDef);
+	CurrentScientia->OnWaterBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateWaterDef);
+	CurrentScientia->OnThunderBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateThunderDef);
+
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void URaidMonsterWidget::UpdateHp()
 {
+
+	if (CurrentScientia != nullptr)		
+	{
+	
+		if (HPProgressBar != nullptr)
+		{
+			
+			HPProgressBar->SetPercent(CurrentScientia->GetHpRatio());
+		}
+	}
 	
 }
 
 void URaidMonsterWidget::UpdateFireDef()
 {
-	
+	if (CurrentScientia != nullptr)
+	{
+		if (FireDefBar != nullptr)
+		{
+			FireDefBar->SetPercent(CurrentScientia->GetFireDefPercent());
+		}
+	}
 }
 
 void URaidMonsterWidget::UpdateWaterDef()
 {
-
+	if (CurrentScientia != nullptr)
+	{
+		if (WaterDefBar != nullptr)
+		{
+			WaterDefBar->SetPercent(CurrentScientia->GetWaterDefPercent());
+		}
+	}
 
 }
 
 void URaidMonsterWidget::UpdateThunderDef()
 {
-	
+	if (CurrentScientia != nullptr)
+	{
+		if (ThunderDefBar != nullptr)
+		{
+			STARRYLOG_S(Error);
+			STARRYLOG(Error, TEXT("%f"), CurrentScientia->GetThunderDefPercent());
+			ThunderDefBar->SetPercent(CurrentScientia->GetThunderDefPercent());
+		}
+	}
 
 }
 

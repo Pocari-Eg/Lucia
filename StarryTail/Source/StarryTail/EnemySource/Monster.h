@@ -53,7 +53,7 @@ public:
 	//현재 방어막 비율 전환
 	float GetDefRatio();
 	//속성변환 델리게이트
-	void ChangeAttributes();
+	void ChangeAttributeDelegate();
 
 	void PlayIdleAnim();
 	void PlayDetectAnim();

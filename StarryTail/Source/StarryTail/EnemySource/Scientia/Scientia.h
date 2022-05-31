@@ -20,6 +20,10 @@ DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FCrushedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDropEndDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FOnChangeFireBarrier);
+DECLARE_MULTICAST_DELEGATE(FOnChangeWaterBarrier);
+DECLARE_MULTICAST_DELEGATE(FOnChangeThunderBarrier);
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
 {
@@ -64,6 +68,11 @@ public:
 	int GetBarrierCount();
 	int GetFeatherCount();
 	float GetHpPercent();
+
+	float GetFireDefPercent();
+	float GetWaterDefPercent();
+	float GetThunderDefPercent();
+
 	float GetAttack2Speed();
 	float GetAttack3Speed();
 	float GetAttack4Speed();
@@ -88,6 +97,12 @@ public:
 	FCrushedEndDelegate CrushedEnd;
 	FDropEndDelegate DropEnd;
 
+	//UI
+	UFUNCTION(BlueprintCallable)
+	void SetMaxBarrierValue();
+	FOnChangeFireBarrier OnFireBarrierChanged;
+	FOnChangeWaterBarrier OnWaterBarrierChanged;
+	FOnChangeThunderBarrier OnThunderBarrierChanged;
 	
 private:
 	void SpawnPiece();
@@ -117,6 +132,10 @@ private:
 
 	float AttributeSettingTimer;
 	float ChangeTimer;
+
+	float MaxFireDef;
+	float MaxWaterDef;
+	float MaxThunderDef;
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

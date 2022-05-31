@@ -3,6 +3,8 @@
 
 #include "Scientia.h"
 #include "ScAIController.h"
+#include "Kismet/GameplayStatics.h"
+#include "../../PlayerSource/IreneUIManager.h"
 #include "../../STGameInstance.h"
 AScientia::AScientia()
 {
@@ -48,6 +50,8 @@ void AScientia::InitMonsterInfo()
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.EnemyRank = EEnemyRank::e_Raid;
+
+	
 }
 void AScientia::InitCollision()
 {
@@ -98,6 +102,18 @@ int AScientia::GetFeatherCount()
 float AScientia::GetHpPercent()
 {
 	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
+}
+float AScientia::GetFireDefPercent()
+{
+	return ScInfo.FireBarrier < KINDA_SMALL_NUMBER ? 0.0f : ScInfo.FireBarrier / MaxFireDef;
+}
+float AScientia::GetWaterDefPercent()
+{
+	return ScInfo.WaterBarrier < KINDA_SMALL_NUMBER ? 0.0f : ScInfo.WaterBarrier / MaxWaterDef;
+}
+float AScientia::GetThunderDefPercent()
+{
+	return ScInfo.ThunderBarrier < KINDA_SMALL_NUMBER ? 0.0f : ScInfo.ThunderBarrier / MaxThunderDef;
 }
 float AScientia::GetAttack2Speed()
 {
@@ -388,7 +404,7 @@ void AScientia::ChangeAttribute()
 		{
 		case 0:
 			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-			break;
+			break; 
 		case 1:
 			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 			break;
@@ -400,7 +416,8 @@ void AScientia::ChangeAttribute()
 	
 
 	ScInfo.CurrentAttribute = MonsterInfo.MonsterAttribute;
-	ChangeAttributes();
+
+	ChangeAttributeDelegate();
 	// ChangeModel
 }
 void AScientia::CalcCurrentBarrier(float Value)
@@ -409,12 +426,15 @@ void AScientia::CalcCurrentBarrier(float Value)
 	{
 	case EAttributeKeyword::e_Fire:
 		ScInfo.FireBarrier -= Value;
+		OnFireBarrierChanged.Broadcast();
 		break;
 	case EAttributeKeyword::e_Water:
 		ScInfo.WaterBarrier -= Value;
+		OnWaterBarrierChanged.Broadcast();
 		break;
 	case EAttributeKeyword::e_Thunder:
 		ScInfo.ThunderBarrier -= Value;
+		OnThunderBarrierChanged.Broadcast();
 		break;
 	}
 }
@@ -506,6 +526,12 @@ bool AScientia::PlayerAttributeIsScAttributeCounter()
 			return true;
 	}
 	return false;
+}
+void AScientia::SetMaxBarrierValue()
+{
+	MaxFireDef = ScInfo.FireBarrier;
+	MaxWaterDef = ScInfo.WaterBarrier;
+	MaxThunderDef = ScInfo.ThunderBarrier;
 }
 void AScientia::SpawnPiece()
 {
@@ -696,6 +722,11 @@ void AScientia::BeginPlay()
 	ScAnimInstance->Change.AddUObject(this, &AScientia::ChangeAttribute);
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
+
+	auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	if (Irene != nullptr) {
+		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
+	}
 }
 
 void AScientia::PossessedBy(AController* NewController)
