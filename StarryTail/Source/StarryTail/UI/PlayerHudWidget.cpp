@@ -100,9 +100,9 @@ void UPlayerHudWidget::SetDialogState(EDialogState NewState)
 	DialogWidget->SetDialogState(NewState);
 }
 
-void UPlayerHudWidget::RaidWidgetbind(AMonster* RadiMonster)
+void UPlayerHudWidget::Scientiabind(AScientia* CurrentScientia)
 {
-	RMWidget->BindMonster(RadiMonster);
+	RMWidget->BindScientia(CurrentScientia);
 }
 
 void UPlayerHudWidget::UpdateHp()

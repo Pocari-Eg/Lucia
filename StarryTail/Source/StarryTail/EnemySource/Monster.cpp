@@ -215,6 +215,10 @@ float AMonster::GetDefRatio()
 {
 	return MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def;
 }
+void AMonster::ChangeAttributeDelegate()
+{
+	AttributeChange.Broadcast();
+}
 #pragma endregion
 void AMonster::SetSpawnPos()
 {

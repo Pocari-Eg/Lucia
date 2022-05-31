@@ -8,19 +8,26 @@
 
 void UHPBarWidget::BindMonster(class AMonster* NewMonster)
 {
+	
 	//새로들어온 Monster를 CurrentMonster에 할당
 	CurrentMonster = Cast<AMonster>(NewMonster);
 
-	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
-	CurrentMonster->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateHpWidget);
-	CurrentMonster->OnDefChanged.AddUObject(this, &UHPBarWidget::UpdateDefWidget);
-
-	if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
+	if (CurrentMonster->GetRank() == EEnemyRank::e_Raid)
 	{
-		DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
-		DefLine->SetVisibility(ESlateVisibility::Hidden);
+		SetVisibility(ESlateVisibility::Hidden);
 	}
+	else {
 
+		//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
+		CurrentMonster->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateHpWidget);
+		CurrentMonster->OnDefChanged.AddUObject(this, &UHPBarWidget::UpdateDefWidget);
+
+		if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
+		{
+			DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+			DefLine->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
 }
 
 
