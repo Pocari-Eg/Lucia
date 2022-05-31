@@ -69,8 +69,9 @@ public:
 	void ExitDialog();
 
 
-	void PlayPopUp(TArray<FScriptData*> Data);
-	
+	void SetPopUp(TArray<FScriptData*> Data);
+	void PlayPopUp();
+	void ExitPopUp();
 	bool ContinueDialog();
 private:
 

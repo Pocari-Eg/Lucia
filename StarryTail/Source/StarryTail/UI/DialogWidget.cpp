@@ -2,7 +2,8 @@
 
 
 #include "DialogWidget.h"
-
+#include "Components/Image.h"
+#include "PlayerHudWidget.h"
 
 void UDialogWidget::SetDialog(FScriptData* ScriptData)
 {
@@ -29,7 +30,6 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		InputDialog = *ScriptData->String;
 		Length = 0;
 		SetVisibility(ESlateVisibility::Visible);
-
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
 	}
 	else if(ScriptData->Condition == 0)
@@ -38,9 +38,14 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		InputDialog = *ScriptData->String;
 		Length = 0;
 		SetVisibility(ESlateVisibility::Visible);
+		CurrentTextKeeptime = TextKeepTime;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayPopUpDialog, TextPrintTime, true, 0.0f);
 
 	}
+
+	if (NextArrow != nullptr)
+		NextArrow->SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 void UDialogWidget::SkipDialog()
@@ -48,6 +53,8 @@ void UDialogWidget::SkipDialog()
 	SetDialogState(EDialogState::e_Complete);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	OutputDialog = InputDialog;
+	if (NextArrow != nullptr)
+		NextArrow->SetVisibility(ESlateVisibility::Visible);
 }
 
 EDialogState UDialogWidget::GetDialogState()
@@ -60,6 +67,11 @@ void UDialogWidget::SetDialogState(EDialogState NewState)
 	CurrnetState = NewState;
 }
 
+void UDialogWidget::BindPlayerHud(class UPlayerHudWidget* NewPlayerHud)
+{
+	PlayerHud = NewPlayerHud;
+}
+
 void UDialogWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
@@ -69,7 +81,7 @@ void UDialogWidget::NativeOnInitialized()
 	Font= LoadObject<UObject>(NULL, TEXT("/Engine/EngineFonts/Roboto.Roboto"), NULL, LOAD_None, NULL);
 
 	CurrnetState = EDialogState::e_Disable;
-	
+	NextArrow= Cast<UImage>(GetWidgetFromName(TEXT("NextArrow")));
 }
 
 void UDialogWidget::PlayDialog()
@@ -79,7 +91,10 @@ void UDialogWidget::PlayDialog()
 	 if (InputDialog.Len()+2 <= Length)
 	  {
 		 SetDialogState(EDialogState::e_Complete);
+		 if(NextArrow!=nullptr)
+		 NextArrow->SetVisibility(ESlateVisibility::Visible);
 		 GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	
 	  } 
 	 else 	if (InputDialog.Len() + 2 > Length)
 	{
@@ -89,7 +104,6 @@ void UDialogWidget::PlayDialog()
 			OutputDialog = *InputDialog.Mid(0, i);
 		}
 		Length++;
-		CurrentTextKeeptime = TextKeepTime;
 	}
 	
 }
@@ -101,15 +115,19 @@ void UDialogWidget::PlayPopUpDialog()
 		if (CurrentTextKeeptime > 0.0f)
 		{
 			CurrentTextKeeptime -= TextPrintTime;
-
+		
 		}
 		else {
 			CurrentTextKeeptime = TextKeepTime;
 			//타이머 초기화로 
 			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-
-			OutputDialog = "";
-			SetVisibility(ESlateVisibility::Hidden);
+			if (PlayerHud->ContinueDialog())
+			{
+				PlayerHud->PlayPopUp();
+			}
+			else {
+				PlayerHud->ExitPopUp();
+			}
 		}
 
 	}

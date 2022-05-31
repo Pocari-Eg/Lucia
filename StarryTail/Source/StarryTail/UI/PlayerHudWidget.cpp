@@ -42,13 +42,27 @@ void UPlayerHudWidget::SkipDialog()
 	DialogWidget->SkipDialog();
 }
 
-void UPlayerHudWidget::PlayPopUp(TArray<FScriptData*> Data)
+void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
 {
 	DialogNum = 0;
 	SetDialogState(EDialogState::e_Set);
 	ScriptData = Data;
+	PopUpWidget->BindPlayerHud(this);
+	PlayPopUp();
+}
+
+void UPlayerHudWidget::PlayPopUp()
+{
 	SetDialogState(EDialogState::e_Playing);
 	PopUpWidget->SetDialog(ScriptData[DialogNum]);
+}
+
+void UPlayerHudWidget::ExitPopUp()
+{
+	
+	SetDialogState(EDialogState::e_Disable);
+	DialogNum = 0;
+	PopUpWidget->EndDialog();
 }
 
 void UPlayerHudWidget::ExitDialog()

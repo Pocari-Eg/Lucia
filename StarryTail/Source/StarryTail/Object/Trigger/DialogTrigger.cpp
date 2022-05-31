@@ -64,7 +64,7 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			{
 				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
 					for (int i = 0; i < DalogIndex.Num(); i++)
-						Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
+						Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
 
 					TriggerOff();
 				}
