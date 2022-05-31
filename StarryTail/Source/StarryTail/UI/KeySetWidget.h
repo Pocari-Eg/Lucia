@@ -19,6 +19,9 @@ private:
 	UPauseWidget* PauseWidget;
 	FKey NONE;
 
+	UPROPERTY()
+	class UButton* BackButton;
+
 public:
 	UPROPERTY(BluePrintReadOnly)
 	bool IsActionEmptyKey;
@@ -28,12 +31,15 @@ public:
 	UPROPERTY(BluePrintReadOnly)
 	bool IsUpdatekey;
 
+	
+
 public:
 
-
+	UFUNCTION(BluePrintcallable)
+	void WidgetOff();
 
 	UFUNCTION(BlueprintCallable)
-		void ChangeActionKey(const FName ActionName, UPARAM(ref) FInputChord& InputKey);
+	void ChangeActionKey(const FName ActionName, UPARAM(ref) FInputChord& InputKey);
 
 	UFUNCTION(BlueprintCallable)
 		void ChangeAxisKey(const FName AxisName, UPARAM(ref) FInputChord& InputKey);

@@ -56,6 +56,20 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			}
 			Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 		}
+		else if (GetScriptData(DalogIndex.Num())[0]->Condition == 0)
+		{
+			STARRYLOG_S(Error);
+			auto Irene = Cast<AIreneCharacter>(OtherActor);
+			if (Irene != nullptr)
+			{
+				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
+					for (int i = 0; i < DalogIndex.Num(); i++)
+						Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
+
+					TriggerOff();
+				}
+			}
+		}
 
 
 	}

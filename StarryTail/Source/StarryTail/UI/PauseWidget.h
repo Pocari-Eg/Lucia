@@ -29,8 +29,6 @@ private:
 	class UButton* QuitButton;
 
 public:
-	bool IsKeySetWidgetOn;
-	bool IsSoundSetwidgetOn;
 
 	bool bIsEnableResume;
 	

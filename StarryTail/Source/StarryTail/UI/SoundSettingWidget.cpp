@@ -10,6 +10,10 @@ void USoundSettingWidget::BindPauseWidget(UPauseWidget* CurrentWidget)
 	PauseWidget = CurrentWidget;
 }
 
+void USoundSettingWidget::WidgetOff()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+}
 void USoundSettingWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();

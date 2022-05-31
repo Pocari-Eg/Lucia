@@ -3,9 +3,14 @@
 
 #include "KeySetWidget.h"
 #include "GameFramework/InputSettings.h"
+#include "Components/Button.h"
 #include "Kismet/KismetInputLibrary.h"
 
 
+void UKeySetWidget::WidgetOff()
+{
+	SetVisibility(ESlateVisibility::Hidden);
+}
 void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputChord& InputKey)
 {
 		TArray< FInputActionKeyMapping> CurrentActionMapping = UInputSettings::GetInputSettings()->GetActionMappings();
@@ -178,10 +183,13 @@ void UKeySetWidget::SetExitEnable()
 {
 	if (IsAxisEmptyKey == false&& IsActionEmptyKey == false)
 	{
+
 		PauseWidget->EnableButton();
+		BackButton->SetIsEnabled(true);
 	}
 	else {
 		PauseWidget->DisableButton();
+		BackButton->SetIsEnabled(false);
 	}
 }
 
@@ -193,6 +201,8 @@ void UKeySetWidget::BindPauseWidget(UPauseWidget* CurrentWidget)
 void UKeySetWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
+
+	BackButton=Cast<UButton>(GetWidgetFromName(TEXT("KeyBackButton")));
 }
 
 
