@@ -50,7 +50,9 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* ThunderAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* FireSkillMontage;
+	UAnimMontage* FireSkill1Montage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* FireSkill2Montage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* WaterSkillMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -73,10 +75,9 @@ public:
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 
 	void PlayAttackMontage();
-	void PlaySkillAttackMontage();
+	void PlaySkillAttackMontage(const int AttackCount = 1);
 	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
-	void NextToEffectAttackMontageSection(const int32 NewSection);
 	
 	void SetDeadAnim(const bool Value) { IsDead = Value; }
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
@@ -103,6 +104,8 @@ private:
 	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()
 	void AnimNotify_MoveSkipCheck() const;
+	UFUNCTION()
+	void AnimNotify_DodgeJumpSkipCheck() const;
 	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()

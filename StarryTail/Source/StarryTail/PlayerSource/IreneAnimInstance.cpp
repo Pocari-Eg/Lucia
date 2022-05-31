@@ -32,7 +32,8 @@ void UIreneAnimInstance::InitMemberVariable()
 UIreneAnimInstance::UIreneAnimInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireAttack_Montage.IreneFireAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill_Montage.IreneFireSkill_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill1_Montage.IreneFireSkill1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Fire_Skill2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill2_Montage.IreneFireSkill2_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneWaterAttack_Montage.IreneWaterAttack_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Water_Skill_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneWaterSkill_Montage.IreneWaterSkill_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Thunder_Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderAttack_Montage.IreneThunderAttack_Montage"));
@@ -42,9 +43,13 @@ UIreneAnimInstance::UIreneAnimInstance()
 	{
 		FireAttackMontage = Fire_Attack_Montage.Object;
 	}
-	if (Fire_Skill_Montage.Succeeded())
+	if (Fire_Skill1_Montage.Succeeded())
 	{
-		FireSkillMontage = Fire_Skill_Montage.Object;
+	 	FireSkill1Montage = Fire_Skill1_Montage.Object;
+	}
+	if (Fire_Skill2_Montage.Succeeded())
+	{
+		FireSkill2Montage = Fire_Skill2_Montage.Object;
 	}
 	if(Water_Attack_Montage.Succeeded())
 	{
@@ -91,11 +96,16 @@ void UIreneAnimInstance::PlayAttackMontage()
 		Montage_Play(ThunderAttackMontage, 1.0f);
 
 }
-void UIreneAnimInstance::PlaySkillAttackMontage()
+void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 {
 	// 현재 속성에 따라 스킬 몽타주를 실행하는 함수
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-		Montage_Play(FireSkillMontage, 1.0f);
+	{
+		if(AttackCount == 2)
+			Montage_Play(FireSkill2Montage, 1.0f);
+		else
+			Montage_Play(FireSkill1Montage, 1.0f);
+	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		Montage_Play(WaterSkillMontage, 1.0f);
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
@@ -128,20 +138,6 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
 	}
 }
-void UIreneAnimInstance::NextToEffectAttackMontageSection(const int32 NewSection)
-{
-	// 다음 스킬의 세션을 현재 세션이 종료되면 시작시키는 함수
-	// 현재 스킬은 한 세션만 사용하므로 수정필요
-	if (NewSection > 1)
-	{
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireSkillMontage);
-		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterSkillMontage);
-		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
-			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderSkillMontage);
-	}
-}
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck() const
 {
@@ -161,6 +157,11 @@ void UIreneAnimInstance::AnimNotify_AttackStopCheck() const
 void UIreneAnimInstance::AnimNotify_MoveSkipCheck() const
 {
 	Irene->IreneAttack->SetCanMoveSkip(true);
+}
+
+void UIreneAnimInstance::AnimNotify_DodgeJumpSkipCheck() const
+{
+	Irene->IreneAttack->SetCanDodgeJumpSkip(true);
 }
 
 void UIreneAnimInstance::AnimNotify_FootStep() const
