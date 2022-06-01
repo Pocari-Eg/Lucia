@@ -446,6 +446,7 @@ bool AScientia::IsBarrierCrushed()
 		if (ScInfo.FireBarrier <= 0 && !ScInfo.bIsFireBarrierCrushed)
 		{
 			ScInfo.bIsFireBarrierCrushed = true;
+			OnCrushBarrier.Broadcast();
 			return true;
 		}
 		break;
@@ -453,6 +454,7 @@ bool AScientia::IsBarrierCrushed()
 		if (ScInfo.WaterBarrier <= 0 && !ScInfo.bIsWaterBarrierCrushed)
 		{
 			ScInfo.bIsWaterBarrierCrushed = true;
+			OnCrushBarrier.Broadcast();
 			return true;
 		}
 		break;
@@ -460,6 +462,7 @@ bool AScientia::IsBarrierCrushed()
 		if (ScInfo.ThunderBarrier <= 0 && !ScInfo.bIsThunderBarrierCrushed)
 		{
 			ScInfo.bIsThunderBarrierCrushed = true;
+			OnCrushBarrier.Broadcast();
 			return true;
 		}
 		break;

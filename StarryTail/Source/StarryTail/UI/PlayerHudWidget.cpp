@@ -340,7 +340,6 @@ void UPlayerHudWidget::NativeOnInitialized()
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
-	RMWidget->SetVisibility(ESlateVisibility::Visible);
 	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
 
 	Fire.SelectIcon=Cast<UImage>(GetWidgetFromName(TEXT("Fire_Select")));

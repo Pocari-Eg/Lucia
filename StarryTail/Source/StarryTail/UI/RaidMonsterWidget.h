@@ -10,6 +10,19 @@
 /**
  * 
  */
+
+USTRUCT()
+struct FAttributeIcon
+{
+	GENERATED_BODY()
+	//加己 包访 单捞磐
+	UPROPERTY()
+	class UImage* Standard;
+	UPROPERTY()
+	class UImage* Break;
+
+
+};
 UCLASS()
 class STARRYTAIL_API URaidMonsterWidget : public UUserWidget
 {
@@ -26,6 +39,8 @@ public:
 	void UpdateWaterDef();
 	void UpdateThunderDef();
 	void UpdateAttribute();
+
+	void BreakAttributeBarrier();
 
 private:
 	bool CheckDefWidget();
@@ -47,4 +62,11 @@ private:
 		class UProgressBar* WaterDefBar;
 	UPROPERTY()
 		class UProgressBar* ThunderDefBar;
+
+	FAttributeIcon Fire;
+	FAttributeIcon Water;
+	FAttributeIcon Thunder;
+
+
+
 };
