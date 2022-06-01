@@ -24,6 +24,8 @@ DECLARE_MULTICAST_DELEGATE(FDropEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnChangeFireBarrier);
 DECLARE_MULTICAST_DELEGATE(FOnChangeWaterBarrier);
 DECLARE_MULTICAST_DELEGATE(FOnChangeThunderBarrier);
+
+DECLARE_MULTICAST_DELEGATE(FOnCrushBarrier);
 UCLASS()
 class STARRYTAIL_API AScientia : public AMonster
 {
@@ -103,6 +105,8 @@ public:
 	FOnChangeFireBarrier OnFireBarrierChanged;
 	FOnChangeWaterBarrier OnWaterBarrierChanged;
 	FOnChangeThunderBarrier OnThunderBarrierChanged;
+
+	FOnCrushBarrier OnCrushBarrier;
 	
 private:
 	void SpawnPiece();
