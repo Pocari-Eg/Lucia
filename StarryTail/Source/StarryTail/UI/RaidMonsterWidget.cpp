@@ -3,7 +3,7 @@
 
 #include "RaidMonsterWidget.h"
 #include "Components/ProgressBar.h"
-
+#include "Components/Image.h"
 void URaidMonsterWidget::BindScientia(class AScientia* NewScientia) {
 
 	CurrentScientia = NewScientia;
@@ -12,12 +12,15 @@ void URaidMonsterWidget::BindScientia(class AScientia* NewScientia) {
 
 	CurrentScientia->AttributeChange.AddUObject(this, &URaidMonsterWidget::UpdateAttribute);
 	CurrentScientia->OnHpChanged.AddUObject(this, &URaidMonsterWidget::UpdateHp);
-
+	
 	CurrentScientia->OnFireBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateFireDef);
 	CurrentScientia->OnWaterBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateWaterDef);
 	CurrentScientia->OnThunderBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateThunderDef);
 
+	CurrentScientia->OnCrushBarrier.AddUObject(this, &URaidMonsterWidget::BreakAttributeBarrier);
 	SetVisibility(ESlateVisibility::Visible);
+
+	STARRYLOG_S(Warning);
 }
 
 void URaidMonsterWidget::UpdateHp()
@@ -41,6 +44,7 @@ void URaidMonsterWidget::UpdateFireDef()
 	{
 		if (FireDefBar != nullptr)
 		{
+
 			FireDefBar->SetPercent(CurrentScientia->GetFireDefPercent());
 		}
 	}
@@ -64,8 +68,6 @@ void URaidMonsterWidget::UpdateThunderDef()
 	{
 		if (ThunderDefBar != nullptr)
 		{
-			STARRYLOG_S(Error);
-			STARRYLOG(Error, TEXT("%f"), CurrentScientia->GetThunderDefPercent());
 			ThunderDefBar->SetPercent(CurrentScientia->GetThunderDefPercent());
 		}
 	}
@@ -78,25 +80,54 @@ void URaidMonsterWidget::UpdateAttribute()
 		switch (CurrentScientia->GetScInfo().CurrentAttribute)
 		{
 		case EAttributeKeyword::e_None:
+		
 			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
 			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
 			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
 			break;
 		case EAttributeKeyword::e_Fire:
+		
 			FireDefBar->SetVisibility(ESlateVisibility::Visible);
 			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
 			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
+			break;
 		case EAttributeKeyword::e_Water:
+	
 			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
 			WaterDefBar->SetVisibility(ESlateVisibility::Visible);
 			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
+			break;
 		case EAttributeKeyword::e_Thunder:
+
 			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
 			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
 			ThunderDefBar->SetVisibility(ESlateVisibility::Visible);
+			break;
 		}
 	}
 	
+}
+
+void URaidMonsterWidget::BreakAttributeBarrier()
+{
+	
+		switch (CurrentScientia->GetScInfo().CurrentAttribute)
+		{
+		case EAttributeKeyword::e_Fire:
+			Fire.Standard->SetVisibility(ESlateVisibility::Hidden);
+			Fire.Break->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case EAttributeKeyword::e_Water:
+
+			Water.Standard->SetVisibility(ESlateVisibility::Hidden);
+			Water.Break->SetVisibility(ESlateVisibility::Visible);
+			break;
+		case EAttributeKeyword::e_Thunder:
+
+			Thunder.Standard->SetVisibility(ESlateVisibility::Hidden);
+			Thunder.Break->SetVisibility(ESlateVisibility::Visible);
+			break;
+		}
 }
 
 bool URaidMonsterWidget::CheckDefWidget()
@@ -108,6 +139,7 @@ bool URaidMonsterWidget::CheckDefWidget()
 	return true;
 }
 
+
 void URaidMonsterWidget::NativeOnInitialized()
 {
 	
@@ -116,5 +148,11 @@ void URaidMonsterWidget::NativeOnInitialized()
 	 WaterDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_WaterDef")));
 	 ThunderDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_ThunderDef")));
 
+	 Fire.Standard= Cast<UImage>(GetWidgetFromName(TEXT("Fire")));
+	 Fire.Break = Cast<UImage>(GetWidgetFromName(TEXT("FireBreak")));
+	 Water.Standard = Cast<UImage>(GetWidgetFromName(TEXT("Water")));
+	 Water.Break = Cast<UImage>(GetWidgetFromName(TEXT("WaterBreak")));
+	 Thunder.Standard = Cast<UImage>(GetWidgetFromName(TEXT("Thunder")));
+	 Thunder.Break = Cast<UImage>(GetWidgetFromName(TEXT("ThunderBreak")));
 }
 
