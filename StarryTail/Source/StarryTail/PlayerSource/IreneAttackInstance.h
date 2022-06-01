@@ -17,7 +17,6 @@ public:
 	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
-	
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -59,6 +58,7 @@ private:
 	bool bMoveSkip;
 	// 후딜 중 닷지나 점프 가능 타이밍 노티파이
 	bool bDodgeJumpSkip;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -81,7 +81,7 @@ public:
 #pragma region GetSet
 	//공격력 반환
 	float GetATK()const;
-	int GetAttackDirection();
+
 	FName GetBasicAttackDataTableName();
 	FName GetActionAttackDataTableName();
 

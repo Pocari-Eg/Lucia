@@ -62,29 +62,6 @@ float UIreneAttackInstance::GetATK()const
 	return Irene->IreneData.Strength;
 }
 
-int UIreneAttackInstance::GetAttackDirection()
-{
-	// 공격 방향을 지정하는 함수로 공격 데미지를 보낼 때 같이 보냄
-	// 현재 공격방식에 따라 방향이 달라 수정필요
-	// 0 == Right to Left
-	// 1 == Left to Right
-	// 2 == Down to Up
-	// 3 == Up to Down
-	
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
-	{
-		return 0;
-	}
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
-	{
-		return 1;
-	}
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
-	{
-		return 0;
-	}
-	return 0;
-}
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
 	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
@@ -157,7 +134,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	if (!Irene->IreneState->IsDodgeState())
+	if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsJumpState())
 	{
 		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		//Irene->ActionEndChangeMoveState();
@@ -401,7 +378,7 @@ void UIreneAttackInstance::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 				{
-					Mob->SetAttackedInfo(bUseMP, 0, (EAttackedDirection)GetAttackDirection());
+					Mob->SetAttackedInfo(bUseMP, 0, EAttackedDirection::Down);
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}

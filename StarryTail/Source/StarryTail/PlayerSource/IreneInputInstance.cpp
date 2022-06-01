@@ -694,7 +694,7 @@ bool UIreneInputInstance::StaminaGaugeIsFull()const
 #pragma region CheckStateChange
 bool UIreneInputInstance::CanJumpState() const
 {
-	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsChargeState())
 			return true;
 	return false;
 }
