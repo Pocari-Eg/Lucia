@@ -69,7 +69,7 @@ public:
 	FPlayerRecoveryDataStruct HpRecoveryData;
 	
 	// 무기 매쉬
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
 	TArray<USkeletalMesh*> WeaponMeshArray;

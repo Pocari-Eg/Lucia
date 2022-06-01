@@ -151,7 +151,8 @@ void UBattleIdleState::Enter(IBaseGameEntity* CurState)
 
 void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 {
-	
+	if(CurState->PlayTime >= 10.0f)
+		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 }
 
 void UBattleIdleState::Exit(IBaseGameEntity* CurState)
@@ -855,11 +856,11 @@ void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
-
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -869,7 +870,6 @@ void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 
 void UBasicAttack2FireState::Exit(IBaseGameEntity* CurState)
 {
-	STARRYLOG_S(Warning);
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -907,11 +907,11 @@ void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
-
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -962,7 +962,7 @@ void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
-
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
@@ -1021,7 +1021,7 @@ void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -1072,7 +1072,7 @@ void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -1127,7 +1127,7 @@ void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -1182,7 +1182,7 @@ void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -1233,7 +1233,7 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() == true && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
@@ -1455,17 +1455,7 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
 		StartShakeTime = CurState->PlayTime;
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
-		CurState->Irene->CameraShakeOn = false;
-
-	if (CurState->Irene->IreneData.IsAttacking)
-	{
-		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
-		{
-			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
-		}
-	}
+		CurState->Irene->CameraShakeOn = false;	
 }
 
 void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
