@@ -73,7 +73,7 @@ private:
 	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
 	int ThunderSkillCount;
-
+	int MaxThunderSkillCount;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -161,12 +161,20 @@ public:
 
 #pragma region CoolTime
 private:
-		void FireCoolTime();
-		void WaterCoolTime();
-		void ThunderCoolTime();
+	void FireCoolTime();
+	void WaterCoolTime();
+	void ThunderCoolTime();
+	void SkillWait();
+	void ThunderSkillWait();
 
-		bool bIsFireAttributeOn;
-		bool bIsWaterAttributeOn;
-		bool bIsThunderAttributeOn;
+	bool bIsFireAttributeOn;
+	bool bIsWaterAttributeOn;
+	bool bIsThunderAttributeOn;
+
+	float SkillCoolTime;
+	float MaxSkillCoolTime;
+	bool bIsSkillOn;
+
+	void InitSkillCount();
 #pragma endregion CoolTime
 };

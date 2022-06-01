@@ -196,10 +196,24 @@ float UIreneUIManager::GetThunderCoolRatio()
 	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
 }
 
+float UIreneUIManager::GetSkillCoolRatio()
+{
+	return (SkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (SkillCurCoolTime / SkillMaxCoolTime);
+}
+
 void UIreneUIManager::PlayHUDAnimation()
 {
 	PlayerHud->PlayHUDAnimation();
 }
+
+void UIreneUIManager::UpdateSkillCool(float CurCool, float MaxCool)
+{
+
+	SkillCurCoolTime = CurCool;
+	SkillMaxCoolTime = MaxCool;
+}
+
+
 
 void UIreneUIManager::PauseWidgetOn()
 {

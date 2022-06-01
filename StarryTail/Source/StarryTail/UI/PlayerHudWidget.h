@@ -73,6 +73,8 @@ public:
 	void PlayPopUp();
 	void ExitPopUp();
 	bool ContinueDialog();
+
+	void UseSkill();
 private:
 
 	void UpdateHp();
@@ -86,6 +88,8 @@ private:
 	void UpdateFireCoolTime();
 	void UpdateWaterCoolTime();
 	void UpdateThunderCoolTime();
+
+	void UpdateSkillCoolTime();
 
 	void FireSelect();
 	void WaterSelect();
@@ -119,10 +123,14 @@ private:
 	FSkillImageData Water;
 	FSkillImageData Thunder;
 
+	FSkillImageData Skill;
+
 	bool isFirst;
 
 
 	TArray<FScriptData*> ScriptData;
 
 	int32 DialogNum;
+
+	float SPLimit;
 };

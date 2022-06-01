@@ -44,10 +44,14 @@ void UIreneInputInstance::InitMemberVariable()
 	bUseWaterDodge = false;
 
 	ThunderSkillCount = 2;
+	MaxThunderSkillCount = ThunderSkillCount;
 
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	ThunderCurCoolTime = 0.0f;
+
+	SkillCoolTime = 0.0f;
+	bIsSkillOn = true;
 
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
@@ -318,28 +322,29 @@ void UIreneInputInstance::RightButton(const float DeltaTime)const
 }
 void UIreneInputInstance::RightButtonPressed()
 {
-	if (CanAttackState() && !bUseLeftButton && !SkillWaitHandle.IsValid())
+	if (CanAttackState() && !bUseLeftButton && bIsSkillOn)
 	{
 		IsCharging = true;
 		ChargingTime = 0.0f;		
 
 		Irene->SetActorRotation(GetMoveKeyToDirVector().Rotation());
 		
+		Irene->IreneUIManager->PlayerHud->UseSkill();
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			bUseRightButton = true;			
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
-				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					SkillWaitHandle.Invalidate();
-				}) , AttackTable->C_Time/1000, false);
+				
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.5f, true, 0.0f);
+				bIsSkillOn = false;
 			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
@@ -348,15 +353,15 @@ void UIreneInputInstance::RightButtonPressed()
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
-				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					SkillWaitHandle.Invalidate();
-				}) , AttackTable->C_Time/1000, false);
+			
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneAnim->PlaySkillAttackMontage();
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.5f, true, 0.0f);
+				bIsSkillOn = false;
 			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && !Irene->IreneState->IsSkillState())
@@ -366,28 +371,21 @@ void UIreneInputInstance::RightButtonPressed()
 				bUseRightButton = true;
 				Irene->IreneAttack->SetSkillState();
 				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
+				MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
 
 				if (AttackTable != nullptr && bUseRightButton)
 				{
 					ThunderSkillCount--;
 					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 					Irene->IreneAnim->PlaySkillAttackMontage();
-					if(ThunderSkillCount < 2 && !ThunderSkillWaitHandle.IsValid())
-					{
-						GetWorld()->GetTimerManager().SetTimer(ThunderSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-						{
-							ThunderSkillCount++;
-							if(ThunderSkillCount == 2)
-							{
-								GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
-								ThunderSkillWaitHandle.Invalidate();
-							}
-						}) , AttackTable->C_Time/1000, true);					
+					STARRYLOG(Error, TEXT("Thunder Skill %d /  %d"), ThunderSkillCount, MaxThunderSkillCount);
+					if (ThunderSkillCount > 0) {
+						STARRYLOG(Error, TEXT("Skill charging"));
+						GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::ThunderSkillWait, 0.5f, true, 0.0f);
 					}
-					if(SkillWaitHandle.IsValid())
-					{
-						GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
-						SkillWaitHandle.Invalidate();						
+					else {
+						STARRYLOG(Error, TEXT("Skill Count Empty"));
+						bIsSkillOn = false;
 					}
 				}
 			}
@@ -482,6 +480,8 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
 	Irene->FOnAttributeChange.Broadcast();
 
+	InitSkillCount();
+
 	// 속성 마다 소리와 무기 설정 적용
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 	{
@@ -505,6 +505,10 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
  	bIsThunderAttributeOn = false;
 	bIsWaterAttributeOn = false;
 	bIsFireAttributeOn = false;
+
+	ThunderCurCoolTime = 0.0f;
+	FireCurCoolTime = 0.0f;
+	WaterCurCoolTime = 0.0f;
 	//Fire
 	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::FireCoolTime, 0.5f , true, 0.0f);
 	//Water
@@ -732,30 +736,35 @@ void UIreneInputInstance::FireCoolTime()
 	if (FireCurCoolTime < FireMaxCoolTime)
 	{
 		FireCurCoolTime += 0.5f;
+
 	}
-	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
-	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
-	if(FireCurCoolTime == FireMaxCoolTime){
+	else {
 		bIsFireAttributeOn = true;
 		FireCurCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(FireStartTimer);
-		
+	
 	}
+	
+	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
+	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
 }
 void UIreneInputInstance::WaterCoolTime()
 {
 	if (WaterCurCoolTime < WaterMaxCoolTime)
 	{
-		WaterCurCoolTime += 0.5f;;
+		WaterCurCoolTime += 0.5f;
+		
 	}
-	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
-	Irene->IreneUIManager->OnWaterCoolChange.Broadcast();
-	if (WaterCurCoolTime == WaterMaxCoolTime) {
+	else {
 		bIsWaterAttributeOn = true;
 		WaterCurCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(WaterStartTimer);
-
+		
 	}
+
+	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
+	Irene->IreneUIManager->OnWaterCoolChange.Broadcast();
+
 }
 void UIreneInputInstance::ThunderCoolTime()
 {
@@ -763,13 +772,60 @@ void UIreneInputInstance::ThunderCoolTime()
 	{
 		ThunderCurCoolTime += 0.5f;;
 	}
-	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
-	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
-	if (ThunderCurCoolTime == ThunderMaxCoolTime) {
+	else {
 		bIsThunderAttributeOn = true;
 		ThunderCurCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(ElectricStartTimer);
 
 	}
+	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
+	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
+
+}	
+
+void UIreneInputInstance::SkillWait()
+{
+	SkillCoolTime += 0.5f;
+
+	if (SkillCoolTime > MaxSkillCoolTime) {
+		bIsSkillOn = true;
+		SkillCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+	}
+	Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 }
+void UIreneInputInstance::ThunderSkillWait()
+{
+	SkillCoolTime += 0.5f;
+	if (SkillCoolTime > MaxSkillCoolTime) {
+		bIsSkillOn = true;
+		SkillCoolTime = 0.0f;
+
+		ThunderSkillCount++;
+		STARRYLOG(Error, TEXT("Thunder Skill %d / %d"), ThunderSkillCount, MaxThunderSkillCount);
+		if (ThunderSkillCount < MaxThunderSkillCount) {
+			STARRYLOG(Error, TEXT("Skill Count 1"));
+			GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+			GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::ThunderSkillWait, 0.5f, true, 0.0f);
+		}
+		else {
+			STARRYLOG(Error, TEXT("Skill Count Is Full"));
+			GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+		}
+	}
+	Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+}
+void UIreneInputInstance::InitSkillCount()
+{
+	bIsSkillOn = true;
+	SkillCoolTime = 0.0f;
+	GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+	ThunderSkillCount = 2;
+	Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+
+}
+
 #pragma endregion GetSet
