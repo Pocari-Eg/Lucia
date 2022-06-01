@@ -20,7 +20,7 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
 	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
 	NewIrene->IreneUIManager->OnThunderCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderCoolTime);
-
+	NewIrene->IreneUIManager->OnSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateSkillCoolTime);
 }
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
@@ -90,6 +90,11 @@ bool UPlayerHudWidget::ContinueDialog()
 	
 }
 
+void UPlayerHudWidget::UseSkill()
+{
+	Skill.Active->SetVisibility(ESlateVisibility::Hidden);
+}
+
 EDialogState UPlayerHudWidget::GetDialogState()
 {
 	return DialogWidget->GetDialogState();
@@ -126,7 +131,15 @@ void UPlayerHudWidget::UpdateMp()
 	{
 		if (nullptr != MPProgressBar)
 		{
-			MPProgressBar->SetPercent(CurrentIrene->IreneUIManager->GetStaminaRatio());
+			float ratio = CurrentIrene->IreneUIManager->GetStaminaRatio();
+			MPProgressBar->SetPercent(ratio);
+			if (ratio < SPLimit)
+			{
+				MPProgressBar->SetFillColorAndOpacity(FLinearColor(1.0f,0.0f,0.0f,1.0f));
+			}
+			else {
+				MPProgressBar->SetFillColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
+			}
 		}
 	}
 }
@@ -158,6 +171,8 @@ void UPlayerHudWidget::UpdateAttributes()
 		ThunderSelect();
 		break;
 	}
+
+	Skill.Active->SetVisibility(ESlateVisibility::Visible);
 
 	if (isFirst)
 	{
@@ -239,6 +254,26 @@ void UPlayerHudWidget::UpdateThunderCoolTime()
 	}
 }
 
+void UPlayerHudWidget::UpdateSkillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != Skill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetSkillCoolRatio();
+			Skill.CoolTimeBar->SetPercent(Ratio);
+
+			if (Ratio >= 1.0f)
+			{
+				Skill.Active->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+
+	
+	}
+}
+
 
 
 void UPlayerHudWidget::FireSelect()
@@ -261,6 +296,8 @@ void UPlayerHudWidget::FireSelect()
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
 	
+
+	SPLimit = 0.25f;
     OnFireAttribute();
 
 }
@@ -285,7 +322,7 @@ void UPlayerHudWidget::WaterSelect()
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
 
-
+	SPLimit = 0.5f;
 	  OnWaterAttribute();
 
 }
@@ -309,7 +346,7 @@ void UPlayerHudWidget::ThunderSelect()
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Visible);
 
-	
+	SPLimit = 0.25f;
 	  OnThunderAttribute();
 }
 
@@ -357,6 +394,10 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Thunder.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_NoneSelect")));
 	Thunder.Active = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Active")));
 	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
+
+	Skill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("SkillOff")));
+	Skill.Active = Cast<UImage>(GetWidgetFromName(TEXT("SkillOn")));
+	Skill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Skill_CoolTime")));
 
 	InitSkillUI();
 

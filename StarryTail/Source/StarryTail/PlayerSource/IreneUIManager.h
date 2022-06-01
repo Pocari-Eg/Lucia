@@ -16,6 +16,8 @@ DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FOnSkillCoolChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
 {
@@ -44,6 +46,10 @@ private:
 	float ThunderMaxCoolTime;
 	float ThunderCurCoolTime;
 
+
+
+	float SkillMaxCoolTime;
+	float SkillCurCoolTime;
 public:
 	// 로그 출력용
 	bool bShowLog;
@@ -56,6 +62,8 @@ public:
 	FOnFireCoolChangeDelegate OnFireCoolChange;
 	FOnWaterCoolChangeDelegate OnWaterCoolChange;
 	FOnThunderCoolChangeDelegate OnThunderCoolChange;
+
+	FOnSkillCoolChangeDelegate OnSkillCoolChange;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -141,7 +149,11 @@ public:
 	//Thunde Cool
 	float GetThunderCoolRatio();
 
+	float GetSkillCoolRatio();
+
 	void PlayHUDAnimation();
+
+	void UpdateSkillCool(float CurCool, float MaxCool);
 #pragma endregion HUDPublic
 
 
