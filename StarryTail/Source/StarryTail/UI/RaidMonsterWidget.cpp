@@ -4,106 +4,99 @@
 #include "RaidMonsterWidget.h"
 #include "Components/ProgressBar.h"
 
-void URaidMonsterWidget::BindMonster(class AMonster* NewMonster) {
+void URaidMonsterWidget::BindScientia(class AScientia* NewScientia) {
 
-	//새로들어온 object를 CurrentObject에 할당
-	CurrentMonster = Cast<AMonster>(NewMonster);
+	CurrentScientia = NewScientia;
 
-	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
+	UpdateAttribute();
 
-	//NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	//NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
-	//NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
+	CurrentScientia->AttributeChange.AddUObject(this, &URaidMonsterWidget::UpdateAttribute);
+	CurrentScientia->OnHpChanged.AddUObject(this, &URaidMonsterWidget::UpdateHp);
+
+	CurrentScientia->OnFireBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateFireDef);
+	CurrentScientia->OnWaterBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateWaterDef);
+	CurrentScientia->OnThunderBarrierChanged.AddUObject(this, &URaidMonsterWidget::UpdateThunderDef);
+
+	SetVisibility(ESlateVisibility::Visible);
 }
 
 void URaidMonsterWidget::UpdateHp()
 {
-	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
-	if (CurrentMonster != nullptr)
-	{
 
-		if (nullptr != HPProgressBar)
+	if (CurrentScientia != nullptr)		
+	{
+	
+		if (HPProgressBar != nullptr)
 		{
-			//radiot
-			//HPProgressBar->SetPercent(CurrentMonster->GetHp);
+			
+			HPProgressBar->SetPercent(CurrentScientia->GetHpRatio());
 		}
 	}
+	
 }
 
 void URaidMonsterWidget::UpdateFireDef()
 {
-	
-	if (CurrentMonster != nullptr)
+	if (CurrentScientia != nullptr)
 	{
-
-		if (nullptr != FireDefBar)
+		if (FireDefBar != nullptr)
 		{
-			//radiot
-			//HPProgressBar->SetPercent(CurrentMonster->GetHp);
+			FireDefBar->SetPercent(CurrentScientia->GetFireDefPercent());
 		}
 	}
 }
 
 void URaidMonsterWidget::UpdateWaterDef()
 {
-
-	if (CurrentMonster != nullptr)
+	if (CurrentScientia != nullptr)
 	{
-
-		if (nullptr != WaterDefBar)
+		if (WaterDefBar != nullptr)
 		{
-			//radiot
-			//HPProgressBar->SetPercent(CurrentMonster->GetHp);
+			WaterDefBar->SetPercent(CurrentScientia->GetWaterDefPercent());
 		}
 	}
+
 }
 
 void URaidMonsterWidget::UpdateThunderDef()
 {
-	
-	if (CurrentMonster != nullptr)
+	if (CurrentScientia != nullptr)
 	{
-
-		if (nullptr != ThunderDefBar)
+		if (ThunderDefBar != nullptr)
 		{
-			//radiot
-			//HPProgressBar->SetPercent(CurrentMonster->GetHp);
+			STARRYLOG_S(Error);
+			STARRYLOG(Error, TEXT("%f"), CurrentScientia->GetThunderDefPercent());
+			ThunderDefBar->SetPercent(CurrentScientia->GetThunderDefPercent());
 		}
 	}
+
 }
 
-void URaidMonsterWidget::ChangeDefWidget()
+void URaidMonsterWidget::UpdateAttribute()
 {
-	
-	if (CurrentMonster != nullptr)
-	{
-		switch (CurrentMonster->GetAttribute())
+	if (CheckDefWidget()) {
+		switch (CurrentScientia->GetScInfo().CurrentAttribute)
 		{
-		case EAttributeKeyword::e_Fire :
-			if (CheckDefWidget()) {
-				FireDefBar->SetVisibility(ESlateVisibility::Visible);
-				WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
-				ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
-			}
-				break;
+		case EAttributeKeyword::e_None:
+			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
+			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
+			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
+			break;
+		case EAttributeKeyword::e_Fire:
+			FireDefBar->SetVisibility(ESlateVisibility::Visible);
+			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
+			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
 		case EAttributeKeyword::e_Water:
-			if (CheckDefWidget()) {
-				FireDefBar->SetVisibility(ESlateVisibility::Hidden);
-				WaterDefBar->SetVisibility(ESlateVisibility::Visible);
-				ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
-			}
-			break;
+			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
+			WaterDefBar->SetVisibility(ESlateVisibility::Visible);
+			ThunderDefBar->SetVisibility(ESlateVisibility::Hidden);
 		case EAttributeKeyword::e_Thunder:
-			if (CheckDefWidget()) {
-				FireDefBar->SetVisibility(ESlateVisibility::Hidden);
-				WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
-				ThunderDefBar->SetVisibility(ESlateVisibility::Visible);
-			}
-			break;
-		default:
-			break;
+			FireDefBar->SetVisibility(ESlateVisibility::Hidden);
+			WaterDefBar->SetVisibility(ESlateVisibility::Hidden);
+			ThunderDefBar->SetVisibility(ESlateVisibility::Visible);
 		}
 	}
+	
 }
 
 bool URaidMonsterWidget::CheckDefWidget()
@@ -117,11 +110,11 @@ bool URaidMonsterWidget::CheckDefWidget()
 
 void URaidMonsterWidget::NativeOnInitialized()
 {
-
-	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_HPBar")));
-	FireDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_FireDefBar")));
-	WaterDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_WaterDefBar")));
-	ThunderDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_ThunderBar")));
+	
+	 HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_HPBar")));
+	 FireDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_FireDef")));
+	 WaterDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_WaterDef")));
+	 ThunderDefBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_ThunderDef")));
 
 }
 
