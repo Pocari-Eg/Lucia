@@ -25,7 +25,8 @@ AAttributeObject::AAttributeObject()
 	GetCapsuleComponent()->SetCapsuleHalfHeight(150.0f);
 	GetCapsuleComponent()->SetCapsuleRadius(55.0f);
 
-	ObjectMesh->SetRelativeLocation(FVector(0.0f, 0.0f, -10.0f));
+
+	ObjectMesh->SetRelativeLocation(GetActorLocation()+FVector(0.0f, 0.0f, -185.0f));
 	//현재 콜리전을 Object로 설정 
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	ObjectMesh->SetCollisionProfileName(TEXT("NoCollision"));

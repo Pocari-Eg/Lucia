@@ -27,9 +27,9 @@ private:
  //메쉬
 	
 //상태
-	UPROPERTY(VisibleAnywhere,Category=Info, meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(VisibleAnywhere,Category=PuzzleInfo, meta = (AllowPrivateAccess = "ture"))
 	EState State;
-	UPROPERTY(VisibleAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
+	UPROPERTY(VisibleAnywhere, Category = PuzzleInfo, meta = (AllowPrivateAccess = "ture"))
 	EAttributeKeyword Attribute;
 public:
 //트리거
