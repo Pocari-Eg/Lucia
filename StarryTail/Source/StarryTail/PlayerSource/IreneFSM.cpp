@@ -1539,7 +1539,6 @@ void UCharge1State::Execute(IBaseGameEntity* CurState)
 
 void UCharge1State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneAnim->SetFireChargeCount(0);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UCharge1State
