@@ -152,7 +152,11 @@ void UBattleIdleState::Enter(IBaseGameEntity* CurState)
 void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 {
 	if(CurState->PlayTime >= 10.0f)
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
 }
 
 void UBattleIdleState::Exit(IBaseGameEntity* CurState)
@@ -179,7 +183,11 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
-	CurState->Irene->Weapon->SetVisibility(false);
+	if(CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
 	//CurState->Irene->SetCameraLagTime(0);
 }
 
@@ -275,7 +283,6 @@ void URunEndState::Execute(IBaseGameEntity* CurState)
 
 void URunEndState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->Weapon->SetVisibility(true);
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
@@ -302,10 +309,14 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
-	CurState->Irene->Weapon->SetVisibility(false);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
 	//CurState->Irene->SetCameraLagTime(0);
+	if(CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -403,7 +414,6 @@ void USprintEndState::Execute(IBaseGameEntity* CurState)
 
 void USprintEndState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->IreneAnim->SetSprintStateAnim(false);
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
 	//CurState->Irene->SetCameraLagTime(0);
@@ -502,6 +512,7 @@ void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
+	CurState->Irene->UseWaterDodge();
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
 	{
@@ -543,7 +554,6 @@ void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetMesh()->SetVisibility(true);
-	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeWaterEndState
@@ -570,6 +580,7 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	//CurState->Irene->SetCameraLagTime(0);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
+	CurState->Irene->StartThunderDodge();
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -621,7 +632,6 @@ void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
 	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
 	CurState->Irene->GetMesh()->SetVisibility(true);
-	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
 	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
@@ -630,6 +640,7 @@ void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	CurState->Irene->EndThunderDodge();
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeThunderEndState
@@ -653,6 +664,11 @@ void UJumpStartState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetMovementComponent()->Velocity = CurState->Irene->GetMovementComponent()->Velocity / CurState->Irene->IreneData.JumpDrag;
 	CurState->Irene->IreneInput->SetStartJump(true);
+	if(CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
 }
 
 void UJumpStartState::Execute(IBaseGameEntity* CurState)
@@ -681,6 +697,11 @@ void UJumpLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurrentTime = 0;
+	if(CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
 }
 
 void UJumpLoopState::Execute(IBaseGameEntity* CurState)
@@ -787,6 +808,11 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -808,6 +834,11 @@ void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -862,6 +893,11 @@ void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}		
@@ -913,6 +949,11 @@ void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -946,6 +987,11 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
@@ -968,6 +1014,11 @@ void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1023,6 +1074,11 @@ void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1074,6 +1130,11 @@ void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1107,6 +1168,11 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1129,6 +1195,11 @@ void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1184,6 +1255,11 @@ void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1235,6 +1311,11 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1269,6 +1350,11 @@ void USkillFireStartState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void USkillFireStartState::Execute(IBaseGameEntity* CurState)
@@ -1285,6 +1371,11 @@ void USkillFireStartState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1346,6 +1437,11 @@ void USkillWaterStartState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
@@ -1365,6 +1461,11 @@ void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (!CurState->Irene->IreneData.CanNextCombo && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			if(CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1436,6 +1537,11 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAnim->StopAllMontages(0);
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -1479,6 +1585,7 @@ void USkillThunderEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Skill_T_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->Weapon->SetVisibility(true);
 }
 
 void USkillThunderEndState::Execute(IBaseGameEntity* CurState)
@@ -1518,6 +1625,11 @@ void UCharge1State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Charge_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	if(!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 	CurrentTime = 0;
 }
 
