@@ -47,7 +47,7 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class UIreneAnimInstance* IreneAnim;
 	UPROPERTY()
 	class UIreneAttackInstance* IreneAttack;
@@ -109,6 +109,15 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void TargetReset()const;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void WeaponVisible(bool Value);
+	UFUNCTION(BlueprintImplementableEvent)
+	void UseWaterDodge();
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartThunderDodge();
+	UFUNCTION(BlueprintImplementableEvent)
+	void EndThunderDodge();
 #pragma endregion Setting
 	
 	// Called every frame
