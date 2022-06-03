@@ -8,17 +8,25 @@
 #include <LevelSequence/Public/LevelSequenceActor.h>
 #include "SequenceTrigger.generated.h"
 
+UENUM(BluePrintType)
+enum class  ESequenePlayType :uint8
+{
+	Play = 0 UMETA(DisplayName = "PLAY"),
+	Reverse UMETA(DisplayName = "REVERSE"),
+
+};
 UCLASS()
 class STARRYTAIL_API ASequenceTrigger : public AActor
 {
 	GENERATED_BODY()
-	
-		//충돌 트리거
+	//충돌 트리거
 	UPROPERTY(EditAnywhere, Category = Trigger)
 	UBoxComponent* Trigger;
 	//메쉬
 	UPROPERTY(EditAnywhere, Category = Trigger)
 		UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, Category = Trigger)
+	ESequenePlayType PlayType;
 
 public:
 	// Sets default values for this actor's properties

@@ -34,8 +34,16 @@ void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 {
 	STARRYLOG(Warning, TEXT("Monster Trigger Overlap"));
 	TriggerOff();
-	if(SpawnPoint.Num()!=0)
-	WaveStart();
+	if (SpawnPoint.Num() != 0) {
+		WaveStart();
+		if (StartSequenceActor.Num()!=0)
+		{
+			for (int i = 0; i < StartSequenceActor.Num(); i++) {
+				StartSequenceActor[i]->SequencePlayer->Play();
+			}
+		}
+	}
+
 }
 
 // Called when the game starts or when spawned
@@ -99,8 +107,11 @@ void AEnemySpawnTrigger::WaveClear()
 {
 	STARRYLOG(Warning, TEXT("Wave Clear"));
 	IsCurrentSpawn = false;
-	if (SequenceActor != nullptr) {
-		SequenceActor->SequencePlayer->Play();
+	if (SequenceActor.Num() != 0)
+	{
+		for (int i = 0; i < SequenceActor.Num(); i++) {
+			SequenceActor[i]->SequencePlayer->Play();
+		}
 	}
 }
 
