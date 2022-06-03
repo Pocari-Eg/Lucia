@@ -931,6 +931,7 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
@@ -943,6 +944,12 @@ void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
+
+	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->ChangeStateAndLog(UBasicAttack1FireState::GetInstance());
+	}
 	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
@@ -1112,6 +1119,7 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
@@ -1125,6 +1133,12 @@ void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 	
 	CurState->Irene->IreneData.IsComboInputOn = false;
 
+	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->ChangeStateAndLog(UBasicAttack1WaterState::GetInstance());
+	}
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
@@ -1293,6 +1307,7 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1306,6 +1321,12 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 	
 	CurState->Irene->IreneData.IsComboInputOn = false;
 
+	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
+	}
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
@@ -1525,7 +1546,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	
 	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
-	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*400;
+	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*800;
 	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
 	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
 	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);

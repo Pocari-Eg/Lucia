@@ -27,7 +27,7 @@ class STARRYTAIL_API UIreneAnimInstance : public UAnimInstance
 public:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-	
+
 protected:
 
 private:
@@ -106,6 +106,8 @@ private:
 	void AnimNotify_MoveSkipCheck() const;
 	UFUNCTION()
 	void AnimNotify_DodgeJumpSkipCheck() const;
+	UFUNCTION()
+	void AnimNotify_ReAttackCheck() const;
 	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()

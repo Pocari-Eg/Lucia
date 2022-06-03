@@ -240,9 +240,6 @@ void AIreneCharacter::BeginPlay()
 	
 	FOnAttributeChange.Broadcast();
 
-
-
-
 	InitComplete();
 }
 
@@ -370,19 +367,19 @@ void AIreneCharacter::FindNearMonster()
 	}
 	
 	// 몹 추적 박스 크기
-	float Far = 300;
+	float Far = 200;
 	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 		Far = 500;
 	// 넓이, 높이, 거리
-	const FVector BoxSize = FVector(300, 50, Far);
+	const FVector BoxSize = FVector(150, 50, Far);
 
 	// 리스트에 모든 충돌 결과 담는다.
 	TArray<FHitResult> MonsterList;
 	const FCollisionQueryParams Params(NAME_None, false, this);
 	const bool bResult = GetWorld()->SweepMultiByChannel(
 		MonsterList,
-		GetActorLocation() + GetActorForwardVector() * Far,
-		GetActorLocation() + GetActorForwardVector() * Far,
+		GetActorLocation(),
+		GetActorLocation(),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * Far).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel8,
 		FCollisionShape::MakeBox(BoxSize * 1),
@@ -416,6 +413,7 @@ void AIreneCharacter::FindNearMonster()
 			const auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;			
 			const float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
 
+			
 			// 몬스터가 공격범위 보다 멀리 있다면
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange && IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)
 			{
@@ -540,7 +538,6 @@ void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPri
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
 
-	//STARRYLOG(Error,TEXT("%s"),*Other->GetName());
 	if(IreneAttack->GetFollowTarget())
 	{
 		if(Cast<AMonster>(Other))

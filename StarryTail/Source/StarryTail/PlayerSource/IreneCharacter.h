@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 
 // 추가하는 부분
+#include "IreneAttackInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
@@ -110,6 +111,9 @@ public:
 
 	void TargetReset()const;
 
+	UFUNCTION(BlueprintCallable)
+	EAttributeKeyword GetAttribute() {return IreneAttack->GetAttribute();}
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponVisible(bool Value);
 	UFUNCTION(BlueprintImplementableEvent)

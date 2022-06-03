@@ -108,7 +108,7 @@ public:
 	int32 MaxCombo = 3;
 	// Ä¸½¶ °ø°Ý »ç°Å¸®
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	float AttackRange = 200.0f;
+	float AttackRange = 50.0f;
 	// Ä¸½¶ °ø°Ý »ç°Å¸® ¹ÝÁö¸§
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	float AttackRadius = 50.0f;

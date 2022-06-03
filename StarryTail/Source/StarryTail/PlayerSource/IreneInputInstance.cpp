@@ -36,6 +36,7 @@ void UIreneInputInstance::InitMemberVariable()
 	ChargingTime = 0.0f;
 
 	// 마우스 입력 초기화
+	bLeftButtonPressed = false;
 	bUseLeftButton = false;
 	bUseRightButton = false;
 
@@ -251,6 +252,10 @@ void UIreneInputInstance::LookUp(float Rate)
 
 void UIreneInputInstance::LeftButton(float Rate)
 {
+	if(Rate != 0)
+		bLeftButtonPressed = true;
+	else
+		bLeftButtonPressed = false;
 	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false)
 	{
 		if (Rate >= 1.0)
@@ -567,12 +572,10 @@ void UIreneInputInstance::DodgeKeyword()
 			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 ThunderDodgeWaitHandle.Invalidate();
-				GetWorld()->GetTimerManager().ClearTimer(ThunderDodgeWaitHandle);
 			 }), 0.03f, false);			
 			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 DodgeWaitHandle.Invalidate();
-				GetWorld()->GetTimerManager().ClearTimer(DodgeWaitHandle);
 			 }), Irene->IreneData.ThunderDodgeTime, false);
 		}
 	}	
