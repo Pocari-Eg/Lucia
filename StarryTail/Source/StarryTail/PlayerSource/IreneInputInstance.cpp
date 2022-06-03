@@ -593,7 +593,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			bUseWaterDodge = true;
-			Irene->IreneData.CurrentStamina -= Rate/5;
+			Irene->IreneData.CurrentStamina -= Rate * GetWorld()->GetDeltaSeconds() * Irene->IreneData.Decrease_Speed;
 			if(StartWaterDodgeStamina - 75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
 			{
 				GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -675,7 +675,7 @@ void UIreneInputInstance::PauseWidgetOn()
 void UIreneInputInstance::RecoveryStaminaGauge(const float DeltaTime)const
 {
 	// 스테미나를 회복시키는 함수
-	Irene->IreneData.CurrentStamina += DeltaTime * 5;
+	Irene->IreneData.CurrentStamina += DeltaTime * Irene->IreneData.Recovery_Speed;
 	if(StaminaGaugeIsFull()) Irene->IreneData.CurrentStamina = Irene->IreneData.MaxStamina;
 	Irene->IreneUIManager->OnStaminaChanged.Broadcast();
 }
