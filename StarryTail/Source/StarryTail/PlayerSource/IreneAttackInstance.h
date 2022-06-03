@@ -20,7 +20,7 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-	
+
 	EAttributeKeyword Attribute;
 
 	UPROPERTY()
@@ -58,7 +58,8 @@ private:
 	bool bMoveSkip;
 	// 후딜 중 닷지나 점프 가능 타이밍 노티파이
 	bool bDodgeJumpSkip;
-
+	// 후딜 중 재공격 가능 타이밍 노티파이
+	bool bReAttackSkip;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -98,6 +99,7 @@ public:
 	bool GetUseMP()const {return bUseMP;}
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
+	bool GetCanReAttackSkip()const{return bReAttackSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
@@ -111,6 +113,8 @@ public:
 	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
+	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
+
 #pragma endregion GetSet
 
 private:

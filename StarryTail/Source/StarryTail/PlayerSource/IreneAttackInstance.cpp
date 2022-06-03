@@ -55,6 +55,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	bUseMP = false;
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
+	bReAttackSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -200,7 +201,7 @@ void UIreneAttackInstance::DoAttack()
 				MonsterList,
 				Irene->GetActorLocation(),
 				Irene->GetActorLocation(),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
 				FCollisionShape::MakeBox(FVector(200, 50, 150)),
 				Params);
@@ -219,7 +220,7 @@ void UIreneAttackInstance::DoAttack()
 				MonsterList,
 				Irene->GetActorLocation(),
 				Irene->GetActorLocation(),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
 				FCollisionShape::MakeBox(BoxSize),
 				Params);
@@ -260,10 +261,10 @@ void UIreneAttackInstance::DoAttack()
 			bResult = GetWorld()->SweepMultiByChannel(
 				MonsterList,
 				Irene->GetActorLocation(),
-				Irene->GetActorLocation() + Irene->GetActorForwardVector() * Irene->IreneData.AttackRange,
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				Irene->GetActorLocation() + Irene->GetActorForwardVector() * 200,
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,Irene->IreneData.AttackRange * 0.5f),
+				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,200 * 0.5f),
 				Params);
 		}
 		if(Irene->IreneInput->bUseRightButton)
@@ -273,9 +274,9 @@ void UIreneAttackInstance::DoAttack()
 				MonsterList,
 				CurrentPosVec,
 				NowPosVec,
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * Irene->IreneData.AttackRange).ToQuat(),
+				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 800).ToQuat(),
 				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,Irene->IreneData.AttackRange * 0.5f),
+				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,800 * 0.5f),
 				Params);
 		}
 	}
@@ -329,9 +330,9 @@ void UIreneAttackInstance::DoAttack()
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
-		FVector TraceVec = Irene->GetActorForwardVector() * Irene->IreneData.AttackRange;
+		FVector TraceVec = Irene->GetActorForwardVector() * 200;
 		FVector Center = Irene->GetActorLocation() + TraceVec * 0.5f;
-		float HalfHeight = Irene->IreneData.AttackRange * 0.5f + Irene->IreneData.AttackRadius;
+		float HalfHeight = 200 * 0.5f + Irene->IreneData.AttackRadius;
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 		float DebugLifeTime = 5.0f;
@@ -349,8 +350,8 @@ void UIreneAttackInstance::DoAttack()
 		if(Irene->IreneInput->bUseRightButton)
 		{
 			DrawDebugCapsule(GetWorld(),
-				CurrentPosVec + Irene->GetActorForwardVector()*300*0.5f,
-				300,
+				CurrentPosVec + Irene->GetActorForwardVector()*800*0.5f,
+				400,
 				Irene->IreneData.AttackRadius,
 				CapsuleRot,
 				DrawColor,
