@@ -34,7 +34,10 @@ public:
 	int32 NextWavePercent;
 
 	UPROPERTY(EditAnywhere, Category = Sequence)
-	ALevelSequenceActor* SequenceActor;
+	TArray<ALevelSequenceActor*> SequenceActor;
+
+	UPROPERTY(EditAnywhere, Category = Sequence)
+	TArray<ALevelSequenceActor*> StartSequenceActor;
 	//Function
 public:
 	// Sets default values for this actor's properties

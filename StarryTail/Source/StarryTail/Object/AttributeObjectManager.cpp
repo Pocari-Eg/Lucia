@@ -7,8 +7,8 @@
 AAttributeObjectManager::AAttributeObjectManager()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-
+	PrimaryActorTick.bCanEverTick = false;
+	AnswerCount = 2;
 }
 
 // Called when the game starts or when spawned
@@ -17,6 +17,15 @@ void AAttributeObjectManager::BeginPlay()
 	Super::BeginPlay();
 	ObjectInit();
 
+	if (Puzzle.Num() > 0) {
+		for (int i = 0; i < Puzzle.Num(); i++)
+		{
+			if (Puzzle[i].Object != nullptr)
+				Puzzle[i].Object->OnActiveCheck.AddUObject(this, &AAttributeObjectManager::ObjectActive);
+
+		}
+	}
+	
 }
 
 void AAttributeObjectManager::ObjectInit()
@@ -26,7 +35,7 @@ void AAttributeObjectManager::ObjectInit()
 		{
 			if(Puzzle[i].Object!=nullptr)
 			Puzzle[i].Object->SetObject(Puzzle[i].State, Puzzle[i].Attribute);
-			Puzzle[i].Object->OnAnswerCheck.AddUObject(this, &AAttributeObjectManager::PuzzleCheck);
+		
 		}
 	}
 
@@ -40,12 +49,32 @@ void AAttributeObjectManager::PuzzleCheck()
 		for (int i = 0; i < Puzzle.Num(); i++)
 		{
 			if (Puzzle[i].Object->GetAttribute() != Answer[i]) {
+				ObjectInit();
+				AnswerCount--;
+				STARRYLOG(Warning, TEXT("Puzzle Fail"));
 				return;
 			}
 		}
 	}
 
 	STARRYLOG(Warning, TEXT("Puzzle Success"));
+	if (SequenceActor != nullptr) {
+		SequenceActor->SequencePlayer->Play();
+	}
+}
+
+void AAttributeObjectManager::ObjectActive()
+{
+	for (int i = 0; i < Puzzle.Num(); i++)
+	{
+		if (Puzzle[i].Object->GetActive() == false)
+		{
+			STARRYLOG(Warning, TEXT("None All ACtive"));
+			return;
+		}
+	}
+	STARRYLOG(Warning, TEXT("All ACtive"));
+	PuzzleCheck();
 }
 
 

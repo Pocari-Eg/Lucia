@@ -41,6 +41,14 @@ void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute
 {
 	State = NewState;
 	Attribute = NewAttribute;
+
+	if (State == EState::e_Constant || State == EState::e_Activate)
+	{
+		IsActive = true;
+	}
+	else {
+		IsActive = false;
+	}
 }
 
 EAttributeKeyword AAttributeObject::GetAttribute()
@@ -72,9 +80,14 @@ EAttributeKeyword AAttributeObject::GetAttribute()
 		}
 
 
-		OnAnswerCheck.Broadcast();
+		OnActiveCheck.Broadcast();
 	}
 }
+
+ bool AAttributeObject::GetActive()
+ {
+	 return IsActive;
+ }
 
 // Called when the game starts or when spawned
 void AAttributeObject::BeginPlay()
