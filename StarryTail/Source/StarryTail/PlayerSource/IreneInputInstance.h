@@ -36,9 +36,6 @@ private:
 	float ThunderMaxCoolTime;
 	float ThunderCurCoolTime;	
 
-	UPROPERTY()
-	UParticleSystemComponent* WaterDodgeEffect;	
-
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 

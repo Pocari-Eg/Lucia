@@ -66,6 +66,7 @@ AIreneCharacter::AIreneCharacter()
 			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
 			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 			Weapon->SetGenerateOverlapEvents(false);
+			Weapon->SetVisibility(false);
 		}
 		
 		//카메라
@@ -174,7 +175,7 @@ AIreneCharacter::AIreneCharacter()
 	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0.0f, 720.0f, 0.0f);
+	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1050.0f, 0.0f);
 
 	// 점프 높이
 	GetCharacterMovement()->JumpZVelocity = IreneData.JumpStartPower;
@@ -597,7 +598,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }

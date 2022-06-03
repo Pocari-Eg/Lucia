@@ -432,7 +432,8 @@ void UIreneInputInstance::RightButtonReleased()
 					Irene->ChangeStateAndLog(UIdleState::GetInstance());
 				}
 			}			
-		}		
+		}
+		Irene->IreneAnim->SetFireChargeCount(0);
 		ChargingTime = 0.0f;
 	}
 }
@@ -587,11 +588,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		{
 			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
-			if(WaterDodgeEffect == nullptr)
-			{
-				const auto PSAtk = LoadObject<UParticleSystem>(nullptr, TEXT("/Game/Effect/VFX_Irene/PS_W_Dodge.PS_W_Dodge"));
-				WaterDodgeEffect = UGameplayStatics::SpawnEmitterAttached(PSAtk, Irene->GetMesh(), TEXT("None"), Irene->GetActorLocation()+FVector(0,0,-70),FRotator::ZeroRotator,FVector::OneVector,EAttachLocation::KeepWorldPosition,true,EPSCPoolMethod::None,true);
-			}
 		}
 		if(StartWaterDodgeStamina != 0)
 		{
@@ -615,11 +611,6 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		if(bUseWaterDodge)
 		{
 			bUseWaterDodge = false;
-			if(WaterDodgeEffect != nullptr)
-			{
-				WaterDodgeEffect->DestroyComponent(true);
-				WaterDodgeEffect = nullptr;
-			}
 			if(!DodgeWaitHandle.IsValid())
 			{
 				GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
