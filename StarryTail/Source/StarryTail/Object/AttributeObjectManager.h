@@ -5,6 +5,7 @@
 #include "../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "AttributeObject.h"
+#include <LevelSequence/Public/LevelSequenceActor.h>
 #include "AttributeObjectManager.generated.h"
 
 USTRUCT()
@@ -29,7 +30,10 @@ public:
 	TArray<FPuzzleInfo> Puzzle				;
 	UPROPERTY(EditAnywhere, Category = Puzzle)
 	TArray<EAttributeKeyword> Answer;
-
+	UPROPERTY(EditAnywhere, Category = Sequence)
+	ALevelSequenceActor* SequenceActor;
+private:
+	int32 AnswerCount;
 public:	
 	// Sets default values for this actor's properties
 	AAttributeObjectManager();
@@ -40,8 +44,8 @@ protected:
 
 private:
 	void ObjectInit();
-
+	
 	void PuzzleCheck();
-
+	void ObjectActive();
 
 };

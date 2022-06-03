@@ -27,6 +27,8 @@ ASequenceTrigger::ASequenceTrigger()
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 
+	PlayType = ESequenePlayType::Play;
+
 }
 
 void ASequenceTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -36,8 +38,22 @@ void ASequenceTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 	{
 		for (int i = 0; i < SequenceActor.Num(); i++)
 		{
-			if(!SequenceActor[i]->SequencePlayer->IsPlaying())
+			
+		
+
+			switch (PlayType)
+			{
+			case ESequenePlayType::Play:
+				if (!SequenceActor[i]->SequencePlayer->IsPlaying())
 				SequenceActor[i]->SequencePlayer->Play();
+				break;
+			case ESequenePlayType::Reverse:
+				SequenceActor[i]->SequencePlayer->PlayReverse();
+				break;
+			default:
+				break;
+			}
+			
 		}
 	}
 	TriggerOff();

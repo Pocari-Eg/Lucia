@@ -8,7 +8,7 @@
 #include "AttributeObject.generated.h"
 
 
-DECLARE_MULTICAST_DELEGATE(FOnAnswerCheckDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnActiveCheckDelegate);
 
 
 UENUM(BluePrintType)
@@ -31,13 +31,17 @@ private:
 	EState State;
 	UPROPERTY(VisibleAnywhere, Category = PuzzleInfo, meta = (AllowPrivateAccess = "ture"))
 	EAttributeKeyword Attribute;
+
+	bool IsActive;
 public:
 //Æ®¸®°Å
 	UPROPERTY(EditAnywhere, Category=Trigger)
 	UCapsuleComponent* Trigger;
 	UPROPERTY(EditAnywhere, Category = Mesh)
 	UStaticMeshComponent* ObjectMesh;
-	FOnAnswerCheckDelegate OnAnswerCheck;
+	FOnActiveCheckDelegate OnActiveCheck;
+
+
 public:	
 	// Sets default values for this actor's properties
 	AAttributeObject();
@@ -47,6 +51,8 @@ public:
 	EAttributeKeyword GetAttribute();
 
 	 void HitCheck(AIreneCharacter* Irene);
+
+	 bool GetActive();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
