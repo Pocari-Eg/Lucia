@@ -118,6 +118,15 @@ public:
 	// 카메라 타겟 추적 선형보간 속도
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float TargetCameraFollowSpeed = 3.0f;
+
+public:
+	// 기타 변수들
+	// SP회복 속도
+	UPROPERTY()
+	float Recovery_Speed = 5.0f;
+	// SP감소 속도
+	UPROPERTY()
+	float Decrease_Speed = 50.0f;
 };
 
 USTRUCT(BlueprintType)
