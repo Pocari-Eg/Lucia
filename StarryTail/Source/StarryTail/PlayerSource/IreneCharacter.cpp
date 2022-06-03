@@ -311,7 +311,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
 	IreneInput->RightButton(DeltaTime);
-	IreneInput->RecoveryStaminaGauge(DeltaTime);
+	if(!IreneState->IsDeathState())
+		IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
 	//STARRYLOG(Error,TEXT("%s"),*IreneState->GetStateToString());
 }
