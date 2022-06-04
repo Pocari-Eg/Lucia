@@ -41,13 +41,13 @@ void UBTTaskBdBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 
-	if (Bouldelith->GetDistanceToPlayer() >= 1000.0f)
+	if (Bouldelith->GetDistanceToPlayer() > 500.0f)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	else if (Bouldelith->GetDistanceToPlayer() <= 300.0f)
+	else if (Bouldelith->GetDistanceToPlayer() <= 200.0f)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
 

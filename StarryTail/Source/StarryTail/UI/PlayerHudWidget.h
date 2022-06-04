@@ -122,11 +122,11 @@ private:
 	FSkillImageData Fire;
 	FSkillImageData Water;
 	FSkillImageData Thunder;
-
 	FSkillImageData Skill;
 
+	TArray<UImage*> ThunderSKillCount;
+	TArray<UImage*> ThunderSkillActive;
 	bool isFirst;
-
 
 	TArray<FScriptData*> ScriptData;
 

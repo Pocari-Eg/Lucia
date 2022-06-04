@@ -151,9 +151,13 @@ public:
 
 	float GetSkillCoolRatio();
 
+	int  GetSkillCount();
+	void  SetSkillCount(int Value);
 	void PlayHUDAnimation();
 
 	void UpdateSkillCool(float CurCool, float MaxCool);
+
+	void SetDialogState(const bool State);
 #pragma endregion HUDPublic
 
 

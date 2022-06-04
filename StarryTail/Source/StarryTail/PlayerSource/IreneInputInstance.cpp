@@ -57,6 +57,8 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
+
+	bIsDialogOn=false;
 }
 void UIreneInputInstance::Begin()
 {
@@ -135,7 +137,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 
 void UIreneInputInstance::StartJump()
 {
-	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		Irene->bPressedJump = true;
@@ -151,25 +153,27 @@ void UIreneInputInstance::StopJump()
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
-	// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
-	if (CanRunState())
-	{
-		MoveKey[Value] = 1;
-		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
-			MoveKey[Value] = 2;
-		if (Irene->IreneState->IsIdleState())
+	if (!bIsDialogOn) {
+		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
+		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
+		if (CanRunState())
 		{
-			// 반대 방향키 아니면
-			if(!((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0)))
+			MoveKey[Value] = 1;
+			if (Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
+				MoveKey[Value] = 2;
+			if (Irene->IreneState->IsIdleState())
 			{
-				Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
-				Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+				// 반대 방향키 아니면
+				if (!((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0)))
+				{
+					Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
+					Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+				}
 			}
-		}		
+		}
+		else
+			MoveKey[Value] = 3;
 	}
-	else
-		MoveKey[Value] = 3;
 }
 void UIreneInputInstance::MoveW(float Rate)
 {
@@ -233,6 +237,7 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 #pragma region Input
 void UIreneInputInstance::Turn(float Rate)
 {
+
 	// 마우스 좌우 이동
 	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
 		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 2);
@@ -256,7 +261,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false)
+	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false&&!bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
@@ -304,7 +309,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 }
 void UIreneInputInstance::RightButton(const float DeltaTime)const
 {
-	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire&&!bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -327,28 +332,26 @@ void UIreneInputInstance::RightButton(const float DeltaTime)const
 }
 void UIreneInputInstance::RightButtonPressed()
 {
-	if (CanAttackState() && !bUseLeftButton && bIsSkillOn)
+	if (CanAttackState() && !bUseLeftButton && bIsSkillOn&&!bIsDialogOn)
 	{
 		IsCharging = true;
 		ChargingTime = 0.0f;		
 
 		Irene->SetActorRotation(GetMoveKeyToDirVector().Rotation());
 		
-		Irene->IreneUIManager->PlayerHud->UseSkill();
+	
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 		{
 			bUseRightButton = true;			
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+			MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
-			{
-				
+			{				
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
-				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.5f, true, 0.0f);
 				bIsSkillOn = false;
 			}
 		}
@@ -358,15 +361,16 @@ void UIreneInputInstance::RightButtonPressed()
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+			MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
 			
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneAnim->PlaySkillAttackMontage();
-				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.5f, true, 0.0f);
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.2f, true, 0.0f);
 				bIsSkillOn = false;
+				Irene->IreneUIManager->PlayerHud->UseSkill();
 			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && !Irene->IreneState->IsSkillState())
@@ -376,23 +380,25 @@ void UIreneInputInstance::RightButtonPressed()
 				bUseRightButton = true;
 				Irene->IreneAttack->SetSkillState();
 				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-				MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+				MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 				if (AttackTable != nullptr && bUseRightButton)
 				{
-					ThunderSkillCount--;
 					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 					Irene->IreneAnim->PlaySkillAttackMontage();
 					STARRYLOG(Error, TEXT("Thunder Skill %d /  %d"), ThunderSkillCount, MaxThunderSkillCount);
 					if (ThunderSkillCount > 0) {
 						STARRYLOG(Error, TEXT("Skill charging"));
-						GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::ThunderSkillWait, 0.5f, true, 0.0f);
+						if (ThunderSkillCount == MaxThunderSkillCount) {
+							GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::ThunderSkillWait, 0.2f, true, 0.0f);
+						}
 					}
 					else {
 						STARRYLOG(Error, TEXT("Skill Count Empty"));
 						bIsSkillOn = false;
 					}
 				}
+				Irene->IreneUIManager->PlayerHud->UseSkill();
 			}
 			else
 			{
@@ -405,7 +411,7 @@ void UIreneInputInstance::RightButtonPressed()
 }
 void UIreneInputInstance::RightButtonReleased()
 {
-	if (CanAttackState() && !bUseLeftButton && bUseRightButton)
+	if (CanAttackState() && !bUseLeftButton && bUseRightButton&&!bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -415,6 +421,8 @@ void UIreneInputInstance::RightButtonReleased()
 		{
 			if (AttackTable != nullptr && bUseRightButton)
 			{
+				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.2f, true, 0.0f);
+				Irene->IreneUIManager->PlayerHud->UseSkill();
 				Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
 				if(ChargingTime > AttackTable->Charge_Time_3/100.0f)
 				{
@@ -445,25 +453,29 @@ void UIreneInputInstance::RightButtonReleased()
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
-	// 줌인줌아웃
-	Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
+	if (!Irene->IreneState->IsDeathState()) {
+		// 줌인줌아웃
+		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
-	Irene->STGameInstance->GetPlayerBattleState()==true?
-	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition):
-	Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+		Irene->STGameInstance->GetPlayerBattleState() == true ?
+			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition):
+			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+	}
 }
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
 {
-	// 속성을 변화시키는 함수
-	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
-	{
-		if(Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
-			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
-			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
-			ChangeForm(Attribute);
+	if (!bIsDialogOn) {
+		// 속성을 변화시키는 함수
+		if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
+		{
+			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
+				ChangeForm(Attribute);
+			if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
+				ChangeForm(Attribute);
+			if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
+				ChangeForm(Attribute);
+		}
 	}
 }
 
@@ -516,17 +528,17 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	//Fire
-	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::FireCoolTime, 0.5f , true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::FireCoolTime, 0.2f, true, 0.0f);
 	//Water
-	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, this, &UIreneInputInstance::WaterCoolTime, 0.5f , true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, this, &UIreneInputInstance::WaterCoolTime, 0.2f, true, 0.0f);
 	//Thunder
-	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, this, &UIreneInputInstance::ThunderCoolTime, 0.5f , true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, this, &UIreneInputInstance::ThunderCoolTime, 0.2f, true, 0.0f);
 }
 
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
-	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		bUseDodgeKey = true;
@@ -584,7 +596,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
 		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() &&
-		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
@@ -634,7 +646,6 @@ void UIreneInputInstance::DialogAction()
 	{
 	case EDialogState::e_Set:
 		PlayerHud->PlayDialog();
-	     
 		break;
 	case EDialogState::e_Playing:
 		PlayerHud->SkipDialog();
@@ -654,11 +665,13 @@ void UIreneInputInstance::DialogAction()
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
-	// 마우스 커서 숨기거나 보이게 하는 함수
-	if (Irene->WorldController->bShowMouseCursor == false)
-		Irene->WorldController->bShowMouseCursor = true;
-	else
-		Irene->WorldController->bShowMouseCursor = false;
+	if (!Irene->IreneState->IsDeathState()&&!bIsDialogOn) {
+		// 마우스 커서 숨기거나 보이게 하는 함수
+		if (Irene->WorldController->bShowMouseCursor == false)
+			Irene->WorldController->bShowMouseCursor = true;
+		else
+			Irene->WorldController->bShowMouseCursor = false;
+	}
 }
 #pragma endregion Input
 
@@ -729,16 +742,16 @@ void UIreneInputInstance::FireCoolTime()
 {
 	if (FireCurCoolTime < FireMaxCoolTime)
 	{
-		FireCurCoolTime += 0.5f;
+		FireCurCoolTime += 0.2f;
 
 	}
 	else {
 		bIsFireAttributeOn = true;
 		FireCurCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(FireStartTimer);
-	
+
 	}
-	
+
 	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
 	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
 }
@@ -746,14 +759,14 @@ void UIreneInputInstance::WaterCoolTime()
 {
 	if (WaterCurCoolTime < WaterMaxCoolTime)
 	{
-		WaterCurCoolTime += 0.5f;
-		
+		WaterCurCoolTime += 0.2f;
+
 	}
 	else {
 		bIsWaterAttributeOn = true;
 		WaterCurCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(WaterStartTimer);
-		
+
 	}
 
 	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
@@ -764,7 +777,7 @@ void UIreneInputInstance::ThunderCoolTime()
 {
 	if (ThunderCurCoolTime < ThunderMaxCoolTime)
 	{
-		ThunderCurCoolTime += 0.5f;;
+		ThunderCurCoolTime += 0.2f;;
 	}
 	else {
 		bIsThunderAttributeOn = true;
@@ -775,41 +788,45 @@ void UIreneInputInstance::ThunderCoolTime()
 	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
 	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
 
-}	
+}
 
 void UIreneInputInstance::SkillWait()
 {
-	SkillCoolTime += 0.5f;
+	SkillCoolTime += 0.2f;
 
 	if (SkillCoolTime > MaxSkillCoolTime) {
 		bIsSkillOn = true;
+		Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 		SkillCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
 	}
-	Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
-	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+	else {
+		Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+	}
 }
 void UIreneInputInstance::ThunderSkillWait()
 {
-	SkillCoolTime += 0.5f;
+	SkillCoolTime += 0.2f;
 	if (SkillCoolTime > MaxSkillCoolTime) {
 		bIsSkillOn = true;
+		Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 		SkillCoolTime = 0.0f;
-
-		ThunderSkillCount++;
 		STARRYLOG(Error, TEXT("Thunder Skill %d / %d"), ThunderSkillCount, MaxThunderSkillCount);
 		if (ThunderSkillCount < MaxThunderSkillCount) {
 			STARRYLOG(Error, TEXT("Skill Count 1"));
-			GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
-			GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::ThunderSkillWait, 0.5f, true, 0.0f);
 		}
 		else {
 			STARRYLOG(Error, TEXT("Skill Count Is Full"));
 			GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
 		}
 	}
-	Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
-	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+	else {
+		Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+	}
 }
 void UIreneInputInstance::InitSkillCount()
 {
@@ -821,5 +838,4 @@ void UIreneInputInstance::InitSkillCount()
 	Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 
 }
-
 #pragma endregion GetSet

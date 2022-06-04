@@ -3,6 +3,7 @@
 
 #include "IreneUIManager.h"
 #include "IreneCharacter.h"
+#include "IreneInputInstance.h"
 #include "IreneFSM.h"
 
 UIreneUIManager::UIreneUIManager()
@@ -201,6 +202,16 @@ float UIreneUIManager::GetSkillCoolRatio()
 	return (SkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (SkillCurCoolTime / SkillMaxCoolTime);
 }
 
+int UIreneUIManager::GetSkillCount()
+{
+	return Irene->IreneInput->GetThunderSkillCount();
+}
+
+void UIreneUIManager::SetSkillCount(int Value)
+{
+	Irene->IreneInput->SetThunderSkillCount(Value);
+}
+
 void UIreneUIManager::PlayHUDAnimation()
 {
 	PlayerHud->PlayHUDAnimation();
@@ -211,6 +222,11 @@ void UIreneUIManager::UpdateSkillCool(float CurCool, float MaxCool)
 
 	SkillCurCoolTime = CurCool;
 	SkillMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::SetDialogState(const bool State)
+{
+	Irene->IreneInput->SetDialogState(State);
 }
 
 

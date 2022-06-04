@@ -547,6 +547,8 @@ void UDodgeWaterEndState::Enter(IBaseGameEntity* CurState)
 void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->ActionEndChangeMoveState();
+	if(CurState->Irene->IreneState->IsRunState())
+		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 }
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)

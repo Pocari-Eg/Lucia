@@ -24,7 +24,7 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 
 	}
 	
-	if (ScriptData->Condition == 1) {
+	if (ScriptData->Type == 0) {
 
 		//메시지를 담아온다
 		InputDialog = *ScriptData->String;
@@ -32,7 +32,7 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		SetVisibility(ESlateVisibility::Visible);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
 	}
-	else if(ScriptData->Condition == 0)
+	else if(ScriptData->Type == 1)
 	{
 		//메시지를 담아온다
 		InputDialog = *ScriptData->String;

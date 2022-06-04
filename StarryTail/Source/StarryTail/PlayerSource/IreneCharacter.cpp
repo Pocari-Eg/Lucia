@@ -378,16 +378,16 @@ void AIreneCharacter::FindNearMonster()
 	const FCollisionQueryParams Params(NAME_None, false, this);
 	const bool bResult = GetWorld()->SweepMultiByChannel(
 		MonsterList,
-		GetActorLocation(),
-		GetActorLocation(),
+		GetActorLocation() + GetActorForwardVector() * (Far - 150.0f),
+		GetActorLocation() + GetActorForwardVector() * (Far - 150.0f),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * Far).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel8,
-		FCollisionShape::MakeBox(BoxSize * 1),
+		FCollisionShape::MakeBox(BoxSize),
 		Params);
 
 	#if ENABLE_DRAW_DEBUG
 		const FVector TraceVec = GetActorForwardVector() * Far;
-		const FVector Center = GetActorLocation() + TraceVec + (GetActorForwardVector()*-150.0f);
+		const FVector Center = GetActorLocation() + TraceVec + (GetActorForwardVector() * -150.0f);
 		const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 		constexpr float DebugLifeTime = 5.0f;
@@ -412,7 +412,6 @@ void AIreneCharacter::FindNearMonster()
 			const auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			const auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;			
 			const float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
-
 			
 			// 몬스터가 공격범위 보다 멀리 있다면
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange && IreneAttack->GetAttribute() != EAttributeKeyword::e_Water)

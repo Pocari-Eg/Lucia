@@ -45,6 +45,10 @@ void APiece::SetEffect()
 		break;
 	}
 }
+void APiece::SetDamage(float Value)
+{
+	Damage = Value;
+}
 EAttributeKeyword APiece::GetAttribute()
 {
 	return PieceAttribute;

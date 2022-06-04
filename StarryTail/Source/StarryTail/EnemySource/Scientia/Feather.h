@@ -18,6 +18,7 @@ public:
 	AFeather();
 
 	void SetMoveDir(FVector Direction);
+	void SetDamage(float Value);
 private:
 	//Function
 	void InitCollision();

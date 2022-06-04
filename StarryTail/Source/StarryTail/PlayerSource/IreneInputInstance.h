@@ -72,6 +72,8 @@ private:
 	FTimerHandle ThunderSkillWaitHandle;
 	int ThunderSkillCount;
 	int MaxThunderSkillCount;
+
+	bool bIsDialogOn;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -148,6 +150,7 @@ public:
 	bool GetCharging()const{return IsCharging;}
 	int GetThunderSkillCount()const{return ThunderSkillCount;}
 	bool GetUseDodgeKey()const{return bUseDodgeKey;}
+
 	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
@@ -155,6 +158,8 @@ public:
 	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
+	void SetThunderSkillCount(const int Value) { ThunderSkillCount = Value; }
+	void SetDialogState(const bool State) { bIsDialogOn = State; }
 #pragma endregion GetSet	
 
 #pragma region CoolTime
