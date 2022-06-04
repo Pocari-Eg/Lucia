@@ -33,13 +33,23 @@ void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
 
 void UPlayerHudWidget::PlayDialog()
 {
-	SetDialogState(EDialogState::e_Playing);
-	DialogWidget->SetDialog(ScriptData[DialogNum]);
+	if (ScriptData[DialogNum]->Type == 0) {
+		SetDialogState(EDialogState::e_Playing);
+		DialogWidget->SetDialog(ScriptData[DialogNum]);
+		
+		CurrentIrene->IreneUIManager->SetDialogState(true);
+	}
+	else {
+		PlayPopUp();
+	}
 }
 
 void UPlayerHudWidget::SkipDialog()
 {
-	DialogWidget->SkipDialog();
+	if (ScriptData[DialogNum]->Type == 0) {
+		DialogWidget->SkipDialog();
+	}
+
 }
 
 void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
@@ -48,7 +58,12 @@ void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
 	SetDialogState(EDialogState::e_Set);
 	ScriptData = Data;
 	PopUpWidget->BindPlayerHud(this);
-	PlayPopUp();
+
+	if (ScriptData[0]->Condition == 0)
+	{
+		PlayPopUp();
+	}
+	
 }
 
 void UPlayerHudWidget::PlayPopUp()
@@ -67,6 +82,7 @@ void UPlayerHudWidget::ExitPopUp()
 
 void UPlayerHudWidget::ExitDialog()
 {
+
 	if (ActionWidget->Visibility == ESlateVisibility::Hidden) {
 		SetDialogState(EDialogState::e_Disable);
 	}
@@ -74,8 +90,13 @@ void UPlayerHudWidget::ExitDialog()
 	{
 		SetDialogState(EDialogState::e_Set);
 	}
-	DialogNum = 0;
-	DialogWidget->EndDialog();
+
+	if (ScriptData[0]->Type == 0) {
+		DialogNum = 0;
+		DialogWidget->EndDialog();
+		CurrentIrene->IreneUIManager->SetDialogState(false);
+	}
+	
 }
 
 bool UPlayerHudWidget::ContinueDialog()
