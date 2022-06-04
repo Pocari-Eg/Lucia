@@ -155,6 +155,7 @@ public:
 	void SetDeltaTimeChargingTime(const float DeltaTime){ChargingTime += DeltaTime;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
+	void SetThunderSkillCount(const int Value) { ThunderSkillCount = Value; }
 #pragma endregion GetSet	
 
 #pragma region CoolTime
