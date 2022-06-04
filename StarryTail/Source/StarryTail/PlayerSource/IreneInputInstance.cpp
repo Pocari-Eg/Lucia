@@ -341,11 +341,10 @@ void UIreneInputInstance::RightButtonPressed()
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+			MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
-			{
-				
+			{				
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
 				GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, 0.5f, true, 0.0f);
@@ -358,7 +357,7 @@ void UIreneInputInstance::RightButtonPressed()
 			
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+			MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 			if (AttackTable != nullptr && bUseRightButton)
 			{
@@ -376,7 +375,7 @@ void UIreneInputInstance::RightButtonPressed()
 				bUseRightButton = true;
 				Irene->IreneAttack->SetSkillState();
 				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-				MaxSkillCoolTime = (float)AttackTable->C_Time / 1000.0f;
+				MaxSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
 
 				if (AttackTable != nullptr && bUseRightButton)
 				{
