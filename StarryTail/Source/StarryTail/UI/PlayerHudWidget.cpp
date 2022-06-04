@@ -93,6 +93,13 @@ bool UPlayerHudWidget::ContinueDialog()
 void UPlayerHudWidget::UseSkill()
 {
 	Skill.Active->SetVisibility(ESlateVisibility::Hidden);
+
+	if (CurrentIrene->GetAttribute() == EAttributeKeyword::e_Thunder)
+	{
+		int Count = CurrentIrene->IreneUIManager->GetSkillCount() - 1;
+		CurrentIrene->IreneUIManager->SetSkillCount(Count);
+		ThunderSkillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
+	}
 }
 
 EDialogState UPlayerHudWidget::GetDialogState()
@@ -266,7 +273,21 @@ void UPlayerHudWidget::UpdateSkillCoolTime()
 
 			if (Ratio >= 1.0f)
 			{
-				Skill.Active->SetVisibility(ESlateVisibility::Visible);
+				if (CurrentIrene->GetAttribute() == EAttributeKeyword::e_Thunder)
+				{
+					int Count = CurrentIrene->IreneUIManager->GetSkillCount() + 1;
+					CurrentIrene->IreneUIManager->SetSkillCount(Count);
+					ThunderSkillActive[Count-1]->SetVisibility(ESlateVisibility::Visible);
+	     			if (Count == 2)
+					{
+						Skill.Active->SetVisibility(ESlateVisibility::Visible);
+					}
+				}
+				else {
+					STARRYLOG_S(Error);
+					Skill.Active->SetVisibility(ESlateVisibility::Visible);
+				}
+			
 			}
 		}
 
@@ -296,7 +317,12 @@ void UPlayerHudWidget::FireSelect()
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
 	
+	for (int i = 0; i < 2; i++)
+	{
+		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Hidden);
+		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Hidden);
 
+	}
 	SPLimit = 0.25f;
     OnFireAttribute();
 
@@ -321,7 +347,12 @@ void UPlayerHudWidget::WaterSelect()
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
+	for (int i = 0; i < 2; i++)
+	{
+		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Hidden);
+		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Hidden);
 
+	}
 	SPLimit = 0.5f;
 	  OnWaterAttribute();
 
@@ -347,6 +378,14 @@ void UPlayerHudWidget::ThunderSelect()
 	Thunder.Active->SetVisibility(ESlateVisibility::Visible);
 
 	SPLimit = 0.25f;
+
+
+	for (int i = 0; i < 2; i++)
+	{
+		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Visible);
+		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Visible);
+
+	}
 	  OnThunderAttribute();
 }
 
@@ -398,6 +437,15 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Skill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("SkillOff")));
 	Skill.Active = Cast<UImage>(GetWidgetFromName(TEXT("SkillOn")));
 	Skill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Skill_CoolTime")));
+	
+	ThunderSKillCount.SetNum(2);
+	ThunderSkillActive.SetNum(2);
+
+	ThunderSKillCount[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1")));
+	ThunderSKillCount[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2")));
+
+	ThunderSkillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1_Acitve")));
+	ThunderSkillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2_Acitve")));
 
 	InitSkillUI();
 
