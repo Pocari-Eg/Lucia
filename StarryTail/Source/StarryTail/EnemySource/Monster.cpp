@@ -241,7 +241,7 @@ void AMonster::SetIsBattleState(bool Value)
 }
 void AMonster::SetEffect()
 {
-	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
+	HitEffectComponent->SetTemplate(MonsterEffect.NoneHitEffect);
 	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
 	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
 	SparkEffectComponent->SetTemplate(MonsterEffect.SparkEffect);
@@ -689,13 +689,30 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 	}
 }
 #pragma endregion
-void AMonster::PrintHitEffect(FVector AttackedPosition)
+void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 {
 	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
 	FVector CompToMonsterDir = GetActorLocation() - (AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
 	CompToMonsterDir.Normalize();
 	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -150.0f)) + (CompToMonsterDir * (Distance / 2.0f));
 
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	
+	switch (STGameInstance->GetPlayerAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		HitEffectComponent->SetTemplate(MonsterEffect.FireHitEffect);
+		break;
+	case EAttributeKeyword::e_Water:
+		HitEffectComponent->SetTemplate(MonsterEffect.WaterHitEffect);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		HitEffectComponent->SetTemplate(MonsterEffect.ThunderHitEffect);
+		break;
+	case EAttributeKeyword::e_None:
+		HitEffectComponent->SetTemplate(MonsterEffect.NoneHitEffect);
+		break;
+	}
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
 	HitEffectComponent->SetActive(true);
@@ -906,7 +923,7 @@ void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class A
 	FString FindName = "WEAPON";
 	if (CompName == FindName)
 	{
-		PrintHitEffect(OtherComp->GetComponentLocation());
+		PrintHitEffect(OtherComp->GetComponentLocation(), OtherActor);
 		return;
 	}
 }
@@ -931,6 +948,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (Cast<APiece>(DamageCauser))
 	{
 		auto ChessPiece = Cast<APiece>(DamageCauser);
+
 		switch (ChessPiece->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
@@ -1004,7 +1022,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					{
 						auto Component = Cast<UPrimitiveComponent>(Elem);
 
-						PrintHitEffect(Component->GetComponentLocation());
+						PrintHitEffect(Component->GetComponentLocation(), DamageCauser);
 						HitStopEvent();
 					}
 				}

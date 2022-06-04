@@ -110,7 +110,7 @@ protected:
 	float CalcNormalAttackDamage(float Damage);
 	float CalcBurnDamage();
 
-	void PrintHitEffect(FVector AttackedPosition);
+	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 	//Variable
 	AMonsterAIController* MonsterAIController;
 
