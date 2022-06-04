@@ -23,6 +23,7 @@ public:
 
 	void SetAttribute(EAttributeKeyword Attribute);
 	void SetEffect();
+	void SetDamage(float Value);
 private:
 	void InitCollision();
 	void InitMesh();

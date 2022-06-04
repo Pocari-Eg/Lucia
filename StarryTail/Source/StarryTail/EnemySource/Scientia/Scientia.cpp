@@ -214,10 +214,13 @@ void AScientia::Feather()
 
 	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	BaseFeather->SetMoveDir(BaseDir);
+	BaseFeather->SetDamage(MonsterInfo.Atk);
 	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	RightFeather->SetMoveDir(RightDir);
+	RightFeather->SetDamage(MonsterInfo.Atk);
 	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	LeftFeather->SetMoveDir(LeftDir);
+	LeftFeather->SetDamage(MonsterInfo.Atk);
 }
 void AScientia::AddFeatherCount()
 {
@@ -558,6 +561,7 @@ void AScientia::SpawnPiece()
 		break;
 	}
 	ChassPiece->SetEffect();
+	ChassPiece->SetDamage(MonsterInfo.Atk * 2);
 }
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
