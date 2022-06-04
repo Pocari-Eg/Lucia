@@ -45,6 +45,10 @@ void AFeather::SetMoveDir(FVector Direction)
 {
 	ProjectileMovementComponent->Velocity = (Direction * MoveSpeed);
 }
+void AFeather::SetDamage(float Value)
+{
+	Damage = Value;
+}
 
 void AFeather::Tick(float DeltaTime)
 {

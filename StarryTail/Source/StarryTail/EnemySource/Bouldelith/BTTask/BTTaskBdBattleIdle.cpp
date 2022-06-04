@@ -34,7 +34,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
 
 	
-	if (Bouldelith->GetAttackFailedStack() >= 5 && Bouldelith->GetHpPercent() < 50)
+	if (Bouldelith->GetAttackFailedStack() >= 3 && Bouldelith->GetHpPercent() < 50)
 	{
 		Bouldelith->ResetAttackFailedStack();
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack4Key, true);
@@ -43,13 +43,13 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		ChangeStateTimer = 0.0f;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	if (Bouldelith->GetDistanceToPlayer() >= 1000.0f)
+	if (Bouldelith->GetDistanceToPlayer() >= 500.0f)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	else if (Bouldelith->GetDistanceToPlayer() <= 300.0f)
+	else if (Bouldelith->GetDistanceToPlayer() <= 200.0f)
 	{
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
