@@ -156,6 +156,8 @@ public:
 	void PlayHUDAnimation();
 
 	void UpdateSkillCool(float CurCool, float MaxCool);
+
+	void SetDialogState(const bool State);
 #pragma endregion HUDPublic
 
 

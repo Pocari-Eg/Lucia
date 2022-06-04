@@ -224,6 +224,11 @@ void UIreneUIManager::UpdateSkillCool(float CurCool, float MaxCool)
 	SkillMaxCoolTime = MaxCool;
 }
 
+void UIreneUIManager::SetDialogState(const bool State)
+{
+	Irene->IreneInput->SetDialogState(State);
+}
+
 
 
 void UIreneUIManager::PauseWidgetOn()

@@ -57,6 +57,8 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
+
+	bIsDialogOn=false;
 }
 void UIreneInputInstance::Begin()
 {
@@ -135,7 +137,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 
 void UIreneInputInstance::StartJump()
 {
-	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		Irene->bPressedJump = true;
@@ -151,25 +153,27 @@ void UIreneInputInstance::StopJump()
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
-	// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
-	if (CanRunState())
-	{
-		MoveKey[Value] = 1;
-		if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
-			MoveKey[Value] = 2;
-		if (Irene->IreneState->IsIdleState())
+	if (!bIsDialogOn) {
+		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
+		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
+		if (CanRunState())
 		{
-			// 반대 방향키 아니면
-			if(!((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0)))
+			MoveKey[Value] = 1;
+			if (Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
+				MoveKey[Value] = 2;
+			if (Irene->IreneState->IsIdleState())
 			{
-				Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
-				Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+				// 반대 방향키 아니면
+				if (!((MoveKey[0] != 0 && MoveKey[2] != 0) || (MoveKey[1] != 0 && MoveKey[3] != 0)))
+				{
+					Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->IreneData.RunMaxSpeed;
+					Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+				}
 			}
-		}		
+		}
+		else
+			MoveKey[Value] = 3;
 	}
-	else
-		MoveKey[Value] = 3;
 }
 void UIreneInputInstance::MoveW(float Rate)
 {
@@ -233,6 +237,7 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 #pragma region Input
 void UIreneInputInstance::Turn(float Rate)
 {
+
 	// 마우스 좌우 이동
 	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
 		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 2);
@@ -256,7 +261,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false)
+	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false&&!bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
@@ -304,7 +309,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 }
 void UIreneInputInstance::RightButton(const float DeltaTime)const
 {
-	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire&&!bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -327,7 +332,7 @@ void UIreneInputInstance::RightButton(const float DeltaTime)const
 }
 void UIreneInputInstance::RightButtonPressed()
 {
-	if (CanAttackState() && !bUseLeftButton && bIsSkillOn)
+	if (CanAttackState() && !bUseLeftButton && bIsSkillOn&&!bIsDialogOn)
 	{
 		IsCharging = true;
 		ChargingTime = 0.0f;		
@@ -406,7 +411,7 @@ void UIreneInputInstance::RightButtonPressed()
 }
 void UIreneInputInstance::RightButtonReleased()
 {
-	if (CanAttackState() && !bUseLeftButton && bUseRightButton)
+	if (CanAttackState() && !bUseLeftButton && bUseRightButton&&!bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -460,15 +465,17 @@ void UIreneInputInstance::MouseWheel(float Rate)
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
 {
-	// 속성을 변화시키는 함수
-	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
-	{
-		if(Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
-			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
-			ChangeForm(Attribute);
-		if(Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
-			ChangeForm(Attribute);
+	if (!bIsDialogOn) {
+		// 속성을 변화시키는 함수
+		if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
+		{
+			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
+				ChangeForm(Attribute);
+			if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
+				ChangeForm(Attribute);
+			if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
+				ChangeForm(Attribute);
+		}
 	}
 }
 
@@ -531,7 +538,7 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
-	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		bUseDodgeKey = true;
@@ -589,7 +596,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
 		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() &&
-		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()))
+		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
@@ -639,7 +646,6 @@ void UIreneInputInstance::DialogAction()
 	{
 	case EDialogState::e_Set:
 		PlayerHud->PlayDialog();
-	     
 		break;
 	case EDialogState::e_Playing:
 		PlayerHud->SkipDialog();
@@ -659,7 +665,7 @@ void UIreneInputInstance::DialogAction()
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
-	if (!Irene->IreneState->IsDeathState()) {
+	if (!Irene->IreneState->IsDeathState()&&!bIsDialogOn) {
 		// 마우스 커서 숨기거나 보이게 하는 함수
 		if (Irene->WorldController->bShowMouseCursor == false)
 			Irene->WorldController->bShowMouseCursor = true;
