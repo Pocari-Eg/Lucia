@@ -137,6 +137,8 @@ public:
 	void ChangeStateAndLog(class IState* NewState)const;
 	UFUNCTION(BlueprintCallable)
 	void ActionEndChangeMoveState()const;
+
+	
 #pragma endregion State
 	
 #pragma region Collision
@@ -197,6 +199,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void InitComplete();
+
+	void SetIreneDialog();
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();
