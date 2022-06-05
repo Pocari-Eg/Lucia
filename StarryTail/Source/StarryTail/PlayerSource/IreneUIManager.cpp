@@ -197,9 +197,19 @@ float UIreneUIManager::GetThunderCoolRatio()
 	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
 }
 
-float UIreneUIManager::GetSkillCoolRatio()
+float UIreneUIManager::GetFireSkillCoolRatio()
 {
-	return (SkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (SkillCurCoolTime / SkillMaxCoolTime);
+	return (FireSkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (FireSkillCurCoolTime / FireSkillMaxCoolTime);
+}
+
+float UIreneUIManager::GetWaterSkillCoolRatio()
+{
+	return (WaterSkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (WaterSkillCurCoolTime / WaterSkillMaxCoolTime);
+}
+
+float UIreneUIManager::GetThunderSkillCoolRatio()
+{
+	return (ThunderSkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderSkillCurCoolTime / ThunderSkillMaxCoolTime);
 }
 
 int UIreneUIManager::GetSkillCount()
@@ -217,11 +227,23 @@ void UIreneUIManager::PlayHUDAnimation()
 	PlayerHud->PlayHUDAnimation();
 }
 
-void UIreneUIManager::UpdateSkillCool(float CurCool, float MaxCool)
+void UIreneUIManager::UpdateWaterSkillCool(float CurCool, float MaxCool)
+{
+	WaterSkillCurCoolTime = CurCool;
+	WaterSkillMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateThunderSkillCool(float CurCool, float MaxCool)
+{
+	ThunderSkillCurCoolTime = CurCool;
+	ThunderSkillMaxCoolTime = MaxCool;
+}
+
+void UIreneUIManager::UpdateFireSkillCool(float CurCool, float MaxCool)
 {
 
-	SkillCurCoolTime = CurCool;
-	SkillMaxCoolTime = MaxCool;
+	FireSkillCurCoolTime = CurCool;
+	FireSkillMaxCoolTime = MaxCool;
 }
 
 void UIreneUIManager::SetDialogState(const bool State)

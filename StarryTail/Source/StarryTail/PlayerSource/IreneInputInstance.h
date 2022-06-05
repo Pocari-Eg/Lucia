@@ -42,8 +42,7 @@ private:
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-	// 공격 연속 입력 지연
-	FTimerHandle SkillWaitHandle;
+
 	
 	// 차징 중인지
 	bool IsCharging;
@@ -68,6 +67,9 @@ private:
 	// 번개 닷지 관련
 	FTimerHandle ThunderDodgeWaitHandle;
 	
+	// 스킬
+	FTimerHandle FireSkillWaitHandle;
+	FTimerHandle WaterSkillWaitHandle;
 	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
 	int ThunderSkillCount;
@@ -167,17 +169,29 @@ private:
 	void FireCoolTime();
 	void WaterCoolTime();
 	void ThunderCoolTime();
-	void SkillWait();
+
+	void FireSkillWait();
+	void WaterSkillWait();
 	void ThunderSkillWait();
 
 	bool bIsFireAttributeOn;
 	bool bIsWaterAttributeOn;
 	bool bIsThunderAttributeOn;
 
-	float SkillCoolTime;
-	float MaxSkillCoolTime;
-	bool bIsSkillOn;
+	float FireSkillCoolTime;
+	float MaxFireSkillCoolTime;
 
-	void InitSkillCount();
+	float WaterSkillCoolTime;
+	float MaxWaterSkillCoolTime;
+
+	float ThunderSkillCoolTime;
+	float MaxThunderSkillCoolTime;
+
+	bool bIsFireSkillOn;
+	bool bIsWaterSkillOn;
+	bool bIsThunderSkillOn;
+
+	float CoolTimeRate;
+
 #pragma endregion CoolTime
 };

@@ -17,7 +17,9 @@ DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
 
-DECLARE_MULTICAST_DELEGATE(FOnSkillCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnFireSkillCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnWaterSkillCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnThunderSkillCoolChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
 {
@@ -48,8 +50,16 @@ private:
 
 
 
-	float SkillMaxCoolTime;
-	float SkillCurCoolTime;
+	float FireSkillMaxCoolTime;
+	float FireSkillCurCoolTime;
+
+
+	float WaterSkillMaxCoolTime;
+	float WaterSkillCurCoolTime;
+
+
+	float ThunderSkillMaxCoolTime;
+	float ThunderSkillCurCoolTime;
 public:
 	// 로그 출력용
 	bool bShowLog;
@@ -63,7 +73,9 @@ public:
 	FOnWaterCoolChangeDelegate OnWaterCoolChange;
 	FOnThunderCoolChangeDelegate OnThunderCoolChange;
 
-	FOnSkillCoolChangeDelegate OnSkillCoolChange;
+	FOnFireSkillCoolChangeDelegate OnFireSkillCoolChange;
+	FOnWaterSkillCoolChangeDelegate OnWaterSkillCoolChange;
+	FOnThunderSkillCoolChangeDelegate OnThunderSkillCoolChange;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -149,13 +161,17 @@ public:
 	//Thunde Cool
 	float GetThunderCoolRatio();
 
-	float GetSkillCoolRatio();
+	float GetFireSkillCoolRatio();
+	float GetWaterSkillCoolRatio();
+	float GetThunderSkillCoolRatio();
 
 	int  GetSkillCount();
 	void  SetSkillCount(int Value);
 	void PlayHUDAnimation();
 
-	void UpdateSkillCool(float CurCool, float MaxCool);
+	void UpdateFireSkillCool(float CurCool, float MaxCool);
+	void UpdateWaterSkillCool(float CurCool, float MaxCool);
+	void UpdateThunderSkillCool(float CurCool, float MaxCool);
 
 	void SetDialogState(const bool State);
 #pragma endregion HUDPublic
