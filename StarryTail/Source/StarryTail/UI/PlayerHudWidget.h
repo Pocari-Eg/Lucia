@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Components/ProgressBar.h"
 #include "Components/Image.h"
+#include "Engine/Canvas.h"
 
 #include "DialogWidget.h"
 #include "RaidMonsterWidget.h"
@@ -83,13 +84,17 @@ private:
 
 	void UpdateAttributes();
 
-	void InitSkillUI();
+
 
 	void UpdateFireCoolTime();
 	void UpdateWaterCoolTime();
 	void UpdateThunderCoolTime();
 
-	void UpdateSkillCoolTime();
+	void UpdateFireSkillCoolTime();
+	void UpdateWaterSkillCoolTime();
+	void UpdateThunderSkillCoolTime();
+
+	void InitAttributeUI();
 
 	void FireSelect();
 	void WaterSelect();
@@ -120,9 +125,14 @@ private:
 	class UUserWidget* ActionWidget;
 
 	FSkillImageData Fire;
+	FSkillImageData FireSkill;
+
 	FSkillImageData Water;
+	FSkillImageData WaterSkill;
+
 	FSkillImageData Thunder;
-	FSkillImageData Skill;
+	FSkillImageData ThunderSkill;
+	
 
 	TArray<UImage*> ThunderSKillCount;
 	TArray<UImage*> ThunderSkillActive;

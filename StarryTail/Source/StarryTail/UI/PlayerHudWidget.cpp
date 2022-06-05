@@ -20,7 +20,10 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
 	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
 	NewIrene->IreneUIManager->OnThunderCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderCoolTime);
-	NewIrene->IreneUIManager->OnSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateSkillCoolTime);
+
+	NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
+	NewIrene->IreneUIManager->OnWaterSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterSkillCoolTime);
+	NewIrene->IreneUIManager->OnThunderSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderSkillCoolTime);
 }
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
@@ -113,7 +116,25 @@ bool UPlayerHudWidget::ContinueDialog()
 
 void UPlayerHudWidget::UseSkill()
 {
-	Skill.Active->SetVisibility(ESlateVisibility::Hidden);
+
+	STARRYLOG_S(Error);
+	switch (CurrentIrene->GetAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		STARRYLOG_S(Error);
+		FireSkill.Active->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case EAttributeKeyword::e_Water:
+		STARRYLOG_S(Error);
+		WaterSkill.Active->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		STARRYLOG_S(Error);
+		ThunderSkill.Active->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	default:
+		break;
+	}
 
 	if (CurrentIrene->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
@@ -200,16 +221,15 @@ void UPlayerHudWidget::UpdateAttributes()
 		break;
 	}
 
-	Skill.Active->SetVisibility(ESlateVisibility::Visible);
 
 	if (isFirst)
 	{
-		InitSkillUI();
+		InitAttributeUI();
 		isFirst = false;
 	}
 }
 
-void UPlayerHudWidget::InitSkillUI()
+void UPlayerHudWidget::InitAttributeUI()
 {
 	//Fire
 	Fire.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
@@ -282,33 +302,24 @@ void UPlayerHudWidget::UpdateThunderCoolTime()
 	}
 }
 
-void UPlayerHudWidget::UpdateSkillCoolTime()
+
+
+void UPlayerHudWidget::UpdateFireSkillCoolTime()
 {
 	if (CurrentIrene != nullptr)
 	{
 
-		if (nullptr != Skill.CoolTimeBar)
+		if (nullptr != FireSkill.CoolTimeBar)
 		{
-			float Ratio = CurrentIrene->IreneUIManager->GetSkillCoolRatio();
-			Skill.CoolTimeBar->SetPercent(Ratio);
+			float Ratio = CurrentIrene->IreneUIManager->GetFireSkillCoolRatio();
+			FireSkill.CoolTimeBar->SetPercent(Ratio);
 
 			if (Ratio >= 1.0f)
 			{
-				if (CurrentIrene->GetAttribute() == EAttributeKeyword::e_Thunder)
-				{
-					int Count = CurrentIrene->IreneUIManager->GetSkillCount() + 1;
-					CurrentIrene->IreneUIManager->SetSkillCount(Count);
-					ThunderSkillActive[Count-1]->SetVisibility(ESlateVisibility::Visible);
-	     			if (Count == 2)
-					{
-						Skill.Active->SetVisibility(ESlateVisibility::Visible);
-					}
-				}
-				else {
-					STARRYLOG_S(Error);
-					Skill.Active->SetVisibility(ESlateVisibility::Visible);
-				}
 			
+				STARRYLOG_S(Error);
+				FireSkill.Active->SetVisibility(ESlateVisibility::Visible);
+
 			}
 		}
 
@@ -316,7 +327,52 @@ void UPlayerHudWidget::UpdateSkillCoolTime()
 	}
 }
 
+void UPlayerHudWidget::UpdateWaterSkillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
 
+		if (nullptr != WaterSkill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetWaterSkillCoolRatio();
+			WaterSkill.CoolTimeBar->SetPercent(Ratio);
+
+			if (Ratio >= 1.0f)
+			{
+		    	WaterSkill.Active->SetVisibility(ESlateVisibility::Visible);
+			}
+		}
+
+
+	}
+}
+
+void UPlayerHudWidget::UpdateThunderSkillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+
+		if (nullptr != ThunderSkill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetThunderSkillCoolRatio();
+			ThunderSkill.CoolTimeBar->SetPercent(Ratio);
+
+			if (Ratio >= 1.0f)
+			{
+			
+				int Count = CurrentIrene->IreneUIManager->GetSkillCount() + 1;
+				CurrentIrene->IreneUIManager->SetSkillCount(Count);
+				ThunderSkillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
+				if (Count == 2)
+				{
+						ThunderSkill.Active->SetVisibility(ESlateVisibility::Visible);
+				}
+			}
+		}
+
+
+	}
+}
 
 void UPlayerHudWidget::FireSelect()
 {
@@ -338,15 +394,10 @@ void UPlayerHudWidget::FireSelect()
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
 	
-	for (int i = 0; i < 2; i++)
-	{
-		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Hidden);
-		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Hidden);
-
-	}
 	SPLimit = 0.25f;
-    OnFireAttribute();
 
+	//Skill
+	OnFireAttribute();
 }
 
 void UPlayerHudWidget::WaterSelect()
@@ -368,15 +419,10 @@ void UPlayerHudWidget::WaterSelect()
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
-	for (int i = 0; i < 2; i++)
-	{
-		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Hidden);
-		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Hidden);
-
-	}
 	SPLimit = 0.5f;
-	  OnWaterAttribute();
 
+	//Skill
+	OnWaterAttribute();
 }
 
 void UPlayerHudWidget::ThunderSelect()
@@ -400,14 +446,8 @@ void UPlayerHudWidget::ThunderSelect()
 
 	SPLimit = 0.25f;
 
-
-	for (int i = 0; i < 2; i++)
-	{
-		ThunderSKillCount[i]->SetVisibility(ESlateVisibility::Visible);
-		ThunderSkillActive[i]->SetVisibility(ESlateVisibility::Visible);
-
-	}
-	  OnThunderAttribute();
+	//Skill
+	OnThunderAttribute();
 }
 
 
@@ -455,9 +495,17 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Thunder.Active = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Active")));
 	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
 
-	Skill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("SkillOff")));
-	Skill.Active = Cast<UImage>(GetWidgetFromName(TEXT("SkillOn")));
-	Skill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Skill_CoolTime")));
+	FireSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("FireSkillOff")));
+	FireSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("FireSkillOn")));
+	FireSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireSkill_CoolTime")));
+
+	WaterSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("WaterSkillOff")));
+	WaterSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("WaterSkillOn")));
+	WaterSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterSkill_CoolTime")));
+
+	ThunderSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("ThunderSkillOff")));
+	ThunderSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("ThunderSkillOn")));
+	ThunderSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ThunderSkill_CoolTime")));
 	
 	ThunderSKillCount.SetNum(2);
 	ThunderSkillActive.SetNum(2);
@@ -468,7 +516,8 @@ void UPlayerHudWidget::NativeOnInitialized()
 	ThunderSkillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1_Acitve")));
 	ThunderSkillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2_Acitve")));
 
-	InitSkillUI();
+
+	InitAttributeUI();
 
 	isFirst = true;
 	ActionWidgetOff();
