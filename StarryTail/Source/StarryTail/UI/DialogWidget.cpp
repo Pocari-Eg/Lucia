@@ -7,6 +7,7 @@
 
 void UDialogWidget::SetDialog(FScriptData* ScriptData)
 {
+	OutputDialog = "";
 	if (TextBox != nullptr)
 	{
 	

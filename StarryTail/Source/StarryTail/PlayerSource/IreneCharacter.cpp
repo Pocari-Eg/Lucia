@@ -753,6 +753,10 @@ void AIreneCharacter::PlayFadeInAnimation()
 {
 	IreneUIManager->PlayHUDAnimation();
 }
+void AIreneCharacter::SetIreneDialog()
+{
+	ChangeStateAndLog(UIdleState::GetInstance());
+}
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
