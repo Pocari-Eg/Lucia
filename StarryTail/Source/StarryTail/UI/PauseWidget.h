@@ -46,6 +46,8 @@ public:
 	//사운드세팅 위젯
 	UFUNCTION(BlueprintCallable)
 	void SoundSetWidgetOn();
+	UFUNCTION(BlueprintCallable)
+	void ExitWidgetOn				();
 
 	void DisableButton();
 	void EnableButton();

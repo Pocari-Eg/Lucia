@@ -40,7 +40,8 @@ void UPauseWidget::KeySetWidgetOn()
     EnableButton();
     SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
     KeySetWidget->SetVisibility(ESlateVisibility::Visible);
-  
+     
+
     
 }
 
@@ -49,8 +50,16 @@ void UPauseWidget::SoundSetWidgetOn()
     EnableButton();
     KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
     SoundSetWidget->SetVisibility(ESlateVisibility::Visible);
+   
 }
 
+
+void UPauseWidget::ExitWidgetOn()
+{
+    EnableButton();
+    KeySetWidget->SetVisibility(ESlateVisibility::Hidden);
+    SoundSetWidget->SetVisibility(ESlateVisibility::Hidden);
+}
 void UPauseWidget::DisableButton()
 {
     bIsEnableResume = false;
