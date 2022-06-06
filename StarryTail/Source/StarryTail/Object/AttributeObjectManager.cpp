@@ -61,6 +61,10 @@ void AAttributeObjectManager::PuzzleCheck()
 	if (SequenceActor != nullptr) {
 		SequenceActor->SequencePlayer->Play();
 	}
+	for (int i = 0; i < Puzzle.Num(); i++)
+	{
+		Puzzle[i].Object->TriggerOff();
+	}
 }
 
 void AAttributeObjectManager::ObjectActive()
