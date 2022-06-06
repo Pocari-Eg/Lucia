@@ -42,15 +42,15 @@ public:
 	FOnActiveCheckDelegate OnActiveCheck;
 
 
-	UPROPERTY(EditAnywhere, Category = Mesh)
-	AActor* Plate;
-	UPROPERTY(EditAnywhere, Category = Mesh)
-	AActor* Crystal;
+	//UPROPERTY(EditAnywhere, Category = Mesh)
+	//AActor* Plate;
+	//UPROPERTY(EditAnywhere, Category = Mesh)
+	//AActor* Crystal;
 
-	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
-	UStaticMeshComponent* PlateMesh;
-	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
-	USkeletalMeshComponent* CrystalMesh;
+	//UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
+	//UStaticMeshComponent* PlateMesh;
+	//UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
+	//USkeletalMeshComponent* CrystalMesh;
 
 public:	
 	// Sets default values for this actor's properties

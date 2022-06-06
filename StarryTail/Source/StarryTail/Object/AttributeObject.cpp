@@ -52,7 +52,7 @@ void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute
 		IsActive = false;
 	}
 
-	AttributeChangeEvent();
+//	AttributeChangeEvent();
 }
 
 EAttributeKeyword AAttributeObject::GetAttribute()
@@ -106,8 +106,8 @@ void AAttributeObject::BeginPlay()
 	MonsterInfo.MaxHp = 9999999.0f;
 	MonsterInfo.Def = 999999.0f;
 
-	PlateMesh = Cast<UStaticMeshComponent>(Plate->GetRootComponent());
-	CrystalMesh = Cast<USkeletalMeshComponent>(Crystal->GetRootComponent());
+	//PlateMesh = Cast<UStaticMeshComponent>(Plate->GetRootComponent());
+	//CrystalMesh = Cast<USkeletalMeshComponent>(Crystal->GetRootComponent());
 
 }
 
