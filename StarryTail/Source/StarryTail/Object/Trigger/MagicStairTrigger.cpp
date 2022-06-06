@@ -12,7 +12,7 @@ AMagicStairTrigger::AMagicStairTrigger()
 
 	RootComponent = Trigger;
 
-	Trigger->SetCollisionProfileName(TEXT("Trigger"));
+	Trigger->SetCollisionProfileName(TEXT("BlockAll"));
 
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("MESH"));
 
@@ -32,6 +32,16 @@ AMagicStairTrigger::AMagicStairTrigger()
 void AMagicStairTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	OnTickControl.Broadcast();
+}
+
+void AMagicStairTrigger::TriggerOn()
+{
+	Trigger->SetCollisionProfileName(TEXT("Trigger"));
+}
+
+void AMagicStairTrigger::TriggerOff()
+{
+	Trigger->SetCollisionProfileName(TEXT("BlockAll"));
 }
 
 void AMagicStairTrigger::BeginPlay()
