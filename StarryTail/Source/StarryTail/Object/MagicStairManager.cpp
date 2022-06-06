@@ -91,6 +91,18 @@ void AMagicStairManager::OnStair()
 		NewMaterial[3]->SetScalarParameterValue(TEXT("Transparency_Amount"), 0.1f);
 }
 
+void AMagicStairManager::TriggerOn()
+{
+	StartTrigger->TriggerOn();
+	EndTrigger->TriggerOn();
+}
+
+void AMagicStairManager::TriggerOff()
+{
+	StartTrigger->TriggerOff();
+	EndTrigger->TriggerOff();
+}
+
 void AMagicStairManager::TickStart()
 {
 	if (IsActorTickEnabled() == false) {
