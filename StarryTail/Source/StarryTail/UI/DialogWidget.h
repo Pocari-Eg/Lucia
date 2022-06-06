@@ -59,6 +59,18 @@ public:
 	void SetDialogState(EDialogState NewState);
 
 	void BindPlayerHud(class UPlayerHudWidget* NewPlayerHud);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnPopUpIrene();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnPopUpNox();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnNormalIrene();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnNormalNox();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnNormalNone();
 protected:
 	virtual void NativeOnInitialized() override;
 private:
