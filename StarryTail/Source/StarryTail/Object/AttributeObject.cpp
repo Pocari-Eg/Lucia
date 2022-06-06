@@ -31,7 +31,6 @@ AAttributeObject::AAttributeObject()
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("Enemy"));
 	ObjectMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
-	SetObject(EState::e_Disabled, EAttributeKeyword::e_None);
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	bIsObject = false;
@@ -52,7 +51,8 @@ void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute
 		IsActive = false;
 	}
 
-//	AttributeChangeEvent();
+	STARRYLOG_S(Error);
+	MaterialChange();
 }
 
 EAttributeKeyword AAttributeObject::GetAttribute()
@@ -105,10 +105,6 @@ void AAttributeObject::BeginPlay()
 	HpBarWidget->Activate(false);
 	MonsterInfo.MaxHp = 9999999.0f;
 	MonsterInfo.Def = 999999.0f;
-
-	//PlateMesh = Cast<UStaticMeshComponent>(Plate->GetRootComponent());
-	//CrystalMesh = Cast<USkeletalMeshComponent>(Crystal->GetRootComponent());
-
 }
 
 void AAttributeObject::PostInitializeComponents()

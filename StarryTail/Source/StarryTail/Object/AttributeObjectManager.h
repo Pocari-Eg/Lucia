@@ -39,13 +39,14 @@ private:
 public:	
 	// Sets default values for this actor's properties
 	AAttributeObjectManager();
-
+	UFUNCTION(BluePrintCallAble)
+	void ObjectInit();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
-	void ObjectInit();
+
 	
 	void PuzzleCheck();
 	void ObjectActive();
