@@ -1642,7 +1642,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	
-	//CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+	CurState->Irene->IreneAttack->SetUseSkillSkip(true);
 	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
 	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*800;
 	CurState->Irene->IreneAttack->SetFollowTargetAlpha(0);
@@ -1664,7 +1664,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
-	STARRYLOG(Log, TEXT("%f"), CurState->PlayTime);
+	CurState->Irene->IreneInput->bUseRightButton = true;
 	// 후딜 이전까지의 시간
 	CurState->Irene->IreneInput->MoveAuto(0.35f);
 	// 목적지에 도착
@@ -1676,7 +1676,7 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 	// 몽타주 시간
 	if(CurState->PlayTime >= 1.0f)
 	{
-		//CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+		CurState->Irene->IreneAttack->SetUseSkillSkip(false);
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
