@@ -15,7 +15,6 @@ AAttributeObjectManager::AAttributeObjectManager()
 void AAttributeObjectManager::BeginPlay()
 {
 	Super::BeginPlay();
-	ObjectInit();
 
 	if (Puzzle.Num() > 0) {
 		for (int i = 0; i < Puzzle.Num(); i++)
@@ -35,7 +34,7 @@ void AAttributeObjectManager::ObjectInit()
 		{
 			if(Puzzle[i].Object!=nullptr)
 			Puzzle[i].Object->SetObject(Puzzle[i].State, Puzzle[i].Attribute);
-		
+
 		}
 	}
 

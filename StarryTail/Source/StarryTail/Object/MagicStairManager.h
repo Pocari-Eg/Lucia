@@ -42,6 +42,11 @@ public:
 	UFUNCTION(BluePrintCallAble)
 	void OnStair();
 
+	UFUNCTION(BluePrintCallAble)
+	void TriggerOn();
+	UFUNCTION(BluePrintCallAble)
+	void TriggerOff();
+
 private:
 	void TickStart();
 	void TickEnd();

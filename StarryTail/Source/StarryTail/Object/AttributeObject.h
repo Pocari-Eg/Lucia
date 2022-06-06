@@ -5,6 +5,8 @@
 #include "../StarryTail.h"
 #include "../EnemySource/Monster.h"
 #include "../Sound/SoundManager.h"
+
+#include "Misc/OutputDeviceNull.h"
 #include "AttributeObject.generated.h"
 
 
@@ -33,6 +35,7 @@ private:
 	EAttributeKeyword Attribute;
 
 	bool IsActive;
+
 public:
 //트리거
 	UPROPERTY(EditAnywhere, Category=Trigger)
@@ -42,15 +45,11 @@ public:
 	FOnActiveCheckDelegate OnActiveCheck;
 
 
-	UPROPERTY(EditAnywhere, Category = Mesh)
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "PLATE")
 	AActor* Plate;
-	UPROPERTY(EditAnywhere, Category = Mesh)
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Category = "Crystal")
 	AActor* Crystal;
 
-	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
-	UStaticMeshComponent* PlateMesh;
-	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
-	USkeletalMeshComponent* CrystalMesh;
 
 public:	
 	// Sets default values for this actor's properties
@@ -66,8 +65,7 @@ public:
 	 bool GetActive();
 
 	 UFUNCTION(BlueprintImplementableEvent)
-	 void  AttributeChangeEvent();
-
+	 void  MaterialChange();
 	 //트리거 Off
 	 void TriggerOff();
 protected:
