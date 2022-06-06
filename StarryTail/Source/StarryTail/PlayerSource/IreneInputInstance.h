@@ -18,6 +18,7 @@ public:
 	TArray<uint8> MoveKey;
 
 	bool bLeftButtonPressed;
+	bool bRightButtonPressed;
 	bool bUseLeftButton;
 	bool bUseRightButton;
 private:
@@ -42,7 +43,6 @@ private:
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-
 	
 	// 차징 중인지
 	bool IsCharging;
@@ -76,6 +76,28 @@ private:
 	int MaxThunderSkillCount;
 
 	bool bIsDialogOn;
+#pragma region CoolTimeValue
+private:
+	bool bIsFireAttributeOn;
+	bool bIsWaterAttributeOn;
+	bool bIsThunderAttributeOn;
+
+	float FireSkillCoolTime;
+	float MaxFireSkillCoolTime;
+
+	float WaterSkillCoolTime;
+	float MaxWaterSkillCoolTime;
+
+	float ThunderSkillCoolTime;
+	float MaxThunderSkillCoolTime;
+
+	bool bIsFireSkillOn;
+	bool bIsWaterSkillOn;
+	bool bIsThunderSkillOn;
+
+	float CoolTimeRate;
+#pragma endregion CoolTimeValue
+	
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -152,8 +174,10 @@ public:
 	bool GetCharging()const{return IsCharging;}
 	int GetThunderSkillCount()const{return ThunderSkillCount;}
 	bool GetUseDodgeKey()const{return bUseDodgeKey;}
+	bool GetFireSkillOn()const{return bIsFireSkillOn;}
+	bool GetWaterSkillOn()const{return bIsWaterSkillOn;}
+	bool GetThunderSkillOn()const{return bIsThunderSkillOn;}
 
-	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
@@ -164,7 +188,7 @@ public:
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 #pragma endregion GetSet	
 
-#pragma region CoolTime
+#pragma region CoolTimeFunction
 private:
 	void FireCoolTime();
 	void WaterCoolTime();
@@ -173,25 +197,5 @@ private:
 	void FireSkillWait();
 	void WaterSkillWait();
 	void ThunderSkillWait();
-
-	bool bIsFireAttributeOn;
-	bool bIsWaterAttributeOn;
-	bool bIsThunderAttributeOn;
-
-	float FireSkillCoolTime;
-	float MaxFireSkillCoolTime;
-
-	float WaterSkillCoolTime;
-	float MaxWaterSkillCoolTime;
-
-	float ThunderSkillCoolTime;
-	float MaxThunderSkillCoolTime;
-
-	bool bIsFireSkillOn;
-	bool bIsWaterSkillOn;
-	bool bIsThunderSkillOn;
-
-	float CoolTimeRate;
-
-#pragma endregion CoolTime
+#pragma endregion CoolTimeFunction
 };

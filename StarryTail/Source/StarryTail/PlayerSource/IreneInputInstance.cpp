@@ -37,6 +37,7 @@ void UIreneInputInstance::InitMemberVariable()
 
 	// 마우스 입력 초기화
 	bLeftButtonPressed = false;
+	bRightButtonPressed = false;
 	bUseLeftButton = false;
 	bUseRightButton = false;
 
@@ -132,14 +133,20 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
 		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
-		
-		FString AnimName = "";
-		if(Irene->IreneAnim->GetCurrentActiveMontage())
-			AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
-		// 전기스킬은 다른 방식으로 공격 실행
-		if (FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50 && AnimName != FString("IreneThunderSkill_Montage"))
+		//STARRYLOG(Warning,TEXT("%f   %f   %f"), Irene->IreneAttack->GetPlayerPosVec().X,Irene->IreneAttack->GetPlayerPosVec().Y,Irene->IreneAttack->GetPlayerPosVec().Z);
+		//STARRYLOG(Warning,TEXT("%f   %f   %f"), Irene->IreneAttack->GetTargetPosVec().X,Irene->IreneAttack->GetTargetPosVec().Y,Irene->IreneAttack->GetTargetPosVec().Z);
+		//STARRYLOG(Error,TEXT("%f   %f   %f"), Target.X,Target.Y,Target.Z);
+
+		if(FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50)
 		{
-			Irene->IreneAttack->DoAttack();
+			FString AnimName = "";
+			if(Irene->IreneAnim->GetCurrentActiveMontage())
+				AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
+			// 전기스킬은 다른 방식으로 공격 실행
+			if (AnimName != FString("IreneThunderSkill_Montage"))
+			{
+				Irene->IreneAttack->DoAttack();
+			}
 		}
 	}
 }
@@ -270,7 +277,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false&&!bIsDialogOn)
+	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
@@ -318,7 +325,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 }
 void UIreneInputInstance::RightButton(const float DeltaTime)const
 {
-	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire&&!bIsDialogOn)
+	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -341,27 +348,27 @@ void UIreneInputInstance::RightButton(const float DeltaTime)const
 }
 void UIreneInputInstance::RightButtonPressed()
 {
-	if (CanAttackState() && !bUseLeftButton &&!bIsDialogOn)
+	bRightButtonPressed = true;
+	if (CanAttackState() && !bUseLeftButton && !bIsDialogOn)
 	{
 		IsCharging = true;
 		ChargingTime = 0.0f;		
 
 		Irene->SetActorRotation(GetMoveKeyToDirVector().Rotation());
-		
-	
+
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && bIsFireSkillOn)
 		{
-			bUseRightButton = true;			
+			bUseRightButton = true;
 			
-			Irene->IreneAttack->SetSkillState();
+			//Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 			MaxFireSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
+			bIsFireSkillOn = false;
 
-			if (AttackTable != nullptr && bUseRightButton)
-			{				
+			if (AttackTable != nullptr && !Irene->IreneState->IsChargeState())
+			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
-				bIsFireSkillOn = false;
 			}
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && bIsWaterSkillOn)
@@ -371,18 +378,17 @@ void UIreneInputInstance::RightButtonPressed()
 			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 			MaxWaterSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
+			bIsWaterSkillOn = false;
 
-			if (AttackTable != nullptr && bUseRightButton)
+			if (AttackTable != nullptr)
 			{
-			
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneAnim->PlaySkillAttackMontage();
 				GetWorld()->GetTimerManager().SetTimer(WaterSkillWaitHandle, this, &UIreneInputInstance::WaterSkillWait, CoolTimeRate, true, 0.0f);
-				bIsWaterSkillOn = false;
 				Irene->IreneUIManager->PlayerHud->UseSkill();
 			}
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && !Irene->IreneState->IsSkillState()&&bIsThunderSkillOn)
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && (!Irene->IreneState->IsSkillState() || Irene->IreneAttack->GetCanSkillSkip()) && bIsThunderSkillOn)
 		{
 			if(ThunderSkillCount > 0 && !bUseRightButton)
 			{
@@ -395,15 +401,15 @@ void UIreneInputInstance::RightButtonPressed()
 				{
 					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 					Irene->IreneAnim->PlaySkillAttackMontage();
-					STARRYLOG(Error, TEXT("Thunder Skill %d /  %d"), ThunderSkillCount, MaxThunderSkillCount);
-					if (ThunderSkillCount > 0) {
-						STARRYLOG(Error, TEXT("Skill charging"));
-						if (ThunderSkillCount == MaxThunderSkillCount) {
+					if (ThunderSkillCount > 0)
+					{
+						if (ThunderSkillCount == MaxThunderSkillCount)
+						{
 							GetWorld()->GetTimerManager().SetTimer(ThunderSkillWaitHandle, this, &UIreneInputInstance::ThunderSkillWait, CoolTimeRate, true, 0.0f);
 						}
 					}
-					else {
-						STARRYLOG(Error, TEXT("Skill Count Empty"));
+					else
+					{
 						bIsThunderSkillOn = false;
 					}
 				}
@@ -420,7 +426,8 @@ void UIreneInputInstance::RightButtonPressed()
 }
 void UIreneInputInstance::RightButtonReleased()
 {
-	if (CanAttackState() && !bUseLeftButton && bUseRightButton&&!bIsDialogOn)
+	bRightButtonPressed = false;
+	if (CanAttackState() && !bUseLeftButton && bUseRightButton && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -833,22 +840,22 @@ void UIreneInputInstance::WaterSkillWait()
 void UIreneInputInstance::ThunderSkillWait()
 {
 	ThunderSkillCoolTime += CoolTimeRate;
-	if (ThunderSkillCoolTime > MaxThunderSkillCoolTime) {
+	if (ThunderSkillCoolTime > MaxThunderSkillCoolTime)
+	{
 		bIsThunderSkillOn = true;
 		Irene->IreneUIManager->UpdateThunderSkillCool(ThunderSkillCoolTime, MaxThunderSkillCoolTime);
 		Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
 		ThunderSkillCoolTime = 0.0f;
-		STARRYLOG(Error, TEXT("Thunder Skill %d / %d"), ThunderSkillCount, MaxThunderSkillCount);
-		if (ThunderSkillCount < MaxThunderSkillCount) {
-			STARRYLOG(Error, TEXT("Skill Count 1"));
+		if (ThunderSkillCount < MaxThunderSkillCount)
+		{
 		}
-		else {
-			STARRYLOG(Error, TEXT("Skill Count Is Full"));
+		else
+		{
 			GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
 		}
 	}
-	else {
-
+	else
+	{
 		Irene->IreneUIManager->UpdateThunderSkillCool(ThunderSkillCoolTime, MaxThunderSkillCoolTime);
 		Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
 	}
