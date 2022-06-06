@@ -42,17 +42,34 @@ public:
 	FOnActiveCheckDelegate OnActiveCheck;
 
 
+	UPROPERTY(EditAnywhere, Category = Mesh)
+	AActor* Plate;
+	UPROPERTY(EditAnywhere, Category = Mesh)
+	AActor* Crystal;
+
+	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
+	UStaticMeshComponent* PlateMesh;
+	UPROPERTY(VisibleAnyWhere,BluePrintReadWrite, Category = Mesh)
+	USkeletalMeshComponent* CrystalMesh;
+
 public:	
 	// Sets default values for this actor's properties
 	AAttributeObject();
 
 	void SetObject(EState NewState, EAttributeKeyword NewAttribute);
 
+	UFUNCTION(BluePrintCallable)
 	EAttributeKeyword GetAttribute();
 
 	 void HitCheck(AIreneCharacter* Irene);
 
 	 bool GetActive();
+
+	 UFUNCTION(BlueprintImplementableEvent)
+	 void  AttributeChangeEvent();
+
+	 //Æ®¸®°Å Off
+	 void TriggerOff();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

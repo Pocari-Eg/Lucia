@@ -32,6 +32,8 @@ public:
 	TArray<EAttributeKeyword> Answer;
 	UPROPERTY(EditAnywhere, Category = Sequence)
 	ALevelSequenceActor* SequenceActor;
+
+
 private:
 	int32 AnswerCount;
 public:	
