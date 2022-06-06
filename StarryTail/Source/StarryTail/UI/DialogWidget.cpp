@@ -32,6 +32,14 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		Length = 0;
 		SetVisibility(ESlateVisibility::Visible);
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayDialog, TextPrintTime, true, 0.0f);
+
+		FString ImageName = ScriptData->Img.ToString();
+		if (ImageName == "IMG_Nox")
+			OnNormalNox();
+		else if (ImageName == "IMG_Irene")
+			OnNormalIrene();
+		else if (ImageName == "None")
+			OnNormalNone();
 	}
 	else if(ScriptData->Type == 1)
 	{
@@ -41,6 +49,13 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		SetVisibility(ESlateVisibility::Visible);
 		CurrentTextKeeptime = TextKeepTime;
 		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UDialogWidget::PlayPopUpDialog, TextPrintTime, true, 0.0f);
+
+		FString ImageName = ScriptData->Img.ToString();
+		if (ImageName == "IMG_Nox")
+			OnPopUpNox();
+		else if (ImageName == "IMG_Irene")
+			OnPopUpIrene();
+		
 
 	}
 
