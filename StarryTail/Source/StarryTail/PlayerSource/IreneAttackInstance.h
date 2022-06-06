@@ -60,6 +60,9 @@ private:
 	bool bDodgeJumpSkip;
 	// 후딜 중 재공격 가능 타이밍 노티파이
 	bool bReAttackSkip;
+	// 후딜 중 스킬 가능 타이밍 노티파이
+	bool bSkillSkip;
+	bool UseSkillSkip;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -100,6 +103,8 @@ public:
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanReAttackSkip()const{return bReAttackSkip;}
+	bool GetCanSkillSkip()const{return bSkillSkip;}
+	bool GetUseSkillSkip()const{return UseSkillSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
@@ -114,6 +119,8 @@ public:
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
+	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
+	void SetUseSkillSkip(const bool Value){UseSkillSkip = Value;}
 
 #pragma endregion GetSet
 

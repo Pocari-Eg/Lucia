@@ -81,6 +81,8 @@ public:
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
+	UPROPERTY()
+	TArray<UParticleSystem*> WaterParticle;
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
@@ -147,6 +149,8 @@ public:
 	void FindNearMonster();
 	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const;
 	void SetNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
+	void PlayWaterEffect();
+	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;

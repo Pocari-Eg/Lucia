@@ -169,6 +169,11 @@ void UIreneAnimInstance::AnimNotify_ReAttackCheck() const
 	Irene->IreneAttack->SetCanReAttackSkip(true);
 }
 
+void UIreneAnimInstance::AnimNotify_SkillSkipCheck() const
+{
+	Irene->IreneAttack->SetCanSkillSkip(true);
+}
+
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();

@@ -56,6 +56,8 @@ void UIreneAttackInstance::InitMemberVariable()
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
 	bReAttackSkip = false;
+	bSkillSkip = false;
+	UseSkillSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -116,7 +118,18 @@ void UIreneAttackInstance::OnAttackMontageEnded(UAnimMontage* Montage, bool bInt
 {
 	// 몽타주가 완전히 끝남
 	Irene->IreneData.IsAttacking = false;
-	AttackEndComboState();
+	// 공격 후딜 중 스킬 사용 시 일반적인 종료와 특수 종료
+	if(UseSkillSkip == false)
+		AttackEndComboState();
+	else
+	{
+		Irene->Weapon->SetGenerateOverlapEvents(false);
+		Irene->IreneInput->bUseLeftButton = false;
+		bUseMP = false;
+		Irene->IreneData.CanNextCombo = false;
+		Irene->IreneData.IsComboInputOn = false;
+		Irene->IreneData.CurrentCombo = 0;
+	}
 }
 void UIreneAttackInstance::AttackStartComboState()
 {
@@ -135,7 +148,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsJumpState())
+	if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsJumpState() && !Irene->IreneState->IsChargeState())
 	{
 		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		//Irene->ActionEndChangeMoveState();
@@ -229,7 +242,7 @@ void UIreneAttackInstance::DoAttack()
 	if(Attribute == EAttributeKeyword::e_Water)
 	{
 		if(Irene->IreneInput->bUseLeftButton)
-		{
+		{			
 			FCollisionQueryParams Params(NAME_None, false, Irene);
 			bResult = GetWorld()->SweepMultiByChannel(
 				MonsterList,
@@ -267,7 +280,7 @@ void UIreneAttackInstance::DoAttack()
 				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,200 * 0.5f),
 				Params);
 		}
-		if(Irene->IreneInput->bUseRightButton)
+		else
 		{
 			FCollisionQueryParams Params(NAME_None, false, Irene);
 			bResult = GetWorld()->SweepMultiByChannel(
@@ -347,7 +360,7 @@ void UIreneAttackInstance::DoAttack()
 				false,
 				DebugLifeTime);
 		}
-		if(Irene->IreneInput->bUseRightButton)
+		else		
 		{
 			DrawDebugCapsule(GetWorld(),
 				CurrentPosVec + Irene->GetActorForwardVector()*800*0.5f,
@@ -481,8 +494,8 @@ void UIreneAttackInstance::SetSkillState()const
 	}
 	if(Attribute == EAttributeKeyword::e_Thunder)
 	{
-		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
-		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0)
+		if ((Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
+		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0) || bSkillSkip)
 		{
 			Irene->ChangeStateAndLog(USkillThunderStartState::GetInstance());
 		}

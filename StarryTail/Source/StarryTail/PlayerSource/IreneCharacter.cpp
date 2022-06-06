@@ -156,6 +156,16 @@ AIreneCharacter::AIreneCharacter()
 		UseLagCurve = CameraLagCurve[0];
 	}
 
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water1(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water2(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water3(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
+	if (Pe_Water1.Succeeded() && Pe_Water2.Succeeded() && Pe_Water3.Succeeded())
+	{
+		WaterParticle.Add(Pe_Water1.Object);
+		WaterParticle.Add(Pe_Water2.Object);
+		WaterParticle.Add(Pe_Water3.Object);
+	}
+	
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 
@@ -396,7 +406,8 @@ void AIreneCharacter::FindNearMonster()
 	#endif
 
 	NearMonsterAnalysis(MonsterList, bResult, Params, Far);
-
+	PlayWaterEffect();
+	
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
 	{
@@ -514,6 +525,41 @@ void AIreneCharacter::SetNearMonster(const FHitResult RayHit, float& NearPositio
 		IreneAnim->SetIsHaveTargetMonster(true);
 	}
 }
+void AIreneCharacter::PlayWaterEffect()
+{
+	if(IreneAttack->TargetMonster)
+	{
+		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], IreneAttack->TargetMonster->GetActorLocation());
+		}
+		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], IreneAttack->TargetMonster->GetActorLocation());
+		}
+		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], IreneAttack->TargetMonster->GetActorLocation());
+		}
+	}
+	else
+	{
+		const FVector Location = GetActorLocation() + GetActorForwardVector() * 800;
+		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0],Location);
+		}
+		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1],Location);
+		}
+		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
+		{
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2],Location);
+		}
+	}
+}
+
 
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
