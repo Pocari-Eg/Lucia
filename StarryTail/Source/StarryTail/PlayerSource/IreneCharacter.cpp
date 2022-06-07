@@ -156,9 +156,9 @@ AIreneCharacter::AIreneCharacter()
 		UseLagCurve = CameraLagCurve[0];
 	}
 
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water1(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water2(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water3(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk.PS_W_atk"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water1(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk1.PS_W_atk1"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water2(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk2.PS_W_atk2"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Pe_Water3(TEXT("/Game/Effect/VFX_Irene/Water/W_BasicAtk_PS/PS_W_atk3.PS_W_atk3"));
 	if (Pe_Water1.Succeeded() && Pe_Water2.Succeeded() && Pe_Water3.Succeeded())
 	{
 		WaterParticle.Add(Pe_Water1.Object);
