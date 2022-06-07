@@ -28,7 +28,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
 {
-
 	DialogNum = 0;
 	SetDialogState(EDialogState::e_Set);
 	ScriptData= Data;
@@ -47,10 +46,10 @@ void UPlayerHudWidget::PlayDialog()
 	}
 }
 
-void UPlayerHudWidget::SkipDialog()
+void UPlayerHudWidget::PassDialog()
 {
 	if (ScriptData[DialogNum]->Type == 0) {
-		DialogWidget->SkipDialog();
+		DialogWidget->PassDialog();
 	}
 
 }
@@ -71,28 +70,25 @@ void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
 
 void UPlayerHudWidget::PlayPopUp()
 {
+	PopUpWidget->DialogTimerClear();
 	SetDialogState(EDialogState::e_Playing);
 	PopUpWidget->SetDialog(ScriptData[DialogNum]);
 }
 
 void UPlayerHudWidget::ExitPopUp()
 {
-	
+	PopUpWidget->DialogTimerClear();
 	SetDialogState(EDialogState::e_Disable);
 	DialogNum = 0;
+
+	ScriptData.Empty();
+	ScriptData.SetNum(0);
+
 	PopUpWidget->EndDialog();
 }
 
 void UPlayerHudWidget::ExitDialog()
 {
-
-	if (ActionWidget->Visibility == ESlateVisibility::Hidden) {
-		SetDialogState(EDialogState::e_Disable);
-	}
-	else if (ActionWidget->Visibility == ESlateVisibility::Visible)
-	{
-		SetDialogState(EDialogState::e_Set);
-	}
 
 	if (ScriptData[0]->Type == 0) {
 		DialogNum = 0;
@@ -100,7 +96,15 @@ void UPlayerHudWidget::ExitDialog()
 		PlayerHudOn();
 		CurrentIrene->IreneUIManager->SetDialogState(false);
 	}
-	
+	if (ActionWidget->Visibility == ESlateVisibility::Hidden) {
+		SetDialogState(EDialogState::e_Disable);
+		ScriptData.Empty();
+		ScriptData.SetNum(0);
+	}
+	else if (ActionWidget->Visibility == ESlateVisibility::Visible)
+	{
+		SetDialogState(EDialogState::e_Set);
+	}
 }
 
 bool UPlayerHudWidget::ContinueDialog()
