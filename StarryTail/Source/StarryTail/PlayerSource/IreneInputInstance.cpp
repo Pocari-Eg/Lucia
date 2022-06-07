@@ -151,7 +151,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 
 void UIreneInputInstance::StartJump()
 {
-	if (CanJumpState() && (Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
+	if (CanJumpState() && ((Irene->IreneState->IsAttackState()||Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip() || (!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		Irene->bPressedJump = true;
@@ -721,7 +721,7 @@ bool UIreneInputInstance::StaminaGaugeIsFull()const
 #pragma region CheckStateChange
 bool UIreneInputInstance::CanJumpState() const
 {
-	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsChargeState())
+	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsChargeState())
 			return true;
 	return false;
 }
