@@ -47,6 +47,8 @@ void ABouldelith::InitMonsterInfo()
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.EnemyRank = EEnemyRank::e_Unique;
+
+	MaxBarrier = MonsterInfo.Barrier;
 }
 void ABouldelith::InitBouldelithInfo()
 {
