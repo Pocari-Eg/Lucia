@@ -52,7 +52,7 @@ private:
 public:
 	//출력할 메시지 세팅
 	void SetDialog(FScriptData* ScriptData);
-	void SkipDialog();
+	void PassDialog();
 	void EndDialog();
 
 	EDialogState GetDialogState();
@@ -71,6 +71,9 @@ public:
 	void  OnNormalNox();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnNormalNone();
+
+
+	void DialogTimerClear();
 protected:
 	virtual void NativeOnInitialized() override;
 private:
