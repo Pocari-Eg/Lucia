@@ -146,6 +146,7 @@ public:
 	void WaterDodgeKeyword(float Rate);	
 	// 액션 
 	void DialogAction();
+	void DialogSkip();
 #pragma endregion OtherInput
 
 #pragma region UIandStamina

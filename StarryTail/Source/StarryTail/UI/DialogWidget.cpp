@@ -17,10 +17,10 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 		
 		if (ScriptData->Style == 0)
 		{
-			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Bold"),FFontOutlineSettings::NoOutline));
+			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Default"),FFontOutlineSettings::NoOutline));
 		}
 		else {
-			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Regular"), FFontOutlineSettings::NoOutline));
+			TextBox->SetFont(FSlateFontInfo(Font, ScriptData->Size, FName("Default"), FFontOutlineSettings::NoOutline));
 		}
 
 	}
@@ -101,7 +101,7 @@ void UDialogWidget::NativeOnInitialized()
 	
 	TextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBox")));
 
-	Font= LoadObject<UObject>(NULL, TEXT("/Engine/EngineFonts/Roboto.Roboto"), NULL, LOAD_None, NULL);
+	Font= LoadObject<UObject>(NULL, TEXT("/Game/UI/Resource/Font/LeferiBaseBold_Font.LeferiBaseBold_Font"), NULL, LOAD_None, NULL);
 
 	CurrnetState = EDialogState::e_Disable;
 	NextArrow= Cast<UImage>(GetWidgetFromName(TEXT("NextArrow")));

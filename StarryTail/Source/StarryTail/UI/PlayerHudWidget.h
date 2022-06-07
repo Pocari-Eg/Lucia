@@ -81,6 +81,8 @@ public:
 	void PlayPopUp();
 	void ExitPopUp();
 	bool ContinueDialog();
+	void SkipDialog();
+
 
 	void UseSkill();
 

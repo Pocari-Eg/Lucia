@@ -119,6 +119,16 @@ bool UPlayerHudWidget::ContinueDialog()
 	
 }
 
+void UPlayerHudWidget::SkipDialog()
+{
+	DialogWidget->DialogTimerClear();
+	
+	ExitDialog();
+	ScriptData.Empty();
+	ScriptData.SetNum(0); 
+	ExitDialog();
+}
+
 void UPlayerHudWidget::UseSkill()
 {
 
