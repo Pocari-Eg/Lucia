@@ -34,4 +34,5 @@ private:
 	bool bIsTurn;
 
 	float RushTimer;
+	float TurnCoolTimer;
 };
