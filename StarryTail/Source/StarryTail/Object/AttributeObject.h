@@ -40,7 +40,7 @@ public:
 //Æ®¸®°Å
 	UPROPERTY(EditAnywhere, Category=Trigger)
 	UCapsuleComponent* Trigger;
-	UPROPERTY(EditAnywhere, Category = Mesh)
+	UPROPERTY(EditAnywhere,BluePrintReadWrite, Category = Mesh)
 	UStaticMeshComponent* ObjectMesh;
 	FOnActiveCheckDelegate OnActiveCheck;
 
