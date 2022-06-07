@@ -469,7 +469,8 @@ void UIreneInputInstance::RightButtonReleased()
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
-	if (!Irene->IreneState->IsDeathState()) {
+	if (!Irene->IreneState->IsDeathState())
+	{
 		// 줌인줌아웃
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
@@ -481,7 +482,8 @@ void UIreneInputInstance::MouseWheel(float Rate)
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
 {
-	if (!bIsDialogOn) {
+	if (!bIsDialogOn)
+	{
 		// 속성을 변화시키는 함수
 		if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
 		{
@@ -554,7 +556,6 @@ void UIreneInputInstance::DodgeKeyword()
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
 	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
-		Irene->IreneAnim->StopAllMontages(0.01f);
 		bUseDodgeKey = true;
 		// 불닷지 & FireDodge (없앨수도 있음)
 		// if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
