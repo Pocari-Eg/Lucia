@@ -39,7 +39,7 @@ void UPlayerHudWidget::PlayDialog()
 	if (ScriptData[DialogNum]->Type == 0) {
 		SetDialogState(EDialogState::e_Playing);
 		DialogWidget->SetDialog(ScriptData[DialogNum]);
-		
+		PlayerHudOff();
 		CurrentIrene->IreneUIManager->SetDialogState(true);
 	}
 	else {
@@ -97,6 +97,7 @@ void UPlayerHudWidget::ExitDialog()
 	if (ScriptData[0]->Type == 0) {
 		DialogNum = 0;
 		DialogWidget->EndDialog();
+		PlayerHudOn();
 		CurrentIrene->IreneUIManager->SetDialogState(false);
 	}
 	
@@ -142,6 +143,11 @@ void UPlayerHudWidget::UseSkill()
 		CurrentIrene->IreneUIManager->SetSkillCount(Count);
 		ThunderSkillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+EAttributeKeyword UPlayerHudWidget::GetAttriburte()
+{
+	return CurrentIrene->GetAttribute();
 }
 
 EDialogState UPlayerHudWidget::GetDialogState()

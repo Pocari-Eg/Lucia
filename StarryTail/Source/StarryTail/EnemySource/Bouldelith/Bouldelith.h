@@ -62,6 +62,9 @@ public:
 
 	bool GetIsUseBackstep();
 	void SetIsUseBackstep(bool Value);
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void  BrokenEvent();
 	//Var
 	FBackstepEndDelegate BackstepEnd;
 	FAttackEndDelegate Attack1End;
