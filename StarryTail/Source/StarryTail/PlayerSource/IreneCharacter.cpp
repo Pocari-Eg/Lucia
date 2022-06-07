@@ -618,7 +618,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			else
 			{
 				if(!IreneState->IsChargeState())
-					ChangeStateAndLog(UHit1State::GetInstance());
+				{
+					ChangeStateAndLog(UHit2State::GetInstance());
+				}
 			}
 		}
 		if (IreneAttack->TargetMonster == nullptr)

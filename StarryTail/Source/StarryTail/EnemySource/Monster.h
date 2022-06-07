@@ -147,6 +147,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
 
+	float MaxBarrier;
+
 	bool bIsAttacking;
 	bool bIsAttacked;
 	bool bIsGroggy;
@@ -187,6 +189,8 @@ private:
 	float KnockBackTimer;
 	float ShowUITimer;
 	float DeadWaitTimer;
+
+
 
 	bool bIsBurn;
 	bool bIsFlooding;

@@ -213,7 +213,7 @@ float AMonster::GetHpRatio()
 }
 float AMonster::GetDefRatio()
 {
-	return MonsterInfo.CurrentDef < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentDef / MonsterInfo.Def;
+	return MonsterInfo.Barrier < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.Barrier / MaxBarrier;
 }
 void AMonster::ChangeAttributeDelegate()
 {
@@ -309,8 +309,7 @@ void AMonster::CalcDef()
 	{
 		MonsterInfo.CurrentDef -= (AttackedInfo.AttributeArmor / 5);
 	}
-	//방어력 게이지 업데이트
-	OnDefChanged.Broadcast();
+	
 
 	if (MonsterInfo.CurrentDef <= 0)
 	{
@@ -348,6 +347,8 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Bouldelith = Cast<ABouldelith>(this);
 		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
 
+		//방어력 게이지 업데이트
+		OnDefChanged.Broadcast();
 
 		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
 			BdAIController->Attacked();
@@ -517,7 +518,7 @@ void AMonster::ResetDef()
 	GroggyEffectComponent->SetActive(false);
 
 	HpBarWidget->ToggleActive();
-	OnDefChanged.Broadcast();
+
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 {

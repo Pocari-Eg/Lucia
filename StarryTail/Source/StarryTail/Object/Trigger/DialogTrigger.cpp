@@ -43,74 +43,75 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 {
 	STARRYLOG_S(Error);
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
-	if (DalogIndex.Num() != 0) {
-	
+	if (Irene != nullptr) {
+		if (DalogIndex.Num() != 0) {
 
-	 if (GetScriptData(DalogIndex.Num())[0]->Condition == 0) {
-		 Irene->IreneUIManager->PlayerHud->ExitPopUp();
-		if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
-		{
-		
-			if (Irene != nullptr)
-			{
-				
-				Irene->SetIreneDialog();
-				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
-					for (int i = 0; i < DalogIndex.Num(); i++)
-						Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
-				}
-			}
-			//Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
-			Irene->IreneUIManager->PlayerHud->PlayDialog();
-			TriggerOff();
-		}
-		else {
-			if (Irene != nullptr)
-			{
-				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
-					for (int i = 0; i < DalogIndex.Num(); i++)
-						Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
+
+			if (GetScriptData(DalogIndex.Num())[0]->Condition == 0) {
+				Irene->IreneUIManager->PlayerHud->ExitPopUp();
+				if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
+				{
+
+					if (Irene != nullptr)
+					{
+
+						Irene->SetIreneDialog();
+						if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
+							for (int i = 0; i < DalogIndex.Num(); i++)
+								Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
+						}
+					}
+					//Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+					Irene->IreneUIManager->PlayerHud->PlayDialog();
 					TriggerOff();
 				}
-			}
-		}
+				else {
+					if (Irene != nullptr)
+					{
+						if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
+							for (int i = 0; i < DalogIndex.Num(); i++)
+								Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
+							TriggerOff();
+						}
+					}
+				}
 
-	}
-	else if (GetScriptData(DalogIndex.Num())[0]->Condition == 1)
-		{
-			if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
+			}
+			else if (GetScriptData(DalogIndex.Num())[0]->Condition == 1)
 			{
-
-				if (Irene != nullptr)
+				if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
 				{
-					Irene->SetIreneDialog();
 
-					if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
-						for (int i = 0; i < DalogIndex.Num(); i++)
-							Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
+					if (Irene != nullptr)
+					{
+						Irene->SetIreneDialog();
+
+						if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
+							for (int i = 0; i < DalogIndex.Num(); i++)
+								Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
+						}
 					}
 				}
-			}
-			else {
-				
-				if (Irene != nullptr)
-				{
-					if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
-						for (int i = 0; i < DalogIndex.Num(); i++)
-							Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
+				else {
+
+					if (Irene != nullptr)
+					{
+						if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
+							for (int i = 0; i < DalogIndex.Num(); i++)
+								Irene->IreneUIManager->PlayerHud->SetPopUp(GetScriptData(DalogIndex.Num()));
+						}
 					}
 				}
+
+				Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 			}
 
-			Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+
+
+
 		}
 
-
-	
-
 	}
-
-
 }
 
 void ADialogTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
