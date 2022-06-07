@@ -406,7 +406,8 @@ void AIreneCharacter::FindNearMonster()
 	#endif
 
 	NearMonsterAnalysis(MonsterList, bResult, Params, Far);
-	PlayWaterEffect();
+	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		PlayWaterEffect();
 	
 	// 몬스터를 찾고 쳐다보기
 	if (IreneAttack->TargetMonster != nullptr)
@@ -529,17 +530,22 @@ void AIreneCharacter::PlayWaterEffect()
 {
 	if(IreneAttack->TargetMonster)
 	{
+		const auto CastMonster = Cast<AMonster>(IreneAttack->TargetMonster);
+		if(CastMonster == nullptr)
+		{
+			return;
+		}
 		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], IreneAttack->TargetMonster->GetActorLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], CastMonster->GetLocation());
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], IreneAttack->TargetMonster->GetActorLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], CastMonster->GetLocation());
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], IreneAttack->TargetMonster->GetActorLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], CastMonster->GetLocation());
 		}
 	}
 	else
