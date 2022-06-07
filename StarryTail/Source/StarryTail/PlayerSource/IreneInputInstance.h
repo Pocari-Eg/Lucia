@@ -70,8 +70,9 @@ private:
 	// 스킬
 	FTimerHandle FireSkillWaitHandle;
 	FTimerHandle WaterSkillWaitHandle;
-	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
+	
+	// 번개 스킬 갯수
 	int ThunderSkillCount;
 	int MaxThunderSkillCount;
 
@@ -177,7 +178,8 @@ public:
 	bool GetFireSkillOn()const{return bIsFireSkillOn;}
 	bool GetWaterSkillOn()const{return bIsWaterSkillOn;}
 	bool GetThunderSkillOn()const{return bIsThunderSkillOn;}
-
+	bool GetIsDialogOn()const{return bIsDialogOn;}
+	
 	void SetStartJump(const bool Value){bStartJump = Value;}
 	void SetJumpingTime(const float Value){JumpingTime = Value;}
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}

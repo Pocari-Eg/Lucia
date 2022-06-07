@@ -28,7 +28,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
 {
-
 	DialogNum = 0;
 	SetDialogState(EDialogState::e_Set);
 	ScriptData= Data;
@@ -39,7 +38,7 @@ void UPlayerHudWidget::PlayDialog()
 	if (ScriptData[DialogNum]->Type == 0) {
 		SetDialogState(EDialogState::e_Playing);
 		DialogWidget->SetDialog(ScriptData[DialogNum]);
-		
+		PlayerHudOff();
 		CurrentIrene->IreneUIManager->SetDialogState(true);
 	}
 	else {
@@ -47,10 +46,10 @@ void UPlayerHudWidget::PlayDialog()
 	}
 }
 
-void UPlayerHudWidget::SkipDialog()
+void UPlayerHudWidget::PassDialog()
 {
 	if (ScriptData[DialogNum]->Type == 0) {
-		DialogWidget->SkipDialog();
+		DialogWidget->PassDialog();
 	}
 
 }
@@ -71,35 +70,41 @@ void UPlayerHudWidget::SetPopUp(TArray<FScriptData*> Data)
 
 void UPlayerHudWidget::PlayPopUp()
 {
+	PopUpWidget->DialogTimerClear();
 	SetDialogState(EDialogState::e_Playing);
 	PopUpWidget->SetDialog(ScriptData[DialogNum]);
 }
 
 void UPlayerHudWidget::ExitPopUp()
 {
-	
+	PopUpWidget->DialogTimerClear();
 	SetDialogState(EDialogState::e_Disable);
 	DialogNum = 0;
+
+	ScriptData.Empty();
+	ScriptData.SetNum(0);
+
 	PopUpWidget->EndDialog();
 }
 
 void UPlayerHudWidget::ExitDialog()
 {
 
+	if (ScriptData[0]->Type == 0) {
+		DialogNum = 0;
+		DialogWidget->EndDialog();
+		PlayerHudOn();
+		CurrentIrene->IreneUIManager->SetDialogState(false);
+	}
 	if (ActionWidget->Visibility == ESlateVisibility::Hidden) {
 		SetDialogState(EDialogState::e_Disable);
+		ScriptData.Empty();
+		ScriptData.SetNum(0);
 	}
 	else if (ActionWidget->Visibility == ESlateVisibility::Visible)
 	{
 		SetDialogState(EDialogState::e_Set);
 	}
-
-	if (ScriptData[0]->Type == 0) {
-		DialogNum = 0;
-		DialogWidget->EndDialog();
-		CurrentIrene->IreneUIManager->SetDialogState(false);
-	}
-	
 }
 
 bool UPlayerHudWidget::ContinueDialog()
@@ -142,6 +147,11 @@ void UPlayerHudWidget::UseSkill()
 		CurrentIrene->IreneUIManager->SetSkillCount(Count);
 		ThunderSkillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
 	}
+}
+
+EAttributeKeyword UPlayerHudWidget::GetAttriburte()
+{
+	return CurrentIrene->GetAttribute();
 }
 
 EDialogState UPlayerHudWidget::GetDialogState()

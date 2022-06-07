@@ -554,9 +554,16 @@ void UDodgeWaterEndState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->ActionEndChangeMoveState();
-	if(CurState->Irene->IreneState->IsRunState())
-		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+	if(!CurState->Irene->IreneInput->GetIsDialogOn())
+	{
+		CurState->Irene->ActionEndChangeMoveState();
+		if(CurState->Irene->IreneState->IsRunState())
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+	}
+	else
+	{
+		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
 }
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
@@ -595,6 +602,11 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
 {
+	if(CurState->Irene->IreneInput->GetIsDialogOn())
+	{
+		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
 	CurState->Irene->IreneInput->MoveAuto();
 	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
 	if (CurState->Irene->GetMovementComponent()->IsFalling())
@@ -1275,7 +1287,7 @@ void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
 
-	if(CurState->Irene->IreneInput->GetThunderSkillOn() && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
+	if(CurState->Irene->IreneInput->GetThunderSkillCount() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
@@ -1343,7 +1355,7 @@ void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 	if(StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
 
-	if(CurState->Irene->IreneInput->GetThunderSkillOn() && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
+	if(CurState->Irene->IreneInput->GetThunderSkillCount() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
@@ -1414,7 +1426,7 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
 	}
 
-	if(CurState->Irene->IreneInput->GetThunderSkillOn() && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
+	if(CurState->Irene->IreneInput->GetThunderSkillCount() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
@@ -1554,6 +1566,7 @@ void USkillWaterStartState::Enter(IBaseGameEntity* CurState)
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	if(!CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(true);
@@ -1642,28 +1655,36 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	
-	CurState->Irene->IreneAttack->SetUseSkillSkip(true);
 	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
 	const FVector NowPosVec = CurState->Irene->GetActorLocation()+CurState->Irene->GetActorForwardVector()*800;
 	CurState->Irene->IreneAttack->SetFollowTargetAlpha(0);
 	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
 	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
 	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));	
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 	StartShakeTime = 0.0f;
+	
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
-	//CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+	CurState->Irene->GetMesh()->SetVisibility(false);
 	if(CurState->Irene->Weapon->IsVisible())
 	{
-		//CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->Weapon->SetVisibility(false);
 		CurState->Irene->WeaponVisible(false);
 	}
 }
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
+	if(CurState->Irene->IreneInput->GetIsDialogOn())
+	{
+		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
 	CurState->Irene->IreneInput->bUseRightButton = true;
 	// 후딜 이전까지의 시간
 	CurState->Irene->IreneInput->MoveAuto(0.35f);

@@ -40,6 +40,7 @@ AAttributeObject::AAttributeObject()
 
 void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute)
 {
+	STARRYLOG_S(Error);
 	State = NewState;
 	Attribute = NewAttribute;
 
@@ -51,7 +52,6 @@ void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute
 		IsActive = false;
 	}
 
-	STARRYLOG_S(Error);
 	MaterialChange();
 }
 
