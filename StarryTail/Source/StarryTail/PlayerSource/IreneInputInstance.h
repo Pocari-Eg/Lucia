@@ -70,8 +70,9 @@ private:
 	// 스킬
 	FTimerHandle FireSkillWaitHandle;
 	FTimerHandle WaterSkillWaitHandle;
-	// 번개 스킬 갯수
 	FTimerHandle ThunderSkillWaitHandle;
+	
+	// 번개 스킬 갯수
 	int ThunderSkillCount;
 	int MaxThunderSkillCount;
 
