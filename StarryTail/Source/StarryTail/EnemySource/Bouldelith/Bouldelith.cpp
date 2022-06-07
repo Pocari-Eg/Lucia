@@ -374,6 +374,7 @@ void ABouldelith::Tick(float DeltaTime)
 			auto BdAIController = Cast<ABdAIController>(MonsterAIController);
 			BdAIController->Broken();
 			BdAnimInstance->PlayBrokenMontage();
+			BrokenEvent();
 			MonsterInfo.DefaultAnimePlayRate = BouldelithInfo.BrokenAnimePlayRate;
 			BdAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
 			bIsBroken = true;
