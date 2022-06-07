@@ -78,21 +78,21 @@ void UBTTaskScBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	{
 		float Distance = Scientia->GetDistanceToPlayer();
 
-		if (Distance < 1000)
+		if (Distance < 500)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack2Key, true);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, true);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
-		else if (Distance >= 1000 && Distance < 2000)
+		else if (Distance >= 500 && Distance < 1000)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack3Key, true);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, true);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
-		else if (Distance >= 2000)
+		else if (Distance >= 1000)
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsBattleWalkKey, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack1Key, true);
