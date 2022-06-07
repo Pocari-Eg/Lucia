@@ -30,6 +30,8 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 	
+	TurnCoolTimer = 1;
+
 	Scientia->TurnEnd.Clear();
 	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
 		{
@@ -46,6 +48,7 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	if (bIsTurn)
 		return;
 
+	TurnCoolTimer -= DeltaSeconds;
 	RushTimer += DeltaSeconds;
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
@@ -72,9 +75,11 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	{
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(Scientia->GetController(), Scientia->GetTransform().GetLocation() + MoveDir.GetSafeNormal() * 300);
 	}
-	else
+	else if(TurnCoolTimer <= 0.0f)
 	{
+		TurnCoolTimer = 1;
 		bIsTurn = true;
+
 		Scientia->Turn();
 	}
 }
