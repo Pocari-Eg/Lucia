@@ -64,7 +64,7 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 
 }
 
-void UDialogWidget::SkipDialog()
+void UDialogWidget::PassDialog()
 {
 	SetDialogState(EDialogState::e_Complete);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
@@ -86,6 +86,13 @@ void UDialogWidget::SetDialogState(EDialogState NewState)
 void UDialogWidget::BindPlayerHud(class UPlayerHudWidget* NewPlayerHud)
 {
 	PlayerHud = NewPlayerHud;
+}
+
+void UDialogWidget::DialogTimerClear()
+{
+	if (GetWorld()->GetTimerManager().IsTimerActive(TimerHandle)) {
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
 }
 
 void UDialogWidget::NativeOnInitialized()
@@ -136,7 +143,6 @@ void UDialogWidget::PlayPopUpDialog()
 		else {
 			CurrentTextKeeptime = TextKeepTime;
 			//타이머 초기화로 
-			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 			if (PlayerHud->ContinueDialog())
 			{
 				PlayerHud->PlayPopUp();
