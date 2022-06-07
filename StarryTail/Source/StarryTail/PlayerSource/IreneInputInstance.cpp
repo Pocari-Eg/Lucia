@@ -391,6 +391,7 @@ void UIreneInputInstance::RightButtonPressed()
 		{
 			if(ThunderSkillCount > 0 && !bUseRightButton)
 			{
+				STARRYLOG_S(Warning);
 				bUseRightButton = true;
 				Irene->IreneAttack->SetSkillState();
 				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));

@@ -1713,6 +1713,7 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->IreneInput->RightButtonPressed();
 	}
 	
@@ -1918,16 +1919,19 @@ void UHit2State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_2);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 }
 
 void UHit2State::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveForward();
-	CurState->Irene->IreneInput->MoveRight();
+	CurState->Irene->ChangeStateAndLog(UHit1State::GetInstance());
+	//CurState->Irene->IreneInput->MoveForward();
+	//CurState->Irene->IreneInput->MoveRight();
 }
 
 void UHit2State::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->bIsEnd = true;
 }
 #pragma endregion UHit2State
