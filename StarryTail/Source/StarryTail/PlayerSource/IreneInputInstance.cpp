@@ -656,27 +656,37 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 
 void UIreneInputInstance::DialogAction()
 {
-	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+		UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
 
-	switch (PlayerHud->GetDialogState())
-	{
-	case EDialogState::e_Set:
-		PlayerHud->PlayDialog();
-		break;
-	case EDialogState::e_Playing:
-		PlayerHud->PassDialog();
-		break;
-	case EDialogState::e_Complete:
-		if (PlayerHud->ContinueDialog())
+		switch (PlayerHud->GetDialogState())
+		{
+		case EDialogState::e_Set:
 			PlayerHud->PlayDialog();
-		else
-			PlayerHud->ExitDialog();
-		break;
-	case EDialogState::e_Disable:
-		break;
-	default:
-		break;
+			break;
+		case EDialogState::e_Playing:
+			PlayerHud->PassDialog();
+			break;
+		case EDialogState::e_Complete:
+			if (PlayerHud->ContinueDialog())
+				PlayerHud->PlayDialog();
+			else
+				PlayerHud->ExitDialog();
+			break;
+		case EDialogState::e_Disable:
+			break;
+		default:
+			break;
+		}
+
+}
+
+void UIreneInputInstance::DialogSkip()
+{
+	if (bIsDialogOn) {
+		UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+		PlayerHud->SkipDialog();
 	}
+
 }
 
 void UIreneInputInstance::MouseCursorKeyword()
