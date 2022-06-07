@@ -47,6 +47,8 @@ public:
 	void ActionWidgetOn();
 	void ActionWidgetOff();
 
+
+	//Event
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnFireAttribute();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -58,9 +60,14 @@ public:
 	void PlayHUDAnimation();
 
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayerHudOn();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void PlayerHudOff();
+
 	//다이얼로그
 	
-
 	EDialogState GetDialogState();
 	void SetDialogState(EDialogState NewState);
 
@@ -76,6 +83,9 @@ public:
 	bool ContinueDialog();
 
 	void UseSkill();
+
+	UFUNCTION(BluePrintCallable)
+	EAttributeKeyword GetAttriburte();
 private:
 
 	void UpdateHp();
