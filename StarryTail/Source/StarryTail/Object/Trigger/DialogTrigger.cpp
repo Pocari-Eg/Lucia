@@ -41,18 +41,19 @@ ADialogTrigger::ADialogTrigger()
 
 void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	STARRYLOG_S(Error);
+	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (DalogIndex.Num() != 0) {
-
-
+	
 
 	 if (GetScriptData(DalogIndex.Num())[0]->Condition == 0) {
-
+		 Irene->IreneUIManager->PlayerHud->ExitPopUp();
 		if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
 		{
-			STARRYLOG_S(Error);
-			auto Irene = Cast<AIreneCharacter>(OtherActor);
+		
 			if (Irene != nullptr)
 			{
+				
 				Irene->SetIreneDialog();
 				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
 					for (int i = 0; i < DalogIndex.Num(); i++)
@@ -64,8 +65,6 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			TriggerOff();
 		}
 		else {
-			STARRYLOG_S(Error);
-			auto Irene = Cast<AIreneCharacter>(OtherActor);
 			if (Irene != nullptr)
 			{
 				if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
@@ -79,8 +78,6 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	}
 	else if (GetScriptData(DalogIndex.Num())[0]->Condition == 1)
 		{
-			STARRYLOG_S(Error);
-			auto Irene = Cast<AIreneCharacter>(OtherActor);
 			if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
 			{
 

@@ -73,7 +73,7 @@ public:
 
 	void SetDialog(TArray<FScriptData*> Data);
 	void PlayDialog();
-	void SkipDialog();
+	void PassDialog();
 	void ExitDialog();
 
 
