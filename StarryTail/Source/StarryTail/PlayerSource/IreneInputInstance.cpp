@@ -66,8 +66,6 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
 
-
-
 	bIsDialogOn=false;
 }
 void UIreneInputInstance::Begin()
@@ -169,7 +167,8 @@ void UIreneInputInstance::StopJump()
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	if (!bIsDialogOn) {
+	if (!bIsDialogOn)
+	{
 		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
 		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
 		if (CanRunState())
@@ -554,7 +553,7 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
-	(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
+	((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		bUseDodgeKey = true;
 		// 불닷지 & FireDodge (없앨수도 있음)
@@ -585,7 +584,8 @@ void UIreneInputInstance::DodgeKeyword()
 		// 			}
 		// 		}), WaitTime, false);
 		// }
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f && !Irene->IreneState->IsJumpState())
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
+			!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 37.5f;
@@ -610,8 +610,8 @@ void UIreneInputInstance::DodgeKeyword()
 void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
 	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
-		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() &&
-		(Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
+		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsJumpState() &&
+		((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		Irene->IreneAnim->StopAllMontages(0.01f);
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
@@ -680,7 +680,8 @@ void UIreneInputInstance::DialogAction()
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
-	if (!Irene->IreneState->IsDeathState()&&!bIsDialogOn) {
+	if (!Irene->IreneState->IsDeathState()&&!bIsDialogOn)
+	{
 		// 마우스 커서 숨기거나 보이게 하는 함수
 		if (Irene->WorldController->bShowMouseCursor == false)
 			Irene->WorldController->bShowMouseCursor = true;

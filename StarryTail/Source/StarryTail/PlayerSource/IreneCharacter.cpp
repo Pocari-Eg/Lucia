@@ -313,7 +313,7 @@ void AIreneCharacter::TargetReset()const
 void AIreneCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
@@ -647,7 +647,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
