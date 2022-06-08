@@ -51,11 +51,8 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 				Irene->IreneUIManager->PlayerHud->ExitPopUp();
 				if (GetScriptData(DalogIndex.Num())[0]->Type == 0)
 				{
-
 					if (Irene != nullptr)
 					{
-
-						Irene->SetIreneDialog();
 						if (Irene->IreneUIManager->PlayerHud->GetDialogState() == EDialogState::e_Disable) {
 							for (int i = 0; i < DalogIndex.Num(); i++)
 								Irene->IreneUIManager->PlayerHud->SetDialog(GetScriptData(DalogIndex.Num()));
@@ -63,6 +60,7 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 					}
 					//Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 					Irene->IreneUIManager->PlayerHud->PlayDialog();
+					Irene->SetIreneDialog();
 					TriggerOff();
 				}
 				else {
