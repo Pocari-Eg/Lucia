@@ -201,6 +201,8 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 
 void URunLoopState::Execute(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
 	if(CurState->PlayTime >= 3)
@@ -1275,7 +1277,7 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
-	
+
 	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
 	{
@@ -1304,6 +1306,7 @@ void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
+			STARRYLOG_S(Warning);
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
@@ -1668,7 +1671,7 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 	StartShakeTime = 0.0f;
-	
+
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
@@ -1717,12 +1720,16 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+			CurState->Irene->IreneInput->bUseRightButton = false;
 			if(CurState->Irene->Weapon->IsVisible())
 			{
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			//CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 		}
 	}
@@ -1730,7 +1737,6 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 
 void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
 {
-	STARRYLOG(Warning,TEXT("%s"),CurState->Irene->IreneInput->GetIsDialogOn()?TEXT("t"):TEXT("f"));
 	if(CurState->Irene->IreneInput->GetIsDialogOn())
 	{
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));

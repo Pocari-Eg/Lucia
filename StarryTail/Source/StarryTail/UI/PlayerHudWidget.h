@@ -66,6 +66,9 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayerHudOff();
 
+
+	/*UFUNCTION(BlueprintImplementableEvent)
+	void StageInfoPlay(FText StageTitle);*/
 	//다이얼로그
 	
 	EDialogState GetDialogState();

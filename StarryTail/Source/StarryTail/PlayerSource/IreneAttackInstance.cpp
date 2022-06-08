@@ -117,10 +117,12 @@ FName UIreneAttackInstance::GetActionAttackDataTableName()
 void UIreneAttackInstance::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
 {
 	// 몽타주가 완전히 끝남
-	Irene->IreneData.IsAttacking = false;
 	// 공격 후딜 중 스킬 사용 시 일반적인 종료와 특수 종료
 	if(UseSkillSkip == false)
+	{
+		Irene->IreneData.IsAttacking = false;
 		AttackEndComboState();
+	}
 	else
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(false);
