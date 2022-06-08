@@ -24,7 +24,18 @@ void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputCh
 
 			if (InputKey == currentkey)
 			{
+			
 				SameKeyName = CurrentActionMapping[i].ActionName;
+
+				if (SameKeyName == "Dodge")
+				{
+					
+					TArray<FInputAxisKeyMapping> Refresh;
+					UInputSettings::GetInputSettings()->GetAxisMappingByName("WaterDodge", Refresh);
+					UInputSettings::GetInputSettings()->RemoveAxisMapping(Refresh[0], false);
+					FInputAxisKeyMapping Rfreshkey("WaterDodge", NONE);
+					UInputSettings::GetInputSettings()->AddAxisMapping(Rfreshkey, false);
+				}
 				TArray<FInputActionKeyMapping> Refresh;
 				UInputSettings::GetInputSettings()->GetActionMappingByName(SameKeyName, Refresh);
 				UInputSettings::GetInputSettings()->RemoveActionMapping(Refresh[0], false);
@@ -41,13 +52,13 @@ void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputCh
 
 			if (InputKey.Key == currentkey.Key)
 			{
-				SameKeyName = CurrentAxisMapping[i].AxisName;
+				
+				SameKeyName = CurrentAxisMapping[i].AxisName;	
 				TArray<FInputAxisKeyMapping> Refresh;
 				UInputSettings::GetInputSettings()->GetAxisMappingByName(SameKeyName, Refresh);
 				UInputSettings::GetInputSettings()->RemoveAxisMapping(Refresh[0], false);
 				FInputAxisKeyMapping Rfreshkey(SameKeyName, NONE);
 				UInputSettings::GetInputSettings()->AddAxisMapping(Rfreshkey, false);
-
 
 			}
 		}
@@ -58,6 +69,15 @@ void UKeySetWidget::ChangeActionKey(const FName ActionName,  UPARAM(ref)FInputCh
 		FInputActionKeyMapping Newkey(ActionName, InputKey.Key, InputKey.bShift, InputKey.bCtrl, InputKey.bAlt, InputKey.bCmd);
 		UInputSettings::GetInputSettings()->AddActionMapping(Newkey, true);
 	
+		if (ActionName == "Dodge")
+		{
+			TArray<FInputAxisKeyMapping> AxisOutMap;
+			UInputSettings::GetInputSettings()->GetAxisMappingByName("WaterDodge", AxisOutMap);
+			UInputSettings::GetInputSettings()->RemoveAxisMapping(AxisOutMap[0], false);
+			FInputAxisKeyMapping AxisNewkey("WaterDodge", InputKey.Key);
+			UInputSettings::GetInputSettings()->AddAxisMapping(AxisNewkey, true);
+
+		}
 
 		UpdateActionKeyName();
 		UpdateAxisKeyName();
