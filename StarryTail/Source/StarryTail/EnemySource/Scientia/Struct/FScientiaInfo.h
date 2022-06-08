@@ -33,6 +33,14 @@ public:
 		float ThunderBarrier;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DropTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack1Value;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack2Value;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack3Value;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Attack4Value;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentAttribute;
