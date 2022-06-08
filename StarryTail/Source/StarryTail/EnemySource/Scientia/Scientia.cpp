@@ -41,7 +41,7 @@ void AScientia::InitMonsterInfo()
 	MonsterInfo.Code = 1;
 
 	MonsterInfo.MaxHp = 5000.0f;
-	MonsterInfo.Atk = 50.0f;
+	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.Def = 100.0f;
 
 	MonsterInfo.BattleWalkMoveSpeed = 400.0f;
@@ -214,13 +214,13 @@ void AScientia::Feather()
 
 	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	BaseFeather->SetMoveDir(BaseDir);
-	BaseFeather->SetDamage(MonsterInfo.Atk);
+	BaseFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	RightFeather->SetMoveDir(RightDir);
-	RightFeather->SetDamage(MonsterInfo.Atk);
+	RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
 	LeftFeather->SetMoveDir(LeftDir);
-	LeftFeather->SetDamage(MonsterInfo.Atk);
+	LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 }
 void AScientia::AddFeatherCount()
 {
@@ -561,7 +561,7 @@ void AScientia::SpawnPiece()
 		break;
 	}
 	ChassPiece->SetEffect();
-	ChassPiece->SetDamage(MonsterInfo.Atk * 2);
+	ChassPiece->SetDamage(MonsterInfo.Atk * ScInfo.Attack2Value);
 }
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -577,12 +577,12 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 
 				if (bIsSpark)
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
 					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 				}
 				else
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2), NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value), NULL, this, NULL);
 				}
 				bIsPlayerClawHit = true;
 			}
@@ -601,12 +601,12 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 
 				if (bIsSpark)
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
 					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 				}
 				else
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3), NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value), NULL, this, NULL);
 				}
 				bIsPlayerRushHit = true;
 			}
