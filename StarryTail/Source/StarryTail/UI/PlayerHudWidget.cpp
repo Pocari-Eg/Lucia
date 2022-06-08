@@ -164,6 +164,12 @@ EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 }
 
 
+void UPlayerHudWidget::StageNamePlay(FText Text)
+{
+	StageTitle = Text;
+StageNamePlayEvent();
+}
+
 EDialogState UPlayerHudWidget::GetDialogState()
 {
 	return DialogWidget->GetDialogState();

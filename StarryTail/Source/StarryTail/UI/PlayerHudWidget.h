@@ -67,8 +67,10 @@ public:
 	void PlayerHudOff();
 
 
-	/*UFUNCTION(BlueprintImplementableEvent)
-	void StageInfoPlay(FText StageTitle);*/
+	UFUNCTION(BlueprintImplementableEvent)
+	void StageNamePlayEvent();
+
+	void StageNamePlay(FText Text);
 	//다이얼로그
 	
 	EDialogState GetDialogState();
@@ -158,4 +160,8 @@ private:
 	int32 DialogNum;
 
 	float SPLimit;
+
+public:
+		UPROPERTY(BluePrintReadOnly)
+		FText StageTitle;
 };

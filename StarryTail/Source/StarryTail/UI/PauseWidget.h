@@ -31,7 +31,7 @@ private:
 public:
 
 	bool bIsEnableResume;
-	
+
 public:
 
 	UFUNCTION(BlueprintCallable)
@@ -47,7 +47,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SoundSetWidgetOn();
 	UFUNCTION(BlueprintCallable)
-	void ExitWidgetOn				();
+	void ExitWidgetOn();
 
 	void DisableButton();
 	void EnableButton();

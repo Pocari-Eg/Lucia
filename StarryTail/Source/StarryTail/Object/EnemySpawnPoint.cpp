@@ -40,19 +40,22 @@ void AEnemySpawnPoint::RandomSpawn()
 				
 
 				//새로운 몬스터 생성
-				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, FVector::ZeroVector, FRotator::ZeroRotator); 
-				NewMonster->SetActorLocation(SpawnLocation);
-				NewMonster->SetSpawnPos();
-				NewMonster->OnSpawnEffectEvent();
-				
-				//플레이어를 바라보도록
-				FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(NewMonster->GetLocation(),
-					UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
-				NewMonster->SetActorRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
-			
-				NewMonster->SetSpawnEnemy();
+				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, GetActorLocation(), FRotator::ZeroRotator); 
 
-				if (Instance != nullptr)Instance->AddEnemyCount(NewMonster->GetRank());
+				if (NewMonster != nullptr) {
+					NewMonster->SetActorLocation(SpawnLocation);
+					NewMonster->SetSpawnPos();
+					NewMonster->OnSpawnEffectEvent();
+
+					//플레이어를 바라보도록
+					FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(NewMonster->GetLocation(),
+						UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation());
+					NewMonster->SetActorRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+
+					NewMonster->SetSpawnEnemy();
+
+					if (Instance != nullptr)Instance->AddEnemyCount(NewMonster->GetRank());
+				}
 			}
 		}
 
