@@ -278,7 +278,9 @@ void AIreneCharacter::PostInitializeComponents()
 			{
 				IreneAttack->AttackStartComboState();
 				if (IreneInput->bUseLeftButton)
+				{
 					IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
+				}
 			}
 		});
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
@@ -650,7 +652,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
