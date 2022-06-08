@@ -124,13 +124,13 @@ void UIdleState::Enter(IBaseGameEntity* CurState)
 		{
 			CurState->Irene->Weapon->SetVisibility(false);
 			CurState->Irene->WeaponVisible(false);
-		}
+		}	
 	}
 }
 
 void UIdleState::Execute(IBaseGameEntity* CurState)
 {
-	
+
 }
 
 void UIdleState::Exit(IBaseGameEntity* CurState)
@@ -1684,11 +1684,6 @@ void USkillThunderStartState::Enter(IBaseGameEntity* CurState)
 
 void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 {
-	if(CurState->Irene->IreneInput->GetIsDialogOn())
-	{
-		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
-		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-	}
 	CurState->Irene->IreneInput->bUseRightButton = true;
 	// 후딜 이전까지의 시간
 	CurState->Irene->IreneInput->MoveAuto(0.35f);
@@ -1735,6 +1730,16 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 
 void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
 {
+	STARRYLOG(Warning,TEXT("%s"),CurState->Irene->IreneInput->GetIsDialogOn()?TEXT("t"):TEXT("f"));
+	if(CurState->Irene->IreneInput->GetIsDialogOn())
+	{
+		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+		CurState->Irene->IreneInput->bUseRightButton = false;
+	}	
 	CurState->ThrowState(USkillThunderEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
@@ -1764,7 +1769,7 @@ void USkillThunderEndState::Execute(IBaseGameEntity* CurState)
 }
 
 void USkillThunderEndState::Exit(IBaseGameEntity* CurState)
-{
+{	
 	//CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
 	//CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
 	CurState->Irene->GetMesh()->SetVisibility(true);
