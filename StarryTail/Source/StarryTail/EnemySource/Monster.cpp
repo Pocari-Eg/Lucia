@@ -619,6 +619,45 @@ void AMonster::Burn()
 	MonsterAttributeDebuff.ThunderDebuffStack = 0;
 
 	MonsterAttributeDebuff.BurnTimer = 0.0f;
+
+	switch (MonsterAttributeDebuff.FireDebuffStack)
+	{
+	case 1:
+		MonsterAttributeDebuff.BurnCycle = 0.55f;
+		MonsterAttributeDebuff.BurnTime = 3;
+		MonsterAttributeDebuff.BurnDamage = 1;
+		break;
+	case 2:
+		MonsterAttributeDebuff.BurnCycle = 0.5f;
+		MonsterAttributeDebuff.BurnTime = 3.5f;
+		MonsterAttributeDebuff.BurnDamage = 1.5f;
+		break;
+	case 3:
+		MonsterAttributeDebuff.BurnCycle = 0.45f;
+		MonsterAttributeDebuff.BurnTime = 4;
+		MonsterAttributeDebuff.BurnDamage = 2;
+		break;
+	case 4:
+		MonsterAttributeDebuff.BurnCycle = 0.4f;
+		MonsterAttributeDebuff.BurnTime = 5;
+		MonsterAttributeDebuff.BurnDamage = 3;
+		break;
+	case 5:
+		MonsterAttributeDebuff.BurnCycle = 0.35f;
+		MonsterAttributeDebuff.BurnTime = 6;
+		MonsterAttributeDebuff.BurnDamage = 4;
+		break;
+	case 6:
+		MonsterAttributeDebuff.BurnCycle = 0.3f;
+		MonsterAttributeDebuff.BurnTime = 7;
+		MonsterAttributeDebuff.BurnDamage = 5;
+		break;
+	default:
+		MonsterAttributeDebuff.BurnCycle = 0.5f;
+		MonsterAttributeDebuff.BurnTime = 3;
+		MonsterAttributeDebuff.BurnDamage = 1;
+		break;
+	}
 	bIsBurn = true;
 }
 void AMonster::Flooding()
@@ -636,13 +675,47 @@ void AMonster::Flooding()
 
 	MonsterAttributeDebuff.FloodingTimer = 0.0f;
 
+	float FloodingValue;
+
+	switch (MonsterAttributeDebuff.WaterDebuffStack)
+	{
+	case 1:
+		MonsterAttributeDebuff.FloodingTime = 3;
+		FloodingValue = 0.95f;
+		break;
+	case 2:
+		MonsterAttributeDebuff.FloodingTime = 3.5f;
+		FloodingValue = 0.90f;
+		break;
+	case 3:
+		MonsterAttributeDebuff.FloodingTime = 4;
+		FloodingValue = 0.85f;
+		break;
+	case 4:
+		MonsterAttributeDebuff.FloodingTime = 5;
+		FloodingValue = 0.80f;
+		break;
+	case 5:
+		MonsterAttributeDebuff.FloodingTime = 6;
+		FloodingValue = 0.75f;
+		break;
+	case 6:
+		MonsterAttributeDebuff.FloodingTime = 7;
+		FloodingValue = 0.7f;
+		break;
+	default:
+		MonsterAttributeDebuff.FloodingTime = 3;
+		FloodingValue = 0.95f;
+		break;
+	}
+
 	if (!bIsFlooding)
 	{
-		MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
-		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * MonsterAttributeDebuff.FloodingDebuffSpeedReductionValue;
+		MonsterInfo.MoveSpeed = MonsterInfo.MoveSpeed * FloodingValue;
+		MonsterInfo.BattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed * FloodingValue;
 
-		MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate / 2.0f);
-		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate / 2.0f);
+		MonsterAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate * FloodingValue);
+		MonsterAnimInstance->Montage_SetPlayRate(MonsterAnimInstance->GetCurrentActiveMontage(), MonsterInfo.DefaultAnimePlayRate * FloodingValue);
 	}
 	bIsFlooding = true;
 }
@@ -669,6 +742,45 @@ void AMonster::Spark()
 
 	MonsterAttributeDebuff.FireDebuffStack = 0;
 	MonsterAttributeDebuff.WaterDebuffStack = 0;
+
+	switch (MonsterAttributeDebuff.ThunderDebuffStack)
+	{
+	case 1:
+		MonsterAttributeDebuff.SparkTime = 5;
+		MonsterAttributeDebuff.SparkReduction = 60;
+		MonsterAttributeDebuff.SparkDamage = 50;
+		break;
+	case 2:
+		MonsterAttributeDebuff.SparkTime = 6;
+		MonsterAttributeDebuff.SparkReduction = 50;
+		MonsterAttributeDebuff.SparkDamage = 70;
+		break;
+	case 3:
+		MonsterAttributeDebuff.SparkTime = 7;
+		MonsterAttributeDebuff.SparkReduction = 40;
+		MonsterAttributeDebuff.SparkDamage = 100;
+		break;
+	case 4:
+		MonsterAttributeDebuff.SparkTime = 8;
+		MonsterAttributeDebuff.SparkReduction = 30;
+		MonsterAttributeDebuff.SparkDamage = 130;
+		break;
+	case 5:
+		MonsterAttributeDebuff.SparkTime = 9;
+		MonsterAttributeDebuff.SparkReduction = 20;
+		MonsterAttributeDebuff.SparkDamage = 150;
+		break;
+	case 6:
+		MonsterAttributeDebuff.SparkTime = 10;
+		MonsterAttributeDebuff.SparkReduction = 10;
+		MonsterAttributeDebuff.SparkDamage = 200;
+		break;
+	default:
+		MonsterAttributeDebuff.SparkTime = 0.5f;
+		MonsterAttributeDebuff.SparkReduction = 60;
+		MonsterAttributeDebuff.SparkDamage = 50;
+		break;
+	}
 
 	MonsterAttributeDebuff.SparkTimer = 0.0f;
 
