@@ -184,12 +184,12 @@ void ABouldelith::AttackCheck1()
 
 		if (bIsSpark)
 		{
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+			UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack1Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
 			CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 		}
 		else
 		{
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 		}
 	}
 	else
@@ -210,12 +210,12 @@ void ABouldelith::AttackCheck4()
 			{
 				if (bIsSpark)
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
 					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 				}
 				else
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 2), NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
 				}
 			}
 		}
@@ -319,12 +319,12 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (bIsSpark)
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
 					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
 				}
 				else
 				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * 3), NULL, this, NULL);
+					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
 				}
 				bIsPlayerRushHit = true;
 			}
@@ -339,7 +339,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (FindName == CompCollisionName)
 				{
-					CalcHp(MonsterInfo.Atk * 3);
+					CalcHp(MonsterInfo.Atk * BouldelithInfo.Attack3Value);
 					if (!bIsDead)
 					{
 						auto BdAIController = Cast<ABdAIController>(MonsterAIController);
