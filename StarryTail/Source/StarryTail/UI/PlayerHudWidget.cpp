@@ -163,6 +163,7 @@ EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 	return CurrentIrene->GetAttribute();
 }
 
+
 EDialogState UPlayerHudWidget::GetDialogState()
 {
 	return DialogWidget->GetDialogState();
