@@ -44,7 +44,7 @@ void AStageInfoTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 	STARRYLOG_S(Error);
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr) {
-		Irene->IreneUIManager->PlayerHud->StageInfoPlay(TitleText);
+		//Irene->IreneUIManager->PlayerHud->StageInfoPlay(TitleText);
 		TriggerOff();
 	}
 }
