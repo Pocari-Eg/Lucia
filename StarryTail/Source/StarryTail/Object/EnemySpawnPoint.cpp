@@ -35,12 +35,12 @@ void AEnemySpawnPoint::RandomSpawn()
 				FVector2D random = FMath::RandPointInCircle(Radius); 
 
 				//货肺款 谅钎 积己
-				FVector SpawnLocation = GetActorLocation() + FVector(random, 130.0f);
+				FVector SpawnLocation = GetActorLocation() + FVector(random, 100.0f);
 
 				
 
 				//货肺款 阁胶磐 积己
-				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, GetActorLocation(), FRotator::ZeroRotator); 
+				AMonster* NewMonster=GetWorld()->SpawnActor<AMonster>(SpawnWave[CurrentWave].Monster[Monster_Index].Type, FVector(9999,9999,9999), FRotator::ZeroRotator); 
 
 				if (NewMonster != nullptr) {
 					NewMonster->SetActorLocation(SpawnLocation);
