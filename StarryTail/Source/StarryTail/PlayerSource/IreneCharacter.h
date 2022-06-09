@@ -124,6 +124,9 @@ public:
 	void StartThunderDodge();
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndThunderDodge();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void LevelRestartEvent();
 #pragma endregion Setting
 	
 	// Called every frame
