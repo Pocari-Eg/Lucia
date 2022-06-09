@@ -553,18 +553,18 @@ void AIreneCharacter::PlayWaterEffect()
 	}
 	else
 	{
-		const FVector Location = GetActorLocation() + GetActorForwardVector() * 800;
+		const FVector Location = GetActorLocation() + GetActorForwardVector() * 800;		
 		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], Location);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], Location);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], Location);
 		}
 	}
 }
@@ -653,7 +653,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
