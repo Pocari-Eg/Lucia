@@ -182,6 +182,7 @@ void UPlayerHudWidget::SetDialogState(EDialogState NewState)
 
 void UPlayerHudWidget::Scientiabind(AScientia* CurrentScientia)
 {
+	CurrentIrene->RaidBattleEvent();
 	RMWidget->BindScientia(CurrentScientia);
 }
 

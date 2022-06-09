@@ -28,6 +28,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxBattleCameraZPosition = 700;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxRaidCameraZPosition = 1200;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BattleCameraZPosition = 700;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)

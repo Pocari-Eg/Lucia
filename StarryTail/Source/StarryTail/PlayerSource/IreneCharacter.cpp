@@ -815,6 +815,15 @@ void AIreneCharacter::SetIreneDialog()
 {
 	ChangeStateAndLog(UIdleState::GetInstance());
 }
+void AIreneCharacter::SetBattleCamera()
+{
+	IreneData.BattleCameraZPosition = IreneData.MaxBattleCameraZPosition;
+}
+void AIreneCharacter::SetRaidBattleCamera()
+{
+	IreneData.BattleCameraZPosition = IreneData.MaxRaidCameraZPosition;
+}
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
