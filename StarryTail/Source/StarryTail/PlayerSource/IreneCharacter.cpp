@@ -617,6 +617,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			if (IreneData.CurrentHP <= 0)
 			{
 				ChangeStateAndLog(UDeathState::GetInstance());
+				LevelRestartEvent();
 			}
 			else
 			{
