@@ -124,7 +124,7 @@ void UIdleState::Enter(IBaseGameEntity* CurState)
 		{
 			CurState->Irene->Weapon->SetVisibility(false);
 			CurState->Irene->WeaponVisible(false);
-		}	
+		}
 	}
 }
 
@@ -514,26 +514,31 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-	CurState->Irene->GetMesh()->SetVisibility(false);
-	CurState->Irene->Weapon->SetVisibility(false);
 }
 
 void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveForward();
-	CurState->Irene->IreneInput->MoveRight();
-	CurState->Irene->UseWaterDodge();
-	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
-	if (CurState->Irene->GetMovementComponent()->IsFalling())
+	if(CurState->Irene->GetMesh()->IsVisible() && CurState->PlayTime > 0.22f)
 	{
-		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
-		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+		CurState->Irene->GetMesh()->SetVisibility(false);
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
+	if(CurState->PlayTime > 0.22f)
+	{
+		CurState->Irene->IreneInput->MoveForward();
+		CurState->Irene->IreneInput->MoveRight();
+		CurState->Irene->UseWaterDodge();
+		// 대쉬 도중 떨어지면 점프 상태로 강제 변화
+		if (CurState->Irene->GetMovementComponent()->IsFalling())
+		{
+			CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
+			CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+		}
 	}
 }
-
 void UDodgeWaterStartState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->ThrowState(UDodgeWaterEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeWaterStartState
@@ -552,20 +557,27 @@ void UDodgeWaterEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_W_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	if(!CurState->Irene->GetMesh()->IsVisible())
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 {
 	if(!CurState->Irene->IreneInput->GetIsDialogOn())
 	{
-		CurState->Irene->ActionEndChangeMoveState();
-		if(CurState->Irene->IreneState->IsRunState())
-			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		if(CurState->PlayTime > 0.47f)
+		{
+			CurState->Irene->ActionEndChangeMoveState();
+		}
 	}
 	else
 	{
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
-	}
+	}	
 }
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
@@ -702,6 +714,7 @@ void UJumpStartState::Execute(IBaseGameEntity* CurState)
 
 void UJumpStartState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UJumpStartState
@@ -765,6 +778,7 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 
 void UJumpLoopState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
 	CurState->bIsEnd = true;
 }
 #pragma endregion UJumpLoopState
@@ -802,6 +816,7 @@ void UJumpEndState::Execute(IBaseGameEntity* CurState)
 
 void UJumpEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
 	CurState->Irene->IreneInput->SetJumpingTime(0);
 	CurState->Irene->IreneInput->SetStartJump(false);
 	CurState->Irene->IreneInput->SetFallingRoll(false);

@@ -123,7 +123,7 @@ public:
 	// 기타 변수들
 	// SP회복 속도
 	UPROPERTY()
-	float Recovery_Speed = 5.0f;
+	float Recovery_Speed = 7.5f;
 	// SP감소 속도
 	UPROPERTY()
 	float Decrease_Speed = 50.0f;

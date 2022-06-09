@@ -510,6 +510,10 @@ void UIreneInputInstance::ElectricKeywordReleased()
 }
 void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 {
+	if(Irene->Weapon->IsVisible())
+	{
+		Irene->WeaponVisible(false);
+	}
 	// 속성을 변화시키고 그에 따른 UI와 사운드 적용
 	Irene->IreneAttack->SetAttribute(Value);
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
