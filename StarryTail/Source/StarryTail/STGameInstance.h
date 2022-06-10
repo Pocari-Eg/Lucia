@@ -50,6 +50,11 @@ public:
 
 	FSoundSetting* GetSoundSetting();
 
+
+	void SetLocation(FVector Location) {CurrnetLoaction = Location;}
+
+	UFUNCTION(BluePrintCallable)
+	FVector GetCurrnetLocation() { return CurrnetLoaction; }
 protected:
 	virtual void Init()override;
 
@@ -66,6 +71,7 @@ private:
 	UPROPERTY()
 	FSoundSetting SoundSettingData;
 
+	FVector CurrnetLoaction;
 
 #pragma region MonsterSpawn
 

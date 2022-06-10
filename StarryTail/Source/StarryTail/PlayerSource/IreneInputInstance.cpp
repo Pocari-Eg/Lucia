@@ -350,6 +350,7 @@ void UIreneInputInstance::RightButtonPressed()
 	bRightButtonPressed = true;
 	if (CanAttackState() && !bUseLeftButton && !bIsDialogOn)
 	{
+		Irene->STGameInstance->SetLocation(Irene->GetActorLocation());
 		IsCharging = true;
 		ChargingTime = 0.0f;		
 
