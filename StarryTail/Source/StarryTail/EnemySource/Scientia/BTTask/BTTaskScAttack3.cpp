@@ -35,8 +35,12 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	Scientia->TurnEnd.Clear();
 	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
 		{
-			bIsTurn = false;
 			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+			bIsTurn = false;
+		});
+	Scientia->RushStart.AddLambda([this, Player, Scientia]() -> void {
+			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+			bIsRush = true;
 		});
 	
 	return EBTNodeResult::InProgress;
@@ -63,6 +67,9 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		return;
 	}
 
+	if (!bIsRush)
+		return;
+
 	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * 300);
 	
 	if (NavData)
@@ -81,5 +88,6 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		bIsTurn = true;
 
 		Scientia->Turn();
+		bIsRush = false;
 	}
 }

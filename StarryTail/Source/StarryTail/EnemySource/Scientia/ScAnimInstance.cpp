@@ -15,9 +15,13 @@ void UScAnimInstance::PlayFeatherMMontage()
 {
 	Montage_Play(FeatherMontageM);
 }
-void UScAnimInstance::PlayClawFMontage()
+void UScAnimInstance::PlayFeatherPreMontage()
 {
-	Montage_Play(ClawFMontage);
+	Montage_Play(FeatherMontagePre);
+}
+void UScAnimInstance::PlayClawMontage()
+{
+	Montage_Play(ClawMontage);
 }
 void UScAnimInstance::PlayRushMontage()
 {
@@ -80,9 +84,21 @@ void UScAnimInstance::AnimNotify_Attack1End()
 {
 	Attack1End.Broadcast();
 }
-void UScAnimInstance::AnimNotify_Attack2End()
+void UScAnimInstance::AnimNotify_ClawPreStart()
 {
-	Attack2End.Broadcast();
+	ClawPreStart.Broadcast();
+}
+void UScAnimInstance::AnimNotify_ClawPreEnd()
+{
+	ClawPreEnd.Broadcast();
+}
+void UScAnimInstance::AnimNotify_ClawFEnd()
+{
+	ClawFEnd.Broadcast();
+}
+void UScAnimInstance::AnimNotify_ClawBEnd()
+{
+	ClawBEnd.Broadcast();
 }
 void UScAnimInstance::AnimNotify_TurnEnd()
 {

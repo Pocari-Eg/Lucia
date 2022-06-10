@@ -22,9 +22,10 @@ EBTNodeResult::Type UBTTaskScAttack1::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	bIsAttacking = true;
 
-	WaitTime = 1.4f;
+	WaitTime = 2.6f;
 	WaitTimer = 0.0f;
 
+	Scientia->AddFeatherEnd.AddLambda([this, Scientia]() -> void { Scientia->PlayFeatherPreAnim(); });
 	Scientia->Attack1End.AddLambda([this]() -> void { bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;
@@ -42,6 +43,7 @@ void UBTTaskScAttack1::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		if (WaitTimer >= WaitTime)
 		{
 			Scientia->Attack1();
+			WaitTime = 4.2f;
 			WaitTimer = 0.0f;
 		}
 		if (!bIsAttacking)
