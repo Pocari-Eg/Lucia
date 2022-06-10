@@ -224,6 +224,7 @@ void AScientia::Feather()
 }
 void AScientia::AddFeatherCount()
 {
+	AddFeatherEnd.Broadcast();
 	ScInfo.FeatherCount++;
 }
 void AScientia::ResetFeatherCount()
@@ -234,7 +235,7 @@ void AScientia::ResetFeatherCount()
 #pragma region Attack2
 void AScientia::Attack2()
 {
-	ScAnimInstance->PlayClawFMontage();
+	ScAnimInstance->PlayClawMontage();
 }
 void AScientia::ResetClawSuccessedCount()
 {
@@ -489,6 +490,10 @@ void AScientia::PlayStuckAnim()
 {
 	ScAnimInstance->PlayStuckMontage();
 }
+void AScientia::PlayFeatherPreAnim()
+{
+	ScAnimInstance->PlayFeatherPreMontage();
+}
 bool AScientia::ScAttributeIsPlayerAttributeCounter()
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -684,10 +689,19 @@ void AScientia::BeginPlay()
 	ScAnimInstance->Attack1End.AddLambda([this]() -> void {
 		Attack1End.Broadcast();
 		});
-	ScAnimInstance->Attack2End.AddLambda([this]() -> void {
-		Attack2End.Broadcast();
+	ScAnimInstance->ClawPreStart.AddLambda([this]() -> void {
+		ClawPreStart.Broadcast();
+		});
+	ScAnimInstance->ClawPreEnd.AddLambda([this]() -> void {
+		ClawPreEnd.Broadcast();
+		});
+	ScAnimInstance->ClawFEnd.AddLambda([this]() -> void {
+		ClawFEnd.Broadcast();
 		bIsClaw = false;
 		bIsPlayerClawHit = false;
+		});
+	ScAnimInstance->ClawBEnd.AddLambda([this]() -> void {
+		ClawBEnd.Broadcast();
 		});
 	ScAnimInstance->DropEnd.AddLambda([this]() -> void {
 		DropEnd.Broadcast();
@@ -700,6 +714,7 @@ void AScientia::BeginPlay()
 		bIsRush = true;
 		GetMovementComponent()->Velocity = FVector(5000, 5000, 0);
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECollisionResponse::ECR_Block);
+		RushStart.Broadcast();
 		});
 	ScAnimInstance->TurnEnd.AddLambda([this]() -> void {
 		TurnEnd.Broadcast();

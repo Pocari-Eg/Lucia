@@ -150,7 +150,7 @@ void UIreneAttackInstance::AttackEndComboState()
 	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = 0;
-	if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsJumpState() && !Irene->IreneState->IsChargeState())
+	if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsJumpState() && !Irene->IreneState->IsChargeState() && !Irene->IreneState->IsIdleState())
 	{
 		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		//Irene->ActionEndChangeMoveState();

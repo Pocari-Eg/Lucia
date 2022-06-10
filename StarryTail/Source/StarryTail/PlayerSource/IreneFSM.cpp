@@ -514,6 +514,11 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	if(CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(false);
+		CurState->Irene->WeaponVisible(false);
+	}
 }
 
 void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
@@ -521,8 +526,6 @@ void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 	if(CurState->Irene->GetMesh()->IsVisible() && CurState->PlayTime > 0.22f)
 	{
 		CurState->Irene->GetMesh()->SetVisibility(false);
-		CurState->Irene->Weapon->SetVisibility(false);
-		CurState->Irene->WeaponVisible(false);
 	}
 	if(CurState->PlayTime > 0.22f)
 	{
@@ -557,12 +560,7 @@ void UDodgeWaterEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_W_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	if(!CurState->Irene->GetMesh()->IsVisible())
-	{
-		CurState->Irene->GetMesh()->SetVisibility(true);
-		CurState->Irene->Weapon->SetVisibility(true);
-		CurState->Irene->WeaponVisible(true);
-	}
+	CurState->Irene->GetMesh()->SetVisibility(true);
 }
 
 void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
@@ -582,6 +580,8 @@ void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneInput->bUseLeftButton = false;
+	CurState->Irene->IreneInput->bUseRightButton = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetMesh()->SetVisibility(true);
@@ -612,6 +612,11 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
 	CurState->Irene->StartThunderDodge();
+
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -847,7 +852,8 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	//CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	//CurState->Irene->IreneAttack->SetUseAttackSkip(false);
 	if(!CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(true);
@@ -858,10 +864,17 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
+	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+
 	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_F")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop1"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -931,6 +944,11 @@ void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop2"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1007,8 +1025,13 @@ void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
 
 	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
 	{
-		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
+		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->ChangeStateAndLog(UBasicAttack1FireState::GetInstance());
+		CurState->Irene->IreneData.CurrentCombo = 0;
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("Attack1"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
+		CurState->Irene->IreneData.IsAttacking = true;
 	}
 	
 	if(CurState->Irene->IreneInput->GetFireSkillOn() && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
@@ -1074,11 +1097,17 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
-	
+	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+
 	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop1"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1149,6 +1178,11 @@ void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+	
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop2"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1225,8 +1259,13 @@ void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
 
 	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
 	{
-		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
+		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->ChangeStateAndLog(UBasicAttack1WaterState::GetInstance());
+		CurState->Irene->IreneData.CurrentCombo = 0;
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("Attack1"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
+		CurState->Irene->IreneData.IsAttacking = true;
 	}
 
 	if(CurState->Irene->IreneInput->GetWaterSkillOn() && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
@@ -1292,11 +1331,17 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
-
+	//CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+	
 	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop1"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1366,6 +1411,11 @@ void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 	&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")) != 0)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
+	}
+
+	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop2"))
+	{
+		CurState->Irene->IreneData.CanNextCombo = false;
 	}
 	
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1440,8 +1490,13 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 
 	if(CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
 	{
-		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
+		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->ChangeStateAndLog(UBasicAttack1ThunderState::GetInstance());
+		CurState->Irene->IreneData.CurrentCombo = 0;
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("Attack1"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
+		CurState->Irene->IreneData.IsAttacking = true;
 	}
 
 	if(CurState->Irene->IreneInput->GetThunderSkillCount() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
@@ -1601,6 +1656,7 @@ void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
 	
 	if(CurState->PlayTime >= 2.26f)
 	{
+		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->IreneAttack->SetUseSkillSkip(false);
 	}
 	if(CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -1757,6 +1813,7 @@ void USkillThunderStartState::Exit(IBaseGameEntity* CurState)
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
+		CurState->Irene->IreneAttack->SetFollowTarget(false);
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
 		CurState->Irene->IreneInput->bUseRightButton = false;
