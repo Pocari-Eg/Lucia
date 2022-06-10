@@ -274,7 +274,6 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
-			IreneData.CanNextCombo = false;
 			if (IreneData.IsComboInputOn)
 			{
 				IreneAttack->AttackStartComboState();

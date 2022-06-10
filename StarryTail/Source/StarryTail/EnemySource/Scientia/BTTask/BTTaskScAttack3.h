@@ -32,6 +32,7 @@ private:
 
 	bool bCanMove;
 	bool bIsTurn;
+	bool bIsRush;
 
 	float RushTimer;
 	float TurnCoolTimer;

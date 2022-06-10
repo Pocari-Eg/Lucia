@@ -16,9 +16,11 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
 
 	AttackCount = 0;
 
+	Scientia->Attack2();
 	Scientia->SetState(TEXT("Attack2"));
 
 	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
@@ -27,18 +29,29 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 
-	Scientia->Attack2End.Clear();
+	Scientia->ClawFEnd.Clear();
 	Scientia->ClawStart.AddLambda([this]() -> void
 		{
 			bIsMove = true;
 		});
-	Scientia->Attack2End.AddLambda([this]() -> void
-		{
-			bIsAttacking = false;
+	Scientia->ClawPreStart.AddLambda([this]() -> void {
+			bIsClawPre = true;
+			STARRYLOG(Log, TEXT("1"));
+		});
+	Scientia->ClawFEnd.AddLambda([this]() -> void {
 			bIsMove = false;
 			AttackCount++;
 		});
-
+	Scientia->ClawBEnd.AddLambda([this, Scientia]() -> void {
+			bIsAttacking = false;
+			Scientia->Attack2();
+		});
+	Scientia->ClawPreEnd.AddLambda([this, Player, Scientia]() -> void {
+			bIsClawPre = false;
+			bIsAttacking = true;
+		});
+	
+	
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskScAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -46,35 +59,26 @@ void UBTTaskScAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
+	if (AttackCount == 3)
+	{
+		if (Scientia->GetClawSuccessedCount() == 0)
+		{
+			Scientia->PlayStuckAnim();
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsStuckKey, true);
+			Scientia->SetState(TEXT("Stuck"));
+		}
 
-	if (!bIsAttacking)
+		Scientia->ResetClawSuccessedCount();
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack2Key, false);
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		return;
+	}
+	if(bIsClawPre)
 	{
 		auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
 
-		if (AttackCount == 3)
-		{
-			if (Scientia->GetClawSuccessedCount() == 0)
-			{
-				Scientia->PlayStuckAnim();
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsStuckKey, true);
-				Scientia->SetState(TEXT("Stuck"));
-			}
-
-			Scientia->ResetClawSuccessedCount();
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttackingKey, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsAttack2Key, false);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
-		}
-
 		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
-
-		Scientia->Attack2();
-
-		bIsAttacking = true;
-	}
-	else
-	{
 		FVector LookVector = MoveDir;
 		LookVector.Z = 0.0f;
 		FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
