@@ -15,11 +15,17 @@
  */
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FClawStartDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawPreStartDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawPreEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawFEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawBEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FCrushedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDropEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FAddFeatherEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnChangeFireBarrier);
 DECLARE_MULTICAST_DELEGATE(FOnChangeWaterBarrier);
@@ -49,6 +55,7 @@ public:
 
 	void ResetClawSuccessedCount();
 	void PlayStuckAnim();
+	void PlayFeatherPreAnim();
 
 	void RushEnd();
 	void Turn();
@@ -90,8 +97,13 @@ public:
 	FScientiaInfo GetScInfo();
 
 	//Var
+	FAddFeatherEndDelegate AddFeatherEnd;
 	FAttackEndDelegate Attack1End;
-	FAttackEndDelegate Attack2End;
+	FClawPreStartDelegate ClawPreStart;
+	FClawPreEndDelegate ClawPreEnd;
+	FClawFEndDelegate ClawFEnd;
+	FClawBEndDelegate ClawBEnd;
+	FRushStartDelegate RushStart;
 	FClawStartDelegate ClawStart;
 	FTurnEndDelegate TurnEnd;
 	FChangeEndDelegate ChangeEnd;

@@ -31,6 +31,7 @@ private:
 	bool bIsAttacking;
 	bool bIsMove;
 	bool bCanMove;
+	bool bIsClawPre;
 
 	FVector MoveDir;
 	FVector NewLocation;
