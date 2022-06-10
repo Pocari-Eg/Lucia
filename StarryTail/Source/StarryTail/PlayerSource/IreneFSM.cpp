@@ -612,6 +612,11 @@ void UDodgeThunderStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
 	CurState->Irene->StartThunderDodge();
+
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
 }
 
 void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
@@ -1326,8 +1331,8 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
-	CurState->Irene->IreneAttack->SetUseSkillSkip(false);
-
+	//CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+	
 	if(CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_T")) != 0)
 	{
