@@ -28,6 +28,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxBattleCameraZPosition = 700;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxRaidCameraZPosition = 1200;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float BattleCameraZPosition = 700;
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
@@ -123,7 +128,7 @@ public:
 	// 기타 변수들
 	// SP회복 속도
 	UPROPERTY()
-	float Recovery_Speed = 5.0f;
+	float Recovery_Speed = 7.5f;
 	// SP감소 속도
 	UPROPERTY()
 	float Decrease_Speed = 50.0f;

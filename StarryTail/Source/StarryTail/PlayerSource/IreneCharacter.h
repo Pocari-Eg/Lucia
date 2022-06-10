@@ -124,6 +124,9 @@ public:
 	void StartThunderDodge();
 	UFUNCTION(BlueprintImplementableEvent)
 	void EndThunderDodge();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void LevelRestartEvent();
 #pragma endregion Setting
 	
 	// Called every frame
@@ -170,6 +173,8 @@ public:
 	void CameraOutEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void CameraInEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void RaidBattleEvent();
 
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
@@ -205,6 +210,11 @@ public:
 	void InitComplete();
 
 	void SetIreneDialog();
+
+	UFUNCTION(BluePrintCallable)
+	void SetBattleCamera();
+	UFUNCTION(BluePrintCallable)
+	void SetRaidBattleCamera();
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();

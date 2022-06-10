@@ -29,6 +29,21 @@ AIreneCharacter::AIreneCharacter()
 	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 콜라이더 설정
+	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
+
+	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
+	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
+	SpringArmComp->bEnableCameraLag = true;
+	SpringArmComp->SetRelativeLocation(FVector(0, 0, 53));
+	SpringArmComp->CameraLagSpeed = 0.0f;
+	SpringArmComp->SetupAttachment(GetCapsuleComponent());
+
+	// 카메라 설정
+	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
+	CameraComp->SetupAttachment(SpringArmComp);
+	CameraComp->FieldOfView = IreneData.FieldOfView;
+
 	// 스켈레톤 메쉬 설정
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
@@ -80,7 +95,6 @@ AIreneCharacter::AIreneCharacter()
 			//SpringArmComp->CameraLagSpeed = 0.0f;
 			//SpringArmComp->SetupAttachment(GetMesh(), CameraSocket);
 		//}
-
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
@@ -166,20 +180,7 @@ AIreneCharacter::AIreneCharacter()
 		WaterParticle.Add(Pe_Water3.Object);
 	}
 	
-	// 콜라이더 설정
-	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
-
-	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
-	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
-	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->SetRelativeLocation(FVector(0, 0, 53));
-	SpringArmComp->CameraLagSpeed = 0.0f;
-	SpringArmComp->SetupAttachment(GetCapsuleComponent());
-
-	// 카메라 설정
-	CameraComp = CreateDefaultSubobject<UCameraComponent>(TEXT("MainCamera"));
-	CameraComp->SetupAttachment(SpringArmComp);
-	CameraComp->FieldOfView = IreneData.FieldOfView;
+	
 
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
 	bUseControllerRotationYaw = false;
@@ -273,7 +274,6 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
-			IreneData.CanNextCombo = false;
 			if (IreneData.IsComboInputOn)
 			{
 				IreneAttack->AttackStartComboState();
@@ -553,18 +553,18 @@ void AIreneCharacter::PlayWaterEffect()
 	}
 	else
 	{
-		const FVector Location = GetActorLocation() + GetActorForwardVector() * 800;
+		const FVector Location = GetActorLocation() + GetActorForwardVector() * 800;		
 		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], Location);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], Location);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2],Location);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], Location);
 		}
 	}
 }
@@ -617,6 +617,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			if (IreneData.CurrentHP <= 0)
 			{
 				ChangeStateAndLog(UDeathState::GetInstance());
+				LevelRestartEvent();
 			}
 			else
 			{
@@ -652,7 +653,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
@@ -814,6 +815,15 @@ void AIreneCharacter::SetIreneDialog()
 {
 	ChangeStateAndLog(UIdleState::GetInstance());
 }
+void AIreneCharacter::SetBattleCamera()
+{
+	IreneData.BattleCameraZPosition = IreneData.MaxBattleCameraZPosition;
+}
+void AIreneCharacter::SetRaidBattleCamera()
+{
+	IreneData.BattleCameraZPosition = IreneData.MaxRaidCameraZPosition;
+}
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();

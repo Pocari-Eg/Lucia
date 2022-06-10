@@ -131,9 +131,6 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
 		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
-		//STARRYLOG(Warning,TEXT("%f   %f   %f"), Irene->IreneAttack->GetPlayerPosVec().X,Irene->IreneAttack->GetPlayerPosVec().Y,Irene->IreneAttack->GetPlayerPosVec().Z);
-		//STARRYLOG(Warning,TEXT("%f   %f   %f"), Irene->IreneAttack->GetTargetPosVec().X,Irene->IreneAttack->GetTargetPosVec().Y,Irene->IreneAttack->GetTargetPosVec().Z);
-		//STARRYLOG(Error,TEXT("%f   %f   %f"), Target.X,Target.Y,Target.Z);
 
 		if(FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50)
 		{
@@ -276,10 +273,10 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if (CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn)
+	if ((CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn) || Rate >= 2.0)
 	{
 		if (Rate >= 1.0)
-		{
+		{			
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
@@ -306,9 +303,12 @@ void UIreneInputInstance::LeftButton(float Rate)
 				}
 				else
 				{
-					// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
-					Irene->IreneData.CurrentCombo += 1;
-					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+					if(Irene->IreneData.CurrentCombo < 3)
+					{
+						// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
+						Irene->IreneData.CurrentCombo += 1;
+						Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+					}
 				}
 			}
 			else
@@ -474,7 +474,7 @@ void UIreneInputInstance::MouseWheel(float Rate)
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
 		Irene->STGameInstance->GetPlayerBattleState() == true ?
-			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxBattleCameraZPosition):
+			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.BattleCameraZPosition) :
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
 	}
 }
@@ -510,6 +510,10 @@ void UIreneInputInstance::ElectricKeywordReleased()
 }
 void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 {
+	if(Irene->Weapon->IsVisible())
+	{
+		Irene->WeaponVisible(false);
+	}
 	// 속성을 변화시키고 그에 따른 UI와 사운드 적용
 	Irene->IreneAttack->SetAttribute(Value);
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
@@ -613,9 +617,9 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsJumpState() &&
 		((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
-		Irene->IreneAnim->StopAllMontages(0.01f);
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
 		{
+			Irene->IreneAnim->StopAllMontages(0.01f);
 			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
 		}
