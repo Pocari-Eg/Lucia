@@ -13,6 +13,10 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAddFeatherDelegate);
 DECLARE_MULTICAST_DELEGATE(FFeatherAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FClawStartDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawPreStartDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawPreEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawFEndDelegate);
+DECLARE_MULTICAST_DELEGATE(FClawBEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
 DECLARE_MULTICAST_DELEGATE(FTurnEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FChangeDelegate);
@@ -29,7 +33,8 @@ public:
 	void PlayFeatherRMontage();
 	void PlayFeatherLMontage();
 	void PlayFeatherMMontage();
-	void PlayClawFMontage();
+	void PlayFeatherPreMontage();
+	void PlayClawMontage();
 	void PlayTurnMontage();
 	void PlayRushMontage();
 	void PlayStuckMontage();
@@ -47,6 +52,10 @@ public:
 	FAddFeatherDelegate AddFeather;
 	FFeatherAttackDelegate Feather;
 	FClawStartDelegate ClawStart;
+	FClawPreStartDelegate ClawPreStart;
+	FClawPreEndDelegate ClawPreEnd;
+	FClawFEndDelegate ClawFEnd;
+	FClawBEndDelegate ClawBEnd;
 	FRushStartDelegate RushStart;
 	FTurnEndDelegate TurnEnd;
 	FChangeDelegate Change;
@@ -66,7 +75,13 @@ private:
 	UFUNCTION()
 		void AnimNotify_Attack1End();
 	UFUNCTION()
-		void AnimNotify_Attack2End();
+		void AnimNotify_ClawPreStart();
+	UFUNCTION()
+		void AnimNotify_ClawPreEnd();
+	UFUNCTION()
+		void AnimNotify_ClawFEnd();
+	UFUNCTION()
+		void AnimNotify_ClawBEnd();
 	UFUNCTION()
 		void AnimNotify_TurnEnd();
 	UFUNCTION()
@@ -86,8 +101,10 @@ private:
 		UAnimMontage* FeatherMontageL;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* FeatherMontageM;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* FeatherMontagePre;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ClawAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* ClawFMontage;
+		UAnimMontage* ClawMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RushAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* RushMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = StuckAnimation, Meta = (AllowPrivateAccess = true))
