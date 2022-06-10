@@ -20,6 +20,7 @@ private:
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	bool bIsAttacking;
+	bool bIsPre;
 
 	float WaitTimer;
 	float WaitTime;
