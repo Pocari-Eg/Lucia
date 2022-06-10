@@ -33,13 +33,11 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	TurnCoolTimer = 1;
 
 	Scientia->TurnEnd.Clear();
-	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
+	Scientia->TurnEnd.AddLambda([this]() -> void
 		{
-			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 			bIsTurn = false;
 		});
-	Scientia->RushStart.AddLambda([this, Player, Scientia]() -> void {
-			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+	Scientia->RushStart.AddLambda([this]() -> void {
 			bIsRush = true;
 		});
 	
@@ -67,8 +65,16 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		return;
 	}
 
-	if (!bIsRush)
+	if (!bIsRush && !bIsTurn)
+	{
+		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+		FVector LookVector = MoveDir;
+		LookVector.Z = 0.0f;
+		FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+
+		Scientia->SetActorRotation(FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 		return;
+	}
 
 	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * 300);
 	

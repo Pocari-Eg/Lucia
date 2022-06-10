@@ -25,7 +25,10 @@ EBTNodeResult::Type UBTTaskScAttack1::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	WaitTime = 2.6f;
 	WaitTimer = 0.0f;
 
-	Scientia->AddFeatherEnd.AddLambda([this, Scientia]() -> void { Scientia->PlayFeatherPreAnim(); });
+	Scientia->AddFeatherEnd.AddLambda([this, Scientia]() -> void { 
+			Scientia->PlayFeatherPreAnim(); 
+			bIsPre = true;
+		});
 	Scientia->Attack1End.AddLambda([this]() -> void { bIsAttacking = false; });
 
 	return EBTNodeResult::InProgress;
@@ -43,8 +46,19 @@ void UBTTaskScAttack1::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		if (WaitTimer >= WaitTime)
 		{
 			Scientia->Attack1();
+			bIsPre = false;
 			WaitTime = 4.2f;
 			WaitTimer = 0.0f;
+		}
+		if (bIsPre)
+		{
+			auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
+
+			FVector LookVector = Player->GetActorLocation() - Scientia->GetLocation();
+			LookVector.Z = 0.0f;
+			FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+
+			Scientia->SetActorRotation(FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 		}
 		if (!bIsAttacking)
 		{
