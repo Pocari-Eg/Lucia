@@ -170,4 +170,7 @@ private:
 public:
 		UPROPERTY(BluePrintReadOnly)
 		FText StageTitle;
+
+		UPROPERTY(BluePrintReadOnly)
+		bool bIsFirstLevel;
 };
