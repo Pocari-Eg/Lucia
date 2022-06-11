@@ -837,6 +837,11 @@ void AIreneCharacter::SetRaidBattleCamera()
 	IreneData.BattleCameraZPosition = IreneData.MaxRaidCameraZPosition;
 }
 
+void AIreneCharacter::SetFirstLevel(bool isFirst)
+{
+	IreneUIManager->PlayerHud->bIsFirstLevel = isFirst;
+}
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();

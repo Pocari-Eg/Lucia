@@ -494,6 +494,10 @@ void AScientia::PlayFeatherPreAnim()
 {
 	ScAnimInstance->PlayFeatherPreMontage();
 }
+void AScientia::PlayClawPreAnim()
+{
+	ScAnimInstance->PlayClawPreMontage();
+}
 bool AScientia::ScAttributeIsPlayerAttributeCounter()
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());

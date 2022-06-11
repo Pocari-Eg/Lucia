@@ -215,6 +215,8 @@ public:
 	void SetBattleCamera();
 	UFUNCTION(BluePrintCallable)
 	void SetRaidBattleCamera();
+	UFUNCTION(BluePrintCallable)
+	void SetFirstLevel(bool isFirst);
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();

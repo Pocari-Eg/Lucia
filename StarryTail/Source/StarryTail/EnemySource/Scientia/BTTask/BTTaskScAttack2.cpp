@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	AttackCount = 0;
 
-	Scientia->Attack2();
+	Scientia->PlayClawPreAnim();
 	Scientia->SetState(TEXT("Attack2"));
 
 	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
@@ -36,19 +36,20 @@ EBTNodeResult::Type UBTTaskScAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		});
 	Scientia->ClawPreStart.AddLambda([this]() -> void {
 			bIsClawPre = true;
-			STARRYLOG(Log, TEXT("1"));
 		});
 	Scientia->ClawFEnd.AddLambda([this]() -> void {
 			bIsMove = false;
 			AttackCount++;
 		});
-	Scientia->ClawBEnd.AddLambda([this, Scientia]() -> void {
+	Scientia->ClawBEnd.AddLambda([this, Scientia, Player]() -> void {
 			bIsAttacking = false;
 			Scientia->Attack2();
+			Scientia->RotationToPlayerDirection();
 		});
 	Scientia->ClawPreEnd.AddLambda([this, Player, Scientia]() -> void {
 			bIsClawPre = false;
 			bIsAttacking = true;
+			Scientia->Attack2();
 		});
 	
 	

@@ -35,6 +35,7 @@ public:
 	void PlayFeatherMMontage();
 	void PlayFeatherPreMontage();
 	void PlayClawMontage();
+	void PlayClawPreMontage();
 	void PlayTurnMontage();
 	void PlayRushMontage();
 	void PlayStuckMontage();
@@ -105,6 +106,8 @@ private:
 		UAnimMontage* FeatherMontagePre;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ClawAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* ClawMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ClawAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* ClawPreMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RushAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* RushMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = StuckAnimation, Meta = (AllowPrivateAccess = true))
