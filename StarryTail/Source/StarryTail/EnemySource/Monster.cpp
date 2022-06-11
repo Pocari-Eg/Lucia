@@ -804,10 +804,10 @@ void AMonster::SetDebuff(EAttributeKeyword AttackedAttribute, float Damage)
 #pragma endregion
 void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 {
-	float Distance = FVector::Distance(GetActorLocation(), AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
-	FVector CompToMonsterDir = GetActorLocation() - (AttackedPosition + FVector(0.0f, 0.0f, -150.0f));
+	float Distance = FVector::Distance(GetLocation(), AttackedPosition);
+	FVector CompToMonsterDir = GetLocation() - AttackedPosition;
 	CompToMonsterDir.Normalize();
-	FVector EffectPosition = (AttackedPosition + FVector(0.0f, 0.0f, -150.0f)) + (CompToMonsterDir * (Distance / 2.0f));
+	FVector EffectPosition = AttackedPosition + (CompToMonsterDir * (Distance / 2.0f));
 
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	
@@ -817,6 +817,7 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 		HitEffectComponent->SetTemplate(MonsterEffect.FireHitEffect);
 		break;
 	case EAttributeKeyword::e_Water:
+		EffectPosition = AttackedPosition + (CompToMonsterDir * (Distance / 10.0f));
 		HitEffectComponent->SetTemplate(MonsterEffect.WaterHitEffect);
 		break;
 	case EAttributeKeyword::e_Thunder:
