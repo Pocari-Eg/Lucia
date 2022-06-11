@@ -165,7 +165,7 @@ void UIreneAttackInstance::AttackCheck()
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(true);
 		Irene->IreneUIManager->AttackSound->SoundPlay2D();
-
+		Irene->IreneUIManager->AttackVoiceSound->SoundPlay2D();
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 		{
 			// 타겟몬스터가 필요 없는 조건
