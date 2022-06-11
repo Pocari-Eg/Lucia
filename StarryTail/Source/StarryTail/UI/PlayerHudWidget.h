@@ -10,6 +10,7 @@
 
 #include "DialogWidget.h"
 #include "RaidMonsterWidget.h"
+#include "TutorialWidget.h"
 #include "../EnemySource/Monster.h"
 #include "ScriptDataTable.h"
 #include "PlayerHudWidget.generated.h"
@@ -93,6 +94,9 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	EAttributeKeyword GetAttriburte();
+
+	UFUNCTION(BluePrintCallable)
+	void SetTutorial(FString Num);
 private:
 
 	void UpdateHp();
@@ -138,6 +142,8 @@ private:
 	class UDialogWidget* PopUpWidget;
 	UPROPERTY()
 	class URaidMonsterWidget* RMWidget;
+	UPROPERTY()
+	class UTutorialWidget* TutorialWidget;
 	UPROPERTY()
 	class UUserWidget* ActionWidget;
 

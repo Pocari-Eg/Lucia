@@ -13,5 +13,14 @@ UCLASS()
 class STARRYTAIL_API UTutorialWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+public:
+	UPROPERTY(BluePrintReadWrite,Category="TUTORIAL")
+	FString TutorialNum;
+
+
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void  		OnAnimationEvent();
+
+	void PlayTutorial(FString Num);
 };

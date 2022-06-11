@@ -163,6 +163,11 @@ EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 	return CurrentIrene->GetAttribute();
 }
 
+void UPlayerHudWidget::SetTutorial(FString Num)
+{
+	TutorialWidget->PlayTutorial(Num);
+}
+
 
 void UPlayerHudWidget::StageNamePlay(FText Text)
 {
@@ -505,6 +510,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
 	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
+	TutorialWidget = Cast<UTutorialWidget>(GetWidgetFromName(TEXT("BP_TutorialWidget")));
 
 	Fire.SelectIcon=Cast<UImage>(GetWidgetFromName(TEXT("Fire_Select")));
 	Fire.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Fire_NoneSelect")));
