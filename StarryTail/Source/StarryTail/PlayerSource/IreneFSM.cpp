@@ -222,7 +222,9 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 		// 			Irene->IreneAnim->SetSprintStopAnim(false);
 		// 		}, 0.3f, false);
 		// }
-		CurState->Irene->ChangeStateAndLog(URunEndState::GetInstance());
+		//CurState->Irene->ChangeStateAndLog(URunEndState::GetInstance());
+		CurState->ThrowState(URunEndState::GetInstance());
+		CurState->Irene->ActionEndChangeMoveState();
 	}
 	if (MoveKey[0] != 0)
 	{
@@ -287,8 +289,7 @@ void URunEndState::Enter(IBaseGameEntity* CurState)
 
 void URunEndState::Execute(IBaseGameEntity* CurState)
 {
-	if (CurState->PlayTime >= 0.83f)
-		CurState->Irene->ActionEndChangeMoveState();
+	//CurState->Irene->ActionEndChangeMoveState();
 }
 
 void URunEndState::Exit(IBaseGameEntity* CurState)
@@ -345,7 +346,9 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		// 			Irene->IreneAnim->SetSprintStopAnim(false);
 		// 		}, 0.3f, false);
 		// }
-		CurState->Irene->ChangeStateAndLog(USprintEndState::GetInstance());
+		//CurState->Irene->ChangeStateAndLog(USprintEndState::GetInstance());
+		CurState->ThrowState(USprintEndState::GetInstance());
+		CurState->Irene->ActionEndChangeMoveState();
 	}
 	if (MoveKey[0] != 0)
 	{
@@ -418,8 +421,7 @@ void USprintEndState::Enter(IBaseGameEntity* CurState)
 
 void USprintEndState::Execute(IBaseGameEntity* CurState)
 {
-	if (CurState->PlayTime >= 0.83f)
-		CurState->Irene->ActionEndChangeMoveState();
+	//CurState->Irene->ActionEndChangeMoveState();
 }
 
 void USprintEndState::Exit(IBaseGameEntity* CurState)
@@ -665,7 +667,7 @@ void UDodgeThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	if (CurState->PlayTime >= 1.2f)
+	if (CurState->PlayTime >= 0.83f)
 		CurState->Irene->ActionEndChangeMoveState();
 }
 
