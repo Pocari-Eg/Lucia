@@ -56,6 +56,7 @@ public:
 	void ResetClawSuccessedCount();
 	void PlayStuckAnim();
 	void PlayFeatherPreAnim();
+	void PlayClawPreAnim();
 
 	void RushEnd();
 	void Turn();
