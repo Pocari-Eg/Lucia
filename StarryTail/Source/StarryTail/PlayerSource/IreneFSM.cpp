@@ -523,11 +523,11 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeWaterStartState::Execute(IBaseGameEntity* CurState)
 {
-	if(CurState->Irene->GetMesh()->IsVisible() && CurState->PlayTime > 0.22f)
+	if(CurState->Irene->GetMesh()->IsVisible() && CurState->PlayTime >= 0.17f)
 	{
 		CurState->Irene->GetMesh()->SetVisibility(false);
 	}
-	if(CurState->PlayTime > 0.22f)
+	if(CurState->PlayTime >= 0.17f)
 	{
 		CurState->Irene->IreneInput->MoveForward();
 		CurState->Irene->IreneInput->MoveRight();
@@ -567,7 +567,7 @@ void UDodgeWaterEndState::Execute(IBaseGameEntity* CurState)
 {
 	if(!CurState->Irene->IreneInput->GetIsDialogOn())
 	{
-		if(CurState->PlayTime > 0.47f)
+		if(CurState->PlayTime >= 0.53f)
 		{
 			CurState->Irene->ActionEndChangeMoveState();
 		}
