@@ -557,7 +557,7 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() &&
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() &&
 	((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		bUseDodgeKey = true;
@@ -745,6 +745,8 @@ bool UIreneInputInstance::StaminaGaugeIsFull()const
 #pragma region CheckStateChange
 bool UIreneInputInstance::CanJumpState() const
 {
+	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_T_End"))==0)
+		return true;
 	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsChargeState())
 			return true;
 	return false;
@@ -757,6 +759,8 @@ bool UIreneInputInstance::CanRunState() const
 }
 bool UIreneInputInstance::CanAttackState() const
 {
+	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_T_End"))==0)
+		return true;
 	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
 		return true;
 	return false;
