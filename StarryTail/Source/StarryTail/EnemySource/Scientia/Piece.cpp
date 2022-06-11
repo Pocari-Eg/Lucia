@@ -35,12 +35,15 @@ void APiece::SetEffect()
 	switch (PieceAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
+		PieceEffectComponent->SetTemplate(PieceFireEffect);
 		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, GetActorLocation() + FVector(0, 0, -1000));
 		break;
 	case EAttributeKeyword::e_Water:
+		PieceEffectComponent->SetTemplate(PieceWaterEffect);
 		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropWaterEffect, GetActorLocation() + FVector(0, 0, -1000));
 		break;
 	case EAttributeKeyword::e_Thunder:
+		PieceEffectComponent->SetTemplate(PieceThunderEffect);
 		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropThunderEffect, GetActorLocation() + FVector(0, 0, -1000));
 		break;
 	}
@@ -63,22 +66,17 @@ void APiece::InitCollision()
 }
 void APiece::InitMesh()
 {
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	Mesh->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere"));
+	PieceEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Piece"));
+	PieceEffectComponent->SetupAttachment(RootComponent);
 
-	if (SphereVisualAsset.Succeeded())
-	{
-		Mesh->SetStaticMesh(SphereVisualAsset.Object);
-	}
-
-	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
-	Mesh->SetWorldScale3D(FVector(1.0f));
+	PieceEffectComponent->SetWorldScale3D(FVector(1.0f));
 }
 
 void APiece::BeginPlay()
 {
 	Super::BeginPlay();
+
+	DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, GetActorLocation() + FVector(0, 0, -1000));
 }
 // Called every frame
 void APiece::Tick(float DeltaTime)
@@ -93,6 +91,15 @@ void APiece::Tick(float DeltaTime)
 		{
 			StartDrop();
 			bIsDrop = true;
+		}
+	}
+	if (bIsDead)
+	{
+		DeadWaitTimer += DeltaTime;
+		if (DeadWaitTimer >= DeadWaitTime)
+		{
+			ProjectileMovementComponent->Velocity = FVector(0, 0, 0);
+			Destroy();
 		}
 	}
 }
@@ -112,6 +119,7 @@ void APiece::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveCom
 		UGameplayStatics::ApplyDamage(Scientia, Damage, NULL, this, NULL);
 		ScAIController->Attacked();
 	}
-	Destroy();
+	SetActorEnableCollision(false);
+	bIsDead = true;
 }
 

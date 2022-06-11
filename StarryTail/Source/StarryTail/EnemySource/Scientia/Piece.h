@@ -32,8 +32,8 @@ private:
 		EAttributeKeyword PieceAttribute;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision, Meta = (AllowPrivateAccess = true))
 		UCapsuleComponent* Collision;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Collision, Meta = (AllowPrivateAccess = true))
-		UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* PieceEffectComponent;
 
 	UPROPERTY(VisibleAnywhere, Category = Projectile, Meta = (AllowPrivateAccess = true))
 		class UProjectileMovementComponent* ProjectileMovementComponent;
@@ -44,6 +44,12 @@ private:
 		UParticleSystem* DropWaterEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystem* DropThunderEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* PieceFireEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* PieceWaterEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* PieceThunderEffect;
 
 	UPROPERTY(VisibleAnywhere, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* DropEffect;
@@ -59,10 +65,15 @@ private:
 
 	float WaitTimer;
 
+	float DeadWaitTimer;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+		float DeadWaitTime;
+
 	FVector MoveDir;
 	FVector NewLocation;
 
 	bool bIsDrop;
+	bool bIsDead;
 public:
 protected:
 	// Called every frame

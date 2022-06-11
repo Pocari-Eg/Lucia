@@ -74,6 +74,8 @@ public:
 	void OffShockDebuffEffect();
 	void OffIsAttacked();
 
+	void RotationToPlayerDirection();
+
 	FAttackEndDelegate AttackEnd;
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
@@ -168,7 +170,6 @@ protected:
 private:
 	//Function
 	bool CheckPlayerIsBehindMonster();
-	void RotationToPlayerDirection();
 
 	void SetEffect();
 

@@ -23,6 +23,10 @@ void UScAnimInstance::PlayClawMontage()
 {
 	Montage_Play(ClawMontage);
 }
+void UScAnimInstance::PlayClawPreMontage()
+{
+	Montage_Play(ClawPreMontage);
+}
 void UScAnimInstance::PlayRushMontage()
 {
 	Montage_Play(RushMontage);
