@@ -346,9 +346,7 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		// 			Irene->IreneAnim->SetSprintStopAnim(false);
 		// 		}, 0.3f, false);
 		// }
-		//CurState->Irene->ChangeStateAndLog(USprintEndState::GetInstance());
-		CurState->ThrowState(USprintEndState::GetInstance());
-		CurState->Irene->ActionEndChangeMoveState();
+		CurState->Irene->ChangeStateAndLog(USprintEndState::GetInstance());
 	}
 	if (MoveKey[0] != 0)
 	{
@@ -421,7 +419,8 @@ void USprintEndState::Enter(IBaseGameEntity* CurState)
 
 void USprintEndState::Execute(IBaseGameEntity* CurState)
 {
-	//CurState->Irene->ActionEndChangeMoveState();
+	if(CurState->PlayTime >= 1.2f)
+		CurState->Irene->ActionEndChangeMoveState();
 }
 
 void USprintEndState::Exit(IBaseGameEntity* CurState)
