@@ -21,6 +21,8 @@
 #include ".././EnemySource/Scientia/Feather.h"
 #include ".././EnemySource/Scientia/Piece.h"
 #include "Curves/CurveVector.h"
+#include "../EnemySource/Bouldelith/Bouldelith.h"
+#include "../EnemySource/Morbit/Morbit.h"
 
 #pragma region Setting
 // Sets default values
@@ -538,17 +540,28 @@ void AIreneCharacter::PlayWaterEffect()
 		{
 			return;
 		}
+
+		const auto CastMorbit = Cast<AMorbit>(IreneAttack->TargetMonster);
+		const auto CastBouldelith = Cast<ABouldelith>(IreneAttack->TargetMonster);
+		const auto CastScientia = Cast<AScientia>(IreneAttack->TargetMonster);
+		FVector Target = FVector::ZeroVector;
+		if(CastMorbit != nullptr)
+			Target.Z = 30;
+		if(CastBouldelith != nullptr)
+			Target.Z = 200;
+		if(CastScientia != nullptr)
+			Target.Z = 300;
 		if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], CastMonster->GetLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[0], CastMonster->GetLocation() + Target);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], CastMonster->GetLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[1], CastMonster->GetLocation() + Target);
 		}
 		else if(IreneAnim->Montage_GetCurrentSection(IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 		{
-			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], CastMonster->GetLocation());
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), WaterParticle[2], CastMonster->GetLocation() + Target);
 		}
 	}
 	else
