@@ -3,3 +3,8 @@
 
 #include "TutorialWidget.h"
 
+void UTutorialWidget::PlayTutorial(FString Num)
+{
+	TutorialNum = Num;
+	OnAnimationEvent();
+}
