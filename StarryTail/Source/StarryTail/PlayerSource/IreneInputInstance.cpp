@@ -276,7 +276,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 	if ((CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn) || Rate >= 2.0)
 	{
 		if (Rate >= 1.0)
-		{			
+		{
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
