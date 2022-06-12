@@ -46,8 +46,6 @@ private:
 
 	float CurrentTextKeeptime;
 
-	class UImage* NextArrow;
-
 	class UPlayerHudWidget* PlayerHud;
 public:
 	//출력할 메시지 세팅
