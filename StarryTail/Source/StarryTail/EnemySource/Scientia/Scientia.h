@@ -97,6 +97,12 @@ public:
 
 	FScientiaInfo GetScInfo();
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void FirstCrushedEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+		void SecondCrushedEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+		void ThirdCrushedEvent();
 	//Var
 	FAddFeatherEndDelegate AddFeatherEnd;
 	FAttackEndDelegate Attack1End;
