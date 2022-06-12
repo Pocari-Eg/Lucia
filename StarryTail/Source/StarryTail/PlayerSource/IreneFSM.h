@@ -469,6 +469,7 @@ public:
 	bool IsJumpState()const;
 	bool IsAttackState()const;
 	bool IsSkillState()const;
+	bool IsFireSkillState()const;
 	bool IsChargeState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;
