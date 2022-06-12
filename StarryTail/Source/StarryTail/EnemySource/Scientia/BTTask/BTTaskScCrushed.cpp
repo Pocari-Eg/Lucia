@@ -38,17 +38,17 @@ void UBTTaskScCrushed::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		
 		if (Scientia->GetBarrierCount() == 2)
 		{
-			// 살짝 금 간 텍스쳐
+			Scientia->FirstCrushedEvent();
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsChangeKey, true);
 		}
 		else if (Scientia->GetBarrierCount() == 1)
 		{
-			// 많이 금 간 텍스쳐
+			Scientia->SecondCrushedEvent();
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AScAIController::IsChangeKey, true);
 		}
 		else if (Scientia->GetBarrierCount() == 0)
 		{
-			//완전히 금 간 텍스쳐
+			Scientia->ThirdCrushedEvent();
 			Scientia->SetAttribute(EAttributeKeyword::e_None);
 		}
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

@@ -105,7 +105,8 @@ protected:
 	void InitEffect();
 	UFUNCTION(BlueprintCallable)
 		void InitMonsterAttribute();
-
+	UFUNCTION(BlueprintCallable)
+		EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
 	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
 	void CalcDef();

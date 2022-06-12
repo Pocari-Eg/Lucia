@@ -75,8 +75,6 @@ void APiece::InitMesh()
 void APiece::BeginPlay()
 {
 	Super::BeginPlay();
-
-	DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, GetActorLocation() + FVector(0, 0, -1000));
 }
 // Called every frame
 void APiece::Tick(float DeltaTime)

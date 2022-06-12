@@ -556,7 +556,7 @@ void AScientia::SpawnPiece()
 	auto Player = Cast<AIreneCharacter>(STGameInstance->GetPlayer());
 
 	FVector DropLocation = Player->GetActorLocation();
-	auto ChassPiece = GetWorld()->SpawnActor<APiece>(PieceBP, DropLocation + FVector(0, 0, 1000), FRotator::ZeroRotator);
+	auto ChassPiece = GetWorld()->SpawnActor<APiece>(PieceBP, DropLocation + FVector(0, 0, 1060), FRotator::ZeroRotator);
 	switch (Random)
 	{
 	case 0:
