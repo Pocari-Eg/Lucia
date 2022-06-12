@@ -55,13 +55,10 @@ void UDialogWidget::SetDialog(FScriptData* ScriptData)
 			OnPopUpNox();
 		else if (ImageName == "IMG_Irene")
 			OnPopUpIrene();
-		
-
+	
 	}
 
-	if (NextArrow != nullptr)
-		NextArrow->SetVisibility(ESlateVisibility::Hidden);
-
+	
 }
 
 void UDialogWidget::PassDialog()
@@ -69,8 +66,6 @@ void UDialogWidget::PassDialog()
 	SetDialogState(EDialogState::e_Complete);
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	OutputDialog = InputDialog;
-	if (NextArrow != nullptr)
-		NextArrow->SetVisibility(ESlateVisibility::Visible);
 }
 
 EDialogState UDialogWidget::GetDialogState()
@@ -104,7 +99,6 @@ void UDialogWidget::NativeOnInitialized()
 	Font= LoadObject<UObject>(NULL, TEXT("/Game/UI/Resource/Font/LeferiBaseBold_Font.LeferiBaseBold_Font"), NULL, LOAD_None, NULL);
 
 	CurrnetState = EDialogState::e_Disable;
-	NextArrow= Cast<UImage>(GetWidgetFromName(TEXT("NextArrow")));
 }
 
 void UDialogWidget::PlayDialog()
@@ -114,8 +108,6 @@ void UDialogWidget::PlayDialog()
 	 if (InputDialog.Len()+2 <= Length)
 	  {
 		 SetDialogState(EDialogState::e_Complete);
-		 if(NextArrow!=nullptr)
-		 NextArrow->SetVisibility(ESlateVisibility::Visible);
 		 GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	
 	  } 
