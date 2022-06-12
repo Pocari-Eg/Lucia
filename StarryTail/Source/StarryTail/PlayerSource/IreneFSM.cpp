@@ -2028,7 +2028,10 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
 	if (CurState->PlayTime >= 0.56f)
+	{
+		STARRYLOG_S(Warning);
 		CurState->Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UHit1State::Exit(IBaseGameEntity* CurState)
@@ -2174,6 +2177,13 @@ bool UIreneFSM::IsDeathState()const
 		return true;
 	return false;
 }
+bool UIreneFSM::IsFireSkillState() const
+{
+	if (StateEnumValue == EStateEnum::Skill_F_Start || StateEnumValue == EStateEnum::Skill_F_End)
+		return true;
+	return false;
+}
+
 #pragma endregion IsState
 
 #pragma region FindState

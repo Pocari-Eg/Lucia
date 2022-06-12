@@ -324,7 +324,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 }
 void UIreneInputInstance::RightButton(const float DeltaTime)const
 {
-	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && !bIsDialogOn)
+	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
@@ -348,7 +348,7 @@ void UIreneInputInstance::RightButton(const float DeltaTime)const
 void UIreneInputInstance::RightButtonPressed()
 {
 	bRightButtonPressed = true;
-	if (CanAttackState() && !bUseLeftButton && !bIsDialogOn)
+	if (CanAttackState() && !bUseLeftButton && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
 	{
 		Irene->STGameInstance->SetLocation(Irene->GetActorLocation());
 		IsCharging = true;
@@ -427,7 +427,7 @@ void UIreneInputInstance::RightButtonPressed()
 void UIreneInputInstance::RightButtonReleased()
 {
 	bRightButtonPressed = false;
-	if (CanAttackState() && !bUseLeftButton && bUseRightButton && !bIsDialogOn)
+	if (CanAttackState() && !bUseLeftButton && bUseRightButton && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
 	{
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
