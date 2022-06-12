@@ -651,7 +651,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 				GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 				 {
 					 DodgeWaitHandle.Invalidate();
-				 }), 1.0f, false);
+				 }), 2.0f, false);
 			}
 			Irene->ChangeStateAndLog(UDodgeWaterEndState::GetInstance());
 		}
