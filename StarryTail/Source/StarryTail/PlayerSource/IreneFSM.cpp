@@ -1604,7 +1604,7 @@ void USkillFireStartState::Enter(IBaseGameEntity* CurState)
 
 void USkillFireStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto();
+	//CurState->Irene->IreneInput->MoveAuto();
 
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
 		StartShakeTime = CurState->PlayTime;
@@ -2018,6 +2018,9 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+    CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+    CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
@@ -2025,7 +2028,10 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
 	if (CurState->PlayTime >= 0.56f)
+	{
+		STARRYLOG_S(Warning);
 		CurState->Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UHit1State::Exit(IBaseGameEntity* CurState)
@@ -2048,6 +2054,9 @@ void UHit2State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_2);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 }
 
@@ -2168,6 +2177,13 @@ bool UIreneFSM::IsDeathState()const
 		return true;
 	return false;
 }
+bool UIreneFSM::IsFireSkillState() const
+{
+	if (StateEnumValue == EStateEnum::Skill_F_Start || StateEnumValue == EStateEnum::Skill_F_End)
+		return true;
+	return false;
+}
+
 #pragma endregion IsState
 
 #pragma region FindState

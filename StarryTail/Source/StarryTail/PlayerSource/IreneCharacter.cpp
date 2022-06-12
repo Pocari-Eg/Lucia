@@ -634,7 +634,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
-				if(!IreneState->IsChargeState())
+				if(!IreneState->IsChargeState() && !IreneState->IsSkillState() && !IreneState->IsAttackState() && !IreneState->IsJumpState())
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
