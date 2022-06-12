@@ -7,6 +7,7 @@
 #include "Components/BoxComponent.h"
 #include <LevelSequence/Public/LevelSequenceActor.h>
 #include"../EnemySpawnPoint.h"
+#include"../BattleWall.h"
 #include "EnemySpawnTrigger.generated.h"
 
 UCLASS()
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Sequence)
 	TArray<ALevelSequenceActor*> StartSequenceActor;
+
+	UPROPERTY(EditAnywhere, Category = WAll)
+	TArray<ABattleWall*> BattleWall;
 	//Function
 public:
 	// Sets default values for this actor's properties
@@ -60,4 +64,7 @@ private:
 	void WaveManager();
 	void WaveStart();
 	void WaveClear();
+
+	void OnBattleWall();
+	void OffBattleWall();
 };

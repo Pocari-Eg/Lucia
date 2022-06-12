@@ -82,7 +82,7 @@ void AEnemySpawnTrigger::WaveStart()
 {
 	if (SpawnPoint[0]->getCurrentWave() < SpawnPoint[0]->SpawnWave.Num()) {
 		WaveMonsterCount = 0;
-
+		OnBattleWall();
 		if (SpawnPoint.Num() != 0) {
 			for (int i = 0; i < SpawnPoint.Num(); i++)
 			{
@@ -106,11 +106,35 @@ void AEnemySpawnTrigger::WaveStart()
 void AEnemySpawnTrigger::WaveClear()
 {
 	STARRYLOG(Warning, TEXT("Wave Clear"));
+	OffBattleWall();
 	IsCurrentSpawn = false;
 	if (SequenceActor.Num() != 0)
 	{
 		for (int i = 0; i < SequenceActor.Num(); i++) {
 			SequenceActor[i]->SequencePlayer->Play();
+		}
+	}
+}
+
+void AEnemySpawnTrigger::OnBattleWall()
+{
+	if (BattleWall.Num() > 0)
+	{
+
+		for (int i = 0; i < BattleWall.Num(); i++)
+		{
+			BattleWall[i]->OnBattleWall();
+		}
+	}
+}
+
+void AEnemySpawnTrigger::OffBattleWall()
+{
+	if (BattleWall.Num() > 0)
+	{
+		for (int i = 0; i < BattleWall.Num(); i++)
+		{
+			BattleWall[i]->OffBattleWall();
 		}
 	}
 }
