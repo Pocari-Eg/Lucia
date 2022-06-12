@@ -276,7 +276,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 	if ((CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn) || Rate >= 2.0)
 	{
 		if (Rate >= 1.0)
-		{			
+		{
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
@@ -485,7 +485,7 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 	if (!bIsDialogOn)
 	{
 		// 속성을 변화시키는 함수
-		if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
+		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
 		{
 			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
 				ChangeForm(Attribute);
