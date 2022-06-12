@@ -1604,7 +1604,7 @@ void USkillFireStartState::Enter(IBaseGameEntity* CurState)
 
 void USkillFireStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto();
+	//CurState->Irene->IreneInput->MoveAuto();
 
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
 		StartShakeTime = CurState->PlayTime;
@@ -2018,6 +2018,9 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+    CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+    CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
@@ -2048,6 +2051,9 @@ void UHit2State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_2);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 }
 
