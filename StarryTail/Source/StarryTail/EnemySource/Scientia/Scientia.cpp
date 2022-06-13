@@ -218,7 +218,7 @@ void AScientia::Feather()
 	BaseFeather->SetMoveDir((PlayerLocation - BaseFeather->GetActorLocation()).GetSafeNormal() + BaseDir);
 	BaseFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 
-	for (int i = 10; i <= 30; i += 10)
+	for (int i = 15; i <= 30; i += 10)
 	{
 		RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + i);
 		LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - i);
@@ -717,10 +717,12 @@ void AScientia::BeginPlay()
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
 
+	/*
 	auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Irene != nullptr) {
 		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
 	}
+	*/
 }
 
 void AScientia::PossessedBy(AController* NewController)
