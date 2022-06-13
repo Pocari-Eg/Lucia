@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../../Starrytail.h"
+#include "DropFloorEffect.h"
 #include "Piece.generated.h"
 
 UCLASS()
@@ -53,6 +54,8 @@ private:
 
 	UPROPERTY(VisibleAnywhere, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* DropEffect;
+
+	TSubclassOf<ADropFloorEffect> DropFloorEffectBP;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		float Damage;
