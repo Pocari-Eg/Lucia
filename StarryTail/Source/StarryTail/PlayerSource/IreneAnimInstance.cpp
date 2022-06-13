@@ -187,6 +187,10 @@ void UIreneAnimInstance::AnimNotify_RadialBlur() const
 	OnRadialBlur.Broadcast();
 }
 
+void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
+{
+	Irene->IreneUIManager->TakeDamageVoiceSound->SoundPlay2D();
+}
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
