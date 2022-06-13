@@ -717,12 +717,12 @@ void AScientia::BeginPlay()
 	ScAnimInstance->Feather.AddUObject(this, &AScientia::Feather);
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
 
-	/*
+	
 	auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Irene != nullptr) {
 		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
 	}
-	*/
+	
 }
 
 void AScientia::PossessedBy(AController* NewController)
