@@ -208,19 +208,41 @@ void AScientia::Feather()
 		Angle = 0;
 	}
 
+	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+	auto PlayerLocation = GameInstance->GetPlayer()->GetActorLocation();
 	BaseDir = AngleToDir(GetActorRotation().Euler().Z + Angle);
 	RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + 30);
 	LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - 30);
 
-	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
-	BaseFeather->SetMoveDir(BaseDir);
+	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+	BaseFeather->SetMoveDir((PlayerLocation - BaseFeather->GetActorLocation()).GetSafeNormal() + BaseDir);
 	BaseFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
-	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
-	RightFeather->SetMoveDir(RightDir);
+
+	for (int i = 10; i <= 30; i += 10)
+	{
+		RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + i);
+		LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - i);
+
+		auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+		RightFeather->SetMoveDir((PlayerLocation - RightFeather->GetActorLocation()).GetSafeNormal() + RightDir);
+		RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+		RightFeather->RotatorRight(i / 2);
+
+		auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+		LeftFeather->SetMoveDir((PlayerLocation - LeftFeather->GetActorLocation()).GetSafeNormal() + LeftDir);
+		LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+		LeftFeather->RotatorLeft(i / 2);
+	}
+	/*
+	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+	RightFeather->SetMoveDir((PlayerLocation - RightFeather->GetActorLocation()).GetSafeNormal() + RightDir);
 	RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
-	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation(), GetActorRotation());
-	LeftFeather->SetMoveDir(LeftDir);
+	RightFeather->RotatorRight();
+	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+	LeftFeather->SetMoveDir((PlayerLocation - LeftFeather->GetActorLocation()).GetSafeNormal() + LeftDir);
 	LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+	LeftFeather->RotatorLeft();
+	*/
 }
 void AScientia::AddFeatherCount()
 {
@@ -289,106 +311,52 @@ void AScientia::Crushed()
 #pragma region Barrier
 void AScientia::ChangeAttribute()
 {
-	int Random = FMath::RandRange(0, 9);
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	auto PlayerAttribute = STGameInstance->GetPlayerAttribute();
 
 	if (ScInfo.BarrierCount == 3)
 	{
-		if (Random >= 3)
+		switch (PlayerAttribute)
 		{
-			switch (PlayerAttribute)
-			{
-			case EAttributeKeyword::e_Fire:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-				break;
-			case EAttributeKeyword::e_Water:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-				break;
-			}
-		}
-		else
-		{
-			switch (PlayerAttribute)
-			{
-			case EAttributeKeyword::e_Fire:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-				break;
-			case EAttributeKeyword::e_Water:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-				break;
-			}
+		case EAttributeKeyword::e_Fire:
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
+			break;
+		case EAttributeKeyword::e_Water:
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
+			break;
+		case EAttributeKeyword::e_Thunder:
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
+			break;
 		}
 	}
 	else if (ScInfo.BarrierCount == 2)
 	{
-		if (Random >= 3)
+		switch (PlayerAttribute)
 		{
-			switch (PlayerAttribute)
+		case EAttributeKeyword::e_Fire:
+			if (ScInfo.WaterBarrier <= 0)
 			{
-			case EAttributeKeyword::e_Fire:
-				if (ScInfo.WaterBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-					break;
-				}
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-				break;
-			case EAttributeKeyword::e_Water:
-				if (ScInfo.ThunderBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-					break;
-				}
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (ScInfo.FireBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-					break;
-				}
 				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
 				break;
 			}
-		}
-		else
-		{
-			switch (PlayerAttribute)
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
+			break;
+		case EAttributeKeyword::e_Water:
+			if (ScInfo.ThunderBarrier <= 0)
 			{
-			case EAttributeKeyword::e_Fire:
-				if (ScInfo.ThunderBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-					break;
-				}
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-				break;
-			case EAttributeKeyword::e_Water:
-				if (ScInfo.FireBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-					break;
-				}
-				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (ScInfo.WaterBarrier <= 0)
-				{
-					MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-					break;
-				}
 				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
 				break;
-			case EAttributeKeyword::e_None:
+			}
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
+			break;
+		case EAttributeKeyword::e_Thunder:
+			if (ScInfo.FireBarrier <= 0)
+			{
+				MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
 				break;
 			}
+			MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
+			break;
 		}
 	}
 	else if (ScInfo.BarrierCount == 1)
@@ -402,7 +370,7 @@ void AScientia::ChangeAttribute()
 	}
 	if (PlayerAttribute == EAttributeKeyword::e_None)
 	{
-		Random = FMath::RandRange(0, 2);
+		int Random = FMath::RandRange(0, 2);
 
 		switch (Random)
 		{

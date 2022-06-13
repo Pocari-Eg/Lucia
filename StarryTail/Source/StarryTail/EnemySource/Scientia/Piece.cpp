@@ -21,7 +21,7 @@ APiece::APiece()
 	// ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->ProjectileGravityScale = 0;
 
-	static ConstructorHelpers::FClassFinder<APiece> DropFloorEffectBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_DropFloorEffect'"));
+	static ConstructorHelpers::FClassFinder<ADropFloorEffect> DropFloorEffectBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_DropFloorEffect'"));
 	if (DropFloorEffectBlueprint.Succeeded())
 	{
 		DropFloorEffectBP = DropFloorEffectBlueprint.Class;
