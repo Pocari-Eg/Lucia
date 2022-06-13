@@ -22,7 +22,8 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Scientia->SetState(TEXT("Attack3"));
 
-	MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+	MoveDir = Player->GetActorLocation() - Scientia->GetActorLocation();
+	MoveDir.Z = Scientia->GetActorLocation().Z;
 
 	NavSys = UNavigationSystemV1::GetCurrent(GetWorld());
 	NavData = NavSys->GetNavDataForProps(Scientia->GetNavAgentPropertiesRef());
@@ -30,12 +31,9 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 	
-	TurnCoolTimer = 1;
-
 	Scientia->TurnEnd.Clear();
 	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
 		{
-			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 			bIsTurn = false;
 		});
 	Scientia->RushStart.AddLambda([this]() -> void {
@@ -51,7 +49,6 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	if (bIsTurn)
 		return;
 
-	TurnCoolTimer -= DeltaSeconds;
 	RushTimer += DeltaSeconds;
 	auto Scientia = Cast<AScientia>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
@@ -68,17 +65,19 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 	if (!bIsRush && !bIsTurn)
 	{
-		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+		MoveDir = Player->GetActorLocation() - Scientia->GetActorLocation();
 		FVector LookVector = MoveDir;
 		LookVector.Z = 0.0f;
 		FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 
-		Scientia->SetActorRotation(FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+		Scientia->SetActorRotation(TargetRot);//FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+		DrawDebugLine(GetWorld(), Scientia->GetActorLocation(), Scientia->GetActorLocation() + (LookVector * Scientia->GetRushTestRange()), FColor::Red, false, 0.2f);
 		return;
 	}
 
-	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * 300);
+	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetRushTestRange());
 	
+	DrawDebugLine(GetWorld(), Scientia->GetActorLocation(), NewLocation, FColor::Blue, false, 1.0f);
 	if (NavData)
 	{
 		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), NewLocation, QueryFilter);
@@ -87,11 +86,12 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	
 	if (bCanMove)
 	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(Scientia->GetController(), Scientia->GetTransform().GetLocation() + MoveDir.GetSafeNormal() * 300);
+		FVector Dir = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetAttack3Speed() * DeltaSeconds);
+		Dir.Z = Scientia->GetActorLocation().Z;
+		Scientia->SetActorLocation(Dir);
 	}
-	else if(TurnCoolTimer <= 0.0f)
+	else
 	{
-		TurnCoolTimer = 1;
 		bIsTurn = true;
 
 		Scientia->Turn();

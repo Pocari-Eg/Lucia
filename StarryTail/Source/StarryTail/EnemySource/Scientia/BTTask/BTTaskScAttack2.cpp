@@ -79,7 +79,7 @@ void UBTTaskScAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	{
 		auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AScAIController::PlayerKey));
 
-		MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
+		MoveDir = Player->GetActorLocation() - Scientia->GetActorLocation();
 		FVector LookVector = MoveDir;
 		LookVector.Z = 0.0f;
 		FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
