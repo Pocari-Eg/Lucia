@@ -20,6 +20,12 @@ APiece::APiece()
 	ProjectileMovementComponent->MaxSpeed = MoveSpeed;
 	// ProjectileMovementComponent->bRotationFollowsVelocity = true;
 	ProjectileMovementComponent->ProjectileGravityScale = 0;
+
+	static ConstructorHelpers::FClassFinder<APiece> DropFloorEffectBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_DropFloorEffect'"));
+	if (DropFloorEffectBlueprint.Succeeded())
+	{
+		DropFloorEffectBP = DropFloorEffectBlueprint.Class;
+	}
 }
 void APiece::StartDrop()
 {
@@ -32,19 +38,20 @@ void APiece::SetAttribute(EAttributeKeyword Attribute)
 }
 void APiece::SetEffect()
 {
+	auto DropFloorEffect = GetWorld()->SpawnActor<ADropFloorEffect>(DropFloorEffectBP, GetActorLocation() + FVector(0, 0, -1000), GetActorRotation());
 	switch (PieceAttribute)
 	{
 	case EAttributeKeyword::e_Fire:
 		PieceEffectComponent->SetTemplate(PieceFireEffect);
-		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropFireEffect, GetActorLocation() + FVector(0, 0, -1000));
+		DropFloorEffect->SetEffect(DropFireEffect);
 		break;
 	case EAttributeKeyword::e_Water:
 		PieceEffectComponent->SetTemplate(PieceWaterEffect);
-		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropWaterEffect, GetActorLocation() + FVector(0, 0, -1000));
+		DropFloorEffect->SetEffect(DropWaterEffect);
 		break;
 	case EAttributeKeyword::e_Thunder:
 		PieceEffectComponent->SetTemplate(PieceThunderEffect);
-		DropEffect = UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), DropThunderEffect, GetActorLocation() + FVector(0, 0, -1000));
+		DropFloorEffect->SetEffect(DropThunderEffect);
 		break;
 	}
 }
