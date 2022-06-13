@@ -91,6 +91,7 @@ public:
 	int GetClawSuccessedCount();
 	bool GetIsCanChange();
 	bool GetIsRush();
+	float GetRushTestRange() { return RushTestRange; }
 
 	void SetState(FString string);
 	void SetAttribute(EAttributeKeyword Attribute);
@@ -155,7 +156,8 @@ private:
 
 	float AttributeSettingTimer;
 	float ChangeTimer;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
+		float RushTestRange;
 	float MaxFireDef;
 	float MaxWaterDef;
 	float MaxThunderDef;

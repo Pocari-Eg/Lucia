@@ -178,12 +178,19 @@ void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
 }
-
+void UIreneAnimInstance::AnimNotify_JumpSound() const
+{
+	Irene->IreneUIManager->JumpVoiceSound->SoundPlay2D();
+}
 void UIreneAnimInstance::AnimNotify_RadialBlur() const
 {
 	OnRadialBlur.Broadcast();
 }
 
+void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
+{
+	Irene->IreneUIManager->TakeDamageVoiceSound->SoundPlay2D();
+}
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
