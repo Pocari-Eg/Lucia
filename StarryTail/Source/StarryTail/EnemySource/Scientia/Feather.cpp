@@ -29,17 +29,10 @@ void AFeather::InitCollision()
 }
 void AFeather::InitMesh()
 {
-	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	Mesh->SetupAttachment(RootComponent);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereVisualAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere"));
-	
-	if (SphereVisualAsset.Succeeded())
-	{
-		Mesh->SetStaticMesh(SphereVisualAsset.Object);
-	}
+	FeatherEffect = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Feather"));
+	FeatherEffect->SetupAttachment(RootComponent);
 
-	Mesh->SetCollisionProfileName(TEXT("NoCollision"));
-	Mesh->SetWorldScale3D(FVector(0.3f));
+	FeatherEffect->SetWorldScale3D(FVector(1.0f));
 }
 void AFeather::SetMoveDir(FVector Direction)
 {
@@ -48,6 +41,14 @@ void AFeather::SetMoveDir(FVector Direction)
 void AFeather::SetDamage(float Value)
 {
 	Damage = Value;
+}
+void AFeather::RotatorRight(int Value)
+{
+	FeatherEffect->SetRelativeRotation(FRotator(-90, Value, 0));
+}
+void AFeather::RotatorLeft(int Value)
+{
+	FeatherEffect->SetRelativeRotation(FRotator(-90, -Value, 0));
 }
 
 void AFeather::Tick(float DeltaTime)
@@ -63,7 +64,8 @@ void AFeather::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveC
 	{
 		auto Player = Cast<AIreneCharacter>(Other);
 		UGameplayStatics::ApplyDamage(Player, Damage, NULL, this, NULL);
-		Destroy();
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), FeatherHitEffect, GetActorLocation(), GetActorRotation());
 	}
+	Destroy();
 }
 

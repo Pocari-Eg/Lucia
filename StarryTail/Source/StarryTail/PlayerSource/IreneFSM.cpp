@@ -434,7 +434,11 @@ void USprintEndState::Enter(IBaseGameEntity* CurState)
 void USprintEndState::Execute(IBaseGameEntity* CurState)
 {
 	if(CurState->PlayTime >= 1.2f)
+	{
 		CurState->Irene->ActionEndChangeMoveState();
+		if(CurState->Irene->IreneState->IsSprintState())
+			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+	}
 }
 
 void USprintEndState::Exit(IBaseGameEntity* CurState)
@@ -1392,6 +1396,7 @@ void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
 		CurState->Irene->IreneInput->RightButtonPressed();
 	}
 
@@ -1469,6 +1474,7 @@ void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
 		CurState->Irene->IreneInput->RightButtonPressed();
 	}
 
@@ -1545,6 +1551,7 @@ void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneAttack->SetUseSkillSkip(true);
+		CurState->Irene->IreneInput->bUseLeftButton = false;
 		CurState->Irene->IreneInput->RightButtonPressed();
 	}
 
@@ -1814,7 +1821,7 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 	}
 	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= 1.0f)
+	if (CurState->PlayTime >= 1.3f)
 	{
 		CurState->Irene->IreneAttack->SetUseSkillSkip(false);
 	}
@@ -2029,7 +2036,6 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->MoveRight();
 	if (CurState->PlayTime >= 0.56f)
 	{
-		STARRYLOG_S(Warning);
 		CurState->Irene->ActionEndChangeMoveState();
 	}
 }

@@ -19,6 +19,9 @@ public:
 
 	void SetMoveDir(FVector Direction);
 	void SetDamage(float Value);
+
+	void RotatorRight(int Value);
+	void RotatorLeft(int Value);
 private:
 	//Function
 	void InitCollision();
@@ -28,7 +31,11 @@ private:
 		class USphereComponent* Collision;
 	UPROPERTY(VisibleAnywhere, Category = Projectile, Meta = (AllowPrivateAccess = true))
 		class UProjectileMovementComponent* ProjectileMovementComponent;
-	class UStaticMeshComponent* Mesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystemComponent* FeatherEffect;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+		UParticleSystem* FeatherHitEffect;
 
 	FVector MoveDir;
 	FVector NewLocation;
