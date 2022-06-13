@@ -66,7 +66,9 @@ void UIreneUIManager::Begin()
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 2.0f);
 
+	
 	AttackVoiceSound->SetVolume(0.3f);
+	AttackVoiceSound->SetParameter("Attributes", 2.0f);
 
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	bIsOnPauseWidget = false;

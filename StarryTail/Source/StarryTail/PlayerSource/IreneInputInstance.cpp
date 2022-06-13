@@ -524,18 +524,23 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
+		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 1.0f);
 		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
 		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
+		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 2.0f);
+
 		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
 		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
+		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 3.0f);
+
 		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[2]);
 		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[2]);
 	}
