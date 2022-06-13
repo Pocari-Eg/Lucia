@@ -33,8 +33,9 @@ EBTNodeResult::Type UBTTaskScAttack3::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	TurnCoolTimer = 1;
 
 	Scientia->TurnEnd.Clear();
-	Scientia->TurnEnd.AddLambda([this]() -> void
+	Scientia->TurnEnd.AddLambda([this, Scientia, Player]() -> void
 		{
+			MoveDir = Player->GetActorLocation() - Scientia->GetLocation();
 			bIsTurn = false;
 		});
 	Scientia->RushStart.AddLambda([this]() -> void {
