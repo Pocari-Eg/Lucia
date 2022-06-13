@@ -20,7 +20,8 @@ UIreneUIManager::UIreneUIManager()
 	}
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
 	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
-	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_AttackVoice");
+	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_AttackVoice");
+	JumpVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_JumpVoice");
 
 	bShowLog = false;
 	IsConsecutiveIdle = false;
@@ -43,6 +44,7 @@ void UIreneUIManager::Init(AIreneCharacter* Value)
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
 	AttackVoiceSound= new SoundManager(AttackVoiceEvent, GetWorld());
+	JumpVoiceSound = new SoundManager(JumpVoiceEvent, GetWorld());
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
@@ -70,6 +72,8 @@ void UIreneUIManager::Begin()
 	AttackVoiceSound->SetVolume(0.3f);
 	AttackVoiceSound->SetParameter("Attributes", 2.0f);
 
+
+	JumpVoiceSound->SetVolume(0.3f);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	bIsOnPauseWidget = false;
 }

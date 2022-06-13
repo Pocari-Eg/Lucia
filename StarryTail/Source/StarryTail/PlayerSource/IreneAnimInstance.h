@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "IreneUIManager.h"
 #include "../StarryTail.h"
 
 #include "IreneAnimInstance.generated.h"
@@ -114,6 +115,8 @@ private:
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
 	void AnimNotify_RadialBlur	() const;
+	UFUNCTION()
+	void AnimNotify_JumpSound() const;
 	FName GetAttackMontageSectionName(const int32 Section);
 
 public:

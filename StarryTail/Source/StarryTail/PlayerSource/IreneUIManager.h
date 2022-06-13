@@ -98,10 +98,12 @@ public:
 	class UFMODEvent* AttackEvent;
 	class UFMODEvent* WalkEvent;
 	class UFMODEvent* AttackVoiceEvent;
+	class UFMODEvent* JumpVoiceEvent;
 	//사운드 
 	SoundManager* WalkSound;
 	SoundManager* AttackSound;
 	SoundManager* AttackVoiceSound;
+	SoundManager* JumpVoiceSound;
 	float AttackSoundParameter;
 #pragma endregion Sound
 private:
