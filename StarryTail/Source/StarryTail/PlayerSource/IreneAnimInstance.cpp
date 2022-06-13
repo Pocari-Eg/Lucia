@@ -178,7 +178,10 @@ void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
 }
-
+void UIreneAnimInstance::AnimNotify_JumpSound() const
+{
+	Irene->IreneUIManager->JumpVoiceSound->SoundPlay2D();
+}
 void UIreneAnimInstance::AnimNotify_RadialBlur() const
 {
 	OnRadialBlur.Broadcast();
