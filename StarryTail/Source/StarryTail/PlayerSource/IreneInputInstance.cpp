@@ -605,6 +605,28 @@ void UIreneInputInstance::DodgeKeyword()
 				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.FirstThunderDodgeSpeed);
 			else
 				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.DoubleThunderDodgeSpeed);
+
+			FVector ThunderPos = FVector::ZeroVector;
+			if(MoveKey[0]!=0)
+			{
+				ThunderPos += Irene->GetActorForwardVector();
+			}
+			if(MoveKey[1]!=0)
+			{
+				ThunderPos += Irene->GetActorRightVector()*-1;
+			}
+			if(MoveKey[2]!=0)
+			{
+				ThunderPos += Irene->GetActorForwardVector()*-1;
+			}
+			if(MoveKey[3]!=0)
+			{
+				ThunderPos += Irene->GetActorRightVector();
+			}
+			ThunderPos.Normalize();
+			if(ThunderPos == FVector::ZeroVector)
+				ThunderPos = Irene->GetActorForwardVector();
+			Irene->SetActorRelativeRotation(ThunderPos.Rotation());
 			
 			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
