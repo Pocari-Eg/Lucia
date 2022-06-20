@@ -53,7 +53,7 @@ void UIreneInputInstance::InitMemberVariable()
 	ThunderCurCoolTime = 0.0f;
 
 
-	CoolTimeRate = 0.2f;
+	CoolTimeRate = 0.008f;
 	FireSkillCoolTime = 0.0f;
 	WaterSkillCoolTime = 0.0f;
 	ThunderSkillCoolTime = 0.0f;
