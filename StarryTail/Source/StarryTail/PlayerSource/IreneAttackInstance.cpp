@@ -57,7 +57,6 @@ void UIreneAttackInstance::InitMemberVariable()
 	bDodgeJumpSkip = false;
 	bReAttackSkip = false;
 	bSkillSkip = false;
-	UseSkillSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -114,25 +113,6 @@ FName UIreneAttackInstance::GetActionAttackDataTableName()
 	return ActionForm;
 }
 
-void UIreneAttackInstance::OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted)
-{
-	// 몽타주가 완전히 끝남
-	// 공격 후딜 중 스킬 사용 시 일반적인 종료와 특수 종료
-	if(UseSkillSkip == false)
-	{
-		Irene->IreneData.IsAttacking = false;
-		AttackEndComboState();
-	}
-	else
-	{
-		Irene->Weapon->SetGenerateOverlapEvents(false);
-		Irene->IreneInput->bUseLeftButton = false;
-		bUseMP = false;
-		Irene->IreneData.CanNextCombo = false;
-		Irene->IreneData.IsComboInputOn = false;
-		Irene->IreneData.CurrentCombo = 0;
-	}
-}
 void UIreneAttackInstance::AttackStartComboState()
 {
 	// 노티파이 NextAttackCheck 도달 시 실행
@@ -142,7 +122,18 @@ void UIreneAttackInstance::AttackStartComboState()
 }
 void UIreneAttackInstance::AttackEndComboState()
 {
+	Irene->IreneData.IsAttacking = false;
+	Irene->Weapon->SetGenerateOverlapEvents(false);
+	Irene->IreneInput->bUseLeftButton = false;
+	bUseMP = false;
+	Irene->IreneData.CanNextCombo = false;
+	Irene->IreneData.IsComboInputOn = false;
+	Irene->IreneData.CurrentCombo = 0;
+}
+void UIreneAttackInstance::AttackTimeEndState()
+{
 	// 몽타주가 완전히 끝남
+	Irene->IreneData.IsAttacking = false;
 	Irene->Weapon->SetGenerateOverlapEvents(false);
 	Irene->IreneInput->bUseLeftButton = false;
 	Irene->IreneInput->bUseRightButton = false;
@@ -155,7 +146,7 @@ void UIreneAttackInstance::AttackEndComboState()
 		//STARRYLOG(Error,TEXT("%d,   %d,   %d,   %d"),Irene->IreneInput->MoveKey[0],Irene->IreneInput->MoveKey[1],Irene->IreneInput->MoveKey[2],Irene->IreneInput->MoveKey[3]);
 		//Irene->ActionEndChangeMoveState();
 		Irene->ChangeStateAndLog(UBattleIdleState::GetInstance());
-	}
+	}	
 }
 
 void UIreneAttackInstance::AttackCheck()
