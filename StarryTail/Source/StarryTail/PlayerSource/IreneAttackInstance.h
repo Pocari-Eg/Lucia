@@ -62,16 +62,14 @@ private:
 	bool bReAttackSkip;
 	// 후딜 중 스킬 가능 타이밍 노티파이
 	bool bSkillSkip;
-	bool UseSkillSkip;
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
 	
-	UFUNCTION()
-	void OnAttackMontageEnded(UAnimMontage* Montage, bool bInterrupted);
 	void AttackStartComboState();
 	void AttackEndComboState();
+	void AttackTimeEndState();
 	void AttackCheck();
 	void AttackStopCheck();
 	void DoAttack();
@@ -104,7 +102,6 @@ public:
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanReAttackSkip()const{return bReAttackSkip;}
 	bool GetCanSkillSkip()const{return bSkillSkip;}
-	bool GetUseSkillSkip()const{return UseSkillSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
 	
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
@@ -120,7 +117,6 @@ public:
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
-	void SetUseSkillSkip(const bool Value){UseSkillSkip = Value;}
 
 #pragma endregion GetSet
 

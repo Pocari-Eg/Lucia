@@ -193,6 +193,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack2FireState final : public UObject, public IState
@@ -204,6 +205,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack3FireState final : public UObject, public IState
@@ -215,6 +217,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack1WaterState final : public UObject, public IState
@@ -226,6 +229,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack2WaterState final : public UObject, public IState
@@ -237,6 +241,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack3WaterState final : public UObject, public IState
@@ -248,6 +253,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack1ThunderState final : public UObject, public IState
@@ -259,6 +265,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack2ThunderState final : public UObject, public IState
@@ -270,6 +277,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
 class STARRYTAIL_API UBasicAttack3ThunderState final : public UObject, public IState
@@ -281,6 +289,7 @@ public:
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 #pragma endregion Attack
 

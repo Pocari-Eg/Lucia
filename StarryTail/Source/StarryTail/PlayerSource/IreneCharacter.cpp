@@ -273,7 +273,6 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneUIManager = NewObject<UIreneUIManager>(this);
 	IreneUIManager->Init(this);
 	
-	IreneAnim->OnMontageEnded.AddDynamic(IreneAttack, &UIreneAttackInstance::OnAttackMontageEnded);
 	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
 		{
 			if (IreneData.IsComboInputOn)
