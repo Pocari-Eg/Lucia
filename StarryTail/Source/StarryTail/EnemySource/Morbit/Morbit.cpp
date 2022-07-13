@@ -26,8 +26,8 @@ AMorbit::AMorbit()
 	SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
-
+	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
+	MonsterWidget->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 
 }
 #pragma region Init

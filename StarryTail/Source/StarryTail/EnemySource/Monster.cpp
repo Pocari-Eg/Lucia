@@ -15,7 +15,8 @@
 #include "../PlayerSource/IreneFSM.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
-#include "../UI/HPBarWidget.h"
+#include "../UI/MonsterWidget.h"
+
 //object
 #include "../Object/AttributeObject.h"
 
@@ -36,19 +37,19 @@ AMonster::AMonster()
 	KnockBackTime = 0.15f;
 	ShowUITime = 5.0f;
 
-	HpBarWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HPBARWIDGET"));
-	HpBarWidget->SetupAttachment(GetMesh());
+	MonsterWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MONSTERWIDGET"));
+	MonsterWidget->SetupAttachment(GetMesh());
 
-	HpBarWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
-	HpBarWidget->SetWidgetSpace(EWidgetSpace::World);
+	MonsterWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	MonsterWidget->SetWidgetSpace(EWidgetSpace::World);
 
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_HPBARWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_HPBar.BP_HPBar_C"));
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_MONSTERWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_MonsterWidget.BP_MonsterWidget_C"));
 
-	if (UI_HPBARWIDGET.Succeeded()) {
+	if (UI_MONSTERWIDGET.Succeeded()) {
 
-		HpBarWidget->SetWidgetClass(UI_HPBARWIDGET.Class);
-		HpBarWidget->SetDrawSize(FVector2D(230.0f,160.0f));
-		HpBarWidget->bAutoActivate = false;
+		MonsterWidget->SetWidgetClass(UI_MONSTERWIDGET.Class);
+		MonsterWidget->SetDrawSize(FVector2D(230.0f,160.0f));
+		MonsterWidget->bAutoActivate = false;
 	}
 
 	bIsSpawnEnemy = false;
@@ -348,7 +349,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
 
 		//방어력 게이지 업데이트
-		OnDefChanged.Broadcast();
+		OnBarrierChanged.Broadcast();
 
 		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
 			BdAIController->Attacked();
@@ -451,7 +452,7 @@ void AMonster::CalcHp(float Damage)
 
 	bShowUI = true;
 	ShowUITimer = 0.0f;
-	HpBarWidget->SetHiddenInGame(false);
+	MonsterWidget->SetHiddenInGame(false);
 
 	OnHpChanged.Broadcast();
 
@@ -517,7 +518,7 @@ void AMonster::ResetDef()
 	bIsGroggy = false;
 	GroggyEffectComponent->SetActive(false);
 
-	HpBarWidget->ToggleActive();
+	MonsterWidget->ToggleActive();
 
 }
 TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
@@ -563,7 +564,7 @@ void AMonster::SetActive()
 {
 	if (bIsDead)
 	{
-		HpBarWidget->SetHiddenInGame(true);
+		MonsterWidget->SetHiddenInGame(true);
 
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
@@ -574,7 +575,7 @@ void AMonster::SetActive()
 }
 void AMonster::MarkerOn()
 {
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	auto HpBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
 		HpBar->MarkerOn();
@@ -582,7 +583,7 @@ void AMonster::MarkerOn()
 }
 void AMonster::MarkerOff()
 {
-	auto HpBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	auto HpBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
 	if (HpBar != nullptr)
 	{
 		HpBar->MarkerOff();
@@ -888,7 +889,7 @@ void AMonster::BeginPlay()
 
 	}
 
-	auto HPBar = Cast<UHPBarWidget>(HpBarWidget->GetWidget());
+	auto HPBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
 	HPBar->BindMonster(this);
 
 	OnSpawnEffectEvent();
@@ -911,11 +912,11 @@ void AMonster::Tick(float DeltaTime)
 
 	//박찬영
 	//플레이어의 카메라 좌표와 현재 위젯의 좌표를 통해 위젯이 카메라를 바라보도록 
-	FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(HpBarWidget->GetComponentTransform().GetLocation(),
+	FRotator CameraRot = UKismetMathLibrary::FindLookAtRotation(MonsterWidget->GetComponentTransform().GetLocation(),
 		UGameplayStatics::GetPlayerCameraManager(GetWorld(), 0)->GetCameraLocation());
 
 	// Yaw 값만 변환하여 위젯이 카메라를 따라옴
-	HpBarWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	MonsterWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
 	if (bDeadWait)
@@ -936,7 +937,7 @@ void AMonster::Tick(float DeltaTime)
 		{
 			bShowUI = true;
 			ShowUITimer = 0.0f;
-			HpBarWidget->SetHiddenInGame(false);
+			MonsterWidget->SetHiddenInGame(false);
 		}
 	}
 	else
@@ -1026,7 +1027,7 @@ void AMonster::Tick(float DeltaTime)
 		if (ShowUITimer >= ShowUITime)
 		{
 			ShowUITimer = 0.0f;
-			HpBarWidget->SetHiddenInGame(true);
+			MonsterWidget->SetHiddenInGame(true);
 			bShowUI = false;
 		}
 	}

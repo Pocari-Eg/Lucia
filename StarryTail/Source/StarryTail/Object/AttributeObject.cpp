@@ -102,7 +102,7 @@ EAttributeKeyword AAttributeObject::GetAttribute()
 void AAttributeObject::BeginPlay()
 {
 	Super::BeginPlay();
-	HpBarWidget->Activate(false);
+	MonsterWidget->Activate(false);
 	MonsterInfo.MaxHp = 9999999.0f;
 	MonsterInfo.Def = 999999.0f;
 }

@@ -5,13 +5,13 @@
 #include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 
-#include "HPBarWidget.generated.h"
+#include "MonsterWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UHPBarWidget : public UUserWidget
+class STARRYTAIL_API UMonsterWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	

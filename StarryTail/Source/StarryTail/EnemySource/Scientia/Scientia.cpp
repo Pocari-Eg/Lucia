@@ -25,7 +25,7 @@ AScientia::AScientia()
 	ScInfo.BarrierCount = 3;
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
+	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
 
 	if (FeatherBlueprint.Succeeded())
 	{

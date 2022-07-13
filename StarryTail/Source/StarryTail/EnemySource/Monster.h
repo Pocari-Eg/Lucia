@@ -22,7 +22,7 @@ DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
@@ -81,7 +81,7 @@ public:
 	FDeathDelegate Death;
 
 	FOnHpDelegate OnHpChanged;
-	FOnDefDelegate OnDefChanged;
+	FOnBarrierDelegate OnBarrierChanged;
 	FOnAttributeChangeDelegate AttributeChange;
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -137,7 +137,7 @@ protected:
 		FAttackedInfo AttackedInfo;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
-		class UWidgetComponent* HpBarWidget;
+		class UWidgetComponent* MonsterWidget;
 
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
