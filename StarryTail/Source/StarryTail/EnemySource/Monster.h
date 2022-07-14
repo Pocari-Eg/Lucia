@@ -47,6 +47,7 @@ public:
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
+	EAttributeKeyword GetBarrierAttribute() const;
 
 	//현재 체력 비율 전환
 	float GetHpRatio();
@@ -211,7 +212,7 @@ protected:
 	virtual void InitCollision() {};
 	virtual void InitMesh() {};
 	virtual void InitAnime() {};
-
+	virtual void InitBarrier() {};
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

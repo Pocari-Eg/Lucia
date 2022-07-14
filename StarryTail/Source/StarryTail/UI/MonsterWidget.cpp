@@ -24,8 +24,10 @@ void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 
 		if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
 		{
-			DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
-			DefLine->SetVisibility(ESlateVisibility::Hidden);
+			//DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+			//DefLine->SetVisibility(ESlateVisibility::Hidden);
+
+			OnBarrierUI();
 		}
 	}
 }
@@ -61,6 +63,7 @@ void UMonsterWidget::UpdateHpWidget()
 void UMonsterWidget::UpdateDefWidget()
 {
 
+	OnBarrierAttributeChange();
 	
 	if (CurrentMonster != nullptr)
 	{
@@ -87,4 +90,10 @@ void UMonsterWidget::MarkerOn()
 void UMonsterWidget::MarkerOff()
 {
 	MarkerImage->SetVisibility(ESlateVisibility::Hidden);
+}
+
+EAttributeKeyword UMonsterWidget::GetBarrierAttribute()
+{
+
+	return CurrentMonster->GetBarrierAttribute();
 }

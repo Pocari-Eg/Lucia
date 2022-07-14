@@ -57,6 +57,8 @@ AMonster::AMonster()
 	InitEffect();
 
 
+	MonsterInfo.BarrierDec = 30;
+
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -208,13 +210,33 @@ bool AMonster::GetIsBattleState() const
 {
 	return bIsBattleState;
 }
+EAttributeKeyword AMonster::GetBarrierAttribute() const
+{
+	if (!MonsterInfo.bIsShieldOn)
+	{
+		return EAttributeKeyword::e_None;
+	 }
+	else {
+
+		return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type;
+	}
+}
 float AMonster::GetHpRatio()
 {
 	return MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp;
 }
 float AMonster::GetDefRatio()
 {
-	return MonsterInfo.Barrier < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.Barrier / MaxBarrier;
+	
+	//return MonsterInfo.Barrier < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.Barrier / MaxBarrier;
+
+	if (!MonsterInfo.bIsShieldOn)return 0.0f;
+	else
+	{
+		return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF / MaxBarrier;
+	}
+
+
 }
 void AMonster::ChangeAttributeDelegate()
 {
@@ -337,6 +359,84 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
 
 		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
+
+		//속성 배리어
+		if (MonsterInfo.bIsShieldOn)
+		{
+			switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
+			{
+			case EAttributeKeyword::e_Fire:
+				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Water)
+				{
+					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+					OnBarrierChanged.Broadcast();
+					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0) 
+					{
+						MonsterInfo.Ele_Shield_Count -= 1;
+					
+						if (MonsterInfo.Ele_Shield_Count < 0)
+						{
+							MonsterInfo.bIsShieldOn = false;
+							OnBarrierChanged.Broadcast();
+						}
+						else {
+						
+							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+							OnBarrierChanged.Broadcast();
+						}
+					}
+
+				}
+				break;
+			case EAttributeKeyword::e_Water:
+				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Thunder)
+				{
+					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+					OnBarrierChanged.Broadcast();
+					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+					{
+						MonsterInfo.Ele_Shield_Count -= 1;
+				
+						if (MonsterInfo.Ele_Shield_Count < 0)
+						{
+							MonsterInfo.bIsShieldOn = false;
+							OnBarrierChanged.Broadcast();
+						}
+						else {
+							
+							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+							OnBarrierChanged.Broadcast();
+						}
+					}
+				}
+				break;
+			case EAttributeKeyword::e_Thunder:
+				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Fire)
+				{
+					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+					OnBarrierChanged.Broadcast();
+					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+					{
+						
+						MonsterInfo.Ele_Shield_Count -= 1;
+						if (MonsterInfo.Ele_Shield_Count < 0)
+						{
+							MonsterInfo.bIsShieldOn = false;
+							OnBarrierChanged.Broadcast();
+						}
+						else {
+							
+							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+							OnBarrierChanged.Broadcast();
+						}
+					}
+				}
+				break;
+			default:
+				break;
+			}
+	
+	    }
 	}
 	if (Cast<ABouldelith>(this))
 	{
@@ -428,56 +528,58 @@ float AMonster::CalcBurnDamage()
 }
 void AMonster::CalcHp(float Damage)
 {
-	Damage = FMath::Abs(Damage);
+	if (!MonsterInfo.bIsShieldOn) {
+		Damage = FMath::Abs(Damage);
 
-	if (!Cast<AScientia>(this))
-	{
-		if (CheckPlayerIsBehindMonster() && !bIsBattleState)
+		if (!Cast<AScientia>(this))
 		{
-			RotationToPlayerDirection();
-			MonsterInfo.CurrentHp -= Damage * 1.5f;
+			if (CheckPlayerIsBehindMonster() && !bIsBattleState)
+			{
+				RotationToPlayerDirection();
+				MonsterInfo.CurrentHp -= Damage * 1.5f;
+			}
+			else
+			{
+				MonsterInfo.CurrentHp -= Damage;
+			}
 		}
 		else
 		{
 			MonsterInfo.CurrentHp -= Damage;
 		}
-	}
-	else
-	{
-		MonsterInfo.CurrentHp -= Damage;
-	}
 
-	if (bTestMode)
-		STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
+		if (bTestMode)
+			STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
 
-	bShowUI = true;
-	ShowUITimer = 0.0f;
-	MonsterWidget->SetHiddenInGame(false);
+		bShowUI = true;
+		ShowUITimer = 0.0f;
+		MonsterWidget->SetHiddenInGame(false);
 
-	OnHpChanged.Broadcast();
+		OnHpChanged.Broadcast();
 
-	if (MonsterInfo.CurrentHp <= 0.0f)
-	{
-		MonsterDeadEvent();
-		bIsDead = true;
-		SetActive();
-
-		MonsterAIController->Death();
-		PlayDeathAnim();
-
-
-		if (bIsSpawnEnemy) {
-			auto instnace = Cast<USTGameInstance>(GetGameInstance());
-			if(instnace!=nullptr)
-			instnace->SubEnemyCount(GetRank());
-		}
-		if (bIsBattleState)
+		if (MonsterInfo.CurrentHp <= 0.0f)
 		{
-			auto instnace = Cast<USTGameInstance>(GetGameInstance());
-			if (instnace != nullptr)
-				instnace->SubDetectedMonster();
+			MonsterDeadEvent();
+			bIsDead = true;
+			SetActive();
+
+			MonsterAIController->Death();
+			PlayDeathAnim();
+
+
+			if (bIsSpawnEnemy) {
+				auto instnace = Cast<USTGameInstance>(GetGameInstance());
+				if (instnace != nullptr)
+					instnace->SubEnemyCount(GetRank());
+			}
+			if (bIsBattleState)
+			{
+				auto instnace = Cast<USTGameInstance>(GetGameInstance());
+				if (instnace != nullptr)
+					instnace->SubDetectedMonster();
+			}
+			return;
 		}
-		return;
 	}
 }
 #pragma endregion

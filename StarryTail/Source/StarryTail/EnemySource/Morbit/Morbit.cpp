@@ -54,6 +54,13 @@ void AMorbit::InitMonsterInfo()
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
+
+	MonsterInfo.Max_Ele_Shield = 0;
+	MonsterInfo.Ele_Shield_Count = -1;
+	MonsterInfo.bIsShieldOn = false;
+
+
+	
 }
 void AMorbit::InitCollision()
 {
@@ -86,6 +93,18 @@ void AMorbit::InitAnime()
 	{
 		GetMesh()->SetAnimInstanceClass(MorbitAnim.Class);
 	}
+}
+void AMorbit::InitBarrier()
+{
+	MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
+	if (MonsterInfo.Max_Ele_Shield > 0) {
+		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield - 1;
+		MonsterInfo.bIsShieldOn = true;
+		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+		OnBarrierChanged.Broadcast();
+	}
+	OnBarrierChanged.Broadcast();
+	
 }
 #pragma endregion
 #pragma region GetValue
@@ -194,6 +213,8 @@ void AMorbit::BeginPlay()
 		});
 	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 
+
+	InitBarrier();
 }
 
 // Called every frame
