@@ -178,4 +178,5 @@ private:
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
+	void InitBarrier() override;
 };

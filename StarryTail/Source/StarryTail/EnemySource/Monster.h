@@ -190,7 +190,7 @@ private:
 	FVector AssembleLocation;
 	FVector KnockBackDir;
 	float KnockBackTimer;
-	float ShowUITimer;
+
 	float DeadWaitTimer;
 
 
@@ -198,6 +198,8 @@ private:
 	bool bIsBurn;
 	bool bIsFlooding;
 
+
+	float ShowUITimer;
 	bool bShowUI;
 	bool bIsBattleState;
 

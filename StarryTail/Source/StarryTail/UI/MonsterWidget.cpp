@@ -62,9 +62,10 @@ void UMonsterWidget::UpdateHpWidget()
 
 void UMonsterWidget::UpdateDefWidget()
 {
-
-	OnBarrierAttributeChange();
-	
+	if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
+	{
+		OnBarrierAttributeChange();
+	}
 	if (CurrentMonster != nullptr)
 	{
 		if (nullptr != DefProgressBar)
