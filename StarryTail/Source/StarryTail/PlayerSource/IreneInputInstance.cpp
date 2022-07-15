@@ -343,18 +343,16 @@ void UIreneInputInstance::RightButtonPressed()
 		switch (Irene->GetAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
-			FireQuillCount--;
 			GetWorld()->GetTimerManager().SetTimer(FireQuillWaitHandle, this, &UIreneInputInstance::FireQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Water:
-			WaterQuillCount--;
 			GetWorld()->GetTimerManager().SetTimer(WaterQuillWaitHandle, this, &UIreneInputInstance::WaterQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Thunder:
-			ThunderQuillCount--;
 			GetWorld()->GetTimerManager().SetTimer(ThunderQuillWaitHandle, this, &UIreneInputInstance::ThunderQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		}
+		Irene->IreneUIManager->PlayerHud->UseQuill();
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = Irene;
 
