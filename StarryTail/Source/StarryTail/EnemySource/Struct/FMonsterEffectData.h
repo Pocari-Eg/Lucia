@@ -29,6 +29,12 @@ public:
 		UParticleSystem* SparkEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* GroggyEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	 UParticleSystem* FireManaShieldEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* WaterManaShieldEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* ThunderManaShieldEffect;
 
 	//Rotation, Scale
 	//Hit
@@ -47,4 +53,10 @@ public:
 		FRotator GroggyEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector GroggyEffectScale;
+
+	//ManaSheild
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator ManaShieldEffectRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector ManaShieldEffectScale;
 };

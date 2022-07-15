@@ -134,19 +134,21 @@ void AMonster::InitEffect()
 	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
 	SparkEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
-
+	ManaShiledEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ManaSheildEffect"));
 
 	HitEffectComponent->SetupAttachment(GetMesh());
 	BurnEffectComponent->SetupAttachment(GetMesh());
 	FloodingEffectComponent->SetupAttachment(GetMesh());
 	SparkEffectComponent->SetupAttachment(GetMesh());
 	GroggyEffectComponent->SetupAttachment(RootComponent);
+	ManaShiledEffectComponent->SetupAttachment(GetMesh());
 
 	HitEffectComponent->bAutoActivate = false;
 	BurnEffectComponent->bAutoActivate = false;
 	FloodingEffectComponent->bAutoActivate = false;
 	SparkEffectComponent->bAutoActivate = false;
 	GroggyEffectComponent->bAutoActivate = false;
+	ManaShiledEffectComponent->bAutoActivate = false;
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
@@ -156,6 +158,9 @@ void AMonster::InitEffect()
 
 	MonsterEffect.GroggyEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.GroggyEffectScale = FVector(1.0f, 1.0f, 1.0f);
+
+	MonsterEffect.ManaShieldEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
+	MonsterEffect.ManaShieldEffectScale = FVector(1.0f, 1.0f, 1.0f);
 }
 #pragma endregion
 
@@ -295,6 +300,29 @@ void AMonster::SetEffect()
 
 	GroggyEffectComponent->SetRelativeRotation(MonsterEffect.GroggyEffectRotation);
 	GroggyEffectComponent->SetRelativeScale3D(MonsterEffect.GroggyEffectScale);
+
+	ManaShiledEffectComponent->SetRelativeRotation(MonsterEffect.ManaShieldEffectRotation);
+	ManaShiledEffectComponent->SetRelativeScale3D(MonsterEffect.ManaShieldEffectScale);
+	
+}
+
+void AMonster::SetManaShieldEffct()
+{
+	switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
+	{
+	case EAttributeKeyword::e_Fire:
+		ManaShiledEffectComponent->SetTemplate(MonsterEffect.FireManaShieldEffect);
+		break;
+	case EAttributeKeyword::e_Water:
+		ManaShiledEffectComponent->SetTemplate(MonsterEffect.WaterManaShieldEffect);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		ManaShiledEffectComponent->SetTemplate(MonsterEffect.ThunderManaShieldEffect);
+		break;
+	case EAttributeKeyword::e_None:
+		HitEffectComponent->SetActive(false);
+		break;
+	}
 }
 
 #pragma region Calc
@@ -371,83 +399,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
-		//加己 硅府绢
-		if (MonsterInfo.bIsShieldOn)
-		{
-			switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-			{
-			case EAttributeKeyword::e_Fire:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Water)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0) 
-					{
-						MonsterInfo.Ele_Shield_Count -= 1;
-					
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-						
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-
-				}
-				break;
-			case EAttributeKeyword::e_Water:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Thunder)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-					{
-						MonsterInfo.Ele_Shield_Count -= 1;
-				
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-							
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-				}
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Fire)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-					{
-						
-						MonsterInfo.Ele_Shield_Count -= 1;
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-							
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-				}
-				break;
-			default:
-				break;
-			}
-	
-	    }
+		CalcManaShield();
 	}
 	if (Cast<AScientia>(this)) {
 
@@ -461,83 +413,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		ScAIController->Attacked();
 
-		//加己 硅府绢
-		if (MonsterInfo.bIsShieldOn)
-		{
-			switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-			{
-			case EAttributeKeyword::e_Fire:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Water)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-					{
-						MonsterInfo.Ele_Shield_Count -= 1;
-
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-
-				}
-				break;
-			case EAttributeKeyword::e_Water:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Thunder)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-					{
-						MonsterInfo.Ele_Shield_Count -= 1;
-
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-				}
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Fire)
-				{
-					MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
-					OnBarrierChanged.Broadcast();
-					if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-					{
-
-						MonsterInfo.Ele_Shield_Count -= 1;
-						if (MonsterInfo.Ele_Shield_Count < 0)
-						{
-							MonsterInfo.bIsShieldOn = false;
-							OnBarrierChanged.Broadcast();
-						}
-						else {
-
-							MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-							OnBarrierChanged.Broadcast();
-						}
-					}
-				}
-				break;
-			default:
-				break;
-			}
-
-		}
+		CalcManaShield();
 	}
 	if (Cast<ABouldelith>(this))
 	{
@@ -626,6 +502,104 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 float AMonster::CalcBurnDamage()
 {
 	return MonsterAttributeDebuff.BurnDamage * 5;
+}
+void AMonster::CalcManaShield()
+{
+	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+	//加己 硅府绢
+	if (MonsterInfo.bIsShieldOn)
+	{
+		switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
+		{
+		case EAttributeKeyword::e_Fire:
+			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Water)
+			{
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+
+
+				OnBarrierChanged.Broadcast();
+				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+				{
+					MonsterInfo.Ele_Shield_Count -= 1;
+
+					if (MonsterInfo.Ele_Shield_Count < 0)
+					{
+						MonsterInfo.bIsShieldOn = false;
+						ManaShiledEffectComponent->SetActive(false);
+						ManaShiledEffectComponent->SetVisibility(false);
+						OnBarrierChanged.Broadcast();
+
+						/*HitEffectComponent->SetActive(true);
+						HitEffectComponent->ForceReset();*/
+					
+
+					}
+					else {
+
+						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+						OnBarrierChanged.Broadcast();
+						SetManaShieldEffct();
+					}
+				}
+
+			}
+			break;
+		case EAttributeKeyword::e_Water:
+			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Thunder)
+			{
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				OnBarrierChanged.Broadcast();
+				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+				{
+					MonsterInfo.Ele_Shield_Count -= 1;
+
+					if (MonsterInfo.Ele_Shield_Count < 0)
+					{
+						MonsterInfo.bIsShieldOn = false;
+						ManaShiledEffectComponent->SetActive(false);
+						ManaShiledEffectComponent->SetVisibility(false);
+						OnBarrierChanged.Broadcast();
+						
+					}
+					else {
+
+						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+						OnBarrierChanged.Broadcast();
+						SetManaShieldEffct();
+					}
+				}
+			}
+			break;
+		case EAttributeKeyword::e_Thunder:
+			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Fire)
+			{
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				OnBarrierChanged.Broadcast();
+				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+				{
+
+					MonsterInfo.Ele_Shield_Count -= 1;
+					if (MonsterInfo.Ele_Shield_Count < 0)
+					{
+						MonsterInfo.bIsShieldOn = false;
+						OnBarrierChanged.Broadcast();
+						ManaShiledEffectComponent->SetActive(false);
+						ManaShiledEffectComponent->SetVisibility(false);
+					}
+					else {
+
+						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+						OnBarrierChanged.Broadcast();
+						SetManaShieldEffct();
+					}
+				}
+			}
+			break;
+		default:
+			break;
+		}
+
+	}
 }
 void AMonster::CalcHp(float Damage)
 {
@@ -776,6 +750,7 @@ void AMonster::SetActive()
 		FloodingEffectComponent->SetActive(false);
 		SparkEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
+		ManaShiledEffectComponent->SetActive(false);
 	}
 }
 void AMonster::MarkerOn()
@@ -1066,6 +1041,20 @@ void AMonster::PlayDeathAnim()
 {
 	MonsterAnimInstance->PlayDeathMontage();
 }
+void AMonster::InitManaShield()
+{
+	MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
+	if (MonsterInfo.Max_Ele_Shield > 0) {
+		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield - 1;
+		MonsterInfo.bIsShieldOn = true;
+		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+		OnBarrierChanged.Broadcast();
+
+		SetManaShieldEffct();
+		ManaShiledEffectComponent->SetActive(true);
+	}
+	OnBarrierChanged.Broadcast();
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -1100,7 +1089,6 @@ void AMonster::BeginPlay()
 
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
-
 
 }
 void AMonster::PossessedBy(AController* NewController)
@@ -1232,7 +1220,6 @@ void AMonster::Tick(float DeltaTime)
 
 	if (bShowUI)
 	{
-		STARRYLOG(Error, TEXT("UI Time : %f"), ShowUITimer);
 		ShowUITimer += DeltaTime;
 
 		if (ShowUITimer >= ShowUITime)
