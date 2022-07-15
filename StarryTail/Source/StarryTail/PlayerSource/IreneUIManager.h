@@ -20,6 +20,10 @@ DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFireSkillCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterSkillCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderSkillCoolChangeDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FOnFireQuillCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnWaterQuillCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnThunderQuillCoolChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
 {
@@ -38,7 +42,6 @@ private:
 	FTimerHandle HpRecoveryTimerHandle;
 	FTimerHandle HpRecoveryWaitTimerHandle;
 
-
 	float FireMaxCoolTime;
 	float FireCurCoolTime;
 
@@ -48,21 +51,27 @@ private:
 	float ThunderMaxCoolTime;
 	float ThunderCurCoolTime;
 
-
-
 	float FireSkillMaxCoolTime;
 	float FireSkillCurCoolTime;
-
 
 	float WaterSkillMaxCoolTime;
 	float WaterSkillCurCoolTime;
 
-
 	float ThunderSkillMaxCoolTime;
 	float ThunderSkillCurCoolTime;
+
+	float FireQuillMaxCoolTime;
+	float FireQuillCurCoolTime;
+
+	float WaterQuillMaxCoolTime;
+	float WaterQuillCurCoolTime;
+
+	float ThunderQuillMaxCoolTime;
+	float ThunderQuillCurCoolTime;
 public:
 	// 로그 출력용
 	bool bShowLog;
+
 #pragma region HUD
 	FOnHpChangeDelegate OnHpChanged;
 	FOnMpChangeDelegate OnStaminaChanged;
@@ -76,6 +85,10 @@ public:
 	FOnFireSkillCoolChangeDelegate OnFireSkillCoolChange;
 	FOnWaterSkillCoolChangeDelegate OnWaterSkillCoolChange;
 	FOnThunderSkillCoolChangeDelegate OnThunderSkillCoolChange;
+
+	FOnFireQuillCoolChangeDelegate OnFireQuillCoolChange;
+	FOnWaterQuillCoolChangeDelegate OnWaterQuillCoolChange;
+	FOnThunderQuillCoolChangeDelegate OnThunderQuillCoolChange;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -98,13 +111,11 @@ public:
 	class UFMODEvent* AttackEvent;
 	class UFMODEvent* WalkEvent;
 	class UFMODEvent* AttackVoiceEvent;
-	class UFMODEvent* JumpVoiceEvent;
 	class UFMODEvent* TakeDamageVoiceEvent;
 	//사운드 
 	SoundManager* WalkSound;
 	SoundManager* AttackSound;
 	SoundManager* AttackVoiceSound;
-	SoundManager* JumpVoiceSound;
 	SoundManager* TakeDamageVoiceSound;
 	float AttackSoundParameter;
 #pragma endregion Sound
@@ -134,7 +145,6 @@ public:
 	void Begin();
 
 #pragma region HUDPublic
-	// 
 	//회복 대기 시작
 	void HPRecoveryWaitStart();
 	//회보 대기 취소
@@ -170,14 +180,30 @@ public:
 	float GetWaterSkillCoolRatio();
 	float GetThunderSkillCoolRatio();
 
+	float GetFireQuillCoolRatio();
+	float GetWaterQuillCoolRatio();
+	float GetThunderQuillCoolRatio();
+	
 	int  GetSkillCount();
 	void  SetSkillCount(int Value);
+
+	int  GetFireQuillCount();
+	void  SetFireQuillCount(int Value);
+	int  GetWaterQuillCount();
+	void  SetWaterQuillCount(int Value);
+	int  GetThunderQuillCount();
+	void  SetThunderQuillCount(int Value);
+	
 	void PlayHUDAnimation();
 
 	void UpdateFireSkillCool(float CurCool, float MaxCool);
 	void UpdateWaterSkillCool(float CurCool, float MaxCool);
 	void UpdateThunderSkillCool(float CurCool, float MaxCool);
 
+	void UpdateFireQuillCool(float CurCool, float MaxCool);
+	void UpdateWaterQuillCool(float CurCool, float MaxCool);
+	void UpdateThunderQuillCool(float CurCool, float MaxCool);
+	
 	void SetDialogState(const bool State);
 #pragma endregion HUDPublic
 

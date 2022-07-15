@@ -7,6 +7,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
+#include "Quill.h"
 #include "../STGameInstance.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
@@ -51,8 +52,23 @@ void UIreneInputInstance::InitMemberVariable()
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	ThunderCurCoolTime = 0.0f;
-
-
+	
+	MaxFireQuillCount = 3;
+	MaxWaterQuillCount=3;
+	MaxThunderQuillCount=3;
+	FireQuillCount = MaxFireQuillCount;
+	WaterQuillCount = MaxWaterQuillCount;
+	ThunderQuillCount = MaxThunderQuillCount;
+	FireQuillCoolTime = 0.0f;
+	WaterQuillCoolTime = 0.0f;
+	ThunderQuillCoolTime = 0.0f;
+	bIsFireQuillOn = true;
+	bIsWaterQuillOn = true;
+	bIsThunderQuillOn = true;	
+	MaxFireQuillCoolTime = 3.0f;
+	MaxWaterQuillCoolTime = 3.0f;
+	MaxThunderQuillCoolTime = 3.0f;
+	
 	CoolTimeRate = 0.008f;
 	FireSkillCoolTime = 0.0f;
 	WaterSkillCoolTime = 0.0f;
@@ -145,20 +161,6 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 		}
 	}
 }
-
-void UIreneInputInstance::StartJump()
-{
-	if (CanJumpState() && ((Irene->IreneState->IsAttackState()||Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip() || (!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
-	{
-		Irene->IreneAnim->StopAllMontages(0.01f);
-		Irene->bPressedJump = true;
-		Irene->ChangeStateAndLog(UJumpStartState::GetInstance());
-	}
-}
-void UIreneInputInstance::StopJump()
-{
-	Irene->bPressedJump = false;
-}
 #pragma endregion Move
 
 #pragma region MoveInput
@@ -249,7 +251,6 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 #pragma region Input
 void UIreneInputInstance::Turn(float Rate)
 {
-
 	// 마우스 좌우 이동
 	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
 		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 2);
@@ -268,7 +269,7 @@ void UIreneInputInstance::LookUp(float Rate)
 }
 
 void UIreneInputInstance::LeftButton(float Rate)
-{
+{	
 	if(Rate != 0)
 		bLeftButtonPressed = true;
 	else
@@ -322,149 +323,66 @@ void UIreneInputInstance::LeftButton(float Rate)
 		}
 	}
 }
-void UIreneInputInstance::RightButton(const float DeltaTime)const
-{
-	if(IsCharging == true && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
-	{
-		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-
-		if(AttackTable != nullptr)
-		{
-			if(ChargingTime > AttackTable->Charge_Time_3/100.0f)
-			{
-				Irene->IreneAnim->SetFireChargeCount(2);
-			}
-			else if(ChargingTime > AttackTable->Charge_Time_2/100.0f)
-			{
-				Irene->IreneAnim->SetFireChargeCount(1);
-			}
-			else if(ChargingTime > AttackTable->Charge_Time_1/100.0f)
-			{
-				Irene->IreneAnim->SetFireChargeCount(0);
-			}
-		}
-	}
-}
 void UIreneInputInstance::RightButtonPressed()
 {
-	bRightButtonPressed = true;
-	if (CanAttackState() && !bUseLeftButton && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
+	int CurrentAttributeQuillCount = 0;
+	switch (Irene->GetAttribute())
 	{
-		Irene->STGameInstance->SetLocation(Irene->GetActorLocation());
-		IsCharging = true;
-		ChargingTime = 0.0f;		
-
-		Irene->SetActorRotation(GetMoveKeyToDirVector().Rotation());
-
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && bIsFireSkillOn)
+	case EAttributeKeyword::e_Fire:
+		CurrentAttributeQuillCount = FireQuillCount;
+		break;
+	case EAttributeKeyword::e_Water:
+		CurrentAttributeQuillCount = WaterQuillCount;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		CurrentAttributeQuillCount = ThunderQuillCount;
+		break;
+	}
+	if(CurrentAttributeQuillCount > 0)
+	{
+		switch (Irene->GetAttribute())
 		{
-			bUseRightButton = true;
-			
-			//Irene->IreneAttack->SetSkillState();
-			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxFireSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
-			bIsFireSkillOn = false;
-
-			if (AttackTable != nullptr && !Irene->IreneState->IsChargeState())
-			{
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->ChangeStateAndLog(UCharge1State::GetInstance());
-			}
+		case EAttributeKeyword::e_Fire:
+			FireQuillCount--;
+			GetWorld()->GetTimerManager().SetTimer(FireQuillWaitHandle, this, &UIreneInputInstance::FireQuillWait, CoolTimeRate, true, 0.0f);
+			break;
+		case EAttributeKeyword::e_Water:
+			WaterQuillCount--;
+			GetWorld()->GetTimerManager().SetTimer(WaterQuillWaitHandle, this, &UIreneInputInstance::WaterQuillWait, CoolTimeRate, true, 0.0f);
+			break;
+		case EAttributeKeyword::e_Thunder:
+			ThunderQuillCount--;
+			GetWorld()->GetTimerManager().SetTimer(ThunderQuillWaitHandle, this, &UIreneInputInstance::ThunderQuillWait, CoolTimeRate, true, 0.0f);
+			break;
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && bIsWaterSkillOn)
-		{
-			bUseRightButton = true;
-			
-			Irene->IreneAttack->SetSkillState();
-			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-			MaxWaterSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
-			bIsWaterSkillOn = false;
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = Irene;
 
-			if (AttackTable != nullptr)
-			{
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->IreneAnim->PlaySkillAttackMontage();
-				GetWorld()->GetTimerManager().SetTimer(WaterSkillWaitHandle, this, &UIreneInputInstance::WaterSkillWait, CoolTimeRate, true, 0.0f);
-				Irene->IreneUIManager->PlayerHud->UseSkill();
-			}
+		const FRotator Rotator = Irene->GetActorRotation() + FRotator(-90,-10,0);
+		const FVector SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*50 + Irene->GetActorUpVector()*70;
+		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
+		SpawnedActor->Attribute = Irene->GetAttribute();
+		SpawnedActor->MoveSpeed = 1500;
+		SpawnedActor->Distance = 750;
+		SpawnedActor->Strength = 100;
+		
+		if(Irene->IreneAttack->TargetMonster != nullptr)
+		{
+			SpawnedActor->Target = Irene->IreneAttack->TargetMonster;
 		}
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && (!Irene->IreneState->IsSkillState() || Irene->IreneAttack->GetCanSkillSkip()) && bIsThunderSkillOn)
+		else if(Irene->IreneAttack->TargetMonster == nullptr && Irene->IreneAttack->CanThrowQuillMonster != nullptr)
 		{
-			if(ThunderSkillCount > 0 && !bUseRightButton)
-			{
-				bUseRightButton = true;
-				Irene->IreneAttack->SetSkillState();
-				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
-				MaxThunderSkillCoolTime = static_cast<float>(AttackTable->C_Time) / 1000.0f;
-
-				if (AttackTable != nullptr && bUseRightButton)
-				{
-					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-					Irene->IreneAnim->PlaySkillAttackMontage();
-					if (ThunderSkillCount > 0)
-					{
-						if (ThunderSkillCount == MaxThunderSkillCount)
-						{
-							GetWorld()->GetTimerManager().SetTimer(ThunderSkillWaitHandle, this, &UIreneInputInstance::ThunderSkillWait, CoolTimeRate, true, 0.0f);
-						}
-					}
-					else
-					{
-						bIsThunderSkillOn = false;
-					}
-				}
-				Irene->IreneUIManager->PlayerHud->UseSkill();
-			}
-			else
-			{
-				IsCharging = false;
-				ChargingTime = 0.0f;
-				bUseRightButton = false;
-			}
+			SpawnedActor->Target = Irene->IreneAttack->CanThrowQuillMonster;
+		}
+		else 
+		{			
+			SpawnedActor->Target = nullptr;
 		}
 	}
 }
 void UIreneInputInstance::RightButtonReleased()
 {
-	bRightButtonPressed = false;
-	if (CanAttackState() && !bUseLeftButton && bUseRightButton && !bIsDialogOn && !Irene->IreneState->IsFireSkillState())
-	{
-		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetActionAttackDataTableName()));
 
-		IsCharging = false;
-
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
-		{
-			if (AttackTable != nullptr && bUseRightButton)
-			{
-				GetWorld()->GetTimerManager().SetTimer(FireSkillWaitHandle, this, &UIreneInputInstance::FireSkillWait, CoolTimeRate, true, 0.0f);
-				Irene->IreneUIManager->PlayerHud->UseSkill();
-				Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
-				if(ChargingTime > AttackTable->Charge_Time_3/100.0f)
-				{
-					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_3;
-					Irene->IreneAnim->PlaySkillAttackMontage(2);
-				}
-				else if(ChargingTime > AttackTable->Charge_Time_2/100.0f)
-				{
-					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_2;
-					Irene->IreneAnim->PlaySkillAttackMontage();
-				}
-				else if(ChargingTime > AttackTable->Charge_Time_1/100.0f)
-				{
-					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-					Irene->IreneAnim->PlaySkillAttackMontage();
-				}
-				else
-				{
-					bUseRightButton = false;
-					Irene->ChangeStateAndLog(UIdleState::GetInstance());
-				}
-			}			
-		}
-		Irene->IreneAnim->SetFireChargeCount(0);
-		ChargingTime = 0.0f;
-	}
 }
 
 void UIreneInputInstance::MouseWheel(float Rate)
@@ -525,24 +443,16 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 1.0f);
-		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
-		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 2.0f);
-
-		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
-		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
 	}
 	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 3.0f);
-
-		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[2]);
-		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[2]);
 	}
 	// 속성 마다 변화 쿨타임 타이머 시작
  	bIsThunderAttributeOn = false;
@@ -898,5 +808,73 @@ void UIreneInputInstance::ThunderSkillWait()
 		Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
 	}
 }
-
+void UIreneInputInstance::FireQuillWait()
+{
+	FireQuillCoolTime += CoolTimeRate;
+	if (FireQuillCoolTime > MaxFireQuillCoolTime)
+	{
+		bIsFireQuillOn = true;
+		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCoolTime, MaxFireQuillCoolTime);
+		Irene->IreneUIManager->OnFireQuillCoolChange.Broadcast();
+		FireQuillCoolTime = 0.0f;
+		if (FireQuillCount < MaxFireQuillCount)
+		{
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(FireQuillWaitHandle);
+		}
+	}
+	else
+	{
+		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCoolTime, MaxFireQuillCoolTime);
+		Irene->IreneUIManager->OnFireQuillCoolChange.Broadcast();
+	}
+}
+void UIreneInputInstance::WaterQuillWait()
+{
+	WaterQuillCoolTime += CoolTimeRate;
+	if (WaterQuillCoolTime > MaxWaterQuillCoolTime)
+	{
+		bIsWaterQuillOn = true;
+		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCoolTime, MaxWaterQuillCoolTime);
+		Irene->IreneUIManager->OnWaterQuillCoolChange.Broadcast();
+		WaterQuillCoolTime = 0.0f;
+		if (WaterQuillCount < MaxWaterQuillCount)
+		{
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(WaterQuillWaitHandle);
+		}
+	}
+	else
+	{
+		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCoolTime, MaxWaterQuillCoolTime);
+		Irene->IreneUIManager->OnWaterQuillCoolChange.Broadcast();
+	}
+}
+void UIreneInputInstance::ThunderQuillWait()
+{
+	ThunderQuillCoolTime += CoolTimeRate;
+	if (ThunderQuillCoolTime > MaxThunderQuillCoolTime)
+	{
+		bIsThunderQuillOn = true;
+		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCoolTime, MaxThunderQuillCoolTime);
+		Irene->IreneUIManager->OnThunderQuillCoolChange.Broadcast();
+		ThunderQuillCoolTime = 0.0f;
+		if (ThunderQuillCount < MaxThunderQuillCount)
+		{
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(ThunderQuillWaitHandle);
+		}
+	}
+	else
+	{
+		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCoolTime, MaxThunderQuillCoolTime);
+		Irene->IreneUIManager->OnThunderQuillCoolChange.Broadcast();
+	}
+}
 #pragma endregion GetSet
