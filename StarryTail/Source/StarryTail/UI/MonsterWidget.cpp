@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "HPBarWidget.h"
+#include "MonsterWidget.h"
 #include "../EnemySource/Monster.h"
 #include "Components/Image.h"
 #include "Components/ProgressBar.h"
 
-void UHPBarWidget::BindMonster(class AMonster* NewMonster)
+void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 {
 	
 	//새로들어온 Monster를 CurrentMonster에 할당
@@ -19,20 +19,22 @@ void UHPBarWidget::BindMonster(class AMonster* NewMonster)
 	else {
 
 		//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
-		CurrentMonster->OnHpChanged.AddUObject(this, &UHPBarWidget::UpdateHpWidget);
-		CurrentMonster->OnDefChanged.AddUObject(this, &UHPBarWidget::UpdateDefWidget);
+		CurrentMonster->OnHpChanged.AddUObject(this, &UMonsterWidget::UpdateHpWidget);
+		CurrentMonster->OnBarrierChanged.AddUObject(this, &UMonsterWidget::UpdateDefWidget);
 
 		if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
 		{
-			DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
-			DefLine->SetVisibility(ESlateVisibility::Hidden);
+			//DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+			//DefLine->SetVisibility(ESlateVisibility::Hidden);
+
+			OnBarrierUI();
 		}
 	}
 }
 
 
 
-void UHPBarWidget::NativeOnInitialized()
+void UMonsterWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();
 
@@ -44,7 +46,7 @@ void UHPBarWidget::NativeOnInitialized()
 }
 
 
-void UHPBarWidget::UpdateHpWidget()
+void UMonsterWidget::UpdateHpWidget()
 {
 
 
@@ -58,10 +60,12 @@ void UHPBarWidget::UpdateHpWidget()
 	
 }
 
-void UHPBarWidget::UpdateDefWidget()
+void UMonsterWidget::UpdateDefWidget()
 {
-
-	
+	if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
+	{
+		OnBarrierAttributeChange();
+	}
 	if (CurrentMonster != nullptr)
 	{
 		if (nullptr != DefProgressBar)
@@ -71,7 +75,7 @@ void UHPBarWidget::UpdateDefWidget()
 	}
 }
 
-void UHPBarWidget::SetColor(FLinearColor Color)
+void UMonsterWidget::SetColor(FLinearColor Color)
 {
 	if (nullptr != HPProgressBar)
 	{
@@ -79,12 +83,18 @@ void UHPBarWidget::SetColor(FLinearColor Color)
 	}
 }
 
-void UHPBarWidget::MarkerOn()
+void UMonsterWidget::MarkerOn()
 {
 	MarkerImage->SetVisibility(ESlateVisibility::Visible);
 }
 
-void UHPBarWidget::MarkerOff()
+void UMonsterWidget::MarkerOff()
 {
 	MarkerImage->SetVisibility(ESlateVisibility::Hidden);
+}
+
+EAttributeKeyword UMonsterWidget::GetBarrierAttribute()
+{
+
+	return CurrentMonster->GetBarrierAttribute();
 }

@@ -25,7 +25,7 @@ AScientia::AScientia()
 	ScInfo.BarrierCount = 3;
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	HpBarWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 380));
+	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 540.0f));
 
 	if (FeatherBlueprint.Succeeded())
 	{
@@ -35,6 +35,8 @@ AScientia::AScientia()
 	{
 		PieceBP = PieceBlueprint.Class;
 	}
+
+	SetActorScale3D(FVector(0.5f, 0.5f, 0.5f));
 }
 void AScientia::InitMonsterInfo()
 {
@@ -49,9 +51,11 @@ void AScientia::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Raid;
+	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
 
-	
+	MonsterInfo.Max_Ele_Shield = 0;
+	MonsterInfo.Ele_Shield_Count = -1;
+	MonsterInfo.bIsShieldOn = false;
 }
 void AScientia::InitCollision()
 {
@@ -84,6 +88,18 @@ void AScientia::InitAnime()
 void AScientia::InitScInfo()
 {
 	ScInfo.AttributeSettingTime = 1.0f;
+}
+
+void AScientia::InitBarrier()
+{
+	MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
+	if (MonsterInfo.Max_Ele_Shield > 0) {
+		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield - 1;
+		MonsterInfo.bIsShieldOn = true;
+		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+		OnBarrierChanged.Broadcast();
+	}
+	OnBarrierChanged.Broadcast();
 }
 #pragma endregion
 #pragma region Get
@@ -718,11 +734,12 @@ void AScientia::BeginPlay()
 	ScAnimInstance->AddFeather.AddUObject(this, &AScientia::AddFeatherCount);
 
 	
-	auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	/*auto Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 	if (Irene != nullptr) {
 		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
-	}
+	}*/
 	
+	InitBarrier();
 }
 
 void AScientia::PossessedBy(AController* NewController)

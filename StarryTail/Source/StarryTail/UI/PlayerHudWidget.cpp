@@ -21,9 +21,9 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
 	NewIrene->IreneUIManager->OnThunderCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderCoolTime);
 
-	NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
+	/*NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
 	NewIrene->IreneUIManager->OnWaterSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterSkillCoolTime);
-	NewIrene->IreneUIManager->OnThunderSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderSkillCoolTime);
+	NewIrene->IreneUIManager->OnThunderSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderSkillCoolTime);*/
 
 	NewIrene->IreneUIManager->OnFireQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireQuillCoolTime);
 	NewIrene->IreneUIManager->OnWaterQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterQuillCoolTime);
@@ -132,7 +132,7 @@ void UPlayerHudWidget::SkipDialog()
 	ScriptData.SetNum(0); 
 }
 
-void UPlayerHudWidget::UseSkill()
+/*void UPlayerHudWidget::UseSkill()
 {
 
 	STARRYLOG_S(Error);
@@ -159,6 +159,44 @@ void UPlayerHudWidget::UseSkill()
 		int Count = CurrentIrene->IreneUIManager->GetSkillCount() - 1;
 		CurrentIrene->IreneUIManager->SetSkillCount(Count);
 		ThunderSkillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
+	}
+
+	
+
+
+}
+*/
+void UPlayerHudWidget::UseQuill()
+{
+	int Count;
+	STARRYLOG_S(Error);
+	switch (CurrentIrene->GetAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		STARRYLOG_S(Error);
+		//FireSkill.Active->SetVisibility(ESlateVisibility::Hidden);
+		FireQuill.Active->SetVisibility(ESlateVisibility::Hidden);
+		Count = CurrentIrene->IreneUIManager->GetFireQuillCount() - 1;
+		CurrentIrene->IreneUIManager->SetFireQuillCount(Count);
+		FireQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case EAttributeKeyword::e_Water:
+		STARRYLOG_S(Error);
+		//WaterSkill.Active->SetVisibility(ESlateVisibility::Hidden);
+		WaterQuill.Active->SetVisibility(ESlateVisibility::Hidden);
+		Count = CurrentIrene->IreneUIManager->GetWaterQuillCount() - 1;
+		CurrentIrene->IreneUIManager->SetWaterQuillCount(Count);
+		WaterQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		STARRYLOG_S(Error);
+		ThunderQuill.Active->SetVisibility(ESlateVisibility::Hidden);
+		Count = CurrentIrene->IreneUIManager->GetThunderQuillCount() - 1;
+		CurrentIrene->IreneUIManager->SetThunderQuillCount(Count);
+		ThunderQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
+		break;
+	default:
+		break;
 	}
 }
 
@@ -351,7 +389,7 @@ void UPlayerHudWidget::UpdateThunderCoolTime()
 
 
 
-void UPlayerHudWidget::UpdateFireSkillCoolTime()
+/*void UPlayerHudWidget::UpdateFireSkillCoolTime()
 {
 	if (CurrentIrene != nullptr)
 	{
@@ -412,7 +450,7 @@ void UPlayerHudWidget::UpdateThunderSkillCoolTime()
 			}
 		}
 	}
-}
+}*/
 void UPlayerHudWidget::UpdateFireQuillCoolTime()
 {
 	if (CurrentIrene != nullptr)
@@ -598,27 +636,44 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Thunder.Active = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Active")));
 	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
 
-	FireSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("FireSkillOff")));
-	FireSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("FireSkillOn")));
-	FireSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireSkill_CoolTime")));
+	FireQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("FireQuillOff")));
+	FireQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("FireQuillOn")));
+	FireQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireQuill_CoolTime")));
 
-	WaterSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("WaterSkillOff")));
-	WaterSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("WaterSkillOn")));
-	WaterSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterSkill_CoolTime")));
+	WaterQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("WaterSQuillOff")));
+	WaterQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuillOn")));
+	WaterQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterQuill_CoolTime")));
 
-	ThunderSkill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("ThunderSkillOff")));
-	ThunderSkill.Active = Cast<UImage>(GetWidgetFromName(TEXT("ThunderSkillOn")));
-	ThunderSkill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ThunderSkill_CoolTime")));
+	ThunderQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuillOff")));
+	ThunderQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuillOn")));
+	ThunderQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ThunderQuill_CoolTime")));
+
+
+
 	
-	ThunderSKillCount.SetNum(2);
-	ThunderSkillActive.SetNum(2);
+	QuillCount.SetNum(3);
 
-	ThunderSKillCount[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1")));
-	ThunderSKillCount[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2")));
+    QuillCount[0] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_1")));
+	QuillCount[1] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_2")));
+    QuillCount[2] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_3")));
 
-	ThunderSkillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1_Acitve")));
-	ThunderSkillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2_Acitve")));
-	
+	FireQuillActive.SetNum(3);
+	FireQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_1_Acitve")));
+	FireQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_2_Acitve")));
+	FireQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_3_Acitve")));
+
+
+	WaterQuillActive.SetNum(3);
+	WaterQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_1_Acitve")));
+	WaterQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_2_Acitve")));
+	WaterQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_3_Acitve")));
+
+
+	ThunderQuillActive.SetNum(3);
+	ThunderQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_1_Acitve")));
+	ThunderQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_2_Acitve")));
+	ThunderQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_3_Acitve")));
+
 	isFirst = true;
 	ActionWidgetOff();
 }

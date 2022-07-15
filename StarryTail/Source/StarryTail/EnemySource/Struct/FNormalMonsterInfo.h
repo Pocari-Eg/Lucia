@@ -6,7 +6,17 @@
 #include "../../StarryTail.h"
 #include "FNormalMonsterInfo.generated.h"
 
+USTRUCT(Atomic, BluePrintType)
+struct FElementalShield
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int DEF;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EAttributeKeyword Type;
 
+};
 USTRUCT(Atomic, BluePrintType)
 struct FNormalMonsterInfo
 {
@@ -58,7 +68,18 @@ public:
 		float CriticalValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEnemyRank EnemyRank; // 몬스터 등급
+
+	//Shield;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int Max_Ele_Shield;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<FElementalShield> Ele_Shield; // 몬스터 등급
+	int Ele_Shield_Count;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	bool bIsShieldOn;
    
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int BarrierDec;
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

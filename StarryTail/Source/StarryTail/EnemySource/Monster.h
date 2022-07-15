@@ -22,7 +22,7 @@ DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnDefDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
@@ -47,6 +47,7 @@ public:
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
+	EAttributeKeyword GetBarrierAttribute() const;
 
 	//현재 체력 비율 전환
 	float GetHpRatio();
@@ -81,7 +82,7 @@ public:
 	FDeathDelegate Death;
 
 	FOnHpDelegate OnHpChanged;
-	FOnDefDelegate OnDefChanged;
+	FOnBarrierDelegate OnBarrierChanged;
 	FOnAttributeChangeDelegate AttributeChange;
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -137,7 +138,7 @@ protected:
 		FAttackedInfo AttackedInfo;
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
-		class UWidgetComponent* HpBarWidget;
+		class UWidgetComponent* MonsterWidget;
 
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
@@ -189,7 +190,7 @@ private:
 	FVector AssembleLocation;
 	FVector KnockBackDir;
 	float KnockBackTimer;
-	float ShowUITimer;
+
 	float DeadWaitTimer;
 
 
@@ -197,6 +198,8 @@ private:
 	bool bIsBurn;
 	bool bIsFlooding;
 
+
+	float ShowUITimer;
 	bool bShowUI;
 	bool bIsBattleState;
 
@@ -211,7 +214,7 @@ protected:
 	virtual void InitCollision() {};
 	virtual void InitMesh() {};
 	virtual void InitAnime() {};
-
+	virtual void InitBarrier() {};
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 

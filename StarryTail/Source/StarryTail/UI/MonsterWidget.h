@@ -5,13 +5,13 @@
 #include "../StarryTail.h"
 #include "Blueprint/UserWidget.h"
 
-#include "HPBarWidget.generated.h"
+#include "MonsterWidget.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UHPBarWidget : public UUserWidget
+class STARRYTAIL_API UMonsterWidget : public UUserWidget
 {
 	GENERATED_BODY()
 	
@@ -27,6 +27,14 @@ public:
 	void MarkerOn();
 
 	void MarkerOff();
+
+	UFUNCTION(BluePrintCallable)
+	EAttributeKeyword GetBarrierAttribute();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnBarrierUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnBarrierAttributeChange();
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;
@@ -47,4 +55,7 @@ private:
 	class UImage* DefLine;
 	UPROPERTY()
 	class UImage* MarkerImage;
+
+
+
 };

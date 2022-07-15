@@ -300,13 +300,13 @@ void UIreneUIManager::UpdateFireQuillCool(float CurCool, float MaxCool)
 }
 void UIreneUIManager::UpdateWaterQuillCool(float CurCool, float MaxCool)
 {
-	FireQuillCurCoolTime = CurCool;
-	FireQuillMaxCoolTime = MaxCool;
+	WaterQuillCurCoolTime = CurCool;
+	WaterQuillMaxCoolTime = MaxCool;
 }
 void UIreneUIManager::UpdateThunderQuillCool(float CurCool, float MaxCool)
 {
-	FireQuillCurCoolTime = CurCool;
-	FireQuillMaxCoolTime = MaxCool;
+	ThunderQuillCurCoolTime = CurCool;
+	ThunderQuillMaxCoolTime = MaxCool;
 }
 
 

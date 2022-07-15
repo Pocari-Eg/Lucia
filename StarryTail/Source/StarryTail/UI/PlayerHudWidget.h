@@ -90,8 +90,8 @@ public:
 	void SkipDialog();
 
 
-	void UseSkill();
-
+//	void UseSkill();
+	void UseQuill();
 	UFUNCTION(BluePrintCallable)
 	EAttributeKeyword GetAttriburte();
 
@@ -109,9 +109,9 @@ private:
 	void UpdateWaterCoolTime();
 	void UpdateThunderCoolTime();
 
-	void UpdateFireSkillCoolTime();
+	/*void UpdateFireSkillCoolTime();
 	void UpdateWaterSkillCoolTime();
-	void UpdateThunderSkillCoolTime();
+	void UpdateThunderSkillCoolTime();*/
 
 	void UpdateFireQuillCoolTime();
 	void UpdateWaterQuillCoolTime();
@@ -150,24 +150,32 @@ private:
 	class UUserWidget* ActionWidget;
 
 	FSkillImageData Fire;
-	FSkillImageData FireSkill;
+	//FSkillImageData FireSkill;
 
 	FSkillImageData Water;
-	FSkillImageData WaterSkill;
+	//FSkillImageData WaterSkill;
 
 	FSkillImageData Thunder;
-	FSkillImageData ThunderSkill;
+	//FSkillImageData ThunderSkill;
 
 	FSkillImageData FireQuill;
-	FSkillImageData WaterQuill;
-	FSkillImageData ThunderQuill;
-
 	TArray<UImage*> FireQuillActive;
-	TArray<UImage*> WaterQuillActive;
-	TArray<UImage*> ThunderQuillActive;
 	
-	TArray<UImage*> ThunderSKillCount;
-	TArray<UImage*> ThunderSkillActive;
+
+	FSkillImageData WaterQuill;
+	TArray<UImage*> WaterQuillActive;
+	
+	//TArray<UImage*> ThunderSKillCount;
+	//TArray<UImage*> ThunderSkillActive;
+
+	FSkillImageData ThunderQuill;
+	TArray<UImage*> ThunderQuillActive;
+
+
+
+	TArray<UImage*> QuillCount;
+
+
 	bool isFirst;
 
 	TArray<FScriptData*> ScriptData;
