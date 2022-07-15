@@ -90,17 +90,7 @@ void AScientia::InitScInfo()
 	ScInfo.AttributeSettingTime = 1.0f;
 }
 
-void AScientia::InitBarrier()
-{
-	MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
-	if (MonsterInfo.Max_Ele_Shield > 0) {
-		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield - 1;
-		MonsterInfo.bIsShieldOn = true;
-		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-		OnBarrierChanged.Broadcast();
-	}
-	OnBarrierChanged.Broadcast();
-}
+
 #pragma endregion
 #pragma region Get
 FString AScientia::GetState()
@@ -739,7 +729,6 @@ void AScientia::BeginPlay()
 		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
 	}*/
 	
-	InitBarrier();
 }
 
 void AScientia::PossessedBy(AController* NewController)

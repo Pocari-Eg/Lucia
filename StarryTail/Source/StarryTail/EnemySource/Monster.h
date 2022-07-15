@@ -99,6 +99,10 @@ public:
 	//스폰 생성 몬스터 설정
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
+
+
+	UFUNCTION(BlueprintCallable)
+	void InitManaShield();
 protected:
 	//Function
 	void InitDebuffInfo();
@@ -113,6 +117,7 @@ protected:
 	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
 	float CalcBurnDamage();
+	void CalcManaShield();
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 	//Variable
@@ -134,6 +139,8 @@ protected:
 		UParticleSystemComponent* SparkEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ManaShiledEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	//박찬영 UI
@@ -174,6 +181,7 @@ private:
 	bool CheckPlayerIsBehindMonster();
 
 	void SetEffect();
+	void SetManaShieldEffct();
 
 	void Burn();
 	void Flooding();
@@ -214,7 +222,7 @@ protected:
 	virtual void InitCollision() {};
 	virtual void InitMesh() {};
 	virtual void InitAnime() {};
-	virtual void InitBarrier() {};
+  
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
