@@ -772,7 +772,6 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 {
 	const float JumpTime = CurState->Irene->IreneInput->GetJumpingTime();
 	CurState->Irene->IreneInput->SetJumpingTime(JumpTime + CurState->PlayTime - CurrentTime);
-	CurState->Irene->GetCharacterMovement()->GravityScale = CurState->Irene->JumpGravityCurve->GetFloatValue(JumpTime);
 	CurrentTime = CurState->PlayTime;
 	// 점프 상태 중 키입력에 따라 바닥에 도착할 경우 정지, 걷기, 달리기 상태 지정
 	if (!CurState->Irene->GetCharacterMovement()->IsFalling())
