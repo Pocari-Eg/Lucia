@@ -17,6 +17,10 @@ public:
 	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
 	AActor* TargetMonster;
+
+	UPROPERTY()
+	// 깃펜을 보낼 수 있는 몬스터 또는 오브젝트
+	AActor* CanThrowQuillMonster;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -103,7 +107,7 @@ public:
 	bool GetCanReAttackSkip()const{return bReAttackSkip;}
 	bool GetCanSkillSkip()const{return bSkillSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
-	
+
 	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
@@ -117,7 +121,6 @@ public:
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
-
 #pragma endregion GetSet
 
 private:

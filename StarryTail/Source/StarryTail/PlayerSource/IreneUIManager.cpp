@@ -21,7 +21,6 @@ UIreneUIManager::UIreneUIManager()
 	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
 	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
 	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_AttackVoice");
-	JumpVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_JumpVoice");
 	TakeDamageVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_TakeDamageVoice");
 
 	bShowLog = false;
@@ -45,9 +44,7 @@ void UIreneUIManager::Init(AIreneCharacter* Value)
 	AttackSound = new SoundManager(AttackEvent, GetWorld());
 	WalkSound = new SoundManager(WalkEvent, GetWorld());
 	AttackVoiceSound= new SoundManager(AttackVoiceEvent, GetWorld());
-	JumpVoiceSound = new SoundManager(JumpVoiceEvent, GetWorld());
 	TakeDamageVoiceSound = new SoundManager(TakeDamageVoiceEvent, GetWorld());
-
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
@@ -59,8 +56,7 @@ void UIreneUIManager::InitMemberVariable()
 }
 void UIreneUIManager::Begin()
 {
-	PauseWidget->AddToViewport();
-	
+	PauseWidget->AddToViewport();	
 
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
@@ -70,13 +66,10 @@ void UIreneUIManager::Begin()
 
 	AttackSound->SetVolume(0.3f);
 	AttackSound->SetParameter("Attributes", 2.0f);
-
 	
 	AttackVoiceSound->SetVolume(0.3f);
 	AttackVoiceSound->SetParameter("Attributes", 2.0f);
 
-
-	JumpVoiceSound->SetVolume(0.4f);
 	TakeDamageVoiceSound->SetVolume(0.4f);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	bIsOnPauseWidget = false;
@@ -224,6 +217,19 @@ float UIreneUIManager::GetThunderSkillCoolRatio()
 	return (ThunderSkillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderSkillCurCoolTime / ThunderSkillMaxCoolTime);
 }
 
+float UIreneUIManager::GetFireQuillCoolRatio()
+{
+	return (FireQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (FireQuillCurCoolTime / FireQuillMaxCoolTime);
+}
+float UIreneUIManager::GetWaterQuillCoolRatio()
+{
+	return (WaterQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (WaterQuillCurCoolTime / WaterQuillMaxCoolTime);
+}
+float UIreneUIManager::GetThunderQuillCoolRatio()
+{
+	return (ThunderQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderQuillCurCoolTime / ThunderQuillMaxCoolTime);
+}
+
 int UIreneUIManager::GetSkillCount()
 {
 	return Irene->IreneInput->GetThunderSkillCount();
@@ -232,6 +238,36 @@ int UIreneUIManager::GetSkillCount()
 void UIreneUIManager::SetSkillCount(int Value)
 {
 	Irene->IreneInput->SetThunderSkillCount(Value);
+}
+
+int UIreneUIManager::GetFireQuillCount()
+{
+	return Irene->IreneInput->GetFireQuillCount();
+}
+
+void UIreneUIManager::SetFireQuillCount(int Value)
+{
+	Irene->IreneInput->SetFireQuillCount(Value);
+}
+
+int UIreneUIManager::GetWaterQuillCount()
+{
+	return Irene->IreneInput->GetWaterQuillCount();
+}
+
+void UIreneUIManager::SetWaterQuillCount(int Value)
+{
+	Irene->IreneInput->SetWaterQuillCount(Value);
+}
+
+int UIreneUIManager::GetThunderQuillCount()
+{
+	return Irene->IreneInput->GetThunderQuillCount();
+}
+
+void UIreneUIManager::SetThunderQuillCount(int Value)
+{
+	Irene->IreneInput->SetThunderQuillCount(Value);
 }
 
 void UIreneUIManager::PlayHUDAnimation()
@@ -253,17 +289,31 @@ void UIreneUIManager::UpdateThunderSkillCool(float CurCool, float MaxCool)
 
 void UIreneUIManager::UpdateFireSkillCool(float CurCool, float MaxCool)
 {
-
 	FireSkillCurCoolTime = CurCool;
 	FireSkillMaxCoolTime = MaxCool;
 }
+
+void UIreneUIManager::UpdateFireQuillCool(float CurCool, float MaxCool)
+{
+	FireQuillCurCoolTime = CurCool;
+	FireQuillMaxCoolTime = MaxCool;
+}
+void UIreneUIManager::UpdateWaterQuillCool(float CurCool, float MaxCool)
+{
+	FireQuillCurCoolTime = CurCool;
+	FireQuillMaxCoolTime = MaxCool;
+}
+void UIreneUIManager::UpdateThunderQuillCool(float CurCool, float MaxCool)
+{
+	FireQuillCurCoolTime = CurCool;
+	FireQuillMaxCoolTime = MaxCool;
+}
+
 
 void UIreneUIManager::SetDialogState(const bool State)
 {
 	Irene->IreneInput->SetDialogState(State);
 }
-
-
 
 void UIreneUIManager::PauseWidgetOn()
 {

@@ -76,6 +76,18 @@ private:
 	int ThunderSkillCount;
 	int MaxThunderSkillCount;
 
+	// 깃펜 갯수
+	int FireQuillCount;
+	int MaxFireQuillCount;
+	int WaterQuillCount;
+	int MaxWaterQuillCount;
+	int ThunderQuillCount;
+	int MaxThunderQuillCount;
+
+	FTimerHandle FireQuillWaitHandle;
+	FTimerHandle WaterQuillWaitHandle;
+	FTimerHandle ThunderQuillWaitHandle;
+	
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
 private:
@@ -92,10 +104,21 @@ private:
 	float ThunderSkillCoolTime;
 	float MaxThunderSkillCoolTime;
 
+	float FireQuillCoolTime;
+	float MaxFireQuillCoolTime;
+	float WaterQuillCoolTime;
+	float MaxWaterQuillCoolTime;
+	float ThunderQuillCoolTime;
+	float MaxThunderQuillCoolTime;
+	
 	bool bIsFireSkillOn;
 	bool bIsWaterSkillOn;
 	bool bIsThunderSkillOn;
-
+	
+	bool bIsFireQuillOn;
+	bool bIsWaterQuillOn;
+	bool bIsThunderQuillOn;
+	
 	float CoolTimeRate;
 #pragma endregion CoolTimeValue
 	
@@ -110,9 +133,6 @@ public:
 	void MoveForward();
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
-
-	void StartJump();
-	void StopJump();
 
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
@@ -130,7 +150,6 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
-	void RightButton(const float DeltaTime)const;
 	void RightButtonPressed();
 	void RightButtonReleased();
 	void MouseWheel(float Rate);
@@ -175,6 +194,9 @@ public:
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetCharging()const{return IsCharging;}
 	int GetThunderSkillCount()const{return ThunderSkillCount;}
+	int GetFireQuillCount()const{return FireQuillCount;}
+	int GetWaterQuillCount()const{return WaterQuillCount;}
+	int GetThunderQuillCount()const{return ThunderQuillCount;}
 	bool GetUseDodgeKey()const{return bUseDodgeKey;}
 	bool GetFireSkillOn()const{return bIsFireSkillOn;}
 	bool GetWaterSkillOn()const{return bIsWaterSkillOn;}
@@ -188,6 +210,9 @@ public:
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
 	void SetThunderSkillCount(const int Value) { ThunderSkillCount = Value; }
+	void SetFireQuillCount(const int Value) { FireQuillCount = Value; }
+	void SetWaterQuillCount(const int Value) { WaterQuillCount = Value; }
+	void SetThunderQuillCount(const int Value) { ThunderQuillCount = Value; }
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 #pragma endregion GetSet	
 
@@ -200,5 +225,9 @@ private:
 	void FireSkillWait();
 	void WaterSkillWait();
 	void ThunderSkillWait();
+
+	void FireQuillWait();
+	void WaterQuillWait();
+	void ThunderQuillWait();
 #pragma endregion CoolTimeFunction
 };

@@ -24,6 +24,10 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
 	NewIrene->IreneUIManager->OnWaterSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterSkillCoolTime);
 	NewIrene->IreneUIManager->OnThunderSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderSkillCoolTime);
+
+	NewIrene->IreneUIManager->OnFireQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireQuillCoolTime);
+	NewIrene->IreneUIManager->OnWaterQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterQuillCoolTime);
+	NewIrene->IreneUIManager->OnThunderQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderQuillCoolTime);
 }
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
@@ -240,7 +244,7 @@ void UPlayerHudWidget::UpdateHpRecovery()
 
 void UPlayerHudWidget::UpdateAttributes()
 {
-	switch (CurrentIrene->IreneAttack->GetAttribute())
+	switch (CurrentIrene->GetAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		FireSelect();
@@ -252,8 +256,7 @@ void UPlayerHudWidget::UpdateAttributes()
 		ThunderSelect();
 		break;
 	}
-
-
+	
 	if (isFirst)
 	{
 		InitAttributeUI();
@@ -268,19 +271,31 @@ void UPlayerHudWidget::InitAttributeUI()
 	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Fire.Active->SetVisibility(ESlateVisibility::Hidden);
 	
-
 	//Water
-	Water.SelectIcon->SetVisibility(ESlateVisibility::Visible);
+	Water.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Water.Active->SetVisibility(ESlateVisibility::Visible);
-
+	Water.Active->SetVisibility(ESlateVisibility::Hidden);
 
 	//Thunder
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
-
+	switch (CurrentIrene->GetAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		Fire.SelectIcon->SetVisibility(ESlateVisibility::Visible);
+		Fire.Active->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case EAttributeKeyword::e_Water:
+		Water.SelectIcon->SetVisibility(ESlateVisibility::Visible);
+		Water.Active->SetVisibility(ESlateVisibility::Visible);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Thunder.SelectIcon->SetVisibility(ESlateVisibility::Visible);
+		Thunder.Active->SetVisibility(ESlateVisibility::Visible);
+		break;
+	}
 }
 
 void UPlayerHudWidget::UpdateFireCoolTime()
@@ -363,7 +378,6 @@ void UPlayerHudWidget::UpdateWaterSkillCoolTime()
 {
 	if (CurrentIrene != nullptr)
 	{
-
 		if (nullptr != WaterSkill.CoolTimeBar)
 		{
 			float Ratio = CurrentIrene->IreneUIManager->GetWaterSkillCoolRatio();
@@ -374,8 +388,6 @@ void UPlayerHudWidget::UpdateWaterSkillCoolTime()
 		    	WaterSkill.Active->SetVisibility(ESlateVisibility::Visible);
 			}
 		}
-
-
 	}
 }
 
@@ -383,15 +395,13 @@ void UPlayerHudWidget::UpdateThunderSkillCoolTime()
 {
 	if (CurrentIrene != nullptr)
 	{
-
 		if (nullptr != ThunderSkill.CoolTimeBar)
 		{
 			float Ratio = CurrentIrene->IreneUIManager->GetThunderSkillCoolRatio();
 			ThunderSkill.CoolTimeBar->SetPercent(Ratio);
 
 			if (Ratio >= 1.0f)
-			{
-			
+			{			
 				int Count = CurrentIrene->IreneUIManager->GetSkillCount() + 1;
 				CurrentIrene->IreneUIManager->SetSkillCount(Count);
 				ThunderSkillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
@@ -401,11 +411,74 @@ void UPlayerHudWidget::UpdateThunderSkillCoolTime()
 				}
 			}
 		}
-
-
 	}
 }
+void UPlayerHudWidget::UpdateFireQuillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+		if (nullptr != FireQuill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetFireQuillCoolRatio();
+			FireQuill.CoolTimeBar->SetPercent(Ratio);
 
+			if (Ratio >= 1.0f)
+			{
+				int Count = CurrentIrene->IreneUIManager->GetFireQuillCount() + 1;
+				CurrentIrene->IreneUIManager->SetFireQuillCount(Count);
+				FireQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
+				if (Count == 3)
+				{
+					FireQuill.Active->SetVisibility(ESlateVisibility::Visible);
+				}
+			}
+		}
+	}
+}
+void UPlayerHudWidget::UpdateWaterQuillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+		if (nullptr != WaterQuill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetWaterQuillCoolRatio();
+			WaterQuill.CoolTimeBar->SetPercent(Ratio);
+
+			if (Ratio >= 1.0f)
+			{			
+				int Count = CurrentIrene->IreneUIManager->GetWaterQuillCount() + 1;
+				CurrentIrene->IreneUIManager->SetWaterQuillCount(Count);
+				WaterQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
+				if (Count == 3)
+				{
+					WaterQuill.Active->SetVisibility(ESlateVisibility::Visible);
+				}
+			}
+		}
+	}
+}
+void UPlayerHudWidget::UpdateThunderQuillCoolTime()
+{
+	if (CurrentIrene != nullptr)
+	{
+		if (nullptr != ThunderQuill.CoolTimeBar)
+		{
+			float Ratio = CurrentIrene->IreneUIManager->GetThunderQuillCoolRatio();
+			ThunderQuill.CoolTimeBar->SetPercent(Ratio);
+
+			if (Ratio >= 1.0f)
+			{			
+				int Count = CurrentIrene->IreneUIManager->GetThunderQuillCount() + 1;
+				CurrentIrene->IreneUIManager->SetThunderQuillCount(Count);
+				ThunderQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
+				if (Count == 3)
+				{
+					ThunderQuill.Active->SetVisibility(ESlateVisibility::Visible);
+				}
+			}
+		}
+	}
+}
 void UPlayerHudWidget::FireSelect()
 {
 	//Fire
@@ -413,18 +486,15 @@ void UPlayerHudWidget::FireSelect()
 	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Fire.Active->SetVisibility(ESlateVisibility::Visible);
 
-
 	//Water
 	Water.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Water.Active->SetVisibility(ESlateVisibility::Hidden);
 
-
 	//Thunder
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
-
 	
 	SPLimit = 0.25f;
 
@@ -548,11 +618,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 
 	ThunderSkillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_1_Acitve")));
 	ThunderSkillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("Skill_2_Acitve")));
-
-
-	InitAttributeUI();
-
+	
 	isFirst = true;
 	ActionWidgetOff();
-
 }

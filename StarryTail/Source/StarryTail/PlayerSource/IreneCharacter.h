@@ -38,10 +38,6 @@ public:
 	UPROPERTY()
 	APlayerController* WorldController;
 
-	// 점프증력 커브
-	UPROPERTY()
-	UCurveFloat* JumpGravityCurve;
-
 	// 카메라 암과 카메라
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	USpringArmComponent* SpringArmComp;
@@ -73,16 +69,13 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
-	TArray<USkeletalMesh*> WeaponMeshArray;
-	UPROPERTY()
-	TArray<FName> WeaponSocketNameArray;
+	USkeletalMesh* WeaponMesh;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
-	UPROPERTY()
-	TArray<UParticleSystem*> WaterParticle;
+	
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
@@ -141,18 +134,21 @@ public:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(class IState* NewState)const;
 	UFUNCTION(BlueprintCallable)
-	void ActionEndChangeMoveState()const;
-
-	
+	void ActionEndChangeMoveState()const;	
 #pragma endregion State
 	
 #pragma region Collision
 public:
 	// 가까운 몬스터 찾기
 	void FindNearMonster();
-	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const bool bResult, const FCollisionQueryParams Params, const float Far)const;
-	void SetNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
-	void PlayWaterEffect();
+	TTuple<FVector, FVector, FVector> SetCameraStartTargetPosition(const FVector BoxSize, const FVector StartPosition)const;
+	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> StartPositionFindNearMonster(const FVector BoxSize, const FVector StartPosition, const FVector TargetPosition, const float LifeTime = 5.0f)const;
+
+	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far, const bool QuillTarget)const;
+	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
+	void SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
+
+	void FindCanThrowQuillMonster(const float DeltaTime)const;
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

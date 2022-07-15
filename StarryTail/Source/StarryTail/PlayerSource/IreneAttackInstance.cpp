@@ -12,7 +12,6 @@
 #include "../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-
 UIreneAttackInstance::UIreneAttackInstance()
 {
 	// 데이터 테이블
@@ -41,7 +40,7 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_Water;
+	Attribute = EAttributeKeyword::e_Fire;
 	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
@@ -198,218 +197,24 @@ void UIreneAttackInstance::DoAttack()
 	bool bResult = false;
 	
 	TArray<FHitResult> MonsterList;
-	if(Attribute == EAttributeKeyword::e_Fire)
-	{
-		if(Irene->IreneInput->bUseLeftButton)
-		{
-			FCollisionQueryParams Params(NAME_None, false, Irene);
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				Irene->GetActorLocation(),
-				Irene->GetActorLocation(),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeBox(FVector(200, 50, 150)),
-				Params);
-		}
-		if(Irene->IreneInput->bUseRightButton)
-		{
-			FVector BoxSize;
-			if(Irene->IreneAnim->GetFireChargeCount() == 0)
-				BoxSize = FVector(250, 50, 250);
-			if(Irene->IreneAnim->GetFireChargeCount() == 1)
-				BoxSize = FVector(300, 50, 300);
-			if(Irene->IreneAnim->GetFireChargeCount() == 2)
-				BoxSize = FVector(400, 50, 400);
-			FCollisionQueryParams Params(NAME_None, false, Irene);
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				Irene->GetActorLocation(),
-				Irene->GetActorLocation(),
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeBox(BoxSize),
-				Params);
-		}
-	}
-	if(Attribute == EAttributeKeyword::e_Water)
-	{
-		const auto CastMonster = Cast<AMonster>(TargetMonster);
-		if(CastMonster == nullptr)
-		{
-			if(Irene->IreneInput->bUseLeftButton)
-			{			
-				FCollisionQueryParams Params(NAME_None, false, Irene);
-				bResult = GetWorld()->SweepMultiByChannel(
-					MonsterList,
-					TargetMonster->GetActorLocation(),
-					TargetMonster->GetActorLocation(),
-					FQuat::Identity,
-					ECollisionChannel::ECC_GameTraceChannel1,
-					FCollisionShape::MakeSphere(50.0f),
-					Params);
-			}
-			if(Irene->IreneInput->bUseRightButton)
-			{
-				FCollisionQueryParams Params(NAME_None, false, Irene);
-				bResult = GetWorld()->SweepMultiByChannel(
-					MonsterList,
-					FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200),
-					FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200),
-					FQuat::Identity,
-					ECollisionChannel::ECC_GameTraceChannel1,
-					FCollisionShape::MakeSphere(500.0f),
-					Params);			
-			}
-		}
-		else
-		{
-			if(Irene->IreneInput->bUseLeftButton)
-			{			
-				FCollisionQueryParams Params(NAME_None, false, Irene);
-				bResult = GetWorld()->SweepMultiByChannel(
-					MonsterList,
-					CastMonster->GetLocation(),
-					CastMonster->GetLocation(),
-					FQuat::Identity,
-					ECollisionChannel::ECC_GameTraceChannel1,
-					FCollisionShape::MakeSphere(50.0f),
-					Params);
-			}
-			if(Irene->IreneInput->bUseRightButton)
-			{
-				FCollisionQueryParams Params(NAME_None, false, Irene);
-				bResult = GetWorld()->SweepMultiByChannel(
-					MonsterList,
-					FVector(CastMonster->GetLocation().X,CastMonster->GetLocation().Y,CastMonster->GetLocation().Z),
-					FVector(CastMonster->GetLocation().X,CastMonster->GetLocation().Y,CastMonster->GetLocation().Z),
-					FQuat::Identity,
-					ECollisionChannel::ECC_GameTraceChannel1,
-					FCollisionShape::MakeSphere(500.0f),
-					Params);			
-			}
-		}		
-	}
-	if(Attribute == EAttributeKeyword::e_Thunder)
-	{
-		if(Irene->IreneInput->bUseLeftButton)
-		{
-			FCollisionQueryParams Params(NAME_None, false, Irene);
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				Irene->GetActorLocation(),
-				Irene->GetActorLocation() + Irene->GetActorForwardVector() * 200,
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 200).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,200 * 0.5f),
-				Params);
-		}
-		else
-		{
-			FCollisionQueryParams Params(NAME_None, false, Irene);
-			bResult = GetWorld()->SweepMultiByChannel(
-				MonsterList,
-				CurrentPosVec,
-				NowPosVec,
-				FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector() * 800).ToQuat(),
-				ECollisionChannel::ECC_GameTraceChannel1,
-				FCollisionShape::MakeCapsule(Irene->IreneData.AttackRadius,800 * 0.5f),
-				Params);
-		}
-	}
+	FCollisionQueryParams Params(NAME_None, false, Irene);
+	bResult = GetWorld()->SweepMultiByChannel(
+	MonsterList,
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f),
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f),
+	FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
+	ECollisionChannel::ECC_GameTraceChannel1,
+	FCollisionShape::MakeBox(FVector(200, 50, 150)),
+	Params);
+	
 	// 그리기 시작
 	#if ENABLE_DRAW_DEBUG
-	if(Attribute == EAttributeKeyword::e_Fire)
-	{
-		if(Irene->IreneInput->bUseLeftButton)
-		{
-			FVector TraceVec = Irene->GetActorForwardVector() * 150;
-			FVector Center = Irene->GetActorLocation() + TraceVec + (Irene->GetActorForwardVector()*-50.0f);
-			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-			float DebugLifeTime = 5.0f;
-			DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
-		}
-		if(Irene->IreneInput->bUseRightButton)
-		{
-			FVector BoxSize;
-			if(Irene->IreneAnim->GetFireChargeCount() == 0)
-				BoxSize = FVector(250, 50, 250);
-			if(Irene->IreneAnim->GetFireChargeCount() == 1)
-				BoxSize = FVector(300, 50, 300);
-			if(Irene->IreneAnim->GetFireChargeCount() == 2)
-				BoxSize = FVector(400, 50, 400);
-			FVector TraceVec = Irene->GetActorForwardVector() * 150;
-			FVector Center = Irene->GetActorLocation();
-			FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-			FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-			float DebugLifeTime = 5.0f;
-			DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
-		}
-	}
-	if(Attribute == EAttributeKeyword::e_Water)
-	{
-		const auto CastMonster = Cast<AMonster>(TargetMonster);
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
-		if(CastMonster == nullptr)
-		{
-			if(Irene->IreneInput->bUseLeftButton)
-			{
-				FVector Center = FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200);				
-				DrawDebugSphere(GetWorld(), Center, 50.0f, 10, DrawColor, false, DebugLifeTime);
-			}		
-			if(Irene->IreneInput->bUseRightButton)
-			{
-				FVector Center = FVector(TargetMonster->GetActorLocation().X,TargetMonster->GetActorLocation().Y,TargetMonster->GetActorLocation().Z-200);
-				DrawDebugSphere(GetWorld(), Center, 500.0f, 20, DrawColor, false, DebugLifeTime);
-			}
-		}
-		else
-		{
-			if(Irene->IreneInput->bUseLeftButton)
-			{
-				FVector Center = FVector(CastMonster->GetLocation().X,CastMonster->GetLocation().Y,CastMonster->GetLocation().Z);
-				DrawDebugSphere(GetWorld(), Center, 50.0f, 10, DrawColor, false, DebugLifeTime);
-			}		
-			if(Irene->IreneInput->bUseRightButton)
-			{
-				FVector Center = FVector(CastMonster->GetLocation().X,CastMonster->GetLocation().Y,CastMonster->GetLocation().Z);
-				DrawDebugSphere(GetWorld(), Center, 500.0f, 20, DrawColor, false, DebugLifeTime);
-			}
-		}	
-	}
-	if(Attribute == EAttributeKeyword::e_Thunder)
-	{
-		FVector TraceVec = Irene->GetActorForwardVector() * 200;
-		FVector Center = Irene->GetActorLocation() + TraceVec * 0.5f;
-		float HalfHeight = 200 * 0.5f + Irene->IreneData.AttackRadius;
+		FVector TraceVec = Irene->GetActorForwardVector();
+		FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f);
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 		float DebugLifeTime = 5.0f;
-		if(Irene->IreneInput->bUseLeftButton)
-		{
-			DrawDebugCapsule(GetWorld(),
-				Center,
-				HalfHeight,
-				Irene->IreneData.AttackRadius,
-				CapsuleRot,
-				DrawColor,
-				false,
-				DebugLifeTime);
-		}
-		else		
-		{
-			DrawDebugCapsule(GetWorld(),
-				CurrentPosVec + Irene->GetActorForwardVector()*800*0.5f,
-				400,
-				Irene->IreneData.AttackRadius,
-				CapsuleRot,
-				DrawColor,
-				false,
-				DebugLifeTime);
-		}
-	}
+		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
 	#endif
 
 	// 스킬이면 마나사용으로 취급 (몬스터 데미지 계산에 필요)
@@ -539,7 +344,6 @@ void UIreneAttackInstance::SetSkillState()const
 		}
 	}
 }
-
 #pragma endregion State
 
 #pragma region GetSet

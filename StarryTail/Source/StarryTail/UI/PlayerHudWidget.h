@@ -105,8 +105,6 @@ private:
 
 	void UpdateAttributes();
 
-
-
 	void UpdateFireCoolTime();
 	void UpdateWaterCoolTime();
 	void UpdateThunderCoolTime();
@@ -115,6 +113,10 @@ private:
 	void UpdateWaterSkillCoolTime();
 	void UpdateThunderSkillCoolTime();
 
+	void UpdateFireQuillCoolTime();
+	void UpdateWaterQuillCoolTime();
+	void UpdateThunderQuillCoolTime();
+	
 	void InitAttributeUI();
 
 	void FireSelect();
@@ -155,8 +157,15 @@ private:
 
 	FSkillImageData Thunder;
 	FSkillImageData ThunderSkill;
-	
 
+	FSkillImageData FireQuill;
+	FSkillImageData WaterQuill;
+	FSkillImageData ThunderQuill;
+
+	TArray<UImage*> FireQuillActive;
+	TArray<UImage*> WaterQuillActive;
+	TArray<UImage*> ThunderQuillActive;
+	
 	TArray<UImage*> ThunderSKillCount;
 	TArray<UImage*> ThunderSkillActive;
 	bool isFirst;
