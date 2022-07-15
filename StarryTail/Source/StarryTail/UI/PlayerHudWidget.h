@@ -159,19 +159,21 @@ private:
 	//FSkillImageData ThunderSkill;
 
 	FSkillImageData FireQuill;
-	FSkillImageData WaterQuill;
+	TArray<UImage*> FireQuillActive;
 	
 
-	TArray<UImage*> FireQuillActive;
+	FSkillImageData WaterQuill;
 	TArray<UImage*> WaterQuillActive;
-	
 	
 	//TArray<UImage*> ThunderSKillCount;
 	//TArray<UImage*> ThunderSkillActive;
 
 	FSkillImageData ThunderQuill;
 	TArray<UImage*> ThunderQuillActive;
-	TArray<UImage*> ThunderQuillCount;
+
+
+
+	TArray<UImage*> QuillCount;
 
 
 	bool isFirst;
