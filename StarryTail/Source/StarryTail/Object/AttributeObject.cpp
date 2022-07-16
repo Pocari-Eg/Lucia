@@ -67,7 +67,7 @@ EAttributeKeyword AAttributeObject::GetAttribute()
 		if (Irene != nullptr) {
 
 			//속성에 따라 공격 가능 체크 
-			switch (Irene->IreneAttack->GetAttribute())
+			switch (Irene->IreneAttack->GetSwordAttribute())
 			{
 			case EAttributeKeyword::e_Fire:
 				SetObject(EState::e_Activate, EAttributeKeyword::e_Fire);

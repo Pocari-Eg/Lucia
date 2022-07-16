@@ -12,7 +12,7 @@ AIreneCharacter* USTGameInstance::GetPlayer()
 }
 EAttributeKeyword USTGameInstance::GetPlayerAttribute()
 {
-	return Player->IreneAttack->GetAttribute();
+	return Player->IreneAttack->GetSwordAttribute();
 }
 void USTGameInstance::SetPlayer(AIreneCharacter* IreneCharacter)
 {

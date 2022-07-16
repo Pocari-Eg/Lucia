@@ -2,7 +2,9 @@
 #include "Quill.h"
 
 #include "StarryTail/EnemySource/Monster.h"
-#include "IreneAttackInstance.h"
+#include "Materials/MaterialInstanceDynamic.h"
+#include "Materials/MaterialInterface.h"
+
 // Sets default values
 AQuill::AQuill()
 {
@@ -17,35 +19,48 @@ AQuill::AQuill()
 	{
 		MeshComponent->SetStaticMesh(SM_Quill.Object);
 	}
+
+	const ConstructorHelpers::FObjectFinder<UMaterial>MT_Quill(TEXT("/Game/Model/Irene/Quill/MT_Quill.MT_Quill"));
+	if(MT_Quill.Succeeded())
+	{
+		MeshComponent->SetMaterial(0,MT_Quill.Object);
+	}
+	
 	MeshComponent->SetRelativeScale3D(FVector(0.3f,0.2f,0.5f));
 	MeshComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
 
+	SetRootComponent(MeshComponent);
 	CapsuleComponent->SetupAttachment(MeshComponent);
 	CapsuleComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
-
+		
 	LifeTime = 0;
 }
 
 // Called when the game starts or when spawned
 void AQuill::BeginPlay()
 {
-	Super::BeginPlay();
-	
+	Super::BeginPlay();	
+
+	auto Material = MeshComponent->GetMaterial(0);
+
+	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,NULL);
+	MeshComponent->SetMaterial(0, DynamicMaterial);
+
+	ColorTimeDelegate.BindUFunction(this, FName("SetColor"));
+	GetWorld()->GetTimerManager().SetTimerForNextTick(ColorTimeDelegate);
 }
 
 // Called every frame
 void AQuill::Tick(float DeltaTime)
 {
-	Super::Tick(DeltaTime);
+	Super::Tick(DeltaTime);	
+	
 	LifeTime += DeltaTime;
 
-	if(Target == nullptr)
-	{
-		FVector NewLocation = GetActorLocation();
-		NewLocation += GetActorUpVector() * MoveSpeed * DeltaTime;
-		LifeTime += DeltaTime;
-		SetActorLocation(NewLocation);
-	}
+	FVector NewLocation = GetActorLocation();
+	NewLocation += GetActorUpVector() * MoveSpeed * DeltaTime;
+	LifeTime += DeltaTime;
+	SetActorLocation(NewLocation);
 		
 	if(LifeTime >= Distance/MoveSpeed)
 		Destroy();
@@ -61,6 +76,10 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 		{
 			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
 		}
+		else
+		{
+			Destroy();
+		}
 	}
 	
 	if(OtherActor == Target)
@@ -72,3 +91,21 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 	}
 }
 
+void AQuill::SetColor()
+{
+	FVector Color;
+	switch (Attribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		Color = FVector(1,0,0);
+		break;
+	case EAttributeKeyword::e_Water:
+		Color = FVector(0,0,1);
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Color = FVector(1,0,1);
+		break;
+	default: ;
+	}
+	DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
+}

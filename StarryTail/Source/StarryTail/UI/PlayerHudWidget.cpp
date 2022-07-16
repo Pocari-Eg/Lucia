@@ -15,7 +15,8 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
 	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
-	NewIrene->FOnAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateAttributes);
+	NewIrene->FOnSwordAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateSwordAttributes);
+	NewIrene->FOnQuillAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateQuillAttributes);
 
 	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
 	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
@@ -160,20 +161,14 @@ void UPlayerHudWidget::SkipDialog()
 		CurrentIrene->IreneUIManager->SetSkillCount(Count);
 		ThunderSkillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
 	}
-
-	
-
-
 }
 */
 void UPlayerHudWidget::UseQuill()
 {
 	int Count;
-	STARRYLOG_S(Error);
-	switch (CurrentIrene->GetAttribute())
+	switch (CurrentIrene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
-		STARRYLOG_S(Error);
 		//FireSkill.Active->SetVisibility(ESlateVisibility::Hidden);
 		FireQuill.Active->SetVisibility(ESlateVisibility::Hidden);
 		Count = CurrentIrene->IreneUIManager->GetFireQuillCount() - 1;
@@ -181,7 +176,6 @@ void UPlayerHudWidget::UseQuill()
 		FireQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	case EAttributeKeyword::e_Water:
-		STARRYLOG_S(Error);
 		//WaterSkill.Active->SetVisibility(ESlateVisibility::Hidden);
 		WaterQuill.Active->SetVisibility(ESlateVisibility::Hidden);
 		Count = CurrentIrene->IreneUIManager->GetWaterQuillCount() - 1;
@@ -189,7 +183,6 @@ void UPlayerHudWidget::UseQuill()
 		WaterQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
 		break;
 	case EAttributeKeyword::e_Thunder:
-		STARRYLOG_S(Error);
 		ThunderQuill.Active->SetVisibility(ESlateVisibility::Hidden);
 		Count = CurrentIrene->IreneUIManager->GetThunderQuillCount() - 1;
 		CurrentIrene->IreneUIManager->SetThunderQuillCount(Count);
@@ -202,7 +195,7 @@ void UPlayerHudWidget::UseQuill()
 
 EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 {
-	return CurrentIrene->GetAttribute();
+	return CurrentIrene->GetSwordAttribute();
 }
 
 void UPlayerHudWidget::SetTutorial(FString Num)
@@ -280,9 +273,9 @@ void UPlayerHudWidget::UpdateHpRecovery()
 }
 
 
-void UPlayerHudWidget::UpdateAttributes()
+void UPlayerHudWidget::UpdateSwordAttributes()
 {
-	switch (CurrentIrene->GetAttribute())
+	switch (CurrentIrene->GetSwordAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		FireSelect();
@@ -298,7 +291,23 @@ void UPlayerHudWidget::UpdateAttributes()
 	if (isFirst)
 	{
 		InitAttributeUI();
+		UpdateQuillAttributes();
 		isFirst = false;
+	}
+}
+void UPlayerHudWidget::UpdateQuillAttributes()
+{
+	switch (CurrentIrene->GetQuillAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		OnFireAttribute();
+		break;
+	case EAttributeKeyword::e_Water:
+		OnWaterAttribute();
+		break;
+	case EAttributeKeyword::e_Thunder:
+		OnThunderAttribute();
+		break;
 	}
 }
 
@@ -319,7 +328,7 @@ void UPlayerHudWidget::InitAttributeUI()
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
-	switch (CurrentIrene->GetAttribute())
+	switch (CurrentIrene->GetSwordAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		Fire.SelectIcon->SetVisibility(ESlateVisibility::Visible);
@@ -537,7 +546,7 @@ void UPlayerHudWidget::FireSelect()
 	SPLimit = 0.25f;
 
 	//Skill
-	OnFireAttribute();
+	//OnFireAttribute();
 }
 
 void UPlayerHudWidget::WaterSelect()
@@ -562,7 +571,7 @@ void UPlayerHudWidget::WaterSelect()
 	SPLimit = 0.5f;
 
 	//Skill
-	OnWaterAttribute();
+	//OnWaterAttribute();
 }
 
 void UPlayerHudWidget::ThunderSelect()
@@ -587,7 +596,7 @@ void UPlayerHudWidget::ThunderSelect()
 	SPLimit = 0.25f;
 
 	//Skill
-	OnThunderAttribute();
+	//OnThunderAttribute();
 }
 
 

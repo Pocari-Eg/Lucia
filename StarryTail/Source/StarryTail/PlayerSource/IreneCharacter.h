@@ -19,8 +19,8 @@
 #include "IreneCharacter.generated.h"
 
 //속성 변경 델리데이트
-DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnQuillAttributeChangeDelegate);
 
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
@@ -29,7 +29,9 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 
 public:
 	//속성변환 델리게이트
-	FOnAttributeChangeDelegate FOnAttributeChange;
+	FOnSwordAttributeChangeDelegate FOnSwordAttributeChange;
+	FOnQuillAttributeChangeDelegate FOnQuillAttributeChange;
+
 protected:
 
 #pragma region GetClassOrObject
@@ -107,7 +109,9 @@ public:
 	void TargetReset()const;
 
 	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetAttribute() {return IreneAttack->GetAttribute();}
+	EAttributeKeyword GetSwordAttribute() {return IreneAttack->GetSwordAttribute();}
+	UFUNCTION(BlueprintCallable)
+	EAttributeKeyword GetQuillAttribute() {return IreneAttack->GetQuillAttribute();}
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponVisible(bool Value);

@@ -40,8 +40,9 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	TargetMonster = nullptr;
 	//초기 속성
-	Attribute = EAttributeKeyword::e_Fire;
-	
+	SwordAttribute = EAttributeKeyword::e_Fire;
+	QuillAttribute = EAttributeKeyword::e_Fire;
+
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -79,15 +80,15 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	{
 		AttributeName = "B_Attack_3";
 	}
-	if(Attribute == EAttributeKeyword::e_Fire)
+	if(SwordAttribute == EAttributeKeyword::e_Fire)
 	{
 		AttributeName = AttributeName + FString("_F");
 	}
-	else if(Attribute == EAttributeKeyword::e_Water)
+	else if(SwordAttribute == EAttributeKeyword::e_Water)
 	{
 		AttributeName = AttributeName + FString("_W");
 	}
-	else if(Attribute == EAttributeKeyword::e_Thunder)
+	else if(SwordAttribute == EAttributeKeyword::e_Thunder)
 	{
 		AttributeName = AttributeName + FString("_T");
 	}
@@ -97,15 +98,15 @@ FName UIreneAttackInstance::GetActionAttackDataTableName()
 {
 	// 스킬 데이터 테이블 이름 받기 위해 현재 속성에 따라 해당하는 이름을 리턴하는 함수
 	FName ActionForm = FName("");
-	if(Attribute == EAttributeKeyword::e_Fire)
+	if(SwordAttribute == EAttributeKeyword::e_Fire)
 	{
 		ActionForm = FName("Skill_F");
 	}
-	else if(Attribute == EAttributeKeyword::e_Water)
+	else if(SwordAttribute == EAttributeKeyword::e_Water)
 	{
 		ActionForm = FName("Skill_W");
 	}
-	else if(Attribute == EAttributeKeyword::e_Thunder)
+	else if(SwordAttribute == EAttributeKeyword::e_Thunder)
 	{
 		ActionForm = FName("Skill_T");
 	}
@@ -261,7 +262,7 @@ void UIreneAttackInstance::DoAttack()
 void UIreneAttackInstance::SetAttackState()const
 {
 	// 현재 속성과 상태를 이용하여 다음 기본공격 상태로 전이 할 수 있는지 확인하는 함수
-	if(Attribute == EAttributeKeyword::e_Fire)
+	if(SwordAttribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
 		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_F")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0)
@@ -279,7 +280,7 @@ void UIreneAttackInstance::SetAttackState()const
 			Irene->ChangeStateAndLog(UBasicAttack3FireState::GetInstance());
 		}
 	}
-	if(Attribute == EAttributeKeyword::e_Water)
+	if(SwordAttribute == EAttributeKeyword::e_Water)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
 		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_W")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_W")))
@@ -297,7 +298,7 @@ void UIreneAttackInstance::SetAttackState()const
 			Irene->ChangeStateAndLog(UBasicAttack3WaterState::GetInstance());
 		}
 	}
-	if(Attribute == EAttributeKeyword::e_Thunder)
+	if(SwordAttribute == EAttributeKeyword::e_Thunder)
 	{
 		if (Irene->IreneAnim->GetCurrentActiveMontage() == nullptr
 		&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_1_T")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_T")))
@@ -319,7 +320,7 @@ void UIreneAttackInstance::SetAttackState()const
 void UIreneAttackInstance::SetSkillState()const
 {
 	// 현재 속성을 이용하여 해당하는 스킬 상태로 전이 할 수 있는지 확인하는 함수
-	if(Attribute == EAttributeKeyword::e_Fire)
+	if(SwordAttribute == EAttributeKeyword::e_Fire)
 	{
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_F_Start")) != 0
 			&&Irene->IreneState->GetStateToString().Compare(FString("Skill_F_End")) != 0)
@@ -327,7 +328,7 @@ void UIreneAttackInstance::SetSkillState()const
 			Irene->ChangeStateAndLog(USkillFireStartState::GetInstance());
 		}		
 	}
-	if(Attribute == EAttributeKeyword::e_Water)
+	if(SwordAttribute == EAttributeKeyword::e_Water)
 	{
 		if (Irene->IreneState->GetStateToString().Compare(FString("Skill_W_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_W_End")) != 0)
@@ -335,7 +336,7 @@ void UIreneAttackInstance::SetSkillState()const
 			Irene->ChangeStateAndLog(USkillWaterStartState::GetInstance());
 		}	
 	}
-	if(Attribute == EAttributeKeyword::e_Thunder)
+	if(SwordAttribute == EAttributeKeyword::e_Thunder)
 	{
 		if ((Irene->IreneState->GetStateToString().Compare(FString("Skill_T_Start")) != 0
 		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_T_End")) != 0) || bSkillSkip)
@@ -350,7 +351,7 @@ void UIreneAttackInstance::SetSkillState()const
 FName UIreneAttackInstance::GetAttributeToFormTimeDataTableName() const
 {
 	// 현재 속성에 따라 FormTimeDataTable에서 사용하는 Name 리턴하는 함수
-	switch (Attribute)
+	switch (SwordAttribute)
 	{
 	case EAttributeKeyword::e_Fire: return FName("Fire_Form");
 	case EAttributeKeyword::e_Water: return FName("Water_Form");
