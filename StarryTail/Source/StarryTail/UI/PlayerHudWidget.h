@@ -103,7 +103,8 @@ private:
 	void UpdateMp();
 	void UpdateHpRecovery();
 
-	void UpdateAttributes();
+	void UpdateSwordAttributes();
+	void UpdateQuillAttributes();
 
 	void UpdateFireCoolTime();
 	void UpdateWaterCoolTime();

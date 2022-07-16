@@ -25,8 +25,9 @@ private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
 
-	EAttributeKeyword Attribute;
-
+	EAttributeKeyword SwordAttribute;
+	EAttributeKeyword QuillAttribute;
+	
 	UPROPERTY()
 	UDataTable* AttackDataTable;
 	UPROPERTY()
@@ -93,7 +94,8 @@ public:
 
 	//속성 반환
 	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetAttribute()const{return Attribute;}
+	EAttributeKeyword GetSwordAttribute()const{return SwordAttribute;}
+	EAttributeKeyword GetQuillAttribute()const{return QuillAttribute;}
 	bool GetFollowTarget()const {return bFollowTarget;}
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
 	FVector GetPlayerPosVec()const {return PlayerPosVec;}
@@ -108,7 +110,8 @@ public:
 	bool GetCanSkillSkip()const{return bSkillSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
 
-	void SetAttribute(const EAttributeKeyword Value){Attribute = Value;}
+	void SetSwordAttribute(const EAttributeKeyword Value){SwordAttribute = Value;}
+	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
 	void SetPlayerPosVec(const FVector Value){PlayerPosVec = Value;}

@@ -1358,7 +1358,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			bIsAttacked = true;
 
 
-			switch (Player->IreneAttack->GetAttribute())
+			switch (Player->IreneAttack->GetSwordAttribute())
 			{
 			case EAttributeKeyword::e_Fire:
 				if (MonsterInfo.MonsterAttribute == EAttributeKeyword::e_Fire)
@@ -1437,7 +1437,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				if (AttackedInfo.bIsUseMana)
 				{
 					CalcDef();
-					CalcAttributeDebuff(Player->IreneAttack->GetAttribute(), DamageAmount);
+					CalcAttributeDebuff(Player->IreneAttack->GetSwordAttribute(), DamageAmount);
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
 				}
 				else

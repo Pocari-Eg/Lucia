@@ -159,7 +159,8 @@ public:
 	void FireKeywordReleased();
 	void WaterKeywordReleased();
 	void ElectricKeywordReleased();
-	
+	void QuillAttributeChangeReleased();
+
 	// 대쉬
 	void DodgeKeyword();
 	void WaterDodgeKeyword(float Rate);	

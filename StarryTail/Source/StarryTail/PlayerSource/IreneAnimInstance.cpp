@@ -88,27 +88,27 @@ void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 void UIreneAnimInstance::PlayAttackMontage()
 {
 	// 현재 속성에 따라 기본공격 몽타주 실행하는 함수
-	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 		Montage_Play(FireAttackMontage, 1.0f);
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 		Montage_Play(WaterAttackMontage, 1.0f);
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 		Montage_Play(ThunderAttackMontage, 1.0f);
 
 }
 void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 {
 	// 현재 속성에 따라 스킬 몽타주를 실행하는 함수
-	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 	{
 		if(AttackCount == 2)
 			Montage_Play(FireSkill2Montage, 1.0f);
 		else
 			Montage_Play(FireSkill1Montage, 1.0f);
 	}
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 		Montage_Play(WaterSkillMontage, 1.0f);
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 		Montage_Play(ThunderSkillMontage, 1.0f);
 }
 
@@ -117,11 +117,11 @@ void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 	// 다음 기본공격의 세션을 현재 세션이 종료되면 시작시키는 함수
 	if (NewSection > 1)
 	{
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), FireAttackMontage);
-		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), WaterAttackMontage);
-		else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
 	}
 }
@@ -130,11 +130,11 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 	// 다음 기본공격의 세션을 즉시 시작시키는 함수
 	if (NewSection > 1)
 	{
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), FireAttackMontage);
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), WaterAttackMontage);
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), ThunderAttackMontage);
 	}
 }
