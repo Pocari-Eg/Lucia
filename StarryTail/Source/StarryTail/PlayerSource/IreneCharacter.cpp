@@ -201,12 +201,12 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->GetAttribute());
+	IreneAnim->SetAttribute(IreneAttack->GetSwordAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();
 	
-	FOnAttributeChange.Broadcast();
+	FOnSwordAttributeChange.Broadcast();
 
 	InitComplete();
 }
@@ -316,7 +316,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
 	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
 	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
-	
+	PlayerInputComponent->BindAction("QuillAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillAttributeChangeReleased);
+
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
@@ -532,7 +533,7 @@ void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPo
 	{
 		NearPosition = FindNearTarget;
 		IreneAttack->CanThrowQuillMonster = RayHit.GetActor();
-		STARRYLOG(Warning,TEXT("%s"), *IreneAttack->CanThrowQuillMonster->GetName());
+		//STARRYLOG(Warning,TEXT("%s"), *IreneAttack->CanThrowQuillMonster->GetName());
 		// 깃펜 UI 표시하기
 		//const auto Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
 		//Mon->MarkerOn();

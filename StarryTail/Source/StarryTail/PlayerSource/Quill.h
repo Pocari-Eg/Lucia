@@ -8,6 +8,7 @@
 #include "Quill.generated.h"
 
 enum class EAttributeKeyword : uint8;
+class UMaterialInstanceDynamic;
 
 UCLASS()
 class STARRYTAIL_API AQuill : public AActor
@@ -19,7 +20,9 @@ public:
 	UStaticMeshComponent* MeshComponent;
 	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* CapsuleComponent;
-
+	UPROPERTY(EditAnywhere)
+	UMaterialInstanceDynamic* DynamicMaterial;
+	
 	UPROPERTY()
 	AActor* Target;
 
@@ -30,10 +33,13 @@ public:
 	float Strength;
 private:
 	float LifeTime;
-	
+
+	FTimerDelegate ColorTimeDelegate;
 public:	
 	AQuill();
-	
+
+	UFUNCTION()
+	void SetColor();
 protected:
 	virtual void BeginPlay() override;
 

@@ -23,7 +23,7 @@ DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnAttributeChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -83,7 +83,7 @@ public:
 
 	FOnHpDelegate OnHpChanged;
 	FOnBarrierDelegate OnBarrierChanged;
-	FOnAttributeChangeDelegate AttributeChange;
+	FOnSwordAttributeChangeDelegate AttributeChange;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();

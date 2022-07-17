@@ -7,8 +7,10 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
+#include "MovieSceneTracksComponentTypes.h"
 #include "Quill.h"
 #include "../STGameInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
@@ -326,7 +328,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 void UIreneInputInstance::RightButtonPressed()
 {
 	int CurrentAttributeQuillCount = 0;
-	switch (Irene->GetAttribute())
+	switch (Irene->IreneAttack->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		CurrentAttributeQuillCount = FireQuillCount;
@@ -337,10 +339,11 @@ void UIreneInputInstance::RightButtonPressed()
 	case EAttributeKeyword::e_Thunder:
 		CurrentAttributeQuillCount = ThunderQuillCount;
 		break;
+	default: ;
 	}
 	if(CurrentAttributeQuillCount > 0)
 	{
-		switch (Irene->GetAttribute())
+		switch (Irene->IreneAttack->GetQuillAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
 			GetWorld()->GetTimerManager().SetTimer(FireQuillWaitHandle, this, &UIreneInputInstance::FireQuillWait, CoolTimeRate, true, 0.0f);
@@ -351,19 +354,55 @@ void UIreneInputInstance::RightButtonPressed()
 		case EAttributeKeyword::e_Thunder:
 			GetWorld()->GetTimerManager().SetTimer(ThunderQuillWaitHandle, this, &UIreneInputInstance::ThunderQuillWait, CoolTimeRate, true, 0.0f);
 			break;
+		default: ;
 		}
 		Irene->IreneUIManager->PlayerHud->UseQuill();
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = Irene;
 
-		const FRotator Rotator = Irene->GetActorRotation() + FRotator(-90,-10,0);
-		const FVector SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*50 + Irene->GetActorUpVector()*70;
+		FRotator Rotator;
+		FVector SpawnLocation;
+		if(Irene->IreneAttack->TargetMonster != nullptr || Irene->IreneAttack->CanThrowQuillMonster != nullptr)
+		{
+			if(Irene->IreneAttack->TargetMonster != nullptr && Irene->IreneAttack->CanThrowQuillMonster == nullptr)
+			{
+				const auto TargetMonster = Cast<AMonster>(Irene->IreneAttack->TargetMonster);
+				FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
+				Length.Normalize();
+				
+				const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
+				const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
+				Rotator = Look;
+				Rotator.Pitch = 270+Rotator.Pitch + 20;
+
+				SpawnLocation = TargetPos;
+			}
+			else if(Irene->IreneAttack->TargetMonster == nullptr && Irene->IreneAttack->CanThrowQuillMonster != nullptr)
+			{
+				const auto TargetMonster = Cast<AMonster>(Irene->IreneAttack->CanThrowQuillMonster);
+				FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
+				Length.Normalize();
+				
+				const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
+				const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
+				Rotator = Look;
+				Rotator.Pitch = 270+Rotator.Pitch + 20;
+				
+				SpawnLocation = TargetPos;
+			}			
+		}
+		else
+		{
+			Rotator = Irene->GetActorRotation() + FRotator(-90,-10,0);
+			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*50 + Irene->GetActorUpVector()*70;
+		}		
+		
 		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
-		SpawnedActor->Attribute = Irene->GetAttribute();
-		SpawnedActor->MoveSpeed = 1500;
+		SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
+		SpawnedActor->MoveSpeed = 300;
 		SpawnedActor->Distance = 750;
 		SpawnedActor->Strength = 100;
-		
+
 		if(Irene->IreneAttack->TargetMonster != nullptr)
 		{
 			SpawnedActor->Target = Irene->IreneAttack->TargetMonster;
@@ -401,7 +440,7 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 	if (!bIsDialogOn)
 	{
 		// 속성을 변화시키는 함수
-		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetAttribute() != Attribute)
+		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
 		{
 			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
 				ChangeForm(Attribute);
@@ -425,6 +464,26 @@ void UIreneInputInstance::ElectricKeywordReleased()
 {
 	AttributeKeywordReleased(EAttributeKeyword::e_Thunder);
 }
+void UIreneInputInstance::QuillAttributeChangeReleased()
+{
+	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
+	switch (Irene->IreneAttack->GetQuillAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		Value = EAttributeKeyword::e_Water;
+		break;
+	case EAttributeKeyword::e_Water:
+		Value = EAttributeKeyword::e_Thunder;
+		break;
+	case EAttributeKeyword::e_Thunder:
+		Value = EAttributeKeyword::e_Fire;
+		break;
+	default: ;
+	}
+	Irene->IreneAttack->SetQuillAttribute(Value);
+	Irene->FOnQuillAttributeChange.Broadcast();
+}
+
 void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 {
 	if(Irene->Weapon->IsVisible())
@@ -432,22 +491,22 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 		Irene->WeaponVisible(false);
 	}
 	// 속성을 변화시키고 그에 따른 UI와 사운드 적용
-	Irene->IreneAttack->SetAttribute(Value);
-	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetAttribute());
-	Irene->FOnAttributeChange.Broadcast();
+	Irene->IreneAttack->SetSwordAttribute(Value);
+	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetSwordAttribute());
+	Irene->FOnSwordAttributeChange.Broadcast();
 
 	// 속성 마다 소리와 무기 설정 적용
-	if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire)
+	if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 1.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 1.0f);
 	}
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 2.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 2.0f);
 	}
-	else if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder)
+	else if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 	{
 		Irene->IreneUIManager->AttackSound->SetParameter("Attributes", 3.0f);
 		Irene->IreneUIManager->AttackVoiceSound->SetParameter("Attributes", 3.0f);
@@ -502,7 +561,7 @@ void UIreneInputInstance::DodgeKeyword()
 		// 			}
 		// 		}), WaitTime, false);
 		// }
-		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
 			!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
@@ -530,7 +589,7 @@ void UIreneInputInstance::DodgeKeyword()
 }
 void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
-	if(Rate >= 1.0f && Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
+	if(Rate >= 1.0f && Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
 		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsJumpState() &&
 		((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
