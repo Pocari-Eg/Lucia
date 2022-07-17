@@ -34,6 +34,11 @@ void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 
 
 
+void UMonsterWidget::SetQuillStackCount(const int Num)
+{
+	QuillStackCount = Num;
+}
+
 void UMonsterWidget::NativeOnInitialized()
 {
 	Super::NativeOnInitialized();

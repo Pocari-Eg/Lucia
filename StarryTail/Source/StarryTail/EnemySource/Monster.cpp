@@ -17,6 +17,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "../UI/MonsterWidget.h"
 
+#include"../PlayerSource/Quill.h"
+
 //object
 #include "../Object/AttributeObject.h"
 
@@ -63,6 +65,10 @@ AMonster::AMonster()
 	ShowUITimer = 0.0f;
 	ShowUITime = 300.0f;
 
+
+	//quill
+	MonsterInfo.Quill_CurStack = 0;
+	MonsterInfo.Quill_MaxStack = 3;
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -229,6 +235,10 @@ EAttributeKeyword AMonster::GetBarrierAttribute() const
 
 		return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type;
 	}
+}
+int AMonster::GetCurQuillStack() const
+{
+	return MonsterInfo.Quill_CurStack;
 }
 float AMonster::GetHpRatio()
 {
@@ -1458,6 +1468,41 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			return FinalDamage;
 		}
 	}
+	if (Cast<AQuill>(DamageCauser))
+	{
+		if (this->MonsterInfo.EnemyRank != EEnemyRank::e_Raid)
+		{
+			if (bShowUI)
+			{
+				ShowUITimer = 0.0f;
+			}
+			else {
+				bShowUI = true;
+				ShowUITimer = 0.0f;
+				MonsterWidget->SetVisibility(true);
+			}
+		}
 
+		CalcHp(DamageAmount);
+		MonsterInfo.Quill_CurStack++;
+
+		//임시  UI
+		auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
+		if (widget != nullptr) {
+			widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
+		}
+		//
+		if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
+		{
+			//스택 맥스
+			STARRYLOG(Error, TEXT("STACK MAX"));
+			//
+
+			MonsterInfo.Quill_CurStack = 0;
+		}
+
+		DamageCauser->Destroy();
+		
+	}
 	return FinalDamage;
 }
