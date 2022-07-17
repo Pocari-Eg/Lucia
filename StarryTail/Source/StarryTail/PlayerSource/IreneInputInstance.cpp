@@ -364,7 +364,7 @@ void UIreneInputInstance::RightButtonPressed()
 		FVector SpawnLocation;
 		if(Irene->IreneAttack->TargetMonster != nullptr || Irene->IreneAttack->CanThrowQuillMonster != nullptr)
 		{
-			if(Irene->IreneAttack->TargetMonster != nullptr && Irene->IreneAttack->CanThrowQuillMonster == nullptr)
+			if(Irene->IreneAttack->TargetMonster != nullptr)
 			{
 				const auto TargetMonster = Cast<AMonster>(Irene->IreneAttack->TargetMonster);
 				FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();

@@ -16,6 +16,10 @@ class STARRYTAIL_API UMonsterWidget : public UUserWidget
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int QuillStackCount;
+	
+public:
 
 	// Object 엑터를 바인드 할떄 사용 
 	void BindMonster(class AMonster* NewMonster);
@@ -35,6 +39,8 @@ public:
 	void  OnBarrierUI();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnBarrierAttributeChange();
+
+	void SetQuillStackCount(const int Num);
 protected:
 	// 위젯을 초기화
 	virtual void NativeOnInitialized() override;

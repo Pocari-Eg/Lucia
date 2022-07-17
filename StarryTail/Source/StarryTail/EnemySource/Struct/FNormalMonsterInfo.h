@@ -80,6 +80,10 @@ public:
    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int BarrierDec;
+
+	//Quill
+	int Quill_MaxStack;
+	int Quill_CurStack;
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

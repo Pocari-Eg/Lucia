@@ -48,6 +48,7 @@ public:
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
 	EAttributeKeyword GetBarrierAttribute() const;
+	int GetCurQuillStack() const;
 
 	//현재 체력 비율 전환
 	float GetHpRatio();

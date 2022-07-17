@@ -62,8 +62,12 @@ void AQuill::Tick(float DeltaTime)
 	LifeTime += DeltaTime;
 	SetActorLocation(NewLocation);
 		
-	if(LifeTime >= Distance/MoveSpeed)
+
+	if (LifeTime >= Distance / MoveSpeed) {
+		STARRYLOG(Error,TEXT("Life Destroy"));
 		Destroy();
+
+	}
 }
 
 void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
@@ -79,6 +83,7 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 		else
 		{
 			Destroy();
+
 		}
 	}
 	
