@@ -256,6 +256,86 @@ void UIreneAttackInstance::DoAttack()
 		}
 	}
 }
+void UIreneAttackInstance::FireQuillStack(const int Value)
+{
+	if(Value == 0)
+		return;
+	switch (Value)
+	{
+	case 1:
+		Irene->IreneData.FireQuillStackDmg = 1.2f;
+		break;
+	case 2:
+		Irene->IreneData.FireQuillStackDmg = 1.5f;
+		break;
+	case 3:
+		Irene->IreneData.FireQuillStackDmg = 2.0f;
+		break;
+	default: break;
+	}
+	GetWorld()->GetTimerManager().SetTimer(FireQuillStackTimerHandle, this, &UIreneAttackInstance::ResetFireQuillStack, 5.0f, false);
+}
+void UIreneAttackInstance::WaterQuillStack(const int Value)
+{
+	if(Value == 0)
+		return;
+	switch (Value)
+	{
+	case 1:
+		Irene->IreneData.Shield = 100;
+		break;
+	case 2:
+		Irene->IreneData.Shield = 200;
+		break;
+	case 3:
+		Irene->IreneData.Shield = 300;
+		break;
+	default: break;
+	}
+	Irene->ShieldComp->SetVisibility(true);
+	GetWorld()->GetTimerManager().SetTimer(WaterQuillStackTimerHandle, this, &UIreneAttackInstance::ResetWaterQuillStack, 120.0f, false);
+}
+void UIreneAttackInstance::ThunderQuillStack(const int Value)
+{
+	if(Value == 0)
+		return;
+	switch (Value)
+	{
+	case 1:
+		Irene->IreneData.ThunderQuillStackSpeed = 1.05f;
+		break;
+	case 2:
+		Irene->IreneData.ThunderQuillStackSpeed = 1.10f;
+		break;
+	case 3:
+		Irene->IreneData.ThunderQuillStackSpeed = 1.20f;
+		break;
+	default: break;
+	}
+	if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.RunMaxSpeed ||
+		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
+	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed * Irene->IreneData.ThunderQuillStackSpeed;
+	GetWorld()->GetTimerManager().SetTimer(ThunderQuillStackTimerHandle, this, &UIreneAttackInstance::ResetThunderQuillStack, 10.0f, false);
+}
+void UIreneAttackInstance::ResetFireQuillStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FireQuillStackTimerHandle);	
+	Irene->IreneData.FireQuillStackDmg = 1.0f;
+}
+void UIreneAttackInstance::ResetWaterQuillStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(WaterQuillStackTimerHandle);	
+	Irene->ShieldComp->SetVisibility(false);
+	Irene->IreneData.Shield = 0;
+}
+void UIreneAttackInstance::ResetThunderQuillStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ThunderQuillStackTimerHandle);
+	if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.RunMaxSpeed * Irene->IreneData.ThunderQuillStackSpeed ||
+		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed * Irene->IreneData.ThunderQuillStackSpeed)
+			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed / Irene->IreneData.ThunderQuillStackSpeed;
+	Irene->IreneData.ThunderQuillStackSpeed = 1.0f;
+}
 #pragma endregion Attack
 
 #pragma region State

@@ -467,15 +467,31 @@ void UIreneInputInstance::ElectricKeywordReleased()
 void UIreneInputInstance::QuillAttributeChangeReleased()
 {
 	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
+	int TargetMonsterStack = 0;
+	if(Irene->IreneAttack->TargetMonster != nullptr)
+	{
+		const auto Monster = Cast<AMonster>(Irene->IreneAttack->TargetMonster);
+		TargetMonsterStack = Monster->GetCurQuillStack();
+		Monster->SetCurQuillStack(0);
+	}
+	else if(Irene->IreneAttack->CanThrowQuillMonster != nullptr)
+	{
+		const auto Monster = Cast<AMonster>(Irene->IreneAttack->CanThrowQuillMonster);
+		TargetMonsterStack = Monster->GetCurQuillStack();
+		Monster->SetCurQuillStack(0);
+	}
 	switch (Irene->IreneAttack->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
+		Irene->IreneAttack->FireQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Water;
 		break;
 	case EAttributeKeyword::e_Water:
+		Irene->IreneAttack->WaterQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Thunder;
 		break;
 	case EAttributeKeyword::e_Thunder:
+		Irene->IreneAttack->ThunderQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Fire;
 		break;
 	default: ;

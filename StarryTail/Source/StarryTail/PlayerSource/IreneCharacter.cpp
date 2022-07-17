@@ -34,6 +34,15 @@ AIreneCharacter::AIreneCharacter()
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.f, 80.0f);
 
+	ShieldComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shield"));
+	const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Shield(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
+	if(SM_Shield.Succeeded())
+	{
+		ShieldComp->SetStaticMesh(SM_Shield.Object);
+	}
+	ShieldComp->SetupAttachment(GetCapsuleComponent());
+	ShieldComp->SetVisibility(false);
+	
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
@@ -588,7 +597,22 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	{
 		if (IreneData.CurrentHP > 0)
 		{
-			IreneData.CurrentHP -= DamageAmount - IreneData.Defenses;
+			if(IreneData.Shield > 0)
+			{
+				const float CurShield = IreneData.Shield;
+				IreneData.Shield -= DamageAmount;
+				if(IreneData.Shield <= 0)
+				{
+					IreneAttack->ResetWaterQuillStack();
+				}
+				DamageAmount -= CurShield;
+				if(DamageAmount > 0)
+					IreneData.CurrentHP -= DamageAmount;
+			}
+			else
+			{
+				IreneData.CurrentHP -= DamageAmount;
+			}
 			IreneUIManager->OnHpChanged.Broadcast();
 			
 			if (IreneData.CurrentHP <= 0)

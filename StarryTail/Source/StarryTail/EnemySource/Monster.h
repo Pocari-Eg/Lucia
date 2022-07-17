@@ -49,6 +49,7 @@ public:
 	bool GetIsBattleState() const;
 	EAttributeKeyword GetBarrierAttribute() const;
 	int GetCurQuillStack() const;
+	void SetCurQuillStack(const int Value);
 
 	//현재 체력 비율 전환
 	float GetHpRatio();

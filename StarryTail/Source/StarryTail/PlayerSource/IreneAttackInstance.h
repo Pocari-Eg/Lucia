@@ -32,7 +32,11 @@ private:
 	UDataTable* AttackDataTable;
 	UPROPERTY()
 	UDataTable* FormTimeDataTable;
-	
+
+	FTimerHandle FireQuillStackTimerHandle;
+	FTimerHandle WaterQuillStackTimerHandle;
+	FTimerHandle ThunderQuillStackTimerHandle;
+
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1
@@ -79,6 +83,13 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
+	void FireQuillStack(const int Value);
+	void WaterQuillStack(const int Value);
+	void ThunderQuillStack(const int Value);
+	void ResetFireQuillStack();
+	void ResetWaterQuillStack();
+	void ResetThunderQuillStack();
+	
 	void SetAttackState()const;
 	void SetSkillState()const;
 	
