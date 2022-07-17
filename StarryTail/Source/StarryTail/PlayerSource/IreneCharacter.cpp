@@ -283,10 +283,11 @@ void AIreneCharacter::TargetReset()const
 		{
 			if (Mob->GetHp() <= 0 || !IreneAttack->CanThrowQuillMonster->WasRecentlyRendered())//FVector::Dist(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()) > 700.0f)
 				{
-				//const auto Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
-				//Mon->MarkerOff();
-				IreneAttack->CanThrowQuillMonster = nullptr;				
-				}			
+				const auto Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+				Mon->TargetWidgetOff();
+				IreneAttack->CanThrowQuillMonster = nullptr;	
+
+			}			
 		}
 	}
 }
@@ -456,6 +457,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 							IreneAnim->SetTargetMonster(RayHit.GetActor());
 							IreneAnim->SetIsHaveTargetMonster(true);
 							NearPosition = FindNearTarget;
+							
 						}
 
 						TargetCollisionProfileName = IreneAttack->TargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
@@ -544,8 +546,8 @@ void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPo
 		IreneAttack->CanThrowQuillMonster = RayHit.GetActor();
 		//STARRYLOG(Warning,TEXT("%s"), *IreneAttack->CanThrowQuillMonster->GetName());
 		// ±Í∆Ê UI «•Ω√«œ±‚
-		//const auto Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
-		//Mon->MarkerOn();
+		const auto Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+		Mon->TargetWidgetOn();
 	}
 }
 

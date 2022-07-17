@@ -26,7 +26,9 @@ AScientia::AScientia()
 
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 540.0f));
-
+	TargetWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
+	MonsterWidget->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
+	TargetWidget->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
 	if (FeatherBlueprint.Succeeded())
 	{
 		FeatherBP = FeatherBlueprint.Class;
