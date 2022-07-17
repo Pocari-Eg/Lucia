@@ -45,7 +45,9 @@ public:
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	UCameraComponent* CameraComp;
-
+	UPROPERTY(VisibleAnywhere)
+	UStaticMeshComponent* ShieldComp;
+	
 	UPROPERTY(BlueprintReadWrite)
 	class UIreneAnimInstance* IreneAnim;
 	UPROPERTY()

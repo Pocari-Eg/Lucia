@@ -65,10 +65,16 @@ public:
 	//공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Strength = 20;
+	//불 스택 추가 공격력
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FireQuillStackDmg = 1;
 	//방어력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Defenses = 10;
-
+	//쉴드
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Shield = 0;
+	
 	// 최대 체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float MaxHP = 2000;
@@ -88,7 +94,10 @@ public:
 	// Sprint 최대 속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
-
+	// 전기 스택 추가 이동속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ThunderQuillStackSpeed = 1;
+	
 	// 전기 대쉬 재사용 쿨타임
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float ThunderDodgeTime = 1.0f;

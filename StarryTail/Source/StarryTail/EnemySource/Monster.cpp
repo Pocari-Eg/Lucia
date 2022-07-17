@@ -240,6 +240,10 @@ int AMonster::GetCurQuillStack() const
 {
 	return MonsterInfo.Quill_CurStack;
 }
+void AMonster::SetCurQuillStack(const int Value)
+{
+	MonsterInfo.Quill_CurStack = Value;
+}
 float AMonster::GetHpRatio()
 {
 	return MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.MaxHp;

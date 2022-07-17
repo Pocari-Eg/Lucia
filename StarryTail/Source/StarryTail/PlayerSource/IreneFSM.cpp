@@ -194,7 +194,7 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Run_Loop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed;
 	if (CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(false);
@@ -326,7 +326,7 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sprint_Loop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed;
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
 	//CurState->Irene->SetCameraLagTime(0);
@@ -529,7 +529,7 @@ void UDodgeWaterStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_W_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * 1.2f * CurState->Irene->IreneData.ThunderQuillStackSpeed;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	if (CurState->Irene->Weapon->IsVisible())
 	{
@@ -599,7 +599,7 @@ void UDodgeWaterEndState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->bUseLeftButton = false;
 	CurState->Irene->IreneInput->bUseRightButton = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->bIsEnd = true;
@@ -789,7 +789,8 @@ void UJumpLoopState::Execute(IBaseGameEntity* CurState)
 		{
 			CurState->Irene->ChangeStateAndLog(UJumpEndState::GetInstance());
 		}
-		else if (CurState->Irene->GetCharacterMovement()->MaxWalkSpeed == CurState->Irene->IreneData.SprintMaxSpeed)
+		else if (CurState->Irene->GetCharacterMovement()->MaxWalkSpeed == CurState->Irene->IreneData.SprintMaxSpeed ||
+			CurState->Irene->GetCharacterMovement()->MaxWalkSpeed == CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed)
 		{
 			CurState->ThrowState(UJumpEndState::GetInstance());
 			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
@@ -824,7 +825,7 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
