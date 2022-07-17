@@ -98,6 +98,9 @@ public:
 	void MarkerOn();
     void MarkerOff();
 
+	void TargetWidgetOn();
+	void TargetWidgetOff();
+
 	//스폰 생성 몬스터 설정
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
@@ -145,9 +148,15 @@ protected:
 	UParticleSystemComponent* ManaShiledEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, Meta = (AllowPrivateAccess = true))
+	UCapsuleComponent* WidgetPoint;
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
+	//박찬영 UI
+	UPROPERTY(VisibleAnywhere, Category = UI)
+	class UWidgetComponent* TargetWidget;
 
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;

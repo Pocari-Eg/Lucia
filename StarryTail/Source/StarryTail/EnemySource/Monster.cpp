@@ -45,15 +45,33 @@ AMonster::AMonster()
 	MonsterWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
 	MonsterWidget->SetWidgetSpace(EWidgetSpace::World);
 
+
+
 	static ConstructorHelpers::FClassFinder<UUserWidget> UI_MONSTERWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_MonsterWidget.BP_MonsterWidget_C"));
 
 	if (UI_MONSTERWIDGET.Succeeded()) {
 
 		MonsterWidget->SetWidgetClass(UI_MONSTERWIDGET.Class);
-		MonsterWidget->SetDrawSize(FVector2D(230.0f,160.0f));
+		MonsterWidget->SetDrawSize(FVector2D(100.0f,160.0f));
 		MonsterWidget->bAutoActivate = false;
 	}
 
+
+	WidgetPoint = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WIDGETPOINT"));
+	WidgetPoint->SetupAttachment(GetMesh());
+	TargetWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TARGETWIDGET"));
+	TargetWidget->SetupAttachment(WidgetPoint);
+
+	TargetWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	TargetWidget->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_TARGETWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_TargetWdiget.BP_TargetWdiget_C"));
+
+	if (UI_TARGETWIDGET.Succeeded()) {
+
+		TargetWidget->SetWidgetClass(UI_TARGETWIDGET.Class);
+		TargetWidget->SetDrawSize(FVector2D(50.0f,50.0f));
+		TargetWidget->bAutoActivate = false;
+	}
 	bIsSpawnEnemy = false;
 	bIsObject = true;
 	InitEffect();
@@ -757,8 +775,9 @@ void AMonster::SetActive()
 {
 	if (bIsDead)
 	{
+		
 		MonsterWidget->SetHiddenInGame(true);
-
+		TargetWidget->SetHiddenInGame(true);
 		HitEffectComponent->SetActive(false);
 		BurnEffectComponent->SetActive(false);
 		FloodingEffectComponent->SetActive(false);
@@ -782,6 +801,14 @@ void AMonster::MarkerOff()
 	{
 		HpBar->MarkerOff();
 	}
+}
+void AMonster::TargetWidgetOn()
+{
+	TargetWidget->SetVisibility(true);
+}
+void AMonster::TargetWidgetOff()
+{
+	TargetWidget->SetVisibility(false);
 }
 void AMonster::SetSpawnEnemy()
 {
@@ -1100,7 +1127,7 @@ void AMonster::BeginPlay()
 	auto HPBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
 	HPBar->BindMonster(this);
 
-
+	TargetWidgetOff();
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
 
@@ -1130,6 +1157,8 @@ void AMonster::Tick(float DeltaTime)
 	MonsterWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
+	TargetWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	WidgetPoint->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	if (bDeadWait)
 	{
 		DeadWaitTimer += DeltaTime;
@@ -1498,9 +1527,28 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		//
 		if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 		{
-			//Ω∫≈√ ∏∆Ω∫
-			STARRYLOG(Error, TEXT("STACK MAX"));
-			//
+			auto Quill = Cast<AQuill>(DamageCauser);
+			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+			{
+				if (STGameInstance != nullptr)
+				{
+					switch (Quill->Attribute)
+					{
+					case EAttributeKeyword::e_Fire:
+						STGameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
+						break;
+					case EAttributeKeyword::e_Water:
+						STGameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
+						break;
+					case EAttributeKeyword::e_Thunder:
+						STGameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
+						break;
+					default:
+						break;
+					}
+				}
+			}
+		
 
 			MonsterInfo.Quill_CurStack = 0;
 		}
