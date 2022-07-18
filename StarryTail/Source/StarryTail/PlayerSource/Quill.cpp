@@ -60,13 +60,11 @@ void AQuill::Tick(float DeltaTime)
 	FVector NewLocation = GetActorLocation();
 	NewLocation += GetActorUpVector() * MoveSpeed * DeltaTime;
 	LifeTime += DeltaTime;
-	SetActorLocation(NewLocation);
-		
+	SetActorLocation(NewLocation);		
 
-	if (LifeTime >= Distance / MoveSpeed) {
-		STARRYLOG(Error,TEXT("Life Destroy"));
+	if (LifeTime >= Distance / MoveSpeed)
+	{
 		Destroy();
-
 	}
 }
 
@@ -83,7 +81,6 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 		else
 		{
 			Destroy();
-
 		}
 	}
 	
