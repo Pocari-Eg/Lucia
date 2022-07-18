@@ -563,7 +563,7 @@ void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPo
 
 void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)const
 {
-	auto AllPosition = SetCameraStartTargetPosition(FVector(200,200,500),CameraComp->GetComponentLocation());
+	auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,700),CameraComp->GetComponentLocation());
 	auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
 	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
 }
