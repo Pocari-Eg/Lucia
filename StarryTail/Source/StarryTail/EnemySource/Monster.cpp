@@ -552,6 +552,7 @@ void AMonster::CalcManaShield()
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
+					SoundInstance->PlayShieldCrashSound();
 					MonsterInfo.Ele_Shield_Count -= 1;
 
 					if (MonsterInfo.Ele_Shield_Count < 0)
@@ -1092,7 +1093,9 @@ void AMonster::InitManaShield()
 		OnBarrierChanged.Broadcast();
 
 		SetManaShieldEffct();
+		
 		ManaShiledEffectComponent->SetActive(true);
+		ManaShiledEffectComponent->SetVisibility(false);
 	}
 	OnBarrierChanged.Broadcast();
 }
@@ -1111,16 +1114,16 @@ void AMonster::BeginPlay()
 	MonsterAIController = Cast<AMonsterAIController>(GetController());
 
 
-	//사운드 세팅
-	HitSound = new SoundManager(HitEvent, GetWorld());
+	
+
 
 	if (GetActorScale3D().X > 1.0f)
 	{
-		HitSound->SetVolume(1.5f);
+		SoundInstance->GetHitSound()->SetVolume(1.5f);
 
 	}
 	else {
-		HitSound->SetVolume(1.0f);
+		SoundInstance->GetHitSound()->SetVolume(1.0f);
 
 	}
 
@@ -1141,6 +1144,9 @@ void AMonster::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AMonster::OnOverlapBegin);
+	//사운드 세팅
+	SoundInstance = NewObject<UMonsterSoundInstance>(this);
+	SoundInstance->Init();
 }
 
 // Called every frame
@@ -1170,20 +1176,22 @@ void AMonster::Tick(float DeltaTime)
 		return;
 	}
 
-	/*if (!bIsDead)
+	if (!bIsDead)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		if (this->GetDistanceTo(STGameInstance->GetPlayer()) < 500.0f)
+		if (this->GetDistanceTo(STGameInstance->GetPlayer()) > 3000.0f)
 		{
-			bShowUI = true;
 			ShowUITimer = 0.0f;
-			MonsterWidget->SetHiddenInGame(false);
+			MonsterWidget->SetVisibility(false);
+			ManaShiledEffectComponent->SetVisibility(false);
+			bShowUI = false;
+			TargetWidgetOff();
 		}
 	}
 	else
 	{
 		return;
-	}*/
+	}
 
 
 	if(bIsBurn)
@@ -1269,6 +1277,7 @@ void AMonster::Tick(float DeltaTime)
 		{
 			ShowUITimer = 0.0f;
 			MonsterWidget->SetVisibility(false);
+			ManaShiledEffectComponent->SetVisibility(false);
 			bShowUI = false;
 		}
 	}
@@ -1376,6 +1385,9 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					bShowUI = true;
 					ShowUITimer = 0.0f;
 					MonsterWidget->SetVisibility(true);
+					if (MonsterInfo.bIsShieldOn) {
+						ManaShiledEffectComponent->SetVisibility(true);
+					}
 				}
 			}
 
@@ -1470,7 +1482,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			if (STGameInstance->GetAttributeEffectMonster() == nullptr)
 			{
 				STGameInstance->SetAttributeEffectMonster(this);
-				HitSound->SoundPlay3D(SoundTransform);
+				SoundInstance->PlayHitSound(SoundTransform);
 			}
 
 
@@ -1513,6 +1525,9 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				bShowUI = true;
 				ShowUITimer = 0.0f;
 				MonsterWidget->SetVisibility(true);
+				if (MonsterInfo.bIsShieldOn) {
+					ManaShiledEffectComponent->SetVisibility(true);
+				}
 			}
 		}
 

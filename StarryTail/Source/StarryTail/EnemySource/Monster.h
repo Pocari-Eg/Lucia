@@ -13,7 +13,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
-#include "../Sound/SoundManager.h"
+#include "MonsterSoundInstance.h"
 
 #include "Monster.generated.h"
 
@@ -158,6 +158,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* TargetWidget;
 
+	//사운드
+	UPROPERTY(BluePrintReadOnly)
+	class UMonsterSoundInstance* SoundInstance;
+
 	UPROPERTY()
 		class UMonsterAnimInstance* MonsterAnimInstance;
 
@@ -180,11 +184,6 @@ protected:
 	bool bIsSpark;
 	bool bIsObject;
 #pragma region Sound
-	//사운드 이벤트
-	//UPROPERTY(EditAnywhere, Category = "FMOD")
-	class UFMODEvent* HitEvent;
-	//사운드 
-	SoundManager* HitSound;
 	FTransform SoundTransform;
 #pragma endregion Sound
 private:
