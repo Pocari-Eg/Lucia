@@ -648,6 +648,8 @@ void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->ThrowState(UDodgeThunderEndState::GetInstance());
 		CurState->Irene->ActionEndChangeMoveState();
+		if(CurState->Irene->IreneState->IsRunState())
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 	}
 }
 
