@@ -40,6 +40,11 @@ AIreneCharacter::AIreneCharacter()
 	{
 		ShieldComp->SetStaticMesh(SM_Shield.Object);
 	}
+	const ConstructorHelpers::FObjectFinder<UMaterial>MT_Shield(TEXT("/Game/Model/Irene/Material/MT_Shield.MT_Shield"));
+	if(MT_Shield.Succeeded())
+	{
+		ShieldComp->SetMaterial(0,MT_Shield.Object);
+	}
 	ShieldComp->SetupAttachment(GetCapsuleComponent());
 	ShieldComp->SetVisibility(false);
 	
@@ -355,7 +360,7 @@ void AIreneCharacter::FindNearMonster()
 	{
 		// 기존 타겟팅 취소
 		const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
-		Mon->MarkerOff();
+		Mon->MarkerOff();		
 		IreneAnim->SetIsHaveTargetMonster(false);
 		IreneAttack->TargetMonster = nullptr;
 	}
@@ -529,9 +534,14 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		IreneAnim->SetTargetMonster(RayHit.GetActor());
 		IreneAnim->SetIsHaveTargetMonster(true);
 
-		const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+		auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
 		Mon->MarkerOn();
-
+		Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+		Mon->TargetWidgetOff();
+		IreneAttack->CanThrowQuillMonster = RayHit.GetActor();
+		Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+		Mon->TargetWidgetOn();
+		
 		// 몬스터를 찾고 쳐다보기
 		const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->TargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -641,8 +651,13 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			IreneAttack->TargetMonster = DamageCauser;
 			IreneAnim->SetTargetMonster(IreneAttack->TargetMonster);
 			IreneAnim->SetIsHaveTargetMonster(true);
-			const auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
+			auto Mon=Cast<AMonster>(IreneAttack->TargetMonster);
 			Mon->MarkerOn();
+			Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+			Mon->TargetWidgetOff();
+			IreneAttack->CanThrowQuillMonster = DamageCauser;
+			Mon=Cast<AMonster>(IreneAttack->CanThrowQuillMonster);
+			Mon->TargetWidgetOn();
 		}
 	}
 	return FinalDamage;

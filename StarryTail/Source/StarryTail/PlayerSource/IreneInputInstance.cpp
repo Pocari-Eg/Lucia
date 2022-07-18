@@ -346,12 +346,15 @@ void UIreneInputInstance::RightButtonPressed()
 		switch (Irene->IreneAttack->GetQuillAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
+			FireQuillCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(FireQuillWaitHandle, this, &UIreneInputInstance::FireQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Water:
+			WaterQuillCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(WaterQuillWaitHandle, this, &UIreneInputInstance::WaterQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Thunder:
+			ThunderQuillCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(ThunderQuillWaitHandle, this, &UIreneInputInstance::ThunderQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		default: ;
@@ -443,11 +446,32 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
 		{
 			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
+			{
 				ChangeForm(Attribute);
+				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Fire)
+				{
+					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Water);
+					Irene->FOnQuillAttributeChange.Broadcast();
+				}
+			}
 			if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
+			{
 				ChangeForm(Attribute);
+				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Water)
+				{
+					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Thunder);
+					Irene->FOnQuillAttributeChange.Broadcast();
+				}
+			}
 			if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
+			{
 				ChangeForm(Attribute);
+				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Thunder)
+				{
+					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Fire);
+					Irene->FOnQuillAttributeChange.Broadcast();
+				}
+			}
 		}
 	}
 }
@@ -482,17 +506,23 @@ void UIreneInputInstance::QuillAttributeChangeReleased()
 	}
 	switch (Irene->IreneAttack->GetQuillAttribute())
 	{
-	case EAttributeKeyword::e_Fire:
+	case EAttributeKeyword::e_Fire:	
 		Irene->IreneAttack->FireQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Water;
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
+			Value = EAttributeKeyword::e_Thunder;
 		break;
 	case EAttributeKeyword::e_Water:
 		Irene->IreneAttack->WaterQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Thunder;
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
+			Value = EAttributeKeyword::e_Fire;
 		break;
 	case EAttributeKeyword::e_Thunder:
 		Irene->IreneAttack->ThunderQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Fire;
+		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
+			Value = EAttributeKeyword::e_Water;
 		break;
 	default: ;
 	}
@@ -545,108 +575,29 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() &&
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !ThunderDodgeWaitHandle.IsValid() &&
 	((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		bUseDodgeKey = true;
-		// 불닷지 & FireDodge (없앨수도 있음)
-		// if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
-		// {
-		// 	Irene->IreneAnim->StopAllMontages(0);
-		// 	StaminaGauge -= 75;
-		// 	constexpr float WaitTime = 0.6f; //시간을 설정
-		// 	FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
-		// 	ForwardVec.Z = 0;
-		// 	ForwardVec.Normalize();
-		// 	MoveAutoDirection = FVector::ZeroVector;
-		//
-		// 	// w키나 아무방향 없으면 정면으로 이동
-		// 	MoveAutoDirection += ForwardVec*-1;
-		// 	MoveAutoDirection.Normalize();
-		// 	
-		// 	const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
-		// 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-		//
-		// 	GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
-		// 		{
-		// 			// 도중에 추락 안하고 정상적으로 진행됬을 때
-		// 			if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
-		// 			{
-		// 				Irene->ActionEndChangeMoveState();
-		// 				Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-		// 			}
-		// 		}), WaitTime, false);
-		// }
-		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
-			!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
+		if(Irene->IreneData.CurrentStamina >= 30)
 		{
 			Irene->IreneAnim->StopAllMontages(0);
-			Irene->IreneData.CurrentStamina -= 37.5f;
+			Irene->IreneData.CurrentStamina -= 30;
 			Irene->ChangeStateAndLog(UDodgeThunderStartState::GetInstance());
 
-			if(!DodgeWaitHandle.IsValid())
-				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.FirstThunderDodgeSpeed);
-			else
-				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.DoubleThunderDodgeSpeed);
-
-			
+			Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
 			Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 			
 			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 ThunderDodgeWaitHandle.Invalidate();
 			 }), 0.03f, false);			
-			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
-			 {
-				 DodgeWaitHandle.Invalidate();
-			 }), Irene->IreneData.ThunderDodgeTime, false);
 		}
 	}	
 }
 void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 {
-	if(Rate >= 1.0f && Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water && Irene->IreneData.CurrentStamina > 0 &&
-		!StaminaWaitHandle.IsValid() && !DodgeWaitHandle.IsValid() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsJumpState() &&
-		((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
-	{
-		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
-		{
-			Irene->IreneAnim->StopAllMontages(0.01f);
-			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
-			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
-		}
-		if(StartWaterDodgeStamina != 0)
-		{
-			Irene->IreneAnim->StopAllMontages(0);
-			bUseWaterDodge = true;
-			Irene->IreneData.CurrentStamina -= Rate * GetWorld()->GetDeltaSeconds() * Irene->IreneData.Decrease_Speed;
-			if(StartWaterDodgeStamina - 75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)
-			{
-				GetWorld()->GetTimerManager().SetTimer(StaminaWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					StaminaWaitHandle.Invalidate();
-				}), 1, false);
-			}
-		}
-	}
-	else
-	{
-		StartWaterDodgeStamina = 0;
-		bUseDodgeKey = false;
-		// 켯다가 껏을 때
-		if(bUseWaterDodge)
-		{
-			bUseWaterDodge = false;
-			if(!DodgeWaitHandle.IsValid())
-			{
-				GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
-				 {
-					 DodgeWaitHandle.Invalidate();
-				 }), 2.0f, false);
-			}
-			Irene->ChangeStateAndLog(UDodgeWaterEndState::GetInstance());
-		}
-	}
+	
 }
 
 void UIreneInputInstance::DialogAction()

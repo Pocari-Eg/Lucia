@@ -41,7 +41,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	TargetMonster = nullptr;
 	//초기 속성
 	SwordAttribute = EAttributeKeyword::e_Fire;
-	QuillAttribute = EAttributeKeyword::e_Fire;
+	QuillAttribute = EAttributeKeyword::e_Water;
 
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;

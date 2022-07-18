@@ -643,21 +643,17 @@ void UDodgeThunderStartState::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 	CurState->Irene->IreneInput->MoveAuto();
-	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
-	if (CurState->Irene->GetMovementComponent()->IsFalling())
-	{
-		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
-		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-	}
+
 	if (CurState->PlayTime >= 0.03f)
 	{
-		CurState->Irene->ChangeStateAndLog(UDodgeThunderEndState::GetInstance());
+		CurState->ThrowState(UDodgeThunderEndState::GetInstance());
+		CurState->Irene->ActionEndChangeMoveState();
 	}
 }
 
 void UDodgeThunderStartState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->ThrowState(UDodgeThunderEndState::GetInstance());
+	//CurState->ThrowState(UDodgeThunderEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeThunderStartState
@@ -681,8 +677,7 @@ void UDodgeThunderEndState::Enter(IBaseGameEntity* CurState)
 
 void UDodgeThunderEndState::Execute(IBaseGameEntity* CurState)
 {
-	if (CurState->PlayTime >= 0.83f)
-		CurState->Irene->ActionEndChangeMoveState();
+	
 }
 
 void UDodgeThunderEndState::Exit(IBaseGameEntity* CurState)
