@@ -32,7 +32,7 @@ AAttributeObject::AAttributeObject()
 	ObjectMesh->SetCollisionProfileName(TEXT("NoCollision"));
 
 
-	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
+
 	bIsObject = false;
 
 
@@ -105,6 +105,7 @@ void AAttributeObject::BeginPlay()
 	MonsterWidget->Activate(false);
 	MonsterInfo.MaxHp = 9999999.0f;
 	MonsterInfo.Def = 999999.0f;
+	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 }
 
 void AAttributeObject::PostInitializeComponents()

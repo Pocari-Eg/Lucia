@@ -19,7 +19,7 @@ ABouldelith::ABouldelith()
 
 	bTestMode = false;
 
-	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
+
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 460.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5, 0.5f, 0.5f));
 }
@@ -422,6 +422,8 @@ void ABouldelith::BeginPlay()
 		});
 	BdAnimInstance->Attack.AddUObject(this, &ABouldelith::AttackCheck1);
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
+
+	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {
