@@ -352,7 +352,7 @@ void AMonster::SetManaShieldEffct()
 		ManaShiledEffectComponent->SetTemplate(MonsterEffect.ThunderManaShieldEffect);
 		break;
 	case EAttributeKeyword::e_None:
-		HitEffectComponent->SetActive(false);
+		ManaShiledEffectComponent->SetTemplate(MonsterEffect.NoneManaShieldEffect);
 		break;
 	}
 }
@@ -627,6 +627,27 @@ void AMonster::CalcManaShield()
 					}
 				}
 			}
+			break;
+		case EAttributeKeyword::e_None:
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				OnBarrierChanged.Broadcast();
+				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+				{
+					MonsterInfo.Ele_Shield_Count -= 1;
+					if (MonsterInfo.Ele_Shield_Count < 0)
+					{
+						MonsterInfo.bIsShieldOn = false;
+						OnBarrierChanged.Broadcast();
+						ManaShiledEffectComponent->SetActive(false);
+						ManaShiledEffectComponent->SetVisibility(false);
+					}
+					else {
+
+						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
+						OnBarrierChanged.Broadcast();
+						SetManaShieldEffct();
+					}
+				}
 			break;
 		default:
 			break;
