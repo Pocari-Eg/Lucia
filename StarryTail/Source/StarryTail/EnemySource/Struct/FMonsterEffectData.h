@@ -30,6 +30,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* GroggyEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UParticleSystem* NoneManaShieldEffect;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	 UParticleSystem* FireManaShieldEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UParticleSystem* WaterManaShieldEffect;

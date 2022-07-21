@@ -122,7 +122,7 @@ protected:
 	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
 	float CalcBurnDamage();
-	void CalcManaShield();
+	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 	//Variable
