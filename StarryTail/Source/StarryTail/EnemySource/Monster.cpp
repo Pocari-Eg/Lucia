@@ -77,7 +77,7 @@ AMonster::AMonster()
 	InitEffect();
 
 
-	MonsterInfo.BarrierDec = 30;
+	MonsterInfo.ManaShieldDec = 30;
 
     bShowUI = false;
 	ShowUITimer = 0.0f;
@@ -431,7 +431,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
-		CalcManaShield();
 	}
 	if (Cast<AScientia>(this)) {
 
@@ -445,7 +444,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		ScAIController->Attacked();
 
-		CalcManaShield();
 	}
 	if (Cast<ABouldelith>(this))
 	{
@@ -535,7 +533,7 @@ float AMonster::CalcBurnDamage()
 {
 	return MonsterAttributeDebuff.BurnDamage * 5;
 }
-void AMonster::CalcManaShield()
+void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
 {
 	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 	//속성 배리어
@@ -544,9 +542,9 @@ void AMonster::CalcManaShield()
 		switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
 		{
 		case EAttributeKeyword::e_Fire:
-			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Water)
+			if (AttackAttribute == EAttributeKeyword::e_Water)
 			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
 
 
 				OnBarrierChanged.Broadcast();
@@ -578,9 +576,9 @@ void AMonster::CalcManaShield()
 			}
 			break;
 		case EAttributeKeyword::e_Water:
-			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Thunder)
+			if (AttackAttribute == EAttributeKeyword::e_Thunder)
 			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
@@ -604,9 +602,9 @@ void AMonster::CalcManaShield()
 			}
 			break;
 		case EAttributeKeyword::e_Thunder:
-			if (GameInstance->GetPlayerAttribute() == EAttributeKeyword::e_Fire)
+			if (AttackAttribute == EAttributeKeyword::e_Fire)
 			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
@@ -629,7 +627,7 @@ void AMonster::CalcManaShield()
 			}
 			break;
 		case EAttributeKeyword::e_None:
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= MonsterInfo.BarrierDec;
+				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
@@ -657,7 +655,6 @@ void AMonster::CalcManaShield()
 }
 void AMonster::CalcHp(float Damage)
 {
-	if (!MonsterInfo.bIsShieldOn) {
 		Damage = FMath::Abs(Damage);
 
 		//if (!Cast<AScientia>(this))
@@ -711,7 +708,6 @@ void AMonster::CalcHp(float Damage)
 			}
 			return;
 		}
-	}
 }
 #pragma endregion
 bool AMonster::CheckPlayerIsBehindMonster()
@@ -1514,11 +1510,26 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				{
 					CalcDef();
 					CalcAttributeDebuff(Player->IreneAttack->GetSwordAttribute(), DamageAmount);
-					CalcHp(CalcNormalAttackDamage(DamageAmount));
+
+					if (MonsterInfo.bIsShieldOn)
+					{
+						CalcManaShield(MonsterInfo.ManaShieldDec, Player->GetSwordAttribute());
+					}
+					else {
+						CalcHp(CalcNormalAttackDamage(DamageAmount));
+					}
+				
+
 				}
 				else
 				{
-					CalcHp(CalcNormalAttackDamage(DamageAmount));
+					if (MonsterInfo.bIsShieldOn)
+					{
+						CalcManaShield(MonsterInfo.ManaShieldDec,Player->GetSwordAttribute());
+					}
+					else {
+						CalcHp(CalcNormalAttackDamage(DamageAmount));
+					}
 				}
 			}
 			//몬스터가 아니면
@@ -1536,6 +1547,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	}
 	if (Cast<AQuill>(DamageCauser))
 	{
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		EAttributeKeyword AttackAttribute;
+		if (STGameInstance != nullptr)
+		{
+			AttackAttribute = STGameInstance->GetPlayer()->GetQuillAttribute();
+		}
 		if (this->MonsterInfo.EnemyRank != EEnemyRank::e_Raid)
 		{
 			if (bShowUI)
@@ -1552,7 +1569,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
-		CalcHp(DamageAmount);
+		if (MonsterInfo.bIsShieldOn)
+		{
+			CalcManaShield(DamageAmount, AttackAttribute);
+		}
+		else {
+			CalcHp(DamageAmount);
+		}
 		MonsterInfo.Quill_CurStack++;
 
 		//임시  UI
@@ -1564,7 +1587,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 		{
 			auto Quill = Cast<AQuill>(DamageCauser);
-			auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		
 			{
 				if (STGameInstance != nullptr)
 				{
@@ -1587,6 +1610,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		
 
 			MonsterInfo.Quill_CurStack = 0;
+
+			if (MonsterInfo.bIsShieldOn)
+			{
+				CalcManaShield(100.0f, AttackAttribute);
+			}
+			else {
+				CalcHp(100.0f);
+			}
 		}
 
 		DamageCauser->Destroy();

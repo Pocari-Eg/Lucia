@@ -79,7 +79,7 @@ public:
 	bool bIsShieldOn;
    
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int BarrierDec;
+	int ManaShieldDec;
 
 	//Quill
 	int Quill_MaxStack;
