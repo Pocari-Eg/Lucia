@@ -14,13 +14,12 @@ class STARRYTAIL_API UIreneAttackInstance : public UObject
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY()
 	// 타겟 몬스터 또는 오브젝트
-	AActor* TargetMonster;
-
 	UPROPERTY()
+	AActor* SwordTargetMonster;
 	// 깃펜을 보낼 수 있는 몬스터 또는 오브젝트
-	AActor* CanThrowQuillMonster;
+	UPROPERTY()
+	AActor* QuillTargetMonster;	
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -60,9 +59,7 @@ private:
 	FRotator CameraRot;
 	// 보간을 위한 목표 위치
 	FRotator TargetCameraRot;	
-
-	// 스킬이면 마나 사용한걸로 취급
-	bool bUseMP;
+	
 	// 후딜 중 이동 가능 타이밍 노티파이
 	bool bMoveSkip;
 	// 후딜 중 닷지나 점프 가능 타이밍 노티파이
@@ -75,7 +72,8 @@ public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
-	
+
+	// 검 공격 함수
 	void AttackStartComboState();
 	void AttackEndComboState();
 	void AttackTimeEndState();
@@ -83,6 +81,7 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
+	// 깃펜 스택 함수
 	void FireQuillStack(const int Value);
 	void WaterQuillStack(const int Value);
 	void ThunderQuillStack(const int Value);
@@ -91,7 +90,6 @@ public:
 	void ResetThunderQuillStack();
 	
 	void SetAttackState()const;
-	void SetSkillState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
@@ -101,11 +99,11 @@ public:
 	float GetATK()const;
 
 	FName GetBasicAttackDataTableName();
-	FName GetActionAttackDataTableName();
 
 	//속성 반환
 	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetSwordAttribute()const{return SwordAttribute;}
+	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetQuillAttribute()const{return QuillAttribute;}
 	bool GetFollowTarget()const {return bFollowTarget;}
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
@@ -114,7 +112,6 @@ public:
 	FVector GetCurrentPosVec()const {return CurrentPosVec;}
 	FVector GetNowPosVec()const {return NowPosVec;}
 	float GetCameraShakeTime()const {return CameraShakeTime;}
-	bool GetUseMP()const {return bUseMP;}
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanReAttackSkip()const{return bReAttackSkip;}
@@ -128,7 +125,6 @@ public:
 	void SetPlayerPosVec(const FVector Value){PlayerPosVec = Value;}
 	void SetTargetPosVec(const FVector Value){TargetPosVec = Value;}
 	void SetCameraShakeTime(const float Value){CameraShakeTime = Value;}
-	void SetUseMP(const bool Value){bUseMP = Value;}
 	void SetCurrentPosVec(const FVector Value){CurrentPosVec = Value;}
 	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}

@@ -28,81 +28,52 @@ void UIreneInputInstance::InitMemberVariable()
 	MoveKey.Add(0);
 	MoveKey.Add(0);
 	MoveKey.Add(0);
+
+	bLeftButtonPressed = false;
 	
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
 
-	// 점프 및 차징 중 초기화
-	bStartJump = false;
-	JumpingTime = 0.0f;
-	IsCharging = false;
-	ChargingTime = 0.0f;
-
-	// 마우스 입력 초기화
-	bLeftButtonPressed = false;
-	bRightButtonPressed = false;
-	bUseLeftButton = false;
-	bUseRightButton = false;
-
 	StartWaterDodgeStamina = 0;
-	
-	bUseWaterDodge = false;
-
-	ThunderSkillCount = 2;
-	MaxThunderSkillCount = ThunderSkillCount;
 
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	ThunderCurCoolTime = 0.0f;
+	FireQuillCurCoolTime = 0.0f;
+	WaterQuillCurCoolTime = 0.0f;
+	ThunderQuillCurCoolTime = 0.0f;
 	
-	MaxFireQuillCount = 3;
-	MaxWaterQuillCount=3;
-	MaxThunderQuillCount=3;
-	FireQuillCount = MaxFireQuillCount;
-	WaterQuillCount = MaxWaterQuillCount;
-	ThunderQuillCount = MaxThunderQuillCount;
-	FireQuillCoolTime = 0.0f;
-	WaterQuillCoolTime = 0.0f;
-	ThunderQuillCoolTime = 0.0f;
-	bIsFireQuillOn = true;
-	bIsWaterQuillOn = true;
-	bIsThunderQuillOn = true;	
-	MaxFireQuillCoolTime = 3.0f;
-	MaxWaterQuillCoolTime = 3.0f;
-	MaxThunderQuillCoolTime = 3.0f;
-	
-	CoolTimeRate = 0.008f;
-	FireSkillCoolTime = 0.0f;
-	WaterSkillCoolTime = 0.0f;
-	ThunderSkillCoolTime = 0.0f;
-
-	bIsFireSkillOn = true;
-	bIsWaterSkillOn = true;
-	bIsThunderSkillOn = true;
-
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
+	bIsFireQuillOn = true;
+	bIsWaterQuillOn = true;
+	bIsThunderQuillOn = true;
+	
+	MaxFireQuillCount = 3;
+	MaxWaterQuillCount = 3;
+	MaxThunderQuillCount = 3;
+	FireQuillCount = MaxFireQuillCount;
+	WaterQuillCount = MaxWaterQuillCount;
+	ThunderQuillCount = MaxThunderQuillCount;
+	FireQuillMaxCoolTime = 3.0f;
+	WaterQuillMaxCoolTime = 3.0f;
+	ThunderQuillMaxCoolTime = 3.0f;
 
-	bIsDialogOn=false;
+	CoolTimeRate = 0.008f;
+	bIsDialogOn = false;
 }
 void UIreneInputInstance::Begin()
 {
 	const TUniquePtr<FFormTimeDataTable> FireFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form")));
 	if(FireFormTimeDataTable != nullptr)
-	{
 		FireMaxCoolTime = FireFormTimeDataTable->Form_C_Time;
-	}
 	const TUniquePtr<FFormTimeDataTable> WaterFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form")));
 	if(WaterFormTimeDataTable != nullptr)
-	{
 		WaterMaxCoolTime = WaterFormTimeDataTable->Form_C_Time;
-	}
 	const TUniquePtr<FFormTimeDataTable> ThunderFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Thunder_Form")));
 	if(ThunderFormTimeDataTable != nullptr)
-	{
 		ThunderMaxCoolTime = ThunderFormTimeDataTable->Form_C_Time;
-	}
 }
 
 #pragma region Move
@@ -113,13 +84,9 @@ void UIreneInputInstance::MoveForward()
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	// 0: 전진, 2: 후진
 	if (MoveKey[0] != 0 && MoveKey[0] < 3)
-	{
 		Irene->AddMovementInput(Direction);
-	}
 	if (MoveKey[2] != 0 && MoveKey[2] < 3)
-	{
 		Irene->AddMovementInput(Direction * -1);
-	}
 }
 void UIreneInputInstance::MoveRight()
 {
@@ -128,13 +95,9 @@ void UIreneInputInstance::MoveRight()
 	const FVector Direction = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	// 1: 좌측, 3: 우측
 	if (MoveKey[1] != 0 && MoveKey[1] < 3)
-	{
 		Irene->AddMovementInput(Direction * -1);
-	}
 	if (MoveKey[3] != 0 && MoveKey[3] < 3)
-	{
 		Irene->AddMovementInput(Direction);
-	}
 }
 
 void UIreneInputInstance::MoveAuto(const float EndTimer)const
@@ -149,18 +112,6 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
 		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
-
-		if(FVector::Dist(Target, Irene->IreneAttack->GetTargetPosVec()) <= 50)
-		{
-			FString AnimName = "";
-			if(Irene->IreneAnim->GetCurrentActiveMontage())
-				AnimName = Irene->IreneAnim->GetCurrentActiveMontage()->GetName();
-			// 전기스킬은 다른 방식으로 공격 실행
-			if (AnimName != FString("IreneThunderSkill_Montage"))
-			{
-				Irene->IreneAttack->DoAttack();
-			}
-		}
 	}
 }
 #pragma endregion Move
@@ -226,21 +177,13 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	FVector LookDir = FVector::ZeroVector;
 	if (MoveKey[0] != 0 && MoveKey[0] < 3)
-	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	}
 	if (MoveKey[2] != 0 && MoveKey[2] < 3)
-	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
-	}
 	if (MoveKey[1] != 0 && MoveKey[1] < 3)
-	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
-	}
 	if (MoveKey[3] != 0 && MoveKey[3] < 3)
-	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-	}
 	if(LookDir == FVector::ZeroVector)
 		LookDir = Irene->GetActorForwardVector();
 	LookDir.Normalize();
@@ -271,28 +214,21 @@ void UIreneInputInstance::LookUp(float Rate)
 }
 
 void UIreneInputInstance::LeftButton(float Rate)
-{	
-	if(Rate != 0)
-		bLeftButtonPressed = true;
-	else
-		bLeftButtonPressed = false;
-	if ((CanAttackState() && !AttackWaitHandle.IsValid() && bUseRightButton == false && !bIsDialogOn) || Rate >= 2.0)
+{
+	bLeftButtonPressed = true;
+	if (CanAttackState() && !AttackWaitHandle.IsValid() && !bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
-			{
-				// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용하며 불 스킬은 UIreneInputInstance::RightButtonReleased에서 데미지 설정을 함
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
-			}
 			
-			bUseLeftButton = true;
-			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(한번에 여러번 공격 인식 안하도록 함)
+			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.15f;
-
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					AttackWaitHandle.Invalidate();
@@ -301,14 +237,11 @@ void UIreneInputInstance::LeftButton(float Rate)
 			if (Irene->IreneData.IsAttacking)
 			{
 				if (Irene->IreneData.CanNextCombo)
-				{
 					Irene->IreneData.IsComboInputOn = true;
-				}
 				else
 				{
 					if(Irene->IreneData.CurrentCombo < 3)
 					{
-						// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
 						Irene->IreneData.CurrentCombo += 1;
 						Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 					}
@@ -318,7 +251,6 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				Irene->IreneAttack->AttackStartComboState();
 				Irene->IreneAnim->PlayAttackMontage();
-
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
 			}
@@ -346,15 +278,15 @@ void UIreneInputInstance::RightButtonPressed()
 		switch (Irene->IreneAttack->GetQuillAttribute())
 		{
 		case EAttributeKeyword::e_Fire:
-			FireQuillCoolTime = 0;
+			FireQuillCurCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(FireQuillWaitHandle, this, &UIreneInputInstance::FireQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Water:
-			WaterQuillCoolTime = 0;
+			WaterQuillCurCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(WaterQuillWaitHandle, this, &UIreneInputInstance::WaterQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		case EAttributeKeyword::e_Thunder:
-			ThunderQuillCoolTime = 0;
+			ThunderQuillCurCoolTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(ThunderQuillWaitHandle, this, &UIreneInputInstance::ThunderQuillWait, CoolTimeRate, true, 0.0f);
 			break;
 		default: ;
@@ -365,34 +297,23 @@ void UIreneInputInstance::RightButtonPressed()
 
 		FRotator Rotator;
 		FVector SpawnLocation;
-		if(Irene->IreneAttack->TargetMonster != nullptr || Irene->IreneAttack->CanThrowQuillMonster != nullptr)
+		if(Irene->IreneAttack->SwordTargetMonster != nullptr || Irene->IreneAttack->QuillTargetMonster != nullptr)
 		{
-			if(Irene->IreneAttack->TargetMonster != nullptr)
-			{
-				const auto TargetMonster = Cast<AMonster>(Irene->IreneAttack->TargetMonster);
-				FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
-				Length.Normalize();
+			const AMonster* TargetMonster = nullptr;
+			if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+				TargetMonster = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+			else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
+				TargetMonster = Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
+			
+			FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
+			Length.Normalize();
 				
-				const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
-				const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
-				Rotator = Look;
-				Rotator.Pitch = 270+Rotator.Pitch + 20;
+			const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
+			const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
+			Rotator = Look;
+			Rotator.Pitch = 270+Rotator.Pitch + 20;
 
-				SpawnLocation = TargetPos;
-			}
-			else if(Irene->IreneAttack->TargetMonster == nullptr && Irene->IreneAttack->CanThrowQuillMonster != nullptr)
-			{
-				const auto TargetMonster = Cast<AMonster>(Irene->IreneAttack->CanThrowQuillMonster);
-				FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
-				Length.Normalize();
-				
-				const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
-				const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
-				Rotator = Look;
-				Rotator.Pitch = 270+Rotator.Pitch + 20;
-				
-				SpawnLocation = TargetPos;
-			}			
+			SpawnLocation = TargetPos;
 		}
 		else
 		{
@@ -406,23 +327,13 @@ void UIreneInputInstance::RightButtonPressed()
 		SpawnedActor->Distance = 1000;
 		SpawnedActor->Strength = 100;
 
-		if(Irene->IreneAttack->TargetMonster != nullptr)
-		{
-			SpawnedActor->Target = Irene->IreneAttack->TargetMonster;
-		}
-		else if(Irene->IreneAttack->TargetMonster == nullptr && Irene->IreneAttack->CanThrowQuillMonster != nullptr)
-		{
-			SpawnedActor->Target = Irene->IreneAttack->CanThrowQuillMonster;
-		}
+		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+			SpawnedActor->Target = Irene->IreneAttack->SwordTargetMonster;
+		else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
+			SpawnedActor->Target = Irene->IreneAttack->QuillTargetMonster;
 		else 
-		{			
 			SpawnedActor->Target = nullptr;
-		}
 	}
-}
-void UIreneInputInstance::RightButtonReleased()
-{
-
 }
 
 void UIreneInputInstance::MouseWheel(float Rate)
@@ -443,35 +354,25 @@ void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attri
 	if (!bIsDialogOn)
 	{
 		// 속성을 변화시키는 함수
-		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
+		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
 		{
 			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
 			{
-				ChangeForm(Attribute);
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Fire)
-				{
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Water);
-					Irene->FOnQuillAttributeChange.Broadcast();
-				}
 			}
-			if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
+			else if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
 			{
-				ChangeForm(Attribute);
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Water)
-				{
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Thunder);
-					Irene->FOnQuillAttributeChange.Broadcast();
-				}
 			}
-			if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
+			else if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
 			{
-				ChangeForm(Attribute);
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Thunder)
-				{
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Fire);
-					Irene->FOnQuillAttributeChange.Broadcast();
-				}
 			}
+			ChangeForm(Attribute);
+			Irene->FOnQuillAttributeChange.Broadcast();
 		}
 	}
 }
@@ -492,15 +393,15 @@ void UIreneInputInstance::QuillAttributeChangeReleased()
 {
 	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
 	int TargetMonsterStack = 0;
-	if(Irene->IreneAttack->TargetMonster != nullptr)
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 	{
-		const auto Monster = Cast<AMonster>(Irene->IreneAttack->TargetMonster);
+		const auto Monster = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
 		TargetMonsterStack = Monster->GetCurQuillStack();
 		Monster->SetCurQuillStack(0);
 	}
-	else if(Irene->IreneAttack->CanThrowQuillMonster != nullptr)
+	else if(Irene->IreneAttack->QuillTargetMonster != nullptr)
 	{
-		const auto Monster = Cast<AMonster>(Irene->IreneAttack->CanThrowQuillMonster);
+		const auto Monster = Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
 		TargetMonsterStack = Monster->GetCurQuillStack();
 		Monster->SetCurQuillStack(0);
 	}
@@ -533,9 +434,7 @@ void UIreneInputInstance::QuillAttributeChangeReleased()
 void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 {
 	if(Irene->Weapon->IsVisible())
-	{
 		Irene->WeaponVisible(false);
-	}
 	// 속성을 변화시키고 그에 따른 UI와 사운드 적용
 	Irene->IreneAttack->SetSwordAttribute(Value);
 	Irene->IreneAnim->SetAttribute(Irene->IreneAttack->GetSwordAttribute());
@@ -566,24 +465,23 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	//Fire
-	GetWorld()->GetTimerManager().SetTimer(FireStartTimer, this, &UIreneInputInstance::FireCoolTime, CoolTimeRate, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(AttributeChangeFireTimer, this, &UIreneInputInstance::FireCoolTime, CoolTimeRate, true, 0.0f);
 	//Water
-	GetWorld()->GetTimerManager().SetTimer(WaterStartTimer, this, &UIreneInputInstance::WaterCoolTime, CoolTimeRate, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(AttributeChangeWaterTimer, this, &UIreneInputInstance::WaterCoolTime, CoolTimeRate, true, 0.0f);
 	//Thunder
-	GetWorld()->GetTimerManager().SetTimer(ElectricStartTimer, this, &UIreneInputInstance::ThunderCoolTime, CoolTimeRate, true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(AttributeChangeElectricTimer, this, &UIreneInputInstance::ThunderCoolTime, CoolTimeRate, true, 0.0f);
 }
 
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !ThunderDodgeWaitHandle.IsValid() &&
-	((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
+	Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
 	{
-		bUseDodgeKey = true;
 		if(Irene->IreneData.CurrentStamina >= 30)
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 30;
-			Irene->ChangeStateAndLog(UDodgeThunderStartState::GetInstance());
+			Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 
 			Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
 			Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
@@ -591,57 +489,52 @@ void UIreneInputInstance::DodgeKeyword()
 			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 ThunderDodgeWaitHandle.Invalidate();
-			 }), 0.03f, false);			
+			 }), 0.03f, false);
 		}
 	}	
-}
-void UIreneInputInstance::WaterDodgeKeyword(float Rate)
-{
-	
 }
 
 void UIreneInputInstance::DialogAction()
 {
-		UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
 
-		switch (PlayerHud->GetDialogState())
-		{
-		case EDialogState::e_Set:
+	switch (PlayerHud->GetDialogState())
+	{
+	case EDialogState::e_Set:
+		PlayerHud->PlayDialog();
+		// 노말다이얼로그 추가되면 주석 해제하면 되는데 불 차징 많이 하고 다이얼로그 띄우면 에러 발생함
+		// Irene->IreneAnim->StopAllMontages(0);
+		// Irene->IreneAttack->SetUseSkillSkip(true);
+		// Irene->SetIreneDialog();
+		// if(Irene->IreneState->IsChargeState())
+		// {
+		// 	Irene->IreneInput->bUseLeftButton = false;
+		// 	Irene->IreneInput->bUseRightButton = false;
+		// }
+		break;
+	case EDialogState::e_Playing:
+		PlayerHud->PassDialog();
+		break;
+	case EDialogState::e_Complete:
+		if (PlayerHud->ContinueDialog())
 			PlayerHud->PlayDialog();
-			// 노말다이얼로그 추가되면 주석 해제하면 되는데 불 차징 많이 하고 다이얼로그 띄우면 에러 발생함
-			// Irene->IreneAnim->StopAllMontages(0);
-			// Irene->IreneAttack->SetUseSkillSkip(true);
-			// Irene->SetIreneDialog();
-			// if(Irene->IreneState->IsChargeState())
-			// {
-			// 	Irene->IreneInput->bUseLeftButton = false;
-			// 	Irene->IreneInput->bUseRightButton = false;
-			// }
-			break;
-		case EDialogState::e_Playing:
-			PlayerHud->PassDialog();
-			break;
-		case EDialogState::e_Complete:
-			if (PlayerHud->ContinueDialog())
-				PlayerHud->PlayDialog();
-			else
-				PlayerHud->ExitDialog();
-			break;
-		case EDialogState::e_Disable:
-			break;
-		default:
-			break;
-		}
-
+		else
+			PlayerHud->ExitDialog();
+		break;
+	case EDialogState::e_Disable:
+		break;
+	default:
+		break;
+	}
 }
 
 void UIreneInputInstance::DialogSkip()
 {
-	if (bIsDialogOn) {
+	if (bIsDialogOn)
+	{
 		UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
 		PlayerHud->SkipDialog();
 	}
-
 }
 
 void UIreneInputInstance::MouseCursorKeyword()
@@ -685,23 +578,15 @@ bool UIreneInputInstance::StaminaGaugeIsFull()const
 #pragma endregion UI
 
 #pragma region CheckStateChange
-bool UIreneInputInstance::CanJumpState() const
-{
-	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_T_End"))==0)
-		return true;
-	if (!Irene->IreneState->IsJumpState()  && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState() && !Irene->IreneState->IsChargeState())
-			return true;
-	return false;
-}
 bool UIreneInputInstance::CanRunState() const
 {
-	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
 			return true;
 	return false;
 }
 bool UIreneInputInstance::CanAttackState() const
 {
-	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_T_End"))==0)
+	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
 		return true;
 	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
 		return true;
@@ -727,177 +612,94 @@ void UIreneInputInstance::SetStopMoveAutoTarget()const
 void UIreneInputInstance::FireCoolTime()
 {
 	if (FireCurCoolTime < FireMaxCoolTime)
-	{
 		FireCurCoolTime += CoolTimeRate;
-
-	}
-	else {
+	else
+	{
 		bIsFireAttributeOn = true;
 		FireCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(FireStartTimer);
-
+		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeFireTimer);
 	}
-
 	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
 	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
 }
 void UIreneInputInstance::WaterCoolTime()
 {
 	if (WaterCurCoolTime < WaterMaxCoolTime)
-	{
 		WaterCurCoolTime += CoolTimeRate;
-
-	}
-	else {
+	else
+	{
 		bIsWaterAttributeOn = true;
 		WaterCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(WaterStartTimer);
-
+		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeWaterTimer);
 	}
-
 	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
 	Irene->IreneUIManager->OnWaterCoolChange.Broadcast();
-
 }
 void UIreneInputInstance::ThunderCoolTime()
 {
 	if (ThunderCurCoolTime < ThunderMaxCoolTime)
+		ThunderCurCoolTime += CoolTimeRate;
+	else
 	{
-		ThunderCurCoolTime += CoolTimeRate;;
-	}
-	else {
 		bIsThunderAttributeOn = true;
 		ThunderCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(ElectricStartTimer);
-
+		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeElectricTimer);
 	}
 	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
 	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
-
 }
 
-void UIreneInputInstance::FireSkillWait()
-{
-	FireSkillCoolTime += CoolTimeRate;
-
-	if (FireSkillCoolTime > MaxFireSkillCoolTime) {
-		bIsFireSkillOn = true;
-		Irene->IreneUIManager->UpdateFireSkillCool(FireSkillCoolTime, MaxFireSkillCoolTime);
-		Irene->IreneUIManager->OnFireSkillCoolChange.Broadcast();
-		FireSkillCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(FireSkillWaitHandle);
-	}
-	else {
-
-		Irene->IreneUIManager->UpdateFireSkillCool(FireSkillCoolTime, MaxFireSkillCoolTime);
-		Irene->IreneUIManager->OnFireSkillCoolChange.Broadcast();
-	}
-}
-void UIreneInputInstance::WaterSkillWait()
-{
-	WaterSkillCoolTime += CoolTimeRate;
-
-	if (WaterSkillCoolTime > MaxWaterSkillCoolTime) {
-		bIsWaterSkillOn = true;
-		Irene->IreneUIManager->UpdateWaterSkillCool(WaterSkillCoolTime, MaxWaterSkillCoolTime);
-		Irene->IreneUIManager->OnWaterSkillCoolChange.Broadcast();
-		WaterSkillCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(WaterSkillWaitHandle);
-	}
-	{
-		Irene->IreneUIManager->UpdateWaterSkillCool(WaterSkillCoolTime, MaxWaterSkillCoolTime);
-		Irene->IreneUIManager->OnWaterSkillCoolChange.Broadcast();
-	}
-}
-void UIreneInputInstance::ThunderSkillWait()
-{
-	ThunderSkillCoolTime += CoolTimeRate;
-	if (ThunderSkillCoolTime > MaxThunderSkillCoolTime)
-	{
-		bIsThunderSkillOn = true;
-		Irene->IreneUIManager->UpdateThunderSkillCool(ThunderSkillCoolTime, MaxThunderSkillCoolTime);
-		Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
-		ThunderSkillCoolTime = 0.0f;
-		if (ThunderSkillCount < MaxThunderSkillCount)
-		{
-		}
-		else
-		{
-			GetWorld()->GetTimerManager().ClearTimer(ThunderSkillWaitHandle);
-		}
-	}
-	else
-	{
-		Irene->IreneUIManager->UpdateThunderSkillCool(ThunderSkillCoolTime, MaxThunderSkillCoolTime);
-		Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
-	}
-}
 void UIreneInputInstance::FireQuillWait()
 {
-	FireQuillCoolTime += CoolTimeRate;
-	if (FireQuillCoolTime > MaxFireQuillCoolTime)
+	FireQuillCurCoolTime += CoolTimeRate;
+	if (FireQuillCurCoolTime > FireQuillMaxCoolTime)
 	{
 		bIsFireQuillOn = true;
-		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCoolTime, MaxFireQuillCoolTime);
+		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCurCoolTime, FireQuillMaxCoolTime);
 		Irene->IreneUIManager->OnFireQuillCoolChange.Broadcast();
-		FireQuillCoolTime = 0.0f;
-		if (FireQuillCount < MaxFireQuillCount)
-		{
-		}
-		else
-		{
+		FireQuillCurCoolTime = 0.0f;
+		if (FireQuillCount >= MaxFireQuillCount)
 			GetWorld()->GetTimerManager().ClearTimer(FireQuillWaitHandle);
-		}
 	}
 	else
 	{
-		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCoolTime, MaxFireQuillCoolTime);
+		Irene->IreneUIManager->UpdateFireQuillCool(FireQuillCurCoolTime, FireQuillMaxCoolTime);
 		Irene->IreneUIManager->OnFireQuillCoolChange.Broadcast();
 	}
 }
 void UIreneInputInstance::WaterQuillWait()
 {
-	WaterQuillCoolTime += CoolTimeRate;
-	if (WaterQuillCoolTime > MaxWaterQuillCoolTime)
+	WaterQuillCurCoolTime += CoolTimeRate;
+	if (WaterQuillCurCoolTime > WaterQuillMaxCoolTime)
 	{
 		bIsWaterQuillOn = true;
-		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCoolTime, MaxWaterQuillCoolTime);
+		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCurCoolTime, WaterQuillMaxCoolTime);
 		Irene->IreneUIManager->OnWaterQuillCoolChange.Broadcast();
-		WaterQuillCoolTime = 0.0f;
-		if (WaterQuillCount < MaxWaterQuillCount)
-		{
-		}
-		else
-		{
+		WaterQuillCurCoolTime = 0.0f;
+		if (WaterQuillCount >= MaxWaterQuillCount)
 			GetWorld()->GetTimerManager().ClearTimer(WaterQuillWaitHandle);
-		}
 	}
 	else
 	{
-		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCoolTime, MaxWaterQuillCoolTime);
+		Irene->IreneUIManager->UpdateWaterQuillCool(WaterQuillCurCoolTime, WaterQuillMaxCoolTime);
 		Irene->IreneUIManager->OnWaterQuillCoolChange.Broadcast();
 	}
 }
 void UIreneInputInstance::ThunderQuillWait()
 {
-	ThunderQuillCoolTime += CoolTimeRate;
-	if (ThunderQuillCoolTime > MaxThunderQuillCoolTime)
+	ThunderQuillCurCoolTime += CoolTimeRate;
+	if (ThunderQuillCurCoolTime > ThunderQuillMaxCoolTime)
 	{
 		bIsThunderQuillOn = true;
-		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCoolTime, MaxThunderQuillCoolTime);
+		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCurCoolTime, ThunderQuillMaxCoolTime);
 		Irene->IreneUIManager->OnThunderQuillCoolChange.Broadcast();
-		ThunderQuillCoolTime = 0.0f;
-		if (ThunderQuillCount < MaxThunderQuillCount)
-		{
-		}
-		else
-		{
+		ThunderQuillCurCoolTime = 0.0f;
+		if (ThunderQuillCount >= MaxThunderQuillCount)
 			GetWorld()->GetTimerManager().ClearTimer(ThunderQuillWaitHandle);
-		}
 	}
 	else
 	{
-		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCoolTime, MaxThunderQuillCoolTime);
+		Irene->IreneUIManager->UpdateThunderQuillCool(ThunderQuillCurCoolTime, ThunderQuillMaxCoolTime);
 		Irene->IreneUIManager->OnThunderQuillCoolChange.Broadcast();
 	}
 }

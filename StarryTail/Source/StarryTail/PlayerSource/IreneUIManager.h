@@ -68,11 +68,9 @@ private:
 
 	float ThunderQuillMaxCoolTime;
 	float ThunderQuillCurCoolTime;
-public:
-	// 로그 출력용
-	bool bShowLog;
 
 #pragma region HUD
+public:
 	FOnHpChangeDelegate OnHpChanged;
 	FOnMpChangeDelegate OnStaminaChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)

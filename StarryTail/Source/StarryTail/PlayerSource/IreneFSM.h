@@ -80,67 +80,23 @@ public:
 
 #pragma region Dodge
 UCLASS()
-class STARRYTAIL_API UDodgeFireStartState final : public UObject, public IState
+class STARRYTAIL_API UDodgeStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
 private:
 	FTimerHandle MoveAutoWaitHandle;
 public:
-	static UDodgeFireStartState* GetInstance();
+	static UDodgeStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 };
 UCLASS()
-class STARRYTAIL_API UDodgeFireEndState final : public UObject, public IState
+class STARRYTAIL_API UDodgeEndState final : public UObject, public IState
 {
 	GENERATED_BODY()
 public:
-	static UDodgeFireEndState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API UDodgeWaterStartState final : public UObject, public IState
-{
-	GENERATED_BODY()
-private:
-	FTimerHandle MoveAutoWaitHandle;
-public:
-	static UDodgeWaterStartState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API UDodgeWaterEndState final : public UObject, public IState
-{
-	GENERATED_BODY()
-public:
-	static UDodgeWaterEndState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API UDodgeThunderStartState final : public UObject, public IState
-{
-	GENERATED_BODY()
-private:
-	FTimerHandle MoveAutoWaitHandle;
-public:
-	static UDodgeThunderStartState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API UDodgeThunderEndState final : public UObject, public IState
-{
-	GENERATED_BODY()
-public:
-	static UDodgeThunderEndState* GetInstance();
+	static UDodgeEndState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
@@ -184,207 +140,42 @@ public:
 
 #pragma region Attack
 UCLASS()
-class STARRYTAIL_API UBasicAttack1FireState final : public UObject, public IState
+class STARRYTAIL_API UBasicAttack1State final : public UObject, public IState
 {
 	GENERATED_BODY()
 	float StartShakeTime;
 public:
-	static UBasicAttack1FireState* GetInstance();
+	static UBasicAttack1State* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
-class STARRYTAIL_API UBasicAttack2FireState final : public UObject, public IState
+class STARRYTAIL_API UBasicAttack2State final : public UObject, public IState
 {
 	GENERATED_BODY()
 	float StartShakeTime;
 public:
-	static UBasicAttack2FireState* GetInstance();
+	static UBasicAttack2State* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
-class STARRYTAIL_API UBasicAttack3FireState final : public UObject, public IState
+class STARRYTAIL_API UBasicAttack3State final : public UObject, public IState
 {
 	GENERATED_BODY()
 	float StartShakeTime;
 public:
-	static UBasicAttack3FireState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack1WaterState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack1WaterState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack2WaterState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack2WaterState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack3WaterState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack3WaterState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack1ThunderState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack1ThunderState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack2ThunderState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack2ThunderState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API UBasicAttack3ThunderState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack3ThunderState* GetInstance();
+	static UBasicAttack3State* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 #pragma endregion Attack
-
-#pragma region Skill
-UCLASS()
-class STARRYTAIL_API USkillFireStartState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static USkillFireStartState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API USkillFireEndState final : public UObject, public IState
-{
-	GENERATED_BODY()
-public:
-	static USkillFireEndState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API USkillWaterStartState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static USkillWaterStartState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API USkillWaterEndState final : public UObject, public IState
-{
-	GENERATED_BODY()
-public:
-	static USkillWaterEndState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API USkillThunderStartState final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static USkillThunderStartState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API USkillThunderEndState final : public UObject, public IState
-{
-	GENERATED_BODY()
-public:
-	static USkillThunderEndState* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-#pragma endregion Skill
-
-#pragma region Charge
-UCLASS()
-class STARRYTAIL_API UCharge1State final : public UObject, public IState
-{
-	GENERATED_BODY()
-private:
-	float CurrentTime;
-public:
-	static UCharge1State* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-UCLASS()
-class STARRYTAIL_API UCharge2State final : public UObject, public IState
-{
-	GENERATED_BODY()
-private:
-	float CurrentTime;
-public:
-	static UCharge2State* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-};
-#pragma endregion Charge
 
 #pragma region FormChange
 UCLASS()
@@ -477,9 +268,6 @@ public:
 	bool IsDodgeState()const;
 	bool IsJumpState()const;
 	bool IsAttackState()const;
-	bool IsSkillState()const;
-	bool IsFireSkillState()const;
-	bool IsChargeState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;
 	bool IsDeathState()const;

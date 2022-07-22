@@ -117,12 +117,6 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponVisible(bool Value);
-	UFUNCTION(BlueprintImplementableEvent)
-	void UseWaterDodge();
-	UFUNCTION(BlueprintImplementableEvent)
-	void StartThunderDodge();
-	UFUNCTION(BlueprintImplementableEvent)
-	void EndThunderDodge();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void LevelRestartEvent();
@@ -140,7 +134,7 @@ public:
 	// 상태 변화 후 로그 출력
 	void ChangeStateAndLog(class IState* NewState)const;
 	UFUNCTION(BlueprintCallable)
-	void ActionEndChangeMoveState()const;	
+	void ActionEndChangeMoveState(bool RunToSprint = false)const;	
 #pragma endregion State
 	
 #pragma region Collision
@@ -203,7 +197,6 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	void PlayFadeOutAnimation();
-
 
 	UFUNCTION(BluePrintCallable)
 	void PlayFadeInAnimation();
