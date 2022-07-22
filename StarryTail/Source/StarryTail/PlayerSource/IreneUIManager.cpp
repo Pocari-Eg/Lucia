@@ -23,7 +23,6 @@ UIreneUIManager::UIreneUIManager()
 	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_AttackVoice");
 	TakeDamageVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_TakeDamageVoice");
 
-	bShowLog = false;
 	IsConsecutiveIdle = false;
 	CurRecoverWaitTime = 0;
 	WalkSoundVolume = 0.7f;
@@ -228,16 +227,6 @@ float UIreneUIManager::GetWaterQuillCoolRatio()
 float UIreneUIManager::GetThunderQuillCoolRatio()
 {
 	return (ThunderQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderQuillCurCoolTime / ThunderQuillMaxCoolTime);
-}
-
-int UIreneUIManager::GetSkillCount()
-{
-	return Irene->IreneInput->GetThunderSkillCount();
-}
-
-void UIreneUIManager::SetSkillCount(int Value)
-{
-	Irene->IreneInput->SetThunderSkillCount(Value);
 }
 
 int UIreneUIManager::GetFireQuillCount()
