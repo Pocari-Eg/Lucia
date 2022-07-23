@@ -17,96 +17,76 @@ public:
 	// 캐릭터 외 설정 값
 	
 	// 스프링암과 플레이어 간 기본 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float FollowCameraZPosition = 425;
 	// 스프링암과 플레이어 간 최대 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxFollowCameraZPosition = 550;
 	// 스프링암과 플레이어 간 최소 거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MinFollowCameraZPosition = 120;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxBattleCameraZPosition = 700;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxRaidCameraZPosition = 1200;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float BattleCameraZPosition = 700;
 
 	// 카메라 수평필드 오브 뷰
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float FieldOfView = 75;
 	// 카메라 지연 속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxCameraLagSpeed = 5.0f;
-
-	// 점프시작파워
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpStartPower = 550;
-	// 점프저항파워
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float JumpDrag = 1.2f;
-	
+		
 	// 마우스 휠 속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MouseWheelSpeed = 10.0f;
 	// 마우스 감도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float EDPI = 1.0f;
 
 public:	
 	// 캐릭터 설정 값
 
 	// 무적상태
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	bool IsInvincibility = false;
 
 	//공격력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float Strength = 20;
 	//불 스택 추가 공격력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float FireQuillStackDmg = 1;
-	//방어력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Defenses = 10;
 	//쉴드
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float Shield = 0;
 	
 	// 최대 체력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxHP = 2000;
 	// 최대 스테미나
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float MaxStamina = 150;
 	// 체력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentHP;
 	// 스테미나
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentStamina;
 
 	// Run 최대 속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float RunMaxSpeed = 540.0f;
 	// Sprint 최대 속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
 	// 전기 스택 추가 이동속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite)
 	float ThunderQuillStackSpeed = 1;
-	
-	// 전기 대쉬 재사용 쿨타임
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float ThunderDodgeTime = 1.0f;
-	// 전기 대쉬 속력 임시값
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float FirstThunderDodgeSpeed = 800000.0f;
-	// 전기 대쉬 속력 임시값
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float DoubleThunderDodgeSpeed = 1500000.0f;
 	
 public:
 	// 공격 관련 변수들
@@ -121,16 +101,16 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	int32 MaxCombo = 3;
 	// 캡슐 공격 사거리
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	float AttackRange = 50.0f;
 	// 캡슐 공격 사거리 반지름
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	float AttackRadius = 50.0f;
 	// 타겟 추적 선형보간 속도
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	float TargetFollowSpeed = 8.0f;
 	// 카메라 타겟 추적 선형보간 속도
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	float TargetCameraFollowSpeed = 3.0f;
 
 public:

@@ -45,27 +45,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EStateEnum IreneState;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* FireAttackMontage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* WaterAttackMontage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* ThunderAttackMontage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* FireSkill1Montage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* FireSkill2Montage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* WaterSkillMontage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* ThunderSkillMontage;
+	UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EAttributeKeyword Attribute;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	AActor* TargetMonster;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	int FireChargeCount;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -76,7 +62,6 @@ public:
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 
 	void PlayAttackMontage();
-	void PlaySkillAttackMontage(const int AttackCount = 1);
 	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
 	
@@ -87,7 +72,6 @@ public:
 	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
-	void SetFireChargeCount(const int Value) { FireChargeCount = Value; }
 
 	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
@@ -110,15 +94,10 @@ private:
 	UFUNCTION()
 	void AnimNotify_ReAttackCheck() const;
 	UFUNCTION()
-	void AnimNotify_SkillSkipCheck() const;
-	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
-	void AnimNotify_RadialBlur	() const;
+	void AnimNotify_RadialBlur() const;
 	UFUNCTION()
-	void AnimNotify_TakeDamageSound	() const;
+	void AnimNotify_TakeDamageSound() const;
 	FName GetAttackMontageSectionName(const int32 Section);
-
-public:
-	int GetFireChargeCount()const { return FireChargeCount; }
 };
