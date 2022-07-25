@@ -11,10 +11,13 @@ AQuill::AQuill()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
+	MeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMeshComponent"));
 
-    const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Quill(TEXT("/Engine/BasicShapes/Cone.Cone"));
+	SetRootComponent(CapsuleComponent);
+	MeshComponent->SetupAttachment(CapsuleComponent);
+
+	const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Quill(TEXT("/Engine/BasicShapes/Cone.Cone"));
 	if(SM_Quill.Succeeded())
 	{
 		MeshComponent->SetStaticMesh(SM_Quill.Object);
@@ -25,15 +28,21 @@ AQuill::AQuill()
 	{
 		MeshComponent->SetMaterial(0,MT_Quill.Object);
 	}
-	
-	MeshComponent->SetRelativeScale3D(FVector(0.3f,0.2f,0.5f));
-	MeshComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
 
-	SetRootComponent(MeshComponent);
-	CapsuleComponent->SetupAttachment(MeshComponent);
+	CapsuleComponent->SetRelativeScale3D(FVector(0.3f,0.2f,0.5f));
+	MeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator(-90.0f,0.0f,0.0f));
+
+	MeshComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
 	CapsuleComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
-		
+
+	CapsuleComponent->SetSimulatePhysics(true);
+	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	CapsuleComponent->SetEnableGravity(false);
+	CapsuleComponent->SetLinearDamping(0);
+	
 	LifeTime = 0;
+	StopTime = 1;
+	BackMoveTime = 1;
 }
 
 // Called when the game starts or when spawned
@@ -56,13 +65,15 @@ void AQuill::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 	
 	LifeTime += DeltaTime;
-
 	FVector NewLocation = GetActorLocation();
-	NewLocation += GetActorUpVector() * MoveSpeed * DeltaTime;
+	if(LifeTime >= StopTime + BackMoveTime)
+		CapsuleComponent->AddImpulse(GetActorForwardVector() * MoveSpeed);
+	if(LifeTime >= StopTime && LifeTime < StopTime + BackMoveTime)
+		NewLocation -= GetActorForwardVector() * MoveSpeed/2.5f * DeltaTime;
 	LifeTime += DeltaTime;
 	SetActorLocation(NewLocation);		
 
-	if (LifeTime >= Distance / MoveSpeed)
+	if (LifeTime >= Distance / MoveSpeed + StopTime + BackMoveTime*2)
 	{
 		Destroy();
 	}
