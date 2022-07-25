@@ -7,7 +7,6 @@
 #include "../UI/PlayerHudWidget.h"
 #include"../UI/PauseWidget.h"
 #include "../Sound/SoundManager.h"
-#include "PlayerCharacterDataStruct.h"
 
 #include "IreneUIManager.generated.h"
 
@@ -16,10 +15,6 @@ DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
-
-DECLARE_MULTICAST_DELEGATE(FOnFireSkillCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnWaterSkillCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnThunderSkillCoolChangeDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FOnFireQuillCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterQuillCoolChangeDelegate);
@@ -51,15 +46,6 @@ private:
 	float ThunderMaxCoolTime;
 	float ThunderCurCoolTime;
 
-	float FireSkillMaxCoolTime;
-	float FireSkillCurCoolTime;
-
-	float WaterSkillMaxCoolTime;
-	float WaterSkillCurCoolTime;
-
-	float ThunderSkillMaxCoolTime;
-	float ThunderSkillCurCoolTime;
-
 	float FireQuillMaxCoolTime;
 	float FireQuillCurCoolTime;
 
@@ -79,10 +65,6 @@ public:
 	FOnFireCoolChangeDelegate OnFireCoolChange;
 	FOnWaterCoolChangeDelegate OnWaterCoolChange;
 	FOnThunderCoolChangeDelegate OnThunderCoolChange;
-
-	FOnFireSkillCoolChangeDelegate OnFireSkillCoolChange;
-	FOnWaterSkillCoolChangeDelegate OnWaterSkillCoolChange;
-	FOnThunderSkillCoolChangeDelegate OnThunderSkillCoolChange;
 
 	FOnFireQuillCoolChangeDelegate OnFireQuillCoolChange;
 	FOnWaterQuillCoolChangeDelegate OnWaterQuillCoolChange;
@@ -174,16 +156,9 @@ public:
 	//Thunde Cool
 	float GetThunderCoolRatio();
 
-	float GetFireSkillCoolRatio();
-	float GetWaterSkillCoolRatio();
-	float GetThunderSkillCoolRatio();
-
 	float GetFireQuillCoolRatio();
 	float GetWaterQuillCoolRatio();
 	float GetThunderQuillCoolRatio();
-	
-	int  GetSkillCount();
-	void  SetSkillCount(int Value);
 
 	int  GetFireQuillCount();
 	void  SetFireQuillCount(int Value);
@@ -193,10 +168,6 @@ public:
 	void  SetThunderQuillCount(int Value);
 	
 	void PlayHUDAnimation();
-
-	void UpdateFireSkillCool(float CurCool, float MaxCool);
-	void UpdateWaterSkillCool(float CurCool, float MaxCool);
-	void UpdateThunderSkillCool(float CurCool, float MaxCool);
 
 	void UpdateFireQuillCool(float CurCool, float MaxCool);
 	void UpdateWaterQuillCool(float CurCool, float MaxCool);

@@ -260,11 +260,10 @@ void AIreneCharacter::TargetReset()const
 		if (Mob != nullptr)
 		{
 			if (Mob->GetHp() <= 0 || !IreneAttack->QuillTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->QuillTargetMonster->GetActorLocation()) > 1000.0f)
-				{
+			{
 				const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
 				Mon->TargetWidgetOff();
-				IreneAttack->QuillTargetMonster = nullptr;	
-
+				IreneAttack->QuillTargetMonster = nullptr;
 			}			
 		}
 	}
@@ -295,7 +294,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
 	
 	// 움직임 외 키보드 입력
-	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
+	//PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
 	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
@@ -385,7 +384,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 {
 	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
 	// 최대거리
-	float NearPosition = Far;
+	float CurNearPosition = Far;
 	FName TargetCollisionProfileName;
 
 	for (FHitResult Monster : MonsterList)
@@ -425,7 +424,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 							IreneAttack->SwordTargetMonster = RayHit.GetActor();
 							IreneAnim->SetTargetMonster(RayHit.GetActor());
 							IreneAnim->SetIsHaveTargetMonster(true);
-							NearPosition = FindNearTarget;							
+							CurNearPosition = FindNearTarget;							
 						}
 						TargetCollisionProfileName = IreneAttack->SwordTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 					}
@@ -435,33 +434,45 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 						if (IreneAttack->QuillTargetMonster == nullptr)
 						{
 							IreneAttack->QuillTargetMonster = RayHit.GetActor();
-							NearPosition = FindNearTarget;
+							CurNearPosition = FindNearTarget;
 						}
 						TargetCollisionProfileName = IreneAttack->QuillTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+						//STARRYLOG(Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
 					}
-					//UE_LOG(LogTemp, Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
 
 					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
-					if (NearPosition >= FindNearTarget)
+					if (CurNearPosition >= FindNearTarget)
 					{
 						// 만약 최단거리가 같은 액터가 있다면
-						if (NearPosition == FindNearTarget)
+						if (CurNearPosition == FindNearTarget)
 						{
 							if ((TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)||
 								(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)||
 								(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile))
 							{
 								if(!QuillTarget)
-									SetAttackNearMonster(RayHit,NearPosition,FindNearTarget);
+									SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
 								else
-									SetQuillNearMonster(RayHit,NearPosition,FindNearTarget);
+									SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
 							}
 							else
 							{
 								if(!QuillTarget)
-									SetAttackNearMonster(RayHit,NearPosition,FindNearTarget);
+									SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
 								else
-									SetQuillNearMonster(RayHit,NearPosition,FindNearTarget);
+									SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
+							}
+						}
+						else
+						{
+							if(!QuillTarget)
+								SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
+							else
+							{
+								const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+								Mon->TargetWidgetOff();
+								IreneAttack->QuillTargetMonster = nullptr;
+								SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
 							}
 						}
 					}
@@ -498,25 +509,19 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const
 {
 	// 가장 가까운 몬스터를 타겟 몬스터로 지정하는 함수
-	if (IreneAttack->QuillTargetMonster == RayHit.GetActor())
-	{
-		NearPosition = FindNearTarget;
-		IreneAttack->QuillTargetMonster = RayHit.GetActor();
-		// 깃펜 UI 표시하기
-		const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		Mon->TargetWidgetOn();
-	}
+	NearPosition = FindNearTarget;
+	IreneAttack->QuillTargetMonster = RayHit.GetActor();
+	// 깃펜 UI 표시하기
+	const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+	Mon->TargetWidgetOn();
 }
 
 void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)const
 {
 	// 매 프레임 가장 가까운 몬스터를 깃펜 타겟 몬스터로 지정하는 함수
-	if(IreneAttack->QuillTargetMonster == nullptr)
-	{
-		auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,700),CameraComp->GetComponentLocation());
-		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
-		NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
-	}
+	auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,700),CameraComp->GetComponentLocation());
+	auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
+	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
 }
 
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)

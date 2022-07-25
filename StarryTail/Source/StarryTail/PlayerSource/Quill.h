@@ -17,9 +17,9 @@ class STARRYTAIL_API AQuill : public AActor
 
 public:
 	UPROPERTY(EditAnywhere)
-	UStaticMeshComponent* MeshComponent;
-	UPROPERTY(EditAnywhere)
 	UCapsuleComponent* CapsuleComponent;
+	UPROPERTY(EditAnywhere)
+	UStaticMeshComponent* MeshComponent;
 	UPROPERTY(EditAnywhere)
 	UMaterialInstanceDynamic* DynamicMaterial;
 	
@@ -33,6 +33,8 @@ public:
 	float Strength;
 private:
 	float LifeTime;
+	float StopTime;
+	float BackMoveTime;
 
 	FTimerDelegate ColorTimeDelegate;
 public:	

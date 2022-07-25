@@ -2,6 +2,8 @@
 
 
 #include "IreneInputInstance.h"
+
+#include "GeomTools.h"
 #include "IreneCharacter.h"
 #include "IreneFSM.h"
 #include "IreneAnimInstance.h"
@@ -176,13 +178,13 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 	const FRotator Rotation = Irene->Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	FVector LookDir = FVector::ZeroVector;
-	if (MoveKey[0] != 0 && MoveKey[0] < 3)
+	if (MoveKey[0] != 0 && MoveKey[0] <= 3)
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	if (MoveKey[2] != 0 && MoveKey[2] < 3)
+	if (MoveKey[2] != 0 && MoveKey[2] <= 3)
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
-	if (MoveKey[1] != 0 && MoveKey[1] < 3)
+	if (MoveKey[1] != 0 && MoveKey[1] <= 3)
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
-	if (MoveKey[3] != 0 && MoveKey[3] < 3)
+	if (MoveKey[3] != 0 && MoveKey[3] <= 3)
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	if(LookDir == FVector::ZeroVector)
 		LookDir = Irene->GetActorForwardVector();
@@ -297,6 +299,64 @@ void UIreneInputInstance::RightButtonPressed()
 
 		FRotator Rotator;
 		FVector SpawnLocation;
+
+		constexpr float Degree = 30;
+		const float L = sin(FMath::DegreesToRadians(Degree));
+		float X = FMath::FRandRange(-1,1);
+		float Y = FMath::FRandRange(-L,L);
+		if(X > 0 && Y > 0)
+		{
+			// 1사분면
+			TArray<FVector2D> PolygonArray;
+			PolygonArray.Add(FVector2D(0,0));
+			PolygonArray.Add(FVector2D(1,0));
+			PolygonArray.Add(FVector2D(1,L));
+			if(!FGeomTools2D::IsPointInPolygon(FVector2D(X,Y),PolygonArray))
+			{
+				X = 1-X;
+				Y = L-Y;
+			}
+		}
+		else if(X > 0 && Y <= 0)
+		{
+			// 4사분면
+			TArray<FVector2D> PolygonArray;
+			PolygonArray.Add(FVector2D(0,0));
+			PolygonArray.Add(FVector2D(1,0));
+			PolygonArray.Add(FVector2D(1,-L));
+			if(!FGeomTools2D::IsPointInPolygon(FVector2D(X,Y),PolygonArray))
+			{
+				X = 1-X;
+				Y = -L-Y;
+			}
+		}
+		else if(X <= 0 && Y > 0)
+		{
+			// 2사분면
+			TArray<FVector2D> PolygonArray;
+			PolygonArray.Add(FVector2D(0,0));
+			PolygonArray.Add(FVector2D(-1,0));
+			PolygonArray.Add(FVector2D(-1,L));
+			if(!FGeomTools2D::IsPointInPolygon(FVector2D(X,Y),PolygonArray))
+			{
+				X = -1-X;
+				Y = L-Y;
+			}
+		}
+		else if(X <= 0 && Y <= 0)
+		{
+			// 3사분면
+			TArray<FVector2D> PolygonArray;
+			PolygonArray.Add(FVector2D(0,0));
+			PolygonArray.Add(FVector2D(-1,0));
+			PolygonArray.Add(FVector2D(-1,-L));
+			if(!FGeomTools2D::IsPointInPolygon(FVector2D(X,Y),PolygonArray))
+			{
+				X = -1-X;
+				Y = -L-Y;
+			}
+		}
+		
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr || Irene->IreneAttack->QuillTargetMonster != nullptr)
 		{
 			const AMonster* TargetMonster = nullptr;
@@ -305,26 +365,20 @@ void UIreneInputInstance::RightButtonPressed()
 			else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
 				TargetMonster = Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
 			
-			FVector Length = Irene->GetActorLocation() - TargetMonster->GetLocation();
-			Length.Normalize();
-				
-			const FVector TargetPos = TargetMonster->GetLocation() + Length*250 + Irene->GetActorUpVector()*120;
-			const FRotator Look = UKismetMathLibrary::FindLookAtRotation(TargetPos, TargetMonster->GetLocation());
-			Rotator = Look;
-			Rotator.Pitch = 270+Rotator.Pitch + 20;
-
-			SpawnLocation = TargetPos;
+			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*X*50 + Irene->GetActorUpVector()*Y*50 + Irene->GetActorUpVector()*70;
+			const FRotator Z = UKismetMathLibrary::FindLookAtRotation(SpawnLocation,TargetMonster->GetRootComponent()->GetSocketLocation(TEXT("Bip001-Head")));
+			Rotator = FRotator(Z.Pitch,Z.Yaw,0);
 		}
 		else
-		{
-			Rotator = Irene->GetActorRotation() + FRotator(-90,-10,0);
-			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*50 + Irene->GetActorUpVector()*70;
-		}		
-		
+		{			
+			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*X*50 + Irene->GetActorUpVector()*Y*50 + Irene->GetActorUpVector()*70;
+			const FRotator Z = UKismetMathLibrary::FindLookAtRotation(SpawnLocation,Irene->GetActorLocation() + Irene->GetActorForwardVector()*1500);
+			Rotator = FRotator(Z.Pitch,Z.Yaw,0);
+		}
 		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
 		SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
 		SpawnedActor->MoveSpeed = 1000;
-		SpawnedActor->Distance = 1000;
+		SpawnedActor->Distance = 2500;
 		SpawnedActor->Strength = 100;
 
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
@@ -391,6 +445,7 @@ void UIreneInputInstance::ElectricKeywordReleased()
 }
 void UIreneInputInstance::QuillAttributeChangeReleased()
 {
+	// 깃펜 속성 변경
 	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
 	int TargetMonsterStack = 0;
 	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
@@ -474,21 +529,20 @@ void UIreneInputInstance::ChangeForm(const EAttributeKeyword Value)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !ThunderDodgeWaitHandle.IsValid() &&
-	Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState())&&!bIsDialogOn)
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() &&
+	Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!bIsDialogOn))
 	{
 		if(Irene->IreneData.CurrentStamina >= 30)
 		{
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 30;
 			Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
-
 			Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
 			Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 			
-			GetWorld()->GetTimerManager().SetTimer(ThunderDodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
-				 ThunderDodgeWaitHandle.Invalidate();
+				 DodgeWaitHandle.Invalidate();
 			 }), 0.03f, false);
 		}
 	}	

@@ -47,10 +47,7 @@ private:
 	
 	// 닷지 쿨타임
 	FTimerHandle DodgeWaitHandle;
-
-	// 번개 닷지 관련
-	FTimerHandle ThunderDodgeWaitHandle;
-
+	
 	// 깃펜 갯수
 	int FireQuillCount;
 	int MaxFireQuillCount;
