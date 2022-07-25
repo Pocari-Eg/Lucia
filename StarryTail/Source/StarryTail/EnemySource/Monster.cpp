@@ -1509,7 +1509,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				if (AttackedInfo.bIsUseMana)
 				{
 					CalcDef();
-					CalcAttributeDebuff(Player->IreneAttack->GetSwordAttribute(), DamageAmount);
+					//CalcAttributeDebuff(Player->IreneAttack->GetSwordAttribute(), DamageAmount);
 
 					if (MonsterInfo.bIsShieldOn)
 					{
