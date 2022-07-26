@@ -364,9 +364,17 @@ void UIreneInputInstance::RightButtonPressed()
 				TargetMonster = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
 			else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
 				TargetMonster = Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
-			
+
 			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*X*50 + Irene->GetActorUpVector()*Y*50 + Irene->GetActorUpVector()*70;
-			const FRotator Z = UKismetMathLibrary::FindLookAtRotation(SpawnLocation,TargetMonster->GetRootComponent()->GetSocketLocation(TEXT("Bip001-Head")));
+			
+			const FVector BonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bip001-Head"));
+			const FVector MorbitBonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bone004"));
+
+			FRotator Z = FRotator::ZeroRotator;
+			if(BonePosition != TargetMonster->GetMesh()->GetComponentLocation())
+				Z = UKismetMathLibrary::FindLookAtRotation(SpawnLocation,BonePosition);
+			else
+				Z = UKismetMathLibrary::FindLookAtRotation(SpawnLocation,MorbitBonePosition);
 			Rotator = FRotator(Z.Pitch,Z.Yaw,0);
 		}
 		else

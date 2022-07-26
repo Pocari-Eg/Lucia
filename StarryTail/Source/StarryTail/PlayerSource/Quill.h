@@ -32,16 +32,23 @@ public:
 	float Distance;
 	float Strength;
 private:
+	UPROPERTY()
+	TArray<UParticleSystem*> BustParticle;
+	UPROPERTY()
+	TArray<UParticleSystem*> AttackParticle;
+	
 	float LifeTime;
 	float StopTime;
 	float BackMoveTime;
+	bool Bust;
 
-	FTimerDelegate ColorTimeDelegate;
 public:	
 	AQuill();
 
 	UFUNCTION()
-	void SetColor();
+	void StartBust();
+	UFUNCTION()
+	void StartAttack();
 protected:
 	virtual void BeginPlay() override;
 

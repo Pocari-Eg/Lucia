@@ -277,8 +277,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
-	FindCanThrowQuillMonster(DeltaTime);
-	
+	FindCanThrowQuillMonster(DeltaTime);	
 	if(!IreneState->IsDeathState())
 		IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
