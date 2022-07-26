@@ -70,20 +70,25 @@ public:
 	EEnemyRank EnemyRank; // 몬스터 등급
 
 	//Shield;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="ManaShield")
 	int Max_Ele_Shield;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
 	TArray<FElementalShield> Ele_Shield; // 몬스터 등급
 	int Ele_Shield_Count;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
 	bool bIsShieldOn;
    
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
 	int ManaShieldDec;
 
+
 	//Quill
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Quill")
 	int Quill_MaxStack;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Quill")
 	int Quill_CurStack;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = "Quill")
+	int Quill_MaxStackDamage;
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
 	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

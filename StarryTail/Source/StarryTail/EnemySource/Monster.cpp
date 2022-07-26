@@ -261,6 +261,12 @@ int AMonster::GetCurQuillStack() const
 void AMonster::SetCurQuillStack(const int Value)
 {
 	MonsterInfo.Quill_CurStack = Value;
+	
+	auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
+	if (widget != nullptr) {
+		widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
+	}
+
 }
 float AMonster::GetHpRatio()
 {
@@ -582,6 +588,7 @@ void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
+					SoundInstance->PlayShieldCrashSound();
 					MonsterInfo.Ele_Shield_Count -= 1;
 
 					if (MonsterInfo.Ele_Shield_Count < 0)
@@ -608,7 +615,7 @@ void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
-
+					SoundInstance->PlayShieldCrashSound();
 					MonsterInfo.Ele_Shield_Count -= 1;
 					if (MonsterInfo.Ele_Shield_Count < 0)
 					{
@@ -631,6 +638,7 @@ void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
 				OnBarrierChanged.Broadcast();
 				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
 				{
+					SoundInstance->PlayShieldCrashSound();
 					MonsterInfo.Ele_Shield_Count -= 1;
 					if (MonsterInfo.Ele_Shield_Count < 0)
 					{
@@ -648,6 +656,86 @@ void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
 				}
 			break;
 		default:
+			break;
+		}
+
+	}
+}
+void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
+{
+
+	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+	//속성 배리어
+	if (MonsterInfo.bIsShieldOn)
+	{
+		switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
+		{
+		case EAttributeKeyword::e_Fire:
+			if (AttackAttribute == EAttributeKeyword::e_Water)
+			{
+				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
+
+				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
+				{
+					GameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
+					MonsterInfo.Quill_CurStack = 0;
+					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
+				}
+			}
+			break;
+		case EAttributeKeyword::e_Water:
+			if (AttackAttribute == EAttributeKeyword::e_Thunder)
+			{
+				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
+
+				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
+				{
+					GameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
+					MonsterInfo.Quill_CurStack = 0;
+					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
+				}
+			}
+			break;
+		case EAttributeKeyword::e_Thunder:
+			if (AttackAttribute == EAttributeKeyword::e_Fire)
+			{
+				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
+				
+			
+
+				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
+				{
+					GameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
+					MonsterInfo.Quill_CurStack = 0;
+					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
+				}
+			}
+			break;
+		case EAttributeKeyword::e_None:
+			
+			SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
+			//
+			if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
+			{
+				
+						switch (AttackAttribute)
+						{
+						case EAttributeKeyword::e_Fire:
+							GameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						case EAttributeKeyword::e_Water:
+							GameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						case EAttributeKeyword::e_Thunder:
+							GameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						default:
+							break;
+						}
+
+				MonsterInfo.Quill_CurStack = 0;
+				CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
+			}
 			break;
 		}
 
@@ -1572,51 +1660,45 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (MonsterInfo.bIsShieldOn)
 		{
 			CalcManaShield(DamageAmount, AttackAttribute);
+			CalcQuillStack(AttackAttribute);
 		}
 		else {
 			CalcHp(DamageAmount);
-		}
-		MonsterInfo.Quill_CurStack++;
 
-		//임시  UI
-		auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
-		if (widget != nullptr) {
-			widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
-		}
-		//
-		if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-		{
-			auto Quill = Cast<AQuill>(DamageCauser);
-		
+			MonsterInfo.Quill_CurStack++;
+			//임시  UI
+			auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
+			if (widget != nullptr) {
+				widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
+			}
+			//
+			if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 			{
-				if (STGameInstance != nullptr)
+				auto Quill = Cast<AQuill>(DamageCauser);
+
 				{
-					switch (Quill->Attribute)
+					if (STGameInstance != nullptr)
 					{
-					case EAttributeKeyword::e_Fire:
-						STGameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
-						break;
-					case EAttributeKeyword::e_Water:
-						STGameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
-						break;
-					case EAttributeKeyword::e_Thunder:
-						STGameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
-						break;
-					default:
-						break;
+						switch (Quill->Attribute)
+						{
+						case EAttributeKeyword::e_Fire:
+							STGameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						case EAttributeKeyword::e_Water:
+							STGameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						case EAttributeKeyword::e_Thunder:
+							STGameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
+							break;
+						default:
+							break;
+						}
 					}
 				}
-			}
-		
 
-			MonsterInfo.Quill_CurStack = 0;
 
-			if (MonsterInfo.bIsShieldOn)
-			{
-				CalcManaShield(100.0f, AttackAttribute);
-			}
-			else {
-				CalcHp(100.0f);
+				MonsterInfo.Quill_CurStack = 0;
+				CalcHp(MonsterInfo.Quill_MaxStackDamage);
 			}
 		}
 
