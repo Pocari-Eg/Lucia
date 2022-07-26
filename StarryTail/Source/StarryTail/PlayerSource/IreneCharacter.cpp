@@ -293,7 +293,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
 	
 	// 움직임 외 키보드 입력
-	//PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
 	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
@@ -494,15 +494,15 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		Mon->MarkerOn();
 		// 기존 깃펜 타겟UI 끄고 검 공격 타겟에게 깃펜 타겟UI 보여주기
-		Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		Mon->TargetWidgetOff();
-		IreneAttack->QuillTargetMonster = RayHit.GetActor();
-		Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		Mon->TargetWidgetOn();
+		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+		// Mon->TargetWidgetOff();
+		// IreneAttack->QuillTargetMonster = RayHit.GetActor();
+		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+		// Mon->TargetWidgetOn();
 		
 		// 몬스터를 찾고 쳐다보기
-		const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
-		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+		//GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 	}
 }
 void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const
@@ -608,11 +608,11 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			IreneAnim->SetIsHaveTargetMonster(true);
 			auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 			Mon->MarkerOn();
-			Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			Mon->TargetWidgetOff();
-			IreneAttack->QuillTargetMonster = DamageCauser;
-			Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			Mon->TargetWidgetOn();
+			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+			//Mon->TargetWidgetOff();
+			//IreneAttack->QuillTargetMonster = DamageCauser;
+			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+			//Mon->TargetWidgetOn();
 		}
 	}
 	return FinalDamage;

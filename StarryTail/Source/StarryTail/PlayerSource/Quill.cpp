@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Quill.h"
 
+#include "Kismet/KismetMathLibrary.h"
 #include "StarryTail/EnemySource/Monster.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
@@ -30,8 +31,8 @@ AQuill::AQuill()
 
 	CapsuleComponent->SetCapsuleRadius(15);
 	CapsuleComponent->SetCapsuleHalfHeight(15);
-	MeshComponent->SetRelativeScale3D(FVector(4.0f,4.0f,4.0f));
-	MeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator(0,180,0));
+	MeshComponent->SetRelativeScale3D(FVector(10.0f,10.0f,10.0f));
+	MeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator(0,180,90));
 
 	MeshComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
 	CapsuleComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
@@ -62,8 +63,8 @@ AQuill::AQuill()
 	
 	Bust = false;
 	LifeTime = 0;
-	StopTime = 1;
-	BackMoveTime = 1;
+	StopTime = 0.5f;
+	BackMoveTime = 0.5f;
 }
 
 // Called when the game starts or when spawned
@@ -85,9 +86,27 @@ void AQuill::Tick(float DeltaTime)
 		StartBust();
 	}
 	if(LifeTime >= StopTime + BackMoveTime)
+	{
+		if(Target != nullptr)
+		{
+			const auto TargetMonster = Cast<AMonster>(Target);
+			if(TargetMonster->GetHp() > 0)
+			{
+				const FVector BonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bip001-Head"));
+				const FVector MorbitBonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bone004"));
+
+				FRotator Z = FRotator::ZeroRotator;
+				if(BonePosition != TargetMonster->GetMesh()->GetComponentLocation())
+					Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),BonePosition);
+				else
+					Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),MorbitBonePosition);
+				SetActorRotation(FRotator(Z.Pitch,Z.Yaw,0));
+			}
+		}
 		CapsuleComponent->AddImpulse(GetActorForwardVector() * MoveSpeed);
+	}
 	if(LifeTime >= StopTime && LifeTime < StopTime + BackMoveTime)
-		NewLocation -= GetActorForwardVector() * MoveSpeed/2.5f * DeltaTime;
+		NewLocation -= GetActorForwardVector() * MoveSpeed/1.5f * DeltaTime;
 	LifeTime += DeltaTime;
 	SetActorLocation(NewLocation);		
 
