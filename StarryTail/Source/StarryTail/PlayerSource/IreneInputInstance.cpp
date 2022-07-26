@@ -58,9 +58,9 @@ void UIreneInputInstance::InitMemberVariable()
 	FireQuillCount = MaxFireQuillCount;
 	WaterQuillCount = MaxWaterQuillCount;
 	ThunderQuillCount = MaxThunderQuillCount;
-	FireQuillMaxCoolTime = 3.0f;
-	WaterQuillMaxCoolTime = 3.0f;
-	ThunderQuillMaxCoolTime = 3.0f;
+	FireQuillMaxCoolTime = 1.5f;
+	WaterQuillMaxCoolTime = 1.5f;
+	ThunderQuillMaxCoolTime = 1.5f;
 
 	CoolTimeRate = 0.008f;
 	bIsDialogOn = false;
@@ -217,7 +217,10 @@ void UIreneInputInstance::LookUp(float Rate)
 
 void UIreneInputInstance::LeftButton(float Rate)
 {
-	bLeftButtonPressed = true;
+	if(Rate > 0)
+		bLeftButtonPressed = true;
+	else
+		bLeftButtonPressed = false;
 	if (CanAttackState() && !AttackWaitHandle.IsValid() && !bIsDialogOn)
 	{
 		if (Rate >= 1.0)
@@ -357,12 +360,12 @@ void UIreneInputInstance::RightButtonPressed()
 			}
 		}
 		
-		if(Irene->IreneAttack->SwordTargetMonster != nullptr || Irene->IreneAttack->QuillTargetMonster != nullptr)
+		if(Irene->IreneAttack->QuillTargetMonster != nullptr)
 		{
 			const AMonster* TargetMonster = nullptr;
-			if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-				TargetMonster = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
-			else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
+			//if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+				//TargetMonster = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+			if(Irene->IreneAttack->QuillTargetMonster != nullptr)
 				TargetMonster = Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
 
 			SpawnLocation = Irene->GetActorLocation() + Irene->GetActorRightVector()*X*50 + Irene->GetActorUpVector()*Y*50 + Irene->GetActorUpVector()*70;
@@ -385,13 +388,13 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
 		SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
-		SpawnedActor->MoveSpeed = 1000;
+		SpawnedActor->MoveSpeed = 200;
 		SpawnedActor->Distance = 2500;
 		SpawnedActor->Strength = 100;
 
-		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-			SpawnedActor->Target = Irene->IreneAttack->SwordTargetMonster;
-		else if(Irene->IreneAttack->SwordTargetMonster == nullptr && Irene->IreneAttack->QuillTargetMonster != nullptr)
+		// if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+		// 	SpawnedActor->Target = Irene->IreneAttack->SwordTargetMonster;
+		if(Irene->IreneAttack->QuillTargetMonster != nullptr)
 			SpawnedActor->Target = Irene->IreneAttack->QuillTargetMonster;
 		else 
 			SpawnedActor->Target = nullptr;
