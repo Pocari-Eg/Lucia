@@ -24,6 +24,15 @@ UIreneAttackInstance::UIreneAttackInstance()
 	{
 		FormTimeDataTable = DT_FormTimeDataTable.Object;
 	}
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_FireBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_f.Ps_Buff_F"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_WaterBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_w.Ps_Buff_W"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_ThunderBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_t.Ps_Buff_T"));
+	if (PS_FireBuff.Succeeded() && PS_WaterBuff.Succeeded() && PS_ThunderBuff.Succeeded())
+	{
+		BuffParticle.Add(PS_FireBuff.Object);
+		BuffParticle.Add(PS_WaterBuff.Object);
+		BuffParticle.Add(PS_ThunderBuff.Object);
+	}
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -221,6 +230,7 @@ void UIreneAttackInstance::FireQuillStack(const int Value)
 		break;
 	default: break;
 	}
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[0],Irene->GetActorLocation());
 	GetWorld()->GetTimerManager().SetTimer(FireQuillStackTimerHandle, this, &UIreneAttackInstance::ResetFireQuillStack, 5.0f, false);
 }
 void UIreneAttackInstance::WaterQuillStack(const int Value)
@@ -241,6 +251,7 @@ void UIreneAttackInstance::WaterQuillStack(const int Value)
 	default: break;
 	}
 	Irene->ShieldComp->SetVisibility(true);
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[1],Irene->GetActorLocation());
 	GetWorld()->GetTimerManager().SetTimer(WaterQuillStackTimerHandle, this, &UIreneAttackInstance::ResetWaterQuillStack, 120.0f, false);
 }
 void UIreneAttackInstance::ThunderQuillStack(const int Value)
@@ -263,6 +274,7 @@ void UIreneAttackInstance::ThunderQuillStack(const int Value)
 	if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.RunMaxSpeed ||
 		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
 	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed * Irene->IreneData.ThunderQuillStackSpeed;
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[2],Irene->GetActorLocation());
 	GetWorld()->GetTimerManager().SetTimer(ThunderQuillStackTimerHandle, this, &UIreneAttackInstance::ResetThunderQuillStack, 10.0f, false);
 }
 void UIreneAttackInstance::ResetFireQuillStack()

@@ -17,20 +17,21 @@ AQuill::AQuill()
 	SetRootComponent(CapsuleComponent);
 	MeshComponent->SetupAttachment(CapsuleComponent);
 
-	const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Quill(TEXT("/Engine/BasicShapes/Cone.Cone"));
+	const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Quill(TEXT("/Game/Effect/VFX_Irene/Feather/Feather/Mash/Sm_Feather.Sm_Feather"));
 	if(SM_Quill.Succeeded())
 	{
 		MeshComponent->SetStaticMesh(SM_Quill.Object);
 	}
-
-	const ConstructorHelpers::FObjectFinder<UMaterial>MT_Quill(TEXT("/Game/Model/Irene/Quill/MT_Quill.MT_Quill"));
+	const ConstructorHelpers::FObjectFinder<UMaterialInstance>MT_Quill(TEXT("/Game/Model/Irene/Material/MI_Irene_Pen.MI_Irene_Pen"));
 	if(MT_Quill.Succeeded())
 	{
 		MeshComponent->SetMaterial(0,MT_Quill.Object);
 	}
 
-	CapsuleComponent->SetRelativeScale3D(FVector(0.3f,0.2f,0.5f));
-	MeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator(-90.0f,0.0f,0.0f));
+	CapsuleComponent->SetCapsuleRadius(15);
+	CapsuleComponent->SetCapsuleHalfHeight(15);
+	MeshComponent->SetRelativeScale3D(FVector(4.0f,4.0f,4.0f));
+	MeshComponent->SetRelativeLocationAndRotation(FVector::ZeroVector,FRotator(0,180,0));
 
 	MeshComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
 	CapsuleComponent->SetCollisionProfileName(TEXT("PlayerAttack"));
@@ -39,7 +40,27 @@ AQuill::AQuill()
 	CapsuleComponent->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 	CapsuleComponent->SetEnableGravity(false);
 	CapsuleComponent->SetLinearDamping(0);
+
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_FireBust(TEXT("/Game/Effect/VFX_Irene/Feather/Bust/PS_Feather_Ex_Fire.PS_Feather_Ex_Fire"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_WaterBust(TEXT("/Game/Effect/VFX_Irene/Feather/Bust/PS_Feather_Ex_Water.PS_Feather_Ex_Water"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_ThunderBust(TEXT("/Game/Effect/VFX_Irene/Feather/Bust/PS_Feather_Ex_Tunder.PS_Feather_Ex_Tunder"));
+	if(PS_FireBust.Succeeded() && PS_WaterBust.Succeeded() && PS_ThunderBust.Succeeded())
+	{
+		BustParticle.Add(PS_FireBust.Object);
+		BustParticle.Add(PS_WaterBust.Object);
+		BustParticle.Add(PS_ThunderBust.Object);
+	}	
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_FireAttack(TEXT("/Game/Effect/VFX_Irene/Feather/Attact/Ps_Feather_At_F.Ps_Feather_At_F"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_WaterAttack(TEXT("/Game/Effect/VFX_Irene/Feather/Attact/Ps_Feather_At_W.Ps_Feather_At_W"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_ThunderAttack(TEXT("/Game/Effect/VFX_Irene/Feather/Attact/Ps_Feather_At_T.Ps_Feather_At_T"));
+	if(PS_FireAttack.Succeeded() && PS_WaterAttack.Succeeded() && PS_ThunderAttack.Succeeded())
+	{
+		AttackParticle.Add(PS_FireAttack.Object);
+		AttackParticle.Add(PS_WaterAttack.Object);
+		AttackParticle.Add(PS_ThunderAttack.Object);
+	}
 	
+	Bust = false;
 	LifeTime = 0;
 	StopTime = 1;
 	BackMoveTime = 1;
@@ -49,14 +70,6 @@ AQuill::AQuill()
 void AQuill::BeginPlay()
 {
 	Super::BeginPlay();	
-
-	auto Material = MeshComponent->GetMaterial(0);
-
-	DynamicMaterial = UMaterialInstanceDynamic::Create(Material,NULL);
-	MeshComponent->SetMaterial(0, DynamicMaterial);
-
-	ColorTimeDelegate.BindUFunction(this, FName("SetColor"));
-	GetWorld()->GetTimerManager().SetTimerForNextTick(ColorTimeDelegate);
 }
 
 // Called every frame
@@ -66,6 +79,11 @@ void AQuill::Tick(float DeltaTime)
 	
 	LifeTime += DeltaTime;
 	FVector NewLocation = GetActorLocation();
+	if(!Bust && LifeTime >= StopTime + BackMoveTime)
+	{
+		Bust = true;
+		StartBust();
+	}
 	if(LifeTime >= StopTime + BackMoveTime)
 		CapsuleComponent->AddImpulse(GetActorForwardVector() * MoveSpeed);
 	if(LifeTime >= StopTime && LifeTime < StopTime + BackMoveTime)
@@ -82,15 +100,16 @@ void AQuill::Tick(float DeltaTime)
 void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-
 	if(Target == nullptr)
 	{
 		if(Cast<AMonster>(OtherActor))
 		{
 			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
+			StartAttack();
 		}
 		else
 		{
+			StartAttack();
 			Destroy();
 		}
 	}
@@ -100,25 +119,41 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 		if(Cast<AMonster>(OtherActor))
 		{
 			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
+			StartAttack();
 		}
 	}
 }
 
-void AQuill::SetColor()
+void AQuill::StartBust()
 {
-	FVector Color;
 	switch (Attribute)
 	{
 	case EAttributeKeyword::e_Fire:
-		Color = FVector(1,0,0);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[0],GetActorLocation());
 		break;
 	case EAttributeKeyword::e_Water:
-		Color = FVector(0,0,1);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[1],GetActorLocation());
 		break;
 	case EAttributeKeyword::e_Thunder:
-		Color = FVector(1,0,1);
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[2],GetActorLocation());
 		break;
-	default: ;
+		default: break;
 	}
-	DynamicMaterial->SetVectorParameterValue(TEXT("Color"), Color);
 }
+void AQuill::StartAttack()
+{
+	switch (Attribute)
+	{
+	case EAttributeKeyword::e_Fire:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),AttackParticle[0],GetActorLocation());
+		break;
+	case EAttributeKeyword::e_Water:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),AttackParticle[1],GetActorLocation());
+		break;
+	case EAttributeKeyword::e_Thunder:
+		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),AttackParticle[2],GetActorLocation());
+		break;
+	default: break;
+	}
+}
+

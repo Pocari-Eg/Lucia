@@ -26,6 +26,9 @@ private:
 
 	EAttributeKeyword SwordAttribute;
 	EAttributeKeyword QuillAttribute;
+
+	UPROPERTY()
+	TArray<UParticleSystem*> BuffParticle;
 	
 	UPROPERTY()
 	UDataTable* AttackDataTable;
