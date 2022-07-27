@@ -109,7 +109,7 @@ void AQuill::Tick(float DeltaTime)
 		CapsuleComponent->AddImpulse(GetActorForwardVector() * MoveSpeed);
 	}
 	if(LifeTime >= StopTime && LifeTime < StopTime + BackMoveTime)
-		NewLocation -= GetActorForwardVector() * MoveSpeed/1.5f * DeltaTime;
+		NewLocation -= GetActorForwardVector() * MoveSpeed/2.0f * DeltaTime;
 	LifeTime += DeltaTime;
 	SetActorLocation(NewLocation);		
 
