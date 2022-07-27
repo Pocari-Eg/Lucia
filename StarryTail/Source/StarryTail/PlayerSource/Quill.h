@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIController.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/Actor.h"
 #include "Quill.generated.h"
@@ -11,7 +12,7 @@ enum class EAttributeKeyword : uint8;
 class UMaterialInstanceDynamic;
 
 UCLASS()
-class STARRYTAIL_API AQuill : public AActor
+class STARRYTAIL_API AQuill : public APawn
 {
 	GENERATED_BODY()
 
@@ -20,10 +21,8 @@ public:
 	UCapsuleComponent* CapsuleComponent;
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* MeshComponent;
-	UPROPERTY(EditAnywhere)
-	UMaterialInstanceDynamic* DynamicMaterial;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	AActor* Target;
 
 	EAttributeKeyword Attribute;
@@ -51,8 +50,9 @@ public:
 	void StartAttack();
 protected:
 	virtual void BeginPlay() override;
-
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+	
+	void FollowTarget();
 	
 public:	
 	virtual void Tick(float DeltaTime) override;

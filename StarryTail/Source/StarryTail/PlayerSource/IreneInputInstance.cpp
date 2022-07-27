@@ -388,7 +388,7 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
 		SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
-		SpawnedActor->MoveSpeed = 200;
+		SpawnedActor->MoveSpeed = 250;
 		SpawnedActor->Distance = 2500;
 		SpawnedActor->Strength = 100;
 

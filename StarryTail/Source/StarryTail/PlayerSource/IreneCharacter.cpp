@@ -46,7 +46,7 @@ AIreneCharacter::AIreneCharacter()
 	}
 	ShieldComp->SetupAttachment(GetCapsuleComponent());
 	ShieldComp->SetVisibility(false);
-
+	
 	// 카메라 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
