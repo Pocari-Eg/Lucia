@@ -1,6 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "Quill.h"
 
+#include "PhysXInterfaceWrapperCore.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "StarryTail/EnemySource/Monster.h"
 #include "Materials/MaterialInstanceDynamic.h"
@@ -65,12 +67,13 @@ AQuill::AQuill()
 	LifeTime = 0;
 	StopTime = 0.5f;
 	BackMoveTime = 0.5f;
+	AutoPossessAI = EAutoPossessAI::Spawned;
 }
 
 // Called when the game starts or when spawned
 void AQuill::BeginPlay()
 {
-	Super::BeginPlay();	
+	Super::BeginPlay();
 }
 
 // Called every frame
@@ -174,5 +177,10 @@ void AQuill::StartAttack()
 		break;
 	default: break;
 	}
+}
+
+void AQuill::FollowTarget()
+{
+	//UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(),Target);
 }
 

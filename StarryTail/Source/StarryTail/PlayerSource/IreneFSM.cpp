@@ -6,6 +6,7 @@
 #include "IreneUIManager.h"
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #pragma region IreneFSM
 void UIreneFSM::Update(const float Value)
@@ -783,6 +784,10 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
@@ -863,6 +868,10 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
