@@ -34,15 +34,13 @@ AMorbit::AMorbit()
 #pragma region Init
 void AMorbit::InitMonsterInfo()
 {
-	MonsterInfo.Code = 1;
+	MonsterInfo.M_Atk_Type = 1;
 
-	MonsterInfo.MaxHp = 100.0f;
+	MonsterInfo.M_Max_HP = 100.0f;
 	MonsterInfo.Atk = 100.0f;
-	MonsterInfo.Def = 100.0f;
-	MonsterInfo.Barrier = 1.0f;
 	MonsterInfo.DetectMonsterRange = 5.0f;
 
-	MonsterInfo.MoveSpeed = 40.0f;
+	MonsterInfo.M_MoveSpeed = 40.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
 	MonsterInfo.ViewAngle = 150.0f;
 	MonsterInfo.ViewRange = 500.0f;
@@ -54,7 +52,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
+	MonsterInfo.M_Type = EEnemyRank::e_Common;
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
@@ -106,7 +104,7 @@ UMorbitAnimInstance* AMorbit::GetMorbitAnimInstance() const
 #pragma region CalledbyBBT
 void AMorbit::Walk()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 }
 void AMorbit::BattleWalk()
 {
@@ -160,16 +158,8 @@ void AMorbit::AttackCheck()
 		auto Player = Cast<AIreneCharacter>(Hit.Actor);
 		if (nullptr == Player)
 			return;
-
-		if (bIsSpark)
-		{
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-			CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-		}
-		else
-		{
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
-		}
+		UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+		
 	}
 	//
 }
@@ -222,7 +212,7 @@ void AMorbit::PossessedBy(AController* NewController)
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
-	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 }
 
 void AMorbit::PostInitializeComponents()

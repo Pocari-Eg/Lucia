@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "./Struct/FNormalMonsterInfo.h"
-#include "./Struct/FAttributeDefence.h"
-#include "./Struct/FAttributeDebuff.h"
 #include "./Struct/FAttackedInfo.h"
 #include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
@@ -51,6 +49,8 @@ public:
 	int GetCurQuillStack() const;
 	void SetCurQuillStack(const int Value);
 
+	AMonsterAIController* GetAIController() const;
+
 	//현재 체력 비율 전환
 	float GetHpRatio();
 	//현재 방어막 비율 전환
@@ -71,8 +71,6 @@ public:
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 	TArray<FOverlapResult> DetectPlayer(float DetectRange);
 	FVector AngleToDir(float angle);
-
-	void ResetDef();
 
 	void OffShockDebuffEffect();
 	void OffIsAttacked();
@@ -110,18 +108,14 @@ public:
 	void InitManaShield();
 protected:
 	//Function
-	void InitDebuffInfo();
 	void InitAttackedInfo();
 	void InitEffect();
 	UFUNCTION(BlueprintCallable)
 		void InitMonsterAttribute();
 	UFUNCTION(BlueprintCallable)
-		EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
+	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
-	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
-	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
-	float CalcBurnDamage();
 	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
 	void CalcQuillStack(EAttributeKeyword AttackAttribute);
 
@@ -131,8 +125,6 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
-		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		FMonsterEffectData MonsterEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -194,11 +186,6 @@ private:
 	void SetEffect();
 	void SetManaShieldEffct();
 
-	void Burn();
-	void Flooding();
-	void Spark();
-	
-	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void SetActive();
 	UFUNCTION()

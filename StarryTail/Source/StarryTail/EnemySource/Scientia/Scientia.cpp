@@ -42,18 +42,18 @@ AScientia::AScientia()
 }
 void AScientia::InitMonsterInfo()
 {
-	MonsterInfo.Code = 1;
+	MonsterInfo.M_Atk_Type = 1;
 
-	MonsterInfo.MaxHp = 5000.0f;
+	MonsterInfo.M_Max_HP = 5000.0f;
 	MonsterInfo.Atk = 100.0f;
-	MonsterInfo.Def = 100.0f;
+	
 
 	MonsterInfo.BattleWalkMoveSpeed = 400.0f;
 
 	MonsterInfo.DeadWaitTime = 3.0f;
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Common;
+	MonsterInfo.M_Type = EEnemyRank::e_Common;
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
@@ -109,7 +109,7 @@ int AScientia::GetFeatherCount()
 }
 float AScientia::GetHpPercent()
 {
-	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
+	return (MonsterInfo.CurrentHp / MonsterInfo.M_Max_HP) * 100.0f;
 }
 float AScientia::GetFireDefPercent()
 {
@@ -165,11 +165,6 @@ void AScientia::SetAttribute(EAttributeKeyword Attribute)
 {
 	MonsterInfo.MonsterAttribute = Attribute;
 	ScInfo.CurrentAttribute = Attribute;
-
-	if (Attribute == EAttributeKeyword::e_None)
-	{
-		MonsterAttributeDebuff.BurnDamage *= 2;
-	}
 }
 FScientiaInfo AScientia::GetScInfo()
 {
@@ -560,15 +555,9 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 
 				ScInfo.ClawSuccessedCount++;
 
-				if (bIsSpark)
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-				}
-				else
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value), NULL, this, NULL);
-				}
+				
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value), NULL, this, NULL);
+				
 				bIsPlayerClawHit = true;
 			}
 		}
@@ -584,15 +573,9 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				GetMovementComponent()->Velocity = FVector(7000, 7000, 0);
 				GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap);
 
-				if (bIsSpark)
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-				}
-				else
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value), NULL, this, NULL);
-				}
+				
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value), NULL, this, NULL);
+				
 				bIsPlayerRushHit = true;
 			}
 		}

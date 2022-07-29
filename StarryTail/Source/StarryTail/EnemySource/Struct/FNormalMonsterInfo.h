@@ -22,30 +22,21 @@ struct FNormalMonsterInfo
 {
 	GENERATED_USTRUCT_BODY()
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int Code; // 몬스터 키값
+		EEnemyRank M_Type; // 몬스터 등급
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MaxHp; //체력
+		int M_Atk_Type; // 몬스터 키값
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Max_HP; //체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Atk; //공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Def; //기본 방어력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Barrier;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MoveSpeed; //이동속도
+		float M_MoveSpeed; //이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BattleWalkMoveSpeed; //전투시 이동속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewAngle; //시야각
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewRange; //시야거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewHeight;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float MeleeAttackRange; //공격사거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float TraceRange; //최대 추적 거리
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute; // 몬스터 속성
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -54,20 +45,8 @@ public:
 		float DeadWaitTime; // 사망시 사라지는 대기시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float KnockBackPower;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ArbitraryConstValueA; // 임의의 상수 A
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ArbitraryConstValueB; // 임의의 상수 B
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ArbitraryConstValueC; // 임의의 상수 C
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float HalvedValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float NormalValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float CriticalValue;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EEnemyRank EnemyRank; // 몬스터 등급
+	
+
 
 	//Shield;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="ManaShield")
@@ -89,16 +68,25 @@ public:
 	int Quill_CurStack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = "Quill")
 	int Quill_MaxStackDamage;
+
+	//attack
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ViewAngle; //시야각
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ViewRange; //시야거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float ViewHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float MeleeAttackRange; //공격사거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float TraceRange; //최대 추적 거리
+
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
-	// UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		// TArray<EAttributeKeyword> MainAttributeDef;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentDebuffAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CurrentHp;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		float CurrentDef;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultMoveSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
