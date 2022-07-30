@@ -109,7 +109,7 @@ int AScientia::GetFeatherCount()
 }
 float AScientia::GetHpPercent()
 {
-	return (MonsterInfo.CurrentHp / MonsterInfo.M_Max_HP) * 100.0f;
+	return (MonsterInfo.M_HP / MonsterInfo.M_Max_HP) * 100.0f;
 }
 float AScientia::GetFireDefPercent()
 {

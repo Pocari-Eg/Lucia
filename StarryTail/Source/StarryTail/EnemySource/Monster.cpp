@@ -166,15 +166,15 @@ bool AMonster::GetTestMode() const
 }
 float AMonster::GetViewAngle() const
 {
-	return MonsterInfo.ViewAngle;
+	return MonsterInfo.M_Sight_Angle;
 }
 float AMonster::GetViewRange() const
 {
-	return MonsterInfo.ViewRange;
+	return MonsterInfo.M_Sight_Radius;
 }
 float AMonster::GetViewHeight() const
 {
-	return MonsterInfo.ViewHeight;
+	return MonsterInfo.M_Sight_Height;
 }
 float AMonster::GetMeleeAttackRange() const
 {
@@ -194,7 +194,7 @@ float AMonster::GetDetectMonsterRange() const
 }
 float AMonster::GetHp() const
 {
-	return MonsterInfo.CurrentHp;
+	return MonsterInfo.M_HP;
 }
 FVector AMonster::GetLocation() const
 {
@@ -229,6 +229,26 @@ int AMonster::GetCurQuillStack() const
 {
 	return MonsterInfo.Quill_CurStack;
 }
+float AMonster::GetPatrolArea() const
+{
+	return MonsterInfo.PatrolArea;
+}
+float AMonster::GetMaxFollowTime() const
+{
+	return MonsterInfo.M_MaxFollowTime;
+}
+float AMonster::GetAtkAngle() const
+{
+	return MonsterInfo.M_Atk_Angle;
+}
+float AMonster::GetAtkRange() const
+{
+	return MonsterInfo.M_Atk_Radius;
+}
+float AMonster::GetAtkHeight() const
+{
+	return MonsterInfo.M_Atk_Angle;
+}
 void AMonster::SetCurQuillStack(const int Value)
 {
 	MonsterInfo.Quill_CurStack = Value;
@@ -245,7 +265,7 @@ AMonsterAIController* AMonster::GetAIController() const
 }
 float AMonster::GetHpRatio()
 {
-	return MonsterInfo.CurrentHp < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.CurrentHp / MonsterInfo.M_Max_HP;
+	return MonsterInfo.M_HP < KINDA_SMALL_NUMBER ? 0.0f : MonsterInfo.M_HP / MonsterInfo.M_Max_HP;
 }
 float AMonster::GetDefRatio()
 {
@@ -584,27 +604,11 @@ void AMonster::CalcHp(float Damage)
 {
 		Damage = FMath::Abs(Damage);
 
-		//if (!Cast<AScientia>(this))
-		//{
-		//	if (CheckPlayerIsBehindMonster() && !bIsBattleState)
-		//	{
-		//		RotationToPlayerDirection();
-		//		MonsterInfo.CurrentHp -= Damage * 1.5f;
-		//	}
-		//	else
-		//	{
-		//		MonsterInfo.CurrentHp -= Damage;
-		//	}
-		//}
-		//else
-		//{
-		//	MonsterInfo.CurrentHp -= Damage;
-		//}
-		MonsterInfo.CurrentHp -= Damage;
+		MonsterInfo.M_HP -= Damage;
 
 
 		if (bTestMode)
-			STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.CurrentHp);
+			STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.M_HP);
 
 		/*bShowUI = true;
 		ShowUITimer = 0.0f;
@@ -612,7 +616,7 @@ void AMonster::CalcHp(float Damage)
 
 		OnHpChanged.Broadcast();
 
-		if (MonsterInfo.CurrentHp <= 0.0f)
+		if (MonsterInfo.M_HP <= 0.0f)
 		{
 			MonsterDeadEvent();
 			bIsDead = true;
@@ -649,7 +653,7 @@ bool AMonster::CheckPlayerIsBehindMonster()
 	//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 	float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-	if (TargetAngle <= (MonsterInfo.ViewAngle * 0.5f))
+	if (TargetAngle <= (MonsterInfo.M_Sight_Angle * 0.5f))
 	{
 		return false;
 	}
@@ -840,7 +844,7 @@ void AMonster::BeginPlay()
 	MonsterInfo.DefaultMoveSpeed = MonsterInfo.M_MoveSpeed;
 	MonsterInfo.DefaultBattleWalkMoveSpeed = MonsterInfo.BattleWalkMoveSpeed;
 
-	MonsterInfo.CurrentHp = MonsterInfo.M_Max_HP;
+	MonsterInfo.M_HP = MonsterInfo.M_Max_HP;
 	MonsterAIController = Cast<AMonsterAIController>(GetController());
 
 

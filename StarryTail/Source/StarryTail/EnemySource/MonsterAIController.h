@@ -27,7 +27,7 @@ public:
 	void Death();
 
 	void SetSpawnPos(FVector Position);
-
+	void SetAttackAble(bool Set);
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
 
@@ -36,7 +36,7 @@ public:
 	static const FName TraceRangeKey;
 
 	static const FName MeleeAttackRangeKey;
-	static const FName CanMeleeAttackKey;
+	static const FName IsCanAttackKey;
 	static const FName IsAttackingKey;
 
 	static const FName IsAttackedKey;

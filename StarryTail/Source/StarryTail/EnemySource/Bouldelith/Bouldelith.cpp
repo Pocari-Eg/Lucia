@@ -34,9 +34,9 @@ void ABouldelith::InitMonsterInfo()
 
 	MonsterInfo.M_MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;
-	MonsterInfo.ViewAngle = 180.0f;
-	MonsterInfo.ViewRange = 1000.0f;
-	MonsterInfo.ViewHeight = 200.0f;
+	MonsterInfo.M_Sight_Angle = 180.0f;
+	MonsterInfo.M_Sight_Radius = 1000.0f;
+	MonsterInfo.M_Sight_Height = 200.0f;
 	MonsterInfo.MeleeAttackRange = 300.0f;
 	MonsterInfo.TraceRange = 3000.0f;
 
@@ -290,7 +290,7 @@ void ABouldelith::ResetAttackFailedStack()
 }
 float ABouldelith::GetHpPercent()
 {
-	return (MonsterInfo.CurrentHp / MonsterInfo.M_Max_HP) * 100.0f;
+	return (MonsterInfo.M_HP / MonsterInfo.M_Max_HP) * 100.0f;
 }
 void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {

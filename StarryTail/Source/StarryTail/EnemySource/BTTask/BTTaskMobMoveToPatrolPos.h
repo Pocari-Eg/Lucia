@@ -3,25 +3,25 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BehaviorTree/BTTaskNode.h"
+#include "BehaviorTree/Tasks/BTTask_MoveTo.h"
 #include "../Monster.h"
-#include "BTTaskMobMoveToPlayer.generated.h"
+#include "BTTaskMobMoveToPatrolPos.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskMobMoveToPlayer : public UBTTaskNode
+class STARRYTAIL_API UBTTaskMobMoveToPatrolPos : public UBTTask_MoveTo
 {
 	GENERATED_BODY()
+
 private:
 	AMonster* Monster;
-	AIreneCharacter* Player;
-
-	float FollowSeconds;
 public:
-	UBTTaskMobMoveToPlayer();
+	UBTTaskMobMoveToPatrolPos();
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+
+
 };

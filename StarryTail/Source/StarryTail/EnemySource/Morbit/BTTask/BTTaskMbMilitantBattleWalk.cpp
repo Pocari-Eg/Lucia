@@ -41,7 +41,7 @@ EBTNodeResult::Type UBTTaskMbMilitantBattleWalk::ExecuteTask(UBehaviorTreeCompon
 
 	if (Morbit->GetDistanceToPlayer() <= OwnerComp.GetBlackboardComponent()->GetValueAsFloat(AMbAIController::MeleeAttackRangeKey))
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::CanMeleeAttackKey, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMbAIController::IsCanAttackKey, true);
 		return EBTNodeResult::Succeeded;
 	}
 

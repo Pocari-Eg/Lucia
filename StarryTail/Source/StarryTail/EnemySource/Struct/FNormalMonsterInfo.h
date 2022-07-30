@@ -31,12 +31,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Max_HP; //체력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Atk; //공격력
+		int Atk; //공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_MoveSpeed; //이동속도
+		int M_MoveSpeed; //이동속도
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float BattleWalkMoveSpeed; //전투시 이동속도
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_CoolTime; // 몬스터 키값
+
+	//etc
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute; // 몬스터 속성
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -45,8 +48,10 @@ public:
 		float DeadWaitTime; // 사망시 사라지는 대기시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float KnockBackPower;
-	
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float PatrolArea;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_MaxFollowTime;
 
 	//Shield;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="ManaShield")
@@ -69,13 +74,23 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = "Quill")
 	int Quill_MaxStackDamage;
 
-	//attack
+	//시야
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewAngle; //시야각
+		float M_Sight_Angle; //시야각
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewRange; //시야거리
+		float M_Sight_Radius; //시야거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float ViewHeight;
+		float M_Sight_Height;
+
+	//공격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Angle; //시야각
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Radius; //시야거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Height;
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float MeleeAttackRange; //공격사거리
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -86,7 +101,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentDebuffAttribute;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-		float CurrentHp;
+		float M_HP;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultMoveSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

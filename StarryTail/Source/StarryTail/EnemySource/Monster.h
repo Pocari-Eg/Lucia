@@ -31,22 +31,9 @@ public:
 	// Sets default values for this character's properties
 	AMonster();
 
-	//Function
-	float GetMeleeAttackRange() const;
-	float GetTraceRange() const;
-	float GetDetectMonsterRange() const;
-	float GetHp() const;
-	float GetBattleWalkSpeed() const;
-	bool GetTestMode() const;
-	float GetViewAngle() const;
-	float GetViewRange() const;
-	float GetViewHeight() const;
-	EAttributeKeyword GetAttribute() const;
-	float GetDistanceToPlayer() const;
-	FVector GetLocation() const;
-	bool GetIsBattleState() const;
-	EAttributeKeyword GetBarrierAttribute() const;
-	int GetCurQuillStack() const;
+	
+
+
 	void SetCurQuillStack(const int Value);
 
 	AMonsterAIController* GetAIController() const;
@@ -215,6 +202,31 @@ private:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Get Function
+	float GetMeleeAttackRange() const;
+	float GetTraceRange() const;
+	float GetDetectMonsterRange() const;
+	float GetHp() const;
+	float GetBattleWalkSpeed() const;
+	bool GetTestMode() const;
+	float GetViewAngle() const;
+	float GetViewRange() const;
+	float GetViewHeight() const;
+	EAttributeKeyword GetAttribute() const;
+	float GetDistanceToPlayer() const;
+	FVector GetLocation() const;
+	bool GetIsBattleState() const;
+	EAttributeKeyword GetBarrierAttribute() const;
+	int GetCurQuillStack() const;
+	float GetPatrolArea() const;
+	float GetMaxFollowTime() const;
+
+	//Atk 
+	float GetAtkAngle() const;
+	float GetAtkRange() const;
+	float GetAtkHeight() const;
+
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};
