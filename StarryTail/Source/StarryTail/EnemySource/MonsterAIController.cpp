@@ -42,6 +42,7 @@ void AMonsterAIController::Death()
 {
 	Blackboard->SetValueAsBool(IsDeadKey, true);
 }
+
 void AMonsterAIController::SetPlayer()
 {
 	if (Blackboard->GetValueAsObject(PlayerKey) != nullptr)

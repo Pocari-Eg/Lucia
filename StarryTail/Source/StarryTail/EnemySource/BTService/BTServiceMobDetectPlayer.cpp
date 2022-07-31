@@ -154,10 +154,22 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 						return;
 					}
+					else {
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+					}
 				}
+				else {
+					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+				}
+			}
+			else {
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
 			}
 		}
 	}
+	else {
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+    }
 
 	if (Monster->GetTestMode())
 	{

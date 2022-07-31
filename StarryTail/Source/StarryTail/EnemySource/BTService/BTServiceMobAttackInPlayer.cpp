@@ -153,8 +153,11 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
 						return;
 					}
+					
 				}
+				
 			}
+		
 		}
 	}
 

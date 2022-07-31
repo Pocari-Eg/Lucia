@@ -9,7 +9,7 @@
 
 AFerno::AFerno()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	AIControllerClass = AFernoAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
@@ -42,10 +42,8 @@ void AFerno::Walk()
 
 void AFerno::RangeAttack()
 {
-	FernoAnimInstance->PlayAttackMontage();
-	MonsterAIController->StopMovement();
 
-	bIsAttacking = true;
+	STARRYLOG(Error, TEXT("Ferno Fire"));
 }
 
 
@@ -100,37 +98,46 @@ void AFerno::PostInitializeComponents()
 #pragma region Init
 void AFerno::InitMonsterInfo()
 {
-	MonsterInfo.M_Atk_Type = 1;
-
-	MonsterInfo.M_Max_HP = 100.0f;
-	MonsterInfo.Atk = 100.0f;
+	MonsterInfo.M_Type = EEnemyRank::e_Common;
+	MonsterInfo.M_Atk_Type = 2;
+	MonsterInfo.M_Max_HP = 150.0f;
+	MonsterInfo.M_MoveSpeed = 40.0f;
 	
-	MonsterInfo.DetectMonsterRange = 5.0f;
+	
 
 	MonsterInfo.PatrolArea = 600.0f;
 	MonsterInfo.M_MaxFollowTime = 5.0f;
 
-	MonsterInfo.M_MoveSpeed = 40.0f;
+	
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
+
+
 	MonsterInfo.M_Sight_Angle = 150.0f;
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
-	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
-	MonsterInfo.TraceRange = 1000.0f;
 
 	MonsterInfo.M_Atk_Angle = 175.0f;
 	MonsterInfo.M_Atk_Radius = 400.0f;
 	MonsterInfo.M_Atk_Height = 110.0f;
 
-	MonsterInfo.KnockBackPower = 50.0f;
-	MonsterInfo.DeadWaitTime = 3.0f;
-
+	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.M_Type = EEnemyRank::e_Common;
+	
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
 	MonsterInfo.bIsShieldOn = false;
+
+	MonsterInfo.Atk = 100.0f;
+
+	MonsterInfo.KnockBackPower = 50.0f;
+	MonsterInfo.DeadWaitTime = 3.0f;
+
+	MonsterInfo.DetectMonsterRange = 5.0f;
+	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
+	MonsterInfo.TraceRange = 1000.0f;
+
+	MonsterInfo.M_MaxAttacked = 3;
 }
 
 void AFerno::InitCollision()
@@ -155,7 +162,12 @@ void AFerno::InitMesh()
 
 	GetMesh()->SetRelativeScale3D(FVector(Scale, Scale, Scale));
 }
+// Called every frame
+void AFerno::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 
+}
 void AFerno::InitAnime()
 {
 	//애니메이션 모드 설정

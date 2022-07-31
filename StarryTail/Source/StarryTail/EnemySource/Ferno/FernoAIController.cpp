@@ -9,6 +9,10 @@ const FName AFernoAIController::IsCanRangeAttackKey = (TEXT("bCanRangeAttack"));
 AFernoAIController::AFernoAIController()
 {
 
+     M_Attacked = 0;
+
+
+
 
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Ferno/BB_Ferno"));
 	if (BBObject.Succeeded())
@@ -20,6 +24,15 @@ AFernoAIController::AFernoAIController()
 	if (BTObject.Succeeded())
 	{
 		BTAsset = BTObject.Object;
+	}
+}
+
+void AFernoAIController::Attacked()
+{
+	M_Attacked++;
+	if (M_Attacked >= M_MaxAttacked)
+	{
+		Blackboard->SetValueAsBool(IsAttackedKey, true);
 	}
 }
 
@@ -41,6 +54,7 @@ void AFernoAIController::OnPossess(APawn* InPawn)
 		// 스폰 위치 저장
 		auto Ferno = Cast<AFerno>(InPawn);
 
+		M_MaxAttacked = Ferno->GetMaxAttacked();
 		Blackboard->SetValueAsVector(SpawnPosKey, InPawn->GetActorLocation());
 		Blackboard->SetValueAsFloat(MeleeAttackRangeKey, Ferno->GetMeleeAttackRange());
 		Blackboard->SetValueAsFloat(TraceRangeKey, Ferno->GetTraceRange());

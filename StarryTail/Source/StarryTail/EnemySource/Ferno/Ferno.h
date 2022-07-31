@@ -32,6 +32,9 @@ protected:
 	void PossessedBy(AController* NewController) override;
 
 	void PostInitializeComponents() override;
+public:
+	// Called every frame
+	void Tick(float DeltaTime) override;
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;

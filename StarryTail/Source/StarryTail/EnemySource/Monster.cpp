@@ -8,6 +8,10 @@
 #include "./Bouldelith/BdAIController.h"
 #include "./Scientia/Scientia.h"
 #include "./Scientia/ScAIController.h"
+
+#include "./Ferno/Ferno.h"
+#include"./Ferno/FernoAIController.h"
+
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
@@ -237,6 +241,14 @@ float AMonster::GetMaxFollowTime() const
 {
 	return MonsterInfo.M_MaxFollowTime;
 }
+int AMonster::GetMaxAttacked() const
+{
+	return MonsterInfo.M_MaxAttacked;
+}
+UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
+{
+	return MonsterAnimInstance;
+}
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.M_Atk_Angle;
@@ -248,6 +260,13 @@ float AMonster::GetAtkRange() const
 float AMonster::GetAtkHeight() const
 {
 	return MonsterInfo.M_Atk_Angle;
+}
+void AMonster::Attack()
+{
+	MonsterAnimInstance->PlayAttackMontage();
+	MonsterAIController->StopMovement();
+
+	bIsAttacking = true;
 }
 void AMonster::SetCurQuillStack(const int Value)
 {
@@ -364,6 +383,19 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
 
 		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
+
+	}
+	if (Cast<AFerno>(this))
+	{
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
+
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
+		auto Ferno = Cast<AFerno>(this);
+		auto FernoAIController = Cast<AFernoAIController>(Ferno->GetController());
+
+		FernoAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
 	if (Cast<AScientia>(this)) {
@@ -790,6 +822,10 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 	HitEffectComponent->SetActive(true);
 	HitEffectComponent->ForceReset();
 }
+void AMonster::Attacked()
+{
+
+}
 void AMonster::OffShockDebuffEffect()
 {
 	SparkEffectComponent->SetActive(false);
@@ -985,6 +1021,9 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (bIsDead)
 		return FinalDamage;
 	
+
+
+
 	if (Cast<AIreneCharacter>(DamageCauser))
 	{
 		auto Player = Cast<AIreneCharacter>(DamageCauser);
@@ -1087,6 +1126,8 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				}
 			}
 			InitAttackedInfo();
+
+			Attacked();
 			return FinalDamage;
 		}
 	}
@@ -1159,8 +1200,9 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 		}
 
+		Attacked();
 		DamageCauser->Destroy();
-		
+		return FinalDamage;
 	}
 	return FinalDamage;
 }

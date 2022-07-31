@@ -33,7 +33,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == true)
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == true)
 	{
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}

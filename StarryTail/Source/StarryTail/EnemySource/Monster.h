@@ -32,7 +32,7 @@ public:
 	AMonster();
 
 	
-
+	 void Attack();
 
 	void SetCurQuillStack(const int Value);
 
@@ -107,6 +107,8 @@ protected:
 	void CalcQuillStack(EAttributeKeyword AttackAttribute);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
+
+	void Attacked();
 	//Variable
 	AMonsterAIController* MonsterAIController;
 
@@ -185,11 +187,7 @@ private:
 	float KnockBackTimer;
 
 	float DeadWaitTimer;
-
-
-
-	bool bIsBurn;
-	bool bIsFlooding;
+	
 
 
 	float ShowUITimer;
@@ -221,11 +219,17 @@ public:
 	int GetCurQuillStack() const;
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
+	int GetMaxAttacked() const;
+	UMonsterAnimInstance* GetMonsterAnimInstance()const;
 
 	//Atk 
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
+
+
+	//set
+
 
 protected:
 	virtual void InitMonsterInfo() {};

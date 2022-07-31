@@ -39,6 +39,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_CoolTime; // 몬스터 키값
 
+
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_MaxAttacked; // 몬스터 키값
 	//etc
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute; // 몬스터 속성

@@ -67,7 +67,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.bIsShieldOn = false;
 
 
-	
+	MonsterInfo.M_MaxAttacked = 0;
 }
 void AMorbit::InitCollision()
 {

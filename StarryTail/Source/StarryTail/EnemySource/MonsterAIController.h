@@ -26,6 +26,8 @@ public:
 	void Groggy();
 	void Death();
 
+	virtual void Attacked() {};
+
 	void SetSpawnPos(FVector Position);
 	void SetAttackAble(bool Set);
 	static const FName SpawnPosKey;

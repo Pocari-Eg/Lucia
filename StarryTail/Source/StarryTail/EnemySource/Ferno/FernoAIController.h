@@ -15,7 +15,10 @@ class STARRYTAIL_API AFernoAIController : public AMonsterAIController
 	GENERATED_BODY()
 public:
 	AFernoAIController();
+	
 
+
+	void Attacked()override;
 	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback);
 
 protected:
@@ -23,4 +26,7 @@ protected:
 
 public:
 	static const FName IsCanRangeAttackKey;
+private:
+	int M_Attacked;
+	int M_MaxAttacked;
 };
