@@ -123,7 +123,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	if (!bIsDialogOn)
+	if (!bIsDialogOn && Irene->IreneAttack->GetThunderSustainTime() <= 0)
 	{
 		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
 		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
@@ -146,6 +146,20 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 			MoveKey[Value] = 3;
 	}
 }
+void UIreneInputInstance::ThunderDeBuffKey()
+{
+	if (!bIsDialogOn)
+	{
+		if(Irene->IreneAttack->GetThunderSustainTime() > 0)
+		{
+			if(Irene->IreneAttack->GetThunderSustainTime() - 1.5f <= 0)
+				Irene->IreneAttack->ResetThunderDeBuffStack();
+			else
+				Irene->IreneAttack->SetThunderSustainTime(Irene->IreneAttack->GetThunderSustainTime() - 1.5f);
+		}
+	}
+}
+
 void UIreneInputInstance::MoveW(float Rate)
 {
 	if(Rate >= 1)
