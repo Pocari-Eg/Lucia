@@ -84,7 +84,7 @@ class STARRYTAIL_API UDodgeStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
 private:
-	FTimerHandle MoveAutoWaitHandle;
+	EStateEnum BeforeStateEnum;
 public:
 	static UDodgeStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;

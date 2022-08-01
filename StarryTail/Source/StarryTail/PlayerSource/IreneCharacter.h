@@ -79,7 +79,7 @@ public:
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
-	
+
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
@@ -157,6 +157,7 @@ public:
 
 	// ÇÇ°Ý
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
+	void SetHP(float DamageAmount);
 #pragma endregion Collision
 
 #pragma region HitFeel

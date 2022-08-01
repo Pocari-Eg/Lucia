@@ -100,7 +100,6 @@ public:
 private:
 
 	void UpdateHp();
-	void UpdateMp();
 	void UpdateHpRecovery();
 
 	void UpdateSwordAttributes();

@@ -54,7 +54,10 @@ public:
 	// 무적상태
 	UPROPERTY(BlueprintReadWrite)
 	bool IsInvincibility = false;
-
+	// 무적상태
+	UPROPERTY(BlueprintReadWrite)
+	bool IsSkipMonsterAttack = false;
+	
 	//공격력
 	UPROPERTY(BlueprintReadWrite)
 	float Strength = 20;
@@ -68,15 +71,9 @@ public:
 	// 최대 체력
 	UPROPERTY(BlueprintReadWrite)
 	float MaxHP = 2000;
-	// 최대 스테미나
-	UPROPERTY(BlueprintReadWrite)
-	float MaxStamina = 150;
 	// 체력
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentHP;
-	// 스테미나
-	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
-	float CurrentStamina;
 
 	// Run 최대 속도
 	UPROPERTY(BlueprintReadWrite)
@@ -112,15 +109,6 @@ public:
 	// 카메라 타겟 추적 선형보간 속도
 	UPROPERTY(BlueprintReadOnly)
 	float TargetCameraFollowSpeed = 3.0f;
-
-public:
-	// 기타 변수들
-	// SP회복 속도
-	UPROPERTY()
-	float Recovery_Speed = 7.5f;
-	// SP감소 속도
-	UPROPERTY()
-	float Decrease_Speed = 50.0f;
 };
 
 USTRUCT(BlueprintType)
