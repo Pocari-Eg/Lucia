@@ -44,6 +44,7 @@ private:
 	FTimerHandle FireDeBuffTickTimerHandle;
 	FTimerHandle WaterDeBuffStackTimerHandle;
 	FTimerHandle ThunderDeBuffStackTimerHandle;
+	FTimerHandle ThunderDeBuffTickTimerHandle;
 
 	// 디버프 중첩 단계
 	int FireDeBuffStack;
@@ -52,6 +53,8 @@ private:
 
 	// 불속성 몬스터 고정 데미지
 	float FireMonsterDamageAmount;
+	// 전기 디버프 작동 시간
+	float ThunderSustainTime;
 	
 	// 타켓 추적 유무
 	bool bFollowTarget;
@@ -113,7 +116,8 @@ public:
 	void ResetFireDeBuffStack();
 	void ResetWaterDeBuffStack();
 	void ResetThunderDeBuffStack();
-	
+	void OverSustainTime();
+
 	void SetAttackState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
@@ -144,6 +148,7 @@ public:
 	int GetFireDeBuffStack()const{return FireDeBuffStack;}
 	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
+	float GetThunderSustainTime()const{return ThunderSustainTime;}
 
 	void SetSwordAttribute(const EAttributeKeyword Value){SwordAttribute = Value;}
 	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
@@ -157,6 +162,7 @@ public:
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
+	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 #pragma endregion GetSet
 
 private:

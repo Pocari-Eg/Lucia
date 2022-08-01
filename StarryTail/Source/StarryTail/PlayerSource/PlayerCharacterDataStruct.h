@@ -84,7 +84,9 @@ public:
 	// 전기 스택 추가 이동속도
 	UPROPERTY(BlueprintReadWrite)
 	float ThunderQuillStackSpeed = 1;
-	
+	// 전기 스택 추가 이동속도
+	UPROPERTY(BlueprintReadWrite)
+	float WaterDeBuffSpeed = 1;
 public:
 	// 공격 관련 변수들
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)

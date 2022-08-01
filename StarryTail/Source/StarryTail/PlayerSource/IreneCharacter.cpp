@@ -290,7 +290,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
-	
+	PlayerInputComponent->BindAction("ThunderDeBuffKey", IE_Pressed, IreneInput, &UIreneInputInstance::ThunderDeBuffKey);
+
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
@@ -669,7 +670,7 @@ void AIreneCharacter::ActionEndChangeMoveState(bool RunToSprint)const
 	{
 		ChangeStateAndLog(UIdleState::GetInstance());
 	}
-	else if (GetCharacterMovement()->MaxWalkSpeed >= IreneData.SprintMaxSpeed)
+	else if (GetCharacterMovement()->MaxWalkSpeed >= IreneData.SprintMaxSpeed * IreneData.WaterDeBuffSpeed)
 	{
 		ChangeStateAndLog(USprintLoopState::GetInstance());
 	}

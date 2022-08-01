@@ -55,7 +55,8 @@ void UIreneAttackInstance::InitMemberVariable()
 	WaterDeBuffStack = 0;
 	ThunderDeBuffStack = 0;
 	FireMonsterDamageAmount = 0;
-
+	ThunderSustainTime = 0;
+	
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -312,12 +313,31 @@ void UIreneAttackInstance::SetFireDeBuffStack(const int Value, const float Damag
 void UIreneAttackInstance::SetWaterDeBuffStack(const int Value)
 {
 	WaterDeBuffStack = Value;
+	switch (Value)
+	{
+	case 1:
+		Irene->IreneData.WaterDeBuffSpeed = 0.9f;
+		break;
+	case 2:
+		Irene->IreneData.WaterDeBuffSpeed = 0.85f;
+		break;
+	case 3:
+		Irene->IreneData.WaterDeBuffSpeed = 0.7f;
+		break;
+	default: break;
+	}
 	GetWorld()->GetTimerManager().SetTimer(WaterDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetWaterDeBuffStack, 120.0f, false);
 }
 void UIreneAttackInstance::SetThunderDeBuffStack(const int Value)
 {
-	ThunderDeBuffStack = Value;
-	GetWorld()->GetTimerManager().SetTimer(ThunderDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetThunderDeBuffStack, 120.0f, false);
+	if(!ThunderDeBuffTickTimerHandle.IsValid() || ThunderDeBuffStackTimerHandle.IsValid())
+	{
+		GetWorld()->GetTimerManager().ClearTimer(ThunderDeBuffTickTimerHandle);
+		GetWorld()->GetTimerManager().ClearTimer(ThunderDeBuffStackTimerHandle);
+		ThunderDeBuffStack = Value;
+		ThunderSustainTime = ThunderDeBuffStack*10;
+		GetWorld()->GetTimerManager().SetTimer(ThunderDeBuffTickTimerHandle, this, &UIreneAttackInstance::OverSustainTime, ThunderSustainTime, false);
+	}
 }
 void UIreneAttackInstance::LoopFireDeBuff()const
 {
@@ -335,11 +355,19 @@ void UIreneAttackInstance::ResetWaterDeBuffStack()
 {
 	GetWorld()->GetTimerManager().ClearTimer(WaterDeBuffStackTimerHandle);
 	WaterDeBuffStack = 0;
+	Irene->IreneData.WaterDeBuffSpeed = 1;
 }
 void UIreneAttackInstance::ResetThunderDeBuffStack()
 {
 	GetWorld()->GetTimerManager().ClearTimer(ThunderDeBuffStackTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(ThunderDeBuffTickTimerHandle);
 	ThunderDeBuffStack = 0;
+	ThunderSustainTime = 0;
+}
+void UIreneAttackInstance::OverSustainTime()
+{
+	ThunderSustainTime = 0;
+	GetWorld()->GetTimerManager().SetTimer(ThunderDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetThunderDeBuffStack, 30.0f, false);
 }
 #pragma endregion Attack
 

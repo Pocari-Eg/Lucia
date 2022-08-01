@@ -100,6 +100,7 @@ public:
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
 	void MovePressedKey(const int Value);
+	void ThunderDeBuffKey();
 	void MoveW(float Rate);
 	void MoveA(float Rate);
 	void MoveS(float Rate);
