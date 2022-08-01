@@ -51,6 +51,11 @@ void UIreneAttackInstance::InitMemberVariable()
 	SwordAttribute = EAttributeKeyword::e_Fire;
 	QuillAttribute = EAttributeKeyword::e_Water;
 
+	FireDeBuffStack = 0;
+	WaterDeBuffStack = 0;
+	ThunderDeBuffStack = 0;
+	FireMonsterDamageAmount = 0;
+
 	bFollowTarget = false;
 	FollowTargetAlpha = 0.0f;
 	PlayerPosVec = FVector::ZeroVector;
@@ -63,7 +68,6 @@ void UIreneAttackInstance::InitMemberVariable()
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
 	bReAttackSkip = false;
-	bSkillSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
@@ -213,7 +217,7 @@ void UIreneAttackInstance::DoAttack()
 		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
 			STGameInstance->ResetAttributeEffectMonster();
 }
-void UIreneAttackInstance::FireQuillStack(const int Value)
+void UIreneAttackInstance::SetFireQuillStack(const int Value)
 {
 	if(Value == 0)
 		return;
@@ -233,7 +237,7 @@ void UIreneAttackInstance::FireQuillStack(const int Value)
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[0],Irene->GetActorLocation());
 	GetWorld()->GetTimerManager().SetTimer(FireQuillStackTimerHandle, this, &UIreneAttackInstance::ResetFireQuillStack, 5.0f, false);
 }
-void UIreneAttackInstance::WaterQuillStack(const int Value)
+void UIreneAttackInstance::SetWaterQuillStack(const int Value)
 {
 	if(Value == 0)
 		return;
@@ -254,7 +258,7 @@ void UIreneAttackInstance::WaterQuillStack(const int Value)
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[1],Irene->GetActorLocation());
 	GetWorld()->GetTimerManager().SetTimer(WaterQuillStackTimerHandle, this, &UIreneAttackInstance::ResetWaterQuillStack, 120.0f, false);
 }
-void UIreneAttackInstance::ThunderQuillStack(const int Value)
+void UIreneAttackInstance::SetThunderQuillStack(const int Value)
 {
 	if(Value == 0)
 		return;
@@ -295,6 +299,47 @@ void UIreneAttackInstance::ResetThunderQuillStack()
 		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed * Irene->IreneData.ThunderQuillStackSpeed)
 			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed / Irene->IreneData.ThunderQuillStackSpeed;
 	Irene->IreneData.ThunderQuillStackSpeed = 1.0f;
+}
+
+void UIreneAttackInstance::SetFireDeBuffStack(const int Value, const float DamageAmount)
+{
+	FireDeBuffStack = Value;
+	FireMonsterDamageAmount = DamageAmount;
+	if(!FireDeBuffTickTimerHandle.IsValid())
+		GetWorld()->GetTimerManager().SetTimer(FireDeBuffTickTimerHandle, this, &UIreneAttackInstance::LoopFireDeBuff, 5.0f, true);
+	GetWorld()->GetTimerManager().SetTimer(FireDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetFireDeBuffStack, 120.0f, false);
+}
+void UIreneAttackInstance::SetWaterDeBuffStack(const int Value)
+{
+	WaterDeBuffStack = Value;
+	GetWorld()->GetTimerManager().SetTimer(WaterDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetWaterDeBuffStack, 120.0f, false);
+}
+void UIreneAttackInstance::SetThunderDeBuffStack(const int Value)
+{
+	ThunderDeBuffStack = Value;
+	GetWorld()->GetTimerManager().SetTimer(ThunderDeBuffStackTimerHandle, this, &UIreneAttackInstance::ResetThunderDeBuffStack, 120.0f, false);
+}
+void UIreneAttackInstance::LoopFireDeBuff()const
+{
+	if(FireMonsterDamageAmount != 0)
+		Irene->SetHP(FireMonsterDamageAmount/2);
+}
+void UIreneAttackInstance::ResetFireDeBuffStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(FireDeBuffTickTimerHandle);
+	GetWorld()->GetTimerManager().ClearTimer(FireDeBuffStackTimerHandle);
+	FireDeBuffStack = 0;
+	FireMonsterDamageAmount = 0;
+}
+void UIreneAttackInstance::ResetWaterDeBuffStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(WaterDeBuffStackTimerHandle);
+	WaterDeBuffStack = 0;
+}
+void UIreneAttackInstance::ResetThunderDeBuffStack()
+{
+	GetWorld()->GetTimerManager().ClearTimer(ThunderDeBuffStackTimerHandle);
+	ThunderDeBuffStack = 0;
 }
 #pragma endregion Attack
 

@@ -198,11 +198,7 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveForward();
 	CurState->Irene->IreneInput->MoveRight();
-	if (CurState->PlayTime >= 3)
-	{
-		CurState->ThrowState(URunEndState::GetInstance());
-		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
-	}
+
 	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 	if (MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
 	{
@@ -450,21 +446,22 @@ UDodgeStartState* UDodgeStartState::GetInstance()
 }
 void UDodgeStartState::Enter(IBaseGameEntity* CurState)
 {
+	if(CurState->Irene->IreneState->GetStateToString().Compare(FString("BattleIdle")))
 	CurState->SetStateEnum(EStateEnum::Dodge_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetMesh()->SetVisibility(false);
+	//CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	//CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
 	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
 	//CurState->Irene->SetCameraLagTime(0);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
-
+	CurState->Irene->IreneData.IsSkipMonsterAttack = true;
+	
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 }
 
 void UDodgeStartState::Execute(IBaseGameEntity* CurState)
@@ -479,14 +476,21 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 
 	if (CurState->PlayTime >= 0.03f)
 	{
-		CurState->ThrowState(UDodgeEndState::GetInstance());
-		CurState->Irene->ActionEndChangeMoveState(true);
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		{
+			CurState->ThrowState(UDodgeEndState::GetInstance());
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		}
+		else
+		{
+			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
+		}
 	}
 }
 
 void UDodgeStartState::Exit(IBaseGameEntity* CurState)
 {
-	CurState->ThrowState(UDodgeEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeStartState
@@ -505,26 +509,29 @@ void UDodgeEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-}
 
-void UDodgeEndState::Execute(IBaseGameEntity* CurState)
-{
-
-}
-
-void UDodgeEndState::Exit(IBaseGameEntity* CurState)
-{
 	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
 	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
-	CurState->Irene->GetMesh()->SetVisibility(true);
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	//CurState->Irene->GetMesh()->SetVisibility(true);
+	//CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
 	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
 	CurState->Irene->GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	CurState->Irene->IreneData.IsSkipMonsterAttack = false;
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+}
+
+void UDodgeEndState::Execute(IBaseGameEntity* CurState)
+{
+	if(CurState->PlayTime > 0.83f)
+		CurState->Irene->ActionEndChangeMoveState(true);
+}
+
+void UDodgeEndState::Exit(IBaseGameEntity* CurState)
+{
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeEndState
@@ -695,13 +702,16 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
 	if (!CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
@@ -709,7 +719,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->MoveAuto();
 
 	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
-		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_F")) != 0 && CurState->Irene->IreneData.CurrentCombo == 2)
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2")) != 0 && CurState->Irene->IreneData.CurrentCombo == 2)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
 	}
@@ -740,7 +750,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->WeaponVisible(false);
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
 	if(CurState->PlayTime >= 1.7f)
@@ -750,7 +760,9 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack1State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneAttack->AttackEndComboState();
+	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
+		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -783,7 +795,6 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
@@ -794,7 +805,7 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
 	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3")
-		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3_F")) != 0 && CurState->Irene->IreneData.CurrentCombo == 3)
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3")) != 0 && CurState->Irene->IreneData.CurrentCombo == 3)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
 	}
@@ -824,7 +835,7 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->WeaponVisible(false);
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
 	if(CurState->PlayTime >= 1.8f)
@@ -834,7 +845,9 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack2State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneAttack->AttackEndComboState();
+	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
+		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -864,11 +877,11 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
 	CurState->Irene->IreneData.CurrentCombo = 3;
+	
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
-
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -905,7 +918,7 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->WeaponVisible(false);
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
 	if(CurState->PlayTime >= 3.3f)
@@ -915,7 +928,9 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack3State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneAttack->AttackEndComboState();
+	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
+		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -972,7 +987,6 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
     CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-    CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
@@ -1007,7 +1021,6 @@ void UHit2State::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 }
 

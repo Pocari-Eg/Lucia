@@ -79,10 +79,6 @@ float UIreneUIManager::GetHpRatio()
 	// 비율변환 0.0 ~ 1.0
 	return (Irene->IreneData.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentHP / Irene->IreneData.MaxHP;
 }
-float UIreneUIManager::GetStaminaRatio()
-{
-	return (Irene->IreneData.CurrentStamina < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentStamina / Irene->IreneData.MaxStamina;
-}
 void UIreneUIManager::FootStepSound()
 {
 	WalkSound->SoundPlay3D(Irene->GetActorTransform());

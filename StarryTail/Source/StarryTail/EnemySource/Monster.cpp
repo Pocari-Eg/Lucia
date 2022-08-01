@@ -1594,13 +1594,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					switch (Quill->Attribute)
 					{
 					case EAttributeKeyword::e_Fire:
-						STGameInstance->GetPlayer()->IreneAttack->FireQuillStack(MonsterInfo.Quill_MaxStack);
+						STGameInstance->GetPlayer()->IreneAttack->SetFireQuillStack(MonsterInfo.Quill_MaxStack);
 						break;
 					case EAttributeKeyword::e_Water:
-						STGameInstance->GetPlayer()->IreneAttack->WaterQuillStack(MonsterInfo.Quill_MaxStack);
+						STGameInstance->GetPlayer()->IreneAttack->SetWaterQuillStack(MonsterInfo.Quill_MaxStack);
 						break;
 					case EAttributeKeyword::e_Thunder:
-						STGameInstance->GetPlayer()->IreneAttack->ThunderQuillStack(MonsterInfo.Quill_MaxStack);
+						STGameInstance->GetPlayer()->IreneAttack->SetThunderQuillStack(MonsterInfo.Quill_MaxStack);
 						break;
 					default:
 						break;

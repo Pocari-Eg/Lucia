@@ -59,6 +59,9 @@ private:
 	FTimerHandle FireQuillWaitHandle;
 	FTimerHandle WaterQuillWaitHandle;
 	FTimerHandle ThunderQuillWaitHandle;
+
+	// 공격 중 속성변경을 위한 변수
+	EAttributeKeyword TempAttribute;
 	
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
@@ -116,7 +119,7 @@ public:
 	void MouseWheel(float Rate);
 
 	// 메인키워드 속성변경
-	void AttributeKeywordReleased(const EAttributeKeyword Attribute);
+	void AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change = false);
 	void FireKeywordReleased();
 	void WaterKeywordReleased();
 	void ElectricKeywordReleased();
@@ -138,9 +141,6 @@ public:
 	public:
 	UFUNCTION(BluePrintcallable)
 	void PauseWidgetOn();
-
-	void RecoveryStaminaGauge(const float DeltaTime)const;
-	bool StaminaGaugeIsFull()const;
 #pragma endregion UIandStamina
 
 #pragma region CheckStateChange
@@ -155,6 +155,7 @@ public:
 	int GetWaterQuillCount()const{return WaterQuillCount;}
 	int GetThunderQuillCount()const{return ThunderQuillCount;}
 	bool GetIsDialogOn()const{return bIsDialogOn;}
+	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
@@ -163,6 +164,7 @@ public:
 	void SetWaterQuillCount(const int Value) { WaterQuillCount = Value; }
 	void SetThunderQuillCount(const int Value) { ThunderQuillCount = Value; }
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
+	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
 #pragma endregion GetSet	
 
 #pragma region CoolTimeFunction

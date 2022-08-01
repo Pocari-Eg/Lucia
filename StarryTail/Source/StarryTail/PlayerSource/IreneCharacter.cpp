@@ -45,6 +45,8 @@ AIreneCharacter::AIreneCharacter()
 		ShieldComp->SetMaterial(0,MT_Shield.Object);
 	}
 	ShieldComp->SetupAttachment(GetCapsuleComponent());
+	ShieldComp->SetCollisionProfileName(TEXT("NoCollision"));
+	ShieldComp->SetGenerateOverlapEvents(false);
 	ShieldComp->SetVisibility(false);
 	
 	// 카메라 설정
@@ -165,7 +167,6 @@ AIreneCharacter::AIreneCharacter()
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
-	IreneData.CurrentStamina = IreneData.MaxStamina;
 	
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
@@ -278,8 +279,6 @@ void AIreneCharacter::Tick(float DeltaTime)
 	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
 	FindCanThrowQuillMonster(DeltaTime);	
-	if(!IreneState->IsDeathState())
-		IreneInput->RecoveryStaminaGauge(DeltaTime);
 	IreneState->Update(DeltaTime);
 }
 
@@ -560,27 +559,11 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if(!IreneData.IsInvincibility)
+	if(!IreneData.IsInvincibility || !IreneData.IsSkipMonsterAttack)
 	{
 		if (IreneData.CurrentHP > 0)
 		{
-			if(IreneData.Shield > 0)
-			{
-				const float CurShield = IreneData.Shield;
-				IreneData.Shield -= DamageAmount;
-				if(IreneData.Shield <= 0)
-				{
-					IreneAttack->ResetWaterQuillStack();
-				}
-				DamageAmount -= CurShield;
-				if(DamageAmount > 0)
-					IreneData.CurrentHP -= DamageAmount;
-			}
-			else
-			{
-				IreneData.CurrentHP -= DamageAmount;
-			}
-			IreneUIManager->OnHpChanged.Broadcast();
+			SetHP(DamageAmount);
 			
 			if (IreneData.CurrentHP <= 0)
 			{
@@ -589,6 +572,25 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
+				const auto Monster = Cast<AMonster>(DamageCauser);
+				if(Monster)
+				{
+					switch (Monster->GetAttribute())
+					{
+					case EAttributeKeyword::e_Fire:
+						IreneAttack->SetFireDeBuffStack(IreneAttack->GetFireDeBuffStack()+1, DamageAmount);
+						break;
+					case EAttributeKeyword::e_Water:
+						IreneAttack->SetWaterDeBuffStack(IreneAttack->GetWaterDeBuffStack()+1);
+						break;
+					case EAttributeKeyword::e_Thunder:
+						IreneAttack->SetThunderDeBuffStack(IreneAttack->GetThunderDeBuffStack()+1);
+						break;
+					case EAttributeKeyword::e_None:
+						break;
+					}
+				}
+
 				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
@@ -616,6 +618,26 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 	}
 	return FinalDamage;
+}
+void AIreneCharacter::SetHP(float DamageAmount)
+{
+	if(IreneData.Shield > 0)
+	{
+		const float CurShield = IreneData.Shield;
+		IreneData.Shield -= DamageAmount;
+		if(IreneData.Shield <= 0)
+		{
+			IreneAttack->ResetWaterQuillStack();
+		}
+		DamageAmount -= CurShield;
+		if(DamageAmount > 0)
+			IreneData.CurrentHP -= DamageAmount;
+	}
+	else
+	{
+		IreneData.CurrentHP -= DamageAmount;
+	}
+	IreneUIManager->OnHpChanged.Broadcast();
 }
 
 #pragma endregion Collision
