@@ -104,7 +104,10 @@ protected:
 	void CalcHp(float Damage);
 	float CalcNormalAttackDamage(float Damage);
 	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
+	void CalcManaShield(float Damage);
+
 	void CalcQuillStack(EAttributeKeyword AttackAttribute);
+	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 

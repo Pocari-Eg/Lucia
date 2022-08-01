@@ -38,6 +38,7 @@ void AMbAIController::OnPossess(APawn* InPawn)
 }
 void AMbAIController::Attacked()
 {
+
 }
 void AMbAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)
 {

@@ -59,6 +59,8 @@ void AFerno::BeginPlay()
 	FernoAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
 		AttackEnd.Broadcast();
+
+		STARRYLOG_S(Error);
 		});
 	FernoAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;

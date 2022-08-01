@@ -22,6 +22,7 @@ EBTNodeResult::Type UBTTaskMbAttacked::ExecuteTask(UBehaviorTreeComponent& Owner
 		return EBTNodeResult::Failed;
 
 	bIsAttacked = true;
+
 	Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });
 
 	return EBTNodeResult::InProgress;

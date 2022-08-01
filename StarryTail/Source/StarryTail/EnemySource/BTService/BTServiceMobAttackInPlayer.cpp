@@ -153,13 +153,25 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 
 						return;
 					}
+					else {
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+					}
 					
 				}
+				else {
+					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+				}
 				
+			}
+			else {
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 			}
 		
 		}
 	}
+	else {
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+}
 
 	if (Monster->GetTestMode())
 	{

@@ -29,11 +29,16 @@ AFernoAIController::AFernoAIController()
 
 void AFernoAIController::Attacked()
 {
+
+
 	M_Attacked++;
 	if (M_Attacked >= M_MaxAttacked)
 	{
 		Blackboard->SetValueAsBool(IsAttackedKey, true);
+		M_Attacked = 0;
+		
 	}
+
 }
 
 void AFernoAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)

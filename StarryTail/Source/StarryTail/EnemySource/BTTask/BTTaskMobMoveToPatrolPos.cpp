@@ -33,8 +33,18 @@ void UBTTaskMobMoveToPatrolPos::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Idle || OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == true)
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
+		|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)
 	{
+		Monster->GetAIController()->StopMovement();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		
+	}
+
+
+	if ( OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == true)
+	{
+		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	

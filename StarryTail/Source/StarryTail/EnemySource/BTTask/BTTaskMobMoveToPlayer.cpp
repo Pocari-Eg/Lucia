@@ -33,9 +33,15 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
+		|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)
+	{
+		Monster->GetAIController()->StopMovement();
+	}
+
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == true)
 	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		Monster->GetAIController()->StopMovement();
 	}
 
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
@@ -50,6 +56,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
 			FollowSeconds = 0.0f;
+			Monster->GetAIController()->StopMovement();
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			
 		}

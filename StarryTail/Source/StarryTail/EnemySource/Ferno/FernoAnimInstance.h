@@ -18,6 +18,7 @@ public:
 	void PlayDeathMontage() override;
 	void PlayAttackMontage() override;
 	void PlayDetectMontage() override;
+	void PlayAttackedMontage() override;
 	void PlayRunMontage();
 
 

@@ -41,6 +41,13 @@ void UFernoAnimInstance::PlayDetectMontage()
 	Montage_Play(DetectMontage, 1.0f);
 }
 
+void UFernoAnimInstance::PlayAttackedMontage()
+{
+	if (CheckAttackedMontagePlaying())
+		return;
+		Montage_Play(AttackedMontage, 1.0f);
+}
+
 void UFernoAnimInstance::PlayRunMontage()
 {
 }
