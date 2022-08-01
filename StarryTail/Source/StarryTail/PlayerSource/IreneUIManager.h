@@ -11,7 +11,6 @@
 #include "IreneUIManager.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnMpChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
@@ -58,7 +57,6 @@ private:
 #pragma region HUD
 public:
 	FOnHpChangeDelegate OnHpChanged;
-	FOnMpChangeDelegate OnStaminaChanged;
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
 
@@ -136,8 +134,6 @@ public:
 	
 	//현재 체력 비율 전환
 	float GetHpRatio();
-	//현재 스테미나 비율 전환
-	float GetStaminaRatio();
 
 	//사운드 출력
 	void FootStepSound();

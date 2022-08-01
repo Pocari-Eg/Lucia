@@ -62,6 +62,8 @@ void UIreneInputInstance::InitMemberVariable()
 	WaterQuillMaxCoolTime = 1.5f;
 	ThunderQuillMaxCoolTime = 1.5f;
 
+	TempAttribute = EAttributeKeyword::e_None;
+	
 	CoolTimeRate = 0.008f;
 	bIsDialogOn = false;
 }
@@ -121,7 +123,7 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	if (!bIsDialogOn)
+	if (!bIsDialogOn && Irene->IreneAttack->GetThunderSustainTime() <= 0)
 	{
 		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
 		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
@@ -144,6 +146,20 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 			MoveKey[Value] = 3;
 	}
 }
+void UIreneInputInstance::ThunderDeBuffKey()
+{
+	if (!bIsDialogOn)
+	{
+		if(Irene->IreneAttack->GetThunderSustainTime() > 0)
+		{
+			if(Irene->IreneAttack->GetThunderSustainTime() - 1.5f <= 0)
+				Irene->IreneAttack->ResetThunderDeBuffStack();
+			else
+				Irene->IreneAttack->SetThunderSustainTime(Irene->IreneAttack->GetThunderSustainTime() - 1.5f);
+		}
+	}
+}
+
 void UIreneInputInstance::MoveW(float Rate)
 {
 	if(Rate >= 1)
@@ -388,7 +404,7 @@ void UIreneInputInstance::RightButtonPressed()
 		}
 		const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Rotator,SpawnParams);
 		SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
-		SpawnedActor->MoveSpeed = 250;
+		SpawnedActor->MoveSpeed = 400;
 		SpawnedActor->Distance = 2500;
 		SpawnedActor->Strength = 100;
 
@@ -414,30 +430,53 @@ void UIreneInputInstance::MouseWheel(float Rate)
 	}
 }
 
-void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute)
+void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change)
 {
 	if (!bIsDialogOn)
 	{
 		// 속성을 변화시키는 함수
-		if (!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
+		if ((!Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsDeathState() && Irene->IreneAttack->GetSwordAttribute() != Attribute)
+			|| Change)
 		{
+			bool CanChange = false;
 			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
 			{
+				CanChange = true;
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Fire)
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Water);
 			}
 			else if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
 			{
+				CanChange = true;
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Water)
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Thunder);
 			}
 			else if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
 			{
+				CanChange = true;
 				if(Irene->IreneAttack->GetQuillAttribute() == EAttributeKeyword::e_Thunder)
 					Irene->IreneAttack->SetQuillAttribute(EAttributeKeyword::e_Fire);
 			}
-			ChangeForm(Attribute);
-			Irene->FOnQuillAttributeChange.Broadcast();
+			if(CanChange)
+			{
+				ChangeForm(Attribute);
+				Irene->FOnQuillAttributeChange.Broadcast();
+			}
+		}
+		else if(Irene->IreneState->IsAttackState())
+		{
+			if (Attribute == EAttributeKeyword::e_Fire && bIsFireAttributeOn)
+			{
+				TempAttribute = Attribute;
+			}
+			else if (Attribute == EAttributeKeyword::e_Water && bIsWaterAttributeOn)
+			{
+				TempAttribute = Attribute;
+			}
+			else if (Attribute == EAttributeKeyword::e_Thunder && bIsThunderAttributeOn)
+			{
+				TempAttribute = Attribute;
+			}
 		}
 	}
 }
@@ -474,19 +513,19 @@ void UIreneInputInstance::QuillAttributeChangeReleased()
 	switch (Irene->IreneAttack->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:	
-		Irene->IreneAttack->FireQuillStack(TargetMonsterStack);
+		Irene->IreneAttack->SetFireQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Water;
 		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Water)
 			Value = EAttributeKeyword::e_Thunder;
 		break;
 	case EAttributeKeyword::e_Water:
-		Irene->IreneAttack->WaterQuillStack(TargetMonsterStack);
+		Irene->IreneAttack->SetWaterQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Thunder;
 		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Thunder)
 			Value = EAttributeKeyword::e_Fire;
 		break;
 	case EAttributeKeyword::e_Thunder:
-		Irene->IreneAttack->ThunderQuillStack(TargetMonsterStack);
+		Irene->IreneAttack->SetThunderQuillStack(TargetMonsterStack);
 		Value = EAttributeKeyword::e_Fire;
 		if(Irene->IreneAttack->GetSwordAttribute() == EAttributeKeyword::e_Fire)
 			Value = EAttributeKeyword::e_Water;
@@ -543,20 +582,16 @@ void UIreneInputInstance::DodgeKeyword()
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() &&
 	Irene->IreneState->IsAttackState() && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!bIsDialogOn))
 	{
-		if(Irene->IreneData.CurrentStamina >= 30)
-		{
-			Irene->IreneAnim->StopAllMontages(0);
-			Irene->IreneData.CurrentStamina -= 30;
-			Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
-			Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
-			Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
+		Irene->IreneAnim->StopAllMontages(0);
+		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
+		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
+		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 			
-			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
-			 {
-				 DodgeWaitHandle.Invalidate();
-			 }), 0.03f, false);
-		}
-	}	
+		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+		 {
+			 DodgeWaitHandle.Invalidate();
+		 }), 0.03f, false);
+	}
 }
 
 void UIreneInputInstance::DialogAction()
@@ -626,19 +661,6 @@ void UIreneInputInstance::PauseWidgetOn()
 		Irene->IreneUIManager->PauseWidgetOn();
 	}
 	Irene->ActionEndChangeMoveState();
-}
-
-void UIreneInputInstance::RecoveryStaminaGauge(const float DeltaTime)const
-{
-	// 스테미나를 회복시키는 함수
-	Irene->IreneData.CurrentStamina += DeltaTime * Irene->IreneData.Recovery_Speed;
-	if(StaminaGaugeIsFull()) Irene->IreneData.CurrentStamina = Irene->IreneData.MaxStamina;
-	Irene->IreneUIManager->OnStaminaChanged.Broadcast();
-}
-bool UIreneInputInstance::StaminaGaugeIsFull()const
-{
-	// 스테미나가 가득 찼는지 확인하는 함수
-	return Irene->IreneData.CurrentStamina >= Irene->IreneData.MaxStamina ? true :false;
 }
 #pragma endregion UI
 

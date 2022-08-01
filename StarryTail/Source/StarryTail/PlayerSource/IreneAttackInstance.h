@@ -19,7 +19,7 @@ public:
 	AActor* SwordTargetMonster;
 	// 깃펜을 보낼 수 있는 몬스터 또는 오브젝트
 	UPROPERTY()
-	AActor* QuillTargetMonster;	
+	AActor* QuillTargetMonster;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -35,10 +35,27 @@ private:
 	UPROPERTY()
 	UDataTable* FormTimeDataTable;
 
+	// 깃펜 효과 타이머
 	FTimerHandle FireQuillStackTimerHandle;
 	FTimerHandle WaterQuillStackTimerHandle;
 	FTimerHandle ThunderQuillStackTimerHandle;
+	// 디버프 효과 타이머
+	FTimerHandle FireDeBuffStackTimerHandle;
+	FTimerHandle FireDeBuffTickTimerHandle;
+	FTimerHandle WaterDeBuffStackTimerHandle;
+	FTimerHandle ThunderDeBuffStackTimerHandle;
+	FTimerHandle ThunderDeBuffTickTimerHandle;
 
+	// 디버프 중첩 단계
+	int FireDeBuffStack;
+	int WaterDeBuffStack;
+	int ThunderDeBuffStack;
+
+	// 불속성 몬스터 고정 데미지
+	float FireMonsterDamageAmount;
+	// 전기 디버프 작동 시간
+	float ThunderSustainTime;
+	
 	// 타켓 추적 유무
 	bool bFollowTarget;
 	// 보간을 위한 수 0 ~ 1
@@ -69,8 +86,7 @@ private:
 	bool bDodgeJumpSkip;
 	// 후딜 중 재공격 가능 타이밍 노티파이
 	bool bReAttackSkip;
-	// 후딜 중 스킬 가능 타이밍 노티파이
-	bool bSkillSkip;
+
 public:
 	void Init(AIreneCharacter* Value);
 	void SetIreneCharacter(AIreneCharacter* Value);
@@ -85,13 +101,23 @@ public:
 	void DoAttack();
 
 	// 깃펜 스택 함수
-	void FireQuillStack(const int Value);
-	void WaterQuillStack(const int Value);
-	void ThunderQuillStack(const int Value);
+	void SetFireQuillStack(const int Value);
+	void SetWaterQuillStack(const int Value);
+	void SetThunderQuillStack(const int Value);
 	void ResetFireQuillStack();
 	void ResetWaterQuillStack();
 	void ResetThunderQuillStack();
-	
+
+	// 디버프 스택 함수
+	void SetFireDeBuffStack(const int Value, const float DamageAmount);
+	void SetWaterDeBuffStack(const int Value);
+	void SetThunderDeBuffStack(const int Value);
+	void LoopFireDeBuff()const;
+	void ResetFireDeBuffStack();
+	void ResetWaterDeBuffStack();
+	void ResetThunderDeBuffStack();
+	void OverSustainTime();
+
 	void SetAttackState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
@@ -118,8 +144,11 @@ public:
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanReAttackSkip()const{return bReAttackSkip;}
-	bool GetCanSkillSkip()const{return bSkillSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
+	int GetFireDeBuffStack()const{return FireDeBuffStack;}
+	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
+	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
+	float GetThunderSustainTime()const{return ThunderSustainTime;}
 
 	void SetSwordAttribute(const EAttributeKeyword Value){SwordAttribute = Value;}
 	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
@@ -133,7 +162,7 @@ public:
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
-	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
+	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 #pragma endregion GetSet
 
 private:

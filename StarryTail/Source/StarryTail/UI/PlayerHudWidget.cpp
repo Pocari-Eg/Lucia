@@ -14,7 +14,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->IreneUIManager->OnStaminaChanged.AddUObject(this, &UPlayerHudWidget::UpdateMp);
 	NewIrene->FOnSwordAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateSwordAttributes);
 	NewIrene->FOnQuillAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateQuillAttributes);
 
@@ -238,26 +237,6 @@ void UPlayerHudWidget::UpdateHp()
 		}
 	}
 	UpdateHpRecovery();
-}
-
-void UPlayerHudWidget::UpdateMp()
-{
-	//오브젝트랑 위젯이 비어있지 않은지 확인후 HPBar의 퍼센티지 갱신
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != MPProgressBar)
-		{
-			float ratio = CurrentIrene->IreneUIManager->GetStaminaRatio();
-			MPProgressBar->SetPercent(ratio);
-			if (ratio < SPLimit)
-			{
-				MPProgressBar->SetFillColorAndOpacity(FLinearColor(1.0f,0.0f,0.0f,1.0f));
-			}
-			else {
-				MPProgressBar->SetFillColorAndOpacity(FLinearColor(1.0f, 1.0f, 1.0f, 1.0f));
-			}
-		}
-	}
 }
 
 void UPlayerHudWidget::UpdateHpRecovery()
