@@ -32,6 +32,7 @@ EBTNodeResult::Type UBTTaskMbFindPatrolPos::ExecuteTask(UBehaviorTreeComponent& 
 	if (NavSystem->GetRandomPointInNavigableRadius(Origin, 600.0f, NextPatrol))
 	{
 		float MoveRange = FMath::RandRange(4.0f, 6.0f);
+
 		// 좌표로 향하는 방향 벡터를 구하고
 		FVector MoveDirection = NextPatrol.Location - Morbit->GetTransform().GetLocation();
 		// 방향 벡터로 5m 떨어진 위치

@@ -4,6 +4,7 @@
 #include "BTServiceMobAttackInPlayer.h"
 #include "../Monster.h"
 #include "../MonsterAIController.h"
+#include "../Ferno/FernoAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -23,6 +24,8 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
 		return;
+
+
 
 	UWorld* World = Monster->GetWorld();
 	FVector Center = Monster->GetLocation() + (-Monster->GetActorForwardVector() * Monster->GetCapsuleComponent()->GetScaledCapsuleRadius());
@@ -60,8 +63,8 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 			if (Player && Player->GetController()->IsPlayerController())
 			{
 				//1차 탐지
-				if (Monster->GetTestMode())
-					STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));
+				//if (Monster->GetTestMode())
+					//STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));
 
 				TArray<FHitResult> Hits;
 				TArray<AActor*> ActorsToIgnore; // 무시할 액터 유형?
@@ -115,8 +118,8 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 				if (bTraceResult && !(nullptr == Player))
 				{
 					//2차 탐지
-					if (Monster->GetTestMode())
-						STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
 
 					FVector TargetDir = Player->GetActorLocation() - Monster->GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
@@ -129,47 +132,43 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 					if (TargetAngle <= (Monster->GetAtkAngle() * 0.5f))
 					{
 						//3차 탐지
-						if (Monster->GetTestMode())
-							STARRYLOG(Warning, TEXT("Attack in Player MorbitFOV"));
-						//몬스터 대기상태 지정
-						Monster->GetAIController()->SetAttackAble(true);
-						//몬스터 탐색
-						TArray<FOverlapResult> AnotherMonsterList = Monster->DetectMonster(Monster->GetDetectMonsterRange());
-						if (AnotherMonsterList.Num() != 0)
-						{
-							for (auto const& AnotherMonster : AnotherMonsterList)
-							{
-								auto Mob = Cast<AMonster>(AnotherMonster.GetActor());
-								if (Mob == nullptr)
-									continue;
+						//if (Monster->GetTestMode())
+						//	STARRYLOG(Warning, TEXT("Attack in Player MorbitFOV"));
+						
 
-								auto AnotherMonsterAIController = Cast<AMonsterAIController>(Mob->GetController());
-								if (AnotherMonsterAIController == nullptr)
-									continue;
-
-								AnotherMonsterAIController->SetFind();
-							}
+						if (Monster->GetIsAttackCool() == false) {
+							Monster->GetAIController()->SetAttackAble(true);
 						}
-
+						return;
+					}
+					else if(Monster->GetDistanceToPlayer() <=100.0f )
+					{
+						if (Monster->GetIsAttackCool() == false) {
+							Monster->GetAIController()->SetAttackAble(true);
+						}
 						return;
 					}
 					else {
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
 						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 					}
 					
 				}
 				else {
+					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
 					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 				}
 				
 			}
 			else {
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 			}
 		
 		}
 	}
 	else {
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 }
 
@@ -183,10 +182,11 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		STARRYLOG_S(Error);
-		DrawRadial(World, BottomDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.2f, false, 0, 2);
-		DrawRadial(World, TopDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.2f, false, 0, 2);
+		DrawRadial(World, BottomDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.016f, false, 0, 2);
+		DrawRadial(World, TopDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.016f, false, 0, 2);
 	}
+
+
 
 }
 

@@ -5,6 +5,7 @@
 
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
+#include "../Ferno/FernoAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
@@ -19,7 +20,7 @@ EBTNodeResult::Type UBTTaskMobMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& 
 	FollowSeconds = 0.0f;
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
@@ -33,21 +34,31 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster) {
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
+	{
+		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
+	}
+
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
 		|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)
 	{
+
+		
 		Monster->GetAIController()->StopMovement();
 	}
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == true)
 	{
+	
 		Monster->GetAIController()->StopMovement();
 	}
 
-	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
-	{
-		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
-	}
+
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == false)
 	{

@@ -199,6 +199,10 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
+
+	bool bIsAttackCool;
+
+	float AttackCoolTimer;
 	
 public:	
 	// Called every frame
@@ -223,8 +227,11 @@ public:
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
 	int GetMaxAttacked() const;
+	int GetMonsterAtkType() const;
+	float GetAttackCoolTime() const;
 	UMonsterAnimInstance* GetMonsterAnimInstance()const;
-
+	bool GetIsAttackCool()const;
+	float GetAttackPercent() const;
 	//Atk 
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -232,7 +239,7 @@ public:
 
 
 	//set
-
+	void SetIsAttackCool(bool Cool);
 
 protected:
 	virtual void InitMonsterInfo() {};

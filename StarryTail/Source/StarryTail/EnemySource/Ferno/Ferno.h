@@ -46,5 +46,11 @@ private:
 	//Variable
 	UPROPERTY()
 		class UFernoAnimInstance* FernoAnimInstance;
-
+public:
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Run_Distance; 
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Run_Time;
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Attacked_Time;
 };

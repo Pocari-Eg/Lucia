@@ -22,6 +22,8 @@ const FName AMonsterAIController::IsDeadKey = (TEXT("bIsDead"));
 
 const FName AMonsterAIController::ReturnKey = (TEXT("bReturn"));
 
+const FName AMonsterAIController::IsRunKey = (TEXT("bIsRun"));
+
 AMonsterAIController::AMonsterAIController()
 {
 
@@ -71,4 +73,9 @@ void AMonsterAIController::SetSpawnPos(FVector Position)
 void AMonsterAIController::SetAttackAble(bool Set)
 {
 	Blackboard->SetValueAsBool(IsCanAttackKey, Set);
+}
+
+void AMonsterAIController::SetRunKey(bool Set)
+{
+	Blackboard->SetValueAsBool(IsRunKey, Set);
 }

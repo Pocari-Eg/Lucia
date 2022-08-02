@@ -12,7 +12,7 @@ UBTTaskFernoAttacked::UBTTaskFernoAttacked()
 	NodeName = TEXT("FernoAttacked");
 	bNotifyTick = true;
 	WaitTimer = 0.0f;
-	WaitTime = 0.5;
+	
 }
 EBTNodeResult::Type UBTTaskFernoAttacked::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -26,6 +26,8 @@ EBTNodeResult::Type UBTTaskFernoAttacked::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	//bIsAttacked = true;
 	//Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });
+
+	WaitTime = Ferno->M_Attacked_Time;
 
 	if (Ferno != nullptr) {
 		Ferno->GetFernoAnimInstance()->PlayAttackedMontage();
@@ -49,8 +51,14 @@ void UBTTaskFernoAttacked::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	//}
 	if (WaitTimer >= WaitTime)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAttackedKey, false);
+
+
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, true);
 		WaitTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAttackedKey, false);
+		
+		
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

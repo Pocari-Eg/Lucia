@@ -134,7 +134,7 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 						
 						Monster->GetAIController()->SetFind();
-						//몬스터 탐색
+						////몬스터 탐색
 						TArray<FOverlapResult> AnotherMonsterList = Monster->DetectMonster(Monster->GetDetectMonsterRange());
 						if (AnotherMonsterList.Num() != 0)
 						{
@@ -154,22 +154,12 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 						return;
 					}
-					else {
-						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
-					}
+					
 				}
-				else {
-					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
-				}
-			}
-			else {
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+				
 			}
 		}
 	}
-	else {
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
-    }
 
 	if (Monster->GetTestMode())
 	{
@@ -182,8 +172,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
 
-		DrawRadial(World, BottomDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue,10,0.2f,false,0,2);
-		DrawRadial(World, TopDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue, 10, 0.2f, false, 0, 2);
+		DrawRadial(World, BottomDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue,10, 0.016f,false,0,2);
+		DrawRadial(World, TopDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue, 10, 0.016f, false, 0, 2);
 	}
 
 }

@@ -4,16 +4,16 @@
 #include "FernoAIController.h"
 #include"Ferno.h"
 
+
 const FName AFernoAIController::IsCanRangeAttackKey = (TEXT("bCanRangeAttack"));
 
+const FName AFernoAIController::IsAfterAttacked = (TEXT("bIsAfterAttacked"));
 AFernoAIController::AFernoAIController()
 {
 
      M_Attacked = 0;
 
-
-
-
+	
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Ferno/BB_Ferno"));
 	if (BBObject.Succeeded())
 	{
@@ -25,20 +25,30 @@ AFernoAIController::AFernoAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+
+
 }
 
 void AFernoAIController::Attacked()
 {
-
-
 	M_Attacked++;
-	if (M_Attacked >= M_MaxAttacked)
+	if (M_Attacked >= 1 && Blackboard->GetValueAsBool(IsRunKey) == true)
 	{
 		Blackboard->SetValueAsBool(IsAttackedKey, true);
 		M_Attacked = 0;
-		
 	}
+	else {
 
+
+	
+		if (M_Attacked >= M_MaxAttacked)
+		{
+			Blackboard->SetValueAsBool(IsAttackedKey, true);
+			M_Attacked = 0;
+
+		}
+
+	}
 }
 
 void AFernoAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)

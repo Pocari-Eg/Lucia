@@ -15,7 +15,6 @@ class STARRYTAIL_API UBTTaskMobMoveToPlayer : public UBTTaskNode
 {
 	GENERATED_BODY()
 private:
-	AMonster* Monster;
 	AIreneCharacter* Player;
 
 	float FollowSeconds;

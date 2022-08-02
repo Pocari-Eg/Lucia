@@ -104,7 +104,7 @@ void AFerno::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 2;
 	MonsterInfo.M_Max_HP = 150.0f;
 	MonsterInfo.M_MoveSpeed = 40.0f;
-	
+	MonsterInfo.M_CoolTime = 3.0f;
 	
 
 	MonsterInfo.PatrolArea = 600.0f;
@@ -140,6 +140,11 @@ void AFerno::InitMonsterInfo()
 	MonsterInfo.TraceRange = 1000.0f;
 
 	MonsterInfo.M_MaxAttacked = 3;
+
+	M_Run_Distance = 450.0f;
+	M_Run_Time = 3.0f;
+	M_Attacked_Time = 0.5f;
+	MonsterInfo.M_AttackPercent = 80.0f;
 }
 
 void AFerno::InitCollision()

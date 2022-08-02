@@ -30,6 +30,7 @@ public:
 
 	void SetSpawnPos(FVector Position);
 	void SetAttackAble(bool Set);
+	void SetRunKey(bool Set);
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
 
@@ -47,6 +48,7 @@ public:
 	static const FName IsDeadKey;
 
 	static const FName ReturnKey;
+	static const FName IsRunKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

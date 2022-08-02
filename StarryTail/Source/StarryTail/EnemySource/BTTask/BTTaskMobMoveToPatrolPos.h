@@ -15,8 +15,6 @@ class STARRYTAIL_API UBTTaskMobMoveToPatrolPos : public UBTTask_MoveTo
 {
 	GENERATED_BODY()
 
-private:
-	AMonster* Monster;
 public:
 	UBTTaskMobMoveToPatrolPos();
 private:

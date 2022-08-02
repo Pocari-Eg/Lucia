@@ -39,7 +39,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.M_Max_HP = 100.0f;
 	MonsterInfo.Atk = 100.0f;
 	MonsterInfo.DetectMonsterRange = 5.0f;
-
+	MonsterInfo.M_CoolTime = 0.0f;
 	MonsterInfo.PatrolArea = 600.0f;
 	MonsterInfo.M_MaxFollowTime = 5.0f;
 

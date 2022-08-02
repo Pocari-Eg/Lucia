@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTaskMobMoveToPatrolPos::ExecuteTask(UBehaviorTreeComponen
 
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
@@ -36,6 +36,11 @@ void UBTTaskMobMoveToPatrolPos::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
 		|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)
 	{
+
+		auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+		if (nullptr == Monster)
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
 		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		
@@ -44,6 +49,10 @@ void UBTTaskMobMoveToPatrolPos::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 
 	if ( OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == true)
 	{
+		auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+		if (nullptr == Monster)
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+
 		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}

@@ -16,6 +16,7 @@ AMbAIController::AMbAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+
 }
 
 void AMbAIController::OnPossess(APawn* InPawn)

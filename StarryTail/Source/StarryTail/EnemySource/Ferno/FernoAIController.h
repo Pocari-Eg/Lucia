@@ -26,6 +26,9 @@ protected:
 
 public:
 	static const FName IsCanRangeAttackKey;
+
+	static const FName IsAfterAttacked;
+
 private:
 	int M_Attacked;
 	int M_MaxAttacked;

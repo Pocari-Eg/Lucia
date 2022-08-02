@@ -58,6 +58,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_MaxFollowTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_AttackPercent;
+
+
 	//Shield;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="ManaShield")
 	int Max_Ele_Shield;

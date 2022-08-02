@@ -37,6 +37,7 @@ AMonster::AMonster()
 
 	KnockBackTime = 0.15f;
 	ShowUITime = 5.0f;
+	AttackCoolTimer = 0.0f;
 
 	MonsterWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MONSTERWIDGET"));
 	MonsterWidget->SetupAttachment(GetMesh());
@@ -82,6 +83,7 @@ AMonster::AMonster()
 	ShowUITimer = 0.0f;
 	ShowUITime = 300.0f;
 
+	bIsAttackCool = false;
 
 	//quill
 	MonsterInfo.Quill_CurStack = 0;
@@ -245,9 +247,25 @@ int AMonster::GetMaxAttacked() const
 {
 	return MonsterInfo.M_MaxAttacked;
 }
+int AMonster::GetMonsterAtkType() const
+{
+	return MonsterInfo.M_Atk_Type;
+}
+float AMonster::GetAttackCoolTime() const
+{
+	return MonsterInfo.M_CoolTime;
+}
 UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 {
 	return MonsterAnimInstance;
+}
+bool AMonster::GetIsAttackCool() const
+{
+	return bIsAttackCool;
+}
+float AMonster::GetAttackPercent() const
+{
+	return MonsterInfo.M_AttackPercent;
 }
 float AMonster::GetAtkAngle() const
 {
@@ -261,12 +279,18 @@ float AMonster::GetAtkHeight() const
 {
 	return MonsterInfo.M_Atk_Angle;
 }
+void AMonster::SetIsAttackCool(bool Cool)
+{
+	bIsAttackCool = Cool;
+}
 void AMonster::Attack()
 {
+	
 	MonsterAnimInstance->PlayAttackMontage();
 	MonsterAIController->StopMovement();
 
-	bIsAttacking = true;
+//	bIsAttacking = true;
+
 }
 void AMonster::SetCurQuillStack(const int Value)
 {
@@ -1088,6 +1112,18 @@ void AMonster::Tick(float DeltaTime)
 			bShowUI = false;
 		}
 	}
+
+	if (bIsAttackCool)
+	{
+		AttackCoolTimer+= DeltaTime;
+
+		if (AttackCoolTimer >= MonsterInfo.M_CoolTime)
+		{
+			AttackCoolTimer = 0.0f;
+			SetIsAttackCool(false);
+		}
+	}
+
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
