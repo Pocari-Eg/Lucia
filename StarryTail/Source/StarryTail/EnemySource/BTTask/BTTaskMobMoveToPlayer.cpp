@@ -2,9 +2,10 @@
 
 
 #include "BTTaskMobMoveToPlayer.h"
-#include "../Monster.h"
+
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
+#include "../Ferno/FernoAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
@@ -15,16 +16,63 @@ UBTTaskMobMoveToPlayer::UBTTaskMobMoveToPlayer()
 }
 EBTNodeResult::Type UBTTaskMobMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+
+	FollowSeconds = 0.0f;
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster)
+		return EBTNodeResult::Failed;
 
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
+	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
+
+	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
+
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster) {
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
+	{
+		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
+	}
+
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
+		|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)
+	{
+
+		
+		Monster->GetAIController()->StopMovement();
+	}
+
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == true)
+	{
+	
+		Monster->GetAIController()->StopMovement();
+	}
+
+
+
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == false)
+	{
+		FollowSeconds += DeltaSeconds;
+		if (FollowSeconds >= Monster->GetMaxFollowTime())
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+			FollowSeconds = 0.0f;
+			Monster->GetAIController()->StopMovement();
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			
+		}
+	}
+
+
 
 }

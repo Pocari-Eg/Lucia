@@ -17,7 +17,7 @@ void UMonsterSoundInstance::Init()
 	HitSound->SetVolume(1.0f);
 
 	ShieldCrashSound = new SoundManager(ShieldCrash, GetWorld());
-	ShieldCrashSound->SetVolume(0.3f);
+	ShieldCrashSound->SetVolume(0.1f);
 }
 
 void UMonsterSoundInstance::PlayHitSound(FTransform Transform)

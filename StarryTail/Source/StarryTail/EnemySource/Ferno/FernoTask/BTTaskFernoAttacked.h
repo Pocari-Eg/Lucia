@@ -4,23 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "../Monster.h"
-#include "BTTaskMobMoveToPlayer.generated.h"
+#include "BTTaskFernoAttacked.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskMobMoveToPlayer : public UBTTaskNode
+class STARRYTAIL_API UBTTaskFernoAttacked : public UBTTaskNode
 {
 	GENERATED_BODY()
-private:
-	AIreneCharacter* Player;
-
-	float FollowSeconds;
 public:
-	UBTTaskMobMoveToPlayer();
+	UBTTaskFernoAttacked();
+	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 private:
-	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	bool bIsAttacked;
+	float WaitTimer;
+	float WaitTime;
 };

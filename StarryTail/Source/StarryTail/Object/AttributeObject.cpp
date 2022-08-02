@@ -103,8 +103,7 @@ void AAttributeObject::BeginPlay()
 {
 	Super::BeginPlay();
 	MonsterWidget->Activate(false);
-	MonsterInfo.MaxHp = 9999999.0f;
-	MonsterInfo.Def = 999999.0f;
+	MonsterInfo.M_Max_HP = 9999999.0f;
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 }
 

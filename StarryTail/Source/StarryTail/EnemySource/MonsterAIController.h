@@ -26,8 +26,11 @@ public:
 	void Groggy();
 	void Death();
 
-	void SetSpawnPos(FVector Position);
+	virtual void Attacked() {};
 
+	void SetSpawnPos(FVector Position);
+	void SetAttackAble(bool Set);
+	void SetRunKey(bool Set);
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
 
@@ -36,7 +39,7 @@ public:
 	static const FName TraceRangeKey;
 
 	static const FName MeleeAttackRangeKey;
-	static const FName CanMeleeAttackKey;
+	static const FName IsCanAttackKey;
 	static const FName IsAttackingKey;
 
 	static const FName IsAttackedKey;
@@ -45,6 +48,7 @@ public:
 	static const FName IsDeadKey;
 
 	static const FName ReturnKey;
+	static const FName IsRunKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

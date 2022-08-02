@@ -12,7 +12,7 @@ const FName AMonsterAIController::PlayerKey = (TEXT("Player"));
 const FName AMonsterAIController::TraceRangeKey = (TEXT("TraceRange"));
 
 const FName AMonsterAIController::MeleeAttackRangeKey = (TEXT("MeleeAttackRange"));
-const FName AMonsterAIController::CanMeleeAttackKey = (TEXT("bCanMeleeAttack"));
+const FName AMonsterAIController::IsCanAttackKey = (TEXT("bCanAttack"));
 const FName AMonsterAIController::IsAttackingKey = (TEXT("bIsAttacking"));
 
 const FName AMonsterAIController::IsAttackedKey = (TEXT("bIsAttacked"));
@@ -21,6 +21,8 @@ const FName AMonsterAIController::IsGroggyKey = (TEXT("bIsGroggy"));
 const FName AMonsterAIController::IsDeadKey = (TEXT("bIsDead"));
 
 const FName AMonsterAIController::ReturnKey = (TEXT("bReturn"));
+
+const FName AMonsterAIController::IsRunKey = (TEXT("bIsRun"));
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -42,6 +44,7 @@ void AMonsterAIController::Death()
 {
 	Blackboard->SetValueAsBool(IsDeadKey, true);
 }
+
 void AMonsterAIController::SetPlayer()
 {
 	if (Blackboard->GetValueAsObject(PlayerKey) != nullptr)
@@ -58,9 +61,21 @@ void AMonsterAIController::SetPlayer()
 }
 void AMonsterAIController::SetFind()
 {
+
 	Blackboard->SetValueAsBool(IsFindKey, true);
+	SetPlayer();
 }
 void AMonsterAIController::SetSpawnPos(FVector Position)
 {
 	Blackboard->SetValueAsVector(SpawnPosKey, Position);
+}
+
+void AMonsterAIController::SetAttackAble(bool Set)
+{
+	Blackboard->SetValueAsBool(IsCanAttackKey, Set);
+}
+
+void AMonsterAIController::SetRunKey(bool Set)
+{
+	Blackboard->SetValueAsBool(IsRunKey, Set);
 }

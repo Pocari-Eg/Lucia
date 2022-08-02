@@ -16,6 +16,7 @@ AMbAIController::AMbAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+
 }
 
 void AMbAIController::OnPossess(APawn* InPawn)
@@ -35,6 +36,10 @@ void AMbAIController::OnPossess(APawn* InPawn)
 			STARRYLOG(Warning, TEXT("MbAIController couldn't run behavior tree."));
 		}
 	}
+}
+void AMbAIController::Attacked()
+{
+
 }
 void AMbAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)
 {

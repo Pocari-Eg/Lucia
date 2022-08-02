@@ -7,6 +7,7 @@
 #include "../../PlayerSource/IreneCharacter.h"
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTServiceMobDetectPlayer::UBTServiceMobDetectPlayer()
@@ -40,9 +41,14 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		Center,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel5,
-		FCollisionShape::MakeBox(Box),
+		FCollisionShape::MakeCapsule(Box),
 		CollisionQueryParam
 	);
+
+
+
+
+
 
 	if (bResult)
 	{
@@ -126,9 +132,9 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 							STARRYLOG(Warning, TEXT("Detect Player in MorbitFOV"));
 						//몬스터 대기상태 지정
 
-						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, true);
-
-						//몬스터 탐색
+						
+						Monster->GetAIController()->SetFind();
+						////몬스터 탐색
 						TArray<FOverlapResult> AnotherMonsterList = Monster->DetectMonster(Monster->GetDetectMonsterRange());
 						if (AnotherMonsterList.Num() != 0)
 						{
@@ -148,32 +154,80 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 
 						return;
 					}
+					
 				}
+				
 			}
 		}
 	}
 
 	if (Monster->GetTestMode())
 	{
-		FVector RightDir = Monster->AngleToDir(Monster->GetActorRotation().Euler().Z + Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
-		FVector LeftDir = Monster->AngleToDir(Monster->GetActorRotation().Euler().Z - Monster->GetViewAngle() * 0.5f) * Monster->GetViewRange();
-		FVector LookDir = Monster->GetActorForwardVector() * Monster->GetViewRange();
-		
-		DrawDebugLine(World, CenterTop, CenterBottom, FColor::Red, false, 0.2f);
+		FTransform BottomLine = Monster->GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 220.0f));
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetViewHeight()));
 
-		DrawDebugLine(World, CenterBottom, CenterBottom + RightDir, FColor::Blue, false, 0.2f);
-		DrawDebugLine(World, CenterBottom, CenterBottom + LeftDir, FColor::Blue, false, 0.2f);
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawDebugLine(World, CenterTop, CenterTop + RightDir, FColor::Blue, false, 0.2f);
-		DrawDebugLine(World, CenterTop, CenterTop + LeftDir, FColor::Blue, false, 0.2f);
 
-		DrawDebugLine(World, CenterBottom + RightDir, CenterTop + RightDir, FColor::Blue, false, 0.2f);
-		DrawDebugLine(World, CenterBottom + LeftDir, CenterTop + LeftDir, FColor::Blue, false, 0.2f);
+		DrawRadial(World, BottomDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue,10, 0.016f,false,0,2);
+		DrawRadial(World, TopDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue, 10, 0.016f, false, 0, 2);
+	}
 
-		DrawDebugLine(World, CenterBottom + LeftDir, CenterBottom + LookDir, FColor::Blue, false, 0.2f);
-		DrawDebugLine(World, CenterBottom + LookDir, CenterBottom + RightDir, FColor::Blue, false, 0.2f);
+}
 
-		DrawDebugLine(World, CenterTop + LeftDir, CenterTop + LookDir, FColor::Blue, false, 0.2f);
-		DrawDebugLine(World, CenterTop + LookDir, CenterTop + RightDir, FColor::Blue, false, 0.2f);
+
+ULineBatchComponent* GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)
+{
+	return (InWorld ? (bDepthIsForeground ? InWorld->ForegroundLineBatcher : ((bPersistentLines || (LifeTime > 0.f)) ? InWorld->PersistentLineBatcher : InWorld->LineBatcher)) : NULL);
+}
+// internal
+static float GetDebugLineLifeTime(ULineBatchComponent* LineBatcher, float LifeTime, bool bPersistent)
+{
+	return bPersistent ? -1.0f : ((LifeTime > 0.f) ? LifeTime : LineBatcher->DefaultLifeTime);
+}
+
+ void DrawRadial(const UWorld* _InWorld, const FMatrix& _TransformMatrix, float _Radius, float _Angle, const FColor& _Color, int32 _Segments, float _LifeTime, bool _bPersistentLines, uint8 _DepthPriority, float _Thickness)
+{
+	// no debug line drawing on dedicated server
+	if (GEngine->GetNetMode(_InWorld) != NM_DedicatedServer)
+	{
+		ULineBatchComponent* const LineBatcher = GetDebugLineBatcher(_InWorld, _bPersistentLines, _LifeTime, (_DepthPriority == SDPG_Foreground));
+		if (LineBatcher != NULL)
+		{
+			const float LineLifeTime = GetDebugLineLifeTime(LineBatcher, _LifeTime, _bPersistentLines);
+
+			// Need at least 4 segments
+			float Segments = FMath::Max(_Segments, 4);
+			const float AngleStep = FMath::DegreesToRadians(_Angle) / float(Segments);
+
+			const FVector Center = _TransformMatrix.GetOrigin();
+			const FVector AxisY = _TransformMatrix.GetScaledAxis(EAxis::Y);
+			const FVector AxisX = _TransformMatrix.GetScaledAxis(EAxis::X);
+
+			TArray<FBatchedLine> Lines;
+			Lines.Empty(Segments);
+
+			float StartAngle = FMath::DegreesToRadians(90.0f - _Angle / 2.0f);
+			float EndAngle = FMath::DegreesToRadians(_Angle);
+
+			float Angle = StartAngle;
+			while (Segments--)
+			{
+				const FVector Vertex1 = Center + _Radius * (AxisY * FMath::Cos(Angle) + AxisX * FMath::Sin(Angle));
+				Angle += AngleStep;
+				const FVector Vertex2 = Center + _Radius * (AxisY * FMath::Cos(Angle) + AxisX * FMath::Sin(Angle));
+				Lines.Add(FBatchedLine(Vertex1, Vertex2, _Color, LineLifeTime, _Thickness, _DepthPriority));
+			}
+			FVector FirsetVertex = Lines[0].Start;
+			FVector LastVertext = Lines.Last().End;
+
+			Lines.Add(FBatchedLine(Center, FirsetVertex, _Color, LineLifeTime, _Thickness, _DepthPriority));
+			Lines.Add(FBatchedLine(Center, LastVertext, _Color, LineLifeTime, _Thickness, _DepthPriority));
+
+			LineBatcher->DrawLines(Lines);
+		}
 	}
 }

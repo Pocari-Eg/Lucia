@@ -4,8 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "./Struct/FNormalMonsterInfo.h"
-#include "./Struct/FAttributeDefence.h"
-#include "./Struct/FAttributeDebuff.h"
 #include "./Struct/FAttackedInfo.h"
 #include "./Struct/FMonsterEffectData.h"
 #include "../StarryTail.h"
@@ -33,23 +31,12 @@ public:
 	// Sets default values for this character's properties
 	AMonster();
 
-	//Function
-	float GetMeleeAttackRange() const;
-	float GetTraceRange() const;
-	float GetDetectMonsterRange() const;
-	float GetHp() const;
-	float GetBattleWalkSpeed() const;
-	bool GetTestMode() const;
-	float GetViewAngle() const;
-	float GetViewRange() const;
-	float GetViewHeight() const;
-	EAttributeKeyword GetAttribute() const;
-	float GetDistanceToPlayer() const;
-	FVector GetLocation() const;
-	bool GetIsBattleState() const;
-	EAttributeKeyword GetBarrierAttribute() const;
-	int GetCurQuillStack() const;
+	
+	 void Attack();
+
 	void SetCurQuillStack(const int Value);
+
+	AMonsterAIController* GetAIController() const;
 
 	//현재 체력 비율 전환
 	float GetHpRatio();
@@ -71,8 +58,6 @@ public:
 	TArray<FOverlapResult> DetectMonster(float DetectRange);
 	TArray<FOverlapResult> DetectPlayer(float DetectRange);
 	FVector AngleToDir(float angle);
-
-	void ResetDef();
 
 	void OffShockDebuffEffect();
 	void OffIsAttacked();
@@ -110,28 +95,28 @@ public:
 	void InitManaShield();
 protected:
 	//Function
-	void InitDebuffInfo();
 	void InitAttackedInfo();
 	void InitEffect();
 	UFUNCTION(BlueprintCallable)
 		void InitMonsterAttribute();
 	UFUNCTION(BlueprintCallable)
-		EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
+	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
-	void CalcAttributeDebuff(EAttributeKeyword PlayerMainAttribute, float Damage);
-	void CalcDef();
 	float CalcNormalAttackDamage(float Damage);
-	float CalcBurnDamage();
 	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
+	void CalcManaShield(float Damage);
+
+	void CalcQuillStack(EAttributeKeyword AttackAttribute);
+	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
+
+	void Attacked();
 	//Variable
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 		FNormalMonsterInfo MonsterInfo;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debuff, Meta = (AllowPrivateAcess = true))
-		FAttributeDebuff MonsterAttributeDebuff;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		FMonsterEffectData MonsterEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -193,11 +178,6 @@ private:
 	void SetEffect();
 	void SetManaShieldEffct();
 
-	void Burn();
-	void Flooding();
-	void Spark();
-	
-	void SetDebuff(EAttributeKeyword AttackedAttribute, float Damage);
 
 	void SetActive();
 	UFUNCTION()
@@ -210,11 +190,7 @@ private:
 	float KnockBackTimer;
 
 	float DeadWaitTimer;
-
-
-
-	bool bIsBurn;
-	bool bIsFlooding;
+	
 
 
 	float ShowUITimer;
@@ -223,10 +199,48 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
+
+	bool bIsAttackCool;
+
+	float AttackCoolTimer;
 	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Get Function
+	float GetMeleeAttackRange() const;
+	float GetTraceRange() const;
+	float GetDetectMonsterRange() const;
+	float GetHp() const;
+	float GetBattleWalkSpeed() const;
+	bool GetTestMode() const;
+	float GetViewAngle() const;
+	float GetViewRange() const;
+	float GetViewHeight() const;
+	EAttributeKeyword GetAttribute() const;
+	float GetDistanceToPlayer() const;
+	FVector GetLocation() const;
+	bool GetIsBattleState() const;
+	EAttributeKeyword GetBarrierAttribute() const;
+	int GetCurQuillStack() const;
+	float GetPatrolArea() const;
+	float GetMaxFollowTime() const;
+	int GetMaxAttacked() const;
+	int GetMonsterAtkType() const;
+	float GetAttackCoolTime() const;
+	UMonsterAnimInstance* GetMonsterAnimInstance()const;
+	bool GetIsAttackCool()const;
+	float GetAttackPercent() const;
+	//Atk 
+	float GetAtkAngle() const;
+	float GetAtkRange() const;
+	float GetAtkHeight() const;
+
+
+	//set
+	void SetIsAttackCool(bool Cool);
+
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};

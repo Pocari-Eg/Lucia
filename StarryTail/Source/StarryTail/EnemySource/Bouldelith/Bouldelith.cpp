@@ -26,19 +26,17 @@ ABouldelith::ABouldelith()
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
 {
-	MonsterInfo.Code = 1;
+	MonsterInfo.M_Atk_Type = 1;
 
-	MonsterInfo.MaxHp = 1000.0f;
+	MonsterInfo.M_Max_HP = 1000.0f;
 	MonsterInfo.Atk = 50.0f;
-	MonsterInfo.Def = 250.0f;
-	MonsterInfo.Barrier = 100.0f;
 	MonsterInfo.DetectMonsterRange = 5.0f;
 
-	MonsterInfo.MoveSpeed = 200.0f;
+	MonsterInfo.M_MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;
-	MonsterInfo.ViewAngle = 180.0f;
-	MonsterInfo.ViewRange = 1000.0f;
-	MonsterInfo.ViewHeight = 200.0f;
+	MonsterInfo.M_Sight_Angle = 180.0f;
+	MonsterInfo.M_Sight_Radius = 1000.0f;
+	MonsterInfo.M_Sight_Height = 200.0f;
 	MonsterInfo.MeleeAttackRange = 300.0f;
 	MonsterInfo.TraceRange = 3000.0f;
 
@@ -46,9 +44,8 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.EnemyRank = EEnemyRank::e_Unique;
+	MonsterInfo.M_Type = EEnemyRank::e_Unique;
 
-	MaxBarrier = MonsterInfo.Barrier;
 }
 void ABouldelith::InitBouldelithInfo()
 {
@@ -91,7 +88,7 @@ void ABouldelith::InitAnime()
 #pragma endregion
 void ABouldelith::Walk()
 {
-	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 }
 void ABouldelith::BattleIdle()
 {
@@ -182,15 +179,9 @@ void ABouldelith::AttackCheck1()
 		if (nullptr == Player)
 			return;
 
-		if (bIsSpark)
-		{
-			UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack1Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-			CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-		}
-		else
-		{
+	
 			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
-		}
+		
 	}
 	else
 	{
@@ -208,15 +199,9 @@ void ABouldelith::AttackCheck4()
 
 			if (!Player->GetMovementComponent()->IsFalling())
 			{
-				if (bIsSpark)
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-				}
-				else
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
-				}
+				
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
+			
 			}
 		}
 	}
@@ -305,7 +290,7 @@ void ABouldelith::ResetAttackFailedStack()
 }
 float ABouldelith::GetHpPercent()
 {
-	return (MonsterInfo.CurrentHp / MonsterInfo.MaxHp) * 100.0f;
+	return (MonsterInfo.M_HP / MonsterInfo.M_Max_HP) * 100.0f;
 }
 void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -317,15 +302,9 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 			{
 				auto Player = Cast<AIreneCharacter>(OtherActor);
 
-				if (bIsSpark)
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value) * MonsterAttributeDebuff.SparkReduction / 100.0f, NULL, this, NULL);
-					CalcHp(MonsterInfo.Atk * MonsterAttributeDebuff.SparkDamage / 100.0f);
-				}
-				else
-				{
-					UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
-				}
+				
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
+				
 				bIsPlayerRushHit = true;
 			}
 		}
@@ -434,7 +413,7 @@ void ABouldelith::PossessedBy(AController* NewController)
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
-	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABouldelith::OnHit);
 }

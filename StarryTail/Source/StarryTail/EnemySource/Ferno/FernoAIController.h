@@ -4,19 +4,32 @@
 
 #include "CoreMinimal.h"
 #include "../MonsterAIController.h"
-#include "MbAIController.generated.h"
+#include "FernoAIController.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API AMbAIController : public AMonsterAIController
+class STARRYTAIL_API AFernoAIController : public AMonsterAIController
 {
 	GENERATED_BODY()
 public:
-	AMbAIController();
+	AFernoAIController();
+	
+
+
 	void Attacked()override;
 	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback);
+
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
+
+public:
+	static const FName IsCanRangeAttackKey;
+
+	static const FName IsAfterAttacked;
+
+private:
+	int M_Attacked;
+	int M_MaxAttacked;
 };
