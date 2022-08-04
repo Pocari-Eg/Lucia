@@ -30,7 +30,7 @@ void ABouldelith::InitMonsterInfo()
 
 	MonsterInfo.M_Max_HP = 1000.0f;
 	MonsterInfo.Atk = 50.0f;
-	MonsterInfo.DetectMonsterRange = 5.0f;
+	MonsterInfo.Chain_Detect_Radius = 450.0f;
 
 	MonsterInfo.M_MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;

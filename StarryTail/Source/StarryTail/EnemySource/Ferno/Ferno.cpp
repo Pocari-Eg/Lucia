@@ -15,6 +15,8 @@ AFerno::AFerno()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 
+
+
 	InitMonsterInfo();
 
 	InitCollision();
@@ -25,6 +27,8 @@ AFerno::AFerno()
 
 	SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
 
+	MeteorFirePos = CreateDefaultSubobject<UBoxComponent>(TEXT("FIREPOS"));
+	MeteorFirePos->SetupAttachment(GetMesh());
 
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
@@ -44,6 +48,26 @@ void AFerno::RangeAttack()
 {
 
 	STARRYLOG(Error, TEXT("Ferno Fire"));
+
+	// 프로젝타일 발사를 시도합니다.
+	if (ProjectileClass)
+	{
+		// 카메라 트랜스폼을 구합니다
+	
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+			// 총구 위치에 발사체를 스폰시킵니다.
+			AMeteor* Meteor = World->SpawnActor<AMeteor>(ProjectileClass,MeteorFirePos->GetComponentToWorld().GetLocation(),GetActorRotation(), SpawnParams);
+			if (Meteor)
+			{
+				Meteor->FireInDirection(GetActorForwardVector(), Meteor_Speed,MonsterInfo.Atk);
+			}
+		}
+	}
 }
 
 
@@ -131,11 +155,11 @@ void AFerno::InitMonsterInfo()
 	MonsterInfo.bIsShieldOn = false;
 
 	MonsterInfo.Atk = 100.0f;
-
+	Meteor_Speed = 700.0f;
 	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 3.0f;
 
-	MonsterInfo.DetectMonsterRange = 5.0f;
+	MonsterInfo.Chain_Detect_Radius = 450.0f;
 	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
 	MonsterInfo.TraceRange = 1000.0f;
 
