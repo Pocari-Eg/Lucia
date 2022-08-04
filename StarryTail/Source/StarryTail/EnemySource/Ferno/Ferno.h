@@ -25,6 +25,7 @@ public:
 
 	void Walk();
 	void RangeAttack();
+	void PlayRunAnim();
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
