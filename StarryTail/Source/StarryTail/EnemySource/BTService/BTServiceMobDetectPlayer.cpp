@@ -125,7 +125,7 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					if (TargetAngle <= (Monster->GetViewAngle() * 0.5f))
+					if (TargetAngle <= (360.0f * 0.5f))
 					{
 						//3차 탐지
 						if (Monster->GetTestMode())
@@ -172,8 +172,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
 
-		DrawRadial(World, BottomDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue,10, 0.016f,false,0,2);
-		DrawRadial(World, TopDebugMatrix, Monster->GetViewRange(), Monster->GetViewAngle(), FColor::Blue, 10, 0.016f, false, 0, 2);
+		DrawRadial(World, BottomDebugMatrix, Monster->GetViewRange(), 360.0f, FColor::Blue,10, 0.1f,false,0,2);
+		DrawRadial(World, TopDebugMatrix, Monster->GetViewRange(), 360.0f, FColor::Blue, 10, 0.1f, false, 0, 2);
 	}
 
 }

@@ -48,7 +48,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute; // 몬스터 속성
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DetectMonsterRange; // 비헤이비어 트리 Detect 몬스터 전이 범위
+		float Chain_Detect_Radius; // 비헤이비어 트리 Detect 몬스터 전이 범위
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float DeadWaitTime; // 사망시 사라지는 대기시간
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -85,10 +85,10 @@ public:
 
 	//시야
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Sight_Angle; //시야각
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Sight_Radius; //시야거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY()
+		float M_Sight_Angle; //시야각
+	UPROPERTY()
 		float M_Sight_Height;
 
 	//공격

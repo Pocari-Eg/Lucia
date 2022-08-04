@@ -196,7 +196,7 @@ float AMonster::GetBattleWalkSpeed() const
 }
 float AMonster::GetDetectMonsterRange() const
 {
-	return MonsterInfo.DetectMonsterRange;
+	return MonsterInfo.Chain_Detect_Radius;
 }
 float AMonster::GetHp() const
 {
@@ -834,7 +834,7 @@ TArray<FOverlapResult> AMonster::DetectMonster(float DetectRange)
 		GetActorLocation(),
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel8, // 채널 변경
-		FCollisionShape::MakeSphere(DetectRange * 100.0f),
+		FCollisionShape::MakeSphere(DetectRange),
 		CollisionQueryParam
 	);
 

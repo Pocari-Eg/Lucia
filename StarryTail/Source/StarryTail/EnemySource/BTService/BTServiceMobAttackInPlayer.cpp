@@ -182,8 +182,8 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(World, BottomDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.016f, false, 0, 2);
-		DrawRadial(World, TopDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.016f, false, 0, 2);
+		DrawRadial(World, BottomDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.1f, false, 0, 2);
+		DrawRadial(World, TopDebugMatrix, Monster->GetAtkRange(), Monster->GetAtkAngle(), FColor::Red, 10, 0.1f, false, 0, 2);
 	}
 
 

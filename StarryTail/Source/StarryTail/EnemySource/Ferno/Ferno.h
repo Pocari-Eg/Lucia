@@ -6,7 +6,7 @@
 #include "../Monster.h"
 #include "FernoAIController.h"
 #include"FernoAnimInstance.h"
-
+#include "Meteor.h"
 #include "Ferno.generated.h"
 
 /**
@@ -53,4 +53,13 @@ public:
 		float M_Run_Time;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Attacked_Time;
+
+		// 카메라 위치에서의 총구 오프셋
+		UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Meteor)
+			UBoxComponent* MeteorFirePos;
+		// 스폰시킬 프로젝타일 클래스
+		UPROPERTY(EditDefaultsOnly, Category = Meteor)
+			TSubclassOf<class AMeteor> ProjectileClass;
+		UPROPERTY(EditAnywhere, Category = Meteor)
+			float Meteor_Speed;
 };
