@@ -21,7 +21,6 @@ public:
 	void PlayAttackedMontage() override;
 	void PlayRunMontage();
 
-
 	bool GetAttackIsPlaying() override;
 private:
 	bool CheckAttackedMontagePlaying() override;
@@ -29,11 +28,12 @@ private:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* IdleMontage1;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* IdleMontage2;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* RangeAttackMontage1;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* RangeAttackMontage2;
+		UAnimMontage* IdleMontage;
+
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* RangeAttackMontage;
+
+		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+			UAnimMontage* RunMontage;
+
 };

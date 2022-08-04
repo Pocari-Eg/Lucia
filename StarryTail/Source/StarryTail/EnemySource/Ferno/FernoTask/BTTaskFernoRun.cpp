@@ -33,7 +33,7 @@ auto  Ferno = Cast<AFerno>(OwnerComp.GetAIOwner()->GetPawn());
 	//뒷벡터 방향으로 Distance만큼의 좌표 
 	FVector RunPos = Ferno->GetTransform().GetLocation() + (RunDirection.GetSafeNormal() * Ferno->M_Run_Distance);
 
-
+	Ferno->PlayRunAnim();
 		// 이동 거리가 5m가 맞는지 확인용
 		if (Ferno->GetTestMode())
 			STARRYLOG(Warning, TEXT("Ferno to Run Distance is %.f"), FVector::Distance(Ferno->GetTransform().GetLocation(), RunPos));

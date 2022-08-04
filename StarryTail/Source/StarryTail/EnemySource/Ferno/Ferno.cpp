@@ -25,7 +25,7 @@ AFerno::AFerno()
 
 	bTestMode = false;
 
-	SetActorScale3D(FVector(1.5f, 1.5f, 1.5f));
+	SetActorScale3D(FVector(1.0f, 1.0f, 1.0f));
 
 	MeteorFirePos = CreateDefaultSubobject<UBoxComponent>(TEXT("FIREPOS"));
 	MeteorFirePos->SetupAttachment(GetMesh());
@@ -68,6 +68,11 @@ void AFerno::RangeAttack()
 			}
 		}
 	}
+}
+
+void AFerno::PlayRunAnim()
+{
+	FernoAnimInstance->PlayRunMontage();
 }
 
 
@@ -181,7 +186,7 @@ void AFerno::InitCollision()
 void AFerno::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster/Morbit/Morbit_Idle/M_Mb_Idle"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Ferno/SkeletalMesh/M_Pr_Idle.M_Pr_Idle"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}

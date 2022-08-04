@@ -24,6 +24,7 @@ auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
+	Monster->GetMonsterAnimInstance()->PlayBattleWalkMontage();
 	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
 	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
@@ -39,6 +40,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 	if (nullptr == Monster) {
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
 		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
@@ -50,12 +52,14 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 
 		
 		Monster->GetAIController()->StopMovement();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsCanAttackKey) == true)
 	{
 	
 		Monster->GetAIController()->StopMovement();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
 

@@ -71,14 +71,12 @@ void UBTTaskMobAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsRunKey, true);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
 		}
 
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	
