@@ -422,7 +422,7 @@ void UIreneInputInstance::RightButtonPressed()
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
-	if (!Irene->IreneState->IsDeathState() && !bIsLockOn)
+	if (!Irene->IreneState->IsDeathState())
 	{
 		// 줌인줌아웃
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
@@ -454,7 +454,7 @@ void UIreneInputInstance::QuillLockOnSort()
 	if(Irene->IreneAttack->QuillTargetMonster)
 	{
 		Irene->ActorAngleMap.Reset();
-		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(500,200,1500),Irene->CameraComp->GetComponentLocation());
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(500,400,1500),Irene->CameraComp->GetComponentLocation());
 		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),GetWorld()->GetDeltaSeconds());
 		for (FHitResult Monster : HitMonsterList.Get<0>())
 		{
@@ -558,7 +558,10 @@ void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)
 void UIreneInputInstance::LockOnTimer()
 {
 	LockOnTime+=GetWorld()->GetDeltaSeconds();
-	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
+	FVector Dir = Irene->IreneAttack->QuillTargetMonster->GetActorLocation() - Irene->CameraComp->GetComponentLocation();
+	Dir.Normalize();
+	float Dist = FVector::Dist(Irene->IreneAttack->QuillTargetMonster->GetActorLocation(), Irene->CameraComp->GetComponentLocation());
+	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Dir*(Dist/2));
 	const FRotator Interp = FMath::RInterpTo(Irene->WorldController->GetControlRotation(),LookAt,GetWorld()->GetDeltaSeconds(),10.0f);
 	const FRotator Controll = FRotator(Interp.Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
 	Irene->WorldController->SetControlRotation(Controll);

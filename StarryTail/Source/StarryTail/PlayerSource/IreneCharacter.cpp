@@ -549,7 +549,7 @@ void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)
 	else
 	{
 		// 보여주는 용도
-		auto AllPosition = SetCameraStartTargetPosition(FVector(500,200,1500),CameraComp->GetComponentLocation());
+		auto AllPosition = SetCameraStartTargetPosition(FVector(500,400,1500),CameraComp->GetComponentLocation());
 		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);		
 	}
 }
