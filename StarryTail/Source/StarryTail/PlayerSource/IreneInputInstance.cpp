@@ -63,7 +63,8 @@ void UIreneInputInstance::InitMemberVariable()
 	ThunderQuillMaxCoolTime = 1.5f;
 
 	TempAttribute = EAttributeKeyword::e_None;
-	
+
+	bIsLockOn = false;
 	CoolTimeRate = 0.008f;
 	bIsDialogOn = false;
 }
@@ -419,7 +420,7 @@ void UIreneInputInstance::RightButtonPressed()
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
-	if (!Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsDeathState() && !bIsLockOn)
 	{
 		// 줌인줌아웃
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
@@ -427,6 +428,130 @@ void UIreneInputInstance::MouseWheel(float Rate)
 		Irene->STGameInstance->GetPlayerBattleState() == true ?
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.BattleCameraZPosition) :
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+	}
+	if(bIsLockOn)
+	{
+		FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
+		FRotator Interp = FMath::RInterpTo(Irene->WorldController->GetControlRotation(),LookAt,GetWorld()->GetDeltaSeconds(),5.0f);
+		FRotator Controll = FRotator(Interp.Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
+		Irene->WorldController->SetControlRotation(Controll);
+	}
+}
+
+void UIreneInputInstance::QuillLockOn()
+{
+	if(Irene->IreneAttack->QuillTargetMonster)
+	{
+		if(bIsLockOn)
+		{
+			bIsLockOn = false;
+		}
+		else
+		{
+			bIsLockOn = true;			
+		}
+	}
+}
+void UIreneInputInstance::QuillLockOnSort()
+{
+	if(Irene->IreneAttack->QuillTargetMonster)
+	{
+		Irene->ActorAngleMap.Reset();
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(500,200,1500),Irene->CameraComp->GetComponentLocation());
+		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),GetWorld()->GetDeltaSeconds());
+		for (FHitResult Monster : HitMonsterList.Get<0>())
+		{
+			// 맞춘 액터가 캡슐오브젝트를 가지고 있는지 확인
+			if (Monster.GetActor()->FindComponentByClass<UCapsuleComponent>() != nullptr)
+			{
+				// 기존 오브젝트 충돌체 프로필 이름
+				// 새로운 오브젝트 충돌체 프로필 이름
+				const FName RayCollisionProfileName = Monster.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+				const FName EnemyProfile = "Enemy";
+				const FName ObjectProfile = "Object";	
+				// 맞췄을 때 캡슐컴포넌트를 가지고 카메라에 렌더링 되며 정상적으로 살아있는 몬스터 또는 오브젝트 찾기
+				if (Monster.Actor.IsValid() &&
+					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
+					&& Monster.GetActor()->WasRecentlyRendered())
+				{
+					FVector Dir = Monster.GetActor()->GetActorLocation()-Irene->CameraComp->GetComponentLocation();
+					Dir.Normalize();
+					float Dot = FVector::DotProduct(Irene->CameraComp->GetRightVector(),Dir);
+					float AcosAngle = FMath::Acos(Dot);
+					float Angle = FMath::RadiansToDegrees(AcosAngle);
+					Irene->ActorAngleMap.Add(Monster.GetActor(),Angle);					
+				}
+			}
+		}
+		Irene->ActorAngleMap.ValueSort([](const float A, const float B){return A<B;});
+	}
+}
+
+void UIreneInputInstance::QuillLeftLockOn()
+{
+	QuillLockOnSort();
+	TTuple<AActor*, float>LeftMonster = MakeTuple(nullptr,0.0f);
+	bool FindCurrentQuillTarget = false;
+	for (const auto MonsterAngle : Irene->ActorAngleMap)
+	{
+		LeftMonster = MonsterAngle;
+		if(FindCurrentQuillTarget == true)
+			break;
+		if(MonsterAngle.Key == Irene->IreneAttack->QuillTargetMonster)
+			FindCurrentQuillTarget = true;
+	}
+	if(LeftMonster.Key)
+		ChangeLockOnTarget(LeftMonster.Key);
+}
+void UIreneInputInstance::QuillRightLockOn()
+{
+	QuillLockOnSort();
+	TTuple<AActor*, float>RightMonster = MakeTuple(nullptr,0.0f);
+	for (const auto MonsterAngle : Irene->ActorAngleMap)
+	{
+		if(MonsterAngle.Key == Irene->IreneAttack->QuillTargetMonster)
+			break;
+		RightMonster = MonsterAngle;
+	}
+	if(RightMonster.Key)
+		ChangeLockOnTarget(RightMonster.Key);
+}
+void UIreneInputInstance::QuillLockOnTargetDead()
+{
+	QuillLockOnSort();
+	TTuple<AActor*, float>NearMonster = MakeTuple(nullptr,10000.0f);
+	for (const auto MonsterAngle : Irene->ActorAngleMap)
+	{
+		float Dist = FVector::Dist(MonsterAngle.Key->GetActorLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
+		if(Dist < NearMonster.Value)
+			NearMonster = MakeTuple(MonsterAngle.Key,Dist);
+	}
+	if(NearMonster.Key)
+		ChangeLockOnTarget(NearMonster.Key);
+	else
+	{
+		const auto Mon=Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
+		if(Mon != nullptr)
+		{
+			Mon->TargetWidgetOff();
+			Irene->IreneAttack->QuillTargetMonster = nullptr;
+			bIsLockOn = false;
+		}
+	}
+}
+void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)const
+{
+	auto Mon=Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
+	if(Mon != nullptr)
+	{
+		Mon->TargetWidgetOff();
+		Irene->IreneAttack->QuillTargetMonster = nullptr;
+	}
+	Mon = Cast<AMonster>(Target);
+	if(Mon != nullptr)
+	{
+		Mon->TargetWidgetOn();
+		Irene->IreneAttack->QuillTargetMonster = Target;
 	}
 }
 
