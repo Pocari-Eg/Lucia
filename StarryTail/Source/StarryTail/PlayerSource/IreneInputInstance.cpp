@@ -223,14 +223,17 @@ void UIreneInputInstance::Turn(float Rate)
 }
 void UIreneInputInstance::LookUp(float Rate)
 {
-	// 마우스 상하 이동
-	const float Yaw = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch) + Rate * Irene->IreneData.EDPI * Irene->WorldController->InputPitchScale;
-
-	// 시야각 제한
-	if (Yaw < 50)
+	if(!bIsLockOn)
 	{
-		if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
-			Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI / 5.5f);
+		// 마우스 상하 이동
+		const float Yaw = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch) + Rate * Irene->IreneData.EDPI * Irene->WorldController->InputPitchScale;
+
+		// 시야각 제한
+		if (Yaw < 50)
+		{
+			if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
+				Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI / 5.5f);
+		}
 	}
 }
 
@@ -444,10 +447,14 @@ void UIreneInputInstance::QuillLockOn()
 	{
 		if(bIsLockOn)
 		{
+			Irene->SpringArmComp->bInheritPitch = true;
+			Irene->WorldController->SetControlRotation(FRotator(-20,Irene->WorldController->GetControlRotation().Yaw,Irene->WorldController->GetControlRotation().Roll));
 			bIsLockOn = false;
 		}
 		else
 		{
+			Irene->SpringArmComp->bInheritPitch = false;
+			Irene->SpringArmComp->SetRelativeRotation(FRotator(-20,Irene->SpringArmComp->GetRelativeRotation().Yaw,Irene->SpringArmComp->GetRelativeRotation().Roll));
 			bIsLockOn = true;
 			LockOnTime = 0;
 			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
@@ -538,6 +545,8 @@ void UIreneInputInstance::QuillLockOnTargetDead()
 			Mon->TargetWidgetOff();
 			Irene->IreneAttack->QuillTargetMonster = nullptr;
 			bIsLockOn = false;
+			Irene->SpringArmComp->bInheritPitch = true;
+			Irene->SpringArmComp->SetRelativeRotation(FRotator::ZeroRotator);
 		}
 	}
 }
@@ -566,9 +575,9 @@ void UIreneInputInstance::LockOnTimer()
 	FVector Dir = Irene->IreneAttack->QuillTargetMonster->GetActorLocation() - Irene->CameraComp->GetComponentLocation();
 	Dir.Normalize();
 	float Dist = FVector::Dist(Irene->IreneAttack->QuillTargetMonster->GetActorLocation(), Irene->CameraComp->GetComponentLocation());
-	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Dir*(Dist/2));
+	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
 	const FRotator Interp = FMath::RInterpTo(Irene->WorldController->GetControlRotation(),LookAt,GetWorld()->GetDeltaSeconds(),10.0f);
-	const FRotator Controll = FRotator(Interp.Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
+	const FRotator Controll = FRotator(Irene->WorldController->GetControlRotation().Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
 	Irene->WorldController->SetControlRotation(Controll);
 	if(LockOnTime > 0.5f)
 	{
