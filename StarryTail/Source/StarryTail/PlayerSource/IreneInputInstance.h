@@ -63,7 +63,10 @@ private:
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
 
+	FTimerHandle LockOnTimerHandle;
 	bool bIsLockOn;
+	float LockOnTime;
+	
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
 private:
@@ -124,7 +127,8 @@ public:
 	void QuillLeftLockOn();
 	void QuillRightLockOn();
 	void QuillLockOnTargetDead();
-	void ChangeLockOnTarget(AActor* Target)const;
+	void ChangeLockOnTarget(AActor* Target);
+	void LockOnTimer();
 	
 	// 메인키워드 속성변경
 	void AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change = false);

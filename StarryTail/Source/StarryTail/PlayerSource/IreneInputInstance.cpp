@@ -65,6 +65,8 @@ void UIreneInputInstance::InitMemberVariable()
 	TempAttribute = EAttributeKeyword::e_None;
 
 	bIsLockOn = false;
+	LockOnTime = 0;
+	
 	CoolTimeRate = 0.008f;
 	bIsDialogOn = false;
 }
@@ -429,13 +431,6 @@ void UIreneInputInstance::MouseWheel(float Rate)
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.BattleCameraZPosition) :
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
 	}
-	if(bIsLockOn)
-	{
-		FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
-		FRotator Interp = FMath::RInterpTo(Irene->WorldController->GetControlRotation(),LookAt,GetWorld()->GetDeltaSeconds(),5.0f);
-		FRotator Controll = FRotator(Interp.Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
-		Irene->WorldController->SetControlRotation(Controll);
-	}
 }
 
 void UIreneInputInstance::QuillLockOn()
@@ -448,7 +443,9 @@ void UIreneInputInstance::QuillLockOn()
 		}
 		else
 		{
-			bIsLockOn = true;			
+			bIsLockOn = true;
+			LockOnTime = 0;
+			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
 		}
 	}
 }
@@ -539,8 +536,10 @@ void UIreneInputInstance::QuillLockOnTargetDead()
 		}
 	}
 }
-void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)const
+void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)
 {
+	if(Target == Irene->IreneAttack->QuillTargetMonster)
+		return;
 	auto Mon=Cast<AMonster>(Irene->IreneAttack->QuillTargetMonster);
 	if(Mon != nullptr)
 	{
@@ -552,8 +551,24 @@ void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)const
 	{
 		Mon->TargetWidgetOn();
 		Irene->IreneAttack->QuillTargetMonster = Target;
+		LockOnTime = 0;
+		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
 	}
 }
+void UIreneInputInstance::LockOnTimer()
+{
+	LockOnTime+=GetWorld()->GetDeltaSeconds();
+	const FRotator LookAt = UKismetMathLibrary::FindLookAtRotation(Irene->CameraComp->GetComponentLocation(),Irene->IreneAttack->QuillTargetMonster->GetActorLocation());
+	const FRotator Interp = FMath::RInterpTo(Irene->WorldController->GetControlRotation(),LookAt,GetWorld()->GetDeltaSeconds(),10.0f);
+	const FRotator Controll = FRotator(Interp.Pitch,Interp.Yaw,Irene->WorldController->GetControlRotation().Roll);
+	Irene->WorldController->SetControlRotation(Controll);
+	if(LockOnTime > 0.5f)
+	{
+		LockOnTime = 0;
+		GetWorld()->GetTimerManager().ClearTimer(LockOnTimerHandle);
+	}
+}
+
 
 void UIreneInputInstance::AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change)
 {
