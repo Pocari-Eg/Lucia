@@ -427,9 +427,14 @@ void UIreneInputInstance::MouseWheel(float Rate)
 		// 줌인줌아웃
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
 
+		if(!bIsLockOn)
 		Irene->STGameInstance->GetPlayerBattleState() == true ?
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.BattleCameraZPosition) :
 			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, Irene->IreneData.MinFollowCameraZPosition, Irene->IreneData.MaxFollowCameraZPosition);
+		else
+			Irene->STGameInstance->GetPlayerBattleState() == true ?
+			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, 700.0f, Irene->IreneData.BattleCameraZPosition+100) :
+			Irene->SpringArmComp->TargetArmLength = FMath::Clamp(Irene->SpringArmComp->TargetArmLength, 700.0f, 800.0f);
 	}
 }
 
