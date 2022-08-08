@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
 #include "PlayerCharacterDataStruct.h"
+#include "Chaos/Vector.h"
 
 //박찬영
 //#include "StopWatch.h"
@@ -79,7 +80,9 @@ public:
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
-
+	
+	UPROPERTY()
+	TMap<AActor*, float>ActorAngleMap;
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
@@ -140,7 +143,7 @@ public:
 #pragma region Collision
 public:
 	// 가까운 몬스터 찾기
-	void FindNearMonster();
+	void FindNearMonster()const;
 	TTuple<FVector, FVector, FVector> SetCameraStartTargetPosition(const FVector BoxSize, const FVector StartPosition)const;
 	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> StartPositionFindNearMonster(const FVector BoxSize, const FVector StartPosition, const FVector TargetPosition, const float LifeTime = 5.0f)const;
 
@@ -148,7 +151,7 @@ public:
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 	void SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
-	void FindCanThrowQuillMonster(const float DeltaTime)const;
+	void FindCanThrowQuillMonster(const float DeltaTime);
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

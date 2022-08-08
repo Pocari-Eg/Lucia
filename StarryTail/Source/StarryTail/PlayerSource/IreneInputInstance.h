@@ -62,6 +62,10 @@ private:
 
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
+
+	FTimerHandle LockOnTimerHandle;
+	bool bIsLockOn;
+	float LockOnTime;
 	
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
@@ -118,7 +122,14 @@ public:
 	void LeftButton(float Rate);
 	void RightButtonPressed();
 	void MouseWheel(float Rate);
-
+	void QuillLockOn();
+	void QuillLockOnSort();
+	void QuillLeftLockOn();
+	void QuillRightLockOn();
+	void QuillLockOnTargetDead();
+	void ChangeLockOnTarget(AActor* Target);
+	void LockOnTimer();
+	
 	// 메인키워드 속성변경
 	void AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change = false);
 	void FireKeywordReleased();
@@ -157,6 +168,7 @@ public:
 	int GetThunderQuillCount()const{return ThunderQuillCount;}
 	bool GetIsDialogOn()const{return bIsDialogOn;}
 	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
+	bool GetIsLockOn()const{return bIsLockOn;}
 	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
@@ -166,7 +178,7 @@ public:
 	void SetThunderQuillCount(const int Value) { ThunderQuillCount = Value; }
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
-#pragma endregion GetSet	
+#pragma endregion GetSet
 
 #pragma region CoolTimeFunction
 private:

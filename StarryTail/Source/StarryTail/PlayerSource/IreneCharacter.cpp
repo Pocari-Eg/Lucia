@@ -261,12 +261,19 @@ void AIreneCharacter::TargetReset()const
 		const auto Mob = Cast<AMonster>(IreneAttack->QuillTargetMonster);
 		if (Mob != nullptr)
 		{
-			if (Mob->GetHp() <= 0 || !IreneAttack->QuillTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->QuillTargetMonster->GetActorLocation()) > 1000.0f)
+			if(IreneInput->GetIsLockOn())
+			{
+				if (Mob->GetHp() <= 0)
+				{
+					IreneInput->QuillLockOnTargetDead();
+				}
+			}
+			else
 			{
 				const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
 				Mon->TargetWidgetOff();
 				IreneAttack->QuillTargetMonster = nullptr;
-			}			
+			}
 		}
 	}
 }
@@ -300,6 +307,9 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
 	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
 	PlayerInputComponent->BindAction("QuillAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillAttributeChangeReleased);
+	PlayerInputComponent->BindAction("LockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLockOn);
+	PlayerInputComponent->BindAction("LeftLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLeftLockOn);
+	PlayerInputComponent->BindAction("RightLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillRightLockOn);
 
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
@@ -319,7 +329,7 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 }
 
 #pragma region Collision
-void AIreneCharacter::FindNearMonster()
+void AIreneCharacter::FindNearMonster()const
 {
 	// 가장 가까운 몬스터를 찾고 공격범위 보다 멀면 다가가게 하고 공격하는 함수	
 	if(IreneAttack->SwordTargetMonster!=nullptr && IreneState->IsFirstAttack())
@@ -389,6 +399,17 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 
 	for (FHitResult Monster : MonsterList)
 	{
+		// 카메라와 캐릭터 사이의 몬스터는 제외
+		if(FVector::Dist(CameraComp->GetComponentLocation(),Monster.GetActor()->GetActorLocation())<=FVector::Dist(CameraComp->GetComponentLocation(),GetActorLocation()))
+		{
+			if(IreneAttack->QuillTargetMonster == Monster.GetActor())
+			{
+				const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
+				Mon->TargetWidgetOff();
+				IreneAttack->QuillTargetMonster = nullptr;
+			}
+			continue;
+		}
 		if (bResult)
 		{
 			//STARRYLOG(Warning,TEXT("%s"), *Monster.GetActor()->GetName());
@@ -516,12 +537,21 @@ void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPo
 	Mon->TargetWidgetOn();
 }
 
-void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)const
+void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)
 {
 	// 매 프레임 가장 가까운 몬스터를 깃펜 타겟 몬스터로 지정하는 함수
-	auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,700),CameraComp->GetComponentLocation());
-	auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
-	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
+	if(!IreneInput->GetIsLockOn())
+	{
+		auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,1500),CameraComp->GetComponentLocation());
+		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
+		NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
+	}
+	else
+	{
+		// 보여주는 용도
+		auto AllPosition = SetCameraStartTargetPosition(FVector(500,400,1500),CameraComp->GetComponentLocation());
+		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);		
+	}
 }
 
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
