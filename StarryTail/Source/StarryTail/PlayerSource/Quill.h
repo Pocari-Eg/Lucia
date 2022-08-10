@@ -30,31 +30,37 @@ public:
 	float MoveSpeed;
 	float Distance;
 	float Strength;
+	bool IsRightPos;
 private:
+	UPROPERTY()
+	class AIreneCharacter* Irene;
+	
 	UPROPERTY()
 	TArray<UParticleSystem*> BustParticle;
 	UPROPERTY()
 	TArray<UParticleSystem*> AttackParticle;
-	
+
+	FVector TargetLocation;
 	float LifeTime;
-	float StopTime;
-	float BackMoveTime;
 	bool Bust;
-
+	
 public:	
-	AQuill();
-
+	void Init(AIreneCharacter* Value);
+	
 	UFUNCTION()
 	void StartBust();
 	UFUNCTION()
 	void StartAttack();
-protected:
+
+private:
+	AQuill();
+
 	virtual void BeginPlay() override;
-	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
-	
-	void FollowTarget();
-	
-public:	
 	virtual void Tick(float DeltaTime) override;
 
+	void SetIreneCharacter(AIreneCharacter* Value);
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
+
+	void LookAtTarget();
+	void MoveTarget();
 };

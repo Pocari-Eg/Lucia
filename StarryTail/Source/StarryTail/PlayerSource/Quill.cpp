@@ -62,12 +62,19 @@ AQuill::AQuill()
 		AttackParticle.Add(PS_WaterAttack.Object);
 		AttackParticle.Add(PS_ThunderAttack.Object);
 	}
-	
+
 	Bust = false;
 	LifeTime = 0;
-	StopTime = 0.5f;
-	BackMoveTime = 0.5f;
 	AutoPossessAI = EAutoPossessAI::Spawned;
+}
+
+void AQuill::Init(AIreneCharacter* Value)
+{
+	SetIreneCharacter(Value);
+}
+void AQuill::SetIreneCharacter(AIreneCharacter* Value)
+{
+	Irene = Value;
 }
 
 // Called when the game starts or when spawned
@@ -82,38 +89,18 @@ void AQuill::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);	
 	
 	LifeTime += DeltaTime;
-	FVector NewLocation = GetActorLocation();
-	if(!Bust && LifeTime >= StopTime + BackMoveTime)
+	
+	if(!Bust)
 	{
 		Bust = true;
+		TargetLocation = Irene->GetActorLocation()+Irene->GetActorForwardVector()*Distance;
 		StartBust();
 	}
-	if(LifeTime >= StopTime + BackMoveTime)
-	{
-		if(Target != nullptr)
-		{
-			const auto TargetMonster = Cast<AMonster>(Target);
-			if(TargetMonster->GetHp() > 0)
-			{
-				const FVector BonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bip001-Head"));
-				const FVector MorbitBonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bone004"));
+	
+	MoveTarget();
+	LookAtTarget();
 
-				FRotator Z = FRotator::ZeroRotator;
-				if(BonePosition != TargetMonster->GetMesh()->GetComponentLocation())
-					Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),BonePosition);
-				else
-					Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),MorbitBonePosition);
-				SetActorRotation(FRotator(Z.Pitch,Z.Yaw,0));
-			}
-		}
-		CapsuleComponent->AddImpulse(GetActorForwardVector() * MoveSpeed);
-	}
-	if(LifeTime >= StopTime && LifeTime < StopTime + BackMoveTime)
-		NewLocation -= GetActorForwardVector() * MoveSpeed/2.0f * DeltaTime;
-	LifeTime += DeltaTime;
-	SetActorLocation(NewLocation);		
-
-	if (LifeTime >= Distance / MoveSpeed + StopTime + BackMoveTime*2)
+	if (LifeTime >= 0.65f)
 	{
 		Destroy();
 	}
@@ -122,6 +109,7 @@ void AQuill::Tick(float DeltaTime)
 void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
+	
 	if(Target == nullptr)
 	{
 		if(Cast<AMonster>(OtherActor))
@@ -129,13 +117,7 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
 			StartAttack();
 		}
-		else
-		{
-			StartAttack();
-			Destroy();
-		}
-	}
-	
+	}	
 	if(OtherActor == Target)
 	{
 		if(Cast<AMonster>(OtherActor))
@@ -151,13 +133,13 @@ void AQuill::StartBust()
 	switch (Attribute)
 	{
 	case EAttributeKeyword::e_Fire:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[0],GetActorLocation());
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[0],GetActorLocation());
 		break;
 	case EAttributeKeyword::e_Water:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[1],GetActorLocation());
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[1],GetActorLocation());
 		break;
 	case EAttributeKeyword::e_Thunder:
-		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[2],GetActorLocation());
+		//UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BustParticle[2],GetActorLocation());
 		break;
 		default: break;
 	}
@@ -179,8 +161,39 @@ void AQuill::StartAttack()
 	}
 }
 
-void AQuill::FollowTarget()
+void AQuill::LookAtTarget()
 {
-	//UAIBlueprintHelperLibrary::SimpleMoveToActor(GetController(),Target);
+	if(Target != nullptr)
+	{
+		const auto TargetMonster = Cast<AMonster>(Target);
+		if(TargetMonster->GetHp() > 0)
+		{
+			const FVector BonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bip001-Head"));
+			const FVector MorbitBonePosition = TargetMonster->GetMesh()->GetSocketLocation(TEXT("Bone004"));
+
+			FRotator Z = FRotator::ZeroRotator;
+			if(BonePosition != TargetMonster->GetMesh()->GetComponentLocation())
+				Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),BonePosition);
+			else
+				Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),MorbitBonePosition);
+			SetActorRotation(FRotator(Z.Pitch,Z.Yaw,0));
+		}
+	}
+	else
+	{
+		FRotator Z = FRotator::ZeroRotator;
+		Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(),TargetLocation);
+		SetActorRotation(FRotator(Z.Pitch,Z.Yaw,0));
+	}
+}
+void AQuill::MoveTarget()
+{
+	//float Y = FMath::Sin(FMath::DegreesToRadians(LifeTime));
+	const float Y2 = (LifeTime*LifeTime+2)/10+10;
+
+	if(IsRightPos)
+		SetActorLocation(GetActorLocation()+GetActorForwardVector()*30+GetActorRightVector()*Y2);
+	else
+		SetActorLocation(GetActorLocation()+GetActorForwardVector()*30+GetActorRightVector()*-Y2);
 }
 

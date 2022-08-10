@@ -24,7 +24,7 @@ class STARRYTAIL_API UIreneUIManager : public UObject
 	GENERATED_BODY()
 private:
 	UPROPERTY()
-	class AIreneCharacter* Irene;
+	AIreneCharacter* Irene;
 
 	//현재 회복 대기 시간
 	int CurRecoverWaitTime;
@@ -118,11 +118,14 @@ private:
 #pragma endregion HUDPrivate
 public:
 	void Init(AIreneCharacter* Value);
-	void SetIreneCharacter(AIreneCharacter* Value);
-	void InitMemberVariable();
 	void Begin();
 
+private:
+	void SetIreneCharacter(AIreneCharacter* Value);
+	void InitMemberVariable();
+
 #pragma region HUDPublic
+public:
 	//회복 대기 시작
 	void HPRecoveryWaitStart();
 	//회보 대기 취소

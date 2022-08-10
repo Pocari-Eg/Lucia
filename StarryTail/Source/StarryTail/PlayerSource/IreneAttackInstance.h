@@ -89,9 +89,12 @@ private:
 
 public:
 	void Init(AIreneCharacter* Value);
+
+private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
-
+	
+public:
 	// 검 공격 함수
 	void AttackStartComboState();
 	void AttackEndComboState();
