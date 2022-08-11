@@ -45,7 +45,7 @@ void AScientia::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 1;
 
 	MonsterInfo.M_Max_HP = 5000.0f;
-	MonsterInfo.Atk = 100.0f;
+	MonsterInfo.M_Skill_Atk = 100.0f;
 	
 
 	MonsterInfo.BattleWalkMoveSpeed = 400.0f;
@@ -219,7 +219,7 @@ void AScientia::Feather()
 
 	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
 	BaseFeather->SetMoveDir((PlayerLocation - BaseFeather->GetActorLocation()).GetSafeNormal() + BaseDir);
-	BaseFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+	BaseFeather->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack1Value);
 
 	for (int i = 15; i <= 30; i += 10)
 	{
@@ -228,22 +228,22 @@ void AScientia::Feather()
 
 		auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
 		RightFeather->SetMoveDir((PlayerLocation - RightFeather->GetActorLocation()).GetSafeNormal() + RightDir);
-		RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+		RightFeather->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack1Value);
 		RightFeather->RotatorRight(i / 2);
 
 		auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
 		LeftFeather->SetMoveDir((PlayerLocation - LeftFeather->GetActorLocation()).GetSafeNormal() + LeftDir);
-		LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+		LeftFeather->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack1Value);
 		LeftFeather->RotatorLeft(i / 2);
 	}
 	/*
 	auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
 	RightFeather->SetMoveDir((PlayerLocation - RightFeather->GetActorLocation()).GetSafeNormal() + RightDir);
-	RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+	RightFeather->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack1Value);
 	RightFeather->RotatorRight();
 	auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
 	LeftFeather->SetMoveDir((PlayerLocation - LeftFeather->GetActorLocation()).GetSafeNormal() + LeftDir);
-	LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
+	LeftFeather->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack1Value);
 	LeftFeather->RotatorLeft();
 	*/
 }
@@ -541,7 +541,7 @@ void AScientia::SpawnPiece()
 		break;
 	}
 	ChassPiece->SetEffect();
-	ChassPiece->SetDamage(MonsterInfo.Atk * ScInfo.Attack2Value);
+	ChassPiece->SetDamage(MonsterInfo.M_Skill_Atk * ScInfo.Attack2Value);
 }
 void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
@@ -556,7 +556,7 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				ScInfo.ClawSuccessedCount++;
 
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack4Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * ScInfo.Attack4Value), NULL, this, NULL);
 				
 				bIsPlayerClawHit = true;
 			}
@@ -574,7 +574,7 @@ void AScientia::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPr
 				GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel3, ECollisionResponse::ECR_Overlap);
 
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * ScInfo.Attack3Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * ScInfo.Attack3Value), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
 			}

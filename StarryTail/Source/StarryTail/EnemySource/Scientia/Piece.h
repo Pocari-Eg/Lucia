@@ -7,10 +7,11 @@
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../../Starrytail.h"
 #include "DropFloorEffect.h"
+#include"../MonsterProjectile.h"
 #include "Piece.generated.h"
 
 UCLASS()
-class STARRYTAIL_API APiece : public AActor
+class STARRYTAIL_API APiece : public AMonsterProjectile
 {
 	GENERATED_BODY()
 	

@@ -39,19 +39,20 @@ void ASequenceTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActo
 		for (int i = 0; i < SequenceActor.Num(); i++)
 		{
 			
-		
+			if (SequenceActor[i] != nullptr) {
 
-			switch (PlayType)
-			{
-			case ESequenePlayType::Play:
-				if (!SequenceActor[i]->SequencePlayer->IsPlaying())
-				SequenceActor[i]->SequencePlayer->Play();
-				break;
-			case ESequenePlayType::Reverse:
-				SequenceActor[i]->SequencePlayer->PlayReverse();
-				break;
-			default:
-				break;
+				switch (PlayType)
+				{
+				case ESequenePlayType::Play:
+					if (!SequenceActor[i]->SequencePlayer->IsPlaying())
+						SequenceActor[i]->SequencePlayer->Play();
+					break;
+				case ESequenePlayType::Reverse:
+					SequenceActor[i]->SequencePlayer->PlayReverse();
+					break;
+				default:
+					break;
+				}
 			}
 			
 		}

@@ -12,8 +12,9 @@ const FName AMonsterAIController::PlayerKey = (TEXT("Player"));
 const FName AMonsterAIController::TraceRangeKey = (TEXT("TraceRange"));
 
 const FName AMonsterAIController::MeleeAttackRangeKey = (TEXT("MeleeAttackRange"));
-const FName AMonsterAIController::IsCanAttackKey = (TEXT("bCanAttack"));
+const FName AMonsterAIController::IsInAttackAreaKey = (TEXT("bIsInAttackArea"));
 const FName AMonsterAIController::IsAttackingKey = (TEXT("bIsAttacking"));
+const FName AMonsterAIController::IsAttackCoolKey = (TEXT("bIsAttackCool"));
 
 const FName AMonsterAIController::IsAttackedKey = (TEXT("bIsAttacked"));
 const FName AMonsterAIController::IsGroggyKey = (TEXT("bIsGroggy"));
@@ -70,12 +71,17 @@ void AMonsterAIController::SetSpawnPos(FVector Position)
 	Blackboard->SetValueAsVector(SpawnPosKey, Position);
 }
 
-void AMonsterAIController::SetAttackAble(bool Set)
+void AMonsterAIController::SetInAttackArea(bool Set)
 {
-	Blackboard->SetValueAsBool(IsCanAttackKey, Set);
+	Blackboard->SetValueAsBool(IsInAttackAreaKey, Set);
 }
 
 void AMonsterAIController::SetRunKey(bool Set)
 {
 	Blackboard->SetValueAsBool(IsRunKey, Set);
+}
+
+void AMonsterAIController::SetAttackCoolKey(bool Set)
+{
+	Blackboard->SetValueAsBool(IsAttackCoolKey, Set);
 }

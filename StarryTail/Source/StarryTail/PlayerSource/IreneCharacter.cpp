@@ -18,9 +18,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
-#include ".././EnemySource/Scientia/Feather.h"
-#include ".././EnemySource/Scientia/Piece.h"
-#include ".././EnemySource/Ferno/Meteor.h"
+#include ".././EnemySource/MonsterProjectile.h"
 #include "Curves/CurveVector.h"
 #include "../EnemySource/Bouldelith/Bouldelith.h"
 #include "../EnemySource/Morbit/Morbit.h"
@@ -632,12 +630,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AFeather>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser))
 				return FinalDamage;
-			if (Cast<APiece>(DamageCauser))
-				return FinalDamage;
-			if (Cast<AMeteor>(DamageCauser))
-				return FinalDamage;
+
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->SwordTargetMonster = DamageCauser;

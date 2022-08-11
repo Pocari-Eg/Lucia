@@ -133,43 +133,37 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 					{
 						//3Â÷ Å½Áö
 						//if (Monster->GetTestMode())
-						//	STARRYLOG(Warning, TEXT("Attack in Player MorbitFOV"));
-						
-
-						if (Monster->GetIsAttackCool() == false) {
-							Monster->GetAIController()->SetAttackAble(true);
-						}
+						//	STARRYLOG(Warning, TEXT("Attack in Player MorbitFOV"));				
+							Monster->GetAIController()->SetInAttackArea(true);
 						return;
 					}
 					else if(Monster->GetDistanceToPlayer() <=100.0f )
-					{
-						if (Monster->GetIsAttackCool() == false) {
-							Monster->GetAIController()->SetAttackAble(true);
-						}
+					{	
+						Monster->GetAIController()->SetInAttackArea(true);
 						return;
 					}
 					else {
 						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
-						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 					}
 					
 				}
 				else {
 					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
-					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 				}
 				
 			}
 			else {
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 			}
 		
 		}
 	}
 	else {
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsCanAttackKey, false);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 }
 
 	if (Monster->GetTestMode())

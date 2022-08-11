@@ -203,7 +203,6 @@ private:
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
-	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -232,10 +231,13 @@ public:
 	UMonsterAnimInstance* GetMonsterAnimInstance()const;
 	bool GetIsAttackCool()const;
 	float GetAttackPercent() const;
-	//Atk 
+	int GetPlayerEnergy() const;
+	int GetManaShieldCount() const;
+	//M_Skill_Atk 
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
+	bool GetIsManaShieldActive() const;
 
 
 	//set
