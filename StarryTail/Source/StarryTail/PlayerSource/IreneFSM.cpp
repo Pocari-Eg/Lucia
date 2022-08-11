@@ -60,7 +60,7 @@ FString UIreneFSM::GetStateToString() const
 }
 FName UIreneFSM::GetStateToAttackDataTableName() const
 {
-	switch(Irene->GetSwordAttribute())
+	switch(Irene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		switch (StateEnumValue)
@@ -759,8 +759,6 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack1State::Exit(IBaseGameEntity* CurState)
 {
-	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
-		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
 	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -844,8 +842,6 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack2State::Exit(IBaseGameEntity* CurState)
 {
-	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
-		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
 	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -927,8 +923,6 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack3State::Exit(IBaseGameEntity* CurState)
 {
-	if(CurState->Irene->IreneInput->GetTempAttribute() != EAttributeKeyword::e_None)
-		CurState->Irene->IreneInput->AttributeKeywordReleased(CurState->Irene->IreneInput->GetTempAttribute(), true);
 	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;

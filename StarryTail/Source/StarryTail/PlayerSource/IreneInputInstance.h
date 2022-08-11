@@ -41,9 +41,11 @@ private:
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 
-	// 스테미나 관련
-	FTimerHandle StaminaWaitHandle;
-	float StartWaterDodgeStamina;	
+	// 깃펜 발사 후 재사용 시간
+	FTimerHandle QuillWaitHandle;
+
+	// 우클릭 차징 시간
+	float RightButtonChargeTime;
 	
 	// 닷지 쿨타임
 	FTimerHandle DodgeWaitHandle;
@@ -93,12 +95,13 @@ private:
 	
 public:
 	void Init(AIreneCharacter* Value);
+	void Begin();
+private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
-	void Begin();
-	void ChangeForm(const EAttributeKeyword Value);
 
 #pragma region Move
+public:
 	void MoveForward();
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
@@ -121,7 +124,10 @@ public:
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
 	void RightButtonPressed();
+	void RightButtonReleased();
+	void RightButton(float Rate);
 	void MouseWheel(float Rate);
+	void QuillSpawn(FVector Vector, bool IsRightPos);
 	void QuillLockOn();
 	void QuillLockOnSort();
 	void QuillLeftLockOn();
@@ -130,12 +136,9 @@ public:
 	void ChangeLockOnTarget(AActor* Target);
 	void LockOnTimer();
 	
-	// 메인키워드 속성변경
-	void AttributeKeywordReleased(const EAttributeKeyword Attribute, const bool Change = false);
-	void FireKeywordReleased();
-	void WaterKeywordReleased();
-	void ElectricKeywordReleased();
-	void QuillAttributeChangeReleased();
+	int QuillAttributeChangeStackAction();
+	void QuillLeftAttributeChangeReleased();
+	void QuillRightAttributeChangeReleased();
 
 	// 대쉬
 	void DodgeKeyword();

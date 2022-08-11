@@ -112,9 +112,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void TargetReset()const;
-
-	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetSwordAttribute() {return IreneAttack->GetSwordAttribute();}
+	
 	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetQuillAttribute() {return IreneAttack->GetQuillAttribute();}
 	

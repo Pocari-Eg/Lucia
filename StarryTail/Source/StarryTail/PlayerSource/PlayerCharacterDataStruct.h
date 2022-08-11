@@ -74,7 +74,14 @@ public:
 	// 체력
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentHP;
+	// 최대 에너지
+	UPROPERTY(BlueprintReadWrite)
+	float MaxScrollEnergy = 100;
+	// 에너지
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	float CurrentEnergy;
 
+	
 	// Run 최대 속도
 	UPROPERTY(BlueprintReadWrite)
 	float RunMaxSpeed = 540.0f;

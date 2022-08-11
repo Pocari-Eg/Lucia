@@ -26,12 +26,16 @@ class STARRYTAIL_API UIreneAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 public:
-	UPROPERTY()
-	class AIreneCharacter* Irene;
-
-protected:
-
+	FOnNextAttackCheckDelegate OnNextAttackCheck;
+	FOnAttackHitCheckDelegate OnAttackHitCheck;
+	FOnAttackStopCheckDelegate OnAttackStopCheck;
+	FOnFootStepDelegate OnFootStep;
+	FOnRadialDelegate OnRadialBlur;
+	
 private:
+	UPROPERTY()
+	AIreneCharacter* Irene;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float CurrentPawnSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -55,12 +59,15 @@ private:
 	
 public:
 	void Init(AIreneCharacter* Value);
-	void SetIreneCharacter(AIreneCharacter* Value);
-	void InitMemberVariable();
-	
+
+private:
 	UIreneAnimInstance();
+
 	virtual void NativeUpdateAnimation(const float DeltaSeconds) override;
 
+	void SetIreneCharacter(AIreneCharacter* Value);
+	void InitMemberVariable();
+public:
 	void PlayAttackMontage();
 	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
@@ -73,13 +80,7 @@ public:
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 
-	FOnNextAttackCheckDelegate OnNextAttackCheck;
-	FOnAttackHitCheckDelegate OnAttackHitCheck;
-	FOnAttackStopCheckDelegate OnAttackStopCheck;
-	FOnFootStepDelegate OnFootStep;
-	FOnRadialDelegate OnRadialBlur;
-protected:
-
+	bool GetIsinAir()const{return IsInAir;}
 private:
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;

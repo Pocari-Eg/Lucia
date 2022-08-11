@@ -168,7 +168,8 @@ AIreneCharacter::AIreneCharacter()
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
-	
+	IreneData.CurrentEnergy = 0;
+
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
 	HpRecoveryData.Amount = 300;
@@ -196,7 +197,7 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->GetSwordAttribute());
+	IreneAnim->SetAttribute(IreneAttack->GetQuillAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();
@@ -303,10 +304,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
-	PlayerInputComponent->BindAction("FireKeyword", IE_Released, IreneInput, &UIreneInputInstance::FireKeywordReleased);
-	PlayerInputComponent->BindAction("WaterKeyword", IE_Released, IreneInput, &UIreneInputInstance::WaterKeywordReleased);
-	PlayerInputComponent->BindAction("ElectricKeyword", IE_Released, IreneInput, &UIreneInputInstance::ElectricKeywordReleased);
-	PlayerInputComponent->BindAction("QuillAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillAttributeChangeReleased);
+	PlayerInputComponent->BindAction("QuillLeftAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillLeftAttributeChangeReleased);
+	PlayerInputComponent->BindAction("QuillRightAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillRightAttributeChangeReleased);
 	PlayerInputComponent->BindAction("LockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLockOn);
 	PlayerInputComponent->BindAction("LeftLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLeftLockOn);
 	PlayerInputComponent->BindAction("RightLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillRightLockOn);
@@ -316,6 +315,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", IreneInput, &UIreneInputInstance::LeftButton);
 	PlayerInputComponent->BindAction("RightButton", IE_Pressed, IreneInput, &UIreneInputInstance::RightButtonPressed);
+	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
+	PlayerInputComponent->BindAxis("RightButton", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
 	
 	// 그 외
