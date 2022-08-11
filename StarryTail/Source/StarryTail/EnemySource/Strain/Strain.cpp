@@ -38,8 +38,10 @@ AStrain::AStrain()
 
 	IsSkillSet = false;
 	IsSkillAttack = false;
+	IsCloseOtherAttack = false;
     SkillSetTimer = 0.0f;
 	SkillAttackTimer = 0.0f;
+	IntersectionTimer = 0.0f;
 	static ConstructorHelpers::FClassFinder<AST_MagicAttack> BP_MAGICATTACK(TEXT("/Game/BluePrint/Monster/Strain/BP_ST_MagicAttack.BP_ST_MagicAttack_C")); 
 	if (BP_MAGICATTACK.Succeeded() && BP_MAGICATTACK.Class != NULL) {
 		MagicAttackClass=BP_MAGICATTACK.Class;
@@ -58,21 +60,27 @@ void AStrain::Walk()
 
 void AStrain::Attack()
 {
-	STARRYLOG(Error, TEXT("Strain Fire"));
+	//어택 준비 애니메이션 출력
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
+	AttackPosition.Z = AttackPosition.Z - 80.0f;
 
+	if (IntersectionCheck())
+	{
+		IsCloseOtherAttack = true;
+	}
+	else {
+		Skill_Setting();
+	}
 }
 
 void AStrain::Skill_Setting()
 {
-	//스킬 셋 애니메이션 출력
+
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
-	
-	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-	FVector SpawnPos = STGameInstance->GetPlayer()->GetActorLocation();
-	SpawnPos.Z = SpawnPos.Z - 80.0f;
-	MagicAttack = GetWorld()->SpawnActor<AST_MagicAttack>(MagicAttackClass, SpawnPos, FRotator::ZeroRotator);
+	MagicAttack = GetWorld()->SpawnActor<AST_MagicAttack>(MagicAttackClass, AttackPosition, FRotator::ZeroRotator);
 	MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius,MonsterInfo.M_Skill_Atk);
 }
 
@@ -107,6 +115,43 @@ void AStrain::Skill_AttackEnd()
 	SkillAttackTimer = 0.0f;
 	MagicAttack->Destroy();
 	AttackEnd.Broadcast();
+}
+
+bool AStrain::IntersectionCheck()
+{
+	float DetectRadius = MonsterInfo.M_Skill_Radius * 1.5f;
+
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		AttackPosition,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel14,
+		FCollisionShape::MakeSphere(DetectRadius),
+		CollisionQueryParam
+	);
+	DrawDebugSphere(GetWorld(), AttackPosition, DetectRadius, 16, FColor::Red, false, 0.2f);
+	if (bResult)
+	{
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			AST_MagicAttack* OtherAttack = Cast<AST_MagicAttack>(OverlapResult.GetActor());
+
+			float Distance = (AttackPosition - OtherAttack->GetActorLocation()).Size();
+			if (Distance <= DetectRadius)
+			{
+				return true;
+			}
+
+		}
+	}
+	else {
+		return false;
+	}
+
+
+	return false;
 }
 
 
@@ -243,6 +288,17 @@ void AStrain::InitMesh()
 void AStrain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (IsCloseOtherAttack)
+	{
+		IntersectionTimer += DeltaTime;
+		if (IntersectionTimer >= 1.0f)
+		{
+			IntersectionTimer = 0.0f;
+			IsCloseOtherAttack = false;
+			Skill_Setting();
+		}
+	}
 
 	if (IsSkillSet)
 	{
