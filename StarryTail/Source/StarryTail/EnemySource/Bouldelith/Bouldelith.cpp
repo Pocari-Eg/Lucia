@@ -29,7 +29,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 1;
 
 	MonsterInfo.M_Max_HP = 1000.0f;
-	MonsterInfo.Atk = 50.0f;
+	MonsterInfo.M_Skill_Atk = 50.0f;
 	MonsterInfo.Chain_Detect_Radius = 450.0f;
 
 	MonsterInfo.M_MoveSpeed = 200.0f;
@@ -180,7 +180,7 @@ void ABouldelith::AttackCheck1()
 			return;
 
 	
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 		
 	}
 	else
@@ -200,7 +200,7 @@ void ABouldelith::AttackCheck4()
 			if (!Player->GetMovementComponent()->IsFalling())
 			{
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
 			
 			}
 		}
@@ -303,7 +303,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				auto Player = Cast<AIreneCharacter>(OtherActor);
 
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
 			}
@@ -318,7 +318,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (FindName == CompCollisionName)
 				{
-					CalcHp(MonsterInfo.Atk * BouldelithInfo.Attack3Value);
+					CalcHp(MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value);
 					if (!bIsDead)
 					{
 						auto BdAIController = Cast<ABdAIController>(MonsterAIController);

@@ -16,6 +16,7 @@ class STARRYTAIL_API ABdAIController : public AMonsterAIController
 public:
 	ABdAIController();
 	
+	void Attack()override;
 	void WallGroggy();
 	void Attacked();
 	void Broken();

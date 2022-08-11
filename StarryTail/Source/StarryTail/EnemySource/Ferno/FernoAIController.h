@@ -17,7 +17,7 @@ public:
 	AFernoAIController();
 	
 
-
+	void Attack() override;
 	void Attacked()override;
 	void Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback);
 
@@ -25,8 +25,6 @@ protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
 public:
-	static const FName IsCanRangeAttackKey;
-
 	static const FName IsAfterAttacked;
 
 private:

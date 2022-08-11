@@ -6,6 +6,7 @@
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include "../Ferno/FernoAIController.h"
+#include "../Strain/StrainAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 
@@ -20,6 +21,10 @@ EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
+		return EBTNodeResult::Failed;
+
+	auto MonaterAnimInstance = Monster->GetMonsterAnimInstance();
+	if (MonaterAnimInstance->GetAttackIsPlaying())
 		return EBTNodeResult::Failed;
 
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
@@ -40,16 +45,28 @@ EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 			return EBTNodeResult::Succeeded;
 		}
 	}
+	if (Monster->GetMonsterAtkType() == 2 && OwnerComp.GetBlackboardComponent()->GetValueAsBool(AStrainAIController::IsAfterAttacked) == true)
+	{
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AStrainAIController::IsAfterAttacked, false);
 
-	Monster->SetIsAttackCool(true);
+		auto ran = FMath::RandRange(1, 100);
+		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
+		if (ran > Monster->GetAttackPercent())
+		{
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AStrainAIController::IsRunKey, true);
+
+			return EBTNodeResult::Succeeded;
+		}
+	}
+
+	Monster->GetAIController()->SetAttackCoolKey(true);
 	Monster->Attack();
 
 	bIsAttacking = true;
 	Monster->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
 
-	auto MonaterAnimInstance = Monster->GetMonsterAnimInstance();
-	if (!MonaterAnimInstance->GetAttackIsPlaying())
-		return EBTNodeResult::Failed;
+
 
 	return EBTNodeResult::InProgress;
 }
@@ -78,6 +95,7 @@ void UBTTaskMobAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		Monster->SetIsAttackCool(true);
 	}
 	
 }

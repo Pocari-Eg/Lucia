@@ -16,6 +16,7 @@ class STARRYTAIL_API AScAIController : public AMonsterAIController
 public:
 	AScAIController();
 
+	void Attack()override;
 	void Attacked();
 	void Crushed();
 

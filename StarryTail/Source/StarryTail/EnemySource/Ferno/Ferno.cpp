@@ -64,7 +64,7 @@ void AFerno::RangeAttack()
 			AMeteor* Meteor = World->SpawnActor<AMeteor>(ProjectileClass,MeteorFirePos->GetComponentToWorld().GetLocation(),GetActorRotation(), SpawnParams);
 			if (Meteor)
 			{
-				Meteor->FireInDirection(GetActorForwardVector(), Meteor_Speed,MonsterInfo.Atk);
+				Meteor->FireInDirection(GetActorForwardVector(), Meteor_Speed,MonsterInfo.M_Skill_Atk);
 			}
 		}
 	}
@@ -133,7 +133,7 @@ void AFerno::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 2;
 	MonsterInfo.M_Max_HP = 150.0f;
 	MonsterInfo.M_MoveSpeed = 40.0f;
-	MonsterInfo.M_CoolTime = 3.0f;
+	MonsterInfo.M_Skill_Cool = 3.0f;
 	
 
 	MonsterInfo.PatrolArea = 600.0f;
@@ -159,7 +159,7 @@ void AFerno::InitMonsterInfo()
 	MonsterInfo.Ele_Shield_Count = -1;
 	MonsterInfo.bIsShieldOn = false;
 
-	MonsterInfo.Atk = 100.0f;
+	MonsterInfo.M_Skill_Atk = 100.0f;
 	Meteor_Speed = 700.0f;
 	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 3.0f;
