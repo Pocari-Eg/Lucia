@@ -13,11 +13,13 @@ AST_MagicAttack::AST_MagicAttack()
 	Circum = CreateDefaultSubobject<UDecalComponent>(TEXT("CIRCUM"));
 	Area = CreateDefaultSubobject<UDecalComponent>(TEXT("Area"));
 	AttackCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Attack"));
+	IntersectionCollision = CreateDefaultSubobject<USphereComponent>(TEXT("INTERSECTION"));
 	RootComponent = Root;
 
 	Circum->SetupAttachment(RootComponent);
 	Area->SetupAttachment(RootComponent);
 	AttackCollision->SetupAttachment(RootComponent);
+	IntersectionCollision->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UMaterial> MAT_Circle(TEXT("/Game/UI/Indicator/CircleMaterial.CircleMaterial"));
 	if (MAT_Circle.Succeeded())
 	{
@@ -27,10 +29,14 @@ AST_MagicAttack::AST_MagicAttack()
 	Circum->SetRelativeLocation(FVector::ZeroVector);
 	Area->SetRelativeLocation(FVector::ZeroVector);
 	AttackCollision->SetRelativeLocation(FVector(1000.0f,0.0f, 0.0f));
+	IntersectionCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	Root->SetWorldRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	AttackCollision->SetCollisionProfileName("EnemyAttack");
 	AttackCollision->SetGenerateOverlapEvents(false);
+
+	IntersectionCollision->SetCollisionProfileName("Intersection");
+	IntersectionCollision->SetGenerateOverlapEvents(true);
 
 	Circum->DecalSize.X = 5.0f;
 	Area->DecalSize.X = 5.0f;
@@ -43,9 +49,10 @@ AST_MagicAttack::AST_MagicAttack()
 
 void AST_MagicAttack::SetMagicAttack(float Radius, float DamageVal)
 {
-	Circum->DecalSize.Set(5, Radius * 2.0f, Radius * 2.0f);
-	Area->DecalSize.Set(5, Radius * 2.0f, Radius * 2.0f);
-	AttackCollision->SetSphereRadius(Radius* 2.0f);
+	Circum->DecalSize.Set(10, Radius , Radius );
+	Area->DecalSize.Set(10, Radius , Radius );
+	AttackCollision->SetSphereRadius(Radius);
+	IntersectionCollision->SetSphereRadius(Radius);
 	Damage = DamageVal;
 }
 
@@ -60,7 +67,6 @@ void AST_MagicAttack::EndIndicator()
 	Area->SetVisibility(false);
 
 }
-
 void AST_MagicAttack::SetActiveAttack()
 {
 	AttackCollision->SetGenerateOverlapEvents(true);

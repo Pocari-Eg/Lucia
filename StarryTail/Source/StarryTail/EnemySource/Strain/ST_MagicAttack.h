@@ -21,6 +21,9 @@ private:
 	USceneComponent* Root;
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
 	USphereComponent* AttackCollision;
+
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
+	USphereComponent* IntersectionCollision;
 	UPROPERTY(EditAnywhere,BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
 	UDecalComponent* Circum;
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
@@ -44,7 +47,6 @@ public:
 	void SetMagicAttack(float Radius,float DamageVal);
 	void PlayIndicator(float Val);
 	void EndIndicator();
-
 	void SetActiveAttack();
 protected:
 	// Called when the game starts or when spawned
@@ -53,6 +55,7 @@ protected:
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

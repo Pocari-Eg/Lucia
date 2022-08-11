@@ -29,7 +29,7 @@ AStrainAIController::AStrainAIController()
 void AStrainAIController::Attack()
 {
 	auto Strain = Cast<AStrain>(GetPawn());
-	Strain->Skill_Setting();
+	Strain->Attack();
 	StopMovement();
 	
 }

@@ -30,6 +30,8 @@ public:
 	void PlayRunAnim();
 	void Skill_Attack();
 	void Skill_AttackEnd();
+
+	bool IntersectionCheck();
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
@@ -68,7 +70,13 @@ private:
 	AST_MagicAttack* MagicAttack;
 	bool IsSkillSet;
 	bool IsSkillAttack;
+
+	bool IsCloseOtherAttack;
+
+	float IntersectionTimer;
 	float SkillSetTimer;
 	float SkillAttackTimer;
+
+	FVector AttackPosition;
 
 };
