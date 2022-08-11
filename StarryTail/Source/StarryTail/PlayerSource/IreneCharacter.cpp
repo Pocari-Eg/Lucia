@@ -168,7 +168,8 @@ AIreneCharacter::AIreneCharacter()
 
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
-	
+	IreneData.CurrentEnergy = 0;
+
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
 	HpRecoveryData.Amount = 300;
@@ -196,7 +197,7 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->GetSwordAttribute());
+	IreneAnim->SetAttribute(IreneAttack->GetQuillAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();

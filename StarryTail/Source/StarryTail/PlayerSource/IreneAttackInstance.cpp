@@ -48,8 +48,7 @@ void UIreneAttackInstance::InitMemberVariable()
 {
 	SwordTargetMonster = nullptr;
 	//초기 속성
-	SwordAttribute = EAttributeKeyword::e_Fire;
-	QuillAttribute = EAttributeKeyword::e_Water;
+	QuillAttribute = EAttributeKeyword::e_Fire;
 
 	FireDeBuffStack = 0;
 	WaterDeBuffStack = 0;
@@ -79,30 +78,18 @@ float UIreneAttackInstance::GetATK()const
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
 	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
-	FString AttributeName = "B_Attack_1";
+	FString AttributeName = "B_Attack_1_F";
 	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 	{
-		AttributeName = "B_Attack_1";
+		AttributeName = "B_Attack_1_F";
 	}
 	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 	{
-		AttributeName = "B_Attack_2";
+		AttributeName = "B_Attack_2_F";
 	}
 	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 	{
-		AttributeName = "B_Attack_3";
-	}
-	if(SwordAttribute == EAttributeKeyword::e_Fire)
-	{
-		AttributeName = AttributeName + FString("_F");
-	}
-	else if(SwordAttribute == EAttributeKeyword::e_Water)
-	{
-		AttributeName = AttributeName + FString("_W");
-	}
-	else if(SwordAttribute == EAttributeKeyword::e_Thunder)
-	{
-		AttributeName = AttributeName + FString("_T");
+		AttributeName = "B_Attack_3_F";
 	}
 	return FName(AttributeName);
 }
@@ -397,7 +384,7 @@ void UIreneAttackInstance::SetAttackState()const
 FName UIreneAttackInstance::GetAttributeToFormTimeDataTableName() const
 {
 	// 현재 속성에 따라 FormTimeDataTable에서 사용하는 Name 리턴하는 함수
-	switch (SwordAttribute)
+	switch (QuillAttribute)
 	{
 	case EAttributeKeyword::e_Fire: return FName("Fire_Form");
 	case EAttributeKeyword::e_Water: return FName("Water_Form");

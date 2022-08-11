@@ -60,7 +60,7 @@ FString UIreneFSM::GetStateToString() const
 }
 FName UIreneFSM::GetStateToAttackDataTableName() const
 {
-	switch(Irene->GetSwordAttribute())
+	switch(Irene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		switch (StateEnumValue)

@@ -100,7 +100,7 @@ void AQuill::Tick(float DeltaTime)
 	MoveTarget();
 	LookAtTarget();
 
-	if (LifeTime >= 0.65f)
+	if (LifeTime >= 0.7f)
 	{
 		Destroy();
 	}
