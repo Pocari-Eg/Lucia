@@ -1242,7 +1242,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				if (MonsterInfo.bIsShieldOn)
 				{
 					//CalcManaShield(CalcManaShieldDamage(true,DamageAmount, Player->GetSwordAttribute()),Player->GetSwordAttribute());
-					CalcManaShield(CalcManaShieldDamage(true, DamageAmount, Player->GetSwordAttribute()));
+					CalcManaShield(CalcManaShieldDamage(true, DamageAmount, Player->GetQuillAttribute()));
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
@@ -1267,7 +1267,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	if (Cast<AQuill>(DamageCauser))
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		EAttributeKeyword AttackAttribute;
+		EAttributeKeyword AttackAttribute = EAttributeKeyword::e_None;
 		if (STGameInstance != nullptr)
 		{
 			AttackAttribute = STGameInstance->GetPlayer()->GetQuillAttribute();

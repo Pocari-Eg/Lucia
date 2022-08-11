@@ -194,7 +194,7 @@ void UPlayerHudWidget::UseQuill()
 
 EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 {
-	return CurrentIrene->GetSwordAttribute();
+	return CurrentIrene->GetQuillAttribute();
 }
 
 void UPlayerHudWidget::SetTutorial(FString Num)
@@ -254,7 +254,7 @@ void UPlayerHudWidget::UpdateHpRecovery()
 
 void UPlayerHudWidget::UpdateSwordAttributes()
 {
-	switch (CurrentIrene->GetSwordAttribute())
+	switch (CurrentIrene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		FireSelect();
@@ -307,7 +307,7 @@ void UPlayerHudWidget::InitAttributeUI()
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
 
-	switch (CurrentIrene->GetSwordAttribute())
+	switch (CurrentIrene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:
 		Fire.SelectIcon->SetVisibility(ESlateVisibility::Visible);

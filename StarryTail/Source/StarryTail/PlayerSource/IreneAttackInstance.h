@@ -24,7 +24,6 @@ private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
 
-	EAttributeKeyword SwordAttribute;
 	EAttributeKeyword QuillAttribute;
 
 	UPROPERTY()
@@ -89,9 +88,12 @@ private:
 
 public:
 	void Init(AIreneCharacter* Value);
+
+private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
-
+	
+public:
 	// 검 공격 함수
 	void AttackStartComboState();
 	void AttackEndComboState();
@@ -131,8 +133,6 @@ public:
 
 	//속성 반환
 	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetSwordAttribute()const{return SwordAttribute;}
-	UFUNCTION(BlueprintCallable)
 	EAttributeKeyword GetQuillAttribute()const{return QuillAttribute;}
 	bool GetFollowTarget()const {return bFollowTarget;}
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
@@ -150,7 +150,6 @@ public:
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
 	float GetThunderSustainTime()const{return ThunderSustainTime;}
 
-	void SetSwordAttribute(const EAttributeKeyword Value){SwordAttribute = Value;}
 	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
