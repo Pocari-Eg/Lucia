@@ -32,7 +32,11 @@ private:
 	UPROPERTY()
 	UDataTable* AttackDataTable;
 	UPROPERTY()
-	UDataTable* FormTimeDataTable;
+	UDataTable* QuillDataTable;
+	UPROPERTY()
+	UDataTable* ChargeDataTable;
+	UPROPERTY()
+	UDataTable* ElementDataTable;
 
 	// 깃펜 효과 타이머
 	FTimerHandle FireQuillStackTimerHandle;
@@ -123,7 +127,9 @@ public:
 	void SetAttackState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
-	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
+	FQuillDataTable* GetNameAtQuillDataTable(const FName Value) const { if (Value != FName("")) return (QuillDataTable->FindRow<FQuillDataTable>(Value, "")); return nullptr; }
+	FChargeDataTable* GetNameAtChargeDataTable() const { return (ChargeDataTable->FindRow<FChargeDataTable>(FName("Charge"), "")); }
+	FElementDataTable* GetNameAtElementDataTable(const FName Value) const { if (Value != FName("")) return (ElementDataTable->FindRow<FElementDataTable>(Value, "")); return nullptr; }
 
 #pragma region GetSet
 	//공격력 반환

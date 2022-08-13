@@ -195,7 +195,7 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->GetQuillAttribute());
+	IreneAnim->SetAttribute(GetQuillAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();
@@ -312,7 +312,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", IreneInput, &UIreneInputInstance::LeftButton);
-	PlayerInputComponent->BindAction("RightButton", IE_Pressed, IreneInput, &UIreneInputInstance::RightButtonPressed);
 	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
 	PlayerInputComponent->BindAxis("RightButton", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);

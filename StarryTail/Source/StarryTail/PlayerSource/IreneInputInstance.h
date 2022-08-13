@@ -123,7 +123,6 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
-	void RightButtonPressed();
 	void RightButtonReleased();
 	void RightButton(float Rate);
 	void MouseWheel(float Rate);
