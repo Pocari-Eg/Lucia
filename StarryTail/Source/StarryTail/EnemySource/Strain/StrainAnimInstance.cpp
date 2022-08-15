@@ -6,9 +6,16 @@
 
 void UStrainAnimInstance::PlayIdleMontage()
 {
-	
-		Montage_Play(IdleMontage, PlayRate);
 
+		if (Montage_IsPlaying(IdleMontage1) || Montage_IsPlaying(IdleMontage2))
+			return;
+
+		auto Random = FMath::RandRange(0, 1);
+
+		if (Random == 0)
+			Montage_Play(IdleMontage1, PlayRate);
+		else
+			Montage_Play(IdleMontage2, PlayRate);
 }
 
 void UStrainAnimInstance::PlayDeathMontage()
@@ -19,8 +26,7 @@ void UStrainAnimInstance::PlayDeathMontage()
 void UStrainAnimInstance::PlayAttackMontage()
 {
 	
-	Montage_Play(RangeAttackMontage, PlayRate);
-
+	Montage_Play(AttackMontage, PlayRate);
 }
 
 void UStrainAnimInstance::PlayDetectMontage()
@@ -37,15 +43,49 @@ void UStrainAnimInstance::PlayAttackedMontage()
 		Montage_Play(AttackedMontage, 1.0f);
 }
 
+void UStrainAnimInstance::PlayWalkMontage()
+{
+	if (Montage_IsPlaying(WalkMontage1) || Montage_IsPlaying(WalkMontage2))
+		return;
+
+	auto Random = FMath::RandRange(0, 1);
+
+	if (Random == 0)
+		Montage_Play(WalkMontage1, PlayRate);
+	else
+		Montage_Play(WalkMontage2, PlayRate);
+}
+
+void UStrainAnimInstance::PlayAttackSignMontage()
+{
+	if (Montage_IsPlaying(AttackSignMontage1) || Montage_IsPlaying(AttackSignMontage2))
+		return;
+
+	auto Random = FMath::RandRange(0, 1);
+
+	if (Random == 0)
+		Montage_Play(AttackSignMontage1, PlayRate);
+	else
+		Montage_Play(AttackSignMontage2, PlayRate);
+}
+
 void UStrainAnimInstance::PlayRunMontage()
 {
-	Montage_Play(RunMontage, PlayRate);
+	if (Montage_IsPlaying(WalkMontage1) || Montage_IsPlaying(WalkMontage2))
+		return;
+
+	auto Random = FMath::RandRange(0, 1);
+
+	if (Random == 0)
+		Montage_Play(WalkMontage1, PlayRate);
+	else
+		Montage_Play(WalkMontage2, PlayRate);
 }
 
 
 bool UStrainAnimInstance::GetAttackIsPlaying()
 {
-	return (Montage_IsPlaying(RangeAttackMontage));
+	return (Montage_IsPlaying(AttackMontage));
 }
 
 

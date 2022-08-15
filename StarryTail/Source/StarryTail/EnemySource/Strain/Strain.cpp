@@ -61,6 +61,7 @@ void AStrain::Walk()
 void AStrain::Attack()
 {
 	//어택 준비 애니메이션 출력
+	StrainAnimInstance->PlayAttackSignMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
 	AttackPosition.Z = AttackPosition.Z - 80.0f;
@@ -77,6 +78,7 @@ void AStrain::Attack()
 void AStrain::Skill_Setting()
 {
 
+	
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
@@ -86,6 +88,7 @@ void AStrain::Skill_Setting()
 
 void AStrain::Skill_Set()
 {
+
 	IsSkillSet = false;
 	Magic_CircleComponent->SetActive(false);
 	Magic_CircleComponent->SetVisibility(false);
@@ -93,6 +96,7 @@ void AStrain::Skill_Set()
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
+	StrainAnimInstance->PlayAttackMontage();
 }
 
 void AStrain::PlayRunAnim()
@@ -178,7 +182,7 @@ void AStrain::BeginPlay()
 		{
 			bDeadWait = true;
 			SetActorEnableCollision(false);
-			StrainAnimInstance->Montage_Stop(500.f, StrainAnimInstance->GetCurrentActiveMontage());
+			Destroy();
 		}
 
 		});
@@ -272,7 +276,7 @@ void AStrain::InitCollision()
 void AStrain::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Ferno/SkeletalMesh/M_Pr_Idle.M_Pr_Idle"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Strain/Mesh/M_Cv_Idle1.M_Cv_Idle1"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}

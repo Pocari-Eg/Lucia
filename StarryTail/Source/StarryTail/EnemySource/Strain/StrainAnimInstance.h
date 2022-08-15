@@ -18,6 +18,8 @@ public:
 	void PlayAttackMontage() override;
 	void PlayDetectMontage() override;
 	void PlayAttackedMontage() override;
+	void PlayWalkMontage() override;
+	void PlayAttackSignMontage();
 	void PlayRunMontage();
 
 	bool GetAttackIsPlaying() override;
@@ -27,12 +29,21 @@ private:
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* IdleMontage;
+		UAnimMontage* IdleMontage1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* IdleMontage2;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* AttackMontage;
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* RangeAttackMontage;
 
-		UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
-			UAnimMontage* RunMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackSignMontage1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* AttackSignMontage2;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* WalkMontage1;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* WalkMontage2;
 
 };
