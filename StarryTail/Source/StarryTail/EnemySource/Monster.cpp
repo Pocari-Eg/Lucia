@@ -1035,6 +1035,7 @@ void AMonster::BeginPlay()
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
 
+	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
 }
 void AMonster::PossessedBy(AController* NewController)
 {

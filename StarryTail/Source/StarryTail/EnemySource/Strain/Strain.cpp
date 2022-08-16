@@ -340,7 +340,7 @@ void AStrain::Tick(float DeltaTime)
 			Skill_AttackEnd();
 		}
 	}
-	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z+M_Fly_Distance));
+	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z+ M_Fly_Distance));
 }
 void AStrain::InitAnime()
 {

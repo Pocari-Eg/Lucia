@@ -22,6 +22,8 @@ DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FDodgeTimeOn);
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -71,6 +73,8 @@ public:
 	FOnHpDelegate OnHpChanged;
 	FOnBarrierDelegate OnBarrierChanged;
 	FOnSwordAttributeChangeDelegate AttributeChange;
+
+	FDodgeTimeOn DodgeTimeOn;
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();
@@ -168,6 +172,8 @@ protected:
 
 	bool bIsSpark;
 	bool bIsObject;
+
+	bool bIsDodgeTime;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
@@ -203,6 +209,8 @@ private:
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
+
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -259,6 +267,7 @@ protected:
 	float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser) override;
 
 
+	virtual void IsDodgeTimeOn() {};
 	//object
 	virtual void HitCheck(AIreneCharacter* Irene) {};
 };
