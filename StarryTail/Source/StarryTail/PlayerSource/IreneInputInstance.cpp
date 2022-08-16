@@ -210,6 +210,42 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 
 	return LookDir;
 }
+int UIreneInputInstance::GetMoveKeyToDirNumber()
+{
+	int LookDir = 0;
+	auto Temp = MoveKey;
+	
+	if(Temp[0] != 0 && Temp[2] != 0)
+	{
+		Temp[0] = 0;
+		Temp[2] = 0;
+	}
+	if(Temp[1] != 0 && Temp[3] != 0)
+	{
+		Temp[1] = 0;
+		Temp[3] = 0;
+	}
+	
+	if (Temp[0] != 0 && Temp[1] == 0 && Temp[3] == 0)
+		LookDir = 0;
+	else if(Temp[0] != 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 1;
+	else if(Temp[0] == 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 2;
+	else if(Temp[2] != 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 3;
+	else if(Temp[2] != 0 && Temp[1] == 0 && Temp[3] == 0)
+		LookDir = 4;
+	else if(Temp[2] != 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 5;
+	else if(Temp[2] == 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 6;
+	else if(Temp[0] != 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 7;
+
+	return LookDir;
+}
+
 
 #pragma endregion MoveInput
 
@@ -595,17 +631,32 @@ void UIreneInputInstance::DodgeKeyword()
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
-
+	
 		Irene->IreneAnim->StopAllMontages(0);
+		
+		if(Irene->IreneAttack->GetIsPerfectDodge() && !PerfectDodgeTimerHandle.IsValid())
+			PerfectDodge();
+
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);			
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
-			
+		
+		Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			 DodgeWaitHandle.Invalidate();
 		 }), AttackDataTable->C_Time, false);
 	}
+}
+void UIreneInputInstance::PerfectDodge()
+{
+	constexpr float Time = 0.4f;
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
+		 {
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+			 PerfectDodgeTimerHandle.Invalidate();
+		 }), Time * 1.0f, false);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
 }
 
 void UIreneInputInstance::DialogAction()
