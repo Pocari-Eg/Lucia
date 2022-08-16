@@ -62,7 +62,8 @@ void AMonsterAIController::SetPlayer()
 }
 void AMonsterAIController::SetFind()
 {
-
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->GetMonsterAnimInstance()->PlayWalktoTraceMontage();
 	Blackboard->SetValueAsBool(IsFindKey, true);
 	SetPlayer();
 }

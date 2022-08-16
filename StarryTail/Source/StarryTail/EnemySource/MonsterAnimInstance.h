@@ -34,6 +34,7 @@ public:
 	virtual void PlayAttackedMontage() {};
 	virtual void PlayGroggyMontage();
 	virtual void PlayDeathMontage() {};
+	virtual void PlayWalktoTraceMontage();
 
 	bool GetBattleIdleIsPlaying();
 	virtual bool GetAttackIsPlaying() { return true;  };
@@ -78,6 +79,8 @@ protected:
 		UAnimMontage* GroggyMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* DeathMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* WalkToTraceMontage;
 private:
 	virtual bool CheckAttackedMontagePlaying() { return true; };
 	/*

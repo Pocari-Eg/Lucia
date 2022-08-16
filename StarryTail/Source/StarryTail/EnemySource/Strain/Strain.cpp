@@ -294,7 +294,7 @@ void AStrain::InitCollision()
 void AStrain::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Strain/Mesh/M_Cv_Idle1.M_Cv_Idle1"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Strain/Mesh/M_Bk_Idle1.M_Bk_Idle1"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
