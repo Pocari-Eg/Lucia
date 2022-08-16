@@ -88,5 +88,8 @@ private:
 
 	float M_Fly_Distance;
 
+	float DodgeTime;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect,meta = (ClampMin = "0.0", ClampMax = "100.0", AllowPrivateAccess = true))
+	float DodgeTimePercent;
 };
