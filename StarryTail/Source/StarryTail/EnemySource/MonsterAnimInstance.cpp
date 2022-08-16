@@ -62,3 +62,9 @@ void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
 }
+
+void UMonsterAnimInstance::AnimNotify_DodgeTimeOn()
+{
+	DodgeTimeOn.Broadcast();
+}
+

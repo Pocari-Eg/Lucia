@@ -654,8 +654,11 @@ void UIreneInputInstance::PerfectDodge()
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+			Irene->IreneData.IsInvincibility = false;
+			Irene->IreneAttack->SetIsPerfectDodge(false);
 			 PerfectDodgeTimerHandle.Invalidate();
 		 }), Time * 1.0f, false);
+	Irene->IreneData.IsInvincibility = true;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
 }
 
