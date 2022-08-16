@@ -49,6 +49,7 @@ AStrain::AStrain()
 
 
 	M_MaxFlyDistance = 100.0f;
+	DodgeTimePercent = 10.0f;
 }
 UStrainAnimInstance* AStrain::GetStrainAnimInstance() const
 {
@@ -79,13 +80,17 @@ void AStrain::Attack()
 
 void AStrain::Skill_Setting()
 {
+	DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
 
-	
+	STARRYLOG(Error, TEXT("%f"), DodgeTime);
+
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
 	MagicAttack = GetWorld()->SpawnActor<AST_MagicAttack>(MagicAttackClass, AttackPosition, FRotator::ZeroRotator);
 	MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius,MonsterInfo.M_Skill_Atk);
+
+
 }
 
 void AStrain::Skill_Set()
@@ -319,14 +324,21 @@ void AStrain::Tick(float DeltaTime)
 
 	if (IsSkillSet)
 	{
-	
+		
 		
 		SkillSetTimer += DeltaTime;
 		float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 		Ratio = (Ratio * 0.5);
 		MagicAttack->PlayIndicator(Ratio);
+		if (SkillSetTimer >= DodgeTime)
+		{
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+		}
 		if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 		{
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
 			Skill_Set();
 		}
 	}
