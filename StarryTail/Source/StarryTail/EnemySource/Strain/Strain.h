@@ -42,6 +42,11 @@ protected:
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
+
+	UFUNCTION(BlueprintCallable)
+	float GetFlyDistance();
+	UFUNCTION(BlueprintCallable)
+	void SetFlyDistance(float Distance);
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
@@ -59,8 +64,8 @@ public:
 		float M_Run_Time;
 		UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Attacked_Time;
-
-
+		UPROPERTY(EditAnywhere, BlueprintReadWrite)
+			float M_MaxFlyDistance;
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* Magic_CircleComponent;
@@ -78,5 +83,10 @@ private:
 	float SkillAttackTimer;
 
 	FVector AttackPosition;
+
+	float TotalFlyDistance;
+
+	float M_Fly_Distance;
+
 
 };

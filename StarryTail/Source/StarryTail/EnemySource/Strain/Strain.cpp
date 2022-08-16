@@ -47,6 +47,8 @@ AStrain::AStrain()
 		MagicAttackClass=BP_MAGICATTACK.Class;
 	}
 
+
+	M_MaxFlyDistance = 100.0f;
 }
 UStrainAnimInstance* AStrain::GetStrainAnimInstance() const
 {
@@ -61,6 +63,7 @@ void AStrain::Walk()
 void AStrain::Attack()
 {
 	//어택 준비 애니메이션 출력
+	StrainAnimInstance->PlayAttackSignMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
 	AttackPosition.Z = AttackPosition.Z - 80.0f;
@@ -77,6 +80,7 @@ void AStrain::Attack()
 void AStrain::Skill_Setting()
 {
 
+	
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
@@ -86,6 +90,7 @@ void AStrain::Skill_Setting()
 
 void AStrain::Skill_Set()
 {
+
 	IsSkillSet = false;
 	Magic_CircleComponent->SetActive(false);
 	Magic_CircleComponent->SetVisibility(false);
@@ -93,6 +98,7 @@ void AStrain::Skill_Set()
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
+	StrainAnimInstance->PlayAttackMontage();
 }
 
 void AStrain::PlayRunAnim()
@@ -178,7 +184,7 @@ void AStrain::BeginPlay()
 		{
 			bDeadWait = true;
 			SetActorEnableCollision(false);
-			StrainAnimInstance->Montage_Stop(500.f, StrainAnimInstance->GetCurrentActiveMontage());
+			Destroy();
 		}
 
 		});
@@ -187,6 +193,9 @@ void AStrain::BeginPlay()
 
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+
+
+
 }
 
 void AStrain::PossessedBy(AController* NewController)
@@ -207,6 +216,14 @@ void AStrain::PostInitializeComponents()
 }
 
 #pragma region Init
+float AStrain::GetFlyDistance()
+{
+	return M_Fly_Distance;
+}
+void AStrain::SetFlyDistance(float Distance)
+{
+	M_Fly_Distance = Distance;
+}
 void AStrain::InitMonsterInfo()
 {
 	MonsterInfo.M_Type = EEnemyRank::e_Common;
@@ -272,7 +289,7 @@ void AStrain::InitCollision()
 void AStrain::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Ferno/SkeletalMesh/M_Pr_Idle.M_Pr_Idle"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Strain/Mesh/M_Cv_Idle1.M_Cv_Idle1"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
@@ -323,7 +340,7 @@ void AStrain::Tick(float DeltaTime)
 			Skill_AttackEnd();
 		}
 	}
-
+	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z+M_Fly_Distance));
 }
 void AStrain::InitAnime()
 {

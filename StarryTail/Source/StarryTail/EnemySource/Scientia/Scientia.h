@@ -127,7 +127,11 @@ public:
 	FOnChangeThunderBarrier OnThunderBarrierChanged;
 
 	FOnCrushBarrier OnCrushBarrier;
-	
+
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AFeather> FeatherBP;
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class APiece> PieceBP;
 private:
 	void SpawnPiece();
 
@@ -137,8 +141,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = ScientiaInfo, Meta = (AllowPrivateAccess = true))
 		FScientiaInfo ScInfo;
 
-	TSubclassOf<AFeather> FeatherBP;
-	TSubclassOf<APiece> PieceBP;
+
 
 	UScAnimInstance* ScAnimInstance;
 
