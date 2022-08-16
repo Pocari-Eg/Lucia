@@ -56,6 +56,8 @@ private:
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	AActor* TargetMonster;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	int DodgeDir;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -79,6 +81,7 @@ public:
 	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
+	void SetDodgeDir(const int Value) { DodgeDir = Value; }
 
 	bool GetIsinAir()const{return IsInAir;}
 private:
