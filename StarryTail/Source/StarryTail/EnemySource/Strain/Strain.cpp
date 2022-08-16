@@ -47,6 +47,8 @@ AStrain::AStrain()
 		MagicAttackClass=BP_MAGICATTACK.Class;
 	}
 
+
+	M_MaxFlyDistance = 100.0f;
 }
 UStrainAnimInstance* AStrain::GetStrainAnimInstance() const
 {
@@ -191,6 +193,9 @@ void AStrain::BeginPlay()
 
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+
+
+
 }
 
 void AStrain::PossessedBy(AController* NewController)
@@ -211,6 +216,14 @@ void AStrain::PostInitializeComponents()
 }
 
 #pragma region Init
+float AStrain::GetFlyDistance()
+{
+	return M_Fly_Distance;
+}
+void AStrain::SetFlyDistance(float Distance)
+{
+	M_Fly_Distance = Distance;
+}
 void AStrain::InitMonsterInfo()
 {
 	MonsterInfo.M_Type = EEnemyRank::e_Common;
@@ -327,7 +340,7 @@ void AStrain::Tick(float DeltaTime)
 			Skill_AttackEnd();
 		}
 	}
-
+	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z+M_Fly_Distance));
 }
 void AStrain::InitAnime()
 {
