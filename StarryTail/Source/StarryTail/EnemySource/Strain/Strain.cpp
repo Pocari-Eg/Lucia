@@ -189,7 +189,9 @@ void AStrain::BeginPlay()
 		{
 			bDeadWait = true;
 			SetActorEnableCollision(false);
-			Destroy();
+			StrainAnimInstance->Montage_Stop(500.f, StrainAnimInstance->GetCurrentActiveMontage());
+			
+		
 		}
 
 		});
@@ -270,7 +272,7 @@ void AStrain::InitMonsterInfo()
 
 	
 	MonsterInfo.KnockBackPower = 50.0f;
-	MonsterInfo.DeadWaitTime = 3.0f;
+	MonsterInfo.DeadWaitTime = 1.0f;
 
 	
 	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
@@ -311,48 +313,56 @@ void AStrain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if (IsCloseOtherAttack)
-	{
-		IntersectionTimer += DeltaTime;
-		if (IntersectionTimer >= 1.0f)
-		{
-			IntersectionTimer = 0.0f;
-			IsCloseOtherAttack = false;
-			Skill_Setting();
-		}
-	}
+	if (bIsDead == false) {
 
-	if (IsSkillSet)
-	{
-		
-		
-		SkillSetTimer += DeltaTime;
-		float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
-		Ratio = (Ratio * 0.5);
-		MagicAttack->PlayIndicator(Ratio);
-		if (SkillSetTimer >= DodgeTime)
+		if (IsCloseOtherAttack)
 		{
-			auto Instance = Cast<USTGameInstance>(GetGameInstance());
-			Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+			IntersectionTimer += DeltaTime;
+			if (IntersectionTimer >= 1.0f)
+			{
+				IntersectionTimer = 0.0f;
+				IsCloseOtherAttack = false;
+				Skill_Setting();
+			}
 		}
-		if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
+
+		if (IsSkillSet)
 		{
-			auto Instance = Cast<USTGameInstance>(GetGameInstance());
-			Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
-			Skill_Set();
-		}
-	}
-	if (IsSkillAttack)
-	{
 
 
-		SkillAttackTimer += DeltaTime;
-		if (SkillAttackTimer >= MonsterInfo.M_Skill_Time)
+			SkillSetTimer += DeltaTime;
+			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
+			Ratio = (Ratio * 0.5);
+			MagicAttack->PlayIndicator(Ratio);
+			if (SkillSetTimer >= DodgeTime)
+			{
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+			}
+			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
+			{
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
+				Skill_Set();
+			}
+		}
+		if (IsSkillAttack)
 		{
-			Skill_AttackEnd();
+
+
+			SkillAttackTimer += DeltaTime;
+			if (SkillAttackTimer >= MonsterInfo.M_Skill_Time)
+			{
+				Skill_AttackEnd();
+			}
+		}
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + M_Fly_Distance));
+	}
+	else {
+		if (MagicAttack != nullptr) {
+			MagicAttack->Destroy();
 		}
 	}
-	SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z+ M_Fly_Distance));
 }
 void AStrain::InitAnime()
 {
