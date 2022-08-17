@@ -12,7 +12,7 @@
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/IreneAttackInstance.h"
-#include "../PlayerSource/IreneFSM.h"
+#include "../PlayerSource/PlayerFSM/IreneFSM.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
 #include "../UI/HPBarWidget.h"

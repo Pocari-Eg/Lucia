@@ -119,6 +119,7 @@ private:
 	void AnimNotify_JumpSound() const;
 	UFUNCTION()
 	void AnimNotify_TakeDamageSound	() const;
+	
 	FName GetAttackMontageSectionName(const int32 Section);
 
 public:

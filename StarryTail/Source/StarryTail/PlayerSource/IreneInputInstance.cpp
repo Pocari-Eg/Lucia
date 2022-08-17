@@ -3,7 +3,7 @@
 
 #include "IreneInputInstance.h"
 #include "IreneCharacter.h"
-#include "IreneFSM.h"
+#include "PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
@@ -306,8 +306,8 @@ void UIreneInputInstance::LeftButton(float Rate)
 					if(Irene->IreneData.CurrentCombo < 3)
 					{
 						// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
-						Irene->IreneData.CurrentCombo += 1;
-						Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+						//Irene->IreneData.CurrentCombo += 1;
+						//Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 					}
 				}
 			}

@@ -6,7 +6,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "../StarryTail.h"
+#include "../../StarryTail.h"
 
 #include "IreneFSMInterface.generated.h"
 
