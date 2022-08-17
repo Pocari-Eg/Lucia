@@ -12,6 +12,9 @@
 #include "./Ferno/Ferno.h"
 #include"./Ferno/FernoAIController.h"
 
+#include"./Strain/Strain.h"
+#include"./Strain/StrainAIController.h"
+
 #include "MonsterAIController.h"
 //UI
 #include "../STGameInstance.h"
@@ -253,7 +256,7 @@ int AMonster::GetMonsterAtkType() const
 }
 float AMonster::GetAttackCoolTime() const
 {
-	return MonsterInfo.M_CoolTime;
+	return MonsterInfo.M_Skill_Cool;
 }
 UMonsterAnimInstance* AMonster::GetMonsterAnimInstance() const
 {
@@ -267,6 +270,14 @@ float AMonster::GetAttackPercent() const
 {
 	return MonsterInfo.M_AttackPercent;
 }
+int AMonster::GetPlayerEnergy() const
+{
+	return 0;
+}
+int AMonster::GetManaShieldCount() const
+{
+	return 0;
+}
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.M_Atk_Angle;
@@ -279,18 +290,18 @@ float AMonster::GetAtkHeight() const
 {
 	return MonsterInfo.M_Atk_Angle;
 }
+bool AMonster::GetIsManaShieldActive() const
+{
+	return MonsterInfo.bIsShieldOn;
+}
 void AMonster::SetIsAttackCool(bool Cool)
 {
 	bIsAttackCool = Cool;
 }
 void AMonster::Attack()
 {
-	
-	MonsterAnimInstance->PlayAttackMontage();
-	MonsterAIController->StopMovement();
-
+	MonsterAIController->Attack();
 //	bIsAttacking = true;
-
 }
 void AMonster::SetCurQuillStack(const int Value)
 {
@@ -394,6 +405,7 @@ void AMonster::SetManaShieldEffct()
 
 #pragma region Calc
 
+
 float AMonster::CalcNormalAttackDamage(float Damage)
 {
 	if (Cast<AMorbit>(this))
@@ -403,10 +415,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		auto Morbit = Cast<AMorbit>(this);
-		auto MbAIController = Cast<AMbAIController>(Morbit->GetController());
-
-		MbAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
+		MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
 	if (Cast<AFerno>(this))
@@ -416,8 +425,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		auto Ferno = Cast<AFerno>(this);
-		auto FernoAIController = Cast<AFernoAIController>(Ferno->GetController());
+		MonsterAIController->Attacked();
 	}
 	if (Cast<AScientia>(this)) {
 
@@ -426,27 +434,30 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		auto Scientia = Cast<AScientia>(this);
-		auto  ScAIController = Cast<AScAIController>(Scientia->GetController());
+		MonsterAIController->Attacked();
 
-		ScAIController->Attacked();
+	}
+	if (Cast<AStrain>(this)) {
+
+		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
+		auto Player = GameInstance->GetPlayer();
+
+		bool IsKnockback = Player->IreneState->IsKnockBackState();
+
+		MonsterAIController->Attacked();
 
 	}
 	if (Cast<ABouldelith>(this))
 	{
-		
-		auto Bouldelith = Cast<ABouldelith>(this);
-		auto BdAIController = Cast<ABdAIController>(Bouldelith->GetController());
-
 		//방어력 게이지 업데이트
 		OnBarrierChanged.Broadcast();
 
-		if(AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
-			BdAIController->Attacked();
+		if (AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
+			MonsterAIController->Attacked();
 	}
 
 	MonsterAIController->StopMovement();
-	
+
 
 	return Damage;
 }
@@ -1024,6 +1035,7 @@ void AMonster::BeginPlay()
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
 
+	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1117,10 +1129,11 @@ void AMonster::Tick(float DeltaTime)
 	{
 		AttackCoolTimer+= DeltaTime;
 
-		if (AttackCoolTimer >= MonsterInfo.M_CoolTime)
+		if (AttackCoolTimer >= MonsterInfo.M_Skill_Cool)
 		{
 			AttackCoolTimer = 0.0f;
 			SetIsAttackCool(false);
+			GetAIController()->SetAttackCoolKey(false);
 		}
 	}
 

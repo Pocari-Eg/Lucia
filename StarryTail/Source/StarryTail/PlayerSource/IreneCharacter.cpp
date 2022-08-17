@@ -18,9 +18,7 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneInputInstance.h"
-#include ".././EnemySource/Scientia/Feather.h"
-#include ".././EnemySource/Scientia/Piece.h"
-#include ".././EnemySource/Ferno/Meteor.h"
+#include ".././EnemySource/MonsterProjectile.h"
 #include "Curves/CurveVector.h"
 #include "../EnemySource/Bouldelith/Bouldelith.h"
 #include "../EnemySource/Morbit/Morbit.h"
@@ -169,7 +167,7 @@ AIreneCharacter::AIreneCharacter()
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
 	IreneData.CurrentEnergy = 0;
-
+	
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
 	HpRecoveryData.Amount = 300;
@@ -197,7 +195,7 @@ void AIreneCharacter::BeginPlay()
 	//StopWatch->InitStopWatch();
 
 	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(IreneAttack->GetQuillAttribute());
+	IreneAnim->SetAttribute(GetQuillAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();
@@ -314,7 +312,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", IreneInput, &UIreneInputInstance::LeftButton);
-	PlayerInputComponent->BindAction("RightButton", IE_Pressed, IreneInput, &UIreneInputInstance::RightButtonPressed);
 	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
 	PlayerInputComponent->BindAxis("RightButton", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
@@ -632,12 +629,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AFeather>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser))
 				return FinalDamage;
-			if (Cast<APiece>(DamageCauser))
-				return FinalDamage;
-			if (Cast<AMeteor>(DamageCauser))
-				return FinalDamage;
+
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->SwordTargetMonster = DamageCauser;

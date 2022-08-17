@@ -37,6 +37,13 @@ void UMonsterAnimInstance::PlayGroggyMontage()
 	if(!Montage_IsPlaying(GroggyMontage))
 		Montage_Play(GroggyMontage, PlayRate);
 }
+
+void UMonsterAnimInstance::PlayWalktoTraceMontage()
+{
+	if (WalkToTraceMontage != nullptr) {
+		Montage_Play(WalkToTraceMontage, PlayRate);
+	}
+}
 #pragma endregion
 bool UMonsterAnimInstance::GetBattleIdleIsPlaying()
 {
@@ -62,3 +69,9 @@ void UMonsterAnimInstance::AnimNotify_Death()
 {
 	Death.Broadcast();
 }
+
+void UMonsterAnimInstance::AnimNotify_DodgeTimeOn()
+{
+	DodgeTimeOn.Broadcast();
+}
+

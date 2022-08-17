@@ -29,7 +29,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 1;
 
 	MonsterInfo.M_Max_HP = 1000.0f;
-	MonsterInfo.Atk = 50.0f;
+	MonsterInfo.M_Skill_Atk = 50.0f;
 	MonsterInfo.Chain_Detect_Radius = 450.0f;
 
 	MonsterInfo.M_MoveSpeed = 200.0f;
@@ -84,6 +84,10 @@ void ABouldelith::InitAnime()
 	{
 		GetMesh()->SetAnimInstanceClass(BouldelithAnim.Class);
 	}
+}
+void ABouldelith::IsDodgeTimeOn()
+{
+	bIsDodgeTime = true;
 }
 #pragma endregion
 void ABouldelith::Walk()
@@ -141,6 +145,7 @@ void ABouldelith::Attack4()
 }
 void ABouldelith::AttackCheck1()
 {
+	bIsDodgeTime = false;
 	FHitResult Hit;
 
 	//By ¼º¿­Çö
@@ -180,7 +185,7 @@ void ABouldelith::AttackCheck1()
 			return;
 
 	
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+			UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 		
 	}
 	else
@@ -200,10 +205,56 @@ void ABouldelith::AttackCheck4()
 			if (!Player->GetMovementComponent()->IsFalling())
 			{
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
 			
 			}
 		}
+	}
+}
+void ABouldelith::DodgeCheck()
+{
+
+	FHitResult Hit;
+
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeSphere(150.0f),
+		Params);
+
+
+	if (bTestMode)
+	{
+		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
+		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Blue : FColor::Yellow;
+		float DebugLifeTime = 5.0f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			150.0f,
+			CapsuleRot,
+			DrawColor,
+			false,
+			0.1);
+	}
+
+	if (bResult)
+	{
+		auto Player = Cast<AIreneCharacter>(Hit.Actor);
+		if (nullptr == Player)
+			return;
+
+		Player->IreneAttack->SetIsPerfectDodge(true);
+		STARRYLOG(Error, TEXT("DODGE AREA IN"));
+
 	}
 }
 #pragma endregion
@@ -303,7 +354,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				auto Player = Cast<AIreneCharacter>(OtherActor);
 
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
 			}
@@ -318,7 +369,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (FindName == CompCollisionName)
 				{
-					CalcHp(MonsterInfo.Atk * BouldelithInfo.Attack3Value);
+					CalcHp(MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value);
 					if (!bIsDead)
 					{
 						auto BdAIController = Cast<ABdAIController>(MonsterAIController);
@@ -360,6 +411,11 @@ void ABouldelith::Tick(float DeltaTime)
 			BdAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
 			bIsBroken = true;
 		}
+	}
+
+	if (bIsDodgeTime)
+	{
+		DodgeCheck();
 	}
 }
 void ABouldelith::BeginPlay()
@@ -403,6 +459,12 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
 
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+
+
+	//Perfect Dodge
+	BdAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
+		DodgeTimeOn.Broadcast();
+		});
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

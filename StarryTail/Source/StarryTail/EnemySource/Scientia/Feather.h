@@ -6,10 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "../../Starrytail.h"
+#include"../MonsterProjectile.h"
 #include "Feather.generated.h"
 
 UCLASS()
-class STARRYTAIL_API AFeather : public AActor
+class STARRYTAIL_API AFeather : public AMonsterProjectile
 {
 	GENERATED_BODY()
 	

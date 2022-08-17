@@ -37,6 +37,8 @@ public:
 	void AttackCheck1();
 	void AttackCheck4();
 
+	void DodgeCheck();
+
 	void Backstep();
 
 	UBdAnimInstance* GetBouldelithAnimInstance() const;
@@ -107,4 +109,6 @@ private:
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
+	void IsDodgeTimeOn() override;
+
 };

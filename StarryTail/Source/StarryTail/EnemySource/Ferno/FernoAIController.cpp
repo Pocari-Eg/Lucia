@@ -5,7 +5,6 @@
 #include"Ferno.h"
 
 
-const FName AFernoAIController::IsCanRangeAttackKey = (TEXT("bCanRangeAttack"));
 
 const FName AFernoAIController::IsAfterAttacked = (TEXT("bIsAfterAttacked"));
 AFernoAIController::AFernoAIController()
@@ -27,6 +26,13 @@ AFernoAIController::AFernoAIController()
 	}
 
 
+}
+
+void AFernoAIController::Attack()
+{
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->GetMonsterAnimInstance()->PlayAttackMontage();
+	StopMovement();
 }
 
 void AFernoAIController::Attacked()
@@ -71,7 +77,6 @@ void AFernoAIController::OnPossess(APawn* InPawn)
 
 		M_MaxAttacked = Ferno->GetMaxAttacked();
 		Blackboard->SetValueAsVector(SpawnPosKey, InPawn->GetActorLocation());
-		Blackboard->SetValueAsFloat(MeleeAttackRangeKey, Ferno->GetMeleeAttackRange());
 		Blackboard->SetValueAsFloat(TraceRangeKey, Ferno->GetTraceRange());
 		if (!RunBehaviorTree(BTAsset))
 		{

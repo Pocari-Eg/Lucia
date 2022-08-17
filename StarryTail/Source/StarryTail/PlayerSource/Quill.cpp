@@ -110,21 +110,18 @@ void AQuill::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	
-	if(Target == nullptr)
+	if(Target == nullptr || OtherActor == Target)
 	{
-		if(Cast<AMonster>(OtherActor))
+		const auto Monster = Cast<AMonster>(OtherActor);
+		if(Monster)
 		{
+			if(Monster->GetIsManaShieldActive())
+				Irene->IreneData.CurrentEnergy+=10;
+			if(Irene->IreneData.CurrentEnergy > Irene->IreneData.MaxScrollEnergy)
+				Irene->IreneData.CurrentEnergy = Irene->IreneData.MaxScrollEnergy;
 			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
 			StartAttack();
-		}
-	}	
-	if(OtherActor == Target)
-	{
-		if(Cast<AMonster>(OtherActor))
-		{
-			UGameplayStatics::ApplyDamage(OtherActor, Strength, nullptr, this, nullptr);
-			StartAttack();
-		}
+		}		
 	}
 }
 

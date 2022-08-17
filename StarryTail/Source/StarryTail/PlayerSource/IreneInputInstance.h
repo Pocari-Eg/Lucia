@@ -68,7 +68,9 @@ private:
 	FTimerHandle LockOnTimerHandle;
 	bool bIsLockOn;
 	float LockOnTime;
-	
+
+	FTimerHandle PerfectDodgeTimerHandle;
+
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
 private:
@@ -114,6 +116,7 @@ public:
 	void MoveD(float Rate);
 
 	FVector GetMoveKeyToDirVector();
+	int GetMoveKeyToDirNumber();
 #pragma endregion Move
 
 #pragma region OtherInput
@@ -123,7 +126,6 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
-	void RightButtonPressed();
 	void RightButtonReleased();
 	void RightButton(float Rate);
 	void MouseWheel(float Rate);
@@ -142,6 +144,7 @@ public:
 
 	// 대쉬
 	void DodgeKeyword();
+	void PerfectDodge();
 	
 	// 액션 
 	void DialogAction();

@@ -37,9 +37,9 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.M_Atk_Type = 1;
 
 	MonsterInfo.M_Max_HP = 100.0f;
-	MonsterInfo.Atk = 100.0f;
+	MonsterInfo.M_Skill_Atk = 100.0f;
 	MonsterInfo.Chain_Detect_Radius = 450.0f;
-	MonsterInfo.M_CoolTime = 0.0f;
+	MonsterInfo.M_Skill_Cool = 0.0f;
 	MonsterInfo.PatrolArea = 600.0f;
 	MonsterInfo.M_MaxFollowTime = 5.0f;
 
@@ -166,7 +166,7 @@ void AMorbit::AttackCheck()
 		auto Player = Cast<AIreneCharacter>(Hit.Actor);
 		if (nullptr == Player)
 			return;
-		UGameplayStatics::ApplyDamage(Player, MonsterInfo.Atk, NULL, this, NULL);
+		UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 		
 	}
 	//

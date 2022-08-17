@@ -14,15 +14,16 @@
 UIreneAttackInstance::UIreneAttackInstance()
 {
 	// 데이터 테이블
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_AttackDataTable(TEXT("/Game/Math/BP_AttackDataTable.BP_AttackDataTable"));
-	if (DT_AttackDataTable.Succeeded())
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_AttackDataTable(TEXT("/Game/Math/DT_AttackDataTable.DT_AttackDataTable"));
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_QuillDataTable(TEXT("/Game/Math/DT_QuillDataTable.DT_QuillDataTable"));
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ChargeDataTable(TEXT("/Game/Math/DT_ChargeDataTable.DT_ChargeDataTable"));
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ElementDataTable(TEXT("/Game/Math/DT_ElementDataTable.DT_ElementDataTable"));
+	if (DT_AttackDataTable.Succeeded() && DT_QuillDataTable.Succeeded() && DT_ChargeDataTable.Succeeded() && DT_ElementDataTable.Succeeded())
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
-	}
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_FormTimeDataTable(TEXT("/Game/Math/BP_FormTimeDataTable.BP_FormTimeDataTable"));
-	if (DT_FormTimeDataTable.Succeeded())
-	{
-		FormTimeDataTable = DT_FormTimeDataTable.Object;
+		QuillDataTable = DT_QuillDataTable.Object;
+		ChargeDataTable = DT_ChargeDataTable.Object;
+		ElementDataTable = DT_ElementDataTable.Object;
 	}
 	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_FireBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_f.Ps_Buff_F"));
 	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_WaterBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_w.Ps_Buff_W"));
@@ -78,18 +79,18 @@ float UIreneAttackInstance::GetATK()const
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
 	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
-	FString AttributeName = "B_Attack_1_F";
+	FString AttributeName = "B_Attack_1";
 	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
 	{
-		AttributeName = "B_Attack_1_F";
+		AttributeName = "B_Attack_1";
 	}
 	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
 	{
-		AttributeName = "B_Attack_2_F";
+		AttributeName = "B_Attack_2";
 	}
 	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 	{
-		AttributeName = "B_Attack_3_F";
+		AttributeName = "B_Attack_3";
 	}
 	return FName(AttributeName);
 }
@@ -157,26 +158,28 @@ void UIreneAttackInstance::DoAttack()
 	PlayerPosVec = FVector::ZeroVector;
 	TargetPosVec = FVector::ZeroVector;
 	bool bResult = false;
+
+	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 	
 	TArray<FHitResult> MonsterList;
 	FCollisionQueryParams Params(NAME_None, false, Irene);
 	bResult = GetWorld()->SweepMultiByChannel(
 	MonsterList,
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f),
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f),
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
 	FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
 	ECollisionChannel::ECC_GameTraceChannel1,
-	FCollisionShape::MakeBox(FVector(200, 50, 150)),
+	FCollisionShape::MakeBox(FVector(200, 50, AttackTable->Attack_Distance_1)),
 	Params);
 	
 	// 그리기 시작
 	#if ENABLE_DRAW_DEBUG
 		FVector TraceVec = Irene->GetActorForwardVector();
-		FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*100.0f);
+		FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 		float DebugLifeTime = 5.0f;
-		DrawDebugBox(GetWorld(), Center, FVector(200, 50, 150), CapsuleRot, DrawColor, false, DebugLifeTime);
+		DrawDebugBox(GetWorld(), Center, FVector(200, 50, AttackTable->Attack_Distance_1), CapsuleRot, DrawColor, false, DebugLifeTime);
 	#endif
 
 	// 모든 충돌된 액터에 데미지 전송

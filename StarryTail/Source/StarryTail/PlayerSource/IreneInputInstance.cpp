@@ -71,15 +71,15 @@ void UIreneInputInstance::InitMemberVariable()
 }
 void UIreneInputInstance::Begin()
 {
-	const TUniquePtr<FFormTimeDataTable> FireFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Fire_Form")));
+	const TUniquePtr<FElementDataTable> FireFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Fire_Ele")));
 	if(FireFormTimeDataTable != nullptr)
-		FireMaxCoolTime = FireFormTimeDataTable->Form_C_Time;
-	const TUniquePtr<FFormTimeDataTable> WaterFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Water_Form")));
+		FireMaxCoolTime = FireFormTimeDataTable->Ele_C_Time;
+	const TUniquePtr<FElementDataTable> WaterFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Water_Ele")));
 	if(WaterFormTimeDataTable != nullptr)
-		WaterMaxCoolTime = WaterFormTimeDataTable->Form_C_Time;
-	const TUniquePtr<FFormTimeDataTable> ThunderFormTimeDataTable = MakeUnique<FFormTimeDataTable>(*Irene->IreneAttack->GetNameAtFormTimeDataTable(FName("Thunder_Form")));
+		WaterMaxCoolTime = WaterFormTimeDataTable->Ele_C_Time;
+	const TUniquePtr<FElementDataTable> ThunderFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Thunder_Ele")));
 	if(ThunderFormTimeDataTable != nullptr)
-		ThunderMaxCoolTime = ThunderFormTimeDataTable->Form_C_Time;
+		ThunderMaxCoolTime = ThunderFormTimeDataTable->Ele_C_Time;
 }
 
 #pragma region Move
@@ -210,6 +210,42 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 
 	return LookDir;
 }
+int UIreneInputInstance::GetMoveKeyToDirNumber()
+{
+	int LookDir = 0;
+	auto Temp = MoveKey;
+	
+	if(Temp[0] != 0 && Temp[2] != 0)
+	{
+		Temp[0] = 0;
+		Temp[2] = 0;
+	}
+	if(Temp[1] != 0 && Temp[3] != 0)
+	{
+		Temp[1] = 0;
+		Temp[3] = 0;
+	}
+	
+	if (Temp[0] != 0 && Temp[1] == 0 && Temp[3] == 0)
+		LookDir = 0;
+	else if(Temp[0] != 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 1;
+	else if(Temp[0] == 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 2;
+	else if(Temp[2] != 0 && Temp[1] == 0 && Temp[3] != 0)
+		LookDir = 3;
+	else if(Temp[2] != 0 && Temp[1] == 0 && Temp[3] == 0)
+		LookDir = 4;
+	else if(Temp[2] != 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 5;
+	else if(Temp[2] == 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 6;
+	else if(Temp[0] != 0 && Temp[1] != 0 && Temp[3] == 0)
+		LookDir = 7;
+
+	return LookDir;
+}
+
 
 #pragma endregion MoveInput
 
@@ -283,39 +319,38 @@ void UIreneInputInstance::LeftButton(float Rate)
 		}
 	}
 }
-void UIreneInputInstance::RightButtonPressed()
-{
-	
-}
 void UIreneInputInstance::RightButtonReleased()
 {
 	if(RightButtonChargeTime > 0)
 	{
-		QuillSpawn(FVector(-10,-55,55),false);
-		QuillSpawn(FVector(-10,55,55),true);
-		QuillSpawn(FVector(-10,-55,20),false);
-		QuillSpawn(FVector(-10,55,20),true);
-		if(RightButtonChargeTime > 1)
+		const TUniquePtr<FChargeDataTable> ChargeDataTable = MakeUnique<FChargeDataTable>(*Irene->IreneAttack->GetNameAtChargeDataTable());
+		if(RightButtonChargeTime > ChargeDataTable->Charge_Time_0)
 		{
-			QuillSpawn(FVector(-10,-75,85),false);
+			QuillSpawn(FVector(-10,-55,55),false);
+			QuillSpawn(FVector(-10,55,55),true);
+			QuillSpawn(FVector(-10,-55,20),false);
+			QuillSpawn(FVector(-10,55,20),true);
+			if(RightButtonChargeTime > ChargeDataTable->Charge_Time_1)
+			{
+				QuillSpawn(FVector(-10,-75,85),false);
+			}
+			if(RightButtonChargeTime > ChargeDataTable->Charge_Time_2)
+			{
+				QuillSpawn(FVector(-10,75,85),true);
+			}
+			if(RightButtonChargeTime > ChargeDataTable->Charge_Time_3)
+			{
+				QuillSpawn(FVector(-10,-75,10),false);
+			}
+			if(RightButtonChargeTime > ChargeDataTable->Charge_Time_4)
+			{
+				QuillSpawn(FVector(-10,75,-10),true);
+			}
 		}
-		if(RightButtonChargeTime > 2)
-		{
-			QuillSpawn(FVector(-10,75,85),true);
-		}
-		if(RightButtonChargeTime > 3)
-		{
-			QuillSpawn(FVector(-10,-75,10),false);
-		}
-		if(RightButtonChargeTime > 4)
-		{
-			QuillSpawn(FVector(-10,75,-10),true);
-		}
-
 		GetWorld()->GetTimerManager().SetTimer(QuillWaitHandle, FTimerDelegate::CreateLambda([&]
 		{
 			GetWorld()->GetTimerManager().ClearTimer(QuillWaitHandle);
-		}), 1, false);
+		}), ChargeDataTable->Quill_C_Time, false);
 		RightButtonChargeTime = 0;
 	}
 }
@@ -348,13 +383,29 @@ void UIreneInputInstance::QuillSpawn(FVector Vector, bool IsRightPos)
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = Irene;
 	const FVector SpawnLocation = Irene->GetActorLocation() + Irene->GetActorForwardVector()*Vector.X + Irene->GetActorRightVector()*Vector.Y + Irene->GetActorUpVector()*Vector.Z;
-	
+
+	TUniquePtr<FQuillDataTable> ElementTimeDataTable;
+	switch (Irene->GetQuillAttribute())
+	{
+	case EAttributeKeyword::e_Fire:
+		ElementTimeDataTable = MakeUnique<FQuillDataTable>(*Irene->IreneAttack->GetNameAtQuillDataTable(FName("FireQuill")));
+		break;
+	case EAttributeKeyword::e_Water:
+		ElementTimeDataTable = MakeUnique<FQuillDataTable>(*Irene->IreneAttack->GetNameAtQuillDataTable(FName("WaterQuill")));
+		break;
+	case EAttributeKeyword::e_Thunder:
+		ElementTimeDataTable = MakeUnique<FQuillDataTable>(*Irene->IreneAttack->GetNameAtQuillDataTable(FName("ThunderQuill")));
+		break;
+	default:
+		ElementTimeDataTable = MakeUnique<FQuillDataTable>(*Irene->IreneAttack->GetNameAtQuillDataTable(FName("FireQuill")));
+		break;
+	}
 	const auto SpawnedActor = GetWorld()->SpawnActor<AQuill>(AQuill::StaticClass(), SpawnLocation,Irene->GetActorRotation(),SpawnParams);
 	SpawnedActor->Init(Irene);
-	SpawnedActor->Attribute = Irene->IreneAttack->GetQuillAttribute();
-	SpawnedActor->MoveSpeed = 400;
-	SpawnedActor->Distance = 2500;
-	SpawnedActor->Strength = 100;
+	SpawnedActor->Attribute = Irene->GetQuillAttribute();
+	SpawnedActor->MoveSpeed = ElementTimeDataTable->Quill_Speed;
+	SpawnedActor->Distance = ElementTimeDataTable->Quill_Distance;
+	SpawnedActor->Strength = ElementTimeDataTable->Quill_Dmg;
 	SpawnedActor->IsRightPos = IsRightPos;
 	
 	if(Irene->IreneAttack->QuillTargetMonster != nullptr)
@@ -530,7 +581,7 @@ void UIreneInputInstance::QuillLeftAttributeChangeReleased()
 	// 깃펜 속성 변경
 	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
 	const int TargetMonsterStack = QuillAttributeChangeStackAction();
-	switch (Irene->IreneAttack->GetQuillAttribute())
+	switch (Irene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:	
 		Irene->IreneAttack->SetFireQuillStack(TargetMonsterStack);
@@ -554,7 +605,7 @@ void UIreneInputInstance::QuillRightAttributeChangeReleased()
 	// 깃펜 속성 변경
 	EAttributeKeyword Value = EAttributeKeyword::e_Fire;
 	const int TargetMonsterStack = QuillAttributeChangeStackAction();
-	switch (Irene->IreneAttack->GetQuillAttribute())
+	switch (Irene->GetQuillAttribute())
 	{
 	case EAttributeKeyword::e_Fire:	
 		Irene->IreneAttack->SetFireQuillStack(TargetMonsterStack);
@@ -579,16 +630,36 @@ void UIreneInputInstance::DodgeKeyword()
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
+		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
+	
 		Irene->IreneAnim->StopAllMontages(0);
+		
+		if(Irene->IreneAttack->GetIsPerfectDodge() && !PerfectDodgeTimerHandle.IsValid())
+			PerfectDodge();
+
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
-		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*800000);			
+		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);			
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
-			
+		
+		Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			 DodgeWaitHandle.Invalidate();
-		 }), 0.03f, false);
+		 }), AttackDataTable->C_Time, false);
 	}
+}
+void UIreneInputInstance::PerfectDodge()
+{
+	constexpr float Time = 0.4f;
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
+		 {
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+			Irene->IreneData.IsInvincibility = false;
+			Irene->IreneAttack->SetIsPerfectDodge(false);
+			 PerfectDodgeTimerHandle.Invalidate();
+		 }), Time * 1.0f, false);
+	Irene->IreneData.IsInvincibility = true;
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
 }
 
 void UIreneInputInstance::DialogAction()

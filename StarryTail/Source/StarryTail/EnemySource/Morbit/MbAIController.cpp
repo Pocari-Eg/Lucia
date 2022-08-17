@@ -37,6 +37,12 @@ void AMbAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+void AMbAIController::Attack()
+{
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->GetMonsterAnimInstance()->PlayAttackMontage();
+    StopMovement();
+}
 void AMbAIController::Attacked()
 {
 

@@ -24,10 +24,15 @@ void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 
 		if (CurrentMonster->GetRank() == EEnemyRank::e_Common)
 		{
-			//DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
-			//DefLine->SetVisibility(ESlateVisibility::Hidden);
+		
 
 			OnBarrierUI();
+
+			if (CurrentMonster->GetManaShieldCount() == 0)
+			{
+				DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+		       DefLine->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 	}
 }

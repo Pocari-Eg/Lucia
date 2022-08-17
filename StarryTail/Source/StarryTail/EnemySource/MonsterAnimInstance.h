@@ -15,6 +15,8 @@ DECLARE_MULTICAST_DELEGATE(FAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
+
+DECLARE_MULTICAST_DELEGATE(FDodgeTimeOn);
 UCLASS()
 class STARRYTAIL_API UMonsterAnimInstance : public UAnimInstance
 {
@@ -32,6 +34,7 @@ public:
 	virtual void PlayAttackedMontage() {};
 	virtual void PlayGroggyMontage();
 	virtual void PlayDeathMontage() {};
+	virtual void PlayWalktoTraceMontage();
 
 	bool GetBattleIdleIsPlaying();
 	virtual bool GetAttackIsPlaying() { return true;  };
@@ -45,6 +48,7 @@ public:
 	FAttackEndDelegate AttackEnd;
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
+	FDodgeTimeOn DodgeTimeOn;
 protected:
 	//Function
 	UFUNCTION()
@@ -55,7 +59,8 @@ protected:
 		void AnimNotify_AttackedEnd();
 	UFUNCTION()
 		void AnimNotify_Death();
-
+	UFUNCTION()
+		void AnimNotify_DodgeTimeOn();
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AnimationSpeed, Meta = (AllowPrivateAccess = true))
 		float PlayRate;
@@ -74,6 +79,8 @@ protected:
 		UAnimMontage* GroggyMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* DeathMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = DeathAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* WalkToTraceMontage;
 private:
 	virtual bool CheckAttackedMontagePlaying() { return true; };
 	/*

@@ -30,6 +30,9 @@ AScAIController::AScAIController()
 		BTAsset = BTObject.Object;
 	}
 }
+void AScAIController::Attack()
+{
+}
 void AScAIController::Attacked()
 {
 	Blackboard->SetValueAsBool(IsAttackingKey, false);

@@ -124,7 +124,6 @@ USTRUCT(BlueprintType)
 struct FAttackDataTable : public FTableRowBase
 {
 	GENERATED_BODY()
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -132,57 +131,81 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Attack_Power;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Attack_Count;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Pre_Attack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Stamina;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Gauge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Time_1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Time_2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Time_3;
+	int Attack_Count;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ATTACK_DAMAGE_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ATTACK_DAMAGE_2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int ATTACK_DAMAGE_3;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Distance_1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Distance_2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Attack_Distance_3;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Save_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Form;
+	float C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;
 };
 USTRUCT(BlueprintType)
-struct FFormTimeDataTable : public FTableRowBase
+struct FQuillDataTable : public FTableRowBase
 {
 	GENERATED_BODY()
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Form_Type;
+	int Quill_E_Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Form_C_Time;
+	int Quill_Dmg;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Target_Collision;
+	int Quill_Distance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Quill_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Quill_Radius_Curve;
 };
-
+USTRUCT(BlueprintType)
+struct FChargeDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Charge_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Charge_Time_0;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Charge_Time_1;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Charge_Time_2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Charge_Time_3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Charge_Time_4;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_0_Quill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_1_Quill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_2_Quill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_3_Quill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int C_4_Quill;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Quill_C_Time;
+};
+USTRUCT(BlueprintType)
+struct FElementDataTable : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Ele_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Ele_C_Time;
+};
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct
 {

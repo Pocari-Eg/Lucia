@@ -54,6 +54,10 @@ void ABdAIController::Broken()
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsBrokenKey, true);
 }
+void ABdAIController::Attack()
+{
+
+}
 void ABdAIController::WallGroggy()
 {
 	Blackboard->SetValueAsBool(IsAttackedKey, true);

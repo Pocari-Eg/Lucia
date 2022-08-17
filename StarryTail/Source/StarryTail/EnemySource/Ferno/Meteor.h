@@ -4,12 +4,13 @@
 
 #include "../../StarryTail.h"
 #include "GameFramework/Actor.h"
+#include"../MonsterProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
 #include "Meteor.generated.h"
 
 UCLASS()
-class STARRYTAIL_API AMeteor : public AActor
+class STARRYTAIL_API AMeteor : public AMonsterProjectile
 {
 	GENERATED_BODY()
 //var	

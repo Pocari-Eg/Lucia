@@ -25,14 +25,21 @@ private:
 	class AIreneCharacter* Irene;
 
 	EAttributeKeyword QuillAttribute;
-
+	
+	// 저스트 회피
+	bool IsPerfectDodge = false;
+	
 	UPROPERTY()
 	TArray<UParticleSystem*> BuffParticle;
 	
 	UPROPERTY()
 	UDataTable* AttackDataTable;
 	UPROPERTY()
-	UDataTable* FormTimeDataTable;
+	UDataTable* QuillDataTable;
+	UPROPERTY()
+	UDataTable* ChargeDataTable;
+	UPROPERTY()
+	UDataTable* ElementDataTable;
 
 	// 깃펜 효과 타이머
 	FTimerHandle FireQuillStackTimerHandle;
@@ -85,7 +92,6 @@ private:
 	bool bDodgeJumpSkip;
 	// 후딜 중 재공격 가능 타이밍 노티파이
 	bool bReAttackSkip;
-
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -123,7 +129,9 @@ public:
 	void SetAttackState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
-	FFormTimeDataTable* GetNameAtFormTimeDataTable(const FName Value) const { if (Value != FName("")) return (FormTimeDataTable->FindRow<FFormTimeDataTable>(Value, "")); return nullptr; }
+	FQuillDataTable* GetNameAtQuillDataTable(const FName Value) const { if (Value != FName("")) return (QuillDataTable->FindRow<FQuillDataTable>(Value, "")); return nullptr; }
+	FChargeDataTable* GetNameAtChargeDataTable() const { return (ChargeDataTable->FindRow<FChargeDataTable>(FName("Charge"), "")); }
+	FElementDataTable* GetNameAtElementDataTable(const FName Value) const { if (Value != FName("")) return (ElementDataTable->FindRow<FElementDataTable>(Value, "")); return nullptr; }
 
 #pragma region GetSet
 	//공격력 반환
@@ -149,7 +157,8 @@ public:
 	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
 	float GetThunderSustainTime()const{return ThunderSustainTime;}
-
+	bool GetIsPerfectDodge()const{return IsPerfectDodge;}
+	
 	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
@@ -162,6 +171,7 @@ public:
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
+	void SetIsPerfectDodge(const bool Value){IsPerfectDodge = Value;}
 #pragma endregion GetSet
 
 private:
