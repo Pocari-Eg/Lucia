@@ -5,8 +5,8 @@
 #include "IreneAnimInstance.h"
 
 #include "IreneAttackInstance.h"
-#include "IreneFSM.h"
-#include "IreneCharacter.h"
+#include "../PlayerFSM/IreneFSM.h"
+#include "../IreneCharacter.h"
 
 void UIreneAnimInstance::Init(AIreneCharacter* Value)
 {

@@ -4,14 +4,14 @@
 #include "IreneInputInstance.h"
 
 #include "GeomTools.h"
-#include "IreneCharacter.h"
-#include "IreneFSM.h"
+#include "../IreneCharacter.h"
+#include "../PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
 #include "MovieSceneTracksComponentTypes.h"
-#include "Quill.h"
-#include "../STGameInstance.h"
+#include "../Quill.h"
+#include "../../STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)

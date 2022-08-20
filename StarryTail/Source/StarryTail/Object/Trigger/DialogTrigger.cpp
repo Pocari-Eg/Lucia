@@ -2,9 +2,9 @@
 
 #include "DialogTrigger.h"
 
-#include "../../PlayerSource/IreneUIManager.h"
+#include "../../PlayerSource/PlayerInstance/IreneUIManager.h"
 #include "../../PlayerSource/IreneCharacter.h"
-#include"../../PlayerSource/IreneInputInstance.h"
+#include"../../PlayerSource/PlayerInstance/IreneInputInstance.h"
 
 ADialogTrigger::ADialogTrigger()
 {

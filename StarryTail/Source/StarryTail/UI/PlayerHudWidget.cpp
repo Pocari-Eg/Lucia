@@ -3,8 +3,8 @@
 
 #include "PlayerHudWidget.h"
 #include "../PlayerSource/IreneCharacter.h"
-#include "../PlayerSource/IreneUIManager.h"
-#include"../PlayerSource/IreneAttackInstance.h"
+#include "../PlayerSource/PlayerInstance/IreneUIManager.h"
+#include"../PlayerSource/PlayerInstance/IreneAttackInstance.h"
 
 void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 

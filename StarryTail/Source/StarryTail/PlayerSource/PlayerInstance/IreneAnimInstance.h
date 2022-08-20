@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "IreneUIManager.h"
-#include "../StarryTail.h"
+#include "../../StarryTail.h"
 
 #include "IreneAnimInstance.generated.h"
 

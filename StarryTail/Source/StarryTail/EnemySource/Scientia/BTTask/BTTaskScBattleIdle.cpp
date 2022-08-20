@@ -4,7 +4,7 @@
 #include "BTTaskScBattleIdle.h"
 #include "../Scientia.h"
 #include "../ScAIController.h"
-#include "../../../PlayerSource/IreneFSM.h"
+#include "../../../PlayerSource/PlayerFSM/IreneFSM.h"
 
 UBTTaskScBattleIdle::UBTTaskScBattleIdle()
 {

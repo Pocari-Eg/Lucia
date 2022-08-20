@@ -4,7 +4,7 @@
 #include "Scientia.h"
 #include "ScAIController.h"
 #include "Kismet/GameplayStatics.h"
-#include "../../PlayerSource/IreneUIManager.h"
+#include "../../PlayerSource/PlayerInstance/IreneUIManager.h"
 #include "../../STGameInstance.h"
 AScientia::AScientia()
 {

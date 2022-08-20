@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "../UI/PlayerHudWidget.h"
-#include"../UI/PauseWidget.h"
-#include "../Sound/SoundManager.h"
+#include "../../UI/PlayerHudWidget.h"
+#include"../../UI/PauseWidget.h"
+#include "../../Sound/SoundManager.h"
 
 #include "IreneUIManager.generated.h"
 
