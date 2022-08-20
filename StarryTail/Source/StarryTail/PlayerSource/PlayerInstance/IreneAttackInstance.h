@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "../StarryTail.h"
-#include "PlayerCharacterDataStruct.h"
+#include "../../StarryTail.h"
+#include "../PlayerCharacterDataStruct.h"
 
 #include "IreneAttackInstance.generated.h"
 

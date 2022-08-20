@@ -2,13 +2,13 @@
 
 
 #include "IreneAttackInstance.h"
-#include "IreneCharacter.h"
-#include "IreneFSM.h"
+#include "../IreneCharacter.h"
+#include "../PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneUIManager.h"
 
 #include "DrawDebugHelpers.h"
-#include "../STGameInstance.h"
+#include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 UIreneAttackInstance::UIreneAttackInstance()

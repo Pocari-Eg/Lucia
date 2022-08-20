@@ -3,7 +3,7 @@
 
 #include "STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
-#include "PlayerSource/IreneAttackInstance.h"
+#include "PlayerSource/PlayerInstance/IreneAttackInstance.h"
 #include "PlayerSource/IreneCharacter.h"
 
 AIreneCharacter* USTGameInstance::GetPlayer()

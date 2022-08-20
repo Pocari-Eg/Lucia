@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "IreneFSM.h"
-#include "IreneCharacter.h"
-#include "IreneInputInstance.h"
-#include "IreneUIManager.h"
-#include "IreneAnimInstance.h"
-#include "IreneAttackInstance.h"
+#include "../IreneCharacter.h"
+#include "../PlayerInstance/IreneInputInstance.h"
+#include "../PlayerInstance/IreneUIManager.h"
+#include "../PlayerInstance/IreneAnimInstance.h"
+#include "../PlayerInstance/IreneAttackInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #pragma region IreneFSM

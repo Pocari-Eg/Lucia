@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 
 // 추가하는 부분
-#include "IreneAttackInstance.h"
+#include "PlayerInstance/IreneAttackInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
