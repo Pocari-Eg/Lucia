@@ -36,12 +36,19 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 
+	
+
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster) {
 		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsInAttackAreaKey) == true)
+	{
 
+		Monster->GetAIController()->StopMovement();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
 		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
@@ -56,12 +63,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsInAttackAreaKey) == true)
-	{
-	
-		Monster->GetAIController()->StopMovement();
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
+
 
 
 

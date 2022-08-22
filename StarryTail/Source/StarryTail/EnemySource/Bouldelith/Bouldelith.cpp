@@ -186,7 +186,7 @@ void ABouldelith::AttackCheck1()
 		if (nullptr == Player)
 			return;
 
-		    Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+		    Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir,nullptr);
 			UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 		
 	}
@@ -206,7 +206,7 @@ void ABouldelith::AttackCheck4()
 		for (auto const& Result : OverlapResults)
 		{
 			auto Player = Cast<AIreneCharacter>(Result.Actor);
-			Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+			Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir,nullptr);
 			if (!Player->GetMovementComponent()->IsFalling())
 			{
 				
@@ -257,7 +257,7 @@ void ABouldelith::DodgeCheck()
 		if (nullptr == Player)
 			return;
 		
-		Player->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
+		Player->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir,this);
 		STARRYLOG(Error, TEXT("DODGE AREA IN"));
 
 	}

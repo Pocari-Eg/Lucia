@@ -48,10 +48,11 @@ void UIreneAttackInstance::SetIreneCharacter(AIreneCharacter* Value)
 {
 	Irene = Value;
 }
-void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir)
+void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir,  AActor* Monster)
 {
 	IsPerfectDodge = Value;
 	Irene->IreneInput->SetIsPerfectDodge(PerfectDodgeDir);
+	PerfectDodgeMonster = Monster;
 }
 void UIreneAttackInstance::InitMemberVariable()
 {
