@@ -315,6 +315,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneAnim->PlayAttackMontage();
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
+				Irene->FollowTargetPosition();
 			}
 		}
 	}
@@ -669,9 +670,8 @@ bool UIreneInputInstance::CalcPerfectDodgeDir(FVector DodgeDirection)
 	{
 		return false;
 	}
-
-
-	EDodgeDirection Dodge;
+	
+	EDodgeDirection Dodge = EDodgeDirection::Front;
 	FVector ViewVector = Irene->CameraComp->GetForwardVector();
 	ViewVector.Normalize();
 	ViewVector = FVector::CrossProduct(FVector::UpVector, ViewVector);
