@@ -569,7 +569,7 @@ void AIreneCharacter::FollowTargetPosition()
 			const auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			const auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;			
 			const float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
-			
+			CustomTimeDilation = 1.0f/0.4f;
 			// 몬스터가 공격범위 보다 멀리 있다면
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
