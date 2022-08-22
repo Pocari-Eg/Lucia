@@ -294,7 +294,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					AttackWaitHandle.Invalidate();
-				}), WaitTime, false);
+				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			if (Irene->IreneData.IsAttacking)
 			{
@@ -350,7 +350,7 @@ void UIreneInputInstance::RightButtonReleased()
 		GetWorld()->GetTimerManager().SetTimer(QuillWaitHandle, FTimerDelegate::CreateLambda([&]
 		{
 			GetWorld()->GetTimerManager().ClearTimer(QuillWaitHandle);
-		}), ChargeDataTable->Quill_C_Time, false);
+		}), ChargeDataTable->Quill_C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 		RightButtonChargeTime = 0;
 	}
 }
@@ -429,7 +429,7 @@ void UIreneInputInstance::QuillLockOn()
 			Irene->SpringArmComp->SetRelativeRotation(FRotator(-20,Irene->SpringArmComp->GetRelativeRotation().Yaw,Irene->SpringArmComp->GetRelativeRotation().Roll));
 			bIsLockOn = true;
 			LockOnTime = 0;
-			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
+			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds()*UGameplayStatics::GetGlobalTimeDilation(this), true, 0.0f);
 		}
 	}
 }
@@ -538,7 +538,7 @@ void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)
 		Mon->TargetWidgetOn();
 		Irene->IreneAttack->QuillTargetMonster = Target;
 		LockOnTime = 0;
-		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
+		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds()*UGameplayStatics::GetGlobalTimeDilation(this), true, 0.0f);
 	}
 }
 void UIreneInputInstance::LockOnTimer()
@@ -645,7 +645,7 @@ void UIreneInputInstance::DodgeKeyword()
 		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			 DodgeWaitHandle.Invalidate();
-		 }), AttackDataTable->C_Time, false);
+		 }), AttackDataTable->C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 	}
 }
 void UIreneInputInstance::PerfectDodge()
@@ -657,7 +657,7 @@ void UIreneInputInstance::PerfectDodge()
 			Irene->IreneData.IsInvincibility = false;
 			Irene->IreneAttack->SetIsPerfectDodge(false);
 			 PerfectDodgeTimerHandle.Invalidate();
-		 }), Time * 1.0f, false);
+		 }), Time * 1.0f*UGameplayStatics::GetGlobalTimeDilation(this), false);
 	Irene->IreneData.IsInvincibility = true;
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
 }
