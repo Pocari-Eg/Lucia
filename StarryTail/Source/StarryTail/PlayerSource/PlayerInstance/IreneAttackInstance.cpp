@@ -6,10 +6,13 @@
 #include "../PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneUIManager.h"
+#include "IreneInputInstance.h"
 
 #include "DrawDebugHelpers.h"
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+
+
 
 UIreneAttackInstance::UIreneAttackInstance()
 {
@@ -44,6 +47,11 @@ void UIreneAttackInstance::Init(AIreneCharacter* Value)
 void UIreneAttackInstance::SetIreneCharacter(AIreneCharacter* Value)
 {
 	Irene = Value;
+}
+void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir)
+{
+	IsPerfectDodge = Value;
+	Irene->IreneInput->SetIsPerfectDodge(PerfectDodgeDir);
 }
 void UIreneAttackInstance::InitMemberVariable()
 {

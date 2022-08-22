@@ -171,7 +171,7 @@ public:
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
-	void SetIsPerfectDodge(const bool Value){IsPerfectDodge = Value;}
+	void SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir);
 #pragma endregion GetSet
 
 private:

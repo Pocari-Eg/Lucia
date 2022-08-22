@@ -81,7 +81,10 @@ void AStrain::Attack()
 void AStrain::Skill_Setting()
 {
 	DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
-
+	PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
+	PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
+	PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
+	PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
 	STARRYLOG(Error, TEXT("%f"), DodgeTime);
 
 	IsSkillSet = true;
@@ -103,6 +106,7 @@ void AStrain::Skill_Set()
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
+	PerfectDodgeDir.Empty();
 	StrainAnimInstance->PlayAttackMontage();
 }
 
@@ -328,8 +332,7 @@ void AStrain::Tick(float DeltaTime)
 
 		if (IsSkillSet)
 		{
-
-
+		
 			SkillSetTimer += DeltaTime;
 			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 			Ratio = (Ratio * 0.5);
@@ -337,12 +340,12 @@ void AStrain::Tick(float DeltaTime)
 			if (SkillSetTimer >= DodgeTime)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
 			}
 			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
 				Skill_Set();
 			}
 		}

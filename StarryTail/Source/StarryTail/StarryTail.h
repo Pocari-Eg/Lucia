@@ -86,3 +86,12 @@ enum class  EDialogState :uint8
 	e_Playing   UMETA(DisplayName = "Playing"),
 	e_Complete   UMETA(DisplayName = "Complete")
 };
+
+UENUM(BluePrintType)
+enum class  EDodgeDirection :uint8
+{
+	Left = 0 UMETA(DisplayName = "Left"),
+	Right UMETA(DisplayName = "Right"),
+	Front  UMETA(DisplayName = "Front"),
+	Back UMETA(DisplayName = "Back")
+};

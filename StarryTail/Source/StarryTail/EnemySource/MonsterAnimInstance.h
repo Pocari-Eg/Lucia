@@ -15,7 +15,7 @@ DECLARE_MULTICAST_DELEGATE(FAttackDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FDodgeDirection);
 DECLARE_MULTICAST_DELEGATE(FDodgeTimeOn);
 UCLASS()
 class STARRYTAIL_API UMonsterAnimInstance : public UAnimInstance
@@ -49,6 +49,11 @@ public:
 	FAttackedEndDelegate AttackedEnd;
 	FDeathDelegate Death;
 	FDodgeTimeOn DodgeTimeOn;
+
+	FDodgeDirection RightDodge;
+	FDodgeDirection LeftDodge;
+	FDodgeDirection FrontDodge;
+	FDodgeDirection BackDodge;
 protected:
 	//Function
 	UFUNCTION()
@@ -61,6 +66,16 @@ protected:
 		void AnimNotify_Death();
 	UFUNCTION()
 		void AnimNotify_DodgeTimeOn();
+
+	UFUNCTION()
+		void AnimNotify_RightDodge();
+	UFUNCTION()
+		void AnimNotify_LeftDodge();
+
+	UFUNCTION()
+		void AnimNotify_FrontDodge();
+	UFUNCTION()
+		void AnimNotify_BackDodge();
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AnimationSpeed, Meta = (AllowPrivateAccess = true))
 		float PlayRate;

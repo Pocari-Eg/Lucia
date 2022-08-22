@@ -64,6 +64,9 @@ private:
 
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
+	//저스트 회피 방향
+	UPROPERTY()
+	TArray<uint8> PerfectDodgeDir;
 
 	FTimerHandle LockOnTimerHandle;
 	bool bIsLockOn;
@@ -145,6 +148,7 @@ public:
 	// 대쉬
 	void DodgeKeyword();
 	void PerfectDodge();
+	bool CalcPerfectDodgeDir(FVector DodgeDirection);
 	
 	// 액션 
 	void DialogAction();
@@ -184,6 +188,7 @@ public:
 	void SetThunderQuillCount(const int Value) { ThunderQuillCount = Value; }
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
+	void SetIsPerfectDodge(const TArray<uint8> Value) { PerfectDodgeDir = Value; }
 #pragma endregion GetSet
 
 #pragma region CoolTimeFunction

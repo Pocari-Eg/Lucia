@@ -146,6 +146,8 @@ void ABouldelith::Attack4()
 void ABouldelith::AttackCheck1()
 {
 	bIsDodgeTime = false;
+	PerfectDodgeDir.Empty();
+	
 	FHitResult Hit;
 
 	//By ¼º¿­Çö
@@ -184,7 +186,7 @@ void ABouldelith::AttackCheck1()
 		if (nullptr == Player)
 			return;
 
-	
+		    Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
 			UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 		
 	}
@@ -195,13 +197,16 @@ void ABouldelith::AttackCheck1()
 }
 void ABouldelith::AttackCheck4()
 {
+	bIsDodgeTime = false;
+	PerfectDodgeDir.Empty();
+
 	TArray<FOverlapResult> OverlapResults = DetectPlayer(10);
 	if (OverlapResults.Num() != 0)
 	{
 		for (auto const& Result : OverlapResults)
 		{
 			auto Player = Cast<AIreneCharacter>(Result.Actor);
-
+			Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
 			if (!Player->GetMovementComponent()->IsFalling())
 			{
 				
@@ -251,8 +256,8 @@ void ABouldelith::DodgeCheck()
 		auto Player = Cast<AIreneCharacter>(Hit.Actor);
 		if (nullptr == Player)
 			return;
-
-		Player->IreneAttack->SetIsPerfectDodge(true);
+		
+		Player->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
 		STARRYLOG(Error, TEXT("DODGE AREA IN"));
 
 	}
@@ -464,6 +469,18 @@ void ABouldelith::BeginPlay()
 	//Perfect Dodge
 	BdAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
 		DodgeTimeOn.Broadcast();
+		});
+	BdAnimInstance->RightDodge.AddLambda([this]() -> void {
+		RightDodge.Broadcast();
+		});
+	BdAnimInstance->LeftDodge.AddLambda([this]() -> void {
+		LeftDodge.Broadcast();
+		});
+	BdAnimInstance->FrontDodge.AddLambda([this]() -> void {
+		FrontDodge.Broadcast();
+		});
+	BdAnimInstance->BackDodge.AddLambda([this]() -> void {
+		BackDodge.Broadcast();
 		});
 }
 void ABouldelith::PossessedBy(AController* NewController)
