@@ -19,6 +19,7 @@
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/PlayerInstance/IreneAttackInstance.h"
+#include "../PlayerSource/PlayerInstance/IreneInputInstance.h"
 #include "../PlayerSource/PlayerFSM/IreneFSM.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
@@ -1001,6 +1002,22 @@ void AMonster::InitManaShield()
 	}
 	OnBarrierChanged.Broadcast();
 }
+void AMonster::InitPerfectDodgeNotify()
+{
+	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
+	RightDodge.AddLambda([this]() -> void {
+		PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
+		});
+	LeftDodge.AddLambda([this]() -> void {
+		PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
+		});
+	FrontDodge.AddLambda([this]() -> void {
+		PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
+		});
+	BackDodge.AddLambda([this]() -> void {
+		PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
+		});
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -1035,7 +1052,7 @@ void AMonster::BeginPlay()
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
 
-	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
+	InitPerfectDodgeNotify();
 }
 void AMonster::PossessedBy(AController* NewController)
 {
