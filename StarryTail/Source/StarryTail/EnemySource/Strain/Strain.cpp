@@ -340,12 +340,12 @@ void AStrain::Tick(float DeltaTime)
 			if (SkillSetTimer >= DodgeTime)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir,this);
 			}
 			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir,nullptr);
 				Skill_Set();
 			}
 		}
