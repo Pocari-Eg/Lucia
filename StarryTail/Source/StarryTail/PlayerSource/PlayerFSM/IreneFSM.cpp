@@ -468,6 +468,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 {
 	if (CurState->Irene->IreneInput->GetIsDialogOn())
 	{
+		CurState->ThrowState(UDodgeEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
@@ -491,6 +492,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeStartState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->ThrowState(UDodgeEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeStartState

@@ -150,6 +150,7 @@ public:
 	void SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FindCanThrowQuillMonster(const float DeltaTime);
+	void FollowTargetPosition();
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
