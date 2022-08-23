@@ -316,7 +316,8 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneAnim->PlayAttackMontage();
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
-				Irene->FollowTargetPosition();
+				if(PerfectDodgeTimerHandle.IsValid())
+					Irene->FollowTargetPosition();
 			}
 		}
 	}
