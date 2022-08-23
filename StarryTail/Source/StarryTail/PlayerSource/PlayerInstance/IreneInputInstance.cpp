@@ -67,6 +67,7 @@ void UIreneInputInstance::InitMemberVariable()
 	LockOnTime = 0;
 	
 	CoolTimeRate = 0.008f;
+	SlowScale = 0.4f;
 	bIsDialogOn = false;
 }
 void UIreneInputInstance::Begin()
@@ -629,21 +630,22 @@ void UIreneInputInstance::QuillRightAttributeChangeReleased()
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() &&
+		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
 	
 		Irene->IreneAnim->StopAllMontages(0);
 		
+		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 
 		if(Irene->IreneAttack->GetIsPerfectDodge() && !PerfectDodgeTimerHandle.IsValid() && CalcPerfectDodgeDir(GetMoveKeyToDirVector()))
 			PerfectDodge();
 
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
-		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);			
-		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
+		//Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);		
+		//Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		
-		Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			 DodgeWaitHandle.Invalidate();
@@ -652,7 +654,7 @@ void UIreneInputInstance::DodgeKeyword()
 }
 void UIreneInputInstance::PerfectDodge()
 {
-	constexpr float Time = 0.4f;
+	constexpr float Time = 2.5f;
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
@@ -660,9 +662,11 @@ void UIreneInputInstance::PerfectDodge()
 			Irene->IreneAttack->SetIsPerfectDodge(false,PerfectDodgeDir,nullptr);
 			Irene->CustomTimeDilation = 1;
 			 PerfectDodgeTimerHandle.Invalidate();
-		 }), Time * 1.0f*UGameplayStatics::GetGlobalTimeDilation(this), false);
+		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
+
 	Irene->IreneData.IsInvincibility = true;
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
+	Irene->IreneAnim->SetDodgeDir(10);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
 }
 
 bool UIreneInputInstance::CalcPerfectDodgeDir(FVector DodgeDirection)

@@ -73,7 +73,8 @@ private:
 	float LockOnTime;
 
 	FTimerHandle PerfectDodgeTimerHandle;
-
+	float SlowScale;
+	
 	bool bIsDialogOn;
 #pragma region CoolTimeValue
 private:
@@ -179,6 +180,7 @@ public:
 	bool GetIsDialogOn()const{return bIsDialogOn;}
 	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	bool GetIsLockOn()const{return bIsLockOn;}
+	float GetSlowScale()const{return SlowScale;}
 	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;

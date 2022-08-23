@@ -84,6 +84,7 @@ public:
 	void SetDodgeDir(const int Value) { DodgeDir = Value; }
 
 	bool GetIsinAir()const{return IsInAir;}
+	int GetDodgeDir()const{return DodgeDir;}
 private:
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;
