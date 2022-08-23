@@ -337,15 +337,25 @@ void AStrain::Tick(float DeltaTime)
 			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 			Ratio = (Ratio * 0.5);
 			MagicAttack->PlayIndicator(Ratio);
-			if (SkillSetTimer >= DodgeTime)
+			if (SkillSetTimer >= DodgeTime&& SkillSetTimer< MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir,this);
+			
+				if(MagicAttack->GetInPlayer() == true)
+				{
+					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true, PerfectDodgeDir);
+					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+				}
+				else {
+					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+				}
+				
 			}
 			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir,nullptr);
+				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
 				Skill_Set();
 			}
 		}
