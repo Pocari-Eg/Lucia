@@ -781,10 +781,10 @@ void AMonster::CalcHp(float Damage)
 
 		if (MonsterInfo.M_HP <= 0.0f)
 		{
+			GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 			MonsterDeadEvent();
 			bIsDead = true;
 			SetActive();
-
 			MonsterAIController->Death();
 			PlayDeathAnim();
 
