@@ -14,11 +14,14 @@ AST_MagicAttack::AST_MagicAttack()
 	Area = CreateDefaultSubobject<UDecalComponent>(TEXT("Area"));
 	AttackCollision = CreateDefaultSubobject<USphereComponent>(TEXT("Attack"));
 	IntersectionCollision = CreateDefaultSubobject<USphereComponent>(TEXT("INTERSECTION"));
+	PlayerCheckCollision = CreateDefaultSubobject<USphereComponent>(TEXT("PLAYERCHECK"));
+
 	RootComponent = Root;
 
 	Circum->SetupAttachment(RootComponent);
 	Area->SetupAttachment(RootComponent);
 	AttackCollision->SetupAttachment(RootComponent);
+	PlayerCheckCollision-> SetupAttachment(RootComponent);
 	IntersectionCollision->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<UMaterial> MAT_Circle(TEXT("/Game/UI/Indicator/CircleMaterial.CircleMaterial"));
 	if (MAT_Circle.Succeeded())
@@ -29,11 +32,17 @@ AST_MagicAttack::AST_MagicAttack()
 	Circum->SetRelativeLocation(FVector::ZeroVector);
 	Area->SetRelativeLocation(FVector::ZeroVector);
 	AttackCollision->SetRelativeLocation(FVector(1000.0f,0.0f, 0.0f));
+	PlayerCheckCollision->SetRelativeLocation(FVector(1000.0f, 0.0f, 0.0f));
+
 	IntersectionCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 	Root->SetWorldRotation(FRotator(90.0f, 0.0f, 0.0f));
 
 	AttackCollision->SetCollisionProfileName("EnemyAttack");
 	AttackCollision->SetGenerateOverlapEvents(false);
+
+
+	PlayerCheckCollision->SetCollisionProfileName("EnemyAttack");
+	PlayerCheckCollision->SetGenerateOverlapEvents(true);
 
 	IntersectionCollision->SetCollisionProfileName("Intersection");
 	IntersectionCollision->SetGenerateOverlapEvents(true);
@@ -45,6 +54,8 @@ AST_MagicAttack::AST_MagicAttack()
 	SkillEffectComponent->SetupAttachment(Root);
 	SkillEffectComponent->bAutoActivate = false;
 	SkillEffectComponent->SetRelativeLocation(FVector(100.0f, 0.0f, 0.0f));
+
+	bIsInPlayer = false;
 }
 
 void AST_MagicAttack::SetMagicAttack(float Radius, float DamageVal)
@@ -52,8 +63,11 @@ void AST_MagicAttack::SetMagicAttack(float Radius, float DamageVal)
 	Circum->DecalSize.Set(10, Radius , Radius );
 	Area->DecalSize.Set(10, Radius , Radius );
 	AttackCollision->SetSphereRadius(Radius);
+	PlayerCheckCollision->SetSphereRadius(Radius);
 	IntersectionCollision->SetSphereRadius(Radius);
 	Damage = DamageVal;
+
+	PlayerCheckCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 }
 
 void AST_MagicAttack::PlayIndicator(float Val)
@@ -69,11 +83,17 @@ void AST_MagicAttack::EndIndicator()
 }
 void AST_MagicAttack::SetActiveAttack()
 {
+	PlayerCheckCollision->SetGenerateOverlapEvents(false);
 	AttackCollision->SetGenerateOverlapEvents(true);
 	AttackCollision->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
 
 	SkillEffectComponent->SetActive(true);
 	SkillEffectComponent->SetVisibility(true);
+}
+
+bool AST_MagicAttack::GetInPlayer()
+{
+	return bIsInPlayer;
 }
 
 // Called when the game starts or when spawned
@@ -86,7 +106,8 @@ void AST_MagicAttack::BeginPlay()
 	AreaInstance->SetScalarParameterValue("Circum1Area0", 0.0f);
 
 	AttackCollision->OnComponentBeginOverlap.AddDynamic(this, &AST_MagicAttack::OnBeginOverlap);
-
+	PlayerCheckCollision->OnComponentBeginOverlap.AddDynamic(this, &AST_MagicAttack::OnPlayerInOverlap);
+	PlayerCheckCollision->OnComponentEndOverlap.AddDynamic(this, &AST_MagicAttack::OnPlayerOutOverlap);
 	SkillEffectComponent->SetTemplate(SkillEffect);
 }
 
@@ -100,6 +121,26 @@ void AST_MagicAttack::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		AttackCollision->SetGenerateOverlapEvents(false);
 	}
 
+}
+
+void AST_MagicAttack::OnPlayerInOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	auto Irene = Cast<AIreneCharacter>(OtherActor);
+	if (Irene != nullptr)
+	{
+		STARRYLOG(Error, TEXT("Player In"));
+		bIsInPlayer = true;
+	}
+}
+
+void AST_MagicAttack::OnPlayerOutOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	//나간 물체가 플레이어라면 
+	if (OtherComp->GetCollisionProfileName() == "Player")
+	{
+		STARRYLOG(Error, TEXT("Player Out"));
+		bIsInPlayer = false;
+	}
 }
 
 // Called every frame
