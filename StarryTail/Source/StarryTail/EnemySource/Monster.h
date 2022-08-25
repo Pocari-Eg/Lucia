@@ -18,7 +18,7 @@
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FDodgeDirection);
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
@@ -76,6 +76,11 @@ public:
 
 	FDodgeTimeOn DodgeTimeOn;
 
+	FDodgeDirection RightDodge;
+	FDodgeDirection LeftDodge;
+	FDodgeDirection FrontDodge;
+	FDodgeDirection BackDodge;
+
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -97,6 +102,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void InitManaShield();
+
+	void InitPerfectDodgeNotify();
 protected:
 	//Function
 	void InitAttackedInfo();
@@ -174,6 +181,8 @@ protected:
 	bool bIsObject;
 
 	bool bIsDodgeTime;
+
+	TArray<uint8> PerfectDodgeDir;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
@@ -210,7 +219,7 @@ private:
 
 	float AttackCoolTimer;
 
-
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

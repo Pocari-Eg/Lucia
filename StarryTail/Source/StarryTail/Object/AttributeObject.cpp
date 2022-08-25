@@ -3,7 +3,7 @@
 
 #include "AttributeObject.h"
 #include"../PlayerSource/IreneCharacter.h"
-#include"../PlayerSource//IreneAttackInstance.h"
+#include"../PlayerSource/PlayerInstance/IreneAttackInstance.h"
 
 AAttributeObject::AAttributeObject()
 {

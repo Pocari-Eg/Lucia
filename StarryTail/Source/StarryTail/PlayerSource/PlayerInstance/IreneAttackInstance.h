@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "../StarryTail.h"
-#include "PlayerCharacterDataStruct.h"
+#include "../../StarryTail.h"
+#include "../PlayerCharacterDataStruct.h"
 
 #include "IreneAttackInstance.generated.h"
 
@@ -20,6 +20,10 @@ public:
 	// 깃펜을 보낼 수 있는 몬스터 또는 오브젝트
 	UPROPERTY()
 	AActor* QuillTargetMonster;
+
+	// 저스트 회피중인  몬스터
+	UPROPERTY()
+	AActor* PerfectDodgeMonster;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -171,7 +175,8 @@ public:
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
-	void SetIsPerfectDodge(const bool Value){IsPerfectDodge = Value;}
+	void SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir);
+	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }
 #pragma endregion GetSet
 
 private:

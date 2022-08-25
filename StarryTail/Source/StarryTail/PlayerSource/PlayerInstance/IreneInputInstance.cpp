@@ -4,14 +4,14 @@
 #include "IreneInputInstance.h"
 
 #include "GeomTools.h"
-#include "IreneCharacter.h"
-#include "IreneFSM.h"
+#include "../IreneCharacter.h"
+#include "../PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
 #include "MovieSceneTracksComponentTypes.h"
-#include "Quill.h"
-#include "../STGameInstance.h"
+#include "../Quill.h"
+#include "../../STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
@@ -67,6 +67,7 @@ void UIreneInputInstance::InitMemberVariable()
 	LockOnTime = 0;
 	
 	CoolTimeRate = 0.008f;
+	SlowScale = 0.4f;
 	bIsDialogOn = false;
 }
 void UIreneInputInstance::Begin()
@@ -294,7 +295,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					AttackWaitHandle.Invalidate();
-				}), WaitTime, false);
+				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			if (Irene->IreneData.IsAttacking)
 			{
@@ -315,6 +316,8 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneAnim->PlayAttackMontage();
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
+				if(PerfectDodgeTimerHandle.IsValid())
+					Irene->FollowTargetPosition();
 			}
 		}
 	}
@@ -350,7 +353,7 @@ void UIreneInputInstance::RightButtonReleased()
 		GetWorld()->GetTimerManager().SetTimer(QuillWaitHandle, FTimerDelegate::CreateLambda([&]
 		{
 			GetWorld()->GetTimerManager().ClearTimer(QuillWaitHandle);
-		}), ChargeDataTable->Quill_C_Time, false);
+		}), ChargeDataTable->Quill_C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 		RightButtonChargeTime = 0;
 	}
 }
@@ -429,7 +432,7 @@ void UIreneInputInstance::QuillLockOn()
 			Irene->SpringArmComp->SetRelativeRotation(FRotator(-20,Irene->SpringArmComp->GetRelativeRotation().Yaw,Irene->SpringArmComp->GetRelativeRotation().Roll));
 			bIsLockOn = true;
 			LockOnTime = 0;
-			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
+			GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds()*UGameplayStatics::GetGlobalTimeDilation(this), true, 0.0f);
 		}
 	}
 }
@@ -538,7 +541,7 @@ void UIreneInputInstance::ChangeLockOnTarget(AActor* Target)
 		Mon->TargetWidgetOn();
 		Irene->IreneAttack->QuillTargetMonster = Target;
 		LockOnTime = 0;
-		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds(), true, 0.0f);
+		GetWorld()->GetTimerManager().SetTimer(LockOnTimerHandle, this, &UIreneInputInstance::LockOnTimer, GetWorld()->GetDeltaSeconds()*UGameplayStatics::GetGlobalTimeDilation(this), true, 0.0f);
 	}
 }
 void UIreneInputInstance::LockOnTimer()
@@ -628,39 +631,104 @@ void UIreneInputInstance::QuillRightAttributeChangeReleased()
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() &&
+		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
 	
 		Irene->IreneAnim->StopAllMontages(0);
 		
-		if(Irene->IreneAttack->GetIsPerfectDodge() && !PerfectDodgeTimerHandle.IsValid())
+		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
+
+		if(Irene->IreneAttack->GetIsPerfectDodge() && !PerfectDodgeTimerHandle.IsValid() && CalcPerfectDodgeDir(GetMoveKeyToDirVector()))
 			PerfectDodge();
 
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
-		Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);			
-		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
+		//Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*AttackDataTable->Attack_Distance_1);		
+		//Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		
-		Irene->IreneAnim->SetDodgeDir(GetMoveKeyToDirNumber());
 		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			 DodgeWaitHandle.Invalidate();
-		 }), AttackDataTable->C_Time, false);
+		 }), AttackDataTable->C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 	}
 }
 void UIreneInputInstance::PerfectDodge()
 {
-	constexpr float Time = 0.4f;
+	constexpr float Time = 2.5f;
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
 			Irene->IreneData.IsInvincibility = false;
-			Irene->IreneAttack->SetIsPerfectDodge(false);
+			Irene->IreneAttack->SetIsPerfectDodge(false,PerfectDodgeDir);
+			Irene->CustomTimeDilation = 1;
 			 PerfectDodgeTimerHandle.Invalidate();
-		 }), Time * 1.0f, false);
+		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
+
 	Irene->IreneData.IsInvincibility = true;
-	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),Time);
+	Irene->IreneAnim->SetDodgeDir(10);
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
 }
+
+bool UIreneInputInstance::CalcPerfectDodgeDir(FVector DodgeDirection)
+{
+	if (PerfectDodgeDir.Num() == 0)
+	{
+		return false;
+	}
+	
+	EDodgeDirection Dodge = EDodgeDirection::Front;
+	FVector ViewVector = Irene->CameraComp->GetForwardVector();
+	ViewVector.Normalize();
+	ViewVector = FVector::CrossProduct(FVector::UpVector, ViewVector);
+	float Angle = FVector::DotProduct(ViewVector, DodgeDirection);
+	Angle = FMath::RoundToFloat(Angle);
+
+
+	if (Angle != 0)
+	{
+		if (Angle > 0)
+		{
+			STARRYLOG(Error, TEXT("Right"), Angle);
+			Dodge = EDodgeDirection::Right;
+		}
+		else {
+			STARRYLOG(Error, TEXT("Left"), Angle);
+			Dodge = EDodgeDirection::Left;
+		}
+	}
+
+	ViewVector = Irene->CameraComp->GetForwardVector();
+	ViewVector.Normalize();
+	Angle = FVector::DotProduct(ViewVector, DodgeDirection);
+	Angle = FMath::RoundToFloat(Angle);
+
+	if (Angle != 0)
+	{
+		if (Angle > 0)
+		{
+			STARRYLOG(Error, TEXT("Front"), Angle);
+			Dodge = EDodgeDirection::Front;
+		}
+		else {
+			STARRYLOG(Error, TEXT("Back"), Angle);
+			Dodge = EDodgeDirection::Back;
+		}
+	}
+	uint8 DodgeResult = (uint8)Dodge;
+	for (int i = 0; i < PerfectDodgeDir.Num(); i++)
+	{
+		if (PerfectDodgeDir[i] == DodgeResult)
+		{
+			PerfectDodgeDir.Empty();
+			return true;
+		}
+	}
+	PerfectDodgeDir.Empty();
+
+	return false;
+}
+
 
 void UIreneInputInstance::DialogAction()
 {

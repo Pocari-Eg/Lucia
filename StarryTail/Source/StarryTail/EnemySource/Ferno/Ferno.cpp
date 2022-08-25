@@ -100,6 +100,7 @@ void AFerno::BeginPlay()
 		{
 			bDeadWait = true;
 			SetActorEnableCollision(false);
+			FernoAnimInstance->Montage_Stop(500.f, FernoAnimInstance->GetCurrentActiveMontage());
 			Destroy();
 		}
 

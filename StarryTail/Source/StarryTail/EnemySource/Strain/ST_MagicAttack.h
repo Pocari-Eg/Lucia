@@ -21,7 +21,8 @@ private:
 	USceneComponent* Root;
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
 	USphereComponent* AttackCollision;
-
+	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
+	USphereComponent* PlayerCheckCollision;
 	UPROPERTY(EditAnywhere, BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
 	USphereComponent* IntersectionCollision;
 	UPROPERTY(EditAnywhere,BluePrintReadWrite, Meta = (AllowPrivateAccess = true))
@@ -39,6 +40,8 @@ private:
 		UParticleSystem* SkillEffect;
 
 	float Damage;
+
+	bool bIsInPlayer;
 //func
 public:	
 	// Sets default values for this actor's properties
@@ -48,6 +51,8 @@ public:
 	void PlayIndicator(float Val);
 	void EndIndicator();
 	void SetActiveAttack();
+
+	bool GetInPlayer();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -55,7 +60,11 @@ protected:
 	UFUNCTION()
 		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-
+	UFUNCTION()
+	void OnPlayerInOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+		UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+		void OnPlayerOutOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

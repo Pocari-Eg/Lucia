@@ -2,9 +2,9 @@
 
 
 #include "IreneUIManager.h"
-#include "IreneCharacter.h"
+#include "../IreneCharacter.h"
 #include "IreneInputInstance.h"
-#include "IreneFSM.h"
+#include "../PlayerFSM/IreneFSM.h"
 
 UIreneUIManager::UIreneUIManager()
 {

@@ -13,11 +13,11 @@
 #include "../STGameInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "../StarryTailGameMode.h"
-#include "IreneUIManager.h"
-#include "IreneFSM.h"
-#include "IreneAnimInstance.h"
-#include "IreneAttackInstance.h"
-#include "IreneInputInstance.h"
+#include "PlayerInstance/IreneUIManager.h"
+#include "PlayerFSM/IreneFSM.h"
+#include "PlayerInstance/IreneAnimInstance.h"
+#include "PlayerInstance/IreneAttackInstance.h"
+#include "PlayerInstance/IreneInputInstance.h"
 #include ".././EnemySource/MonsterProjectile.h"
 #include "Curves/CurveVector.h"
 #include "../EnemySource/Bouldelith/Bouldelith.h"
@@ -551,6 +551,43 @@ void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)
 		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);		
 	}
 }
+
+void AIreneCharacter::FollowTargetPosition()
+{
+	// 몬스터를 찾고 쳐다보기
+	if (IreneAttack->PerfectDodgeMonster != nullptr)
+	{
+		// 몹을 따라가는 조건
+		if(IreneState->IsFirstAttack() || IreneInput->bLeftButtonPressed)
+		{
+			const auto Mon=Cast<AMonster>(IreneAttack->PerfectDodgeMonster);
+			Mon->MarkerOn();
+			const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->PerfectDodgeMonster->GetActorLocation()).Yaw;
+			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+
+			// 다가가야하는 거리 계산
+			const auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
+			const auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;			
+			const float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
+			CustomTimeDilation = 1.0f/0.4f;
+			// 몬스터가 공격범위 보다 멀리 있다면
+			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
+			{
+				// 추적 세팅
+				IreneInput->SetStartMoveAutoTarget(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * TargetPos);
+			}
+			else
+			{
+				IreneAttack->DoAttack();
+			}
+		}
+		else
+		{
+			IreneAttack->DoAttack();
+		}
+	}
+}
+
 
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {

@@ -75,3 +75,23 @@ void UMonsterAnimInstance::AnimNotify_DodgeTimeOn()
 	DodgeTimeOn.Broadcast();
 }
 
+void UMonsterAnimInstance::AnimNotify_RightDodge()
+{
+	RightDodge.Broadcast();
+}
+
+void UMonsterAnimInstance::AnimNotify_LeftDodge()
+{
+	LeftDodge.Broadcast();
+}
+
+void UMonsterAnimInstance::AnimNotify_FrontDodge()
+{
+	FrontDodge.Broadcast();
+}
+
+void UMonsterAnimInstance::AnimNotify_BackDodge()
+{
+	BackDodge.Broadcast();
+}
+

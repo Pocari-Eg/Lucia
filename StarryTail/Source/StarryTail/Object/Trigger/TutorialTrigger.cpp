@@ -2,7 +2,7 @@
 
 
 #include "TutorialTrigger.h"
-#include "../../PlayerSource/IreneUIManager.h"
+#include "../../PlayerSource/PlayerInstance/IreneUIManager.h"
 #include "../../PlayerSource/IreneCharacter.h"
 
 // Sets default values

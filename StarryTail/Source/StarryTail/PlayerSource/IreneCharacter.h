@@ -6,7 +6,7 @@
 #include "GameFramework/Character.h"
 
 // 추가하는 부분
-#include "IreneAttackInstance.h"
+#include "PlayerInstance/IreneAttackInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
@@ -150,6 +150,7 @@ public:
 	void SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FindCanThrowQuillMonster(const float DeltaTime);
+	void FollowTargetPosition();
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;

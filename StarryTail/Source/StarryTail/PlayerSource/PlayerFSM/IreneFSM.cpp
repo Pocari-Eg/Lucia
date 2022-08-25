@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "IreneFSM.h"
-#include "IreneCharacter.h"
-#include "IreneInputInstance.h"
-#include "IreneUIManager.h"
-#include "IreneAnimInstance.h"
-#include "IreneAttackInstance.h"
+#include "../IreneCharacter.h"
+#include "../PlayerInstance/IreneInputInstance.h"
+#include "../PlayerInstance/IreneUIManager.h"
+#include "../PlayerInstance/IreneAnimInstance.h"
+#include "../PlayerInstance/IreneAttackInstance.h"
 #include "Kismet/KismetMathLibrary.h"
 
 #pragma region IreneFSM
@@ -453,8 +453,8 @@ void UDodgeStartState::Enter(IBaseGameEntity* CurState)
 	//CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
 	//CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
-	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
-	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
+	//CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
+	//CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
 	//CurState->Irene->SetCameraLagTime(0);
 	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
 	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
@@ -468,29 +468,46 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 {
 	if (CurState->Irene->IreneInput->GetIsDialogOn())
 	{
+		CurState->ThrowState(UDodgeEndState::GetInstance());
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	}
 	
 	//CurState->Irene->IreneInput->MoveAuto();
 
-	if (CurState->PlayTime >= 0.03f)
+	if(CurState->Irene->IreneAnim->GetDodgeDir() != 10)
 	{
-		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		if (CurState->PlayTime >= 0.86f)
 		{
-			CurState->ThrowState(UDodgeEndState::GetInstance());
-			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+			{
+				CurState->ThrowState(UDodgeEndState::GetInstance());
+				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+			}
+			else
+				CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
 		}
-		else
+	}
+	else
+	{
+		if (CurState->PlayTime >= 1.09f * CurState->Irene->IreneInput->GetSlowScale())
 		{
-			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
+			CurState->Irene->IreneAnim->SetDodgeDir(0);
+
+			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+			
+			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+			else
+				CurState->Irene->ActionEndChangeMoveState(true);
 		}
 	}
 }
 
 void UDodgeStartState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->ThrowState(UDodgeEndState::GetInstance());
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeStartState
@@ -514,9 +531,9 @@ void UDodgeEndState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
 	//CurState->Irene->GetMesh()->SetVisibility(true);
 	//CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
-	CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
-	CurState->Irene->GetCharacterMovement()->Velocity = FVector::ZeroVector;
+	//CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
+	//CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 2048;
+	//CurState->Irene->GetCharacterMovement()->Velocity = FVector::ZeroVector;
 	CurState->Irene->IreneData.IsSkipMonsterAttack = false;
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
