@@ -152,8 +152,9 @@ public:
 	void PerfectDodge();
 	bool CalcPerfectDodgeDir(FVector DodgeDirection);
 	void PerfectDodgeStart();
-	void PerfectDodgeEnd();
-	
+	void PerfectDodgeTimeEnd();
+	void PerfectDodgeAttackEnd();
+
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
