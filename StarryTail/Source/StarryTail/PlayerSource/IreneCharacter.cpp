@@ -382,9 +382,9 @@ void AIreneCharacter::FindNearMonster()
 	}
 	
 	// 몹 추적 박스 크기
-	float Far = 200;
+	float Far = 100;
 	if(IreneAttack->GetAttribute() == EAttributeKeyword::e_Water)
-		Far = 500;
+		Far = 400;
 	// 넓이, 높이, 거리
 	const FVector BoxSize = FVector(150, 50, Far);
 
@@ -393,8 +393,8 @@ void AIreneCharacter::FindNearMonster()
 	const FCollisionQueryParams Params(NAME_None, false, this);
 	const bool bResult = GetWorld()->SweepMultiByChannel(
 		MonsterList,
-		GetActorLocation() + GetActorForwardVector() * (Far - 150.0f),
-		GetActorLocation() + GetActorForwardVector() * (Far - 150.0f),
+		GetActorLocation() + GetActorForwardVector() * (Far),
+		GetActorLocation() + GetActorForwardVector() * (Far),
 		FRotationMatrix::MakeFromZ(GetActorForwardVector() * Far).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel8,
 		FCollisionShape::MakeBox(BoxSize),
@@ -402,7 +402,7 @@ void AIreneCharacter::FindNearMonster()
 
 	#if ENABLE_DRAW_DEBUG
 		const FVector TraceVec = GetActorForwardVector() * Far;
-		const FVector Center = GetActorLocation() + TraceVec + (GetActorForwardVector() * -150.0f);
+		const FVector Center = GetActorLocation() + TraceVec + (GetActorForwardVector());
 		const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 		constexpr float DebugLifeTime = 5.0f;
@@ -620,7 +620,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 {
 	const float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if(!IreneData.IsInvincibility)
+	if(!IreneData.IsInvincibility || !IreneData.IsSkipMonsterAttack)
 	{
 		if (IreneData.CurrentHP > 0)
 		{

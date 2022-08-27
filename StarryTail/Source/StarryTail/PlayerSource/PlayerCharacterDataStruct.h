@@ -61,7 +61,10 @@ public:
 	// 무적상태
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool IsInvincibility = false;
-
+	// 무적상태
+	UPROPERTY(BlueprintReadWrite)
+	bool IsSkipMonsterAttack = false;
+	
 	//공격력
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Strength = 20;

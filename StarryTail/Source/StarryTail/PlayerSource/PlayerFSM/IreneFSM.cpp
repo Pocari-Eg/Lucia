@@ -6,6 +6,7 @@
 #include "../IreneUIManager.h"
 #include "../IreneAnimInstance.h"
 #include "../IreneAttackInstance.h"
+#include "Kismet/KismetMathLibrary.h"
 
 #pragma region IreneFSM
 void UIreneFSM::Update(const float Value)
@@ -470,16 +471,37 @@ void UDodgeFireStartState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_F_Start);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+
+	CurState->Irene->Weapon->SetVisibility(false);
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
+	CurState->Irene->IreneData.IsSkipMonsterAttack = true;
+	
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UDodgeFireStartState::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->MoveAuto();
-	// 대쉬 도중 떨어지면 점프 상태로 강제 변화
-	if (CurState->Irene->GetMovementComponent()->IsFalling())
+	if (CurState->Irene->IreneInput->GetIsDialogOn())
 	{
-		CurState->Irene->ChangeStateAndLog(UJumpLoopState::GetInstance());
+		CurState->ThrowState(UDodgeFireEndState::GetInstance());
+		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	}
+	
+	//CurState->Irene->IreneInput->MoveAuto();
+
+	if (CurState->PlayTime >= 0.86f)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		{
+			CurState->ThrowState(UDodgeFireEndState::GetInstance());
+			CurState->Irene->ActionEndChangeMoveState();
+		}
+		else
+			CurState->Irene->ChangeStateAndLog(UDodgeFireEndState::GetInstance());
 	}
 }
 
@@ -504,11 +526,17 @@ void UDodgeFireEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_F_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+
+	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	CurState->Irene->IreneData.IsSkipMonsterAttack = false;
+	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
 }
 
 void UDodgeFireEndState::Execute(IBaseGameEntity* CurState)
 {
-
+	CurState->Irene->ActionEndChangeMoveState();
 }
 
 void UDodgeFireEndState::Exit(IBaseGameEntity* CurState)
@@ -884,6 +912,10 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -963,6 +995,10 @@ void UBasicAttack2FireState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack2FireState::Execute(IBaseGameEntity* CurState)
@@ -1042,6 +1078,10 @@ void UBasicAttack3FireState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack3FireState::Execute(IBaseGameEntity* CurState)
@@ -1124,6 +1164,10 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
@@ -1203,6 +1247,10 @@ void UBasicAttack2WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack2WaterState::Execute(IBaseGameEntity* CurState)
@@ -1283,6 +1331,10 @@ void UBasicAttack3WaterState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack3WaterState::Execute(IBaseGameEntity* CurState)
@@ -1365,6 +1417,10 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1444,6 +1500,10 @@ void UBasicAttack2ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack2ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1523,6 +1583,10 @@ void UBasicAttack3ThunderState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
 void UBasicAttack3ThunderState::Execute(IBaseGameEntity* CurState)

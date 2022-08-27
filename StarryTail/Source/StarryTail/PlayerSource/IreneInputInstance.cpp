@@ -221,19 +221,19 @@ FVector UIreneInputInstance::GetMoveKeyToDirVector()
 	const FRotator Rotation = Irene->Controller->GetControlRotation();
 	const FRotator YawRotation(0, Rotation.Yaw, 0);
 	FVector LookDir = FVector::ZeroVector;
-	if (MoveKey[0] != 0 && MoveKey[0] < 3)
+	if (MoveKey[0] != 0 && MoveKey[0] <= 3)
 	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	}
-	if (MoveKey[2] != 0 && MoveKey[2] < 3)
+	if (MoveKey[2] != 0 && MoveKey[2] <= 3)
 	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X)*-1;
 	}
-	if (MoveKey[1] != 0 && MoveKey[1] < 3)
+	if (MoveKey[1] != 0 && MoveKey[1] <= 3)
 	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y)*-1;
 	}
-	if (MoveKey[3] != 0 && MoveKey[3] < 3)
+	if (MoveKey[3] != 0 && MoveKey[3] <= 3)
 	{
 		LookDir += FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	}
@@ -306,8 +306,8 @@ void UIreneInputInstance::LeftButton(float Rate)
 					if(Irene->IreneData.CurrentCombo < 3)
 					{
 						// 공격중에 NextAttackCheck노티파이와 AttackStop의 세션사이에 클릭하면 의도한 결과가 안나오니 수정필요
-						//Irene->IreneData.CurrentCombo += 1;
-						//Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+						Irene->IreneData.CurrentCombo += 1;
+						Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 					}
 				}
 			}
@@ -566,34 +566,20 @@ void UIreneInputInstance::DodgeKeyword()
 	((Irene->IreneState->IsAttackState() || Irene->IreneState->IsSkillState()) && Irene->IreneAttack->GetCanDodgeJumpSkip()||(!Irene->IreneState->IsAttackState()&&!Irene->IreneState->IsSkillState()))&&!bIsDialogOn)
 	{
 		bUseDodgeKey = true;
-		// 불닷지 & FireDodge (없앨수도 있음)
-		// if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && StaminaGauge >= 75)
-		// {
-		// 	Irene->IreneAnim->StopAllMontages(0);
-		// 	StaminaGauge -= 75;
-		// 	constexpr float WaitTime = 0.6f; //시간을 설정
-		// 	FVector ForwardVec = Irene->WorldController->GetControlRotation().Vector();
-		// 	ForwardVec.Z = 0;
-		// 	ForwardVec.Normalize();
-		// 	MoveAutoDirection = FVector::ZeroVector;
-		//
-		// 	// w키나 아무방향 없으면 정면으로 이동
-		// 	MoveAutoDirection += ForwardVec*-1;
-		// 	MoveAutoDirection.Normalize();
-		// 	
-		// 	const float z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->GetActorLocation() + MoveAutoDirection).Yaw;
-		// 	GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, z, 0.0f));
-		//
-		// 	GetWorld()->GetTimerManager().SetTimer(MoveAutoWaitHandle, FTimerDelegate::CreateLambda([&]()
-		// 		{
-		// 			// 도중에 추락 안하고 정상적으로 진행됬을 때
-		// 			if (Irene->IreneState->GetStateToString().Compare(FString("Dodge")) == 0)
-		// 			{
-		// 				Irene->ActionEndChangeMoveState();
-		// 				Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-		// 			}
-		// 		}), WaitTime, false);
-		// }
+		// 불닷지 & FireDodge
+		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneData.CurrentStamina >= 37.5f && !DodgeWaitHandle.IsValid())
+		{
+			Irene->IreneAnim->StopAllMontages(0);
+			Irene->IreneData.CurrentStamina -= 37.5f;
+			Irene->ChangeStateAndLog(UDodgeFireStartState::GetInstance());
+			
+			Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
+		
+			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+			 {
+				 DodgeWaitHandle.Invalidate();
+			 }), 3, false);
+		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
 			!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
 		{
