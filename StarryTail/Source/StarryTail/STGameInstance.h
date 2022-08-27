@@ -55,6 +55,11 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	FVector GetCurrnetLocation() { return CurrnetLoaction; }
+
+	UFUNCTION(BluePrintCallable)
+	void SetFirstTime(const bool value) { bIsFirstTime = value; }
+	UFUNCTION(BluePrintCallable)
+	bool GetFirstTime() { return bIsFirstTime; }
 protected:
 	virtual void Init()override;
 
@@ -83,6 +88,7 @@ private:
 	int32 NextWaveCount;
 
 	bool bIsLastWave;
+	bool bIsFirstTime;
 public:
 	void AddEnemyCount(EEnemyRank Rank);
 	void SubEnemyCount(EEnemyRank Rank);
@@ -92,6 +98,8 @@ public:
 	void SetLastWave(bool State);
 	bool IsLastWave();
 private:
+
+
 
 #pragma endregion
 
