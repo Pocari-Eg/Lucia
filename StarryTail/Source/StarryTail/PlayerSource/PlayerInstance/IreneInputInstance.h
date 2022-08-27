@@ -124,6 +124,7 @@ public:
 #pragma endregion Move
 
 #pragma region OtherInput
+public:
 	// 카메라 회전 관련 함수
 	void Turn(float Rate);
 	void LookUp(float Rate);
@@ -150,6 +151,8 @@ public:
 	void DodgeKeyword();
 	void PerfectDodge();
 	bool CalcPerfectDodgeDir(FVector DodgeDirection);
+	void PerfectDodgeStart();
+	void PerfectDodgeEnd();
 	
 	// 액션 
 	void DialogAction();

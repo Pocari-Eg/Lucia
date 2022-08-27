@@ -174,7 +174,12 @@ public:
 	void CameraInEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void RaidBattleEvent();
-
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void PerfectDodgeStart();
+	UFUNCTION(BlueprintImplementableEvent)
+	void PerfectDodgeEnd();
+	
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
 

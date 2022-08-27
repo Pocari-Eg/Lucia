@@ -317,7 +317,10 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
 				Irene->IreneData.IsAttacking = true;
 				if(PerfectDodgeTimerHandle.IsValid())
+				{
 					Irene->FollowTargetPosition();
+					PerfectDodgeEnd();
+				}
 			}
 		}
 	}
@@ -662,9 +665,10 @@ void UIreneInputInstance::PerfectDodge()
 			Irene->IreneData.IsInvincibility = false;
 			Irene->IreneAttack->SetIsPerfectDodge(false,PerfectDodgeDir);
 			Irene->CustomTimeDilation = 1;
+			PerfectDodgeEnd();
 			 PerfectDodgeTimerHandle.Invalidate();
 		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
-
+	PerfectDodgeStart();
 	Irene->IreneData.IsInvincibility = true;
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
@@ -727,6 +731,14 @@ bool UIreneInputInstance::CalcPerfectDodgeDir(FVector DodgeDirection)
 	PerfectDodgeDir.Empty();
 
 	return false;
+}
+void UIreneInputInstance::PerfectDodgeStart()
+{
+	Irene->PerfectDodgeStart();
+}
+void UIreneInputInstance::PerfectDodgeEnd()
+{
+	Irene->PerfectDodgeEnd();
 }
 
 
