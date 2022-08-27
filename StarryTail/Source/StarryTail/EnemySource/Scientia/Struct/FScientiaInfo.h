@@ -41,6 +41,9 @@ public:
 		float Attack3Value;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float Attack4Value;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float FeatherHeight;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		EAttributeKeyword CurrentAttribute;

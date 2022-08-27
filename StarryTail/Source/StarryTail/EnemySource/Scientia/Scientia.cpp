@@ -16,6 +16,7 @@ AScientia::AScientia()
 	static ConstructorHelpers::FClassFinder<AFeather> FeatherBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Feather'"));
 	static ConstructorHelpers::FClassFinder<APiece> PieceBlueprint(TEXT("Blueprint'/Game/BluePrint/Monster/BP_Piece'"));
 	InitMonsterInfo();
+	InitScInfo();
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -35,6 +36,8 @@ AScientia::AScientia()
 	{
 		PieceBP = PieceBlueprint.Class;
 	}
+
+
 }
 void AScientia::InitMonsterInfo()
 {
@@ -84,6 +87,7 @@ void AScientia::InitAnime()
 void AScientia::InitScInfo()
 {
 	ScInfo.AttributeSettingTime = 1.0f;
+	ScInfo.FeatherHeight = 100.0f;
 }
 #pragma endregion
 #pragma region Get
@@ -214,7 +218,7 @@ void AScientia::Feather()
 	RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + 30);
 	LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - 30);
 
-	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+	auto BaseFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, ScInfo.FeatherHeight), GetActorRotation());
 	BaseFeather->SetMoveDir((PlayerLocation - BaseFeather->GetActorLocation()).GetSafeNormal() + BaseDir);
 	BaseFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 
@@ -223,12 +227,12 @@ void AScientia::Feather()
 		RightDir = AngleToDir(GetActorRotation().Euler().Z + Angle + i);
 		LeftDir = AngleToDir(GetActorRotation().Euler().Z + Angle - i);
 
-		auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+		auto RightFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, ScInfo.FeatherHeight), GetActorRotation());
 		RightFeather->SetMoveDir((PlayerLocation - RightFeather->GetActorLocation()).GetSafeNormal() + RightDir);
 		RightFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 		RightFeather->RotatorRight(i / 2);
 
-		auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, 150), GetActorRotation());
+		auto LeftFeather = GetWorld()->SpawnActor<AFeather>(FeatherBP, GetActorLocation() + FVector(0, 0, ScInfo.FeatherHeight), GetActorRotation());
 		LeftFeather->SetMoveDir((PlayerLocation - LeftFeather->GetActorLocation()).GetSafeNormal() + LeftDir);
 		LeftFeather->SetDamage(MonsterInfo.Atk * ScInfo.Attack1Value);
 		LeftFeather->RotatorLeft(i / 2);
