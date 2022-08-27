@@ -178,8 +178,10 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void PerfectDodgeStart();
 	UFUNCTION(BlueprintImplementableEvent)
-	void PerfectDodgeEnd();
-	
+	void PerfectDodgeTimeEnd();
+	UFUNCTION(BlueprintImplementableEvent)
+    void PerfectDodgeAttackEnd();
+    
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
 
