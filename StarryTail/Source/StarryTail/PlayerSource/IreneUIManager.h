@@ -100,12 +100,17 @@ public:
 	class UFMODEvent* AttackVoiceEvent;
 	class UFMODEvent* JumpVoiceEvent;
 	class UFMODEvent* TakeDamageVoiceEvent;
+	class UFMODEvent* WaterDodgeEvent;
+	class UFMODEvent* ThunderDodgeEvent;
 	//사운드 
 	SoundManager* WalkSound;
 	SoundManager* AttackSound;
 	SoundManager* AttackVoiceSound;
 	SoundManager* JumpVoiceSound;
 	SoundManager* TakeDamageVoiceSound;
+	SoundManager* WaterDodgeSound;
+	SoundManager* ThunderDodgeSound;
+
 	float AttackSoundParameter;
 #pragma endregion Sound
 private:

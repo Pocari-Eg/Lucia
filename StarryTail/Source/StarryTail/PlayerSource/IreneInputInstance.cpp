@@ -586,6 +586,7 @@ void UIreneInputInstance::DodgeKeyword()
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneData.CurrentStamina -= 37.5f;
 			Irene->ChangeStateAndLog(UDodgeThunderStartState::GetInstance());
+			Irene->IreneUIManager->ThunderDodgeSound->SoundPlay2D();
 
 			if(!DodgeWaitHandle.IsValid())
 				Irene->GetCharacterMovement()->AddImpulse(GetMoveKeyToDirVector()*Irene->IreneData.FirstThunderDodgeSpeed);
@@ -611,12 +612,15 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	{
 		if(!bUseWaterDodge && Irene->IreneData.CurrentStamina > 75)
 		{
+			Irene->IreneUIManager->WaterDodgeSound->SetParameter("DodgeState", 0.0f);
+			Irene->IreneUIManager->WaterDodgeSound->SoundPlay2D();
 			Irene->IreneAnim->StopAllMontages(0.01f);
 			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
 		}
 		if(StartWaterDodgeStamina != 0)
 		{
+			
 			Irene->IreneAnim->StopAllMontages(0);
 			bUseWaterDodge = true;
 			Irene->IreneData.CurrentStamina -= Rate * GetWorld()->GetDeltaSeconds() * Irene->IreneData.Decrease_Speed;
@@ -631,11 +635,13 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 	}
 	else
 	{
+		
 		StartWaterDodgeStamina = 0;
 		bUseDodgeKey = false;
 		// 켯다가 껏을 때
 		if(bUseWaterDodge)
 		{
+			Irene->IreneUIManager->WaterDodgeSound->PlayingChangeParamter("DodgeState", 1.0f);
 			bUseWaterDodge = false;
 			if(!DodgeWaitHandle.IsValid())
 			{
