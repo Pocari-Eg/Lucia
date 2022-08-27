@@ -44,7 +44,7 @@ public:
 	// 카메라 암과 카메라
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	USpringArmComponent* SpringArmComp;
-	UPROPERTY(VisibleAnywhere, Category = Camera)
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	UCameraComponent* CameraComp;
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ShieldComp;
