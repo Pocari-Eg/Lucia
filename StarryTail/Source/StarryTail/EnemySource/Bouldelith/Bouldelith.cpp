@@ -18,8 +18,7 @@ ABouldelith::ABouldelith()
 	InitAnime();
 
 	bTestMode = false;
-
-
+	
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 460.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5, 0.5f, 0.5f));
 }
@@ -260,8 +259,6 @@ void ABouldelith::DodgeCheck()
 		
 		Player->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
 		Player->IreneAttack->SetIsPerfectDodgeMonster(this);
-		STARRYLOG(Error, TEXT("DODGE AREA IN"));
-
 	}
 }
 #pragma endregion

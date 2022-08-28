@@ -72,6 +72,7 @@ private:
 	bool bIsLockOn;
 	float LockOnTime;
 
+	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
 	FTimerHandle PerfectDodgeInvincibilityTimerHandle;
 	float SlowScale;
