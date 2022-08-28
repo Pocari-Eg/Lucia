@@ -578,7 +578,7 @@ void UIreneInputInstance::DodgeKeyword()
 			GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
 			 {
 				 DodgeWaitHandle.Invalidate();
-			 }), 3, false);
+			 }), 1, false);
 		}
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Thunder && Irene->IreneData.CurrentStamina >= 37.5f &&
 			!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDeathState())
