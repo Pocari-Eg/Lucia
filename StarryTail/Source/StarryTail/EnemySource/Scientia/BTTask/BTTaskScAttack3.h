@@ -30,6 +30,8 @@ private:
 	FVector MoveDir;
 	FVector NewLocation;
 
+	FVector StartLocation;
+
 	bool bCanMove;
 	bool bIsTurn;
 	bool bIsRush;

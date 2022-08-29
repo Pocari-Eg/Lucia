@@ -71,13 +71,14 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 
 		Scientia->SetActorRotation(TargetRot);//FMath::RInterpTo(Scientia->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+		StartLocation = Scientia->GetTransform().GetLocation();
 		DrawDebugLine(GetWorld(), Scientia->GetActorLocation(), Scientia->GetActorLocation() + (LookVector * Scientia->GetRushTestRange()), FColor::Red, false, 0.2f);
 		return;
 	}
 
-	NewLocation = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetRushTestRange());
-	
-	DrawDebugLine(GetWorld(), Scientia->GetActorLocation(), NewLocation, FColor::Blue, false, 1.0f);
+	NewLocation = StartLocation + (MoveDir.GetSafeNormal() * Scientia->GetRushTestRange());
+
+	//DrawDebugLine(GetWorld(), Scientia->GetActorLocation(), NewLocation, FColor::Blue, false, 1.0f);
 	if (NavData)
 	{
 		MyAIQuery = FPathFindingQuery(this, *NavData, Scientia->GetActorLocation(), NewLocation, QueryFilter);
@@ -86,8 +87,12 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	
 	if (bCanMove)
 	{
-		FVector Dir = Scientia->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Scientia->GetAttack3Speed() * DeltaSeconds);
+		FVector Normal = MoveDir.GetSafeNormal();
+		Normal.Z = 0.0f;
+		FVector Dir = StartLocation + (Normal * Scientia->GetAttack3Speed() * DeltaSeconds);
+		StartLocation= StartLocation + (Normal * Scientia->GetAttack3Speed() * DeltaSeconds);
 		Dir.Z = Scientia->GetActorLocation().Z;
+		STARRYLOG(Error, TEXT("%f,%f,%f"), Normal.X, Normal.Y, Normal.Z);
 		Scientia->SetActorLocation(Dir);
 	}
 	else
