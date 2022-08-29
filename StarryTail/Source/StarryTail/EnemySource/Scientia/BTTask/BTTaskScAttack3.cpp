@@ -92,7 +92,6 @@ void UBTTaskScAttack3::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		FVector Dir = StartLocation + (Normal * Scientia->GetAttack3Speed() * DeltaSeconds);
 		StartLocation= StartLocation + (Normal * Scientia->GetAttack3Speed() * DeltaSeconds);
 		Dir.Z = Scientia->GetActorLocation().Z;
-		STARRYLOG(Error, TEXT("%f,%f,%f"), Normal.X, Normal.Y, Normal.Z);
 		Scientia->SetActorLocation(Dir);
 	}
 	else
