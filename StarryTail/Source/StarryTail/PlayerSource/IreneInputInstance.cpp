@@ -615,6 +615,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 			Irene->IreneUIManager->WaterDodgeSound->SetParameter("DodgeState", 0.0f);
 			Irene->IreneUIManager->WaterDodgeSound->SoundPlay2D();
 			Irene->IreneAnim->StopAllMontages(0.01f);
+			Irene->IreneAttack->AttackEndComboState();
 			StartWaterDodgeStamina = Irene->IreneData.CurrentStamina;
 			Irene->ChangeStateAndLog(UDodgeWaterStartState::GetInstance());
 		}
@@ -622,6 +623,7 @@ void UIreneInputInstance::WaterDodgeKeyword(float Rate)
 		{
 			
 			Irene->IreneAnim->StopAllMontages(0);
+			Irene->IreneAttack->AttackEndComboState();
 			bUseWaterDodge = true;
 			Irene->IreneData.CurrentStamina -= Rate * GetWorld()->GetDeltaSeconds() * Irene->IreneData.Decrease_Speed;
 			if(StartWaterDodgeStamina - 75 > Irene->IreneData.CurrentStamina || Irene->IreneData.CurrentStamina <= 0)

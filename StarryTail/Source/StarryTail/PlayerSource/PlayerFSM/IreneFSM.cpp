@@ -916,6 +916,15 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+
+	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
+	{
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->PlayAttackMontage();
+
+		CurState->Irene->IreneAnim->NextToAttackMontageSection(CurState->Irene->IreneData.CurrentCombo);
+		CurState->Irene->IreneData.IsAttacking = true;
+	}
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -1168,6 +1177,15 @@ void UBasicAttack1WaterState::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+
+	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
+	{
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->PlayAttackMontage();
+
+		CurState->Irene->IreneAnim->NextToAttackMontageSection(CurState->Irene->IreneData.CurrentCombo);
+		CurState->Irene->IreneData.IsAttacking = true;
+	}
 }
 
 void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
@@ -1175,7 +1193,7 @@ void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->MoveAuto();
 
 	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2")
-		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0 && CurState->Irene->IreneData.CurrentCombo == 2)
+		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2_W")) != 0 && (CurState->Irene->IreneData.CurrentCombo == 2||CurState->Irene->IreneData.CurrentCombo == 0))
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
 	}
@@ -1202,7 +1220,7 @@ void UBasicAttack1WaterState::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->IreneAttack->AttackEndComboState();
 		CurState->Irene->IreneInput->RightButtonPressed();
 	}
-
+	
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
@@ -1421,6 +1439,15 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+
+	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
+	{
+		CurState->Irene->IreneAttack->AttackStartComboState();
+		CurState->Irene->IreneAnim->PlayAttackMontage();
+
+		CurState->Irene->IreneAnim->NextToAttackMontageSection(CurState->Irene->IreneData.CurrentCombo);
+		CurState->Irene->IreneData.IsAttacking = true;
+	}
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
