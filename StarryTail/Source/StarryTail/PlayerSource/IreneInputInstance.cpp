@@ -570,6 +570,8 @@ void UIreneInputInstance::DodgeKeyword()
 		if(Irene->IreneAttack->GetAttribute() == EAttributeKeyword::e_Fire && Irene->IreneData.CurrentStamina >= 37.5f && !DodgeWaitHandle.IsValid())
 		{
 			Irene->IreneAnim->StopAllMontages(0);
+			ChargingTime = 0.0f;
+			RightButtonReleased();
 			Irene->IreneData.CurrentStamina -= 37.5f;
 			Irene->ChangeStateAndLog(UDodgeFireStartState::GetInstance());
 			

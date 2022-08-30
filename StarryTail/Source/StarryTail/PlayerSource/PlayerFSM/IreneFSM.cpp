@@ -133,7 +133,12 @@ void UIdleState::Enter(IBaseGameEntity* CurState)
 
 void UIdleState::Execute(IBaseGameEntity* CurState)
 {
-
+	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() != nullptr)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneAttack->AttackEndComboState();
+		STARRYLOG_S(Warning);
+	}
 }
 
 void UIdleState::Exit(IBaseGameEntity* CurState)
@@ -169,6 +174,12 @@ void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(false);
 		CurState->Irene->WeaponVisible(false);
 		CurState->Irene->ChangeStateAndLog(UIdleState::GetInstance());
+	}
+	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() != nullptr)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneAttack->AttackEndComboState();
+		STARRYLOG_S(Warning);
 	}
 }
 
@@ -916,15 +927,6 @@ void UBasicAttack1FireState::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-
-	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
-	{
-		CurState->Irene->IreneAttack->AttackStartComboState();
-		CurState->Irene->IreneAnim->PlayAttackMontage();
-
-		CurState->Irene->IreneAnim->NextToAttackMontageSection(CurState->Irene->IreneData.CurrentCombo);
-		CurState->Irene->IreneData.IsAttacking = true;
-	}
 }
 
 void UBasicAttack1FireState::Execute(IBaseGameEntity* CurState)
@@ -1439,15 +1441,6 @@ void UBasicAttack1ThunderState::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-
-	if(CurState->Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
-	{
-		CurState->Irene->IreneAttack->AttackStartComboState();
-		CurState->Irene->IreneAnim->PlayAttackMontage();
-
-		CurState->Irene->IreneAnim->NextToAttackMontageSection(CurState->Irene->IreneData.CurrentCombo);
-		CurState->Irene->IreneData.IsAttacking = true;
-	}
 }
 
 void UBasicAttack1ThunderState::Execute(IBaseGameEntity* CurState)
@@ -1915,6 +1908,8 @@ void USkillThunderStartState::Execute(IBaseGameEntity* CurState)
 	if (CurState->PlayTime >= 1.3f)
 	{
 		CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
 	}
 
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
