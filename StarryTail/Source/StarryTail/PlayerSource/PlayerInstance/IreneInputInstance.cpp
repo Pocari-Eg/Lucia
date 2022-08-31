@@ -32,6 +32,8 @@ void UIreneInputInstance::InitMemberVariable()
 	MoveKey.Add(0);
 
 	bLeftButtonPressed = false;
+
+	bReAttack = false;
 	
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
@@ -301,13 +303,17 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if (Irene->IreneData.CanNextCombo)
 					Irene->IreneData.IsComboInputOn = true;
-				else
+				if(bReAttack)
 				{
-					if(Irene->IreneData.CurrentCombo < 3)
-					{
-						Irene->IreneData.CurrentCombo += 1;
-						Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
-					}
+					STARRYLOG_S(Warning);
+					Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
+					Irene->IreneData.IsAttacking = true;
+					Irene->IreneData.CurrentCombo = 0;
+					Irene->IreneAttack->AttackStartComboState();
+					if(Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
+						Irene->IreneAnim->PlayAttackMontage();
+					else
+						Irene->IreneAnim->Montage_JumpToSection(FName("Attack1"), Irene->IreneAnim->GetCurrentActiveMontage());
 				}
 			}
 			else

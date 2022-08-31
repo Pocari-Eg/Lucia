@@ -23,6 +23,8 @@ private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
 
+	bool bReAttack;
+	
 	FTimerHandle AttributeChangeFireTimer;
 	FTimerHandle AttributeChangeWaterTimer;
 	FTimerHandle AttributeChangeElectricTimer;
@@ -197,6 +199,7 @@ public:
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
 	void SetIsPerfectDodge(const TArray<uint8> Value) { PerfectDodgeDir = Value; }
+	void SetReAttack(const bool State) { bReAttack = State; }
 #pragma endregion GetSet
 
 #pragma region CoolTimeFunction

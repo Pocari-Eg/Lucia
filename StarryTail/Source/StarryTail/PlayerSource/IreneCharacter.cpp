@@ -221,14 +221,6 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneUIManager = NewObject<UIreneUIManager>(this);
 	IreneUIManager->Init(this);
 	
-	IreneAnim->OnNextAttackCheck.AddLambda([this]()->void
-		{
-			if (IreneData.IsComboInputOn)
-			{
-				IreneAttack->AttackStartComboState();
-				IreneAnim->NextToAttackMontageSection(IreneData.CurrentCombo);
-			}
-		});
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
 	IreneAnim->OnAttackStopCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackStopCheck);
 	IreneAnim->OnFootStep.AddUObject(IreneUIManager, &UIreneUIManager::FootStepSound);

@@ -106,7 +106,7 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 void UIreneAttackInstance::AttackStartComboState()
 {
 	// 노티파이 NextAttackCheck 도달 시 실행
-	Irene->IreneData.CanNextCombo = true;
+	Irene->IreneData.CanNextCombo = false;
 	Irene->IreneData.IsComboInputOn = false;
 	Irene->IreneData.CurrentCombo = FMath::Clamp<int32>(Irene->IreneData.CurrentCombo + 1, 1, Irene->IreneData.MaxCombo);
 }
