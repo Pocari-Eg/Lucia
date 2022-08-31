@@ -75,11 +75,6 @@ void UIreneAnimInstance::AnimNotify_AttackHitCheck() const
 	OnAttackHitCheck.Broadcast();
 }
 
-void UIreneAnimInstance::AnimNotify_NextAttackCheck() const
-{
-	OnNextAttackCheck.Broadcast();
-}
-
 void UIreneAnimInstance::AnimNotify_AttackStopCheck() const
 {
 	OnAttackStopCheck.Broadcast();

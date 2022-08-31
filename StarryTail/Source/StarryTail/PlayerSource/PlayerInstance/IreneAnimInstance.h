@@ -9,7 +9,6 @@
 
 #include "IreneAnimInstance.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnNextAttackCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackHitCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnAttackStopCheckDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnFootStepDelegate);
@@ -26,7 +25,6 @@ class STARRYTAIL_API UIreneAnimInstance : public UAnimInstance
 	GENERATED_BODY()
 	
 public:
-	FOnNextAttackCheckDelegate OnNextAttackCheck;
 	FOnAttackHitCheckDelegate OnAttackHitCheck;
 	FOnAttackStopCheckDelegate OnAttackStopCheck;
 	FOnFootStepDelegate OnFootStep;
@@ -88,8 +86,6 @@ public:
 private:
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;
-	UFUNCTION()
-	void AnimNotify_NextAttackCheck() const;
 	UFUNCTION()
 	void AnimNotify_AttackStopCheck() const;
 	UFUNCTION()

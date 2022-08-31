@@ -714,8 +714,9 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 	StartShakeTime = 0.0f;	
-	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	
+	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 
@@ -738,15 +739,6 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_2")) != 0 && CurState->Irene->IreneData.CurrentCombo == 2)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
-	}
-
-	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop1"))
-	{
-		CurState->Irene->IreneData.CanNextCombo = false;
-	}
-	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && CurState->Irene->IreneData.CurrentCombo != 2)
-	{
-		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("AttackStop1"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
 	}
 	
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -776,7 +768,8 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack1State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -804,9 +797,10 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
-	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 2;
-	
+
+	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 
@@ -822,15 +816,6 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 		&& CurState->Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3")) != 0 && CurState->Irene->IreneData.CurrentCombo == 3)
 	{
 		CurState->Irene->IreneAttack->SetAttackState();
-	}
-
-	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("AttackStop2"))
-	{
-		CurState->Irene->IreneData.CanNextCombo = false;
-	}
-	if (CurState->Irene->IreneAnim->Montage_GetCurrentSection(CurState->Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3") && CurState->Irene->IreneData.CurrentCombo != 3)
-	{
-		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("AttackStop2"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
 	}
 	
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
@@ -859,7 +844,8 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack2State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
@@ -887,9 +873,10 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
-	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 3;
-	
+
+	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
@@ -940,7 +927,8 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack3State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
