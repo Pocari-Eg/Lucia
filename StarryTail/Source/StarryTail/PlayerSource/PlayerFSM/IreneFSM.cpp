@@ -1793,6 +1793,8 @@ void USkillWaterStartState::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->IreneAttack->SetUseSkillSkip(false);
+		CurState->Irene->ChangeStateAndLog(UBattleIdleState::GetInstance());
+
 	}
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
 		StartShakeTime = CurState->PlayTime;
