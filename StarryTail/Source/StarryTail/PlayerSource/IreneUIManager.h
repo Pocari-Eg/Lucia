@@ -184,6 +184,10 @@ public:
 	void UpdateThunderSkillCool(float CurCool, float MaxCool);
 
 	void SetDialogState(const bool State);
+	
+
+
+	void HpFullRecovery();
 #pragma endregion HUDPublic
 
 

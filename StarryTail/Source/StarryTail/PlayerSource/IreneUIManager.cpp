@@ -270,6 +270,12 @@ void UIreneUIManager::SetDialogState(const bool State)
 	Irene->IreneInput->SetDialogState(State);
 }
 
+void UIreneUIManager::HpFullRecovery()
+{
+	Irene->IreneData.CurrentHP = Irene->IreneData.MaxHP;
+	HpRecoveringCancel();
+}
+
 
 
 void UIreneUIManager::PauseWidgetOn()

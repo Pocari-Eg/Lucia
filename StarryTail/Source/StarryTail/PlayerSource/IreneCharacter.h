@@ -217,6 +217,10 @@ public:
 	void SetRaidBattleCamera();
 	UFUNCTION(BluePrintCallable)
 	void SetFirstLevel(bool isFirst);
+
+
+	UFUNCTION(BluePrintCallable)
+	void HPFullRecovery();
 #pragma endregion UIManager
 //스탑워치 
 	//void WatchControl();

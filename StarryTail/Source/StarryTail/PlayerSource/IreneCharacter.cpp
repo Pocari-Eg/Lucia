@@ -842,6 +842,11 @@ void AIreneCharacter::SetFirstLevel(bool isFirst)
 	IreneUIManager->PlayerHud->bIsFirstLevel = isFirst;
 }
 
+void AIreneCharacter::HPFullRecovery()
+{
+	IreneUIManager->HpFullRecovery();
+}
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
