@@ -135,6 +135,9 @@ private:
 	int32 CurStateTime;
 	FTimerHandle StateChangeTimer;
 public:
+	UFUNCTION(BlueprintCallAble)
+		void InitData();
+
 	void AddDetectedMonster();
 	void SubDetectedMonster();
 	bool GetPlayerBattleState();
