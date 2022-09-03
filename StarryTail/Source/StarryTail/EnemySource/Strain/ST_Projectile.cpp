@@ -4,6 +4,8 @@
 #include "ST_Projectile.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include "../../STGameInstance.h"
+
+#include "Kismet/KismetSystemLibrary.h"
 // Sets default values
 AST_Projectile::AST_Projectile()
 {
@@ -41,20 +43,29 @@ void AST_Projectile::Tick(float DeltaTime)
 	SetActorLocation(GetActorLocation()+(GetActorUpVector()* Speed * DeltaTime));
 
    auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+   //2개의 벡터를 a to b 로 회전 하는 행렬 구하기
    FVector ForwardVec = GetActorUpVector();
    ForwardVec.Normalize();
 
    FVector PlayerVec = Instance->GetPlayer()->GetActorLocation() - GetActorLocation();
+
    PlayerVec.Normalize();
 
 
    STARRYLOG(Error, TEXT("%f,%f,%f"), ForwardVec.X, ForwardVec.Y, ForwardVec.Z);
    STARRYLOG(Error, TEXT("%f,%f,%f"), PlayerVec.X, PlayerVec.Y, PlayerVec.Z);
 
-   float dot = FVector::DotProduct(ForwardVec, PlayerVec);
-   float AcosAngle = FMath::Acos(dot);
-   float AngleDefree = FMath::RadiansToDegrees(AcosAngle);
- 
-   STARRYLOG(Error, TEXT("%f"), AngleDefree);
+   RotationQuat=Math::VectorA2BRotation(ForwardVec, PlayerVec);
+  FVector RotateVec = RotationQuat.RotateVector(ForwardVec);
+
+  RealRotation =  RotationQuat.Rotator();
+
+  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation()+(PlayerVec* GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
+  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (ForwardVec*100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
+  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (RotateVec * GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Green, 0.1f, 3.0f);
+
+
+  
 }
 

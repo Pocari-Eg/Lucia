@@ -22,6 +22,13 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Info")
 		float Speed;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	FQuat RotationQuat;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FRotator RealRotation;
+private:
+	
 public:	
 	// Sets default values for this actor's properties
 	AST_Projectile();

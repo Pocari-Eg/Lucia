@@ -3,6 +3,7 @@
 #pragma once
 
 #include "EngineMinimal.h"
+#include "Math.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(StarryTail, Log, All);
 #define STARRYLOG_CALLINFO (FString(__FUNCTION__) + TEXT("(") + FString::FromInt(__LINE__) + TEXT(")"))
@@ -95,3 +96,4 @@ enum class  EDodgeDirection :uint8
 	Front  UMETA(DisplayName = "Front"),
 	Back UMETA(DisplayName = "Back")
 };
+
