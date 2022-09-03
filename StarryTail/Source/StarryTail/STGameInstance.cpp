@@ -50,17 +50,11 @@ void USTGameInstance::Init()
 	EnemyCount = 0;
 	EnemyMaxCount = 20;*/
 
-	EnemyCount = 0;
-	UniqueCount = 0;
-	bIsLastWave = false;
+	
+	InitData();
 	InitSoundSetting();
 
-	//detect
-	bIsPlayerBattleState = false;
-	DetectedMonsterCount = 0;
 
-	 StateTime=2;
-	 CurStateTime = StateTime;
 }
 
 void USTGameInstance::InitSoundSetting()
@@ -140,6 +134,21 @@ void USTGameInstance::SetLastWave(bool State)
 bool USTGameInstance::IsLastWave()
 {
 	return bIsLastWave;
+}
+
+void USTGameInstance::InitData()
+{
+	EnemyCount = 0;
+	UniqueCount = 0;
+	bIsLastWave = false;
+	//detect
+	bIsPlayerBattleState = false;
+	DetectedMonsterCount = 0;
+
+	StateTime = 2;
+	CurStateTime = StateTime;
+	
+	NextWaveCount = 0;
 }
 
 void USTGameInstance::AddDetectedMonster()
