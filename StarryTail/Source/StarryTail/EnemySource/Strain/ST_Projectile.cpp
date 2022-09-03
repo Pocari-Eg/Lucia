@@ -59,11 +59,13 @@ void AST_Projectile::Tick(float DeltaTime)
    RotationQuat=Math::VectorA2BRotation(ForwardVec, PlayerVec);
   FVector RotateVec = RotationQuat.RotateVector(ForwardVec);
 
-  RealRotation =  RotationQuat.Rotator();
 
-  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation()+(PlayerVec* GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
-  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (ForwardVec*100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
-  // UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (RotateVec * GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Green, 0.1f, 3.0f);
+  
+
+
+   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation()+(PlayerVec* GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
+   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (ForwardVec*100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
+   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (RotateVec * GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Green, 0.1f, 3.0f);
 
 
   

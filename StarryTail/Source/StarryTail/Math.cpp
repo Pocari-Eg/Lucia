@@ -18,10 +18,10 @@ Math::~Math()
 	float dot = FVector::DotProduct(VectorA, VectorB);
 	float fRadian = FMath::Acos(dot);
 	
-	if (PI - fRadian < 0.01f) {
-		VectorA.X += 0.01f;
-		VectorA.Y += 0.01f;
-		VectorA.Z += 0.01f;
+	if (PI - fRadian < 0.005f) {
+		VectorA.X += 0.005f;
+		VectorA.Y += 0.005f;
+		VectorA.Z += 0.005f;
 	}
 	FVector vCross = FVector::CrossProduct(VectorA, VectorB);
 	
