@@ -82,10 +82,21 @@ void UBellyfishAnimInstance::PlayRunMontage()
 		Montage_Play(WalkMontage2, PlayRate);
 }
 
+void UBellyfishAnimInstance::PlayRushMontage()
+{
+	if(RushMontage!=nullptr)
+	Montage_Play(RushMontage);
+}
+
 
 bool UBellyfishAnimInstance::GetAttackIsPlaying()
 {
 	return (Montage_IsPlaying(AttackMontage));
+}
+
+void UBellyfishAnimInstance::AnimNotify_RushEnd()
+{
+	RushEnd.Broadcast();
 }
 
 

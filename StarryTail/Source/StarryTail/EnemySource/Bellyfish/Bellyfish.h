@@ -7,11 +7,15 @@
 #include "BellyfishAIController.h"
 #include"BellyfishAnimInstance.h"
 #include"BF_MagicAttack.h"
+#include"BellyfishInfo.h"
 #include "Bellyfish.generated.h"
 
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
+
 UCLASS()
 class STARRYTAIL_API ABellyfish : public AMonster
 {
@@ -25,6 +29,8 @@ public:
 
 	void Walk();
 	void Attack();
+	void RushAttack();
+
 	void Skill_Setting();
 	void Skill_Set();
 	void PlayRunAnim();
@@ -39,12 +45,26 @@ protected:
 	void PossessedBy(AController* NewController) override;
 
 	void PostInitializeComponents() override;
+
+	//Function
+	UFUNCTION()
+	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
 
+
+	//get 
 	UFUNCTION(BlueprintCallable)
 	float GetFlyDistance();
+	float GetRunDistance();
+	float GetAttackedTime();
+	float GetRushTime();
+	float GetRushTestRange();
+	float GetRushSpeed();
+	UFUNCTION(BlueprintCallable)
+	float GetMaxFlyDistance();
+	//set
 	UFUNCTION(BlueprintCallable)
 	void SetFlyDistance(float Distance);
 private:
@@ -57,39 +77,37 @@ private:
 	//Variable
 	UPROPERTY()
 		class UBellyfishAnimInstance* BellyfishAnimInstance;
-public:
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Run_Distance; 
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Run_Time;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Attacked_Time;
-		UPROPERTY(EditAnywhere, BlueprintReadWrite)
-			float M_MaxFlyDistance;
 private:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BellyfishInfo, Meta = (AllowPrivateAccess = true))
+		FBellyfishInfo Info;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* Magic_CircleComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "ture"))
 		UParticleSystem* Magic_Circle;
 	TSubclassOf<ABF_MagicAttack> MagicAttackClass;
 	ABF_MagicAttack* MagicAttack;
+
 	bool IsSkillSet;
 	bool IsSkillAttack;
 
 	bool IsCloseOtherAttack;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect,meta = (ClampMin = "0.0", ClampMax = "100.0", AllowPrivateAccess = true))
+	float DodgeTimePercent;
+
 	float IntersectionTimer;
 	float SkillSetTimer;
 	float SkillAttackTimer;
 
-	FVector AttackPosition;
+	//Rush
+	bool bIsRush;
+	bool bIsPlayerRushHit;
+	bool bIsWallRushHit;
 
-	float TotalFlyDistance;
-
-	float M_Fly_Distance;
-
-	float DodgeTime;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect,meta = (ClampMin = "0.0", ClampMax = "100.0", AllowPrivateAccess = true))
-	float DodgeTimePercent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
+	float RushTestRange;
+public:
+	FRushEndDelegate RushEnd;
 };

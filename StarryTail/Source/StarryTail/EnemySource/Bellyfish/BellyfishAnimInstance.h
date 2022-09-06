@@ -8,6 +8,9 @@
 /**
  * 
  */
+
+DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
+
 UCLASS()
 class STARRYTAIL_API UBellyfishAnimInstance : public UMonsterAnimInstance
 {
@@ -21,8 +24,13 @@ public:
 	void PlayWalkMontage() override;
 	void PlayAttackSignMontage();
 	void PlayRunMontage();
-
+	void PlayRushMontage();
 	bool GetAttackIsPlaying() override;
+private:
+	UFUNCTION()
+		void AnimNotify_RushEnd();
+public:
+	FRushEndDelegate RushEnd;
 private:
 	bool CheckAttackedMontagePlaying() override;
 
@@ -45,5 +53,7 @@ private:
 		UAnimMontage* WalkMontage1;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* WalkMontage2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = RushAnimation, Meta = (AllowPrivateAccess = true))
+		UAnimMontage* RushMontage;
 
 };

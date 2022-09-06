@@ -31,7 +31,7 @@ auto  Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
 	FVector RunDirection = Bellyfish->GetActorForwardVector().RotateAngleAxis(180.0f, FVector::UpVector);
 
 	//뒷벡터 방향으로 Distance만큼의 좌표 
-	FVector RunPos = Bellyfish->GetTransform().GetLocation() + (RunDirection.GetSafeNormal() * Bellyfish->M_Run_Distance);
+	FVector RunPos = Bellyfish->GetTransform().GetLocation() + (RunDirection.GetSafeNormal() * Bellyfish->GetRunDistance());
 
 	Bellyfish->PlayRunAnim();
 		// 이동 거리가 5m가 맞는지 확인용
