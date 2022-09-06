@@ -652,7 +652,7 @@ void UIreneInputInstance::DodgeKeyword()
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
 		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
-	
+
 		Irene->IreneAnim->StopAllMontages(0);
 		
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
@@ -660,9 +660,9 @@ void UIreneInputInstance::DodgeKeyword()
 
 		if(Irene->IreneAttack->GetIsPerfectDodge() && CalcPerfectDodgeDir(GetMoveKeyToDirVector()))
 			PerfectDodge();
-
-		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 		
+		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
+
 		constexpr float InvincibilityTime = 0.3f;
 		GetWorld()->GetTimerManager().SetTimer(DodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {

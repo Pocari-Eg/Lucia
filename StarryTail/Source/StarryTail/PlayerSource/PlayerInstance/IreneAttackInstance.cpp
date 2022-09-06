@@ -77,6 +77,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
 }
+
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const
 {
@@ -98,6 +99,10 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
 	{
 		AttributeName = "B_Attack_3";
+	}
+	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
+	{
+		AttributeName = "B_Attack_4";
 	}
 	return FName(AttributeName);
 }
@@ -386,6 +391,11 @@ void UIreneAttackInstance::SetAttackState()const
 	&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_3")) != 0)
 	{
 		Irene->ChangeStateAndLog(UBasicAttack3State::GetInstance());
+	}
+	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4")
+	&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_4")) != 0)
+	{
+		Irene->ChangeStateAndLog(UBasicAttack4State::GetInstance());
 	}
 }
 #pragma endregion State
