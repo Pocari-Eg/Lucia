@@ -4,7 +4,7 @@
 #include "BTTaskMobFindPatrolPos.h"
 #include "../MonsterAIController.h"
 #include "../Monster.h"
-#include"../Strain/Strain.h"
+#include"../Bellyfish/Bellyfish.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
