@@ -94,8 +94,7 @@ private:
 	bool bMoveSkip;
 	// 후딜 중 닷지나 점프 가능 타이밍 노티파이
 	bool bDodgeJumpSkip;
-	// 후딜 중 재공격 가능 타이밍 노티파이
-	bool bReAttackSkip;
+
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -155,7 +154,6 @@ public:
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
-	bool GetCanReAttackSkip()const{return bReAttackSkip;}
 	FName GetAttributeToFormTimeDataTableName()const;
 	int GetFireDeBuffStack()const{return FireDeBuffStack;}
 	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
@@ -173,7 +171,6 @@ public:
 	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
-	void SetCanReAttackSkip(const bool Value){bReAttackSkip = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 	void SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }

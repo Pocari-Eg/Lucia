@@ -19,6 +19,7 @@ void UNextAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayl
 	if(Irene != nullptr)
 	{
 		Irene->IreneData.CanNextCombo = true;
+		Irene->IreneInput->SetNextAttack(true);
 	}
 }
 void UNextAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
@@ -28,7 +29,6 @@ void UNextAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPaylo
 void UNextAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
-	STARRYLOG_S(Warning);
 	if(Irene != nullptr)
 	{
 		Irene->IreneData.CanNextCombo = false;
@@ -37,6 +37,6 @@ void UNextAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayloa
 			Irene->IreneAttack->AttackStartComboState();
 			Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 		}
-		Irene->IreneInput->SetReAttack(true);
+		Irene->IreneInput->SetNextAttack(false);
 	}
 }

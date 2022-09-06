@@ -90,11 +90,6 @@ void UIreneAnimInstance::AnimNotify_DodgeJumpSkipCheck() const
 	Irene->IreneAttack->SetCanDodgeJumpSkip(true);
 }
 
-void UIreneAnimInstance::AnimNotify_ReAttackCheck() const
-{
-	Irene->IreneAttack->SetCanReAttackSkip(true);
-}
-
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
