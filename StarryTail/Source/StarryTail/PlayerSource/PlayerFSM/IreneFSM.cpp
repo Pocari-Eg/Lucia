@@ -477,7 +477,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 
 	if(CurState->Irene->IreneAnim->GetDodgeDir() != 10)
 	{
-		if (CurState->PlayTime >= 0.86f)
+		if (CurState->PlayTime >= 0.32f)
 		{
 			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
