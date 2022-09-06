@@ -64,6 +64,7 @@ enum class EStateEnum : uint8
 	B_Attack_1,
 	B_Attack_2,
 	B_Attack_3,
+	B_Attack_4,
 	Form_Change,
 	Hit_1,
 	Hit_2,

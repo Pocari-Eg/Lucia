@@ -175,6 +175,18 @@ public:
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
+UCLASS()
+class STARRYTAIL_API UBasicAttack4State final : public UObject, public IState
+{
+	GENERATED_BODY()
+	float StartShakeTime;
+public:
+	static UBasicAttack4State* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
 #pragma endregion Attack
 
 #pragma region FormChange
@@ -275,6 +287,7 @@ public:
 	bool IsFirstAttack()const;
 	bool IsSecondAttack() const;
 	bool IsThirdAttack() const;
-	
+	bool IsForthAttack() const;
+
 	bool IsKnockBackState()const;
 };
