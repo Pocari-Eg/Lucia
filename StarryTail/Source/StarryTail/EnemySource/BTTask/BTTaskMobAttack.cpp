@@ -5,8 +5,7 @@
 
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
-#include "../Ferno/FernoAIController.h"
-#include "../Strain/StrainAIController.h"
+#include "../Bellyfish/BellyfishAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 
@@ -31,30 +30,16 @@ EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 
 
-	if (Monster->GetMonsterAtkType() == 2&& OwnerComp.GetBlackboardComponent()->GetValueAsBool(AFernoAIController::IsAfterAttacked)==true)
+	if (Monster->GetMonsterAtkType() == 2 && OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABellyfishAIController::IsAfterAttacked) == true)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsAfterAttacked, false);
-
-		auto ran=FMath::RandRange(1, 100);
-		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
-		if (ran > Monster->GetAttackPercent())
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AFernoAIController::IsRunKey, true);
-
-			return EBTNodeResult::Succeeded;
-		}
-	}
-	if (Monster->GetMonsterAtkType() == 2 && OwnerComp.GetBlackboardComponent()->GetValueAsBool(AStrainAIController::IsAfterAttacked) == true)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AStrainAIController::IsAfterAttacked, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 
 		auto ran = FMath::RandRange(1, 100);
 		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
 		if (ran > Monster->GetAttackPercent())
 		{
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AStrainAIController::IsRunKey, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsRunKey, true);
 
 			return EBTNodeResult::Succeeded;
 		}

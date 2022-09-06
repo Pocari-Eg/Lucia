@@ -301,11 +301,18 @@ void UIreneInputInstance::LeftButton(float Rate)
 
 			if (Irene->IreneData.IsAttacking)
 			{
-				if (Irene->IreneData.CanNextCombo)
-					Irene->IreneData.IsComboInputOn = true;
+				if(bNextAttack)
+				{
+					if (Irene->IreneData.CanNextCombo)
+						Irene->IreneData.IsComboInputOn = true;
+				}
+				if(bJumpAttack)
+				{
+					Irene->IreneAttack->AttackStartComboState();
+					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+				}
 				if(bReAttack)
 				{
-					STARRYLOG_S(Warning);
 					Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
 					Irene->IreneData.IsAttacking = true;
 					Irene->IreneData.CurrentCombo = 0;

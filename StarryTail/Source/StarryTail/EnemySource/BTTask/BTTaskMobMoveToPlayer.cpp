@@ -5,7 +5,6 @@
 
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
-#include "../Ferno/FernoAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
