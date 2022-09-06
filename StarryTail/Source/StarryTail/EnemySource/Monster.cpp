@@ -9,11 +9,8 @@
 #include "./Scientia/Scientia.h"
 #include "./Scientia/ScAIController.h"
 
-#include "./Ferno/Ferno.h"
-#include"./Ferno/FernoAIController.h"
-
-#include"./Strain/Strain.h"
-#include"./Strain/StrainAIController.h"
+#include "./Bellyfish/Bellyfish.h"
+#include"./Bellyfish/BellyfishAIController.h"
 
 #include "MonsterAIController.h"
 //UI
@@ -419,15 +416,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
-	if (Cast<AFerno>(this))
-	{
-		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-		auto Player = GameInstance->GetPlayer();
-
-		bool IsKnockback = Player->IreneState->IsKnockBackState();
-
-		MonsterAIController->Attacked();
-	}
 	if (Cast<AScientia>(this)) {
 
 		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -438,7 +426,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		MonsterAIController->Attacked();
 
 	}
-	if (Cast<AStrain>(this)) {
+	if (Cast<ABellyfish>(this)) {
 
 		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 		auto Player = GameInstance->GetPlayer();
