@@ -76,7 +76,6 @@ void UIreneAttackInstance::InitMemberVariable()
 
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
-	bReAttackSkip = false;
 }
 #pragma region Attack
 float UIreneAttackInstance::GetATK()const

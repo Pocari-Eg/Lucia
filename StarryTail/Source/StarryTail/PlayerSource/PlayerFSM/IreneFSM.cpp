@@ -715,7 +715,9 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 	StartShakeTime = 0.0f;	
 	CurState->Irene->IreneData.CanNextCombo = false;
-	
+
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
@@ -800,6 +802,8 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 2;
 
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
@@ -876,10 +880,11 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 3;
 
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanReAttackSkip(false);
 	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
@@ -896,15 +901,6 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
-
-	if (CurState->Irene->IreneAttack->GetCanReAttackSkip() && CurState->Irene->IreneInput->bLeftButtonPressed)
-	{
-		CurState->Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
-		CurState->Irene->IreneData.CurrentCombo = 0;
-		CurState->Irene->IreneAttack->AttackStartComboState();
-		CurState->Irene->IreneAnim->Montage_JumpToSection(FName("Attack1"), CurState->Irene->IreneAnim->GetCurrentActiveMontage());
-		CurState->Irene->IreneData.IsAttacking = true;
-	}
 
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
