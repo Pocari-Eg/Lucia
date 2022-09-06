@@ -27,7 +27,7 @@ EBTNodeResult::Type UBTTaskBellyfishAttacked::ExecuteTask(UBehaviorTreeComponent
 	//bIsAttacked = true;
 	//Monster->AttackedEnd.AddLambda([this]() -> void { bIsAttacked = false; });
 
-	WaitTime = Bellyfish->M_Attacked_Time;
+	WaitTime = Bellyfish->GetAttackedTime();
 
 	if (Bellyfish != nullptr) {
 		Bellyfish->GetBellyfishAnimInstance()->PlayAttackedMontage();
