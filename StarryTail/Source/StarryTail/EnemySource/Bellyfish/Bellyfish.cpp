@@ -39,17 +39,23 @@ ABellyfish::ABellyfish()
 	IsSkillSet = false;
 	IsSkillAttack = false;
 	IsCloseOtherAttack = false;
-    SkillSetTimer = 0.0f;
-	SkillAttackTimer = 0.0f;
-	IntersectionTimer = 0.0f;
+
 	static ConstructorHelpers::FClassFinder<ABF_MagicAttack> BP_MAGICATTACK(TEXT("/Game/BluePrint/Monster/Bellyfish/BP_BF_MagicAttack.BP_BF_MagicAttack_C")); 
 	if (BP_MAGICATTACK.Succeeded() && BP_MAGICATTACK.Class != NULL) {
 		MagicAttackClass=BP_MAGICATTACK.Class;
 	}
 
+	SkillSetTimer = 0.0f;
+	SkillAttackTimer = 0.0f;
+	IntersectionTimer = 0.0f;
 
-	M_MaxFlyDistance = 100.0f;
+	Info.M_MaxFlyDistance = 100.0f;
+	Info.M_RushAtk = 100.0f;
+
 	DodgeTimePercent = 10.0f;
+
+	 bIsRush = false;
+	 bIsPlayerRushHit = false;
 }
 UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 {
@@ -66,8 +72,8 @@ void ABellyfish::Attack()
 	//어택 준비 애니메이션 출력
 	BellyfishAnimInstance->PlayAttackSignMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-	AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
-	AttackPosition.Z = AttackPosition.Z - 80.0f;
+	Info.AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
+	Info.AttackPosition.Z = Info.AttackPosition.Z - 80.0f;
 
 	if (IntersectionCheck())
 	{
@@ -78,19 +84,26 @@ void ABellyfish::Attack()
 	}
 }
 
+void ABellyfish::RushAttack()
+{
+	BellyfishAnimInstance->PlayRushMontage();
+	GetCharacterMovement()->MaxWalkSpeed = Info.RushSpeed;
+	bIsRush = true;
+}
+
 void ABellyfish::Skill_Setting()
 {
-	DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
+	Info.DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
 	PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
 	PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
 	PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
 	PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
-	STARRYLOG(Error, TEXT("%f"), DodgeTime);
+	STARRYLOG(Error, TEXT("%f"), Info.DodgeTime);
 
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
-	MagicAttack = GetWorld()->SpawnActor<ABF_MagicAttack>(MagicAttackClass, AttackPosition, FRotator::ZeroRotator);
+	MagicAttack = GetWorld()->SpawnActor<ABF_MagicAttack>(MagicAttackClass, Info.AttackPosition, FRotator::ZeroRotator);
 	MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius,MonsterInfo.M_Skill_Atk);
 
 
@@ -102,7 +115,7 @@ void ABellyfish::Skill_Set()
 	IsSkillSet = false;
 	Magic_CircleComponent->SetActive(false);
 	Magic_CircleComponent->SetVisibility(false);
-	SkillSetTimer = 0.0;
+    SkillSetTimer = 0.0;
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
@@ -140,20 +153,20 @@ bool ABellyfish::IntersectionCheck()
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
 		OverlapResults,
-		AttackPosition,
+		Info.AttackPosition,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel14,
 		FCollisionShape::MakeSphere(DetectRadius),
 		CollisionQueryParam
 	);
-	DrawDebugSphere(GetWorld(), AttackPosition, DetectRadius, 16, FColor::Red, false, 0.2f);
+	DrawDebugSphere(GetWorld(), Info.AttackPosition, DetectRadius, 16, FColor::Red, false, 0.2f);
 	if (bResult)
 	{
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			ABF_MagicAttack* OtherAttack = Cast<ABF_MagicAttack>(OverlapResult.GetActor());
 
-			float Distance = (AttackPosition - OtherAttack->GetActorLocation()).Size();
+			float Distance = (Info.AttackPosition - OtherAttack->GetActorLocation()).Size();
 			if (Distance <= DetectRadius)
 			{
 				return true;
@@ -168,6 +181,7 @@ bool ABellyfish::IntersectionCheck()
 
 	return false;
 }
+
 
 
 void ABellyfish::BeginPlay()
@@ -194,12 +208,16 @@ void ABellyfish::BeginPlay()
 			bDeadWait = true;
 			SetActorEnableCollision(false);
 			BellyfishAnimInstance->Montage_Stop(500.f, BellyfishAnimInstance->GetCurrentActiveMontage());
-			
-		
 		}
-
 		});
 	BellyfishAnimInstance->Attack.AddUObject(this, &ABellyfish::Attack);
+
+	BellyfishAnimInstance->RushEnd.AddLambda([this]() -> void {
+		RushEnd.Broadcast();
+		bIsRush = false;
+		bIsPlayerRushHit = false;
+		bIsWallRushHit = false;
+	});
 
 
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
@@ -218,6 +236,7 @@ void ABellyfish::PossessedBy(AController* NewController)
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 480.0f, 0.0f);
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABellyfish::OnHit);
 }
 
 void ABellyfish::PostInitializeComponents()
@@ -229,11 +248,35 @@ void ABellyfish::PostInitializeComponents()
 #pragma region Init
 float ABellyfish::GetFlyDistance()
 {
-	return M_Fly_Distance;
+	return Info.M_Fly_Distance;
+}
+float ABellyfish::GetRunDistance()
+{
+	return Info.M_Run_Distance;
+}
+float ABellyfish::GetAttackedTime()
+{
+	return Info.M_Attacked_Time;
+}
+float ABellyfish::GetRushTime()
+{
+	return Info.M_Run_Time;
+}
+float ABellyfish::GetRushTestRange()
+{
+	return RushTestRange;
+}
+float ABellyfish::GetRushSpeed()
+{
+	return Info.RushSpeed;
+}
+float ABellyfish::GetMaxFlyDistance()
+{
+	return Info.M_MaxFlyDistance;
 }
 void ABellyfish::SetFlyDistance(float Distance)
 {
-	M_Fly_Distance = Distance;
+	Info.M_Fly_Distance = Distance;
 }
 void ABellyfish::InitMonsterInfo()
 {
@@ -284,9 +327,9 @@ void ABellyfish::InitMonsterInfo()
 
 	MonsterInfo.M_MaxAttacked = 3;
 
-	M_Run_Distance = 450.0f;
-	M_Run_Time = 3.0f;
-	M_Attacked_Time = 0.5f;
+	Info.M_Run_Distance = 450.0f;
+	Info.M_Run_Time = 3.0f;
+	Info.M_Attacked_Time = 0.5f;
 	MonsterInfo.M_AttackPercent = 80.0f;
 }
 
@@ -311,6 +354,43 @@ void ABellyfish::InitMesh()
 	float Scale = FMath::RandRange(0.9f, 1.1f);
 
 	GetMesh()->SetRelativeScale3D(FVector(Scale, Scale, Scale));
+}
+void ABellyfish::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+{
+
+	if (bIsRush)
+	{
+		if (!bIsPlayerRushHit)
+		{
+			if (Cast<AIreneCharacter>(OtherActor))
+			{
+				auto Player = Cast<AIreneCharacter>(OtherActor);
+				UGameplayStatics::ApplyDamage(Player, (Info.M_RushAtk), NULL, this, NULL);
+				bIsPlayerRushHit = true;
+			}
+		}
+		if (!bIsWallRushHit)
+		{
+			if (Cast<UStaticMeshComponent>(OtherComponent))
+			{
+				auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
+				FString FindName = "Wall";
+				FString CompCollisionName = MeshComponent->GetCollisionProfileName().ToString();
+
+				if (FindName == CompCollisionName)
+				{
+					CalcHp(Info.M_RushAtk);
+					if (!bIsDead)
+					{
+						auto BellyfishAIController = Cast<ABellyfishAIController>(MonsterAIController);
+						//BellyfishAIController->WallGroggy();
+						MonsterAnimInstance->PlayGroggyMontage();
+					}
+					bIsWallRushHit = true;
+				}
+			}
+		}
+	}
 }
 // Called every frame
 void ABellyfish::Tick(float DeltaTime)
@@ -337,7 +417,7 @@ void ABellyfish::Tick(float DeltaTime)
 			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 			Ratio = (Ratio * 0.5);
 			MagicAttack->PlayIndicator(Ratio);
-			if (SkillSetTimer >= DodgeTime&& SkillSetTimer< MonsterInfo.M_Skill_Set_Time)
+			if (SkillSetTimer >= Info.DodgeTime&& SkillSetTimer< MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
 			
@@ -369,7 +449,7 @@ void ABellyfish::Tick(float DeltaTime)
 				Skill_AttackEnd();
 			}
 		}
-		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + M_Fly_Distance));
+		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Info.M_Fly_Distance));
 	}
 	else {
 		if (MagicAttack != nullptr) {
