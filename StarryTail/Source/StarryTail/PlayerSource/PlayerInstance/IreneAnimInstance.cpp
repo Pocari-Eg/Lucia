@@ -31,7 +31,8 @@ void UIreneAnimInstance::InitMemberVariable()
 
 UIreneAnimInstance::UIreneAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneAttack_Montage.IreneAttack_Montage"));
+	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneAttack_Montage.IreneAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/TestIreneAttack_Montage.TestIreneAttack_Montage"));
 
 	if(Attack_Montage.Succeeded())
 		AttackMontage = Attack_Montage.Object;
