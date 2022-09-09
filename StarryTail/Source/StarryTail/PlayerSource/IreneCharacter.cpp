@@ -67,7 +67,7 @@ AIreneCharacter::AIreneCharacter()
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
-		GetMesh()->SetRelativeScale3D(FVector(10,10,10));
+		GetMesh()->SetRelativeScale3D(FVector(8.5f,8.5f,8.5f));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
