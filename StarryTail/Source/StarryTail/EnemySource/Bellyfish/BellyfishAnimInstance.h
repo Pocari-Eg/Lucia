@@ -11,6 +11,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
 UCLASS()
 class STARRYTAIL_API UBellyfishAnimInstance : public UMonsterAnimInstance
 {
@@ -26,11 +27,19 @@ public:
 	void PlayRunMontage();
 	void PlayRushMontage();
 	bool GetAttackIsPlaying() override;
+
+
+//Montage
+public:
+	void JumeToRushEnd();
 private:
 	UFUNCTION()
 		void AnimNotify_RushEnd();
+	UFUNCTION()
+		void AnimNotify_RushStart();
 public:
 	FRushEndDelegate RushEnd;
+	FRushStartDelegate RushStart;
 private:
 	bool CheckAttackedMontagePlaying() override;
 

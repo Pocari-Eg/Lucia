@@ -292,6 +292,10 @@ bool AMonster::GetIsManaShieldActive() const
 {
 	return MonsterInfo.bIsShieldOn;
 }
+float AMonster::GetSkillRadius() const
+{
+	return MonsterInfo.M_Skill_Radius;
+}
 void AMonster::SetIsAttackCool(bool Cool)
 {
 	bIsAttackCool = Cool;
@@ -1133,9 +1137,9 @@ void AMonster::Tick(float DeltaTime)
 	if (bIsAttackCool)
 	{
 		AttackCoolTimer+= DeltaTime;
-
 		if (AttackCoolTimer >= MonsterInfo.M_Skill_Cool)
 		{
+			
 			AttackCoolTimer = 0.0f;
 			SetIsAttackCool(false);
 			GetAIController()->SetAttackCoolKey(false);

@@ -20,7 +20,20 @@ private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	bool bIsAttacking;
+	UNavigationSystemV1* NavSys;
+	ANavigationData* NavData;
 
-	
+	TSubclassOf<UNavigationQueryFilter> FilterClass;
+	FSharedConstNavQueryFilter QueryFilter;
+	FPathFindingQuery MyAIQuery;
+
+	FVector MoveDir;
+	FVector NewLocation;
+
+	bool bCanMove;
+	bool bIsRush;
+
+	float RushDistance;
+
+	float SkillSetTimer;
 };

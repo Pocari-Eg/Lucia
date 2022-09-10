@@ -16,6 +16,7 @@
 
 DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
 
+DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
 UCLASS()
 class STARRYTAIL_API ABellyfish : public AMonster
 {
@@ -38,6 +39,11 @@ public:
 	void Skill_AttackEnd();
 
 	bool IntersectionCheck();
+
+	bool RushRouteCheck();
+	void RushEndFunc();
+	
+
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
@@ -47,8 +53,12 @@ protected:
 	void PostInitializeComponents() override;
 
 	//Function
+	//Function
 	UFUNCTION()
-	void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
+	UFUNCTION()
+		void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
@@ -64,6 +74,7 @@ public:
 	float GetRushSpeed();
 	UFUNCTION(BlueprintCallable)
 	float GetMaxFlyDistance();
+	float GetSkillSetTime();
 	//set
 	UFUNCTION(BlueprintCallable)
 	void SetFlyDistance(float Distance);
@@ -73,6 +84,9 @@ private:
 	void InitMesh() override;
 	void InitAnime() override;
 
+
+	void InitAttack1Data();
+	void InitAttack3Data();
 //Variable
 	//Variable
 	UPROPERTY()
@@ -106,8 +120,20 @@ private:
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
 
+
+	bool RushFlyOn;
+	bool RushFlyOff;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
 	float RushTestRange;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
+	FMonsterSkillInfo Attack1Info;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
+	FMonsterSkillInfo Attack3Info;
 public:
 	FRushEndDelegate RushEnd;
+	FRushStartDelegate RushStart;
 };
