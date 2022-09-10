@@ -94,9 +94,20 @@ bool UBellyfishAnimInstance::GetAttackIsPlaying()
 	return (Montage_IsPlaying(AttackMontage));
 }
 
+void UBellyfishAnimInstance::JumeToRushEnd()
+{
+		Montage_JumpToSection("End");
+}
+
 void UBellyfishAnimInstance::AnimNotify_RushEnd()
 {
+
 	RushEnd.Broadcast();
+}
+
+void UBellyfishAnimInstance::AnimNotify_RushStart()
+{
+	RushStart.Broadcast();
 }
 
 

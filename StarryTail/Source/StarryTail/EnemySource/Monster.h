@@ -255,7 +255,7 @@ public:
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
 	bool GetIsManaShieldActive() const;
-
+	float GetSkillRadius() const;
 
 	//set
 	void SetIsAttackCool(bool Cool);

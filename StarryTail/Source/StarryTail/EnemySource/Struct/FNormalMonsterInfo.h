@@ -135,3 +135,25 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultAnimePlayRate;
 };
+
+USTRUCT(Atomic, BluePrintType)
+struct FMonsterSkillInfo
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int M_Skill_Code;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int M_Skill_Range;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float M_Skill_Radius;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		int M_Skill_Atk;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float M_Skill_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float M_Skill_Set_Time;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+		float M_Skill_Cool;
+};
+

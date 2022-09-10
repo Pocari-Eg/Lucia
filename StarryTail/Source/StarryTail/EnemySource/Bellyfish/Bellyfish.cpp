@@ -56,6 +56,8 @@ ABellyfish::ABellyfish()
 
 	 bIsRush = false;
 	 bIsPlayerRushHit = false;
+
+	 RushFlyOn=false;
 }
 UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 {
@@ -70,6 +72,9 @@ void ABellyfish::Walk()
 void ABellyfish::Attack()
 {
 	//어택 준비 애니메이션 출력
+
+	InitAttack1Data();
+
 	BellyfishAnimInstance->PlayAttackSignMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	Info.AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
@@ -86,9 +91,17 @@ void ABellyfish::Attack()
 
 void ABellyfish::RushAttack()
 {
-	BellyfishAnimInstance->PlayRushMontage();
-	GetCharacterMovement()->MaxWalkSpeed = Info.RushSpeed;
-	bIsRush = true;
+	InitAttack3Data();
+	if (RushRouteCheck())
+	{
+		RushFlyOn = true;
+		BellyfishAnimInstance->PlayRushMontage();
+	}
+	else {
+		RushEnd.Broadcast();
+	}
+	
+	
 }
 
 void ABellyfish::Skill_Setting()
@@ -182,6 +195,60 @@ bool ABellyfish::IntersectionCheck()
 	return false;
 }
 
+bool ABellyfish::RushRouteCheck()
+{
+
+	FHitResult Hit;
+	//By 성열현
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation(),
+		GetActorLocation()+GetActorForwardVector()*MonsterInfo.M_Skill_Radius,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel15,
+		FCollisionShape::MakeSphere(50.0f),
+		Params);
+
+#if ENABLE_DRAW_DEBUG
+	FVector TraceVec = GetActorForwardVector() * MonsterInfo.M_Skill_Radius;
+	FVector Center = GetActorLocation() + TraceVec * 0.5f;
+	float HalfHeight = MonsterInfo.M_Skill_Radius* 0.5f + 50.0f;
+	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	float DebugLifeTime = 5.0f;
+
+	DrawDebugCapsule(GetWorld(),
+		Center,
+		HalfHeight,
+		50.0f,
+		CapsuleRot,
+		DrawColor,
+		false,
+		DebugLifeTime);
+#endif
+
+	if (bResult)
+	{
+		STARRYLOG(Error,TEXT("%s"),*Hit.Actor->GetName())
+		if (Cast<AIreneCharacter>(Hit.Actor))
+		{
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+void ABellyfish::RushEndFunc()
+{
+
+	BellyfishAnimInstance->JumeToRushEnd();
+}
+
 
 
 void ABellyfish::BeginPlay()
@@ -213,10 +280,19 @@ void ABellyfish::BeginPlay()
 	BellyfishAnimInstance->Attack.AddUObject(this, &ABellyfish::Attack);
 
 	BellyfishAnimInstance->RushEnd.AddLambda([this]() -> void {
-		RushEnd.Broadcast();
+
 		bIsRush = false;
 		bIsPlayerRushHit = false;
 		bIsWallRushHit = false;
+		RushFlyOff = true;
+		GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+	});
+
+	BellyfishAnimInstance->RushStart.AddLambda([this]() -> void {
+		RushStart.Broadcast();
+		RushFlyOn = false;
+		bIsRush = true;
+		GetCapsuleComponent()->SetCollisionProfileName("RushCheck");
 	});
 
 
@@ -237,6 +313,8 @@ void ABellyfish::PossessedBy(AController* NewController)
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 	GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &ABellyfish::OnHit);
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABellyfish::OnBeginOverlap);
 }
 
 void ABellyfish::PostInitializeComponents()
@@ -264,16 +342,22 @@ float ABellyfish::GetRushTime()
 }
 float ABellyfish::GetRushTestRange()
 {
-	return RushTestRange;
+	return MonsterInfo.M_Skill_Radius;
 }
 float ABellyfish::GetRushSpeed()
 {
-	return Info.RushSpeed;
+	return MonsterInfo.M_Skill_Time;
 }
 float ABellyfish::GetMaxFlyDistance()
 {
 	return Info.M_MaxFlyDistance;
 }
+
+float ABellyfish::GetSkillSetTime()
+{
+	return MonsterInfo.M_Skill_Set_Time;
+}
+
 void ABellyfish::SetFlyDistance(float Distance)
 {
 	Info.M_Fly_Distance = Distance;
@@ -355,39 +439,36 @@ void ABellyfish::InitMesh()
 
 	GetMesh()->SetRelativeScale3D(FVector(Scale, Scale, Scale));
 }
+
 void ABellyfish::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
+	if (bIsRush)
+	{
+		
+		STARRYLOG_S(Warning);
+		RushEnd.Broadcast();
+	
+	}
+}
 
+void ABellyfish::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
 	if (bIsRush)
 	{
 		if (!bIsPlayerRushHit)
 		{
 			if (Cast<AIreneCharacter>(OtherActor))
 			{
+				STARRYLOG_S(Warning);
 				auto Player = Cast<AIreneCharacter>(OtherActor);
-				UGameplayStatics::ApplyDamage(Player, (Info.M_RushAtk), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 				bIsPlayerRushHit = true;
+				RushEnd.Broadcast();
 			}
-		}
-		if (!bIsWallRushHit)
-		{
-			if (Cast<UStaticMeshComponent>(OtherComponent))
-			{
-				auto MeshComponent = Cast<UStaticMeshComponent>(OtherComponent);
-				FString FindName = "Wall";
-				FString CompCollisionName = MeshComponent->GetCollisionProfileName().ToString();
-
-				if (FindName == CompCollisionName)
-				{
-					CalcHp(Info.M_RushAtk);
-					if (!bIsDead)
-					{
-						auto BellyfishAIController = Cast<ABellyfishAIController>(MonsterAIController);
-						//BellyfishAIController->WallGroggy();
-						MonsterAnimInstance->PlayGroggyMontage();
-					}
-					bIsWallRushHit = true;
-				}
+			else {
+				STARRYLOG_S(Warning);
+				bIsPlayerRushHit = false;
+				RushEnd.Broadcast();
 			}
 		}
 	}
@@ -456,6 +537,20 @@ void ABellyfish::Tick(float DeltaTime)
 			MagicAttack->Destroy();
 		}
 	}
+
+	if (RushFlyOn)
+	{
+		Info.M_MaxFlyDistance += (DeltaTime*100.0f);
+	}
+	if (RushFlyOff)
+	{
+		Info.M_MaxFlyDistance -= (DeltaTime * 100.0f);
+		if (Info.M_MaxFlyDistance <= 100.0f)
+		{
+			Info.M_MaxFlyDistance = 100.0f;
+			RushFlyOff = false;
+		}
+	}
 }
 void ABellyfish::InitAnime()
 {
@@ -468,5 +563,28 @@ void ABellyfish::InitAnime()
 	{
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);
 	}
+}
+void ABellyfish::InitAttack1Data()
+{
+	MonsterInfo.M_Skill_Code = Attack1Info.M_Skill_Code;
+	MonsterInfo.M_Skill_Range = Attack1Info.M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = Attack1Info.M_Skill_Radius;
+	
+	MonsterInfo.M_Skill_Atk = Attack1Info.M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = Attack1Info.M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = Attack1Info.M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = Attack1Info.M_Skill_Cool;
+
+}
+void ABellyfish::InitAttack3Data()
+{
+	MonsterInfo.M_Skill_Code = Attack3Info.M_Skill_Code;
+	MonsterInfo.M_Skill_Range = Attack3Info.M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = Attack3Info.M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = Attack3Info.M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = Attack3Info.M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = Attack3Info.M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = Attack3Info.M_Skill_Cool;
 }
 #pragma endregion Init
