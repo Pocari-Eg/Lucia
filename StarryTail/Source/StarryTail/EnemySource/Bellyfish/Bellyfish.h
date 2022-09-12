@@ -8,6 +8,7 @@
 #include"BellyfishAnimInstance.h"
 #include"BF_MagicAttack.h"
 #include"BellyfishInfo.h"
+#include"BF_Projectile.h"
 #include "Bellyfish.generated.h"
 
 /**
@@ -15,8 +16,8 @@
  */
 
 DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
-
 DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
+
 UCLASS()
 class STARRYTAIL_API ABellyfish : public AMonster
 {
@@ -31,6 +32,9 @@ public:
 	void Walk();
 	void Attack();
 	void RushAttack();
+
+	void PlayFireAnim();
+	void ProjectileAttack();
 
 	void Skill_Setting();
 	void Skill_Set();
@@ -53,7 +57,6 @@ protected:
 	void PostInitializeComponents() override;
 
 	//Function
-	//Function
 	UFUNCTION()
 		void OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit);
 	UFUNCTION()
@@ -62,7 +65,6 @@ protected:
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
-
 
 	//get 
 	UFUNCTION(BlueprintCallable)
@@ -86,6 +88,7 @@ private:
 
 
 	void InitAttack1Data();
+	void InitAttack2Data();
 	void InitAttack3Data();
 //Variable
 	//Variable
@@ -100,6 +103,7 @@ private:
 		UParticleSystemComponent* Magic_CircleComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "ture"))
 		UParticleSystem* Magic_Circle;
+
 	TSubclassOf<ABF_MagicAttack> MagicAttackClass;
 	ABF_MagicAttack* MagicAttack;
 
@@ -130,10 +134,18 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
 	FMonsterSkillInfo Attack1Info;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
+	FMonsterSkillInfo Attack2Info;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
 	FMonsterSkillInfo Attack3Info;
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;
+
+	// 카메라 위치에서의 총구 오프셋
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Meteor)
+		UBoxComponent* ProjectileFirePos;
+	// 스폰시킬 프로젝타일 클래스
+	UPROPERTY(EditDefaultsOnly, Category = Meteor)
+		TSubclassOf<class ABF_Projectile> ProjectileClass;
 };

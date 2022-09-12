@@ -40,6 +40,9 @@ ABellyfish::ABellyfish()
 	IsSkillAttack = false;
 	IsCloseOtherAttack = false;
 
+	ProjectileFirePos = CreateDefaultSubobject<UBoxComponent>(TEXT("FIREPOS"));
+	ProjectileFirePos->SetupAttachment(GetMesh());
+
 	static ConstructorHelpers::FClassFinder<ABF_MagicAttack> BP_MAGICATTACK(TEXT("/Game/BluePrint/Monster/Bellyfish/BP_BF_MagicAttack.BP_BF_MagicAttack_C")); 
 	if (BP_MAGICATTACK.Succeeded() && BP_MAGICATTACK.Class != NULL) {
 		MagicAttackClass=BP_MAGICATTACK.Class;
@@ -102,6 +105,36 @@ void ABellyfish::RushAttack()
 	}
 	
 	
+}
+
+void ABellyfish::PlayFireAnim()
+{
+	InitAttack2Data();
+	BellyfishAnimInstance->PlayFireMontage();
+}
+
+void ABellyfish::ProjectileAttack()
+{
+	STARRYLOG(Error, TEXT("Bellyfish Projectile Fire"));
+
+	// 프로젝타일 발사를 시도합니다.
+	if (ProjectileClass)
+	{
+		// 카메라 트랜스폼을 구합니다
+		UWorld* World = GetWorld();
+		if (World)
+		{
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.Owner = this;
+			SpawnParams.Instigator = GetInstigator();
+			// 총구 위치에 발사체를 스폰시킵니다.
+			ABF_Projectile* Projectile = World->SpawnActor<ABF_Projectile>(ProjectileClass, ProjectileFirePos->GetComponentToWorld().GetLocation(), GetActorRotation(), SpawnParams);
+			if (Projectile)
+			{
+				Projectile->SetProjectile(MonsterInfo.M_Skill_Atk, MonsterInfo.M_Skill_Time, MonsterInfo.M_Skill_Radius);
+			}
+		}
+	}
 }
 
 void ABellyfish::Skill_Setting()
@@ -263,7 +296,6 @@ void ABellyfish::BeginPlay()
 	BellyfishAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
 		AttackEnd.Broadcast();
-		STARRYLOG_S(Error);
 		});
 	BellyfishAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
@@ -295,6 +327,7 @@ void ABellyfish::BeginPlay()
 		GetCapsuleComponent()->SetCollisionProfileName("RushCheck");
 	});
 
+	BellyfishAnimInstance->Fire.AddUObject(this, &ABellyfish::ProjectileAttack);
 
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
@@ -443,11 +476,9 @@ void ABellyfish::InitMesh()
 void ABellyfish::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
 	if (bIsRush)
-	{
-		
+	{	
 		STARRYLOG_S(Warning);
 		RushEnd.Broadcast();
-	
 	}
 }
 
@@ -575,6 +606,17 @@ void ABellyfish::InitAttack1Data()
 	MonsterInfo.M_Skill_Set_Time = Attack1Info.M_Skill_Set_Time;
 	MonsterInfo.M_Skill_Cool = Attack1Info.M_Skill_Cool;
 
+}
+void ABellyfish::InitAttack2Data()
+{
+	MonsterInfo.M_Skill_Code = Attack2Info.M_Skill_Code;
+	MonsterInfo.M_Skill_Range = Attack2Info.M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = Attack2Info.M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = Attack2Info.M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = Attack2Info.M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = Attack2Info.M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = Attack2Info.M_Skill_Cool;
 }
 void ABellyfish::InitAttack3Data()
 {

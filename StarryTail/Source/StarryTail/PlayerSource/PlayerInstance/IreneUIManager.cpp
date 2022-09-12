@@ -64,10 +64,8 @@ void UIreneUIManager::Begin()
 	WalkSound->SetParameter("Material", 0.0f);
 
 	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 2.0f);
 	
 	AttackVoiceSound->SetVolume(0.3f);
-	AttackVoiceSound->SetParameter("Attributes", 2.0f);
 
 	TakeDamageVoiceSound->SetVolume(0.4f);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
