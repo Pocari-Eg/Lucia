@@ -5,6 +5,7 @@
 #include "IreneAnimInstance.h"
 
 #include "IreneAttackInstance.h"
+#include "IreneSoundInstance.h"
 #include "../PlayerFSM/IreneFSM.h"
 #include "../IreneCharacter.h"
 
@@ -111,7 +112,7 @@ void UIreneAnimInstance::AnimNotify_RadialBlur() const
 
 void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
 {
-	Irene->IreneUIManager->TakeDamageVoiceSound->SoundPlay2D();
+	Irene->IreneSound->PlayTakeDamageVoiceSound();
 }
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {

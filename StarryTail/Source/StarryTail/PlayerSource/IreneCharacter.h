@@ -7,6 +7,7 @@
 
 // 추가하는 부분
 #include "PlayerInstance/IreneAttackInstance.h"
+#include "PlayerInstance/IreneSoundInstance.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
@@ -53,6 +54,8 @@ public:
 	class UIreneAttackInstance* IreneAttack;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneInputInstance* IreneInput;
+	UPROPERTY(BluePrintReadOnly)
+	class UIreneSoundInstance* IreneSound;
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
 
@@ -217,8 +220,6 @@ public:
 	void SetFirstLevel(bool isFirst);
 #pragma endregion UIManager
 //스탑워치 
-	//void WatchControl();
-	//void WatchReset();
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
 	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}
 	//void SetLastLagTime(const float Value){LastLagTime = Value;}
