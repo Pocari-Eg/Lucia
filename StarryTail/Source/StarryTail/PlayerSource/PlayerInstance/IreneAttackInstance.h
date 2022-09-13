@@ -17,9 +17,6 @@ public:
 	// 타겟 몬스터 또는 오브젝트
 	UPROPERTY()
 	AActor* SwordTargetMonster;
-	// 깃펜을 보낼 수 있는 몬스터 또는 오브젝트
-	UPROPERTY()
-	AActor* QuillTargetMonster;
 
 	// 저스트 회피중인  몬스터
 	UPROPERTY()

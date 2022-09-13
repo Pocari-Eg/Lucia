@@ -24,10 +24,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	/*NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
 	NewIrene->IreneUIManager->OnWaterSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterSkillCoolTime);
 	NewIrene->IreneUIManager->OnThunderSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderSkillCoolTime);*/
-
-	NewIrene->IreneUIManager->OnFireQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireQuillCoolTime);
-	NewIrene->IreneUIManager->OnWaterQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterQuillCoolTime);
-	NewIrene->IreneUIManager->OnThunderQuillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderQuillCoolTime);
 }
 
 void UPlayerHudWidget::SetDialog(TArray<FScriptData*> Data)
@@ -162,35 +158,6 @@ void UPlayerHudWidget::SkipDialog()
 	}
 }
 */
-void UPlayerHudWidget::UseQuill()
-{
-	int Count;
-	switch (CurrentIrene->GetQuillAttribute())
-	{
-	case EAttributeKeyword::e_Fire:
-		//FireSkill.Active->SetVisibility(ESlateVisibility::Hidden);
-		FireQuill.Active->SetVisibility(ESlateVisibility::Hidden);
-		Count = CurrentIrene->IreneUIManager->GetFireQuillCount() - 1;
-		CurrentIrene->IreneUIManager->SetFireQuillCount(Count);
-		FireQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	case EAttributeKeyword::e_Water:
-		//WaterSkill.Active->SetVisibility(ESlateVisibility::Hidden);
-		WaterQuill.Active->SetVisibility(ESlateVisibility::Hidden);
-		Count = CurrentIrene->IreneUIManager->GetWaterQuillCount() - 1;
-		CurrentIrene->IreneUIManager->SetWaterQuillCount(Count);
-		WaterQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	case EAttributeKeyword::e_Thunder:
-		ThunderQuill.Active->SetVisibility(ESlateVisibility::Hidden);
-		Count = CurrentIrene->IreneUIManager->GetThunderQuillCount() - 1;
-		CurrentIrene->IreneUIManager->SetThunderQuillCount(Count);
-		ThunderQuillActive[Count]->SetVisibility(ESlateVisibility::Hidden);
-		break;
-	default:
-		break;
-	}
-}
 
 EAttributeKeyword UPlayerHudWidget::GetAttriburte()
 {
@@ -439,72 +406,7 @@ void UPlayerHudWidget::UpdateThunderSkillCoolTime()
 		}
 	}
 }*/
-void UPlayerHudWidget::UpdateFireQuillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != FireQuill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetFireQuillCoolRatio();
-			FireQuill.CoolTimeBar->SetPercent(Ratio);
 
-			if (Ratio >= 1.0f)
-			{
-				int Count = CurrentIrene->IreneUIManager->GetFireQuillCount() + 1;
-				CurrentIrene->IreneUIManager->SetFireQuillCount(Count);
-				FireQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
-				if (Count == 3)
-				{
-					FireQuill.Active->SetVisibility(ESlateVisibility::Visible);
-				}
-			}
-		}
-	}
-}
-void UPlayerHudWidget::UpdateWaterQuillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != WaterQuill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetWaterQuillCoolRatio();
-			WaterQuill.CoolTimeBar->SetPercent(Ratio);
-
-			if (Ratio >= 1.0f)
-			{			
-				int Count = CurrentIrene->IreneUIManager->GetWaterQuillCount() + 1;
-				CurrentIrene->IreneUIManager->SetWaterQuillCount(Count);
-				WaterQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
-				if (Count == 3)
-				{
-					WaterQuill.Active->SetVisibility(ESlateVisibility::Visible);
-				}
-			}
-		}
-	}
-}
-void UPlayerHudWidget::UpdateThunderQuillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != ThunderQuill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetThunderQuillCoolRatio();
-			ThunderQuill.CoolTimeBar->SetPercent(Ratio);
-
-			if (Ratio >= 1.0f)
-			{			
-				int Count = CurrentIrene->IreneUIManager->GetThunderQuillCount() + 1;
-				CurrentIrene->IreneUIManager->SetThunderQuillCount(Count);
-				ThunderQuillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
-				if (Count == 3)
-				{
-					ThunderQuill.Active->SetVisibility(ESlateVisibility::Visible);
-				}
-			}
-		}
-	}
-}
 void UPlayerHudWidget::FireSelect()
 {
 	//Fire
@@ -623,44 +525,6 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Thunder.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_NoneSelect")));
 	Thunder.Active = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Active")));
 	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
-
-	FireQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("FireQuillOff")));
-	FireQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("FireQuillOn")));
-	FireQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("FireQuill_CoolTime")));
-
-	WaterQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("WaterSQuillOff")));
-	WaterQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuillOn")));
-	WaterQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("WaterQuill_CoolTime")));
-
-	ThunderQuill.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuillOff")));
-	ThunderQuill.Active = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuillOn")));
-	ThunderQuill.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("ThunderQuill_CoolTime")));
-
-
-
-	
-	QuillCount.SetNum(3);
-
-    QuillCount[0] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_1")));
-	QuillCount[1] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_2")));
-    QuillCount[2] = Cast<UImage>(GetWidgetFromName(TEXT("Quill_3")));
-
-	FireQuillActive.SetNum(3);
-	FireQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_1_Acitve")));
-	FireQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_2_Acitve")));
-	FireQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("FireQuill_3_Acitve")));
-
-
-	WaterQuillActive.SetNum(3);
-	WaterQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_1_Acitve")));
-	WaterQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_2_Acitve")));
-	WaterQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("WaterQuill_3_Acitve")));
-
-
-	ThunderQuillActive.SetNum(3);
-	ThunderQuillActive[0] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_1_Acitve")));
-	ThunderQuillActive[1] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_2_Acitve")));
-	ThunderQuillActive[2] = Cast<UImage>(GetWidgetFromName(TEXT("ThunderQuill_3_Acitve")));
 
 	isFirst = true;
 	ActionWidgetOff();
