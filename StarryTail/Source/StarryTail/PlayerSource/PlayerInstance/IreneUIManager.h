@@ -15,9 +15,6 @@ DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
 
-DECLARE_MULTICAST_DELEGATE(FOnFireQuillCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnWaterQuillCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnThunderQuillCoolChangeDelegate);
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
 {
@@ -45,15 +42,6 @@ private:
 	float ThunderMaxCoolTime;
 	float ThunderCurCoolTime;
 
-	float FireQuillMaxCoolTime;
-	float FireQuillCurCoolTime;
-
-	float WaterQuillMaxCoolTime;
-	float WaterQuillCurCoolTime;
-
-	float ThunderQuillMaxCoolTime;
-	float ThunderQuillCurCoolTime;
-
 #pragma region HUD
 public:
 	FOnHpChangeDelegate OnHpChanged;
@@ -63,10 +51,6 @@ public:
 	FOnFireCoolChangeDelegate OnFireCoolChange;
 	FOnWaterCoolChangeDelegate OnWaterCoolChange;
 	FOnThunderCoolChangeDelegate OnThunderCoolChange;
-
-	FOnFireQuillCoolChangeDelegate OnFireQuillCoolChange;
-	FOnWaterQuillCoolChangeDelegate OnWaterQuillCoolChange;
-	FOnThunderQuillCoolChangeDelegate OnThunderQuillCoolChange;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -154,23 +138,8 @@ public:
 	float GetWaterCoolRatio();
 	//Thunde Cool
 	float GetThunderCoolRatio();
-
-	float GetFireQuillCoolRatio();
-	float GetWaterQuillCoolRatio();
-	float GetThunderQuillCoolRatio();
-
-	int  GetFireQuillCount();
-	void  SetFireQuillCount(int Value);
-	int  GetWaterQuillCount();
-	void  SetWaterQuillCount(int Value);
-	int  GetThunderQuillCount();
-	void  SetThunderQuillCount(int Value);
-	
+		
 	void PlayHUDAnimation();
-
-	void UpdateFireQuillCool(float CurCool, float MaxCool);
-	void UpdateWaterQuillCool(float CurCool, float MaxCool);
-	void UpdateThunderQuillCool(float CurCool, float MaxCool);
 	
 	void SetDialogState(const bool State);
 #pragma endregion HUDPublic
