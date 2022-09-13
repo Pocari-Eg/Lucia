@@ -17,7 +17,7 @@ void USkillSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPaylo
 	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
-		//Irene->IreneAttack->SetCanSkillSkip(true);
+		Irene->IreneAttack->SetCanSkillSkip(true);
 	}
 }
 void USkillSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
@@ -30,7 +30,7 @@ void USkillSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
 	if(Irene != nullptr)
 	{
-		//Irene->IreneAttack->SetCanSkillSkip(false);
+		Irene->IreneAttack->SetCanSkillSkip(false);
 	}
 }
 

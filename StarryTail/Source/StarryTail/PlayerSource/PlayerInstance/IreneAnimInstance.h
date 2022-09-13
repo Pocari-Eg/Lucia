@@ -49,13 +49,15 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* AttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	EAttributeKeyword Attribute;
+	UAnimMontage* SkillMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	AActor* TargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	int DodgeDir;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	int FireChargeCount;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -69,6 +71,7 @@ private:
 	void InitMemberVariable();
 public:
 	void PlayAttackMontage();
+	void PlaySkillAttackMontage(const int AttackCount = 1);
 	void NextToAttackMontageSection(const int32 NewSection);
 	void JumpToAttackMontageSection(const int32 NewSection);
 	
@@ -76,10 +79,10 @@ public:
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
 	void SetSprintStopAnim(const bool Value) { IsSprintStop = Value; }
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
-	void SetAttribute(const EAttributeKeyword Value) { Attribute = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 	void SetDodgeDir(const int Value) { DodgeDir = Value; }
+	void SetFireChargeCount(const int Value) { FireChargeCount = Value; }
 
 	bool GetIsinAir()const{return IsInAir;}
 	int GetDodgeDir()const{return DodgeDir;}

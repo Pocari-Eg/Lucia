@@ -629,7 +629,6 @@ void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
 
 				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 				{
-					GameInstance->GetPlayer()->IreneAttack->SetWaterQuillStack(MonsterInfo.Quill_MaxStack);
 					MonsterInfo.Quill_CurStack = 0;
 					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
 				}
@@ -642,7 +641,6 @@ void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
 
 				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 				{
-					GameInstance->GetPlayer()->IreneAttack->SetThunderQuillStack(MonsterInfo.Quill_MaxStack);
 					MonsterInfo.Quill_CurStack = 0;
 					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
 				}
@@ -657,7 +655,6 @@ void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
 
 				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 				{
-					GameInstance->GetPlayer()->IreneAttack->SetFireQuillStack(MonsterInfo.Quill_MaxStack);
 					MonsterInfo.Quill_CurStack = 0;
 					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
 				}
@@ -669,22 +666,6 @@ void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
 			//
 			if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
 			{
-				
-						switch (AttackAttribute)
-						{
-						case EAttributeKeyword::e_Fire:
-							GameInstance->GetPlayer()->IreneAttack->SetFireQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						case EAttributeKeyword::e_Water:
-							GameInstance->GetPlayer()->IreneAttack->SetWaterQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						case EAttributeKeyword::e_Thunder:
-							GameInstance->GetPlayer()->IreneAttack->SetThunderQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						default:
-							break;
-						}
-
 				MonsterInfo.Quill_CurStack = 0;
 				CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
 			}
@@ -1262,7 +1243,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				if (MonsterInfo.bIsShieldOn)
 				{
 					//CalcManaShield(CalcManaShieldDamage(true,DamageAmount, Player->GetSwordAttribute()),Player->GetSwordAttribute());
-					CalcManaShield(CalcManaShieldDamage(true, DamageAmount, Player->GetQuillAttribute()));
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));

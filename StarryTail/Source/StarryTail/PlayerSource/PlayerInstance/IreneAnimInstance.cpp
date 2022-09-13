@@ -27,15 +27,18 @@ void UIreneAnimInstance::InitMemberVariable()
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
 	TargetMonster = nullptr;
+	FireChargeCount = 0;
 }
 
 UIreneAnimInstance::UIreneAnimInstance()
 {
-	//static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneAttack_Montage.IreneAttack_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/TestIreneAttack_Montage.TestIreneAttack_Montage"));
-
 	if(Attack_Montage.Succeeded())
 		AttackMontage = Attack_Montage.Object;
+	
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Skill_Montage(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/TestIreneSkill_Montage.TestIreneSkill_Montage"));
+	if(Skill_Montage.Succeeded())
+		SkillMontage = Skill_Montage.Object;
 }
 
 void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
@@ -56,6 +59,11 @@ void UIreneAnimInstance::PlayAttackMontage()
 {
 	// 현재 속성에 따라 기본공격 몽타주 실행하는 함수
 	Montage_Play(AttackMontage, 1.0f);
+}
+void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
+{
+	// 스킬 몽타주를 실행하는 함수
+	Montage_Play(SkillMontage, 1.0f);
 }
 
 void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)

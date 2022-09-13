@@ -14,8 +14,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-	NewIrene->FOnSwordAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateSwordAttributes);
-	NewIrene->FOnQuillAttributeChange.AddUObject(this, &UPlayerHudWidget::UpdateQuillAttributes);
 
 	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
 	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
@@ -159,11 +157,6 @@ void UPlayerHudWidget::SkipDialog()
 }
 */
 
-EAttributeKeyword UPlayerHudWidget::GetAttriburte()
-{
-	return CurrentIrene->GetQuillAttribute();
-}
-
 void UPlayerHudWidget::SetTutorial(FString Num)
 {
 	TutorialWidget->PlayTutorial(Num);
@@ -218,45 +211,6 @@ void UPlayerHudWidget::UpdateHpRecovery()
 	}
 }
 
-
-void UPlayerHudWidget::UpdateSwordAttributes()
-{
-	switch (CurrentIrene->GetQuillAttribute())
-	{
-	case EAttributeKeyword::e_Fire:
-		FireSelect();
-		break;
-	case EAttributeKeyword::e_Water:
-		WaterSelect();
-		break;
-	case EAttributeKeyword::e_Thunder:
-		ThunderSelect();
-		break;
-	}
-	
-	if (isFirst)
-	{
-		InitAttributeUI();
-		UpdateQuillAttributes();
-		isFirst = false;
-	}
-}
-void UPlayerHudWidget::UpdateQuillAttributes()
-{
-	switch (CurrentIrene->GetQuillAttribute())
-	{
-	case EAttributeKeyword::e_Fire:
-		OnFireAttribute();
-		break;
-	case EAttributeKeyword::e_Water:
-		OnWaterAttribute();
-		break;
-	case EAttributeKeyword::e_Thunder:
-		OnThunderAttribute();
-		break;
-	}
-}
-
 void UPlayerHudWidget::InitAttributeUI()
 {
 	//Fire
@@ -273,22 +227,6 @@ void UPlayerHudWidget::InitAttributeUI()
 	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
 	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
 	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
-
-	switch (CurrentIrene->GetQuillAttribute())
-	{
-	case EAttributeKeyword::e_Fire:
-		Fire.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-		Fire.Active->SetVisibility(ESlateVisibility::Visible);
-		break;
-	case EAttributeKeyword::e_Water:
-		Water.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-		Water.Active->SetVisibility(ESlateVisibility::Visible);
-		break;
-	case EAttributeKeyword::e_Thunder:
-		Thunder.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-		Thunder.Active->SetVisibility(ESlateVisibility::Visible);
-		break;
-	}
 }
 
 void UPlayerHudWidget::UpdateFireCoolTime()

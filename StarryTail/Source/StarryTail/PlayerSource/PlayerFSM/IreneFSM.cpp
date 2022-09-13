@@ -52,6 +52,8 @@ FString UIreneFSM::GetStateToString() const
 	case EStateEnum::B_Attack_2: return FString("B_Attack_2");
 	case EStateEnum::B_Attack_3: return FString("B_Attack_3");
 	case EStateEnum::B_Attack_4: return FString("B_Attack_4");
+	case EStateEnum::Skill_Start: return FString("Skill_Start");
+	case EStateEnum::Skill_End: return FString("Skill_End");
 	case EStateEnum::Form_Change: return FString("Form_Change");
 	case EStateEnum::Hit_1: return FString("Hit_1");
 	case EStateEnum::Hit_2: return FString("Hit_2");
@@ -61,32 +63,11 @@ FString UIreneFSM::GetStateToString() const
 }
 FName UIreneFSM::GetStateToAttackDataTableName() const
 {
-	switch(Irene->GetQuillAttribute())
+	switch (StateEnumValue)
 	{
-	case EAttributeKeyword::e_Fire:
-		switch (StateEnumValue)
-		{
 	case EStateEnum::B_Attack_1: return FName("B_Attack_1_F");
 	case EStateEnum::B_Attack_2: return FName("B_Attack_2_F");
 	case EStateEnum::B_Attack_3: return FName("B_Attack_3_F");
-	default: return FName("Error GetStateToAttackDataTableName");
-		}
-	case EAttributeKeyword::e_Water:
-		switch (StateEnumValue)
-		{
-	case EStateEnum::B_Attack_1: return FName("B_Attack_1_W");
-	case EStateEnum::B_Attack_2: return FName("B_Attack_2_W");
-	case EStateEnum::B_Attack_3: return FName("B_Attack_3_W");
-	default: return FName("Error GetStateToAttackDataTableName");
-		}
-	case EAttributeKeyword::e_Thunder:
-		switch (StateEnumValue)
-		{
-	case EStateEnum::B_Attack_1: return FName("B_Attack_1_T");
-	case EStateEnum::B_Attack_2: return FName("B_Attack_2_T");
-	case EStateEnum::B_Attack_3: return FName("B_Attack_3_T");
-	default: return FName("Error GetStateToAttackDataTableName");
-		}
 	default: return FName("Error GetStateToAttackDataTableName");
 	}
 }
@@ -526,9 +507,7 @@ void UDodgeEndState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Dodge_End);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-
-	CurState->Irene->IreneAttack->SetCurrentPosVec(FVector::ZeroVector);
-	CurState->Irene->IreneAttack->SetNowPosVec(FVector::ZeroVector);
+	
 	//CurState->Irene->GetMesh()->SetVisibility(true);
 	//CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	//CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2;
@@ -720,6 +699,7 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
 	if (!CurState->Irene->Weapon->IsVisible())
 	{
@@ -806,6 +786,7 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
@@ -883,7 +864,8 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -963,7 +945,8 @@ void UBasicAttack4State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetReAttack(false);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -1013,7 +996,107 @@ void UBasicAttack4State::EndTimeExit(IBaseGameEntity* CurState)
 #pragma endregion UBasicAttack4State
 #pragma endregion AttackState
 
-#pragma region UFormChangeState
+#pragma region Skill
+#pragma region SkillStart
+USkillStartState* USkillStartState::GetInstance()
+{
+	static USkillStartState* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<USkillStartState>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void USkillStartState::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(EStateEnum::Skill_Start);
+	CurState->PlayTime = 0.0f;
+	CurState->bIsEnd = false;
+
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
+	CurState->Irene->IreneInput->SetReAttack(false);
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+}
+
+void USkillStartState::Execute(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->MoveAuto();
+	
+	// ÀÌµ¿ ½ºÅµ
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			if (CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ActionEndChangeMoveState();
+		}
+	}
+	if(CurState->PlayTime >= 1.29f)
+	{
+		EndTimeExit(CurState);
+	}
+}
+void USkillStartState::Exit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->CameraShakeOn = false;
+	CurState->bIsEnd = true;
+}
+void USkillStartState::EndTimeExit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneAttack->AttackTimeEndState();
+}
+#pragma endregion SkillStart
+#pragma region SkillEnd
+USkillEndState* USkillEndState::GetInstance()
+{
+	static USkillEndState* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<USkillEndState>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void USkillEndState::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(EStateEnum::Skill_Start);
+	CurState->PlayTime = 0.0f;
+	CurState->bIsEnd = false;
+}
+
+void USkillEndState::Execute(IBaseGameEntity* CurState)
+{
+
+}
+
+void USkillEndState::Exit(IBaseGameEntity* CurState)
+{
+	CurState->bIsEnd = true;
+}
+#pragma endregion SkillEnd
+#pragma endregion Skill
+
+#pragma region FormChangeState
 UFormChangeState* UFormChangeState::GetInstance()
 {
 	static UFormChangeState* Instance;
@@ -1039,7 +1122,7 @@ void UFormChangeState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
-#pragma endregion UFormChangeState
+#pragma endregion FormChangeState
 
 #pragma region Hit
 #pragma region UHit1State
@@ -1111,7 +1194,7 @@ void UHit2State::Exit(IBaseGameEntity* CurState)
 #pragma endregion UHit2State
 #pragma endregion Hit
 
-#pragma region UDeathState
+#pragma region DeathState
 UDeathState* UDeathState::GetInstance()
 {
 	static UDeathState* Instance;
@@ -1139,7 +1222,7 @@ void UDeathState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->bIsEnd = true;
 }
-#pragma endregion UDeathState
+#pragma endregion DeathState
 
 #pragma region IsState
 bool UIreneFSM::IsIdleState()const
@@ -1178,7 +1261,12 @@ bool UIreneFSM::IsAttackState()const
 		return true;
 	return false;
 }
-
+bool UIreneFSM::IsSkillState() const
+{
+	if (StateEnumValue == EStateEnum::Skill_Start || StateEnumValue == EStateEnum::Skill_End)
+		return true;
+	return false;
+}
 bool UIreneFSM::IsFormChangeState()const
 {
 	if (StateEnumValue == EStateEnum::Form_Change)

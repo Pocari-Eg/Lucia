@@ -30,23 +30,6 @@ AIreneCharacter::AIreneCharacter()
 
 	// 콜라이더 설정
 	GetCapsuleComponent()->InitCapsuleSize(25.0f, 80.0f);
-
-	// 쉴드 설정
-	ShieldComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Shield"));
-	const ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Shield(TEXT("/Engine/BasicShapes/Sphere.Sphere"));
-	if(SM_Shield.Succeeded())
-	{
-		ShieldComp->SetStaticMesh(SM_Shield.Object);
-	}
-	const ConstructorHelpers::FObjectFinder<UMaterial>MT_Shield(TEXT("/Game/Model/Irene/Material/MT_Shield.MT_Shield"));
-	if(MT_Shield.Succeeded())
-	{
-		ShieldComp->SetMaterial(0,MT_Shield.Object);
-	}
-	ShieldComp->SetupAttachment(GetCapsuleComponent());
-	ShieldComp->SetCollisionProfileName(TEXT("NoCollision"));
-	ShieldComp->SetGenerateOverlapEvents(false);
-	ShieldComp->SetVisibility(false);
 	
 	// 카메라 설정
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
@@ -196,9 +179,6 @@ void AIreneCharacter::BeginPlay()
 	// 스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
-
-	// 애니메이션 속성 초기화
-	IreneAnim->SetAttribute(GetQuillAttribute());
 	
 	IreneUIManager->Begin();
 	IreneInput->Begin();
@@ -279,7 +259,6 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", IreneInput, &UIreneInputInstance::LeftButton);
-	PlayerInputComponent->BindAction("RightButton", IE_Released, IreneInput, &UIreneInputInstance::RightButtonReleased);
 	PlayerInputComponent->BindAxis("RightButton", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
 	
@@ -499,16 +478,6 @@ void AIreneCharacter::FollowTargetPosition()
 void AIreneCharacter::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
-
-	if(IreneAttack->GetFollowTarget())
-	{
-		if(Cast<AMonster>(OtherActor))
-		{
-			// FindNearMonster() 이후 다가갈 때 충돌하면 멈추고 공격
-			IreneInput->SetStopMoveAutoTarget();
-			IreneAttack->DoAttack();
-		}
-	}
 }
 void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 {
@@ -517,16 +486,6 @@ void AIreneCharacter::NotifyActorEndOverlap(AActor* OtherActor)
 void AIreneCharacter::NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit)
 {
 	Super::NotifyHit(MyComp, Other, OtherComp, bSelfMoved, HitLocation, HitNormal, NormalImpulse, Hit);
-
-	if(IreneAttack->GetFollowTarget())
-	{
-		if(Cast<AMonster>(Other))
-		{
-			// FindNearMonster() 이후 다가갈 때 충돌하면 멈추고 공격
-			IreneInput->SetStopMoveAutoTarget();
-			IreneAttack->DoAttack();
-		}
-	}
 }
 
 float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)
@@ -598,10 +557,6 @@ void AIreneCharacter::SetHP(float DamageAmount)
 	{
 		const float CurShield = IreneData.Shield;
 		IreneData.Shield -= DamageAmount;
-		if(IreneData.Shield <= 0)
-		{
-			IreneAttack->ResetWaterQuillStack();
-		}
 		DamageAmount -= CurShield;
 		if(DamageAmount > 0)
 			IreneData.CurrentHP -= DamageAmount;

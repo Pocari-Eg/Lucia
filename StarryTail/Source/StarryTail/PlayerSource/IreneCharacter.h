@@ -46,8 +46,6 @@ public:
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	UCameraComponent* CameraComp;
-	UPROPERTY(VisibleAnywhere)
-	UStaticMeshComponent* ShieldComp;
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UIreneAnimInstance* IreneAnim;
@@ -112,9 +110,6 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	void TargetReset()const;
-	
-	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetQuillAttribute() {return IreneAttack->GetQuillAttribute();}
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponVisible(bool Value);

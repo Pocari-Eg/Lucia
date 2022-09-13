@@ -91,8 +91,6 @@ public:
 
 
 //	void UseSkill();
-	UFUNCTION(BluePrintCallable)
-	EAttributeKeyword GetAttriburte();
 
 	UFUNCTION(BluePrintCallable)
 	void SetTutorial(FString Num);
@@ -100,9 +98,6 @@ private:
 
 	void UpdateHp();
 	void UpdateHpRecovery();
-
-	void UpdateSwordAttributes();
-	void UpdateQuillAttributes();
 
 	void UpdateFireCoolTime();
 	void UpdateWaterCoolTime();

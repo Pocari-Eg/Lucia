@@ -31,7 +31,10 @@ void UIreneInputInstance::InitMemberVariable()
 	MoveKey.Add(0);
 
 	bLeftButtonPressed = false;
-
+	bRightButtonPressed = false;
+	bUseLeftButton = true;
+	bUseRightButton = true;
+	
 	bReAttack = false;
 	
 	// 추락 중 구르기 입력 초기화
@@ -45,6 +48,8 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsWaterAttributeOn = true;
 	bIsThunderAttributeOn = true;
 
+	bIsSkillOn = false;
+	
 	TempAttribute = EAttributeKeyword::e_None;
 	
 	CoolTimeRate = 0.008f;
@@ -302,13 +307,64 @@ void UIreneInputInstance::LeftButton(float Rate)
 		}
 	}
 }
-void UIreneInputInstance::RightButtonReleased()
-{
-	
-}
 void UIreneInputInstance::RightButton(float Rate)
 {
+	// UI작성 시 주석 모두 제거
+	if(Rate > 0)
+		bRightButtonPressed = true;
+	else
+		bRightButtonPressed = false;
+	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SkillWaitHandle.IsValid() && !bIsDialogOn)
+	{
+		if (Rate >= 1.0)
+		{
+			Irene->IreneAttack->SetSkillState();
+
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("B_Attack_1"));
+			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
+			if(AttackTable != nullptr)
+				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
+			
+			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
+			constexpr float WaitTime = 0.15f;
+			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					SkillWaitHandle.Invalidate();
+				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);			
+
+			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true, 0.0f);
+
+			//Irene->IreneUIManager->PlayerHud->UseSkill();
+			Irene->ChangeStateAndLog(USkillStartState::GetInstance());
+			Irene->IreneAnim->PlaySkillAttackMontage();
+			Irene->IreneData.IsAttacking = true;
+			if(PerfectDodgeTimerHandle.IsValid())
+			{
+				Irene->IreneAnim->SetDodgeDir(0);
+				Irene->FollowTargetPosition();
+				PerfectDodgeAttackEnd();
+			}
+		}
+	}
+}
+void UIreneInputInstance::SkillWait()
+{
+	// UI작성 시 주석 모두 제거
+	SkillCoolTime += CoolTimeRate;
 	
+	if (SkillCoolTime > MaxSkillCoolTime)
+	{
+		bIsSkillOn = true;
+		//Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		//Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+		SkillCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+	}
+	//else
+	//{
+		//Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		//Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
+	//}
 }
 
 void UIreneInputInstance::MouseWheel(float Rate)
@@ -534,6 +590,14 @@ bool UIreneInputInstance::CanAttackState() const
 	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
 		return true;
 	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsDeathState())
+		return true;
+	return false;
+}
+bool UIreneInputInstance::CanSkillState() const
+{
+	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
+		return true;
+	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
 		return true;
 	return false;
 }
