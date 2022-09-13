@@ -24,8 +24,6 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-
-	EAttributeKeyword QuillAttribute;
 	
 	// 저스트 회피
 	bool IsPerfectDodge = false;
@@ -36,16 +34,10 @@ private:
 	UPROPERTY()
 	UDataTable* AttackDataTable;
 	UPROPERTY()
-	UDataTable* QuillDataTable;
-	UPROPERTY()
 	UDataTable* ChargeDataTable;
 	UPROPERTY()
 	UDataTable* ElementDataTable;
-
-	// 깃펜 효과 타이머
-	FTimerHandle FireQuillStackTimerHandle;
-	FTimerHandle WaterQuillStackTimerHandle;
-	FTimerHandle ThunderQuillStackTimerHandle;
+	
 	// 디버프 효과 타이머
 	FTimerHandle FireDeBuffStackTimerHandle;
 	FTimerHandle FireDeBuffTickTimerHandle;
@@ -71,9 +63,9 @@ private:
 	FVector PlayerPosVec;
 	// 보간을 위한 목표 위치
 	FVector TargetPosVec;
-	// 전기 스킬 이동 전 위치
+	// 이동 전 위치
 	FVector CurrentPosVec;
-	// 전기 스킬 이동 후 위치
+	// 이동 후 위치
 	FVector NowPosVec;
 	
 	// 카메라 쉐이크 시간
@@ -91,7 +83,8 @@ private:
 	bool bMoveSkip;
 	// 후딜 중 닷지나 점프 가능 타이밍 노티파이
 	bool bDodgeJumpSkip;
-
+	// 후딜 중 스킬 사용 가능 타이밍 노티파이
+	bool bSkillSkip;
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -108,14 +101,6 @@ public:
 	void AttackStopCheck();
 	void DoAttack();
 
-	// 깃펜 스택 함수
-	void SetFireQuillStack(const int Value);
-	void SetWaterQuillStack(const int Value);
-	void SetThunderQuillStack(const int Value);
-	void ResetFireQuillStack();
-	void ResetWaterQuillStack();
-	void ResetThunderQuillStack();
-
 	// 디버프 스택 함수
 	void SetFireDeBuffStack(const int Value, const float DamageAmount);
 	void SetWaterDeBuffStack(const int Value);
@@ -127,9 +112,9 @@ public:
 	void OverSustainTime();
 
 	void SetAttackState()const;
+	void SetSkillState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
-	FQuillDataTable* GetNameAtQuillDataTable(const FName Value) const { if (Value != FName("")) return (QuillDataTable->FindRow<FQuillDataTable>(Value, "")); return nullptr; }
 	FChargeDataTable* GetNameAtChargeDataTable() const { return (ChargeDataTable->FindRow<FChargeDataTable>(FName("Charge"), "")); }
 	FElementDataTable* GetNameAtElementDataTable(const FName Value) const { if (Value != FName("")) return (ElementDataTable->FindRow<FElementDataTable>(Value, "")); return nullptr; }
 
@@ -138,10 +123,7 @@ public:
 	float GetATK()const;
 
 	FName GetBasicAttackDataTableName();
-
-	//속성 반환
-	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetQuillAttribute()const{return QuillAttribute;}
+	
 	bool GetFollowTarget()const {return bFollowTarget;}
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
 	FVector GetPlayerPosVec()const {return PlayerPosVec;}
@@ -151,14 +133,13 @@ public:
 	float GetCameraShakeTime()const {return CameraShakeTime;}
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
-	FName GetAttributeToFormTimeDataTableName()const;
+	bool GetCanSkillSkip()const{return bSkillSkip;}
 	int GetFireDeBuffStack()const{return FireDeBuffStack;}
 	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
 	float GetThunderSustainTime()const{return ThunderSustainTime;}
 	bool GetIsPerfectDodge()const{return IsPerfectDodge;}
 	
-	void SetQuillAttribute(const EAttributeKeyword Value){QuillAttribute = Value;}
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
 	void SetPlayerPosVec(const FVector Value){PlayerPosVec = Value;}
@@ -168,6 +149,7 @@ public:
 	void SetNowPosVec(const FVector Value){NowPosVec = Value;}
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
+	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 	void SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }

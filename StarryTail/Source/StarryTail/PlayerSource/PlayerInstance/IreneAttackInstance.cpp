@@ -18,25 +18,15 @@ UIreneAttackInstance::UIreneAttackInstance()
 {
 	// 데이터 테이블
 	const ConstructorHelpers::FObjectFinder<UDataTable>DT_AttackDataTable(TEXT("/Game/Math/DT_AttackDataTable.DT_AttackDataTable"));
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_QuillDataTable(TEXT("/Game/Math/DT_QuillDataTable.DT_QuillDataTable"));
 	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ChargeDataTable(TEXT("/Game/Math/DT_ChargeDataTable.DT_ChargeDataTable"));
 	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ElementDataTable(TEXT("/Game/Math/DT_ElementDataTable.DT_ElementDataTable"));
-	if (DT_AttackDataTable.Succeeded() && DT_QuillDataTable.Succeeded() && DT_ChargeDataTable.Succeeded() && DT_ElementDataTable.Succeeded())
+	if (DT_AttackDataTable.Succeeded() && DT_ChargeDataTable.Succeeded() && DT_ElementDataTable.Succeeded())
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
-		QuillDataTable = DT_QuillDataTable.Object;
 		ChargeDataTable = DT_ChargeDataTable.Object;
 		ElementDataTable = DT_ElementDataTable.Object;
 	}
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_FireBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_f.Ps_Buff_F"));
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_WaterBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_w.Ps_Buff_W"));
-	const ConstructorHelpers::FObjectFinder<UParticleSystem>PS_ThunderBuff(TEXT("/Game/Effect/VFX_Irene/Feather/Buff/Ps_Buff_t.Ps_Buff_T"));
-	if (PS_FireBuff.Succeeded() && PS_WaterBuff.Succeeded() && PS_ThunderBuff.Succeeded())
-	{
-		BuffParticle.Add(PS_FireBuff.Object);
-		BuffParticle.Add(PS_WaterBuff.Object);
-		BuffParticle.Add(PS_ThunderBuff.Object);
-	}
+
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -56,19 +46,7 @@ void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint
 void UIreneAttackInstance::InitMemberVariable()
 {
 	SwordTargetMonster = nullptr;
-	//초기 속성
-	QuillAttribute = EAttributeKeyword::e_Fire;
 
-	FireDeBuffStack = 0;
-	WaterDeBuffStack = 0;
-	ThunderDeBuffStack = 0;
-	FireMonsterDamageAmount = 0;
-	ThunderSustainTime = 0;
-	
-	bFollowTarget = false;
-	FollowTargetAlpha = 0.0f;
-	PlayerPosVec = FVector::ZeroVector;
-	TargetPosVec = FVector::ZeroVector;
 	bFollowCameraTarget = false;
 	FollowTargetCameraAlpha = 0.0f;
 	CameraRot = FRotator::ZeroRotator;
@@ -76,6 +54,7 @@ void UIreneAttackInstance::InitMemberVariable()
 
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
+	bSkillSkip = false;
 }
 
 #pragma region Attack
@@ -163,12 +142,7 @@ void UIreneAttackInstance::DoAttack()
 	//{
 	//	Irene->CameraOutEvent();
 	//}
-
-	// 몬스터 추적 초기화
-	bFollowTarget = false;
-	FollowTargetAlpha = 0;
-	PlayerPosVec = FVector::ZeroVector;
-	TargetPosVec = FVector::ZeroVector;
+	
 	bool bResult = false;
 
 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
@@ -219,89 +193,6 @@ void UIreneAttackInstance::DoAttack()
 		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
 			STGameInstance->ResetAttributeEffectMonster();
-}
-void UIreneAttackInstance::SetFireQuillStack(const int Value)
-{
-	if(Value == 0)
-		return;
-	switch (Value)
-	{
-	case 1:
-		Irene->IreneData.FireQuillStackDmg = 1.2f;
-		break;
-	case 2:
-		Irene->IreneData.FireQuillStackDmg = 1.5f;
-		break;
-	case 3:
-		Irene->IreneData.FireQuillStackDmg = 2.0f;
-		break;
-	default: break;
-	}
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[0],Irene->GetActorLocation());
-	GetWorld()->GetTimerManager().SetTimer(FireQuillStackTimerHandle, this, &UIreneAttackInstance::ResetFireQuillStack, 5.0f, false);
-}
-void UIreneAttackInstance::SetWaterQuillStack(const int Value)
-{
-	if(Value == 0)
-		return;
-	switch (Value)
-	{
-	case 1:
-		Irene->IreneData.Shield = 100;
-		break;
-	case 2:
-		Irene->IreneData.Shield = 200;
-		break;
-	case 3:
-		Irene->IreneData.Shield = 300;
-		break;
-	default: break;
-	}
-	Irene->ShieldComp->SetVisibility(true);
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[1],Irene->GetActorLocation());
-	GetWorld()->GetTimerManager().SetTimer(WaterQuillStackTimerHandle, this, &UIreneAttackInstance::ResetWaterQuillStack, 120.0f, false);
-}
-void UIreneAttackInstance::SetThunderQuillStack(const int Value)
-{
-	if(Value == 0)
-		return;
-	switch (Value)
-	{
-	case 1:
-		Irene->IreneData.ThunderQuillStackSpeed = 1.05f;
-		break;
-	case 2:
-		Irene->IreneData.ThunderQuillStackSpeed = 1.10f;
-		break;
-	case 3:
-		Irene->IreneData.ThunderQuillStackSpeed = 1.20f;
-		break;
-	default: break;
-	}
-	if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.RunMaxSpeed ||
-		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
-	Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed * Irene->IreneData.ThunderQuillStackSpeed;
-	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(),BuffParticle[2],Irene->GetActorLocation());
-	GetWorld()->GetTimerManager().SetTimer(ThunderQuillStackTimerHandle, this, &UIreneAttackInstance::ResetThunderQuillStack, 10.0f, false);
-}
-void UIreneAttackInstance::ResetFireQuillStack()
-{
-	GetWorld()->GetTimerManager().ClearTimer(FireQuillStackTimerHandle);	
-	Irene->IreneData.FireQuillStackDmg = 1.0f;
-}
-void UIreneAttackInstance::ResetWaterQuillStack()
-{
-	GetWorld()->GetTimerManager().ClearTimer(WaterQuillStackTimerHandle);	
-	Irene->ShieldComp->SetVisibility(false);
-	Irene->IreneData.Shield = 0;
-}
-void UIreneAttackInstance::ResetThunderQuillStack()
-{
-	GetWorld()->GetTimerManager().ClearTimer(ThunderQuillStackTimerHandle);
-	if(Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.RunMaxSpeed * Irene->IreneData.ThunderQuillStackSpeed ||
-		Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed * Irene->IreneData.ThunderQuillStackSpeed)
-			Irene->GetCharacterMovement()->MaxWalkSpeed = Irene->GetCharacterMovement()->MaxWalkSpeed / Irene->IreneData.ThunderQuillStackSpeed;
-	Irene->IreneData.ThunderQuillStackSpeed = 1.0f;
 }
 
 void UIreneAttackInstance::SetFireDeBuffStack(const int Value, const float DamageAmount)
@@ -398,18 +289,17 @@ void UIreneAttackInstance::SetAttackState()const
 		Irene->ChangeStateAndLog(UBasicAttack4State::GetInstance());
 	}
 }
+void UIreneAttackInstance::SetSkillState()const
+{
+	// 스킬 상태로 전이 할 수 있는지 확인하는 함수
+	if (Irene->IreneState->GetStateToString().Compare(FString("Skill_F_Start")) != 0
+		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_F_End")) != 0)
+	{
+		Irene->ChangeStateAndLog(USkillStartState::GetInstance());
+	}
+}
 #pragma endregion State
 
 #pragma region GetSet
-FName UIreneAttackInstance::GetAttributeToFormTimeDataTableName() const
-{
-	// 현재 속성에 따라 FormTimeDataTable에서 사용하는 Name 리턴하는 함수
-	switch (QuillAttribute)
-	{
-	case EAttributeKeyword::e_Fire: return FName("Fire_Form");
-	case EAttributeKeyword::e_Water: return FName("Water_Form");
-	case EAttributeKeyword::e_Thunder: return FName("Thunder_Form");
-	default: return FName("Error GetAttributeToFormTimeDataTableName");
-	}
-}
+
 #pragma endregion GetSet

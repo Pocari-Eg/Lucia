@@ -67,25 +67,11 @@ EAttributeKeyword AAttributeObject::GetAttribute()
 		if (Irene != nullptr) {
 
 			//속성에 따라 공격 가능 체크 
-			switch (Irene->IreneAttack->GetQuillAttribute())
-			{
-			case EAttributeKeyword::e_Fire:
-				SetObject(EState::e_Activate, EAttributeKeyword::e_Fire);
-				break;
-			case EAttributeKeyword::e_Water:
-				SetObject(EState::e_Activate, EAttributeKeyword::e_Water);
-				break;
-			case EAttributeKeyword::e_Thunder:
-				SetObject(EState::e_Activate, EAttributeKeyword::e_Thunder);
-				break;
-			default:
-				break;
-			}
+			SetObject(EState::e_Activate, EAttributeKeyword::e_Fire);				
 		}
-
-
-		OnActiveCheck.Broadcast();
 	}
+	
+	OnActiveCheck.Broadcast();
 }
 
  bool AAttributeObject::GetActive()
