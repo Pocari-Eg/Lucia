@@ -18,14 +18,11 @@ UIreneUIManager::UIreneUIManager()
 	{
 		PauseWidgetClass = PAUSEWIDGET.Class;
 	}
-	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
-	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
-	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_AttackVoice");
-	TakeDamageVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_TakeDamageVoice");
+
 
 	IsConsecutiveIdle = false;
 	CurRecoverWaitTime = 0;
-	WalkSoundVolume = 0.7f;
+
 }
 
 void UIreneUIManager::PlayerHudInit()
@@ -40,10 +37,7 @@ void UIreneUIManager::Init(AIreneCharacter* Value)
 	InitMemberVariable();
 	PlayerHudInit();
 
-	AttackSound = new SoundManager(AttackEvent, GetWorld());
-	WalkSound = new SoundManager(WalkEvent, GetWorld());
-	AttackVoiceSound= new SoundManager(AttackVoiceEvent, GetWorld());
-	TakeDamageVoiceSound = new SoundManager(TakeDamageVoiceEvent, GetWorld());
+	
 }
 void UIreneUIManager::SetIreneCharacter(AIreneCharacter* Value)
 {
@@ -59,17 +53,7 @@ void UIreneUIManager::Begin()
 
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
-	//사운드 세팅
-	WalkSound->SetVolume(WalkSoundVolume);
-	WalkSound->SetParameter("Material", 0.0f);
-
-	AttackSound->SetVolume(0.3f);
-	AttackSound->SetParameter("Attributes", 2.0f);
 	
-	AttackVoiceSound->SetVolume(0.3f);
-	AttackVoiceSound->SetParameter("Attributes", 2.0f);
-
-	TakeDamageVoiceSound->SetVolume(0.4f);
 	PauseWidget->SetVisibility(ESlateVisibility::Hidden);
 	bIsOnPauseWidget = false;
 }
@@ -79,10 +63,7 @@ float UIreneUIManager::GetHpRatio()
 	// 비율변환 0.0 ~ 1.0
 	return (Irene->IreneData.CurrentHP < KINDA_SMALL_NUMBER) ? 0.0f : Irene->IreneData.CurrentHP / Irene->IreneData.MaxHP;
 }
-void UIreneUIManager::FootStepSound()
-{
-	WalkSound->SoundPlay3D(Irene->GetActorTransform());
-}
+
 void UIreneUIManager::HPRecoveryWaitStart()
 {
 	if(!Irene->HpRecoveryData.bIsRecovering&& !IsHpFull())

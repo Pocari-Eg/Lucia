@@ -88,6 +88,12 @@ void UBellyfishAnimInstance::PlayRushMontage()
 	Montage_Play(RushMontage);
 }
 
+void UBellyfishAnimInstance::PlayFireMontage()
+{
+	if (FireMontage != nullptr)
+		Montage_Play(FireMontage);
+}
+
 
 bool UBellyfishAnimInstance::GetAttackIsPlaying()
 {
@@ -108,6 +114,11 @@ void UBellyfishAnimInstance::AnimNotify_RushEnd()
 void UBellyfishAnimInstance::AnimNotify_RushStart()
 {
 	RushStart.Broadcast();
+}
+
+void UBellyfishAnimInstance::AnimNotify_Fire()
+{
+      Fire.Broadcast();
 }
 
 

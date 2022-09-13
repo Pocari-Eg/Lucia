@@ -4,7 +4,6 @@
 #include "BF_Projectile.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include "../../STGameInstance.h"
-
 #include "Kismet/KismetSystemLibrary.h"
 // Sets default values
 ABF_Projectile::ABF_Projectile()
@@ -25,49 +24,78 @@ ABF_Projectile::ABF_Projectile()
 	}
 
 	CapsuleComponent->SetWorldRotation(FRotator(270.0f, 0.0f, 0.0f));
+	CapsuleComponent->SetCollisionProfileName("Projectile");
 	Speed = 30.0f;
+	bIsFire = false;
+	MoveDistance = 0.0f;
+
+}
+
+void ABF_Projectile::SetProjectile(float SetDamage, float SetSpeed, float SetDistance)
+{
+	Damage = SetDamage;
+	Speed = SetSpeed;
+	MaxMoveDistance = SetDistance;
+	bIsFire = true;
 }
 
 // Called when the game starts or when spawned
 void ABF_Projectile::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	//CapsuleComponent->OnComponentHit.AddDynamic(this, &ABF_Projectile::OnHit);
+	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ABF_Projectile::OnBeginOverlap);
 }
+
+//void ABF_Projectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+//{
+//	STARRYLOG_S(Warning);
+//
+//}
+
+void ABF_Projectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	STARRYLOG_S(Warning);
+	if (Cast<AIreneCharacter>(OtherActor))
+	{
+		auto Player = Cast<AIreneCharacter>(OtherActor);
+		UGameplayStatics::ApplyDamage(Player, Damage, NULL, this, NULL);
+		Destroy();
+	}
+
+}
+
+void ABF_Projectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	STARRYLOG_S(Warning);
+	Destroy();
+}
+
 
 // Called every frame
 void ABF_Projectile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//2개의 벡터를 a to b 로 회전 하는 행렬 구하기
+
+
+	if (bIsFire) {
+		FVector ForwardVec = GetActorUpVector();
+		ForwardVec.Normalize();
+		SetActorLocation(GetActorLocation() + (ForwardVec * Speed * DeltaTime));
+
+		MoveDistance += (Speed * DeltaTime);
+
+		if (MoveDistance >= MaxMoveDistance)
+		{
+			Destroy();
+		}
+	}
+
+
+
+
 	
-	SetActorLocation(GetActorLocation()+(GetActorUpVector()* Speed * DeltaTime));
 
-   auto Instance = Cast<USTGameInstance>(GetGameInstance());
-
-   //2개의 벡터를 a to b 로 회전 하는 행렬 구하기
-   FVector ForwardVec = GetActorUpVector();
-   ForwardVec.Normalize();
-
-   FVector PlayerVec = Instance->GetPlayer()->GetActorLocation() - GetActorLocation();
-
-   PlayerVec.Normalize();
-
-
-   STARRYLOG(Error, TEXT("%f,%f,%f"), ForwardVec.X, ForwardVec.Y, ForwardVec.Z);
-   STARRYLOG(Error, TEXT("%f,%f,%f"), PlayerVec.X, PlayerVec.Y, PlayerVec.Z);
-
-   RotationQuat=Math::VectorA2BRotation(ForwardVec, PlayerVec);
-  FVector RotateVec = RotationQuat.RotateVector(ForwardVec);
-
-
-  
-
-
-   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation()+(PlayerVec* GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
-   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (ForwardVec*100), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
-   UKismetSystemLibrary::DrawDebugArrow(this, GetActorLocation(), GetActorLocation() + (RotateVec * GetDistanceTo(Instance->GetPlayer())), 300.0f, FLinearColor::Green, 0.1f, 3.0f);
-
-
-  
 }
 

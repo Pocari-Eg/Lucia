@@ -201,12 +201,16 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
 	IreneInput->Init(this);
+
+	IreneSound= NewObject<UIreneSoundInstance>(this);
+	IreneSound->Init(this);
+
 	IreneUIManager = NewObject<UIreneUIManager>(this);
 	IreneUIManager->Init(this);
 	
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
 	IreneAnim->OnAttackStopCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackStopCheck);
-	IreneAnim->OnFootStep.AddUObject(IreneUIManager, &UIreneUIManager::FootStepSound);
+	IreneAnim->OnFootStep.AddUObject(IreneSound, &UIreneSoundInstance::PlayWalkSound);
 	IreneAnim->OnRadialBlur.AddUObject(this, &AIreneCharacter::OnRadialBlur);
 }
 

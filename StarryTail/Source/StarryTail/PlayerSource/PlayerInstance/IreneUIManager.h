@@ -6,7 +6,6 @@
 #include "UObject/Object.h"
 #include "../../UI/PlayerHudWidget.h"
 #include"../../UI/PauseWidget.h"
-#include "../../Sound/SoundManager.h"
 
 #include "IreneUIManager.generated.h"
 
@@ -66,21 +65,7 @@ public:
 	bool bIsOnPauseWidget;
 #pragma endregion PauseWidget
 
-#pragma region Sound
-	//사운드 이벤트
-	UPROPERTY(EditAnyWhere,Category="SOUND_VOLUME",meta=(ClampMin="0", ClampMax = "1"))
-	float WalkSoundVolume;
-	class UFMODEvent* AttackEvent;
-	class UFMODEvent* WalkEvent;
-	class UFMODEvent* AttackVoiceEvent;
-	class UFMODEvent* TakeDamageVoiceEvent;
-	//사운드 
-	SoundManager* WalkSound;
-	SoundManager* AttackSound;
-	SoundManager* AttackVoiceSound;
-	SoundManager* TakeDamageVoiceSound;
-	float AttackSoundParameter;
-#pragma endregion Sound
+
 private:
 	UIreneUIManager();
 #pragma region HUDPrivate
@@ -122,8 +107,6 @@ public:
 	//현재 체력 비율 전환
 	float GetHpRatio();
 
-	//사운드 출력
-	void FootStepSound();
 	
 	//Hp RecoveryBar 
 	float GetHpRecoveryRatio();

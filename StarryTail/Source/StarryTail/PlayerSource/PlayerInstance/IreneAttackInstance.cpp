@@ -121,8 +121,8 @@ void UIreneAttackInstance::AttackCheck()
 	if (Irene->IreneAnim->GetCurrentActiveMontage())
 	{
 		Irene->Weapon->SetGenerateOverlapEvents(true);
-		Irene->IreneUIManager->AttackSound->SoundPlay2D();
-		Irene->IreneUIManager->AttackVoiceSound->SoundPlay2D();
+
+		Irene->IreneSound->PlayAttackSound();
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 			Irene->FindNearMonster();
 	}
