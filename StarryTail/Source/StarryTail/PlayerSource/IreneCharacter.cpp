@@ -249,27 +249,6 @@ void AIreneCharacter::TargetReset()const
 			}			
 		}
 	}
-	if (IreneAttack->QuillTargetMonster != nullptr)
-	{
-		// 타겟몹이 죽거나 렌더링이 안거나 거리가 멀어지면 초기화
-		const auto Mob = Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		if (Mob != nullptr)
-		{
-			if(IreneInput->GetIsLockOn())
-			{
-				if (Mob->GetHp() <= 0)
-				{
-					IreneInput->QuillLockOnTargetDead();
-				}
-			}
-			else
-			{
-				const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-				Mon->TargetWidgetOff();
-				IreneAttack->QuillTargetMonster = nullptr;
-			}
-		}
-	}
 }
 #pragma endregion Setting
 
@@ -280,7 +259,6 @@ void AIreneCharacter::Tick(float DeltaTime)
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
 	TargetReset();
-	FindCanThrowQuillMonster(DeltaTime);	
 	IreneState->Update(DeltaTime);
 }
 
@@ -292,16 +270,10 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
-	PlayerInputComponent->BindAction("ThunderDeBuffKey", IE_Pressed, IreneInput, &UIreneInputInstance::ThunderDeBuffKey);
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
-	PlayerInputComponent->BindAction("QuillLeftAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillLeftAttributeChangeReleased);
-	PlayerInputComponent->BindAction("QuillRightAttributeChange", IE_Released, IreneInput, &UIreneInputInstance::QuillRightAttributeChangeReleased);
-	PlayerInputComponent->BindAction("LockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLockOn);
-	PlayerInputComponent->BindAction("LeftLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillLeftLockOn);
-	PlayerInputComponent->BindAction("RightLockOn", IE_Released, IreneInput, &UIreneInputInstance::QuillRightLockOn);
 
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
@@ -342,7 +314,7 @@ void AIreneCharacter::FindNearMonster()const
 	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
 	auto AllPosition = SetCameraStartTargetPosition(FVector(200,200,500),CameraComp->GetComponentLocation());
 	auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
-	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, false);
+	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
 	
 	IreneAttack->DoAttack();
 }
@@ -383,7 +355,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	
 	return MakeTuple(MonsterList, Params, bResult);
 }
-void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far, const bool QuillTarget)const
+void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far)const
 {
 	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
 	// 최대거리
@@ -395,12 +367,6 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 		// 카메라와 캐릭터 사이의 몬스터는 제외
 		if(FVector::Dist(CameraComp->GetComponentLocation(),Monster.GetActor()->GetActorLocation())<=FVector::Dist(CameraComp->GetComponentLocation(),GetActorLocation()))
 		{
-			if(IreneAttack->QuillTargetMonster == Monster.GetActor())
-			{
-				const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-				Mon->TargetWidgetOff();
-				IreneAttack->QuillTargetMonster = nullptr;
-			}
 			continue;
 		}
 		if (bResult)
@@ -430,29 +396,15 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
 					&& RayHit.GetActor()->WasRecentlyRendered())
 				{
-					if(!QuillTarget)
+					// 첫 몬스터 할당
+					if (IreneAttack->SwordTargetMonster == nullptr)
 					{
-						// 첫 몬스터 할당
-						if (IreneAttack->SwordTargetMonster == nullptr)
-						{
-							IreneAttack->SwordTargetMonster = RayHit.GetActor();
-							IreneAnim->SetTargetMonster(RayHit.GetActor());
-							IreneAnim->SetIsHaveTargetMonster(true);
-							CurNearPosition = FindNearTarget;							
-						}
-						TargetCollisionProfileName = IreneAttack->SwordTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+						IreneAttack->SwordTargetMonster = RayHit.GetActor();
+						IreneAnim->SetTargetMonster(RayHit.GetActor());
+						IreneAnim->SetIsHaveTargetMonster(true);
+						CurNearPosition = FindNearTarget;							
 					}
-					else
-					{
-						// 첫 몬스터 할당
-						if (IreneAttack->QuillTargetMonster == nullptr)
-						{
-							IreneAttack->QuillTargetMonster = RayHit.GetActor();
-							CurNearPosition = FindNearTarget;
-						}
-						TargetCollisionProfileName = IreneAttack->QuillTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
-						//STARRYLOG(Warning, TEXT("Name: %s, Dist: %f"), *RayHit.GetActor()->GetName(), FindNearTarget);
-					}
+					TargetCollisionProfileName = IreneAttack->SwordTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 
 					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
 					if (CurNearPosition >= FindNearTarget)
@@ -464,30 +416,16 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 								(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == EnemyProfile)||
 								(TargetCollisionProfileName == ObjectProfile && RayCollisionProfileName == ObjectProfile))
 							{
-								if(!QuillTarget)
-									SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
-								else
-									SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
+								SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
 							}
 							else
 							{
-								if(!QuillTarget)
-									SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
-								else
-									SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
+								SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
 							}
 						}
 						else
 						{
-							if(!QuillTarget)
-								SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);
-							else
-							{
-								const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-								Mon->TargetWidgetOff();
-								IreneAttack->QuillTargetMonster = nullptr;
-								SetQuillNearMonster(RayHit,CurNearPosition,FindNearTarget);
-							}
+							SetAttackNearMonster(RayHit,CurNearPosition,FindNearTarget);							
 						}
 					}
 				}
@@ -518,32 +456,6 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		// 몬스터를 찾고 쳐다보기
 		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
 		//GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-	}
-}
-void AIreneCharacter::SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const
-{
-	// 가장 가까운 몬스터를 타겟 몬스터로 지정하는 함수
-	NearPosition = FindNearTarget;
-	IreneAttack->QuillTargetMonster = RayHit.GetActor();
-	// 깃펜 UI 표시하기
-	const auto Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-	Mon->TargetWidgetOn();
-}
-
-void AIreneCharacter::FindCanThrowQuillMonster(const float DeltaTime)
-{
-	// 매 프레임 가장 가까운 몬스터를 깃펜 타겟 몬스터로 지정하는 함수
-	if(!IreneInput->GetIsLockOn())
-	{
-		auto AllPosition = SetCameraStartTargetPosition(FVector(400,200,1500),CameraComp->GetComponentLocation());
-		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);	
-		NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z, true);
-	}
-	else
-	{
-		// 보여주는 용도
-		auto AllPosition = SetCameraStartTargetPosition(FVector(500,400,1500),CameraComp->GetComponentLocation());
-		auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>(),DeltaTime);		
 	}
 }
 
@@ -841,27 +753,7 @@ void AIreneCharacter::SetUseShakeCurve(UCurveVector* Curve)
 {
 	UseShakeCurve = Curve;
 }
-// void AIreneCharacter::DoCameraLagCurve(const float DeltaTime)
-// {
-// 	if(!FixedUpdateCameraLagTimer.IsValid())
-// 	{
-// 		constexpr float TimeSpeed = 0.01f;
-// 		GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraLagTimer, FTimerDelegate::CreateLambda([&]()
-// 		{
-// 			const float CameraShakeTime = CameraLagTime;
-// 			CameraLagTime = CameraShakeTime + 0.1f / 10.0f;
-// 		}), TimeSpeed, true);
-// 	}
-// 	
-// 	if(UseLagCurve->GetName().Compare(FString("ReturnCameraLag"))==0)
-// 	{
-// 		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime) * LastLagTime;		
-// 	}
-// 	else
-// 	{
-// 		SpringArmComp->CameraLagSpeed = UseLagCurve->GetFloatValue(CameraLagTime);
-// 	}
-// }
+
 void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;

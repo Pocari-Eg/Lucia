@@ -91,7 +91,6 @@ public:
 
 
 //	void UseSkill();
-	void UseQuill();
 	UFUNCTION(BluePrintCallable)
 	EAttributeKeyword GetAttriburte();
 
@@ -112,10 +111,6 @@ private:
 	/*void UpdateFireSkillCoolTime();
 	void UpdateWaterSkillCoolTime();
 	void UpdateThunderSkillCoolTime();*/
-
-	void UpdateFireQuillCoolTime();
-	void UpdateWaterQuillCoolTime();
-	void UpdateThunderQuillCoolTime();
 	
 	void InitAttributeUI();
 
@@ -157,24 +152,9 @@ private:
 
 	FSkillImageData Thunder;
 	//FSkillImageData ThunderSkill;
-
-	FSkillImageData FireQuill;
-	TArray<UImage*> FireQuillActive;
-	
-
-	FSkillImageData WaterQuill;
-	TArray<UImage*> WaterQuillActive;
 	
 	//TArray<UImage*> ThunderSKillCount;
 	//TArray<UImage*> ThunderSkillActive;
-
-	FSkillImageData ThunderQuill;
-	TArray<UImage*> ThunderQuillActive;
-
-
-
-	TArray<UImage*> QuillCount;
-
 
 	bool isFirst;
 

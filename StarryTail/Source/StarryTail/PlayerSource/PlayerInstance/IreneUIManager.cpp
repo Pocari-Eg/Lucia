@@ -197,70 +197,10 @@ float UIreneUIManager::GetThunderCoolRatio()
 	return (ThunderCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderCurCoolTime / ThunderMaxCoolTime);
 }
 
-float UIreneUIManager::GetFireQuillCoolRatio()
-{
-	return (FireQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (FireQuillCurCoolTime / FireQuillMaxCoolTime);
-}
-float UIreneUIManager::GetWaterQuillCoolRatio()
-{
-	return (WaterQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (WaterQuillCurCoolTime / WaterQuillMaxCoolTime);
-}
-float UIreneUIManager::GetThunderQuillCoolRatio()
-{
-	return (ThunderQuillCurCoolTime < KINDA_SMALL_NUMBER) ? 0.0f : (ThunderQuillCurCoolTime / ThunderQuillMaxCoolTime);
-}
-
-int UIreneUIManager::GetFireQuillCount()
-{
-	return Irene->IreneInput->GetFireQuillCount();
-}
-
-void UIreneUIManager::SetFireQuillCount(int Value)
-{
-	Irene->IreneInput->SetFireQuillCount(Value);
-}
-
-int UIreneUIManager::GetWaterQuillCount()
-{
-	return Irene->IreneInput->GetWaterQuillCount();
-}
-
-void UIreneUIManager::SetWaterQuillCount(int Value)
-{
-	Irene->IreneInput->SetWaterQuillCount(Value);
-}
-
-int UIreneUIManager::GetThunderQuillCount()
-{
-	return Irene->IreneInput->GetThunderQuillCount();
-}
-
-void UIreneUIManager::SetThunderQuillCount(int Value)
-{
-	Irene->IreneInput->SetThunderQuillCount(Value);
-}
-
 void UIreneUIManager::PlayHUDAnimation()
 {
 	PlayerHud->PlayHUDAnimation();
 }
-
-void UIreneUIManager::UpdateFireQuillCool(float CurCool, float MaxCool)
-{
-	FireQuillCurCoolTime = CurCool;
-	FireQuillMaxCoolTime = MaxCool;
-}
-void UIreneUIManager::UpdateWaterQuillCool(float CurCool, float MaxCool)
-{
-	WaterQuillCurCoolTime = CurCool;
-	WaterQuillMaxCoolTime = MaxCool;
-}
-void UIreneUIManager::UpdateThunderQuillCool(float CurCool, float MaxCool)
-{
-	ThunderQuillCurCoolTime = CurCool;
-	ThunderQuillMaxCoolTime = MaxCool;
-}
-
 
 void UIreneUIManager::SetDialogState(const bool State)
 {

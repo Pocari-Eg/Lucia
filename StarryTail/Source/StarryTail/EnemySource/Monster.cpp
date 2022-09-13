@@ -22,8 +22,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "../UI/MonsterWidget.h"
 
-#include"../PlayerSource/Quill.h"
-
 //object
 #include "../Object/AttributeObject.h"
 
@@ -1285,80 +1283,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			Attacked();
 			return FinalDamage;
 		}
-	}
-	if (Cast<AQuill>(DamageCauser))
-	{
-		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
-		EAttributeKeyword AttackAttribute = EAttributeKeyword::e_None;
-		if (STGameInstance != nullptr)
-		{
-			AttackAttribute = STGameInstance->GetPlayer()->GetQuillAttribute();
-		}
-		if (this->MonsterInfo.M_Type != EEnemyRank::e_Raid)
-		{
-			if (bShowUI)
-			{
-				ShowUITimer = 0.0f;
-			}
-			else {
-				bShowUI = true;
-				ShowUITimer = 0.0f;
-				MonsterWidget->SetVisibility(true);
-				if (MonsterInfo.bIsShieldOn) {
-					ManaShiledEffectComponent->SetVisibility(true);
-				}
-			}
-		}
-
-		if (MonsterInfo.bIsShieldOn)
-		{
-			//CalcManaShield(CalcManaShieldDamage(false, DamageAmount, AttackAttribute), AttackAttribute);
-			CalcManaShield(CalcManaShieldDamage(false, DamageAmount, AttackAttribute));
-			CalcQuillStack(AttackAttribute);
-		}
-		else {
-			CalcHp(DamageAmount);
-
-			MonsterInfo.Quill_CurStack++;
-			//юс╫ц  UI
-			auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
-			if (widget != nullptr) {
-				widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
-			}
-			//
-			if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-			{
-				auto Quill = Cast<AQuill>(DamageCauser);
-
-				{
-					if (STGameInstance != nullptr)
-					{
-						switch (Quill->Attribute)
-						{
-						case EAttributeKeyword::e_Fire:
-							STGameInstance->GetPlayer()->IreneAttack->SetFireQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						case EAttributeKeyword::e_Water:
-							STGameInstance->GetPlayer()->IreneAttack->SetWaterQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						case EAttributeKeyword::e_Thunder:
-							STGameInstance->GetPlayer()->IreneAttack->SetThunderQuillStack(MonsterInfo.Quill_MaxStack);
-							break;
-						default:
-							break;
-						}
-					}
-				}
-
-
-				MonsterInfo.Quill_CurStack = 0;
-				CalcHp(MonsterInfo.Quill_MaxStackDamage);
-			}
-		}
-
-		Attacked();
-		DamageCauser->Destroy();
-		return FinalDamage;
 	}
 	return FinalDamage;
 }

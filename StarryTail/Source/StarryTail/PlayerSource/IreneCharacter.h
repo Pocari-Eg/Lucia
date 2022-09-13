@@ -145,11 +145,9 @@ public:
 	TTuple<FVector, FVector, FVector> SetCameraStartTargetPosition(const FVector BoxSize, const FVector StartPosition)const;
 	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> StartPositionFindNearMonster(const FVector BoxSize, const FVector StartPosition, const FVector TargetPosition, const float LifeTime = 5.0f)const;
 
-	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far, const bool QuillTarget)const;
+	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far)const;
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
-	void SetQuillNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
-	void FindCanThrowQuillMonster(const float DeltaTime);
 	void FollowTargetPosition();
 	
 	// 겹침 충돌 처리
