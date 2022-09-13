@@ -43,28 +43,34 @@ void ABF_Projectile::SetProjectile(float SetDamage, float SetSpeed, float SetDis
 void ABF_Projectile::BeginPlay()
 {
 	Super::BeginPlay();
-	CapsuleComponent->OnComponentHit.AddDynamic(this, &ABF_Projectile::OnHit);
+	//CapsuleComponent->OnComponentHit.AddDynamic(this, &ABF_Projectile::OnHit);
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ABF_Projectile::OnBeginOverlap);
 }
 
-void ABF_Projectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
-{
-	Destroy();
-}
+//void ABF_Projectile::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
+//{
+//	STARRYLOG_S(Warning);
+//
+//}
 
 void ABF_Projectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	STARRYLOG_S(Warning);
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
-		STARRYLOG_S(Warning);
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		UGameplayStatics::ApplyDamage(Player, Damage, NULL, this, NULL);
 		Destroy();
 	}
-	else {
-		Destroy();
-	}
+
 }
+
+void ABF_Projectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
+{
+	STARRYLOG_S(Warning);
+	Destroy();
+}
+
 
 // Called every frame
 void ABF_Projectile::Tick(float DeltaTime)
