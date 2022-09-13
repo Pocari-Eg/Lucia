@@ -189,6 +189,30 @@ public:
 };
 #pragma endregion Attack
 
+#pragma region Skill
+UCLASS()
+class STARRYTAIL_API USkillStartState final : public UObject, public IState
+{
+	GENERATED_BODY()
+public:
+	static USkillStartState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
+UCLASS()
+class STARRYTAIL_API USkillEndState final : public UObject, public IState
+{
+	GENERATED_BODY()
+public:
+	static USkillEndState* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+};
+#pragma endregion Skill
+
 #pragma region FormChange
 UCLASS()
 class STARRYTAIL_API UFormChangeState final : public UObject, public IState
@@ -280,6 +304,8 @@ public:
 	bool IsDodgeState()const;
 	bool IsJumpState()const;
 	bool IsAttackState()const;
+	bool IsChargeState()const;
+	bool IsSkillState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;
 	bool IsDeathState()const;

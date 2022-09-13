@@ -18,7 +18,9 @@ public:
 	TArray<uint8> MoveKey;
 
 	bool bLeftButtonPressed;
-	
+	bool bRightButtonPressed;
+	bool bUseLeftButton;
+	bool bUseRightButton;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
@@ -31,22 +33,14 @@ private:
 	FTimerHandle AttributeChangeWaterTimer;
 	FTimerHandle AttributeChangeElectricTimer;
 
-	// 속성 변경 시 사용되는 쿨타임
-	float FireMaxCoolTime;
-	float FireCurCoolTime;
-	float WaterMaxCoolTime;
-	float WaterCurCoolTime;
-	float ThunderMaxCoolTime;
-	float ThunderCurCoolTime;	
-
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 	
-	// 닷지 쿨타임
-	FTimerHandle DodgeWaitHandle;
+	// 스킬 사용중
+	bool bIsSkillOn;
 
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
@@ -63,10 +57,28 @@ private:
 
 #pragma region CoolTimeValue
 private:
+	// 속성 변경 시 사용되는 쿨타임
+	float FireMaxCoolTime;
+	float FireCurCoolTime;
+	float WaterMaxCoolTime;
+	float WaterCurCoolTime;
+	float ThunderMaxCoolTime;
+	float ThunderCurCoolTime;
+	
 	// 검 속성
 	bool bIsFireAttributeOn;
 	bool bIsWaterAttributeOn;
 	bool bIsThunderAttributeOn;
+
+	// 스킬 최대 쿨타임
+	float MaxSkillCoolTime;
+	// 스킬 쿨타임
+	float SkillCoolTime;
+	// 스킬 종료 쿨타임
+	FTimerHandle SkillWaitHandle;
+	
+	// 닷지 쿨타임
+	FTimerHandle DodgeWaitHandle;
 	
 	float CoolTimeRate;
 #pragma endregion CoolTimeValue
@@ -102,8 +114,8 @@ public:
 
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
-	void RightButtonReleased();
 	void RightButton(float Rate);
+	void SkillWait();
 	void MouseWheel(float Rate);
 
 	// 대쉬
@@ -132,6 +144,7 @@ public:
 #pragma region CheckStateChange
 	bool CanRunState()const;
 	bool CanAttackState()const;
+	bool CanSkillState()const;
 #pragma endregion CheckStateChange
 
 #pragma region GetSet
@@ -140,6 +153,7 @@ public:
 	bool GetIsDialogOn()const{return bIsDialogOn;}
 	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	float GetSlowScale()const{return SlowScale;}
+	bool GetReAttack()const{return bReAttack;}
 	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
