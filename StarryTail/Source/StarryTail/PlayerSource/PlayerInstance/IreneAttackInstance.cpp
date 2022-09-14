@@ -12,21 +12,20 @@
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
-
-
 UIreneAttackInstance::UIreneAttackInstance()
 {
 	// 데이터 테이블
 	const ConstructorHelpers::FObjectFinder<UDataTable>DT_AttackDataTable(TEXT("/Game/Math/DT_AttackDataTable.DT_AttackDataTable"));
-	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ChargeDataTable(TEXT("/Game/Math/DT_ChargeDataTable.DT_ChargeDataTable"));
 	const ConstructorHelpers::FObjectFinder<UDataTable>DT_ElementDataTable(TEXT("/Game/Math/DT_ElementDataTable.DT_ElementDataTable"));
-	if (DT_AttackDataTable.Succeeded() && DT_ChargeDataTable.Succeeded() && DT_ElementDataTable.Succeeded())
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_WeaponGauge(TEXT("/Game/Math/DT_WeaponGauge.DT_WeaponGauge"));
+	const ConstructorHelpers::FObjectFinder<UDataTable>DT_WeaponSoul(TEXT("/Game/Math/DT_WeaponSoul.DT_WeaponSoul"));
+	if (DT_AttackDataTable.Succeeded() && DT_ElementDataTable.Succeeded() && DT_WeaponGauge.Succeeded() && DT_WeaponSoul.Succeeded())
 	{
 		AttackDataTable = DT_AttackDataTable.Object;
-		ChargeDataTable = DT_ChargeDataTable.Object;
 		ElementDataTable = DT_ElementDataTable.Object;
+		WeaponGaugeDataTable = DT_WeaponGauge.Object;
+		WeaponSoulDataTable = DT_WeaponSoul.Object;
 	}
-
 }
 
 void UIreneAttackInstance::Init(AIreneCharacter* Value)
@@ -46,7 +45,8 @@ void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint
 void UIreneAttackInstance::InitMemberVariable()
 {
 	SwordTargetMonster = nullptr;
-
+	TrueAttackCount = 0;
+	
 	bFollowCameraTarget = false;
 	FollowTargetCameraAlpha = 0.0f;
 	CameraRot = FRotator::ZeroRotator;
@@ -65,23 +65,26 @@ float UIreneAttackInstance::GetATK()const
 
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
-	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
-	FString AttributeName = "B_Attack_1";
-	if (Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack1"))
+	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수	
+	FString AttributeName = "Sword_B_Attack_1";
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		AttributeName = "Sword_B_Attack_"+FString::FromInt(TrueAttackCount);
+	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		AttributeName = "Spear_B_Attack_"+FString::FromInt(TrueAttackCount);
+	return FName(AttributeName);
+}
+FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
+{
+	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수	
+	FString AttributeName = "Sword_B_Attack_1";
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		AttributeName = "Sword_B_Attack_"+FString::FromInt(TrueAttackCount);
+	if(Irene->IreneState->IsSkillState())
 	{
-		AttributeName = "B_Attack_1";
-	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2"))
-	{
-		AttributeName = "B_Attack_2";
-	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack3"))
-	{
-		AttributeName = "B_Attack_3";
-	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4"))
-	{
-		AttributeName = "B_Attack_4";
+		if(Irene->IreneState->GetStateToString().Compare("Skill_Start")!=0)
+		{
+			AttributeName = "Sword_Skill_1_1";
+		}
 	}
 	return FName(AttributeName);
 }
@@ -120,6 +123,13 @@ void UIreneAttackInstance::AttackCheck()
 	// 노티파이 AttackHitCheck 도달 시 실행
 	if (Irene->IreneAnim->GetCurrentActiveMontage())
 	{
+		if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		{
+			if(TrueAttackCount == 2)
+			{
+				TrueAttackCount++;
+			}
+		}
 		Irene->Weapon->SetGenerateOverlapEvents(true);
 
 		Irene->IreneSound->PlayAttackSound();
@@ -184,16 +194,26 @@ void UIreneAttackInstance::DoAttack()
 				{
 					if(Mob->GetHp() > 0 && Irene->IreneData.CurrentHP > 0)
 					{
+						const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(GetWeaponGaugeDataTableName()));
 						// 기본 + 몹
-						SetGauge(17 + (7 * (MonsterList.Num()-1)));
+						SetGauge(DataTable->Get_W_Gauge + (1 * (MonsterList.Num()-1)));
 					}
 				}
 				else if(Irene->IreneState->IsSkillState())
 				{
 					if(Mob->GetHp() > 0 && Irene->IreneData.CurrentHP > 0)
 					{
-						// 기본 + 스킬 + 몹
-						SetGauge(17 + 30 + (7 * (MonsterList.Num()-1)));
+						const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(GetWeaponGaugeDataTableName()));
+						if(!Irene->IreneInput->GetAttackUseSkill())
+						{
+							// 기본 + 몹
+							SetGauge(DataTable->Get_W_Gauge + (1 * (MonsterList.Num()-1)));
+						}
+						else
+						{
+							// 기본 + 스킬 + 몹
+							SetGauge(DataTable->Get_W_Gauge + DataTable->Get_B_Next + (1 * (MonsterList.Num()-1)));
+						}
 					}
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
@@ -321,5 +341,4 @@ void UIreneAttackInstance::SetGauge(float Value)
 			Irene->IreneData.CurrentGauge = Irene->IreneData.MaxGauge;
 	}
 }
-
 #pragma endregion GetSet

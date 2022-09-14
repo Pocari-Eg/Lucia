@@ -162,7 +162,8 @@ public:
 	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	float GetSlowScale()const{return SlowScale;}
 	bool GetReAttack()const{return bReAttack;}
-	
+	bool GetAttackUseSkill()const{return bAttackUseSkill;}
+
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;

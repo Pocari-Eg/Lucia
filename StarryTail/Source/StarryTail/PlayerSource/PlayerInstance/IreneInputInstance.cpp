@@ -250,13 +250,14 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if (CanAttackState() && !AttackWaitHandle.IsValid() && !bIsDialogOn)
+	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack)) && !AttackWaitHandle.IsValid() && !bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
 			Irene->IreneAttack->SetAttackState();
 
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
@@ -282,6 +283,8 @@ void UIreneInputInstance::LeftButton(float Rate)
 				}
 				if(bReAttack)
 				{
+					if(Irene->IreneState->IsSkillState())
+						Irene->IreneAnim->StopAllMontages(0);
 					Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
 					Irene->IreneData.IsAttacking = true;
 					Irene->IreneData.CurrentCombo = 0;
@@ -323,7 +326,17 @@ void UIreneInputInstance::RightButton(float Rate)
 				bAttackUseSkill = true;
 			
 			Irene->IreneAttack->SetSkillState();
-			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("B_Attack_1"));
+
+			TUniquePtr<FAttackDataTable> AttackTable = nullptr;
+			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			{
+				AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Sword_Skill_1_1"));
+			}
+			else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			{
+				AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
+			}
+			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
@@ -388,7 +401,11 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
 	{
-		const TUniquePtr<FAttackDataTable> AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Dodge")));
+		TUniquePtr<FAttackDataTable> AttackDataTable = nullptr;
+		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Sword_Dodge")));
+		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Spear_Dodge")));
 
 		Irene->IreneAnim->StopAllMontages(0);
 		
@@ -435,7 +452,9 @@ void UIreneInputInstance::PerfectDodge()
 		Irene->IreneData.IsInvincibility = false;
 		 PerfectDodgeInvincibilityTimerHandle.Invalidate();
 	 }), InvincibilityTime * UGameplayStatics::GetGlobalTimeDilation(this), false);
-	Irene->IreneAttack->SetGauge(60);
+	
+	const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(FName("Perfect_Dodge")));
+	Irene->IreneAttack->SetGauge(DataTable->Get_W_Gauge);
 	PerfectDodgeStart();
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);

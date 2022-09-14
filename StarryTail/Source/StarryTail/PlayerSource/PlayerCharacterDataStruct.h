@@ -147,54 +147,6 @@ struct FAttackDataTable : public FTableRowBase
 	FName Key_Set;
 };
 USTRUCT(BlueprintType)
-struct FQuillDataTable : public FTableRowBase
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Quill_E_Type;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Quill_Dmg;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Quill_Distance;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Quill_Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Quill_Radius_Curve;
-};
-USTRUCT(BlueprintType)
-struct FChargeDataTable : public FTableRowBase
-{
-	GENERATED_BODY()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName Name;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Charge_Gauge;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charge_Time_0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charge_Time_1;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charge_Time_2;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charge_Time_3;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Charge_Time_4;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_0_Quill;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_1_Quill;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_2_Quill;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_3_Quill;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int C_4_Quill;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Quill_C_Time;
-};
-USTRUCT(BlueprintType)
 struct FElementDataTable : public FTableRowBase
 {
 	GENERATED_BODY()
@@ -204,6 +156,36 @@ struct FElementDataTable : public FTableRowBase
 	int Ele_Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Ele_C_Time;
+};
+USTRUCT(BlueprintType)
+struct FWeaponGauge : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Get_W_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Get_B_Next;
+};
+USTRUCT(BlueprintType)
+struct FWeaponSoul : public FTableRowBase
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName Name;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Get_Weapon_Gauge;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int W_Soul_Distance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float W_Soul_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Spawn_Distance;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Drop_Speed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Soul_Radius_Curve;
 };
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct
