@@ -71,6 +71,8 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 		AttributeName = "Sword_B_Attack_"+FString::FromInt(TrueAttackCount);
 	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 		AttributeName = "Spear_B_Attack_"+FString::FromInt(TrueAttackCount);
+	if(AttributeName == "Sword_B_Attack_4")
+		AttributeName = "Sword_B_Attack_3";
 	return FName(AttributeName);
 }
 FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
@@ -323,10 +325,20 @@ void UIreneAttackInstance::SetAttackState()const
 void UIreneAttackInstance::SetSkillState()const
 {
 	// 스킬 상태로 전이 할 수 있는지 확인하는 함수
-	if (Irene->IreneState->GetStateToString().Compare(FString("Skill_Start")) != 0
-		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_End")) != 0)
+	if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) != 0
+		&& Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] && Irene->IreneInput->GetCanUseSecondSwordSkill() == false)
 	{
-		Irene->ChangeStateAndLog(USkillStartState::GetInstance());
+		Irene->ChangeStateAndLog(USwordSkill1::GetInstance());
+	}
+	else if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_2")) != 0
+		&& Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] && Irene->IreneInput->GetCanUseSecondSwordSkill() == true)
+	{
+		Irene->ChangeStateAndLog(USwordSkill2::GetInstance());
+	}
+	else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	{
+		STARRYLOG_S(Warning);
+		Irene->ChangeStateAndLog(USpearSkill1::GetInstance());
 	}
 }
 #pragma endregion State

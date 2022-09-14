@@ -179,26 +179,40 @@ public:
 
 #pragma region Skill
 UCLASS()
-class STARRYTAIL_API USkillStartState final : public UObject, public IState
+class STARRYTAIL_API USwordSkill1 final : public UObject, public IState
 {
 	GENERATED_BODY()
 public:
 	float StartShakeTime;
-	static USkillStartState* GetInstance();
+	static USwordSkill1* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
-class STARRYTAIL_API USkillEndState final : public UObject, public IState
+class STARRYTAIL_API USwordSkill2 final : public UObject, public IState
 {
 	GENERATED_BODY()
 public:
-	static USkillEndState* GetInstance();
+	float StartShakeTime;
+	static USwordSkill2* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
+UCLASS()
+class STARRYTAIL_API USpearSkill1 final : public UObject, public IState
+{
+	GENERATED_BODY()
+public:
+	float StartShakeTime;
+	static USpearSkill1* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
 };
 #pragma endregion Skill
 

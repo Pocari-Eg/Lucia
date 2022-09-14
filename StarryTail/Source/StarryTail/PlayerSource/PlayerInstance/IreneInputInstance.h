@@ -45,6 +45,14 @@ private:
 	bool bIsSkillOn;
 	// 공격 중 스킬 사용
 	bool bAttackUseSkill;
+	// 2번째 검 스킬 사용
+	bool CanUseSecondSwordSkill;
+	// 전기 스킬 사용 가능
+	bool bIsSpearSkill1On;
+	// 최대 전기 스킬 횟수
+	int MaxSpearSkill1Count;
+	// 전기 스킬 횟수
+	int SpearSkill1Count;
 	
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
@@ -74,12 +82,20 @@ private:
 	bool bIsWaterAttributeOn;
 	bool bIsThunderAttributeOn;
 
-	// 스킬 최대 쿨타임
-	float MaxSkillCoolTime;
-	// 스킬 쿨타임
-	float SkillCoolTime;
-	// 스킬 종료 쿨타임
-	FTimerHandle SkillWaitHandle;
+	// 검 스킬 최대 쿨타임
+	float MaxSwordSkillCoolTime;
+	// 검 스킬 쿨타임
+	float SwordSkillCoolTime;
+	// 검 스킬 종료 쿨타임
+	FTimerHandle SwordSkillWaitHandle;
+	// 검 2번 스킬 사용가능 시간
+	FTimerHandle SwordSkill2WaitHandle;
+	// 창 스킬 최대 쿨타임
+	float MaxSpearSkill1CoolTime;
+	// 창 스킬 쿨타임
+	float SpearSkill1CoolTime;
+	// 창 스킬 쿨타임
+	FTimerHandle SpearSkill1WaitHandle;
 	
 	// 닷지 쿨타임
 	FTimerHandle DodgeWaitHandle;
@@ -119,7 +135,9 @@ public:
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
 	void RightButton(float Rate);
+	void SpearRightButton();
 	void SkillWait();
+	void SpearSkill1Wait();
 	void MouseWheel(float Rate);
 
 	// 대쉬
@@ -163,6 +181,8 @@ public:
 	float GetSlowScale()const{return SlowScale;}
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
+	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
+	int GetSpearSkill1Count()const{return SpearSkill1Count;}
 
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
@@ -174,6 +194,7 @@ public:
 	void SetJumpAttack(const bool State) { bJumpAttack = State; }
 	void SetReAttack(const bool State) { bReAttack = State; }
 	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
+	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
 #pragma endregion GetSet
 
 #pragma region CoolTimeFunction
