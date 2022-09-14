@@ -180,6 +180,22 @@ void UIreneAttackInstance::DoAttack()
 				auto Mob = Cast<AMonster>(Monster.Actor);
 				if (Mob != nullptr)
 					Mob->SetAttackedInfo(true, 0, EAttackedDirection::Down);
+				if(Irene->IreneState->IsAttackState())
+				{
+					if(Mob->GetHp() > 0 && Irene->IreneData.CurrentHP > 0)
+					{
+						// 기본 + 몹
+						SetGauge(17 + (7 * (MonsterList.Num()-1)));
+					}
+				}
+				else if(Irene->IreneState->IsSkillState())
+				{
+					if(Mob->GetHp() > 0 && Irene->IreneData.CurrentHP > 0)
+					{
+						// 기본 + 스킬 + 몹
+						SetGauge(17 + 30 + (7 * (MonsterList.Num()-1)));
+					}
+				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}
 		}
@@ -283,17 +299,12 @@ void UIreneAttackInstance::SetAttackState()const
 	{
 		Irene->ChangeStateAndLog(UBasicAttack3State::GetInstance());
 	}
-	else if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack4")
-	&& Irene->IreneState->GetStateToString().Compare(FString("B_Attack_4")) != 0)
-	{
-		Irene->ChangeStateAndLog(UBasicAttack4State::GetInstance());
-	}
 }
 void UIreneAttackInstance::SetSkillState()const
 {
 	// 스킬 상태로 전이 할 수 있는지 확인하는 함수
-	if (Irene->IreneState->GetStateToString().Compare(FString("Skill_F_Start")) != 0
-		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_F_End")) != 0)
+	if (Irene->IreneState->GetStateToString().Compare(FString("Skill_Start")) != 0
+		&&Irene->IreneState->GetStateToString().Compare(FString("Skill_End")) != 0)
 	{
 		Irene->ChangeStateAndLog(USkillStartState::GetInstance());
 	}
@@ -301,5 +312,14 @@ void UIreneAttackInstance::SetSkillState()const
 #pragma endregion State
 
 #pragma region GetSet
+void UIreneAttackInstance::SetGauge(float Value)
+{
+	if(Irene->IreneData.CurrentHP > 0 && Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+	{
+		Irene->IreneData.CurrentGauge += Value;
+		if(Irene->IreneData.CurrentGauge > Irene->IreneData.MaxGauge)
+			Irene->IreneData.CurrentGauge = Irene->IreneData.MaxGauge;
+	}
+}
 
 #pragma endregion GetSet

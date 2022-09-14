@@ -49,6 +49,7 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsThunderAttributeOn = true;
 
 	bIsSkillOn = false;
+	bAttackUseSkill = false;
 	
 	TempAttribute = EAttributeKeyword::e_None;
 	
@@ -318,8 +319,10 @@ void UIreneInputInstance::RightButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{
+			if(Irene->IreneAttack->GetCanSkillSkip())
+				bAttackUseSkill = true;
+			
 			Irene->IreneAttack->SetSkillState();
-
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("B_Attack_1"));
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
@@ -335,7 +338,6 @@ void UIreneInputInstance::RightButton(float Rate)
 			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true, 0.0f);
 
 			//Irene->IreneUIManager->PlayerHud->UseSkill();
-			Irene->ChangeStateAndLog(USkillStartState::GetInstance());
 			Irene->IreneAnim->PlaySkillAttackMontage();
 			Irene->IreneData.IsAttacking = true;
 			if(PerfectDodgeTimerHandle.IsValid())
@@ -424,6 +426,7 @@ void UIreneInputInstance::PerfectDodge()
 			Irene->IreneAttack->SetIsPerfectDodge(false,PerfectDodgeDir);
 			Irene->CustomTimeDilation = 1;
 			Irene->IreneAnim->SetDodgeDir(0);
+			SetStopMoveAutoTarget();
 			PerfectDodgeTimeEnd();
 			 PerfectDodgeTimerHandle.Invalidate();
 		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
@@ -432,6 +435,7 @@ void UIreneInputInstance::PerfectDodge()
 		Irene->IreneData.IsInvincibility = false;
 		 PerfectDodgeInvincibilityTimerHandle.Invalidate();
 	 }), InvincibilityTime * UGameplayStatics::GetGlobalTimeDilation(this), false);
+	Irene->IreneAttack->SetGauge(60);
 	PerfectDodgeStart();
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
@@ -506,6 +510,43 @@ void UIreneInputInstance::PerfectDodgeTimeEnd()
 void UIreneInputInstance::PerfectDodgeAttackEnd()
 {
 	Irene->PerfectDodgeAttackEnd();
+}
+
+void UIreneInputInstance::WeaponChangeKeyword()
+{
+	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	{
+		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		{
+			Irene->IreneData.CurrentGauge = 0;
+			Irene->IreneAnim->IsSword(false);
+			GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 10*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			Irene->IreneAnim->StopAllMontages(0);
+			Irene->IreneAttack->AttackTimeEndState();
+			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
+			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
+		}
+		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		{
+			Irene->IreneAnim->IsSword(true);
+			Irene->IreneAnim->StopAllMontages(0);
+			Irene->IreneAttack->AttackTimeEndState();
+			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
+			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
+		}
+	}
+}
+void UIreneInputInstance::WeaponChangeTimeOut()
+{
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	{
+		Irene->IreneAnim->IsSword(true);
+		Irene->IreneAnim->StopAllMontages(0);
+		Irene->IreneAttack->AttackTimeEndState();
+		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
+		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
+		WeaponChangeWaitHandle.Invalidate();
+	}
 }
 
 void UIreneInputInstance::DialogAction()

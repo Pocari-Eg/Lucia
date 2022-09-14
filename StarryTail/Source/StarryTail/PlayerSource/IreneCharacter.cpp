@@ -44,27 +44,37 @@ AIreneCharacter::AIreneCharacter()
 	CameraComp->FieldOfView = IreneData.FieldOfView;
 
 	// 스켈레톤 메쉬 설정
-	//const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Test/NewFolder/idle_KeQing.idle_KeQing"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
+	//const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Test/NewFolder/idle_KeQing.idle_KeQing"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
 		GetMesh()->SetRelativeLocationAndRotation(FVector(0, 0, -80), FRotator(0, 270, 0));
-		GetMesh()->SetRelativeScale3D(FVector(8.5f,8.5f,8.5f));
+		//GetMesh()->SetRelativeScale3D(FVector(8.5f,8.5f,8.5f));
 		GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
+		
 		// 무기
-		if (GetMesh()->DoesSocketExist(TEXT("hand_rSwordSocket")))
+		WeaponSocketNameArray.Add(TEXT("hand_rSwordSocket"));
+		WeaponSocketNameArray.Add(TEXT("hand_rSpearSocket"));
+
+		if (GetMesh()->DoesSocketExist(WeaponSocketNameArray[0]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[1]))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
 			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Sword(TEXT("/Game/Animation/Irene/Weapon/Sword.Sword"));
+			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Spear(TEXT("/Game/Animation/Irene/Weapon/Spear.Spear"));
 
 			if (SK_Sword.Succeeded())
-				WeaponMesh=SK_Sword.Object;
-
-			Weapon->SetSkeletalMesh(WeaponMesh);
-			Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSwordSocket"));
+			{
+				WeaponMeshArray.Add(SK_Sword.Object);
+			}
+			if(SK_Spear.Succeeded())
+			{
+				WeaponMeshArray.Add(SK_Spear.Object);
+			}
+			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
+			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
 			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 			Weapon->SetGenerateOverlapEvents(false);
 			Weapon->SetVisibility(false);
@@ -72,8 +82,8 @@ AIreneCharacter::AIreneCharacter()
 		
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-		//ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
-		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/BP_TestIrene.BP_TestIrene_C"));
+		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
+		//ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/BP_TestIrene.BP_TestIrene_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
@@ -153,6 +163,7 @@ AIreneCharacter::AIreneCharacter()
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
 	IreneData.CurrentEnergy = 0;
+	IreneData.CurrentGauge = 0;
 	
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
@@ -258,7 +269,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
-
+	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::WeaponChangeKeyword);
+	
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
@@ -556,19 +568,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	return FinalDamage;
 }
 void AIreneCharacter::SetHP(float DamageAmount)
-{
-	if(IreneData.Shield > 0)
-	{
-		const float CurShield = IreneData.Shield;
-		IreneData.Shield -= DamageAmount;
-		DamageAmount -= CurShield;
-		if(DamageAmount > 0)
-			IreneData.CurrentHP -= DamageAmount;
-	}
-	else
-	{
-		IreneData.CurrentHP -= DamageAmount;
-	}
+{	
+	IreneData.CurrentHP -= DamageAmount;	
 	IreneUIManager->OnHpChanged.Broadcast();
 }
 
