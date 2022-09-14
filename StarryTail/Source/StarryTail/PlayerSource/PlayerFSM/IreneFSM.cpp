@@ -51,8 +51,9 @@ FString UIreneFSM::GetStateToString() const
 	case EStateEnum::B_Attack_1: return FString("B_Attack_1");
 	case EStateEnum::B_Attack_2: return FString("B_Attack_2");
 	case EStateEnum::B_Attack_3: return FString("B_Attack_3");
-	case EStateEnum::Skill_Start: return FString("Skill_Start");
-	case EStateEnum::Skill_End: return FString("Skill_End");
+	case EStateEnum::Sword_Skill_1: return FString("Sword_Skill_1");
+	case EStateEnum::Sword_Skill_2: return FString("Sword_Skill_2");
+	case EStateEnum::Spear_Skill_1: return FString("Spear_Skill_1");
 	case EStateEnum::Form_Change: return FString("Form_Change");
 	case EStateEnum::Hit_1: return FString("Hit_1");
 	case EStateEnum::Hit_2: return FString("Hit_2");
@@ -953,19 +954,19 @@ void UBasicAttack3State::EndTimeExit(IBaseGameEntity* CurState)
 #pragma endregion AttackState
 
 #pragma region Skill
-#pragma region SkillStart
-USkillStartState* USkillStartState::GetInstance()
+#pragma region SwordSkill1
+USwordSkill1* USwordSkill1::GetInstance()
 {
-	static USkillStartState* Instance;
+	static USwordSkill1* Instance;
 	if (Instance == nullptr) {
-		Instance = NewObject<USkillStartState>();
+		Instance = NewObject<USwordSkill1>();
 		Instance->AddToRoot();
 	}
 	return Instance;
 }
-void USkillStartState::Enter(IBaseGameEntity* CurState)
+void USwordSkill1::Enter(IBaseGameEntity* CurState)
 {
-	CurState->SetStateEnum(EStateEnum::Skill_Start);
+	CurState->SetStateEnum(EStateEnum::Sword_Skill_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
@@ -990,7 +991,7 @@ void USkillStartState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
-void USkillStartState::Execute(IBaseGameEntity* CurState)
+void USwordSkill1::Execute(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->MoveAuto();
 	
@@ -1019,7 +1020,7 @@ void USkillStartState::Execute(IBaseGameEntity* CurState)
 		EndTimeExit(CurState);
 	}
 }
-void USkillStartState::Exit(IBaseGameEntity* CurState)
+void USwordSkill1::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
 	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
@@ -1027,33 +1028,7 @@ void USkillStartState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
-void USkillStartState::EndTimeExit(IBaseGameEntity* CurState)
-{
-	CurState->ThrowState(USkillEndState::GetInstance());
-	CurState->bIsEnd = true;
-}
-#pragma endregion SkillStart
-#pragma region SkillEnd
-USkillEndState* USkillEndState::GetInstance()
-{
-	static USkillEndState* Instance;
-	if (Instance == nullptr) {
-		Instance = NewObject<USkillEndState>();
-		Instance->AddToRoot();
-	}
-	return Instance;
-}
-void USkillEndState::Enter(IBaseGameEntity* CurState)
-{
-	CurState->SetStateEnum(EStateEnum::Skill_End);
-	CurState->PlayTime = 0.0f;
-	CurState->bIsEnd = false;
-}
-void USkillEndState::Execute(IBaseGameEntity* CurState)
-{
-
-}
-void USkillEndState::Exit(IBaseGameEntity* CurState)
+void USwordSkill1::EndTimeExit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->CameraShakeOn = false;
 	CurState->Irene->IreneData.IsAttacking = false;
@@ -1063,7 +1038,208 @@ void USkillEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->AttackTimeEndState();
 	CurState->bIsEnd = true;
 }
-#pragma endregion SkillEnd
+#pragma endregion SwordSkill1
+#pragma region SwordSkill2
+USwordSkill2* USwordSkill2::GetInstance()
+{
+	static USwordSkill2* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<USwordSkill2>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void USwordSkill2::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(EStateEnum::Sword_Skill_2);
+	CurState->PlayTime = 0.0f;
+	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
+	CurState->Irene->IreneInput->SetReAttack(false);
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+
+	CurState->Irene->IreneInput->SetCanUseSecondSwordSkill(false);
+	
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+}
+
+void USwordSkill2::Execute(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->MoveAuto();
+	
+	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	// 이동 스킵
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			if (CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ActionEndChangeMoveState();
+		}
+	}
+	if(CurState->PlayTime >= 1.15f)
+	{
+		EndTimeExit(CurState);
+	}
+}
+void USwordSkill2::Exit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->SetAttackUseSkill(false);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->CameraShakeOn = false;
+	CurState->bIsEnd = true;
+}
+void USwordSkill2::EndTimeExit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
+	CurState->Irene->IreneInput->SetAttackUseSkill(false);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackTimeEndState();
+	CurState->bIsEnd = true;
+}
+#pragma endregion SwordSkill2
+#pragma region SpearSkill1
+USpearSkill1* USpearSkill1::GetInstance()
+{
+	static USpearSkill1* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<USpearSkill1>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void USpearSkill1::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(EStateEnum::Spear_Skill_1);
+	CurState->PlayTime = 0.0f;
+	CurState->bIsEnd = false;
+	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
+	StartShakeTime = 0.0f;
+
+	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
+	const FVector NowPosVec = CurState->Irene->GetActorLocation() + CurState->Irene->GetActorForwardVector() * 800;
+	CurState->Irene->IreneAttack->SetFollowTargetAlpha(0);
+	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
+	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
+	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
+	
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = true;
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
+	CurState->Irene->IreneInput->SetReAttack(false);
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	
+	CurState->Irene->GetMesh()->SetVisibility(false);
+	CurState->Irene->Weapon->SetVisibility(false);
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+}
+
+void USpearSkill1::Execute(IBaseGameEntity* CurState)
+{
+	// 후딜 이전까지의 시간
+	CurState->Irene->IreneInput->MoveAuto(0.63f);
+	// 목적지에 도착
+	if (CurState->PlayTime >= 0.63f)
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+	}
+	// 몽타주 시간
+	if (CurState->PlayTime >= 1.33f)
+	{
+		EndTimeExit(CurState);
+	}
+	
+	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+
+	// 전기 스킬 연속
+	if (CurState->Irene->IreneInput->GetSpearSkill1Count() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
+	{
+		CurState->Irene->IreneAnim->StopAllMontages(0);
+		CurState->Irene->IreneInput->bUseRightButton = false;
+		CurState->Irene->IreneInput->RightButton(1);
+	}
+
+	// 이동 스킵
+	if (CurState->Irene->IreneData.IsAttacking)
+	{
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			if (CurState->Irene->Weapon->IsVisible())
+			{
+				CurState->Irene->Weapon->SetVisibility(false);
+				CurState->Irene->WeaponVisible(false);
+			}
+			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->ActionEndChangeMoveState();
+		}
+	}
+}
+void USpearSkill1::Exit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->SetStopMoveAutoTarget();
+	CurState->Irene->GetMesh()->SetVisibility(true);
+	CurState->Irene->Weapon->SetVisibility(true);
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
+	
+	CurState->Irene->IreneInput->SetAttackUseSkill(false);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->CameraShakeOn = false;
+	CurState->bIsEnd = true;
+}
+void USpearSkill1::EndTimeExit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneInput->SetStopMoveAutoTarget();
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
+	CurState->Irene->IreneInput->SetAttackUseSkill(false);
+	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
+	CurState->Irene->IreneAttack->AttackTimeEndState();
+	CurState->bIsEnd = true;
+}
+#pragma endregion SpearSkill1
 #pragma endregion Skill
 
 #pragma region FormChangeState
@@ -1233,7 +1409,7 @@ bool UIreneFSM::IsAttackState()const
 }
 bool UIreneFSM::IsSkillState() const
 {
-	if (StateEnumValue == EStateEnum::Skill_Start || StateEnumValue == EStateEnum::Skill_End)
+	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 || StateEnumValue == EStateEnum::Spear_Skill_1)
 		return true;
 	return false;
 }
