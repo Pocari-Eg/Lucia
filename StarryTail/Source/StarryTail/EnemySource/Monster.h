@@ -89,6 +89,9 @@ public:
 	void InitManaShield();
 	void InitPerfectDodgeNotify();
 
+	//FSM
+	void SetBattleState();
+
 //delegete========================================================
 	FAttackEndDelegate AttackEnd;
 	FAttackedEndDelegate AttackedEnd;
@@ -265,6 +268,9 @@ public:
 	bool GetIsManaShieldActive() const;
 	float GetSkillRadius() const;
 
+	FAttackRange GetAttack1Range()const;
+	FAttackRange GetAttack2Range()const;
+	FAttackRange GetAttack3Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
 

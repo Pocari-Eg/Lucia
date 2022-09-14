@@ -15,7 +15,5 @@ class STARRYTAIL_API UBTTaskMobFindPatrolPos : public UBTTaskNode
 	GENERATED_BODY()
 public:
 	UBTTaskMobFindPatrolPos();
-
-
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };

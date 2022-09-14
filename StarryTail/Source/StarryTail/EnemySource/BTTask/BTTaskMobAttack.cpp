@@ -29,22 +29,6 @@ EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 
 
-
-	if (Monster->GetMonsterAtkType() == 2 && OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABellyfishAIController::IsAfterAttacked) == true)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-
-		auto ran = FMath::RandRange(1, 100);
-		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
-		if (ran > Monster->GetAttackPercent())
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsRunKey, true);
-
-			return EBTNodeResult::Succeeded;
-		}
-	}
-
 	
 	Monster->Attack();
 
@@ -67,17 +51,6 @@ void UBTTaskMobAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		if (nullptr == Monster) {
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
-
-		if (Monster->GetMonsterAtkType() == 2 && Monster->GetDistanceToPlayer() <= 200.0f)
-		{
-			
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsRunKey, true);
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-			Monster->GetAIController()->SetAttackCoolKey(true);
-			Monster->SetIsAttackCool(true);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
-
 
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 		Monster->GetAIController()->SetAttackCoolKey(true);

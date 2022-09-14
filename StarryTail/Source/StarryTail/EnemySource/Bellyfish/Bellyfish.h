@@ -29,7 +29,6 @@ public:
 
 	UBellyfishAnimInstance* GetBellyfishAnimInstance() const;
 
-	void Walk();
 	void Attack();
 	void RushAttack();
 

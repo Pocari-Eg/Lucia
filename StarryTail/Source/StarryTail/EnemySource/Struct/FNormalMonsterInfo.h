@@ -17,6 +17,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword Type;
 };
+
+USTRUCT(Atomic, BluePrintType)
+struct FAttackRange
+{
+	GENERATED_BODY()
+public:
+	//공격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Angle; //시야각
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Radius; //시야거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Height;
+};
 USTRUCT(Atomic, BluePrintType)
 struct FNormalMonsterInfo
 {
@@ -66,7 +80,12 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EEnemyRank Monster_Rank; // 몬스터 등급
 
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack1Range;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack2Range;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack3Range;
 
 	//시야
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -75,15 +94,6 @@ public:
 		float M_Sight_Angle; //시야각
 	UPROPERTY()
 		float M_Sight_Height;
-
-	//공격
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Angle; //시야각
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Radius; //시야거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Height;
-
 
 
 

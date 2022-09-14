@@ -37,23 +37,12 @@ void ABellyfishAIController::Attack()
 void ABellyfishAIController::Attacked()
 {
 	M_Attacked++;
-	if (M_Attacked >= 1 && Blackboard->GetValueAsBool(IsRunKey) == true)
-	{
-		Blackboard->SetValueAsBool(IsAttackedKey, true);
-		M_Attacked = 0;
-	}
-	else {
-
-
-	
 		if (M_Attacked >= M_MaxAttacked)
 		{
 			Blackboard->SetValueAsBool(IsAttackedKey, true);
 			M_Attacked = 0;
 
 		}
-
-	}
 }
 
 void ABellyfishAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)

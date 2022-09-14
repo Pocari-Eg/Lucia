@@ -48,12 +48,6 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 		FCollisionShape::MakeCapsule(Box),
 		CollisionQueryParam
 	);
-
-
-
-
-
-
 	if (bResult)
 	{
 		for (auto const& OverlapResult : OverlapResults)

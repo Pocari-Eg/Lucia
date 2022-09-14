@@ -49,7 +49,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
 
-	MonsterInfo.M_Atk_Angle = 150.0f;
+	MonsterInfo.Attack1Range.M_Atk_Angle = 150.0f;
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
 

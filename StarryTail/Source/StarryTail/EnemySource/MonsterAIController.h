@@ -32,8 +32,16 @@ public:
 
 	void SetSpawnPos(FVector Position);
 	void SetInAttackArea(bool Set);
-	void SetRunKey(bool Set);
 	void SetAttackCoolKey(bool Set);
+
+
+	//func===========================================
+	void SetNormalState(bool State);
+	void SetBattleState(bool State);
+	void SetAttackedState(bool State);
+	void SetSupportState(bool State);
+
+	//key=======================================================================
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
 
@@ -51,14 +59,25 @@ public:
 	static const FName IsGroggyKey;
 
 	static const FName IsDeadKey;
-
 	static const FName ReturnKey;
-	static const FName IsRunKey;
+
+
+
+	//
+	static const FName NormalStateKey;
+	static const FName BattleStateKey;
+	static const FName AttackedStateKey;
+	static const FName SupportStateKey;
+
+	static const FName Attack1Key;
+	static const FName Attack2Key;
+	static const FName Attack3Key;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;
 	UPROPERTY()
 		class UBlackboardData* BBAsset;
+
 
 	virtual void OnPossess(APawn* InPawn) override;
 };

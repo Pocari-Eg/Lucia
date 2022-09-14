@@ -67,10 +67,6 @@ UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 	return BellyfishAnimInstance;
 }
 
-void ABellyfish::Walk()
-{
-	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
-}
 
 void ABellyfish::Attack()
 {
@@ -408,7 +404,7 @@ void ABellyfish::InitMonsterInfo()
 
 	MonsterInfo.M_Atk_Type = NewData->M_Atk_Type;
 	MonsterInfo.M_Max_HP = NewData->M_Max_HP;
-	MonsterInfo.M_HP = NewData->M_HP;
+	MonsterInfo.M_HP = MonsterInfo.M_Max_HP;
 	MonsterInfo.M_MoveSpeed = NewData->M_MoveSpeed;
 	MonsterInfo.M_Skill_Type_01 = NewData->M_Skill_Type_01;
 	MonsterInfo.M_Skill_Type_02 = NewData->M_Skill_Type_02;
@@ -425,6 +421,24 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.M_Sight_Angle = 150.0f;
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
+
+	//Attack Range
+
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
+	MonsterInfo.Attack1Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
+	MonsterInfo.Attack1Range.M_Atk_Height = NewSkillData->M_Atk_Height;
+	MonsterInfo.Attack1Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
+
+	NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_02);
+	MonsterInfo.Attack2Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
+	MonsterInfo.Attack2Range.M_Atk_Height = NewSkillData->M_Atk_Height;
+	MonsterInfo.Attack2Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
+
+	NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
+	MonsterInfo.Attack3Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
+	MonsterInfo.Attack3Range.M_Atk_Height = NewSkillData->M_Atk_Height;
+	MonsterInfo.Attack3Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
+	//
 
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
@@ -449,6 +463,8 @@ void ABellyfish::InitMonsterInfo()
 	Info.M_Run_Time = 3.0f;
 	Info.M_Attacked_Time = 0.5f;
 	MonsterInfo.M_AttackPercent = 80.0f;
+
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 }
 
 void ABellyfish::InitCollision()
@@ -608,9 +624,8 @@ void ABellyfish::InitAttack1Data()
 	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
 	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
 	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-	MonsterInfo.M_Atk_Angle = NewData->M_Atk_Angle;
-	MonsterInfo.M_Atk_Radius = NewData->M_Atk_Radius;
-	MonsterInfo.M_Atk_Height = NewData->M_Atk_Height;
+
+
 
 }
 void ABellyfish::InitAttack2Data()
@@ -624,9 +639,6 @@ void ABellyfish::InitAttack2Data()
 	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
 	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
 	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-	MonsterInfo.M_Atk_Angle = NewData->M_Atk_Angle;
-	MonsterInfo.M_Atk_Radius = NewData->M_Atk_Radius;
-	MonsterInfo.M_Atk_Height = NewData->M_Atk_Height;
 }
 void ABellyfish::InitAttack3Data()
 {
@@ -639,8 +651,5 @@ void ABellyfish::InitAttack3Data()
 	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
 	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
 	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-	MonsterInfo.M_Atk_Angle = NewData->M_Atk_Angle;
-	MonsterInfo.M_Atk_Radius = NewData->M_Atk_Radius;
-	MonsterInfo.M_Atk_Height = NewData->M_Atk_Height;
 }
 #pragma endregion Init

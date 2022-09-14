@@ -72,7 +72,7 @@ AMonster::AMonster()
 		TargetWidget->bAutoActivate = false;
 	}
 	bIsSpawnEnemy = false;
-	bIsObject = true;
+	bIsObject = false;
 	InitEffect();
 
 
@@ -283,15 +283,15 @@ int AMonster::GetManaShieldCount() const
 }
 float AMonster::GetAtkAngle() const
 {
-	return MonsterInfo.M_Atk_Angle;
+	return MonsterInfo.Attack1Range.M_Atk_Angle;
 }
 float AMonster::GetAtkRange() const
 {
-	return MonsterInfo.M_Atk_Radius;
+	return MonsterInfo.Attack1Range.M_Atk_Radius;
 }
 float AMonster::GetAtkHeight() const
 {
-	return MonsterInfo.M_Atk_Angle;
+	return MonsterInfo.Attack1Range.M_Atk_Angle;
 }
 bool AMonster::GetIsManaShieldActive() const
 {
@@ -300,6 +300,18 @@ bool AMonster::GetIsManaShieldActive() const
 float AMonster::GetSkillRadius() const
 {
 	return MonsterInfo.M_Skill_Radius;
+}
+FAttackRange AMonster::GetAttack1Range() const
+{
+	return MonsterInfo.Attack1Range;
+}
+FAttackRange AMonster::GetAttack2Range() const
+{
+	return MonsterInfo.Attack2Range;
+}
+FAttackRange AMonster::GetAttack3Range() const
+{
+	return MonsterInfo.Attack3Range;
 }
 void AMonster::SetIsAttackCool(bool Cool)
 {
@@ -935,6 +947,11 @@ void AMonster::InitPerfectDodgeNotify()
 		PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
 		});
 }
+void AMonster::SetBattleState()
+{
+	MonsterAIController->SetBattleState(true);
+	MonsterAIController->SetNormalState(false);
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -970,6 +987,8 @@ void AMonster::BeginPlay()
 	OnSpawnEffectEvent();
 
 	InitPerfectDodgeNotify();
+
+	MonsterAIController->SetNormalState(true);
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1184,7 +1203,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 			//몬스터인지 아닌지
-			if (bIsObject) {
+			if (!bIsObject) {
 								
 				if (MonsterInfo.bIsShieldOn)
 				{
@@ -1207,8 +1226,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			InitAttackedInfo();
 
 			Attacked();
+			SetBattleState();
 			return FinalDamage;
 		}
 	}
+
+
+
 	return FinalDamage;
 }
