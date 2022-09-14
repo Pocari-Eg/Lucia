@@ -692,6 +692,8 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 	StartShakeTime = 0.0f;	
 	CurState->Irene->IreneData.CanNextCombo = false;
+	
+	CurState->Irene->IreneAttack->SetTrueAttackCount(1);
 
 	CurState->Irene->IreneInput->SetNextAttack(false);
 	CurState->Irene->IreneInput->SetJumpAttack(false);
@@ -789,7 +791,9 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 2;
-
+	
+	CurState->Irene->IreneAttack->SetTrueAttackCount(2);
+	
 	CurState->Irene->IreneInput->SetNextAttack(false);
 	CurState->Irene->IreneInput->SetJumpAttack(false);
 	CurState->Irene->IreneInput->SetReAttack(false);
@@ -877,6 +881,11 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 3;
+	
+	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
+		CurState->Irene->IreneAttack->SetTrueAttackCount(3);
+	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
+		CurState->Irene->IreneAttack->SetTrueAttackCount(4);
 
 	CurState->Irene->IreneInput->SetNextAttack(false);
 	CurState->Irene->IreneInput->SetJumpAttack(false);

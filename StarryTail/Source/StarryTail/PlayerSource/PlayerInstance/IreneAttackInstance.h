@@ -34,9 +34,14 @@ private:
 	UPROPERTY()
 	UDataTable* AttackDataTable;
 	UPROPERTY()
-	UDataTable* ChargeDataTable;
-	UPROPERTY()
 	UDataTable* ElementDataTable;
+	UPROPERTY()
+	UDataTable* WeaponGaugeDataTable;
+	UPROPERTY()
+	UDataTable* WeaponSoulDataTable;
+
+	// 진짜 공격 횟수
+	int TrueAttackCount;
 	
 	// 디버프 효과 타이머
 	FTimerHandle FireDeBuffStackTimerHandle;
@@ -112,15 +117,17 @@ public:
 	void OverSustainTime();
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
-	FChargeDataTable* GetNameAtChargeDataTable() const { return (ChargeDataTable->FindRow<FChargeDataTable>(FName("Charge"), "")); }
 	FElementDataTable* GetNameAtElementDataTable(const FName Value) const { if (Value != FName("")) return (ElementDataTable->FindRow<FElementDataTable>(Value, "")); return nullptr; }
+	FWeaponGauge* GetNameAtWeaponGaugeDataTable(const FName Value) const { if (Value != FName("")) return (WeaponGaugeDataTable->FindRow<FWeaponGauge>(Value, "")); return nullptr; }
+	FWeaponSoul* GetNameAtWeaponSoulDataTable() const { return WeaponSoulDataTable->FindRow<FWeaponSoul>(FName("Weapon_Soul"), "");}
 
 #pragma region GetSet
 	//공격력 반환
 	float GetATK()const;
 
 	FName GetBasicAttackDataTableName();
-	
+	FName GetWeaponGaugeDataTableName();
+
 	bool GetFollowTarget()const {return bFollowTarget;}
 	float GetFollowTargetAlpha()const {return FollowTargetAlpha;}
 	FVector GetPlayerPosVec()const {return PlayerPosVec;}
@@ -153,6 +160,7 @@ public:
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 	void SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }
+	void SetTrueAttackCount(const int Value) { TrueAttackCount = Value; }
 #pragma endregion GetSet
 
 private:
