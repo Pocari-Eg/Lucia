@@ -36,7 +36,7 @@ public:
 	
 	 void Attack();
 
-	void SetCurQuillStack(const int Value);
+
 
 	AMonsterAIController* GetAIController() const;
 
@@ -66,21 +66,6 @@ public:
 
 	void RotationToPlayerDirection();
 
-	FAttackEndDelegate AttackEnd;
-	FAttackedEndDelegate AttackedEnd;
-	FDeathDelegate Death;
-
-	FOnHpDelegate OnHpChanged;
-	FOnBarrierDelegate OnBarrierChanged;
-	FOnSwordAttributeChangeDelegate AttributeChange;
-
-	FDodgeTimeOn DodgeTimeOn;
-
-	FDodgeDirection RightDodge;
-	FDodgeDirection LeftDodge;
-	FDodgeDirection FrontDodge;
-	FDodgeDirection BackDodge;
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnSpawnEffectEvent();
 	UFUNCTION(BlueprintImplementableEvent)
@@ -102,10 +87,25 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void InitManaShield();
-
 	void InitPerfectDodgeNotify();
+
+//delegete========================================================
+	FAttackEndDelegate AttackEnd;
+	FAttackedEndDelegate AttackedEnd;
+	FDeathDelegate Death;
+
+	FOnHpDelegate OnHpChanged;
+	FOnBarrierDelegate OnBarrierChanged;
+	FOnSwordAttributeChangeDelegate AttributeChange;
+
+	FDodgeTimeOn DodgeTimeOn;
+
+	FDodgeDirection RightDodge;
+	FDodgeDirection LeftDodge;
+	FDodgeDirection FrontDodge;
+	FDodgeDirection BackDodge;
 protected:
-	//Function
+	//Function========================================================
 	void InitAttackedInfo();
 	void InitEffect();
 	UFUNCTION(BlueprintCallable)
@@ -117,13 +117,16 @@ protected:
 	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
 	void CalcManaShield(float Damage);
 
-	void CalcQuillStack(EAttributeKeyword AttackAttribute);
 	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 
 	void Attacked();
-	//Variable
+
+	FMonsterDataTable* GetMontserData(int32 num);
+	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
+
+//Variable========================================================
 	AMonsterAIController* MonsterAIController;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
@@ -153,19 +156,24 @@ protected:
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 	class UWidgetComponent* TargetWidget;
-
 	//사운드
 	UPROPERTY(BluePrintReadOnly)
 	class UMonsterSoundInstance* SoundInstance;
+	UPROPERTY()
+	class UMonsterAnimInstance* MonsterAnimInstance;
 
 	UPROPERTY()
-		class UMonsterAnimInstance* MonsterAnimInstance;
+	UDataTable* MonsterDataTable;
+	UPROPERTY()
+	UDataTable* MonsterSkillDataTable;
+
+
+
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		float KnockBackTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		float ShowUITime;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 		bool bTestMode;
 
@@ -224,7 +232,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Get Function
+	// Get Function========================================================
 	float GetMeleeAttackRange() const;
 	float GetTraceRange() const;
 	float GetDetectMonsterRange() const;
@@ -239,7 +247,6 @@ public:
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
 	EAttributeKeyword GetBarrierAttribute() const;
-	int GetCurQuillStack() const;
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
 	int GetMaxAttacked() const;
@@ -250,14 +257,15 @@ public:
 	float GetAttackPercent() const;
 	int GetPlayerEnergy() const;
 	int GetManaShieldCount() const;
-	//M_Skill_Atk 
+
+	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
 	bool GetIsManaShieldActive() const;
 	float GetSkillRadius() const;
 
-	//set
+	//set========================================================
 	void SetIsAttackCool(bool Cool);
 
 protected:

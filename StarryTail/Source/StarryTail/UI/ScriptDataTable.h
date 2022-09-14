@@ -15,7 +15,6 @@ struct FScriptData : public FTableRowBase {
 
 	GENERATED_BODY();
 	public:
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Script");
 	int32 Type;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Script");

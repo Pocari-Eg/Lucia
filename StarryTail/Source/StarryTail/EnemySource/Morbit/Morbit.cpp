@@ -60,7 +60,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.M_Type = EEnemyRank::e_Common;
+	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
