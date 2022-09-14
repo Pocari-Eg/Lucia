@@ -61,12 +61,6 @@ public:
 	//공격력
 	UPROPERTY(BlueprintReadWrite)
 	float Strength = 20;
-	//불 스택 추가 공격력
-	UPROPERTY(BlueprintReadWrite)
-	float FireQuillStackDmg = 1;
-	//쉴드
-	UPROPERTY(BlueprintReadWrite)
-	float Shield = 0;
 	
 	// 최대 체력
 	UPROPERTY(BlueprintReadWrite)
@@ -74,13 +68,18 @@ public:
 	// 체력
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentHP;
-	// 최대 에너지
+	// 최대 에너지 - 대쉬
 	UPROPERTY(BlueprintReadWrite)
 	float MaxScrollEnergy = 100;
 	// 에너지
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentEnergy;
-
+	// 최대 게이지 - 무기변경
+	UPROPERTY(BlueprintReadWrite)
+	float MaxGauge = 100;
+	// 게이지
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	float CurrentGauge;
 	
 	// Run 최대 속도
 	UPROPERTY(BlueprintReadWrite)
@@ -105,7 +104,7 @@ public:
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
 	int32 CurrentCombo = 0;
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadOnly)
-	int32 MaxCombo = 4;
+	int32 MaxCombo = 3;
 	// 캡슐 공격 사거리
 	UPROPERTY(BlueprintReadOnly)
 	float AttackRange = 50.0f;

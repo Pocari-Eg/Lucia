@@ -38,10 +38,14 @@ private:
 
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
+	// 창에서 검으로 변경
+	FTimerHandle WeaponChangeWaitHandle;
 	
 	// 스킬 사용중
 	bool bIsSkillOn;
-
+	// 공격 중 스킬 사용
+	bool bAttackUseSkill;
+	
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
 	//저스트 회피 방향
@@ -126,6 +130,10 @@ public:
 	void PerfectDodgeTimeEnd();
 	void PerfectDodgeAttackEnd();
 
+	// 무기 변경
+	void WeaponChangeKeyword();
+	void WeaponChangeTimeOut();
+	
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
@@ -164,6 +172,7 @@ public:
 	void SetNextAttack(const bool State) { bNextAttack = State; }
 	void SetJumpAttack(const bool State) { bJumpAttack = State; }
 	void SetReAttack(const bool State) { bReAttack = State; }
+	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
 #pragma endregion GetSet
 
 #pragma region CoolTimeFunction

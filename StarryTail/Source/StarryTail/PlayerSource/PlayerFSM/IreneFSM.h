@@ -175,18 +175,6 @@ public:
 	virtual void Exit(IBaseGameEntity* CurState) override;
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
-UCLASS()
-class STARRYTAIL_API UBasicAttack4State final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float StartShakeTime;
-public:
-	static UBasicAttack4State* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
 #pragma endregion Attack
 
 #pragma region Skill
@@ -195,6 +183,7 @@ class STARRYTAIL_API USkillStartState final : public UObject, public IState
 {
 	GENERATED_BODY()
 public:
+	float StartShakeTime;
 	static USkillStartState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
@@ -304,7 +293,6 @@ public:
 	bool IsDodgeState()const;
 	bool IsJumpState()const;
 	bool IsAttackState()const;
-	bool IsChargeState()const;
 	bool IsSkillState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;
@@ -313,7 +301,6 @@ public:
 	bool IsFirstAttack()const;
 	bool IsSecondAttack() const;
 	bool IsThirdAttack() const;
-	bool IsForthAttack() const;
 
 	bool IsKnockBackState()const;
 };

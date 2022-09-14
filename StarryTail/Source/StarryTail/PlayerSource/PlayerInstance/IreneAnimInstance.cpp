@@ -28,18 +28,28 @@ void UIreneAnimInstance::InitMemberVariable()
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
 	TargetMonster = nullptr;
-	FireChargeCount = 0;
+	bSword = true;
 }
 
 UIreneAnimInstance::UIreneAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Attack_Montage(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/TestIreneAttack_Montage.TestIreneAttack_Montage"));
-	if(Attack_Montage.Succeeded())
-		AttackMontage = Attack_Montage.Object;
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordAttack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireAttack_Montage.IreneFireAttack_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SpearAttack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderAttack_Montage.IreneThunderAttack_Montage"));
+	if(SwordAttack_Montage.Succeeded()&&SpearAttack_Montage.Succeeded())
+	{
+		SwordAttackMontage = SwordAttack_Montage.Object;
+		SpearAttackMontage = SpearAttack_Montage.Object;
+	}
 	
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Skill_Montage(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/TestIreneSkill_Montage.TestIreneSkill_Montage"));
-	if(Skill_Montage.Succeeded())
-		SkillMontage = Skill_Montage.Object;
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill1_Montage.IreneFireSkill1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill2_Montage.IreneFireSkill2_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SpearSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderSkill_Montage.IreneThunderSkill_Montage"));
+	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&SpearSkill1_Montage.Succeeded())
+	{
+		SwordSkill1Montage = SwordSkill1_Montage.Object;
+		SwordSkill2Montage = SwordSkill2_Montage.Object;
+		SpearSkill1Montage = SpearSkill1_Montage.Object;
+	}
 }
 
 void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
@@ -58,26 +68,42 @@ void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 
 void UIreneAnimInstance::PlayAttackMontage()
 {
-	// 현재 속성에 따라 기본공격 몽타주 실행하는 함수
-	Montage_Play(AttackMontage, 1.0f);
+	// 현재 무기에 따라 기본공격 몽타주 실행하는 함수
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		Montage_Play(SwordAttackMontage, 1.0f);
+	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		Montage_Play(SpearAttackMontage, 1.0f);
 }
 void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 {
 	// 스킬 몽타주를 실행하는 함수
-	Montage_Play(SkillMontage, 1.0f);
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		Montage_Play(SwordSkill1Montage, 1.0f);
+	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		Montage_Play(SpearSkill1Montage, 1.0f);
 }
 
 void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 {
 	// 다음 기본공격의 세션을 현재 세션이 종료되면 시작시키는 함수
 	if (NewSection > 1)
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), AttackMontage);
+	{
+		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SwordAttackMontage);
+		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SpearAttackMontage);
+	}
 }
 void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 {
 	// 다음 기본공격의 세션을 즉시 시작시키는 함수
 	if (NewSection > 1)
-		Montage_JumpToSection(GetAttackMontageSectionName(NewSection), AttackMontage);
+	{
+		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SwordAttackMontage);
+		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpearAttackMontage);
+	}
 }
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck() const

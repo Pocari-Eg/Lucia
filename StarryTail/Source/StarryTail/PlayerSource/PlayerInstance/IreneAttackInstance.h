@@ -110,9 +110,6 @@ public:
 	void ResetWaterDeBuffStack();
 	void ResetThunderDeBuffStack();
 	void OverSustainTime();
-
-	void SetAttackState()const;
-	void SetSkillState()const;
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 	FChargeDataTable* GetNameAtChargeDataTable() const { return (ChargeDataTable->FindRow<FChargeDataTable>(FName("Charge"), "")); }
@@ -139,7 +136,10 @@ public:
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
 	float GetThunderSustainTime()const{return ThunderSustainTime;}
 	bool GetIsPerfectDodge()const{return IsPerfectDodge;}
-	
+
+	void SetAttackState()const;
+	void SetSkillState()const;
+	void SetGauge(float Value);
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
 	void SetPlayerPosVec(const FVector Value){PlayerPosVec = Value;}

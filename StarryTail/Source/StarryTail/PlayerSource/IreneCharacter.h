@@ -75,7 +75,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
-	USkeletalMesh* WeaponMesh;
+	TArray<USkeletalMesh*> WeaponMeshArray;
+	UPROPERTY()
+	TArray<FName> WeaponSocketNameArray;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveVector*> CameraShakeCurve;
