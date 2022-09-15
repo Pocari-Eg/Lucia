@@ -32,8 +32,6 @@ void UIreneInputInstance::InitMemberVariable()
 
 	bLeftButtonPressed = false;
 	bRightButtonPressed = false;
-	bUseLeftButton = false;
-	bUseRightButton = false;
 	
 	bReAttack = false;
 	
@@ -54,7 +52,7 @@ void UIreneInputInstance::InitMemberVariable()
 	bAttackUseSkill = false;
 	CanUseSecondSwordSkill = false;
 	bIsSpearSkill1On = true;
-	MaxSpearSkill1Count = 2;
+	MaxSpearSkill1Count = 3;
 	SpearSkill1Count = MaxSpearSkill1Count;
 	
 	TempAttribute = EAttributeKeyword::e_None;
@@ -322,6 +320,10 @@ void UIreneInputInstance::RightButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{
+			STARRYLOG(Warning,TEXT("%d"),SpearSkill1Count);
+			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1] && SpearSkill1Count <= 0 && !bIsSpearSkill1On)
+				return;
+			
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.15f;
 			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -381,18 +383,16 @@ void UIreneInputInstance::SpearRightButton()
 	// UI작성 시 주석 모두 제거
 	if(bIsSpearSkill1On)
 	{
-		if(SpearSkill1Count > 0 && !bUseRightButton)
+		if(SpearSkill1Count > 0)
 		{
-			bUseRightButton = true;
-			Irene->IreneAttack->SetSkillState();
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
 			MaxSpearSkill1CoolTime = AttackTable->C_Time;
 
-			if (AttackTable != nullptr && bUseRightButton)
+			if (AttackTable != nullptr)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->IreneAnim->PlaySkillAttackMontage();
 				Irene->IreneData.IsAttacking = true;
+				SpearSkill1Count--;
 				if(PerfectDodgeTimerHandle.IsValid())
 				{
 					Irene->IreneAnim->SetDodgeDir(0);
@@ -413,12 +413,7 @@ void UIreneInputInstance::SpearRightButton()
 			}
 			//Irene->IreneUIManager->PlayerHud->UseSkill();
 		}
-		else
-		{
-			bUseRightButton = false;
-		}
 	}
-	STARRYLOG(Warning,TEXT("%d"),SpearSkill1Count);
 }
 
 void UIreneInputInstance::SkillWait()
@@ -616,8 +611,8 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
-	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-	{
+	//if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	//{
 		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
 		{
 			Irene->IreneData.CurrentGauge = 0;
@@ -637,7 +632,7 @@ void UIreneInputInstance::WeaponChangeKeyword()
 			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
 			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 		}
-	}
+	//}
 }
 void UIreneInputInstance::WeaponChangeTimeOut()
 {

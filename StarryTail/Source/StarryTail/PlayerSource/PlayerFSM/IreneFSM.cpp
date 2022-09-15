@@ -1143,13 +1143,13 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 	StartShakeTime = 0.0f;
+	MaxWalkSpeed = CurState->Irene->GetCharacterMovement()->MaxWalkSpeed;
+	
+	CurState->Irene->IreneAnim->PlaySkillAttackMontage();
 
-	const FVector CurrentPosVec = CurState->Irene->GetActorLocation();
-	const FVector NowPosVec = CurState->Irene->GetActorLocation() + CurState->Irene->GetActorForwardVector() * 800;
-	CurState->Irene->IreneAttack->SetFollowTargetAlpha(0);
-	CurState->Irene->IreneInput->SetStartMoveAutoTarget(CurrentPosVec, NowPosVec);
-	CurState->Irene->IreneAttack->SetCurrentPosVec(CurrentPosVec);
-	CurState->Irene->IreneAttack->SetNowPosVec(NowPosVec);
+	CurState->Irene->IreneAttack->SetPlayerPosVec(CurState->Irene->GetActorLocation());
+	CurState->Irene->GetCharacterMovement()->GravityScale = 9999;
+	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*10000,true,false);	
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	
 	CurState->Irene->IreneData.IsAttacking = true;
@@ -1172,7 +1172,8 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 void USpearSkill1::Execute(IBaseGameEntity* CurState)
 {
 	// 후딜 이전까지의 시간
-	CurState->Irene->IreneInput->MoveAuto(0.63f);
+	//CurState->Irene->IreneInput->MoveAuto(0.63f);
+	
 	// 목적지에 도착
 	if (CurState->PlayTime >= 0.63f)
 	{
@@ -1194,7 +1195,6 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 	if (CurState->Irene->IreneInput->GetSpearSkill1Count() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
-		CurState->Irene->IreneInput->bUseRightButton = false;
 		CurState->Irene->IreneInput->RightButton(1);
 	}
 
@@ -1216,10 +1216,10 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 }
 void USpearSkill1::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetStopMoveAutoTarget();
+	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
+	
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->CameraShakeOn = false;
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
@@ -1230,7 +1230,6 @@ void USpearSkill1::Exit(IBaseGameEntity* CurState)
 }
 void USpearSkill1::EndTimeExit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetStopMoveAutoTarget();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->Irene->IreneData.IsAttacking = false;
 	CurState->Irene->IreneData.CanNextCombo = false;
