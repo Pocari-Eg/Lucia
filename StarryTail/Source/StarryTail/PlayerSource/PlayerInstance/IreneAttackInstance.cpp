@@ -174,33 +174,65 @@ void UIreneAttackInstance::DoAttack()
 
 	bool bResult = false;
 
-	TUniquePtr<FAttackDataTable> AttackTable = nullptr;
-	if (Irene->IreneState->IsAttackState())
-		AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-	else if (Irene->IreneState->IsSkillState())
-		AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-
-	TArray<FHitResult> MonsterList;
-	FCollisionQueryParams Params(NAME_None, false, Irene);
-	bResult = GetWorld()->SweepMultiByChannel(
-	MonsterList,
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
-	ECollisionChannel::ECC_GameTraceChannel1,
-	FCollisionShape::MakeBox(FVector(200, 50, AttackTable->Attack_Distance_1)),
-	Params);
+	TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 	
-	// 그리기 시작
-	#if ENABLE_DRAW_DEBUG
+	TArray<FHitResult> MonsterList;
+
+	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] || Irene->IreneState->IsAttackState())
+	{
+		FVector BoxSize = FVector::ZeroVector;
+		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
+		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
+
+		FCollisionQueryParams Params(NAME_None, false, Irene);
+		bResult = GetWorld()->SweepMultiByChannel(
+		MonsterList,
+		Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+		Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+		FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel1,
+		FCollisionShape::MakeBox(BoxSize),
+		Params);
+	
+		// 그리기 시작
+		#if ENABLE_DRAW_DEBUG
 		FVector TraceVec = Irene->GetActorForwardVector();
 		FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 		float DebugLifeTime = 5.0f;
-		DrawDebugBox(GetWorld(), Center, FVector(200, 50, AttackTable->Attack_Distance_1), CapsuleRot, DrawColor, false, DebugLifeTime);
-	#endif
-
+		DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
+		#endif
+	}
+	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1] && Irene->IreneState->IsSkillState())
+	{
+		FVector MoveForwardVector = PlayerPosVec-Irene->GetActorLocation();
+		MoveForwardVector.Normalize();
+		float MoveDist = FVector::Dist(Irene->GetActorLocation(),PlayerPosVec)/2;
+		
+		FCollisionQueryParams Params(NAME_None, false, Irene);
+		bResult = GetWorld()->SweepMultiByChannel(
+		MonsterList,
+		(PlayerPosVec+Irene->GetActorLocation())/2,
+		(PlayerPosVec+Irene->GetActorLocation())/2,
+		FRotationMatrix::MakeFromZ(MoveForwardVector).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel1,
+		FCollisionShape::MakeBox(FVector(50, 50, MoveDist)),
+		Params);
+	
+		// 그리기 시작
+		#if ENABLE_DRAW_DEBUG
+		FVector TraceVec = MoveForwardVector;
+		FVector Center = (PlayerPosVec+Irene->GetActorLocation())/2;
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 5.0f;
+		DrawDebugBox(GetWorld(), Center, FVector(50, 50, MoveDist), CapsuleRot, DrawColor, false, DebugLifeTime);
+#endif
+	}
+	
 	// 모든 충돌된 액터에 데미지 전송
 	for (FHitResult Monster : MonsterList)
 	{
@@ -358,7 +390,6 @@ void UIreneAttackInstance::SetSkillState()const
 	}
 	else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 	{
-		STARRYLOG_S(Warning);
 		Irene->ChangeStateAndLog(USpearSkill1::GetInstance());
 	}
 }

@@ -19,8 +19,6 @@ public:
 
 	bool bLeftButtonPressed;
 	bool bRightButtonPressed;
-	bool bUseLeftButton;
-	bool bUseRightButton;
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;

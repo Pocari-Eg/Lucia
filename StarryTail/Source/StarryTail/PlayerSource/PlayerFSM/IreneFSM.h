@@ -206,6 +206,7 @@ UCLASS()
 class STARRYTAIL_API USpearSkill1 final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float MaxWalkSpeed;
 public:
 	float StartShakeTime;
 	static USpearSkill1* GetInstance();
