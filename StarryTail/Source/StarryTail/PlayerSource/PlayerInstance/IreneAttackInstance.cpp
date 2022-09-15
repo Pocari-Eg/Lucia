@@ -65,30 +65,47 @@ float UIreneAttackInstance::GetATK()const
 
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
-	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수	
+	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
 	FString AttributeName = "Sword_B_Attack_1";
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
-		AttributeName = "Sword_B_Attack_"+FString::FromInt(TrueAttackCount);
-	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-		AttributeName = "Spear_B_Attack_"+FString::FromInt(TrueAttackCount);
-	if(AttributeName == "Sword_B_Attack_4")
-		AttributeName = "Sword_B_Attack_3";
+	if (Irene->IreneState->IsAttackState())
+	{
+		if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			AttributeName = "Sword_B_Attack_" + FString::FromInt(TrueAttackCount);
+		else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			AttributeName = "Spear_B_Attack_" + FString::FromInt(TrueAttackCount);
+		if (AttributeName == "Sword_B_Attack_4")
+			AttributeName = "Sword_B_Attack_3";
+	}
+	else if (Irene->IreneState->IsSkillState())
+	{
+		if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		{
+			if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
+				AttributeName = "Sword_Skill_1_1";
+			else if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
+				AttributeName = "Sword_Skill_1_2";
+		}
+		else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			AttributeName = "Spear_Skill_1";
+	}
 	return FName(AttributeName);
+
 }
 FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
 {
-	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수	
+	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수   
 	FString AttributeName = "Sword_B_Attack_1";
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
-		AttributeName = "Sword_B_Attack_"+FString::FromInt(TrueAttackCount);
-	if(Irene->IreneState->IsSkillState())
+	if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		AttributeName = "Sword_B_Attack_" + FString::FromInt(TrueAttackCount);
+	if (Irene->IreneState->IsSkillState())
 	{
-		if(Irene->IreneState->GetStateToString().Compare("Skill_Start")!=0)
-		{
+		if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
 			AttributeName = "Sword_Skill_1_1";
-		}
+		else if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
+			AttributeName = "Sword_Skill_1_2";
 	}
 	return FName(AttributeName);
+
 }
 
 void UIreneAttackInstance::AttackStartComboState()
@@ -148,17 +165,21 @@ void UIreneAttackInstance::AttackStopCheck()
 void UIreneAttackInstance::DoAttack()
 {
 	// 실제로 공격을 하는 함수로 위에는 속성에 따른 콜라이더 사용과 아래에는 콜라이더를 보여주는 역할을 하는 코드가 있는 함수
-	
+
 	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	//if (STGameInstance->GetPlayerBattleState())
 	//{
-	//	Irene->CameraOutEvent();
+	//   Irene->CameraOutEvent();
 	//}
-	
+
 	bool bResult = false;
 
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-	
+	TUniquePtr<FAttackDataTable> AttackTable = nullptr;
+	if (Irene->IreneState->IsAttackState())
+		AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+	else if (Irene->IreneState->IsSkillState())
+		AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+
 	TArray<FHitResult> MonsterList;
 	FCollisionQueryParams Params(NAME_None, false, Irene);
 	bResult = GetWorld()->SweepMultiByChannel(
@@ -351,6 +372,8 @@ void UIreneAttackInstance::SetGauge(float Value)
 		Irene->IreneData.CurrentGauge += Value;
 		if(Irene->IreneData.CurrentGauge > Irene->IreneData.MaxGauge)
 			Irene->IreneData.CurrentGauge = Irene->IreneData.MaxGauge;
+
+		Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 	}
 }
 #pragma endregion GetSet

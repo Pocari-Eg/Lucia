@@ -33,7 +33,7 @@ AAttributeObject::AAttributeObject()
 
 
 
-	bIsObject = false;
+	bIsObject = true;
 
 
 }

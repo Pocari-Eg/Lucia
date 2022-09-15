@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../../StarryTail.h"
+#include "Engine/DataTable.h"
 #include "FNormalMonsterInfo.generated.h"
 
 USTRUCT(Atomic, BluePrintType)
@@ -12,10 +13,23 @@ struct FElementalShield
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int DEF;
+		int DEF;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	EAttributeKeyword Type;
+		EAttributeKeyword Type;
+};
 
+USTRUCT(Atomic, BluePrintType)
+struct FAttackRange
+{
+	GENERATED_BODY()
+public:
+	//공격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Angle; //시야각
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Radius; //시야거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Height;
 };
 USTRUCT(Atomic, BluePrintType)
 struct FNormalMonsterInfo
@@ -23,47 +37,76 @@ struct FNormalMonsterInfo
 	GENERATED_USTRUCT_BODY()
 public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Monster_Code; // 몬스터 키값
 
-	//Stat
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EEnemyRank M_Type; // 몬스터 등급
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Atk_Type; // 몬스터 키값
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Max_HP; //체력
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float M_HP;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_MoveSpeed; //이동속도
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_Skill_Type; 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float Chain_Detect_Radius; // 비헤이비어 트리 Detect 몬스터 전이 범위
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_Player_Energy;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_01; 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_02;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_03;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int Weapon_Soul;
 
 
-	//Skill
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_Skill_Code;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Skill_Range; 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Skill_Radius;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Skill_Atk; //공격력
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Skill_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Skill_Set_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Skill_Cool; // 몬스터 키값
 
 
 
+	//Stat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_MaxAttacked; // 몬스터 키값
+		EEnemyRank Monster_Rank; // 몬스터 등급
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack1Range;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack2Range;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack3Range;
+
+	//시야
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Sight_Radius; //시야거리
+	UPROPERTY()
+		float M_Sight_Angle; //시야각
+	UPROPERTY()
+		float M_Sight_Height;
+
+
+
+
 	//etc
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_MaxAttacked;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float Chain_Detect_Radius; // 비헤이비어 트리 Detect 몬스터 전이 범위
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		EAttributeKeyword MonsterAttribute; // 몬스터 속성
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -79,44 +122,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_AttackPercent;
+//
 
-
-	//Shield;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly,Category="ManaShield")
-	int Max_Ele_Shield;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
-	TArray<FElementalShield> Ele_Shield; // 몬스터 등급
-	int Ele_Shield_Count;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
-	bool bIsShieldOn;
-   
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
-	int ManaShieldDec;
-
-
-	//Quill
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Quill")
-	int Quill_MaxStack;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Quill")
-	int Quill_CurStack;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite ,Category = "Quill")
-	int Quill_MaxStackDamage;
-
-	//시야
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Sight_Radius; //시야거리
-	UPROPERTY()
-		float M_Sight_Angle; //시야각
-	UPROPERTY()
-		float M_Sight_Height;
-
-	//공격
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Angle; //시야각
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Radius; //시야거리
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Atk_Height;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -134,15 +141,29 @@ public:
 		float DefaultBattleWalkMoveSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultAnimePlayRate;
+
+
+	//shield
+
+		//Shield;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
+		int Max_Ele_Shield;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
+		TArray<FElementalShield> Ele_Shield; 
+	int Ele_Shield_Count;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
+		bool bIsShieldOn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
+		int ManaShieldDec;
 };
 
 USTRUCT(Atomic, BluePrintType)
-struct FMonsterSkillInfo
+struct FMonsterSkillDataTable :public FTableRowBase
 {
-	GENERATED_USTRUCT_BODY()
+	GENERATED_BODY();
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-		int M_Skill_Code;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int M_Skill_Range;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
@@ -155,5 +176,34 @@ public:
 		float M_Skill_Set_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float M_Skill_Cool;
+	//공격
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Angle; //시야각
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Radius; //시야거리
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Atk_Height;
 };
+USTRUCT(Atomic, BluePrintType)
+struct FMonsterDataTable :public FTableRowBase
+{
+	GENERATED_BODY();
+public:
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Atk_Type; // 몬스터 키값
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float M_Max_HP; //체력
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+		float M_HP;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_MoveSpeed; //이동속도
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_01;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_02;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_03;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int Weapon_Soul;
+};

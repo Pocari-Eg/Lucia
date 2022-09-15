@@ -49,7 +49,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
 
-	MonsterInfo.M_Atk_Angle = 150.0f;
+	MonsterInfo.Attack1Range.M_Atk_Angle = 150.0f;
 	MonsterInfo.M_Sight_Radius = 500.0f;
 	MonsterInfo.M_Sight_Height = 150.0f;
 
@@ -60,7 +60,7 @@ void AMorbit::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.M_Type = EEnemyRank::e_Common;
+	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;

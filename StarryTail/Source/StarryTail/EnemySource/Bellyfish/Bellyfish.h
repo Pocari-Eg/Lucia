@@ -29,7 +29,6 @@ public:
 
 	UBellyfishAnimInstance* GetBellyfishAnimInstance() const;
 
-	void Walk();
 	void Attack();
 	void RushAttack();
 
@@ -132,12 +131,6 @@ private:
 	float RushTestRange;
 
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
-	FMonsterSkillInfo Attack1Info;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
-	FMonsterSkillInfo Attack2Info;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = SkillInfo, Meta = (AllowPrivateAccess = true))
-	FMonsterSkillInfo Attack3Info;
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;

@@ -72,7 +72,7 @@ AMonster::AMonster()
 		TargetWidget->bAutoActivate = false;
 	}
 	bIsSpawnEnemy = false;
-	bIsObject = true;
+	bIsObject = false;
 	InitEffect();
 
 
@@ -84,9 +84,20 @@ AMonster::AMonster()
 
 	bIsAttackCool = false;
 
-	//quill
-	MonsterInfo.Quill_CurStack = 0;
-	MonsterInfo.Quill_MaxStack = 3;
+
+	FString MonsterDataPath = TEXT("/Game/Math/MonsterDataTable.MonsterDataTable");
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_MONSTER(*MonsterDataPath);
+	if (DT_MONSTER.Succeeded())
+	{
+		MonsterDataTable = DT_MONSTER.Object;
+	}
+
+	FString MontserSkillDataPath = TEXT("/Game/Math/MonsterSkillDataTable.MonsterSkillDataTable");
+	static ConstructorHelpers::FObjectFinder<UDataTable> DT_SKILL(*MontserSkillDataPath);
+	if (DT_SKILL.Succeeded())
+	{
+		MonsterSkillDataTable = DT_SKILL.Object;
+	}
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -230,10 +241,6 @@ EAttributeKeyword AMonster::GetBarrierAttribute() const
 		return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type;
 	}
 }
-int AMonster::GetCurQuillStack() const
-{
-	return MonsterInfo.Quill_CurStack;
-}
 float AMonster::GetPatrolArea() const
 {
 	return MonsterInfo.PatrolArea;
@@ -276,15 +283,15 @@ int AMonster::GetManaShieldCount() const
 }
 float AMonster::GetAtkAngle() const
 {
-	return MonsterInfo.M_Atk_Angle;
+	return MonsterInfo.Attack1Range.M_Atk_Angle;
 }
 float AMonster::GetAtkRange() const
 {
-	return MonsterInfo.M_Atk_Radius;
+	return MonsterInfo.Attack1Range.M_Atk_Radius;
 }
 float AMonster::GetAtkHeight() const
 {
-	return MonsterInfo.M_Atk_Angle;
+	return MonsterInfo.Attack1Range.M_Atk_Angle;
 }
 bool AMonster::GetIsManaShieldActive() const
 {
@@ -293,6 +300,18 @@ bool AMonster::GetIsManaShieldActive() const
 float AMonster::GetSkillRadius() const
 {
 	return MonsterInfo.M_Skill_Radius;
+}
+FAttackRange AMonster::GetAttack1Range() const
+{
+	return MonsterInfo.Attack1Range;
+}
+FAttackRange AMonster::GetAttack2Range() const
+{
+	return MonsterInfo.Attack2Range;
+}
+FAttackRange AMonster::GetAttack3Range() const
+{
+	return MonsterInfo.Attack3Range;
 }
 void AMonster::SetIsAttackCool(bool Cool)
 {
@@ -303,16 +322,7 @@ void AMonster::Attack()
 	MonsterAIController->Attack();
 //	bIsAttacking = true;
 }
-void AMonster::SetCurQuillStack(const int Value)
-{
-	MonsterInfo.Quill_CurStack = Value;
-	
-	auto widget = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
-	if (widget != nullptr) {
-		widget->SetQuillStackCount(MonsterInfo.Quill_CurStack);
-	}
 
-}
 AMonsterAIController* AMonster::GetAIController() const
 {
 	return MonsterAIController;
@@ -613,67 +623,6 @@ void AMonster::CalcManaShield(float Damage)
 		}
 	}
 }
-void AMonster::CalcQuillStack(EAttributeKeyword AttackAttribute)
-{
-
-	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-	//속성 배리어
-	if (MonsterInfo.bIsShieldOn)
-	{
-		switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-		{
-		case EAttributeKeyword::e_Fire:
-			if (AttackAttribute == EAttributeKeyword::e_Water)
-			{
-				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
-
-				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-				{
-					MonsterInfo.Quill_CurStack = 0;
-					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
-				}
-			}
-			break;
-		case EAttributeKeyword::e_Water:
-			if (AttackAttribute == EAttributeKeyword::e_Thunder)
-			{
-				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
-
-				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-				{
-					MonsterInfo.Quill_CurStack = 0;
-					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
-				}
-			}
-			break;
-		case EAttributeKeyword::e_Thunder:
-			if (AttackAttribute == EAttributeKeyword::e_Fire)
-			{
-				SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
-				
-			
-
-				if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-				{
-					MonsterInfo.Quill_CurStack = 0;
-					CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
-				}
-			}
-			break;
-		case EAttributeKeyword::e_None:
-			
-			SetCurQuillStack(MonsterInfo.Quill_CurStack + 1);
-			//
-			if (MonsterInfo.Quill_CurStack == MonsterInfo.Quill_MaxStack)
-			{
-				MonsterInfo.Quill_CurStack = 0;
-				CalcManaShield(MonsterInfo.Quill_MaxStackDamage, AttackAttribute);
-			}
-			break;
-		}
-
-	}
-}
 float AMonster::CalcManaShieldDamage(bool bIsSword, float Damage, EAttributeKeyword AttackAttribute)
 {
 	float TotalDamage = 0.0f;
@@ -775,6 +724,15 @@ void AMonster::CalcHp(float Damage)
 		}
 }
 #pragma endregion
+FMonsterDataTable* AMonster::GetMontserData(int32 num)
+{
+	return MonsterDataTable->FindRow<FMonsterDataTable>(FName(*(FString::FormatAsNumber(num))), FString(""));
+}
+FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
+{
+	return MonsterSkillDataTable->FindRow<FMonsterSkillDataTable>(FName(*(FString::FormatAsNumber(num))), FString(""));
+}
+
 bool AMonster::CheckPlayerIsBehindMonster()
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -891,7 +849,7 @@ void AMonster::SetSpawnEnemy()
 }
 EEnemyRank AMonster::GetRank()
 {
-	return MonsterInfo.M_Type;
+	return MonsterInfo.Monster_Rank;
 }
 
 void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
@@ -989,6 +947,11 @@ void AMonster::InitPerfectDodgeNotify()
 		PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
 		});
 }
+void AMonster::SetBattleState()
+{
+	MonsterAIController->SetBattleState(true);
+	MonsterAIController->SetNormalState(false);
+}
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -1024,6 +987,8 @@ void AMonster::BeginPlay()
 	OnSpawnEffectEvent();
 
 	InitPerfectDodgeNotify();
+
+	MonsterAIController->SetNormalState(true);
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1169,7 +1134,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (Player != nullptr)
 		{
 
-			if (this->MonsterInfo.M_Type != EEnemyRank::e_Raid)
+			if (this->MonsterInfo.Monster_Rank != EEnemyRank::e_Unique)
 			{
 				if (bShowUI)
 				{
@@ -1238,7 +1203,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 			//몬스터인지 아닌지
-			if (bIsObject) {
+			if (!bIsObject) {
 								
 				if (MonsterInfo.bIsShieldOn)
 				{
@@ -1261,8 +1226,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			InitAttackedInfo();
 
 			Attacked();
+			SetBattleState();
 			return FinalDamage;
 		}
 	}
+
+
+
 	return FinalDamage;
 }

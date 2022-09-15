@@ -43,7 +43,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-	MonsterInfo.M_Type = EEnemyRank::e_Unique;
+	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 
 }
 void ABouldelith::InitBouldelithInfo()
