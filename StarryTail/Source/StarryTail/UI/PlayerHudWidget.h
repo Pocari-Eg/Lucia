@@ -26,10 +26,9 @@ struct FSkillImageData
 	GENERATED_BODY()
 		//속성 관련 데이터
 	UPROPERTY()
-	class UImage* SelectIcon;
+	class UImage* Off;
 	UPROPERTY()
-	class UImage* NoneSelectIcon;
-	UPROPERTY()
+
 	class UProgressBar* CoolTimeBar;
 	UPROPERTY()
 	class UImage* Active;
@@ -48,14 +47,6 @@ public:
 	void ActionWidgetOn();
 	void ActionWidgetOff();
 
-
-	//Event
-	UFUNCTION(BlueprintImplementableEvent)
-	void  OnFireAttribute();
-	UFUNCTION(BlueprintImplementableEvent)
-	void  OnWaterAttribute();
-	UFUNCTION(BlueprintImplementableEvent)
-	void  OnThunderAttribute();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void PlayHUDAnimation();
@@ -99,19 +90,8 @@ private:
 	void UpdateHp();
 	void UpdateHpRecovery();
 
-	void UpdateFireCoolTime();
-	void UpdateWaterCoolTime();
-	void UpdateThunderCoolTime();
+	void UpdateSoulGauge();
 
-	/*void UpdateFireSkillCoolTime();
-	void UpdateWaterSkillCoolTime();
-	void UpdateThunderSkillCoolTime();*/
-	
-	void InitAttributeUI();
-
-	void FireSelect();
-	void WaterSelect();
-	void ThunderSelect();
 
 protected:
 	// 위젯을 초기화
@@ -139,13 +119,9 @@ private:
 	UPROPERTY()
 	class UUserWidget* ActionWidget;
 
-	FSkillImageData Fire;
-	//FSkillImageData FireSkill;
 
-	FSkillImageData Water;
-	//FSkillImageData WaterSkill;
 
-	FSkillImageData Thunder;
+	FSkillImageData Spear;
 	//FSkillImageData ThunderSkill;
 	
 	//TArray<UImage*> ThunderSKillCount;

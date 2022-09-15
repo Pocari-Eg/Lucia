@@ -10,9 +10,7 @@
 #include "IreneUIManager.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnHpChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnFireCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnWaterCoolChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnThunderCoolChangeDelegate);
+DECLARE_MULTICAST_DELEGATE(FOnSoulUpdateDelegate);
 
 UCLASS()
 class STARRYTAIL_API UIreneUIManager : public UObject
@@ -32,14 +30,8 @@ private:
 	FTimerHandle HpRecoveryTimerHandle;
 	FTimerHandle HpRecoveryWaitTimerHandle;
 
-	float FireMaxCoolTime;
-	float FireCurCoolTime;
-
-	float WaterMaxCoolTime;
-	float WaterCurCoolTime;
-
-	float ThunderMaxCoolTime;
-	float ThunderCurCoolTime;
+	float MaxSoulValue;
+	float CurSoulValue;
 
 #pragma region HUD
 public:
@@ -47,9 +39,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BluePrintReadWrite, Category = UI)
 	TSubclassOf<class UPlayerHudWidget> PlayerHudClass;   // 위젯 클래스 
 
-	FOnFireCoolChangeDelegate OnFireCoolChange;
-	FOnWaterCoolChangeDelegate OnWaterCoolChange;
-	FOnThunderCoolChangeDelegate OnThunderCoolChange;
+	FOnSoulUpdateDelegate OnSoulUpdate;
 public:
 
 	UPROPERTY(BluePrintReadOnly, Category = UI)
@@ -111,17 +101,11 @@ public:
 	//Hp RecoveryBar 
 	float GetHpRecoveryRatio();
 
-	void UpdateFireCool(float CurCool,float MaxCool);
-	void UpdateWaterCool(float CurCool, float MaxCool);
-	void UpdateThunderCool(float CurCool, float MaxCool);
+	void UpdateSoul(float CurSoul, float MaxSoul);
 
-	//Fire Cool
-	float GetFireCoolRatio();
-	//Water Cool
-	float GetWaterCoolRatio();
+
 	//Thunde Cool
-	float GetThunderCoolRatio();
-		
+	float GetSoulRatio();
 	void PlayHUDAnimation();
 	
 	void SetDialogState(const bool State);

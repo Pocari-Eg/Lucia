@@ -69,17 +69,11 @@ private:
 
 #pragma region CoolTimeValue
 private:
-	// 속성 변경 시 사용되는 쿨타임
-	float FireMaxCoolTime;
-	float FireCurCoolTime;
-	float WaterMaxCoolTime;
-	float WaterCurCoolTime;
-	float ThunderMaxCoolTime;
-	float ThunderCurCoolTime;
+
+	float MaxSoulValue;
+	float CurSoulValue;
 	
-	// 검 속성
-	bool bIsFireAttributeOn;
-	bool bIsWaterAttributeOn;
+
 	bool bIsThunderAttributeOn;
 
 	// 검 스킬 최대 쿨타임
@@ -197,10 +191,4 @@ public:
 	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
 #pragma endregion GetSet
 
-#pragma region CoolTimeFunction
-private:
-	void FireCoolTime();
-	void WaterCoolTime();
-	void ThunderCoolTime();
-#pragma endregion CoolTimeFunction
 };

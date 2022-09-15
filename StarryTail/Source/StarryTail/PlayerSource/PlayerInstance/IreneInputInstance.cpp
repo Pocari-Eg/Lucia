@@ -39,18 +39,15 @@ void UIreneInputInstance::InitMemberVariable()
 	
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
-	
-	FireCurCoolTime = 0.0f;
-	WaterCurCoolTime = 0.0f;
-	ThunderCurCoolTime = 0.0f;
+
+	CurSoulValue = 0.0f;
 
 	MaxSwordSkillCoolTime = 0.5f;
 	SwordSkillCoolTime = 0.0f;
 	MaxSpearSkill1CoolTime = 0.5f;
 	SpearSkill1CoolTime = 0.0f;
 	
-	bIsFireAttributeOn = true;
-	bIsWaterAttributeOn = true;
+
 	bIsThunderAttributeOn = true;
 
 	bIsSkillOn = false;
@@ -68,15 +65,10 @@ void UIreneInputInstance::InitMemberVariable()
 }
 void UIreneInputInstance::Begin()
 {
-	const TUniquePtr<FElementDataTable> FireFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Fire_Ele")));
-	if(FireFormTimeDataTable != nullptr)
-		FireMaxCoolTime = FireFormTimeDataTable->Ele_C_Time;
-	const TUniquePtr<FElementDataTable> WaterFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Water_Ele")));
-	if(WaterFormTimeDataTable != nullptr)
-		WaterMaxCoolTime = WaterFormTimeDataTable->Ele_C_Time;
+
 	const TUniquePtr<FElementDataTable> ThunderFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Thunder_Ele")));
 	if(ThunderFormTimeDataTable != nullptr)
-		ThunderMaxCoolTime = ThunderFormTimeDataTable->Ele_C_Time;
+		MaxSoulValue = ThunderFormTimeDataTable->Ele_C_Time;
 }
 
 #pragma region Move
@@ -624,11 +616,12 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
-	//if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-	//{
+	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	{
 		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
 		{
 			Irene->IreneData.CurrentGauge = 0;
+			Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 			Irene->IreneAnim->IsSword(false);
 			GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 10*UGameplayStatics::GetGlobalTimeDilation(this), false);
 			Irene->IreneAnim->StopAllMontages(0);
@@ -644,7 +637,7 @@ void UIreneInputInstance::WeaponChangeKeyword()
 			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
 			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 		}
-	//}
+	}
 }
 void UIreneInputInstance::WeaponChangeTimeOut()
 {
@@ -769,43 +762,6 @@ void UIreneInputInstance::SetStopMoveAutoTarget()const
 	Irene->IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
 	Irene->IreneAttack->SetTargetPosVec(FVector::ZeroVector);	
 }
-void UIreneInputInstance::FireCoolTime()
-{
-	if (FireCurCoolTime < FireMaxCoolTime)
-		FireCurCoolTime += CoolTimeRate;
-	else
-	{
-		bIsFireAttributeOn = true;
-		FireCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeFireTimer);
-	}
-	Irene->IreneUIManager->UpdateFireCool(FireCurCoolTime, FireMaxCoolTime);
-	Irene->IreneUIManager->OnFireCoolChange.Broadcast();
-}
-void UIreneInputInstance::WaterCoolTime()
-{
-	if (WaterCurCoolTime < WaterMaxCoolTime)
-		WaterCurCoolTime += CoolTimeRate;
-	else
-	{
-		bIsWaterAttributeOn = true;
-		WaterCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeWaterTimer);
-	}
-	Irene->IreneUIManager->UpdateWaterCool(WaterCurCoolTime, WaterMaxCoolTime);
-	Irene->IreneUIManager->OnWaterCoolChange.Broadcast();
-}
-void UIreneInputInstance::ThunderCoolTime()
-{
-	if (ThunderCurCoolTime < ThunderMaxCoolTime)
-		ThunderCurCoolTime += CoolTimeRate;
-	else
-	{
-		bIsThunderAttributeOn = true;
-		ThunderCurCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(AttributeChangeElectricTimer);
-	}
-	Irene->IreneUIManager->UpdateThunderCool(ThunderCurCoolTime, ThunderMaxCoolTime);
-	Irene->IreneUIManager->OnThunderCoolChange.Broadcast();
-}
+
+
 #pragma endregion GetSet

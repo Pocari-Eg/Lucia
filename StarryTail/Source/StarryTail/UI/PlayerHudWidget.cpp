@@ -15,9 +15,7 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
 
-	NewIrene->IreneUIManager->OnFireCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireCoolTime);
-	NewIrene->IreneUIManager->OnWaterCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterCoolTime);
-	NewIrene->IreneUIManager->OnThunderCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateThunderCoolTime);
+	NewIrene->IreneUIManager->OnSoulUpdate.AddUObject(this, &UPlayerHudWidget::UpdateSoulGauge);
 
 	/*NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
 	NewIrene->IreneUIManager->OnWaterSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateWaterSkillCoolTime);
@@ -211,212 +209,27 @@ void UPlayerHudWidget::UpdateHpRecovery()
 	}
 }
 
-void UPlayerHudWidget::InitAttributeUI()
-{
-	//Fire
-	Fire.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Fire.Active->SetVisibility(ESlateVisibility::Hidden);
-	
-	//Water
-	Water.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Water.Active->SetVisibility(ESlateVisibility::Hidden);
 
-	//Thunder
-	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
-}
-
-void UPlayerHudWidget::UpdateFireCoolTime()
+void UPlayerHudWidget::UpdateSoulGauge()
 {
 	if (CurrentIrene != nullptr)
 	{
 
-		if (nullptr != Fire.CoolTimeBar)
+		if (nullptr != Spear.CoolTimeBar)
 		{
-			float Ratio = CurrentIrene->IreneUIManager->GetFireCoolRatio();
-			Fire.CoolTimeBar->SetPercent(Ratio);
+			float Ratio = CurrentIrene->IreneUIManager->GetSoulRatio();
+			Spear.CoolTimeBar->SetPercent(Ratio);
 			if (Ratio >= 1.0f)
 			{
-				Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
+				Spear.Active->SetVisibility(ESlateVisibility::Visible);
+			}
+			else {
+				Spear.Active->SetVisibility(ESlateVisibility::Hidden);
 			}
 		}
 	}
 }
 
-void UPlayerHudWidget::UpdateWaterCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Water.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetWaterCoolRatio();
-			Water.CoolTimeBar->SetPercent(Ratio);
-			if (Ratio >= 1.0f)
-			{
-				Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-			}
-		}
-	}
-}
-
-void UPlayerHudWidget::UpdateThunderCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != Thunder.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetThunderCoolRatio();
-			Thunder.CoolTimeBar->SetPercent(Ratio);
-			if (Ratio >= 1.0f)
-			{
-				Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Visible);
-			}
-		}
-	}
-}
-
-
-
-/*void UPlayerHudWidget::UpdateFireSkillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-
-		if (nullptr != FireSkill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetFireSkillCoolRatio();
-			FireSkill.CoolTimeBar->SetPercent(Ratio);
-
-			if (Ratio >= 1.0f)
-			{
-			
-				STARRYLOG_S(Error);
-				FireSkill.Active->SetVisibility(ESlateVisibility::Visible);
-
-			}
-		}
-
-	
-	}
-}
-
-void UPlayerHudWidget::UpdateWaterSkillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != WaterSkill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetWaterSkillCoolRatio();
-			WaterSkill.CoolTimeBar->SetPercent(Ratio);
-
-			if (Ratio >= 1.0f)
-			{
-		    	WaterSkill.Active->SetVisibility(ESlateVisibility::Visible);
-			}
-		}
-	}
-}
-
-void UPlayerHudWidget::UpdateThunderSkillCoolTime()
-{
-	if (CurrentIrene != nullptr)
-	{
-		if (nullptr != ThunderSkill.CoolTimeBar)
-		{
-			float Ratio = CurrentIrene->IreneUIManager->GetThunderSkillCoolRatio();
-			ThunderSkill.CoolTimeBar->SetPercent(Ratio);
-
-			if (Ratio >= 1.0f)
-			{			
-				int Count = CurrentIrene->IreneUIManager->GetSkillCount() + 1;
-				CurrentIrene->IreneUIManager->SetSkillCount(Count);
-				ThunderSkillActive[Count - 1]->SetVisibility(ESlateVisibility::Visible);
-				if (Count == 2)
-				{
-						ThunderSkill.Active->SetVisibility(ESlateVisibility::Visible);
-				}
-			}
-		}
-	}
-}*/
-
-void UPlayerHudWidget::FireSelect()
-{
-	//Fire
-	Fire.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.Active->SetVisibility(ESlateVisibility::Visible);
-
-	//Water
-	Water.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.Active->SetVisibility(ESlateVisibility::Hidden);
-
-	//Thunder
-	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
-	
-	SPLimit = 0.25f;
-
-	//Skill
-	//OnFireAttribute();
-}
-
-void UPlayerHudWidget::WaterSelect()
-{
-	//Fire
-	Fire.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.Active->SetVisibility(ESlateVisibility::Hidden);
-
-
-	//Water
-	Water.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.Active->SetVisibility(ESlateVisibility::Visible);
-
-
-	//Thunder
-	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.Active->SetVisibility(ESlateVisibility::Hidden);
-
-	SPLimit = 0.5f;
-
-	//Skill
-	//OnWaterAttribute();
-}
-
-void UPlayerHudWidget::ThunderSelect()
-{
-	//Fire
-	Fire.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Fire.Active->SetVisibility(ESlateVisibility::Hidden);
-
-
-	//Water
-	Water.SelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Water.Active->SetVisibility(ESlateVisibility::Hidden);
-
-
-	//Thunder
-	Thunder.SelectIcon->SetVisibility(ESlateVisibility::Visible);
-	Thunder.NoneSelectIcon->SetVisibility(ESlateVisibility::Hidden);
-	Thunder.Active->SetVisibility(ESlateVisibility::Visible);
-
-	SPLimit = 0.25f;
-
-	//Skill
-	//OnThunderAttribute();
-}
 
 
 
@@ -430,8 +243,6 @@ void UPlayerHudWidget::ActionWidgetOff()
 {
 	ActionWidget->SetVisibility(ESlateVisibility::Hidden);
 }
-
-
 
 void UPlayerHudWidget::NativeOnInitialized()
 {
@@ -448,21 +259,9 @@ void UPlayerHudWidget::NativeOnInitialized()
 	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
 	TutorialWidget = Cast<UTutorialWidget>(GetWidgetFromName(TEXT("BP_TutorialWidget")));
 
-	Fire.SelectIcon=Cast<UImage>(GetWidgetFromName(TEXT("Fire_Select")));
-	Fire.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Fire_NoneSelect")));
-	Fire.Active = Cast<UImage>(GetWidgetFromName(TEXT("Fire_Active")));
-	Fire.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Fire_CoolTime")));
-
-
-	Water.SelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Water_Select")));
-	Water.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Water_NoneSelect")));
-	Water.Active = Cast<UImage>(GetWidgetFromName(TEXT("Water_Active")));
-	Water.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Water_CoolTime")));
-
-	Thunder.SelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Select")));
-	Thunder.NoneSelectIcon = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_NoneSelect")));
-	Thunder.Active = Cast<UImage>(GetWidgetFromName(TEXT("Thunder_Active")));
-	Thunder.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("Thunder_CoolTime")));
+	Spear.Off = Cast<UImage>(GetWidgetFromName(TEXT("SpearOff")));
+	Spear.Active = Cast<UImage>(GetWidgetFromName(TEXT("SpearOn")));
+	Spear.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SpearUpdate")));
 
 	isFirst = true;
 	ActionWidgetOff();
