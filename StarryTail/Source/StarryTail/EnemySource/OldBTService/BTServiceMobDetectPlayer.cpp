@@ -131,34 +131,29 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 						if (Monster->GetTestMode())
 							STARRYLOG(Warning, TEXT("Detect Player in MorbitFOV"));
 						//몬스터 대기상태 지정
-
-						
 						Monster->GetAIController()->SetFind();
-						////몬스터 탐색
-						TArray<FOverlapResult> AnotherMonsterList = Monster->DetectMonster(Monster->GetDetectMonsterRange());
-						if (AnotherMonsterList.Num() != 0)
-						{
-							for (auto const& AnotherMonster : AnotherMonsterList)
-							{
-								auto Mob = Cast<AMonster>(AnotherMonster.GetActor());
-								if (Mob == nullptr)
-									continue;
-
-								auto AnotherMonsterAIController = Cast<AMonsterAIController>(Mob->GetController());
-								if (AnotherMonsterAIController == nullptr)
-									continue;
-
-								AnotherMonsterAIController->SetFind();
-							}
-						}
-
 						return;
+					}
+					else {
+						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+
 					}
 					
 				}
+				else {
+					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+
+				}
 				
 			}
+			else {
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
+
+			}
 		}
+	}
+	else {
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
 	}
 
 	if (Monster->GetTestMode())

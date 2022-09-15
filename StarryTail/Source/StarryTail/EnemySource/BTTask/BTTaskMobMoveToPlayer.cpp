@@ -12,6 +12,8 @@ UBTTaskMobMoveToPlayer::UBTTaskMobMoveToPlayer()
 {
 	NodeName = TEXT("MoveToPlayer");
 	bNotifyTick = true;
+	PlayerFollowTime = 5.0f;
+	PlayerFollowTimer = 0.0f;
 }
 EBTNodeResult::Type UBTTaskMobMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -34,23 +36,39 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-
-	
-
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster) {
 		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	/*if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsInAttackAreaKey) == true)
+
+	
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == false)
 	{
-		Monster->GetAIController()->StopMovement();
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}*/
+		PlayerFollowTimer += DeltaSeconds;
+		if (PlayerFollowTimer >= PlayerFollowTime)
+		{
+			PlayerFollowTimer = 0.0f;
+
+			Monster->GetAIController()->StopMovement();
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+	}
+
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
 		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 	}
+
+
+
+
+	/*if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsInAttackAreaKey) == true)
+{
+	Monster->GetAIController()->StopMovement();
+	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+}*/
 
 	//if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsDeadKey) == true
 	//	|| OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackedKey) == true)

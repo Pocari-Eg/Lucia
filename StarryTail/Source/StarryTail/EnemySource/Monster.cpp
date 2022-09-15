@@ -316,6 +316,10 @@ FAttackRange AMonster::GetAttack3Range() const
 void AMonster::SetIsAttackCool(bool Cool)
 {
 	bIsAttackCool = Cool;
+	if (Cool == true)
+	{
+		AttackCoolTimer = 0.0f;
+	}
 }
 void AMonster::Attack()
 {

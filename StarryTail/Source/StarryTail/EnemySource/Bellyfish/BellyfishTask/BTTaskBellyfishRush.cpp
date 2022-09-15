@@ -30,7 +30,8 @@ EBTNodeResult::Type UBTTaskBellyfishRush::ExecuteTask(UBehaviorTreeComponent& Ow
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 
-	
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+
 	Bellyfish->RushStart.AddLambda([this]() -> void {
 		bIsRush = true;
 		});
@@ -54,12 +55,25 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	if (RushDistance >= Bellyfish->GetSkillRadius())
 	{
 		Bellyfish->RushEndFunc();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAttackingKey, false);
-		Bellyfish->GetAIController()->SetAttackCoolKey(true);
-		Bellyfish->SetIsAttackCool(true);
+		
+
 		bIsRush = false;
 		RushDistance = 0.0f;
 		SkillSetTimer = 0.0f;
+		Bellyfish->GetAIController()->OffAttack(3);
+
+		auto ran = FMath::RandRange(1, 100);
+		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
+		if (ran <=70)
+		{
+			Bellyfish->GetAIController()->OnAttack(1);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+		Bellyfish->GetAIController()->SetAttackCoolKey(true);
+		Bellyfish->SetIsAttackCool(true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAttackingKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
 	}
@@ -90,6 +104,6 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		Dir.Z = Bellyfish->GetActorLocation().Z;
 		Bellyfish->SetActorLocation(Dir);
 	}
-
+	
 	
 }

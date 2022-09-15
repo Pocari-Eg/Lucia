@@ -33,7 +33,7 @@ const FName AMonsterAIController::Attack1Key = (TEXT("Attack1Active"));
 const FName AMonsterAIController::Attack2Key = (TEXT("Attack2Active"));
 const FName AMonsterAIController::Attack3Key = (TEXT("Attack3Active"));
 
-
+const FName AMonsterAIController::B_IdleKey = (TEXT("B_IdleState"));
 AMonsterAIController::AMonsterAIController()
 {
 
@@ -111,5 +111,47 @@ void AMonsterAIController::SetAttackedState(bool State)
 void AMonsterAIController::SetSupportState(bool State)
 {
 	Blackboard->SetValueAsBool(SupportStateKey, State);
+}
+
+void AMonsterAIController::OnAttack(int i)
+{
+	switch (i)
+	{
+	case 1:
+		Blackboard->SetValueAsBool(Attack1Key, true);
+		Blackboard->SetValueAsBool(Attack2Key, false);
+		Blackboard->SetValueAsBool(Attack3Key, false);
+		break;
+	case 2:
+		Blackboard->SetValueAsBool(Attack1Key, false);
+		Blackboard->SetValueAsBool(Attack2Key, true);
+		Blackboard->SetValueAsBool(Attack3Key, false);
+		break;
+	case 3:
+		Blackboard->SetValueAsBool(Attack1Key, false);
+		Blackboard->SetValueAsBool(Attack2Key, false);
+		Blackboard->SetValueAsBool(Attack3Key, true);
+		break;
+	default:
+		break;
+	}
+}
+
+void AMonsterAIController::OffAttack(int i)
+{
+	switch (i)
+	{
+	case 1:
+		Blackboard->SetValueAsBool(Attack1Key, false);
+		break;
+	case 2:
+		Blackboard->SetValueAsBool(Attack2Key, false);
+		break;
+	case 3:
+		Blackboard->SetValueAsBool(Attack3Key, false);
+		break;
+	default:
+		break;
+	}
 }
 

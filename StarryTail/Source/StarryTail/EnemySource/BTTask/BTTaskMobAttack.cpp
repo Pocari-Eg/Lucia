@@ -55,6 +55,8 @@ void UBTTaskMobAttack::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 		Monster->GetAIController()->SetAttackCoolKey(true);
 		Monster->SetIsAttackCool(true);
+		Monster->GetAIController()->OffAttack(1);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	
 	}

@@ -40,6 +40,8 @@ public:
 	void SetBattleState(bool State);
 	void SetAttackedState(bool State);
 	void SetSupportState(bool State);
+	void OnAttack(int i);
+	void OffAttack(int i);
 
 	//key=======================================================================
 	static const FName SpawnPosKey;
@@ -61,7 +63,7 @@ public:
 	static const FName IsDeadKey;
 	static const FName ReturnKey;
 
-
+	static const FName B_IdleKey;
 
 	//
 	static const FName NormalStateKey;

@@ -45,6 +45,8 @@ void UBTTaskBellyfishProjectile::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 		Monster->GetAIController()->SetAttackCoolKey(true);
 		Monster->SetIsAttackCool(true);
+		Monster->GetAIController()->OffAttack(2);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 	}
