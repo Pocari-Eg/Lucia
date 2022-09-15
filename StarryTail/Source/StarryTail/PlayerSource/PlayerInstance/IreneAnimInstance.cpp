@@ -78,7 +78,12 @@ void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 {
 	// 스킬 몽타주를 실행하는 함수
 	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
-		Montage_Play(SwordSkill1Montage, 1.0f);
+	{
+		if(Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
+			Montage_Play(SwordSkill1Montage, 1.0f);
+		else if(Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
+			Montage_Play(SwordSkill2Montage, 1.0f);
+	}
 	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 		Montage_Play(SpearSkill1Montage, 1.0f);
 }

@@ -32,8 +32,8 @@ void UIreneInputInstance::InitMemberVariable()
 
 	bLeftButtonPressed = false;
 	bRightButtonPressed = false;
-	bUseLeftButton = true;
-	bUseRightButton = true;
+	bUseLeftButton = false;
+	bUseRightButton = false;
 	
 	bReAttack = false;
 	
@@ -43,6 +43,11 @@ void UIreneInputInstance::InitMemberVariable()
 	FireCurCoolTime = 0.0f;
 	WaterCurCoolTime = 0.0f;
 	ThunderCurCoolTime = 0.0f;
+
+	MaxSwordSkillCoolTime = 0.5f;
+	SwordSkillCoolTime = 0.0f;
+	MaxSpearSkill1CoolTime = 0.5f;
+	SpearSkill1CoolTime = 0.0f;
 	
 	bIsFireAttributeOn = true;
 	bIsWaterAttributeOn = true;
@@ -50,6 +55,10 @@ void UIreneInputInstance::InitMemberVariable()
 
 	bIsSkillOn = false;
 	bAttackUseSkill = false;
+	CanUseSecondSwordSkill = false;
+	bIsSpearSkill1On = true;
+	MaxSpearSkill1Count = 2;
+	SpearSkill1Count = MaxSpearSkill1Count;
 	
 	TempAttribute = EAttributeKeyword::e_None;
 	
@@ -97,7 +106,6 @@ void UIreneInputInstance::MoveRight()
 void UIreneInputInstance::MoveAuto(const float EndTimer)const
 {
 	// 자동으로 이동시키는 함수
-	// 이동 후 공격
 	if (Irene->IreneAttack->GetFollowTarget())
 	{
 		const float TargetAlpha = Irene->IreneAttack->GetFollowTargetAlpha()/EndTimer;
@@ -318,15 +326,34 @@ void UIreneInputInstance::RightButton(float Rate)
 		bRightButtonPressed = true;
 	else
 		bRightButtonPressed = false;
-	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SkillWaitHandle.IsValid() && !bIsDialogOn)
+	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn)
 	{
 		if (Rate >= 1.0)
 		{
+			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
+			constexpr float WaitTime = 0.15f;
+			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					SwordSkillWaitHandle.Invalidate();
+				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			
 			if(Irene->IreneAttack->GetCanSkillSkip())
 				bAttackUseSkill = true;
 			
 			Irene->IreneAttack->SetSkillState();
 
+			if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0
+			&& Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] && CanUseSecondSwordSkill == false)
+			{
+				CanUseSecondSwordSkill = true;
+				// 5초안에 다시 우클릭하면 스킬2로 넘길 수 있다.
+				GetWorld()->GetTimerManager().SetTimer(SwordSkill2WaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					CanUseSecondSwordSkill = false;
+					SwordSkill2WaitHandle.Invalidate();
+				}), 5*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			}
+			
 			TUniquePtr<FAttackDataTable> AttackTable = nullptr;
 			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
 			{
@@ -335,20 +362,15 @@ void UIreneInputInstance::RightButton(float Rate)
 			else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 			{
 				AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
+				SpearRightButton();
+				return;
 			}
 			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
-			
-			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			constexpr float WaitTime = 0.15f;
-			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					SkillWaitHandle.Invalidate();
-				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);			
+				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 
-			GetWorld()->GetTimerManager().SetTimer(SkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true, 0.0f);
+			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true, 0.0f);
 
 			//Irene->IreneUIManager->PlayerHud->UseSkill();
 			Irene->IreneAnim->PlaySkillAttackMontage();
@@ -362,25 +384,94 @@ void UIreneInputInstance::RightButton(float Rate)
 		}
 	}
 }
+void UIreneInputInstance::SpearRightButton()
+{
+	// UI작성 시 주석 모두 제거
+	if(bIsSpearSkill1On)
+	{
+		if(SpearSkill1Count > 0 && !bUseRightButton)
+		{
+			bUseRightButton = true;
+			Irene->IreneAttack->SetSkillState();
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
+			MaxSpearSkill1CoolTime = AttackTable->C_Time;
+
+			if (AttackTable != nullptr && bUseRightButton)
+			{
+				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
+				Irene->IreneAnim->PlaySkillAttackMontage();
+				Irene->IreneData.IsAttacking = true;
+				if(PerfectDodgeTimerHandle.IsValid())
+				{
+					Irene->IreneAnim->SetDodgeDir(0);
+					Irene->FollowTargetPosition();
+					PerfectDodgeAttackEnd();
+				}
+				if (SpearSkill1Count > 0)
+				{
+					if (SpearSkill1Count == MaxSpearSkill1Count)
+					{
+						GetWorld()->GetTimerManager().SetTimer(SpearSkill1WaitHandle, this, &UIreneInputInstance::SpearSkill1Wait, CoolTimeRate, true, 0.0f);
+					}
+				}
+				else
+				{
+					bIsSpearSkill1On = false;
+				}
+			}
+			//Irene->IreneUIManager->PlayerHud->UseSkill();
+		}
+		else
+		{
+			bUseRightButton = false;
+		}
+	}
+	STARRYLOG(Warning,TEXT("%d"),SpearSkill1Count);
+}
+
 void UIreneInputInstance::SkillWait()
 {
 	// UI작성 시 주석 모두 제거
-	SkillCoolTime += CoolTimeRate;
+	SwordSkillCoolTime += CoolTimeRate;
 	
-	if (SkillCoolTime > MaxSkillCoolTime)
+	if (SwordSkillCoolTime > MaxSwordSkillCoolTime)
 	{
 		bIsSkillOn = true;
-		//Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		//Irene->IreneUIManager->UpdateSkillCool(SwordSkillCoolTime, MaxSwordSkillCoolTime);
 		//Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
-		SkillCoolTime = 0.0f;
-		GetWorld()->GetTimerManager().ClearTimer(SkillWaitHandle);
+		SwordSkillCoolTime = 0.0f;
+		GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 	}
 	//else
 	//{
-		//Irene->IreneUIManager->UpdateSkillCool(SkillCoolTime, MaxSkillCoolTime);
+		//Irene->IreneUIManager->UpdateSkillCool(SwordSkillCoolTime, MaxSwordSkillCoolTime);
 		//Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 	//}
 }
+void UIreneInputInstance::SpearSkill1Wait()
+{
+	SpearSkill1CoolTime += CoolTimeRate;
+	if (SpearSkill1CoolTime > MaxSpearSkill1CoolTime)
+	{
+		bIsSpearSkill1On = true;
+		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
+		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
+		SpearSkill1CoolTime = 0.0f;
+		if (SpearSkill1Count < MaxSpearSkill1Count)
+		{
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(SpearSkill1WaitHandle);
+		}
+	}
+	else
+	{
+		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
+		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
+	}
+}
+
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
@@ -533,8 +624,8 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
-	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-	{
+	//if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	//{
 		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
 		{
 			Irene->IreneData.CurrentGauge = 0;
@@ -553,7 +644,7 @@ void UIreneInputInstance::WeaponChangeKeyword()
 			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
 			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 		}
-	}
+	//}
 }
 void UIreneInputInstance::WeaponChangeTimeOut()
 {
