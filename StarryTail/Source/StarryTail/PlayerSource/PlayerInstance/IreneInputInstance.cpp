@@ -392,7 +392,7 @@ void UIreneInputInstance::SpearRightButton()
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				Irene->IreneData.IsAttacking = true;
-				SpearSkill1Count--;
+				//SpearSkill1Count--;
 				if(PerfectDodgeTimerHandle.IsValid())
 				{
 					Irene->IreneAnim->SetDodgeDir(0);
@@ -611,14 +611,14 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
-	//if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-	//{
+	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	{
 		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
 		{
 			Irene->IreneData.CurrentGauge = 0;
 			Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 			Irene->IreneAnim->IsSword(false);
-			GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 10*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 20*UGameplayStatics::GetGlobalTimeDilation(this), false);
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneAttack->AttackTimeEndState();
 			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
@@ -632,7 +632,7 @@ void UIreneInputInstance::WeaponChangeKeyword()
 			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
 			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 		}
-	//}
+	}
 }
 void UIreneInputInstance::WeaponChangeTimeOut()
 {
