@@ -21,4 +21,6 @@ private:
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 private:
 	bool bIsAttacking;
+
+	float SkillSetTimer;
 };

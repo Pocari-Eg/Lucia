@@ -54,6 +54,7 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 	if (RushDistance >= Bellyfish->GetSkillRadius())
 	{
+		STARRYLOG(Warning, TEXT("Stop"));
 		Bellyfish->RushEndFunc();
 		
 
@@ -84,13 +85,13 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		if (SkillSetTimer >= Bellyfish->GetSkillSetTime())
 		{
 			Bellyfish->RushAttack();
+			return;
 		}
 		else {
 			MoveDir = Player->GetActorLocation() - Bellyfish->GetActorLocation();
 			FVector LookVector = MoveDir;
 			LookVector.Z = 0.0f;
 			FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-
 			Bellyfish->SetActorRotation(TargetRot);//FMath::RInterpTo(Bellyfish->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 0.2f);
 			return;
@@ -101,9 +102,14 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	{
 		FVector Dir = Bellyfish->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Bellyfish->GetRushSpeed() * DeltaSeconds);
 		RushDistance += Bellyfish->GetRushSpeed() * DeltaSeconds;
-		Dir.Z = Bellyfish->GetActorLocation().Z;
-		Bellyfish->SetActorLocation(Dir);
+
+		if (RushDistance < Bellyfish->GetSkillRadius()) {
+			Dir.Z = Bellyfish->GetActorLocation().Z;
+			//Bellyfish->SetActorLocation(Dir);
+		}
+		return;
 	}
+
 	
 	
 }

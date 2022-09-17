@@ -95,9 +95,11 @@ void ABellyfish::RushAttack()
 	{
 		RushFlyOn = true;
 		BellyfishAnimInstance->PlayRushMontage();
+
 	}
 	else {
-		RushEnd.Broadcast();
+
+	 RushEnd.Broadcast();
 	}
 	
 	
@@ -213,7 +215,6 @@ bool ABellyfish::IntersectionCheck()
 			{
 				return true;
 			}
-
 		}
 	}
 	else {
@@ -232,7 +233,7 @@ bool ABellyfish::RushRouteCheck()
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		Hit,
-		GetActorLocation(),
+		GetActorLocation()-FVector(100.0f, 100.0f,0.0f),
 		GetActorLocation()+GetActorForwardVector()*MonsterInfo.M_Skill_Radius,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel15,

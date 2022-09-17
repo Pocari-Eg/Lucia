@@ -21,6 +21,8 @@ private:
 	bool bIsAttack2In;
 	bool bIsAttack3In;
 
+	bool bIsAttack12In;
+	bool bIsAttack23In;
 public:
 	UBTServiceAttackTrace();
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;

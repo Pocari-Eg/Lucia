@@ -20,7 +20,7 @@ EBTNodeResult::Type UBTTaskBellyfishProjectile::ExecuteTask(UBehaviorTreeCompone
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 
 
-	Bellyfish->PlayFireAnim();
+
 
 	bIsAttacking = true;
 	Bellyfish->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
@@ -33,9 +33,31 @@ EBTNodeResult::Type UBTTaskBellyfishProjectile::ExecuteTask(UBehaviorTreeCompone
 void UBTTaskBellyfishProjectile::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 
+	auto Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABellyfishAIController::PlayerKey));
+
+	if (SkillSetTimer < Bellyfish->GetSkillSetTime())
+	{
+		SkillSetTimer += DeltaSeconds;
+		if (SkillSetTimer >= Bellyfish->GetSkillSetTime())
+		{
+			Bellyfish->PlayFireAnim();
+		
+			return;
+		}
+		else {
+			FVector LookVector = Player->GetActorLocation() - Bellyfish->GetActorLocation();
+			LookVector.Z = 0.0f;
+			FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+			Bellyfish->SetActorRotation(TargetRot);//FMath::RInterpTo(Bellyfish->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 0.2f);
+			return;
+		}
+	}
+
 	if (!bIsAttacking)
 	{
-
+		SkillSetTimer = 0.0f;
 		auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 		if (nullptr == Monster) {
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);

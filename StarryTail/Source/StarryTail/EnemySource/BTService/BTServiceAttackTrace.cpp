@@ -19,7 +19,8 @@ UBTServiceAttackTrace::UBTServiceAttackTrace()
 void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false&&
+		OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
 		auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 		if (nullptr == Monster)
 			return;
@@ -34,26 +35,72 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 		FVector CenterTop = CenterBottom;
 		CenterTop.Z += 150.0f;
 
+	
 
-		bIsAttack1In = Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
-
-		bIsAttack2In = Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
-
-		bIsAttack3In = Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
-
-
-		if (bIsAttack1In)
+		if (Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
 		{
-			STARRYLOG(Error, TEXT("Attack 1 In"));
+			if (bIsAttack23In)
+			{
+				auto ran = FMath::RandRange(1, 100);
+				STARRYLOG(Error, TEXT("Percent : %d"), ran);
+				if (ran <= 20)
+				{
+					Monster->GetAIController()->OnAttack(3);
+					return;
+				}
+				else {
+					Monster->GetAIController()->OnAttack(2);
+					return;
+				}
+			}
+
+			if (bIsAttack3In)
+			{
+				Monster->GetAIController()->OnAttack(3);
+				return;
+			}
 		}
-		if (bIsAttack2In)
-		{
-			STARRYLOG(Error, TEXT("Attack 2 In"));
+		else {
+			if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
+			{
+			
+				if (bIsAttack12In)
+				{
+					auto ran = FMath::RandRange(1, 100);
+					STARRYLOG(Error, TEXT("Percent : %d"), ran);
+					if (ran <= 40)
+					{
+						Monster->GetAIController()->OnAttack(1);
+						return;
+					}
+					else {
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+			    }
+
+				if (bIsAttack2In)
+				{
+					Monster->GetAIController()->OnAttack(2);
+					return;
+				}
+			
+			}
+			else {
+				if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
+					Monster->GetAIController()->OnAttack(1);
+					return;
+				}
+			}
 		}
-		if (bIsAttack3In)
-		{
-			STARRYLOG(Error, TEXT("Attack 3 In"));
-		}
+	
+
+
+
+		
+
+		
+
 
 	/*	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false) {
 
@@ -77,7 +124,7 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
 {
-
+	bIsAttack1In = false;
 
 	if (Monster->GetTestMode())
 	{
@@ -182,9 +229,7 @@ bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 
 					if (TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 0.5f))
 					{
-						//3Â÷ Å½Áö
-						
-						//Monster->GetAIController()->SetInAttackArea(true);
+						bIsAttack1In = true;
 						return true;
 					}
 					else {
@@ -220,6 +265,8 @@ bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 
 bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
 {
+	bIsAttack2In = false;
+	bIsAttack12In = false;
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
@@ -325,41 +372,57 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 					if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 					{
 						//3Â÷ Å½Áö
-
+						float Distance = Monster->GetDistanceTo(Player);
 						//Monster->GetAIController()->SetInAttackArea(true);
 						if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
 						{
-							return false;
+							float line = (Monster->GetAttack1Range().M_Atk_Radius * 0.95);
+							if (Distance >= line)
+							{
+						
+								bIsAttack12In = true;
+								return true;
+							}
+							else if (TargetAngle >= (Monster->GetAttack1Range().M_Atk_Angle*0.95f) * 0.5)
+							{
+								bIsAttack12In = true;
+								return true;
+							}
+							else {
+								return false;
+							}
+						}
+						else if (Distance <= Monster->GetAttack1Range().M_Atk_Radius
+							&& TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 1.05f) * 0.5)
+						{
+							bIsAttack12In = true;
+							return true;
 						}
 						else {
+							bIsAttack2In = true;
 							return true;
 						}
 					}
 					else {
-						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 						return false;
 					}
 
 				}
 				else {
-					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+				
 					return false;
 				}
 
 			}
 			else {
-				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+
 				return false;
 			}
 
 		}
 	}
 	else {
-		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+
 		return false;
 	}
 
@@ -370,6 +433,8 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
 {
 
+	bIsAttack3In = false;
+	bIsAttack23In = false;
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
@@ -471,19 +536,43 @@ bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 
 					if (TargetAngle <= (Monster->GetAttack3Range().M_Atk_Angle * 0.5f))
 					{
-						//3Â÷ Å½Áö
-						//Monster->GetAIController()->SetInAttackArea(true);
+
 						if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
 						{
 							return false;
 						}
-					 
+
+						//3Â÷ Å½Áö
+						float Distance = Monster->GetDistanceTo(Player);
+						//Monster->GetAIController()->SetInAttackArea(true);
 						if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
 						{
-							return false;
-						}
+							float line = (Monster->GetAttack2Range().M_Atk_Radius * 0.95);
+							if (Distance >= line)
+							{
 
-						return true;
+								bIsAttack23In = true;
+								return true;
+							}
+							else if (TargetAngle >= (Monster->GetAttack2Range().M_Atk_Angle * 0.95f) * 0.5)
+							{
+								bIsAttack23In = true;
+								return true;
+							}
+							else {
+								return false;
+							}
+						}
+						else if (Distance <= Monster->GetAttack2Range().M_Atk_Radius
+							&& TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 1.05f) * 0.5)
+						{
+							bIsAttack23In = true;
+							return true;
+						}
+						else {
+							bIsAttack3In = true;
+							return true;
+						}
 						
 					}
 					else {
