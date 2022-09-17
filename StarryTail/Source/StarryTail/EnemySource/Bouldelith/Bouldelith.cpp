@@ -426,7 +426,7 @@ void ABouldelith::BeginPlay()
 {
 	Super::BeginPlay();
 
-	MonsterAnimInstance = BdAnimInstance;
+	
 
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
@@ -481,6 +481,9 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->BackDodge.AddLambda([this]() -> void {
 		BackDodge.Broadcast();
 		});
+
+
+	MonsterAnimInstance = BdAnimInstance;
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {
