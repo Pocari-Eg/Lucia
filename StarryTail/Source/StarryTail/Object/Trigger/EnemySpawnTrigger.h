@@ -67,4 +67,6 @@ private:
 
 	void OnBattleWall();
 	void OffBattleWall();
+
+
 };

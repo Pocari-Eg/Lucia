@@ -24,6 +24,8 @@ DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
 
 DECLARE_MULTICAST_DELEGATE(FDodgeTimeOn);
+
+
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -91,6 +93,8 @@ public:
 
 	//FSM
 	void SetBattleState();
+	void SetNormalState();
+	void SetSupportState();
 
 //delegete========================================================
 	FAttackEndDelegate AttackEnd;
@@ -194,6 +198,12 @@ protected:
 	bool bIsDodgeTime;
 
 	TArray<uint8> PerfectDodgeDir;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	class AEnemySpawnPoint* MonsterControl;
+
+	EMontserState CurState;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
@@ -229,6 +239,7 @@ private:
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
+	float AttackCoolTime;
 
 	
 public:	
@@ -260,6 +271,8 @@ public:
 	float GetAttackPercent() const;
 	int GetPlayerEnergy() const;
 	int GetManaShieldCount() const;
+	EMontserState GetState()const;
+	float GetSupportPatrolRadius() const;
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
@@ -268,11 +281,13 @@ public:
 	bool GetIsManaShieldActive() const;
 	float GetSkillRadius() const;
 
+
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
 	FAttackRange GetAttack3Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
+	void SetMonsterContorl(class AEnemySpawnPoint* Object);
 
 protected:
 	virtual void InitMonsterInfo() {};

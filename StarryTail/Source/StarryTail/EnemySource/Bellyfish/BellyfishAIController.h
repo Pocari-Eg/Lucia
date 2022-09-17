@@ -27,6 +27,7 @@ public:
 
 	static const FName IsAfterAttacked;
 
+
 private:
 	int M_Attacked;
 	int M_MaxAttacked;

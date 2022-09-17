@@ -17,7 +17,7 @@ UBTTaskMobAttack::UBTTaskMobAttack()
 EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
-
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
@@ -26,7 +26,7 @@ EBTNodeResult::Type UBTTaskMobAttack::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	if (MonaterAnimInstance->GetAttackIsPlaying())
 		return EBTNodeResult::Failed;
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+	
 
 
 	

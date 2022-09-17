@@ -5,7 +5,7 @@
 #include "../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
-#include "../EnemySource/Morbit/Morbit.h"
+
 // Sets default values
 AEnemySpawnPoint::AEnemySpawnPoint()
 {
@@ -22,6 +22,13 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 	}
 	OldRadius = 0.0f;
 	CurrentWave = 0;
+
+	Group_Range_Radius = 800.0f;
+
+	BattleMonster = nullptr;
+
+	 SupportNum = 0;
+	 SpawnNum = 0;
 }
 
 void AEnemySpawnPoint::RandomSpawn()
@@ -53,6 +60,9 @@ void AEnemySpawnPoint::RandomSpawn()
 					NewMonster->SetActorRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 
 					NewMonster->SetSpawnEnemy();
+					NewMonster->SetMonsterContorl(this);
+					SpawnMonsters.Add(NewMonster);
+					SpawnNum++;
 
 					if (Instance != nullptr)Instance->AddEnemyCount(NewMonster->GetRank());
 				}
@@ -84,5 +94,114 @@ int AEnemySpawnPoint::getCurrentWave()
 void AEnemySpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (BattleMonster != nullptr) {
+		FindNearMontser();
+	}
 }
-  
+
+
+void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
+{
+	if (BattleMonster == nullptr) {
+
+		BattleMonster = Monster;
+		BattleMonster->SetBattleState();
+		for (int i = 0; i < SpawnMonsters.Num(); i++)
+		{
+			if(SpawnMonsters[i]!=nullptr)
+			SpawnMonsters[i]->GetAIController()->SetBattleMonster(BattleMonster);
+		}
+
+	}
+
+}
+
+
+AMonster* AEnemySpawnPoint::GetBattleMonster()
+{
+	if (BattleMonster != nullptr)
+	{
+		return BattleMonster;
+	}
+	return nullptr;
+}
+
+void AEnemySpawnPoint::FindNearMontser()
+{
+	TArray<FOverlapResult> AnotherMonsterList = BattleMonster->DetectMonster(Group_Range_Radius);
+	if (AnotherMonsterList.Num() != 0)
+	{
+		for (auto const& AnotherMonster : AnotherMonsterList)
+		{
+			auto Mob = Cast<AMonster>(AnotherMonster.GetActor());
+			if (Mob == nullptr)
+				continue;
+			if (Mob == BattleMonster) {
+				continue;
+			}
+			else {
+
+				if (Mob->GetState() != EMontserState::Support) {
+
+					Mob->SetSupportState();
+				}
+			}
+		
+		}
+	}
+}
+
+void AEnemySpawnPoint::InsertSupportGroup(AMonster* Monster)
+{
+	SupportMonsters.Add(Monster);
+	SupportNum++;
+}
+
+void AEnemySpawnPoint::InitSupportGroup()
+{
+
+	BattleMonster = nullptr;
+	for (int i = 0; i < SupportNum; i++)
+	{
+		if (SupportMonsters[i] != nullptr)
+			SupportMonsters[i]->SetNormalState();
+	}
+
+	for (int i = 0; i < SpawnNum; i++)
+	{
+		if (SpawnMonsters[i] != nullptr)
+			SpawnMonsters[i]->GetAIController()->InitBattleMonster();
+	}
+
+	SupportMonsters.Empty();
+	SupportNum = 0;
+}
+
+
+
+void AEnemySpawnPoint::DeleteMonster(AMonster* Monster)
+{
+
+
+	for (int i = 0; i < SupportNum; i++)
+	{
+		if (SupportMonsters[i] == Monster)
+		{
+			SupportMonsters[i] = nullptr;
+		}	
+	}
+
+	for (int i = 0; i < SpawnNum; i++)
+	{
+		if (SpawnMonsters[i] == Monster)
+		{
+			SpawnMonsters[i] = nullptr;
+		}
+	}
+}
+
+float AEnemySpawnPoint::GetGroupRangeRadius() const
+{
+	return Group_Range_Radius;
+}

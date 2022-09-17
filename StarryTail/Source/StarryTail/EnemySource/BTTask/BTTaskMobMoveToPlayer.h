@@ -21,6 +21,9 @@ private:
 
 	float PlayerFollowTime;
 	float PlayerFollowTimer;
+
+	float AttackTime;
+	float AttackTimer;
 public:
 	UBTTaskMobMoveToPlayer();
 private:

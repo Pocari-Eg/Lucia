@@ -26,7 +26,7 @@ const FName AMonsterAIController::ReturnKey = (TEXT("bReturn"));
 //state
 const FName AMonsterAIController::NormalStateKey = (TEXT("NormalState"));
 const FName AMonsterAIController::BattleStateKey = (TEXT("BattleState"));
-const FName AMonsterAIController::AttackedStateKey = (TEXT("AttackedState"));
+
 const FName AMonsterAIController::SupportStateKey = (TEXT("SupportState"));
 
 const FName AMonsterAIController::Attack1Key = (TEXT("Attack1Active"));
@@ -34,6 +34,9 @@ const FName AMonsterAIController::Attack2Key = (TEXT("Attack2Active"));
 const FName AMonsterAIController::Attack3Key = (TEXT("Attack3Active"));
 
 const FName AMonsterAIController::B_IdleKey = (TEXT("B_IdleState"));
+
+const FName AMonsterAIController::BattleMonsterKey = (TEXT("BattleMonster"));
+
 AMonsterAIController::AMonsterAIController()
 {
 
@@ -95,6 +98,7 @@ void AMonsterAIController::SetAttackCoolKey(bool Set)
 void AMonsterAIController::SetNormalState(bool State)
 {
 	Blackboard->SetValueAsBool(NormalStateKey, State);
+   
 }
 
 void AMonsterAIController::SetBattleState(bool State)
@@ -105,7 +109,7 @@ void AMonsterAIController::SetBattleState(bool State)
 
 void AMonsterAIController::SetAttackedState(bool State)
 {
-	Blackboard->SetValueAsBool(AttackedStateKey, State);
+	Blackboard->SetValueAsBool(IsAttackedKey, State);
 }
 
 void AMonsterAIController::SetSupportState(bool State)
@@ -155,3 +159,19 @@ void AMonsterAIController::OffAttack(int i)
 	}
 }
 
+void AMonsterAIController::SetBattleMonster(AActor* Monster)
+{
+	Blackboard->SetValueAsObject(BattleMonsterKey, Monster);
+}
+
+void AMonsterAIController::InitBattleMonster()
+{
+	Blackboard->SetValueAsObject(BattleMonsterKey, nullptr);
+
+}
+
+
+bool AMonsterAIController::GetIsAttacking()
+{
+	return Blackboard->GetValueAsBool(IsAttackingKey);
+}

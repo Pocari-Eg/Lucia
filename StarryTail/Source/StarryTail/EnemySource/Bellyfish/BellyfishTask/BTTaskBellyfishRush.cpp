@@ -17,6 +17,8 @@ EBTNodeResult::Type UBTTaskBellyfishRush::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+
 	auto Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABellyfishAIController::PlayerKey));
 
@@ -30,7 +32,7 @@ EBTNodeResult::Type UBTTaskBellyfishRush::ExecuteTask(UBehaviorTreeComponent& Ow
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+
 
 	Bellyfish->RushStart.AddLambda([this]() -> void {
 		bIsRush = true;

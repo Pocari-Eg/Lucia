@@ -8,7 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-#include "../OldBTService/BTServiceMobDetectPlayer.h"
+#include "../BTService/BTServiceMobDetectPlayer.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 UBTServiceAttackTrace::UBTServiceAttackTrace()
@@ -37,61 +37,83 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 	
 
-		if (Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
-		{
-			if (bIsAttack23In)
-			{
-				auto ran = FMath::RandRange(1, 100);
-				STARRYLOG(Error, TEXT("Percent : %d"), ran);
-				if (ran <= 20)
-				{
-					Monster->GetAIController()->OnAttack(3);
-					return;
-				}
-				else {
-					Monster->GetAIController()->OnAttack(2);
-					return;
-				}
-			}
+		if (Monster->GetState() == EMontserState::Battle) {
 
-			if (bIsAttack3In)
+			if (Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
 			{
-				Monster->GetAIController()->OnAttack(3);
-				return;
-			}
-		}
-		else {
-			if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
-			{
-			
-				if (bIsAttack12In)
+				if (bIsAttack23In)
 				{
 					auto ran = FMath::RandRange(1, 100);
 					STARRYLOG(Error, TEXT("Percent : %d"), ran);
-					if (ran <= 40)
+					if (ran <= 20)
 					{
-						Monster->GetAIController()->OnAttack(1);
+						Monster->GetAIController()->OnAttack(3);
 						return;
 					}
 					else {
 						Monster->GetAIController()->OnAttack(2);
 						return;
 					}
-			    }
+				}
+
+				if (bIsAttack3In)
+				{
+					Monster->GetAIController()->OnAttack(3);
+					return;
+				}
+			}
+			else {
+				if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
+				{
+
+					if (bIsAttack12In)
+					{
+						auto ran = FMath::RandRange(1, 100);
+						STARRYLOG(Error, TEXT("Percent : %d"), ran);
+						if (ran <= 40)
+						{
+							Monster->GetAIController()->OnAttack(1);
+							return;
+						}
+						else {
+							Monster->GetAIController()->OnAttack(2);
+							return;
+						}
+					}
+
+					if (bIsAttack2In)
+					{
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+
+				}
+				else {
+					if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
+						Monster->GetAIController()->OnAttack(1);
+						return;
+					}
+				}
+			}
+		}
+		else if (Monster->GetState() == EMontserState::Support) {
+			if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
 
 				if (bIsAttack2In)
 				{
-					Monster->GetAIController()->OnAttack(2);
-					return;
+					auto ran = FMath::RandRange(1, 100);
+					STARRYLOG(Error, TEXT("Percent : %d"), ran);
+					if (ran <= 80)
+					{
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+					else {
+						return;
+					}
 				}
-			
 			}
-			else {
-				if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
-					Monster->GetAIController()->OnAttack(1);
-					return;
-				}
-			}
+
 		}
 	
 
@@ -371,36 +393,43 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 
 					if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 					{
-						//3Â÷ Å½Áö
-						float Distance = Monster->GetDistanceTo(Player);
-						//Monster->GetAIController()->SetInAttackArea(true);
-						if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
-						{
-							float line = (Monster->GetAttack1Range().M_Atk_Radius * 0.95);
-							if (Distance >= line)
+						if (Monster->GetState() == EMontserState::Support && Monster->GetMonsterAtkType() == 2) {
+							bIsAttack2In = true;
+							return true;
+						}
+						else {
+
+							//3Â÷ Å½Áö
+							float Distance = Monster->GetDistanceTo(Player);
+							//Monster->GetAIController()->SetInAttackArea(true);
+							if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
 							{
-						
-								bIsAttack12In = true;
-								return true;
+								float line = (Monster->GetAttack1Range().M_Atk_Radius * 0.95);
+								if (Distance >= line)
+								{
+
+									bIsAttack12In = true;
+									return true;
+								}
+								else if (TargetAngle >= (Monster->GetAttack1Range().M_Atk_Angle * 0.95f) * 0.5)
+								{
+									bIsAttack12In = true;
+									return true;
+								}
+								else {
+									return false;
+								}
 							}
-							else if (TargetAngle >= (Monster->GetAttack1Range().M_Atk_Angle*0.95f) * 0.5)
+							else if (Distance <= Monster->GetAttack1Range().M_Atk_Radius
+								&& TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 1.05f) * 0.5)
 							{
 								bIsAttack12In = true;
 								return true;
 							}
 							else {
-								return false;
+								bIsAttack2In = true;
+								return true;
 							}
-						}
-						else if (Distance <= Monster->GetAttack1Range().M_Atk_Radius
-							&& TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 1.05f) * 0.5)
-						{
-							bIsAttack12In = true;
-							return true;
-						}
-						else {
-							bIsAttack2In = true;
-							return true;
 						}
 					}
 					else {

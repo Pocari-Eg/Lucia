@@ -9,7 +9,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-#include "BTServiceMobDetectPlayer.h"
+#include "../BTService/BTServiceMobDetectPlayer.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 UBTServiceMobAttackInPlayer::UBTServiceMobAttackInPlayer()

@@ -441,6 +441,7 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.Attack3Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
 	//
 
+	MonsterInfo.S_Attack_Time = 8.0f;
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 
@@ -587,11 +588,11 @@ void ABellyfish::Tick(float DeltaTime)
 		}
 	}
 
-	if (RushFlyOn)
+	if (RushFlyOn== true)
 	{
 		Info.M_MaxFlyDistance += (DeltaTime*100.0f);
 	}
-	if (RushFlyOff)
+	if (RushFlyOff==true)
 	{
 		Info.M_MaxFlyDistance -= (DeltaTime * 100.0f);
 		if (Info.M_MaxFlyDistance <= 100.0f)

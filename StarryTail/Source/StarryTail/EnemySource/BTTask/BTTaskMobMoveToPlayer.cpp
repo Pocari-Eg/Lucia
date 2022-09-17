@@ -14,6 +14,10 @@ UBTTaskMobMoveToPlayer::UBTTaskMobMoveToPlayer()
 	bNotifyTick = true;
 	PlayerFollowTime = 5.0f;
 	PlayerFollowTimer = 0.0f;
+
+
+	AttackTime = 0.5f;
+	AttackTimer = 0.0f;
 }
 EBTNodeResult::Type UBTTaskMobMoveToPlayer::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -61,6 +65,37 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 	}
 
+	if (AttackTimer+=DeltaSeconds)
+	{
+		if (AttackTimer >= AttackTime)
+		{
+			AttackTimer = 0.0f;
+			float distance = Monster->GetDistanceTo(Player);
+			if (distance < 1000.0f&& distance > Monster->GetAttack3Range().M_Atk_Radius) {
+				auto ran = FMath::RandRange(1, 100);
+				STARRYLOG(Error, TEXT("Percent : %d"), ran);
+				if (ran <= 15)
+				{
+					Monster->GetAIController()->OnAttack(1);
+					return;
+				}
+				else if (ran > 15 && ran <= 50)
+				{
+					Monster->GetAIController()->OnAttack(2);
+					return;
+				}
+				else {
+
+				}
+			}
+			else if(distance > 1000.0f) {
+				Monster->GetAIController()->OnAttack(3);
+				return;
+			}
+		}
+	}
+
+	
 
 
 

@@ -12,14 +12,11 @@ EBTNodeResult::Type UBTTaskBellyfishProjectile::ExecuteTask(UBehaviorTreeCompone
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+
 	auto Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Bellyfish)
 		return EBTNodeResult::Failed;
-
-
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
-
-
 
 
 	bIsAttacking = true;

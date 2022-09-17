@@ -100,3 +100,10 @@ enum class  EDodgeDirection :uint8
 	Back UMETA(DisplayName = "Back")
 };
 
+UENUM(BluePrintType)
+enum class  EMontserState :uint8
+{
+	Normal = 0 UMETA(DisplayName = "Normal"),
+	Battle UMETA(DisplayName = "Battle"),
+	Support  UMETA(DisplayName = "Support"),
+};

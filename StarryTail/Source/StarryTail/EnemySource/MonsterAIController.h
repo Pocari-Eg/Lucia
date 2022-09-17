@@ -43,6 +43,11 @@ public:
 	void OnAttack(int i);
 	void OffAttack(int i);
 
+	void SetBattleMonster(AActor* Monster);
+	void InitBattleMonster();
+
+	bool GetIsAttacking();
+
 	//key=======================================================================
 	static const FName SpawnPosKey;
 	static const FName PatrolPosKey;
@@ -74,6 +79,8 @@ public:
 	static const FName Attack1Key;
 	static const FName Attack2Key;
 	static const FName Attack3Key;
+
+	static const FName BattleMonsterKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;
