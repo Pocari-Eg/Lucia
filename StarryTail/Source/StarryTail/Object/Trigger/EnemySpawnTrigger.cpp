@@ -139,10 +139,6 @@ void AEnemySpawnTrigger::OffBattleWall()
 	}
 }
 
-
-
-
-
 void AEnemySpawnTrigger::TriggerOff()
 {
 	//트리거 충돌을 켜기

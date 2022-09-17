@@ -18,6 +18,12 @@ private:
 	AIreneCharacter* Player;
 
 	float FollowSeconds;
+
+	float PlayerFollowTime;
+	float PlayerFollowTimer;
+
+	float AttackTime;
+	float AttackTimer;
 public:
 	UBTTaskMobMoveToPlayer();
 private:

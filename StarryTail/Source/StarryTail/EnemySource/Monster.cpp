@@ -24,7 +24,7 @@
 
 //object
 #include "../Object/AttributeObject.h"
-
+#include "../Object/EnemySpawnPoint.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -281,6 +281,17 @@ int AMonster::GetManaShieldCount() const
 {
 	return 0;
 }
+
+EMontserState AMonster::GetState() const
+{
+	return CurState;
+}
+
+float AMonster::GetSupportPatrolRadius() const
+{
+	return MonsterControl->GetGroupRangeRadius();
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -315,8 +326,28 @@ FAttackRange AMonster::GetAttack3Range() const
 }
 void AMonster::SetIsAttackCool(bool Cool)
 {
+
+
+	if (CurState == EMontserState::Support)
+	{
+		AttackCoolTime = MonsterInfo.S_Attack_Time;
+	}
+	else {
+		AttackCoolTime = MonsterInfo.M_Skill_Cool;
+	}
+	
+	if (Cool == true)
+	{
+		AttackCoolTimer = 0.0f;
+	}
 	bIsAttackCool = Cool;
 }
+
+void AMonster::SetMonsterContorl(class AEnemySpawnPoint* Object)
+{
+	MonsterControl = Object;
+}
+
 void AMonster::Attack()
 {
 	MonsterAIController->Attack();
@@ -425,6 +456,10 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
+		if (MonsterAIController->GetIsAttacking() == false) {
+			Attacked();
+		}
+
 		MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
@@ -434,8 +469,9 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-
-		MonsterAIController->Attacked();
+		if (MonsterAIController->GetIsAttacking() == false) {
+			Attacked();
+		}
 
 	}
 	if (Cast<ABellyfish>(this)) {
@@ -445,7 +481,9 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		MonsterAIController->Attacked();
+		if (MonsterAIController->GetIsAttacking() == false) {
+			Attacked();
+		}
 
 	}
 	if (Cast<ABouldelith>(this))
@@ -453,8 +491,14 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		//방어력 게이지 업데이트
 		OnBarrierChanged.Broadcast();
 
+		if (MonsterAIController->GetIsAttacking() == false) {
+			Attacked();
+		}
+
 		if (AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
 			MonsterAIController->Attacked();
+
+
 	}
 
 	MonsterAIController->StopMovement();
@@ -701,7 +745,10 @@ void AMonster::CalcHp(float Damage)
 
 		if (MonsterInfo.M_HP <= 0.0f)
 		{
+
 			GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+
+
 			MonsterDeadEvent();
 			bIsDead = true;
 			SetActive();
@@ -914,6 +961,7 @@ void AMonster::PlayGroggyAnim()
 void AMonster::PlayDeathAnim()
 {
 	MonsterAnimInstance->PlayDeathMontage();
+
 }
 void AMonster::InitManaShield()
 {
@@ -951,6 +999,31 @@ void AMonster::SetBattleState()
 {
 	MonsterAIController->SetBattleState(true);
 	MonsterAIController->SetNormalState(false);
+	MonsterAIController->SetSupportState(false);
+
+	CurState = EMontserState::Battle;
+
+
+}
+void AMonster::SetNormalState()
+{
+	MonsterAIController->SetBattleState(false);
+	MonsterAIController->SetNormalState(true);
+	MonsterAIController->SetSupportState(false);
+
+	CurState = EMontserState::Normal;
+}
+void AMonster::SetSupportState()
+{
+
+	MonsterAIController->SetBattleState(false);
+	MonsterAIController->SetNormalState(false);
+	MonsterAIController->SetSupportState(true);
+
+
+	CurState = EMontserState::Support;
+
+	MonsterControl->InsertSupportGroup(this);
 }
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
@@ -988,7 +1061,9 @@ void AMonster::BeginPlay()
 
 	InitPerfectDodgeNotify();
 
-	MonsterAIController->SetNormalState(true);
+	SetNormalState();
+	MonsterAIController->SetPlayer();
+
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1027,6 +1102,16 @@ void AMonster::Tick(float DeltaTime)
 		{
 			SetActorTickEnabled(false);
 			SetActorHiddenInGame(true);
+
+			MonsterControl->DeleteMonster(this);
+
+			if (CurState == EMontserState::Battle)
+			{
+				MonsterControl->InitSupportGroup();
+			}
+			Destroy();
+
+			
 		}
 		return;
 	}
@@ -1081,13 +1166,31 @@ void AMonster::Tick(float DeltaTime)
 	if (bIsAttackCool)
 	{
 		AttackCoolTimer+= DeltaTime;
-		if (AttackCoolTimer >= MonsterInfo.M_Skill_Cool)
+		if (AttackCoolTimer >= AttackCoolTime)
 		{
 			
 			AttackCoolTimer = 0.0f;
 			SetIsAttackCool(false);
 			GetAIController()->SetAttackCoolKey(false);
 		}
+	}
+
+	if (CurState == EMontserState::Support|| CurState == EMontserState::Normal)
+	{
+		auto BattleMonster = MonsterControl->GetBattleMonster();
+		if (BattleMonster != nullptr)
+		{
+		if (GetDistanceTo(BattleMonster) > MonsterControl->GetGroupRangeRadius())
+		 {
+
+			GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed*2.0f;
+		   }
+		else {
+
+			GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+	    	}
+		}
+
 	}
 
 }
@@ -1225,13 +1328,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			Attacked();
-			SetBattleState();
+			if (MonsterAIController->GetIsAttacking()==false) {
+				Attacked();
+			}
+			MonsterControl->SetBattleMonster(this);
+	
 			return FinalDamage;
 		}
 	}
-
-
-
 	return FinalDamage;
 }

@@ -40,6 +40,13 @@ public:
 	void SetBattleState(bool State);
 	void SetAttackedState(bool State);
 	void SetSupportState(bool State);
+	void OnAttack(int i);
+	void OffAttack(int i);
+
+	void SetBattleMonster(AActor* Monster);
+	void InitBattleMonster();
+
+	bool GetIsAttacking();
 
 	//key=======================================================================
 	static const FName SpawnPosKey;
@@ -61,7 +68,7 @@ public:
 	static const FName IsDeadKey;
 	static const FName ReturnKey;
 
-
+	static const FName B_IdleKey;
 
 	//
 	static const FName NormalStateKey;
@@ -72,6 +79,8 @@ public:
 	static const FName Attack1Key;
 	static const FName Attack2Key;
 	static const FName Attack3Key;
+
+	static const FName BattleMonsterKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

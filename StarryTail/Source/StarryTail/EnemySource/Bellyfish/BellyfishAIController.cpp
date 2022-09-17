@@ -5,6 +5,8 @@
 #include "Bellyfish.h"
 
 const FName ABellyfishAIController::IsAfterAttacked = (TEXT("bIsAfterAttacked"));
+
+
 ABellyfishAIController::ABellyfishAIController()
 {
 
@@ -36,13 +38,9 @@ void ABellyfishAIController::Attack()
 
 void ABellyfishAIController::Attacked()
 {
-	M_Attacked++;
-		if (M_Attacked >= M_MaxAttacked)
-		{
-			Blackboard->SetValueAsBool(IsAttackedKey, true);
-			M_Attacked = 0;
 
-		}
+	Blackboard->SetValueAsBool(IsAttackedKey, true);
+
 }
 
 void ABellyfishAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)
@@ -72,3 +70,5 @@ void ABellyfishAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+
+

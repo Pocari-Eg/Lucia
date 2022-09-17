@@ -17,6 +17,8 @@ EBTNodeResult::Type UBTTaskBellyfishRush::ExecuteTask(UBehaviorTreeComponent& Ow
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+
 	auto Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABellyfishAIController::PlayerKey));
 
@@ -30,7 +32,8 @@ EBTNodeResult::Type UBTTaskBellyfishRush::ExecuteTask(UBehaviorTreeComponent& Ow
 	FilterClass = UNavigationQueryFilter::StaticClass();
 	QueryFilter = UNavigationQueryFilter::GetQueryFilter(*NavData, FilterClass);
 
-	
+
+
 	Bellyfish->RushStart.AddLambda([this]() -> void {
 		bIsRush = true;
 		});
@@ -53,13 +56,27 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 	if (RushDistance >= Bellyfish->GetSkillRadius())
 	{
+		STARRYLOG(Warning, TEXT("Stop"));
 		Bellyfish->RushEndFunc();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAttackingKey, false);
-		Bellyfish->GetAIController()->SetAttackCoolKey(true);
-		Bellyfish->SetIsAttackCool(true);
+		
+
 		bIsRush = false;
 		RushDistance = 0.0f;
 		SkillSetTimer = 0.0f;
+		Bellyfish->GetAIController()->OffAttack(3);
+
+		auto ran = FMath::RandRange(1, 100);
+		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
+		if (ran <=70)
+		{
+			Bellyfish->GetAIController()->OnAttack(1);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+		Bellyfish->GetAIController()->SetAttackCoolKey(true);
+		Bellyfish->SetIsAttackCool(true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAttackingKey, false);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		return;
 	}
@@ -70,13 +87,13 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		if (SkillSetTimer >= Bellyfish->GetSkillSetTime())
 		{
 			Bellyfish->RushAttack();
+			return;
 		}
 		else {
 			MoveDir = Player->GetActorLocation() - Bellyfish->GetActorLocation();
 			FVector LookVector = MoveDir;
 			LookVector.Z = 0.0f;
 			FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-
 			Bellyfish->SetActorRotation(TargetRot);//FMath::RInterpTo(Bellyfish->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
 			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 0.2f);
 			return;
@@ -87,9 +104,14 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	{
 		FVector Dir = Bellyfish->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Bellyfish->GetRushSpeed() * DeltaSeconds);
 		RushDistance += Bellyfish->GetRushSpeed() * DeltaSeconds;
-		Dir.Z = Bellyfish->GetActorLocation().Z;
-		Bellyfish->SetActorLocation(Dir);
+
+		if (RushDistance < Bellyfish->GetSkillRadius()) {
+			Dir.Z = Bellyfish->GetActorLocation().Z;
+			//Bellyfish->SetActorLocation(Dir);
+		}
+		return;
 	}
 
+	
 	
 }

@@ -47,6 +47,18 @@ private:
 
 	//현재 몬스터 웨이브
 	int32 CurrentWave;
+
+	int32 SupportNum;
+	int32 SpawnNum;
+
+	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
+	TArray<AMonster*> SupportMonsters;
+
+	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
+	TArray<AMonster*> SpawnMonsters;
+
+	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
+	float Group_Range_Radius;
 public:	
 	// Sets default values for this actor's properties
 	AEnemySpawnPoint();
@@ -57,5 +69,19 @@ public:
 
 	virtual void Tick(float DeltaTime) override;
 
+	void SetBattleMonster(AMonster* Monster);
+	AMonster* GetBattleMonster();
 
+	void FindNearMontser();
+
+	void InsertSupportGroup(AMonster* Monster);
+	void InitSupportGroup();
+	void DeleteMonster(AMonster* Monster);
+
+   float GetGroupRangeRadius() const;
+
+
+
+   UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
+   AMonster* BattleMonster;
 };

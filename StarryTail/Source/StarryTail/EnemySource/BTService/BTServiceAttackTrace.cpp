@@ -8,7 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "Kismet/KismetSystemLibrary.h"
 
-#include "../OldBTService/BTServiceMobDetectPlayer.h"
+#include "../BTService/BTServiceMobDetectPlayer.h"
 
 #include "BehaviorTree/BlackboardComponent.h"
 UBTServiceAttackTrace::UBTServiceAttackTrace()
@@ -19,28 +19,150 @@ UBTServiceAttackTrace::UBTServiceAttackTrace()
 void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false&&
+		OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+		auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+		if (nullptr == Monster)
+			return;
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == Monster)
-		return;
 
-	FVector Center = Monster->GetLocation() + (-Monster->GetActorForwardVector() * Monster->GetCapsuleComponent()->GetScaledCapsuleRadius());
 
-	FVector CenterBottom = Center;
-	CenterBottom.Z -= 85.0f;
+		FVector Center = Monster->GetLocation() + (-Monster->GetActorForwardVector() * Monster->GetCapsuleComponent()->GetScaledCapsuleRadius());
 
-	FVector CenterTop = CenterBottom;
-	CenterTop.Z += 150.0f;
+		FVector CenterBottom = Center;
+		CenterBottom.Z -= 85.0f;
+
+		FVector CenterTop = CenterBottom;
+		CenterTop.Z += 150.0f;
 
 	
-	Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
-	Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
-	Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop);
+
+		if (Monster->GetState() == EMontserState::Battle) {
+
+			if (Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
+			{
+				if (bIsAttack23In)
+				{
+					auto ran = FMath::RandRange(1, 100);
+					STARRYLOG(Error, TEXT("Percent : %d"), ran);
+					if (ran <= 20)
+					{
+						Monster->GetAIController()->OnAttack(3);
+						return;
+					}
+					else {
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+				}
+
+				if (bIsAttack3In)
+				{
+					Monster->GetAIController()->OnAttack(3);
+					return;
+				}
+			}
+			else {
+				if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
+				{
+
+					if (bIsAttack12In)
+					{
+						auto ran = FMath::RandRange(1, 100);
+						STARRYLOG(Error, TEXT("Percent : %d"), ran);
+						if (ran <= 40)
+						{
+							Monster->GetAIController()->OnAttack(1);
+							return;
+						}
+						else {
+							Monster->GetAIController()->OnAttack(2);
+							return;
+						}
+					}
+
+					if (bIsAttack2In)
+					{
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+
+				}
+				else {
+					if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
+						Monster->GetAIController()->OnAttack(1);
+						return;
+					}
+				}
+			}
+		}
+		else if (Monster->GetState() == EMontserState::Support) {
+			if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
+
+				if (bIsAttack2In)
+				{
+					auto ran = FMath::RandRange(1, 100);
+					STARRYLOG(Error, TEXT("Percent : %d"), ran);
+					if (ran <= 80)
+					{
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+					else {
+						return;
+					}
+				}
+			}
+
+		}
+	
+
+
+
+		
+
+		
+
+
+	/*	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false) {
+
+			if (bIsAttack1In)
+			{
+				bIsAttack3In = false;
+			}
+			else if (bIsAttack2In)
+			{
+				Monster->GetAIController()->OnAttack(3);
+			}
+			else if (bIsAttack3In)
+			{
+				bIsAttack1In = false;
+			}
+			
+			
+		}*/
+	}
 }
 
-void UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
 {
-	FVector Box = FVector(Monster->GetAttack1Range().M_Atk_Angle, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Height);
+	bIsAttack1In = false;
+
+	if (Monster->GetTestMode())
+	{
+		FTransform BottomLine = Monster->GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation());
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
+
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
+
+		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
+		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
+	}
+
+	FVector Box = FVector(Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Height);
 	//모르빗 주변 범위 200 안에 있는 액터 탐지, EnemyDetect 트레이스 채널 사용
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, Monster);
@@ -127,33 +249,29 @@ void UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					if (TargetAngle <= (Monster->GetAtkAngle() * 0.5f))
+					if (TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 0.5f))
 					{
-						//3차 탐지
-						
-						//Monster->GetAIController()->SetInAttackArea(true);
-						return;
-					}
-					else if (Monster->GetDistanceToPlayer() <= 100.0f)
-					{
-						//Monster->GetAIController()->SetInAttackArea(true);
-						return;
+						bIsAttack1In = true;
+						return true;
 					}
 					else {
 						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+						return false;
 					}
 
 				}
 				else {
 					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+					return false;
 				}
 
 			}
 			else {
 				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+				return false;
 			}
 
 		}
@@ -161,27 +279,32 @@ void UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 	else {
 		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+		return false;
 	}
 
+	return false;
+}
+
+bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+{
+	bIsAttack2In = false;
+	bIsAttack12In = false;
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 220.0f));
+		BottomLine.SetLocation(BottomLine.GetLocation());
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
 
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
+		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
+		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
 	}
 
-}
 
-void UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
-{
-	FVector Box = FVector(Monster->GetAttack2Range().M_Atk_Angle, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Height);
+	FVector Box = FVector(Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Height);
 	//모르빗 주변 범위 200 안에 있는 액터 탐지, EnemyDetect 트레이스 채널 사용
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, Monster);
@@ -257,7 +380,8 @@ void UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 				if (bTraceResult && !(nullptr == Player))
 				{
 					//2차 탐지
-	
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
 
 					FVector TargetDir = Player->GetActorLocation() - Monster->GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
@@ -267,61 +391,94 @@ void UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					if (TargetAngle <= (Monster->GetAtkAngle() * 0.5f))
+					if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 					{
-						//3차 탐지
-			
-					//	Monster->GetAIController()->SetInAttackArea(true);
-						return;
-					}
-					else if (Monster->GetDistanceToPlayer() <= 100.0f)
-					{
-					//	Monster->GetAIController()->SetInAttackArea(true);
-						return;
+						if (Monster->GetState() == EMontserState::Support && Monster->GetMonsterAtkType() == 2) {
+							bIsAttack2In = true;
+							return true;
+						}
+						else {
+
+							//3차 탐지
+							float Distance = Monster->GetDistanceTo(Player);
+							//Monster->GetAIController()->SetInAttackArea(true);
+							if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+							{
+								float line = (Monster->GetAttack1Range().M_Atk_Radius * 0.95);
+								if (Distance >= line)
+								{
+
+									bIsAttack12In = true;
+									return true;
+								}
+								else if (TargetAngle >= (Monster->GetAttack1Range().M_Atk_Angle * 0.95f) * 0.5)
+								{
+									bIsAttack12In = true;
+									return true;
+								}
+								else {
+									return false;
+								}
+							}
+							else if (Distance <= Monster->GetAttack1Range().M_Atk_Radius
+								&& TargetAngle <= (Monster->GetAttack1Range().M_Atk_Angle * 1.05f) * 0.5)
+							{
+								bIsAttack12In = true;
+								return true;
+							}
+							else {
+								bIsAttack2In = true;
+								return true;
+							}
+						}
 					}
 					else {
-						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+						return false;
 					}
 
 				}
 				else {
-					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+				
+					return false;
 				}
 
 			}
 			else {
-				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+
+				return false;
 			}
 
 		}
 	}
 	else {
-		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
-		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+
+		return false;
 	}
 
+
+	return false;
+}
+
+bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+{
+
+	bIsAttack3In = false;
+	bIsAttack23In = false;
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 220.0f));
+		BottomLine.SetLocation(BottomLine.GetLocation());
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
 
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
+		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
+		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
 	}
 
-}
-
-void UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
-{
-	FVector Box = FVector(Monster->GetAttack3Range().M_Atk_Angle, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Height);
+	FVector Box = FVector(Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Height);
 	//모르빗 주변 범위 200 안에 있는 액터 탐지, EnemyDetect 트레이스 채널 사용
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, Monster);
@@ -395,7 +552,8 @@ void UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 				if (bTraceResult && !(nullptr == Player))
 				{
 					//2차 탐지
-	
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
 
 					FVector TargetDir = Player->GetActorLocation() - Monster->GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
@@ -405,33 +563,65 @@ void UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 
-					if (TargetAngle <= (Monster->GetAtkAngle() * 0.5f))
+					if (TargetAngle <= (Monster->GetAttack3Range().M_Atk_Angle * 0.5f))
 					{
+
+						if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+						{
+							return false;
+						}
+
 						//3차 탐지
+						float Distance = Monster->GetDistanceTo(Player);
+						//Monster->GetAIController()->SetInAttackArea(true);
+						if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+						{
+							float line = (Monster->GetAttack2Range().M_Atk_Radius * 0.95);
+							if (Distance >= line)
+							{
+
+								bIsAttack23In = true;
+								return true;
+							}
+							else if (TargetAngle >= (Monster->GetAttack2Range().M_Atk_Angle * 0.95f) * 0.5)
+							{
+								bIsAttack23In = true;
+								return true;
+							}
+							else {
+								return false;
+							}
+						}
+						else if (Distance <= Monster->GetAttack2Range().M_Atk_Radius
+							&& TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 1.05f) * 0.5)
+						{
+							bIsAttack23In = true;
+							return true;
+						}
+						else {
+							bIsAttack3In = true;
+							return true;
+						}
 						
-						//Monster->GetAIController()->SetInAttackArea(true);
-						return;
-					}
-					else if (Monster->GetDistanceToPlayer() <= 100.0f)
-					{
-						//Monster->GetAIController()->SetInAttackArea(true);
-						return;
 					}
 					else {
 						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 						//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+						return false;
 					}
 
 				}
 				else {
 					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 					//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+					return false;
 				}
 
 			}
 			else {
-			   //OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
+				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 				//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+				return false;
 			}
 
 		}
@@ -439,21 +629,8 @@ void UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 	else {
 		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
+		return false;
 	}
-
-	if (Monster->GetTestMode())
-	{
-		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 220.0f));
-		FTransform TopLine = BottomLine;
-		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
-
-		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
-		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
-
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
-	}
-
+	return false;
 }
 

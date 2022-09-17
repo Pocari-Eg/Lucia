@@ -95,9 +95,11 @@ void ABellyfish::RushAttack()
 	{
 		RushFlyOn = true;
 		BellyfishAnimInstance->PlayRushMontage();
+
 	}
 	else {
-		RushEnd.Broadcast();
+
+	 RushEnd.Broadcast();
 	}
 	
 	
@@ -213,7 +215,6 @@ bool ABellyfish::IntersectionCheck()
 			{
 				return true;
 			}
-
 		}
 	}
 	else {
@@ -232,7 +233,7 @@ bool ABellyfish::RushRouteCheck()
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		Hit,
-		GetActorLocation(),
+		GetActorLocation()-FVector(100.0f, 100.0f,0.0f),
 		GetActorLocation()+GetActorForwardVector()*MonsterInfo.M_Skill_Radius,
 		FQuat::Identity,
 		ECollisionChannel::ECC_GameTraceChannel15,
@@ -440,6 +441,7 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.Attack3Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
 	//
 
+	MonsterInfo.S_Attack_Time = 8.0f;
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 
@@ -586,11 +588,11 @@ void ABellyfish::Tick(float DeltaTime)
 		}
 	}
 
-	if (RushFlyOn)
+	if (RushFlyOn== true)
 	{
 		Info.M_MaxFlyDistance += (DeltaTime*100.0f);
 	}
-	if (RushFlyOff)
+	if (RushFlyOff==true)
 	{
 		Info.M_MaxFlyDistance -= (DeltaTime * 100.0f);
 		if (Info.M_MaxFlyDistance <= 100.0f)

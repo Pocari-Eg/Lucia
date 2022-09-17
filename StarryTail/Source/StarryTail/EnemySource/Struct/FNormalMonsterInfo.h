@@ -74,7 +74,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		float M_Skill_Cool; // 몬스터 키값
 
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	float S_Attack_Time; // 몬스터 키값
 
 	//Stat
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
