@@ -106,6 +106,7 @@ void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
 	if (BattleMonster == nullptr) {
 
 		BattleMonster = Monster;
+		BattleMonster->GetAIController()->SetPlayer();
 		BattleMonster->SetBattleState();
 		for (int i = 0; i < SpawnMonsters.Num(); i++)
 		{
@@ -155,6 +156,7 @@ void AEnemySpawnPoint::FindNearMontser()
 void AEnemySpawnPoint::InsertSupportGroup(AMonster* Monster)
 {
 	SupportMonsters.Add(Monster);
+	Monster->GetAIController()->SetPlayer();
 	SupportNum++;
 }
 

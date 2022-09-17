@@ -289,7 +289,11 @@ EMontserState AMonster::GetState() const
 
 float AMonster::GetSupportPatrolRadius() const
 {
+	if (MonsterControl != nullptr)
 	return MonsterControl->GetGroupRangeRadius();
+	else {
+		return 800.0f;
+	}
 }
 
 float AMonster::GetAtkAngle() const
@@ -345,6 +349,7 @@ void AMonster::SetIsAttackCool(bool Cool)
 
 void AMonster::SetMonsterContorl(class AEnemySpawnPoint* Object)
 {
+	if (MonsterControl != nullptr)
 	MonsterControl = Object;
 }
 
@@ -1023,6 +1028,7 @@ void AMonster::SetSupportState()
 
 	CurState = EMontserState::Support;
 
+	if (MonsterControl != nullptr)
 	MonsterControl->InsertSupportGroup(this);
 }
 // Called when the game starts or when spawned
@@ -1061,8 +1067,9 @@ void AMonster::BeginPlay()
 
 	InitPerfectDodgeNotify();
 
+
+
 	SetNormalState();
-	MonsterAIController->SetPlayer();
 
 }
 void AMonster::PossessedBy(AController* NewController)
@@ -1103,10 +1110,12 @@ void AMonster::Tick(float DeltaTime)
 			SetActorTickEnabled(false);
 			SetActorHiddenInGame(true);
 
+			if(MonsterControl!=nullptr)
 			MonsterControl->DeleteMonster(this);
 
 			if (CurState == EMontserState::Battle)
 			{
+				if (MonsterControl != nullptr)
 				MonsterControl->InitSupportGroup();
 			}
 			Destroy();
@@ -1177,18 +1186,20 @@ void AMonster::Tick(float DeltaTime)
 
 	if (CurState == EMontserState::Support|| CurState == EMontserState::Normal)
 	{
-		auto BattleMonster = MonsterControl->GetBattleMonster();
-		if (BattleMonster != nullptr)
-		{
-		if (GetDistanceTo(BattleMonster) > MonsterControl->GetGroupRangeRadius())
-		 {
+		if (MonsterControl != nullptr) {
+			auto BattleMonster = MonsterControl->GetBattleMonster();
+			if (BattleMonster != nullptr)
+			{
+				if (GetDistanceTo(BattleMonster) > MonsterControl->GetGroupRangeRadius())
+				{
 
-			GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed*2.0f;
-		   }
-		else {
+					GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed * 2.0f;
+				}
+				else {
 
-			GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
-	    	}
+					GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+				}
+			}
 		}
 
 	}
@@ -1331,6 +1342,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			if (MonsterAIController->GetIsAttacking()==false) {
 				Attacked();
 			}
+			if (MonsterControl != nullptr)
 			MonsterControl->SetBattleMonster(this);
 	
 			return FinalDamage;
