@@ -47,6 +47,11 @@ public:
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	UCameraComponent* CameraComp;
+
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Pet)
+	USpringArmComponent* PetSpringArmComp;
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Pet)
+	USkeletalMeshComponent* PetMesh;
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UIreneAnimInstance* IreneAnim;
