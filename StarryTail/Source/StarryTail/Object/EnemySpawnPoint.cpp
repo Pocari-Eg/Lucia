@@ -106,8 +106,8 @@ void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
 	if (BattleMonster == nullptr) {
 
 		BattleMonster = Monster;
-		BattleMonster->GetAIController()->SetPlayer();
-		BattleMonster->SetBattleState();
+		Monster->GetAIController()->SetPlayer();
+		Monster->SetBattleState();
 		for (int i = 0; i < SpawnMonsters.Num(); i++)
 		{
 			if(SpawnMonsters[i]!=nullptr)

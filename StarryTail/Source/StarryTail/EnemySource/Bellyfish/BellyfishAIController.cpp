@@ -25,7 +25,6 @@ ABellyfishAIController::ABellyfishAIController()
 		BTAsset = BTObject.Object;
 	}
 
-
 }
 
 void ABellyfishAIController::Attack()

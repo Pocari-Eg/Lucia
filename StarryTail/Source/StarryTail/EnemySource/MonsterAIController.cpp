@@ -104,6 +104,9 @@ void AMonsterAIController::SetNormalState(bool State)
 void AMonsterAIController::SetBattleState(bool State)
 {
 	Blackboard->SetValueAsBool(BattleStateKey, State);
+	if (State) {
+		SetPlayer();
+	}
 }
 
 void AMonsterAIController::SetAttackedState(bool State)

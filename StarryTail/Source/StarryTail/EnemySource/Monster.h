@@ -13,6 +13,9 @@
 #include "Components/WidgetComponent.h"
 #include "MonsterSoundInstance.h"
 
+
+#include "Common/Weapon_Soul.h"
+
 #include "Monster.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
@@ -95,6 +98,11 @@ public:
 	void SetBattleState();
 	void SetNormalState();
 	void SetSupportState();
+
+	void DropWeaponSoul();
+
+
+
 
 //delegete========================================================
 	FAttackEndDelegate AttackEnd;
@@ -204,6 +212,9 @@ protected:
 	class AEnemySpawnPoint* MonsterControl;
 
 	EMontserState CurState;
+
+	TSubclassOf<AWeapon_Soul> Weapon_SoulClass;
+
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
