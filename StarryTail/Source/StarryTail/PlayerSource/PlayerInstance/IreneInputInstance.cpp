@@ -320,7 +320,6 @@ void UIreneInputInstance::RightButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{
-			STARRYLOG(Warning,TEXT("%d"),SpearSkill1Count);
 			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1] && SpearSkill1Count <= 0 && !bIsSpearSkill1On)
 				return;
 			

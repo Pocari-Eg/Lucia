@@ -197,26 +197,29 @@ void URunLoopState::Execute(IBaseGameEntity* CurState)
 		CurState->ThrowState(URunEndState::GetInstance());
 		CurState->Irene->ActionEndChangeMoveState();
 	}
-	if (MoveKey[0] != 0)
+	if(CurState->Irene->CameraLagCurve.Num()>0)
 	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
-	}
-	if (MoveKey[2] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
-	}
-	if (MoveKey[1] != 0 || MoveKey[3] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 14;
-	}
-	if ((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0) ||
-		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+		if (MoveKey[0] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[0]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+		}
+		if (MoveKey[2] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[3]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+		}
+		if (MoveKey[1] != 0 || MoveKey[3] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[1]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 14;
+		}
+		if ((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0) ||
+			(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[2]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+		}
 	}
 
 	//대각선이 아니면
@@ -267,8 +270,11 @@ void URunEndState::Exit(IBaseGameEntity* CurState)
 {
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
-	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
-	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+	{
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	}
 	CurState->bIsEnd = true;
 }
 #pragma endregion URunEndState
@@ -323,26 +329,29 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 		CurState->ThrowState(USprintEndState::GetInstance());
 		CurState->Irene->ActionEndChangeMoveState();
 	}
-	if (MoveKey[0] != 0)
+	if(CurState->Irene->CameraLagCurve.Num()>0)
 	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
-	}
-	if (MoveKey[2] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[7]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
-	}
-	if (MoveKey[1] != 0 || MoveKey[3] != 0)
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
-	}
-	if ((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0) ||
-		(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
-	{
-		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
-		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		if (MoveKey[0] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[4]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		}
+		if (MoveKey[2] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[7]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		}
+		if (MoveKey[1] != 0 || MoveKey[3] != 0)
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[5]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 12;
+		}
+		if ((MoveKey[0] != 0 && MoveKey[1] != 0) || (MoveKey[0] != 0 && MoveKey[3] != 0) ||
+			(MoveKey[2] != 0 && MoveKey[1] != 0) || (MoveKey[2] != 0 && MoveKey[3] != 0))
+		{
+			CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[6]);
+			CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		}
 	}
 	// w,a,s,d -> 0,1,2,3
 	//대각선이면
@@ -408,8 +417,11 @@ void USprintEndState::Exit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAnim->SetSprintStopAnim(false);
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
-	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
-	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+	{
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	}
 	CurState->bIsEnd = true;
 }
 #pragma endregion USprintEndState
@@ -437,8 +449,11 @@ void UDodgeStartState::Enter(IBaseGameEntity* CurState)
 	//CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0;
 	//CurState->Irene->GetCharacterMovement()->BrakingDecelerationWalking = 0;
 	//CurState->Irene->SetCameraLagTime(0);
-	CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
-	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+	{
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 30;
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[8]);
+	}
 	CurState->Irene->IreneData.IsSkipMonsterAttack = true;
 
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
@@ -516,8 +531,11 @@ void UDodgeEndState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsSkipMonsterAttack = false;
 	//CurState->Irene->SetCameraLagTime(0);
 	//CurState->Irene->SetLastLagTime(CurState->Irene->SpringArmComp->CameraLagSpeed);
-	CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
-	CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+	{
+		CurState->Irene->SpringArmComp->CameraLagSpeed = 10;
+		CurState->Irene->SetUseCameraLag(CurState->Irene->CameraLagCurve[9]);
+	}
 }
 
 void UDodgeEndState::Execute(IBaseGameEntity* CurState)
@@ -690,7 +708,8 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
 	StartShakeTime = 0.0f;	
 	CurState->Irene->IreneData.CanNextCombo = false;
 	

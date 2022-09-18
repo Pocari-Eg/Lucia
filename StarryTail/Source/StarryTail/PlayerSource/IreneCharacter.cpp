@@ -35,7 +35,7 @@ AIreneCharacter::AIreneCharacter()
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
-	SpringArmComp->SetRelativeLocation(FVector(0, 0, 53));
+	SpringArmComp->SetRelativeLocation(FVector(0, 0, 70));
 	SpringArmComp->CameraLagSpeed = 0.0f;
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
 
@@ -89,6 +89,22 @@ AIreneCharacter::AIreneCharacter()
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
 
+	// 펫 세팅
+	PetSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("PetSprintArm"));
+	PetSpringArmComp->TargetArmLength = 0;
+	PetSpringArmComp->bEnableCameraLag = true;
+	PetSpringArmComp->SetRelativeLocation(FVector(0, 45, 30));
+	PetSpringArmComp->CameraLagSpeed = 3.0f;
+	PetSpringArmComp->SetupAttachment(GetCapsuleComponent());
+
+	PetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PetMesh"));
+	PetMesh->SetupAttachment(PetSpringArmComp);
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
+	if(PetStatic.Succeeded())
+		PetMesh->SetSkeletalMesh(PetStatic.Object);
+	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
+	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
+	
 	// 카메라 쉐이크 커브
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack1(TEXT("/Game/Math/AttackCurve/FireAttack1.FireAttack1"));
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack2(TEXT("/Game/Math/AttackCurve/FireAttack2.FireAttack2"));

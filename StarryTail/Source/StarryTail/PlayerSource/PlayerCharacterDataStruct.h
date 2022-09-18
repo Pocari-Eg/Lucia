@@ -36,7 +36,7 @@ public:
 
 	// 카메라 수평필드 오브 뷰
 	UPROPERTY(BlueprintReadWrite)
-	float FieldOfView = 75;
+	float FieldOfView = 80;
 	// 카메라 지연 속도
 	UPROPERTY(BlueprintReadWrite)
 	float MaxCameraLagSpeed = 5.0f;
