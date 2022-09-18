@@ -92,7 +92,12 @@ public:
 
 	bool GetIsinAir()const{return IsInAir;}
 	int GetDodgeDir()const{return DodgeDir;}
-private:
+	
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpearSkillEvent();
+	
+private:	
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;
 	UFUNCTION()
@@ -107,5 +112,7 @@ private:
 	void AnimNotify_RadialBlur() const;
 	UFUNCTION()
 	void AnimNotify_TakeDamageSound() const;
+	UFUNCTION()
+	void AnimNotify_PlayEffect();
 	FName GetAttackMontageSectionName(const int32 Section);
 };

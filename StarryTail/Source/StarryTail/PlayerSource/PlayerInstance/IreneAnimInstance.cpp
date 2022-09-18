@@ -145,6 +145,12 @@ void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
 {
 	Irene->IreneSound->PlayTakeDamageVoiceSound();
 }
+
+void UIreneAnimInstance::AnimNotify_PlayEffect()
+{
+	SpearSkillEvent();
+}
+
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
