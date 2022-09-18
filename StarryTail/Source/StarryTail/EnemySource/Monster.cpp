@@ -18,6 +18,7 @@
 #include "../PlayerSource/PlayerInstance/IreneAttackInstance.h"
 #include "../PlayerSource/PlayerInstance/IreneInputInstance.h"
 #include "../PlayerSource/PlayerFSM/IreneFSM.h"
+#include "../PlayerSource/PlayerCharacterDataStruct.h"
 #include <Engine/Classes/Kismet/KismetMathLibrary.h>
 #include "Kismet/GameplayStatics.h"
 #include "../UI/MonsterWidget.h"
@@ -98,6 +99,16 @@ AMonster::AMonster()
 	{
 		MonsterSkillDataTable = DT_SKILL.Object;
 	}
+
+
+
+	static ConstructorHelpers::FClassFinder<AWeapon_Soul> BP_WEAPONSOUL (TEXT("/Game/BluePrint/Monster/BP_Weapon_Soul.BP_Weapon_Soul_C"));
+
+	if (BP_WEAPONSOUL.Succeeded()) {
+
+		Weapon_SoulClass= BP_WEAPONSOUL.Class;
+	}
+
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -349,7 +360,7 @@ void AMonster::SetIsAttackCool(bool Cool)
 
 void AMonster::SetMonsterContorl(class AEnemySpawnPoint* Object)
 {
-	if (MonsterControl != nullptr)
+	if (MonsterControl == nullptr)
 	MonsterControl = Object;
 }
 
@@ -753,6 +764,7 @@ void AMonster::CalcHp(float Damage)
 
 			GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 
+			//DropWeaponSoul();
 
 			MonsterDeadEvent();
 			bIsDead = true;
@@ -1031,6 +1043,34 @@ void AMonster::SetSupportState()
 	if (MonsterControl != nullptr)
 	MonsterControl->InsertSupportGroup(this);
 }
+
+void AMonster::DropWeaponSoul()
+{
+	USTGameInstance* Instance;
+	do 
+	{
+		Instance = Cast<USTGameInstance>(GetGameInstance());
+	} while (Instance==nullptr);
+
+
+	TArray<AWeapon_Soul*> Souls;
+	for (int i = 0; i < MonsterInfo.Weapon_Soul; i++)
+	{
+		Souls.Add(GetWorld()->SpawnActor<AWeapon_Soul>(Weapon_SoulClass, GetActorLocation(), FRotator::ZeroRotator));
+	}
+	for (int i = 0; i < MonsterInfo.Weapon_Soul; i++)
+	{
+
+		auto Y = FMath::RandRange(1, 3);
+		auto Z = FMath::RandRange(1, 3);
+		Souls[i]->SetValue(Instance->GetPlayer()->IreneAttack->GetNameAtWeaponSoulDataTable());
+		Souls[i]->FireInDirection(FVector(0.0f,Y,Z));
+	}
+}
+
+
+	
+
 // Called when the game starts or when spawned
 void AMonster::BeginPlay()
 {
@@ -1068,9 +1108,7 @@ void AMonster::BeginPlay()
 	InitPerfectDodgeNotify();
 
 
-
 	SetNormalState();
-
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1325,6 +1363,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
+				
 				}
 			
 			}
@@ -1339,11 +1378,16 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking()==false) {
+			if (MonsterAIController->GetIsAttacking() == false) {
 				Attacked();
 			}
-			if (MonsterControl != nullptr)
-			MonsterControl->SetBattleMonster(this);
+
+			if (MonsterControl != nullptr) {
+				MonsterControl->SetBattleMonster(this);
+			}
+			else {
+				SetBattleState();
+			}
 	
 			return FinalDamage;
 		}

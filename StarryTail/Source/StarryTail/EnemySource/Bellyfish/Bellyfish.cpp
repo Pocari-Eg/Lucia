@@ -334,8 +334,6 @@ void ABellyfish::BeginPlay()
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
-
-
 }
 
 void ABellyfish::PossessedBy(AController* NewController)
