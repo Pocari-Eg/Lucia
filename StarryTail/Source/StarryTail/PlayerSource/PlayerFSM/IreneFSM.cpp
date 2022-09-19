@@ -806,7 +806,8 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = false;
@@ -896,7 +897,8 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = false;
@@ -988,7 +990,8 @@ void USwordSkill1::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sword_Skill_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
@@ -1073,7 +1076,8 @@ void USwordSkill2::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sword_Skill_2);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
 	StartShakeTime = 0.0f;
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
@@ -1160,7 +1164,8 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Spear_Skill_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 	StartShakeTime = 0.0f;
 	MaxWalkSpeed = CurState->Irene->GetCharacterMovement()->MaxWalkSpeed;
 	
