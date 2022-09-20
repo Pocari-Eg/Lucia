@@ -43,6 +43,8 @@ private:
 	bool bIsSkillOn;
 	// 공격 중 스킬 사용
 	bool bAttackUseSkill;
+	// 공격 중 스킬 사용 후 다음 공격 해야하는 단계
+	int AttackUseSkillNextCount;
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
 	// 전기 스킬 사용 가능
@@ -69,8 +71,7 @@ private:
 private:
 
 	float MaxSoulValue;
-	float CurSoulValue;
-	
+	float CurSoulValue;	
 
 	bool bIsThunderAttributeOn;
 
@@ -88,6 +89,8 @@ private:
 	float SpearSkill1CoolTime;
 	// 창 스킬 쿨타임
 	FTimerHandle SpearSkill1WaitHandle;
+	// 공격 중 스킬 사용 후 다음 공격 해야하는 단계 사용 가능 시간
+	FTimerHandle AttackUseSkillNextCountWaitHandle;
 	
 	// 닷지 쿨타임
 	FTimerHandle DodgeWaitHandle;

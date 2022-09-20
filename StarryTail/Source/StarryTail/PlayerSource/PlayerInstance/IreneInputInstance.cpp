@@ -252,8 +252,25 @@ void UIreneInputInstance::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{
-			Irene->IreneAttack->SetAttackState();
-
+			if(AttackUseSkillNextCount==0)
+				Irene->IreneAttack->SetAttackState();
+			else
+			{
+				switch (AttackUseSkillNextCount)
+				{
+				case 1:
+					Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
+					break;
+				case 2:
+					Irene->ChangeStateAndLog(UBasicAttack2State::GetInstance());
+					break;
+				case 3:
+					Irene->ChangeStateAndLog(UBasicAttack3State::GetInstance());
+					break;
+				default:
+					break;
+				}
+			}
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
@@ -267,6 +284,22 @@ void UIreneInputInstance::LeftButton(float Rate)
 					AttackWaitHandle.Invalidate();
 				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
+			if(AttackUseSkillNextCount>0)
+			{
+				Irene->IreneAnim->StopAllMontages(0);
+				Irene->IreneData.CurrentCombo = AttackUseSkillNextCount;				
+				AttackUseSkillNextCount = 0;
+				Irene->IreneData.IsAttacking = true;
+				Irene->IreneData.CanNextCombo = false;
+				Irene->IreneData.IsComboInputOn = false;
+				if(Irene->IreneAnim->GetCurrentActiveMontage() == nullptr)
+					Irene->IreneAnim->PlayAttackMontage();
+				else
+					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+				AttackUseSkillNextCountWaitHandle.Invalidate();
+				return;
+			}
+			
 			if (Irene->IreneData.IsAttacking)
 			{
 				if(bNextAttack)
@@ -331,7 +364,17 @@ void UIreneInputInstance::RightButton(float Rate)
 				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 			
 			if(Irene->IreneAttack->GetCanSkillSkip())
+			{
 				bAttackUseSkill = true;
+				AttackUseSkillNextCount = Irene->IreneData.CurrentCombo+1;
+				if(AttackUseSkillNextCount>Irene->IreneData.MaxCombo)
+					AttackUseSkillNextCount = 1;
+				GetWorld()->GetTimerManager().SetTimer(AttackUseSkillNextCountWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+					AttackUseSkillNextCount = 0;
+					AttackUseSkillNextCountWaitHandle.Invalidate();
+				}), 5*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			}
 			
 			Irene->IreneAttack->SetSkillState();
 
