@@ -764,6 +764,18 @@ void AMonster::CalcHp(float Damage)
 
 			GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 
+
+			if (MonsterControl != nullptr)
+				MonsterControl->DeleteMonster(this);
+
+			if (CurState == EMontserState::Battle)
+			{
+				STARRYLOG_S(Error);
+				if (MonsterControl != nullptr)
+					MonsterControl->InitSupportGroup();
+			}
+
+
 			//DropWeaponSoul();
 
 			MonsterDeadEvent();
@@ -1148,14 +1160,7 @@ void AMonster::Tick(float DeltaTime)
 			SetActorTickEnabled(false);
 			SetActorHiddenInGame(true);
 
-			if(MonsterControl!=nullptr)
-			MonsterControl->DeleteMonster(this);
-
-			if (CurState == EMontserState::Battle)
-			{
-				if (MonsterControl != nullptr)
-				MonsterControl->InitSupportGroup();
-			}
+		
 			Destroy();
 
 			
@@ -1356,6 +1361,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 			//몬스터인지 아닌지
 			if (!bIsObject) {
+
+				if (MonsterControl != nullptr) {
+					MonsterControl->SetBattleMonster(this);
+				}
+				else {
+					SetBattleState();
+				}
 								
 				if (MonsterInfo.bIsShieldOn)
 				{
@@ -1382,12 +1394,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				Attacked();
 			}
 
-			if (MonsterControl != nullptr) {
-				MonsterControl->SetBattleMonster(this);
-			}
-			else {
-				SetBattleState();
-			}
+
 	
 			return FinalDamage;
 		}
