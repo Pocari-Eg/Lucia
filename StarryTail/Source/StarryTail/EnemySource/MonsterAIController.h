@@ -8,6 +8,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DrawDebugHelpers.h"
+#include "Components/LineBatchComponent.h"
 #include "MonsterAIController.generated.h"
 
 /**
@@ -47,6 +49,25 @@ public:
 	void InitBattleMonster();
 
 	bool GetIsAttacking();
+
+
+	//debug
+
+	ULineBatchComponent* GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground);
+
+	static float GetDebugLineLifeTime(ULineBatchComponent* LineBatcher, float LifeTime, bool bPersistent);
+
+
+	 void DrawRadial(const UWorld* _InWorld,
+		const FMatrix& _TransformMatrix,
+		float _Radius,
+		float _Angle,
+		const FColor& _Color,
+		int32 _Segments,
+		float _LifeTime,
+		bool _bPersistentLines,
+		uint8 _DepthPriority,
+		float _Thickness);
 
 	//key=======================================================================
 	static const FName SpawnPosKey;

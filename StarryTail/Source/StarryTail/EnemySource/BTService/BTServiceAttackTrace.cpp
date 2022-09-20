@@ -158,8 +158,8 @@ bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Angle, FColor::Red, 10, 0.1f, false, 0, 2);
 	}
 
 	FVector Box = FVector(Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Radius, Monster->GetAttack1Range().M_Atk_Height);
@@ -299,8 +299,8 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack2Range().M_Atk_Radius, Monster->GetAttack2Range().M_Atk_Angle, FColor::Blue, 10, 0.1f, false, 0, 2);
 	}
 
 
@@ -474,8 +474,8 @@ bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
-		DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Angle, FColor::Yellow, 10, 0.1f, false, 0, 2);
 	}
 
 	FVector Box = FVector(Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Radius, Monster->GetAttack3Range().M_Atk_Height);
