@@ -765,7 +765,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.6f)
+		if(CurState->PlayTime >= 1.73f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -856,14 +856,14 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.6f)
+		if(CurState->PlayTime >= 1.8f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
 	{
-		if(CurState->PlayTime >= 2.27f)
+		if(CurState->PlayTime >= 1.93f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -947,14 +947,14 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.83f)
+		if(CurState->PlayTime >= 3.23f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
 	{
-		if(CurState->PlayTime >= 2.4f)
+		if(CurState->PlayTime >= 2.13f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -1037,7 +1037,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 1.29f)
+	if(CurState->PlayTime >= 0.83f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1125,7 +1125,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 1.15f)
+	if(CurState->PlayTime >= 0.63f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1205,7 +1205,7 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 	}
 	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= 1.33f)
+	if (CurState->PlayTime >= 1.4f)
 	{
 		EndTimeExit(CurState);
 	}
