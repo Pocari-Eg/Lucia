@@ -427,6 +427,7 @@ void UIreneInputInstance::SpearRightButton()
 	{
 		if(SpearSkill1Count > 0)
 		{
+			Irene->IreneAnim->StopAllMontages(0);
 			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
 			MaxSpearSkill1CoolTime = AttackTable->C_Time;
 
