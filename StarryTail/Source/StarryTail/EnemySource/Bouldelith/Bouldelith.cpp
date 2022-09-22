@@ -2,6 +2,7 @@
 
 
 #include "Bouldelith.h"
+#include"../../STGameInstance.h"
 #include "BdAIController.h"
 
 ABouldelith::ABouldelith()
@@ -148,46 +149,35 @@ void ABouldelith::AttackCheck1()
 	bIsDodgeTime = false;
 	PerfectDodgeDir.Empty();
 	// hitcheck======================================
-	//FHitResult Hit;
 
-	////By 성열현
-	//FCollisionQueryParams Params(NAME_None, false, this);
-	//bool bResult = GetWorld()->SweepSingleByChannel(
-	//	Hit,
-	//	GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-	//	GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-	//	FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
-	//	ECollisionChannel::ECC_GameTraceChannel6,
-	//	FCollisionShape::MakeSphere(150.0f),
-	//	Params);
-
-	//if (bTestMode)
-	//{
-	//	FTransform BottomLine = GetTransform();
-	//	BottomLine.SetLocation(BottomLine.GetLocation()-FVector(0.0f,0.0f,120.0f));
-
-	//	FQuat RotationQuat = FQuat::MakeFromEuler(FVector(.0f, -90.0f, 0.0f));
-	//	BottomLine.SetRotation(RotationQuat);
-	//	BottomLine.SetRotation(BottomLine.GetRotation() + RotationQuat);
-	//
-	//	FTransform TopLine = BottomLine;
-	//	TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
+	if (bTestMode)
+	{
+		FTransform BottomLine = GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation()-FVector(0.0f,0.0f,120.0f));
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
 
 
 
-	//	FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
-	//	FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
-	//	GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
-	//	GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
-	//}
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
+		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+	}
 
-	FVector Center = GetLocation() + (GetActorForwardVector() * GetCapsuleComponent()->GetScaledCapsuleRadius());
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+	FVector AttackDirection = ForwardVector.RotateAngleAxis(-90.0f, FVector::UpVector);
+	AttackDirection.Normalize();
 
+
+	FVector Center = GetLocation() + (AttackDirection * GetCapsuleComponent()->GetScaledCapsuleRadius());
 	FVector CenterBottom = Center;
-	CenterBottom.Z -= 120.0f;
+
 
 	FVector CenterTop = CenterBottom;
 	CenterTop.Z += 250.0f;
+
 
 	FVector Box = FVector(300.0f, 300.0f, 300.0f);
 	TArray<FOverlapResult> OverlapResults;
@@ -205,27 +195,19 @@ void ABouldelith::AttackCheck1()
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
+			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
 			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
 			if (Player && Player->GetController()->IsPlayerController())
 			{
-				STARRYLOG_S(Error);
-				STARRYLOG_S(Error);
-				//1차 탐지
-				//if (Monster->GetTestMode())
-					//STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));
-
 				TArray<FHitResult> Hits;
-				TArray<AActor*> ActorsToIgnore; // 무시할 액터 유형?
+				TArray<AActor*> ActorsToIgnore; 
 				bool bTraceResult;
-
-				// https://blog.daum.net/peace-day/22
-				// TraceTypeQuery는 콜리전 프리셋의 트레이스 유형에서 1부터 순차적으로 부여됨
 				if (GetTestMode())
 				{
 					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
 						GetWorld(),
 						GetLocation(), // SphereTrace 시작 위치
-						GetActorLocation(), // SphereTrace 종료 위치
+						Player->GetActorLocation(), // SphereTrace 종료 위치
 						5.0f,
 						ETraceTypeQuery::TraceTypeQuery4,
 						false,
@@ -253,21 +235,15 @@ void ABouldelith::AttackCheck1()
 						true
 					);
 				}
-
 				for (int i = 0; i < Hits.Num();++i)
 				{
-					Player = Cast<AIreneCharacter>(Hits[i].GetActor());
-
-					STARRYLOG_S(Error);
-					STARRYLOG_S(Error);
-					STARRYLOG_S(Error);
+					STARRYLOG(Warning,TEXT("%s"), *Hits[i].GetActor()->GetName());
+					Player = Cast<AIreneCharacter>(Hits[i].Actor);
 					if (Player!=nullptr	)
 					{
-						STARRYLOG_S(Error);
 						break;	
 					}
 				}
-
 				if (bTraceResult && !(nullptr == Player))
 				{
 					//2차 탐지
@@ -277,13 +253,12 @@ void ABouldelith::AttackCheck1()
 					FVector TargetDir = Player->GetActorLocation() - GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
 
-					FVector ForwardVector = GetActorForwardVector();
-					ForwardVector.Normalize();
-					FVector AttackDirection = ForwardVector.RotateAngleAxis(-90.0f, FVector::UpVector);
+					
 					float Radian = FVector::DotProduct(AttackDirection, TargetDir);
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
-					if (TargetAngle <= (230.0f * 0.5f))
+					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					if (TargetAngle <= (180.0f * 0.5f))
 					{
 						if (nullptr == Player) {
 							return;
@@ -299,9 +274,7 @@ void ABouldelith::AttackCheck1()
 			}
 		}
 	}
-
 	BouldelithInfo.AttackFailedStack++;
-	
 }
 void ABouldelith::AttackCheck4()
 {
@@ -530,6 +503,7 @@ void ABouldelith::Tick(float DeltaTime)
 	{
 		DodgeCheck();
 	}
+
 }
 void ABouldelith::BeginPlay()
 {

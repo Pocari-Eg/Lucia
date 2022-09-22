@@ -109,6 +109,16 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpearAttackMontage);
 	}
+	
+}
+
+void UIreneAnimInstance::CallCreateTail()
+{
+	STARRYLOG_S(Error);
+	if (Irene != nullptr) {
+	  Irene->CreateTailEvent();
+
+	}
 }
 
 void UIreneAnimInstance::AnimNotify_AttackHitCheck() const
