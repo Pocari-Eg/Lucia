@@ -376,6 +376,7 @@ void UIreneInputInstance::RightButton(float Rate)
 				}), 5*UGameplayStatics::GetGlobalTimeDilation(this), false);
 			}
 			
+			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneAttack->SetSkillState();
 
 			if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0

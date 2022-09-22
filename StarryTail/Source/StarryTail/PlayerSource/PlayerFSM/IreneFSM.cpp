@@ -724,6 +724,7 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 
 	if (!CurState->Irene->Weapon->IsVisible())
 	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
@@ -765,7 +766,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.6f)
+		if(CurState->PlayTime >= 1.73f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -822,6 +823,13 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -856,14 +864,14 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.6f)
+		if(CurState->PlayTime >= 1.8f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
 	{
-		if(CurState->PlayTime >= 2.27f)
+		if(CurState->PlayTime >= 1.93f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -916,6 +924,13 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
+
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -947,14 +962,14 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 0.83f)
+		if(CurState->PlayTime >= 3.23f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
 	{
-		if(CurState->PlayTime >= 2.4f)
+		if(CurState->PlayTime >= 2.13f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -1004,6 +1019,7 @@ void USwordSkill1::Enter(IBaseGameEntity* CurState)
 
 	if (!CurState->Irene->Weapon->IsVisible())
 	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
@@ -1037,7 +1053,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 1.29f)
+	if(CurState->PlayTime >= 0.83f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1092,6 +1108,7 @@ void USwordSkill2::Enter(IBaseGameEntity* CurState)
 	
 	if (!CurState->Irene->Weapon->IsVisible())
 	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
@@ -1125,7 +1142,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 1.15f)
+	if(CurState->PlayTime >= 0.63f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1187,7 +1204,7 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 	
 	CurState->Irene->GetMesh()->SetVisibility(false);
 	CurState->Irene->Weapon->SetVisibility(false);
-
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -1205,11 +1222,11 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 	}
 	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= 1.33f)
+	if (CurState->PlayTime >= 1.4f)
 	{
 		EndTimeExit(CurState);
 	}
-	
+
 	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
 		StartShakeTime = CurState->PlayTime;
 	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
@@ -1228,6 +1245,7 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
+			STARRYLOG_S(Warning);
 			if (CurState->Irene->Weapon->IsVisible())
 			{
 				CurState->Irene->Weapon->SetVisibility(false);

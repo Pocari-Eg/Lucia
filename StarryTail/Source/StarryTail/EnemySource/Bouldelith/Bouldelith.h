@@ -94,6 +94,7 @@ private:
 	bool bIsRush;
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
+
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;

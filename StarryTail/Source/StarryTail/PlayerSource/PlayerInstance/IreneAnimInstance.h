@@ -96,7 +96,10 @@ public:
 public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpearSkillEvent();
-	
+
+
+	UFUNCTION(BlueprintCallable)
+	void CallCreateTail();
 private:	
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;

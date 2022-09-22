@@ -179,7 +179,7 @@ AIreneCharacter::AIreneCharacter()
 	// PlayerCharacterDataStruct.h의 변수들 초기화
 	IreneData.CurrentHP = IreneData.MaxHP;
 	IreneData.CurrentEnergy = 0;
-	IreneData.CurrentGauge = 0;
+	IreneData.CurrentGauge = 100;
 	
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
