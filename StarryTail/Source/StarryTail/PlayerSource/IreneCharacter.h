@@ -126,6 +126,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void LevelRestartEvent();
+
+
 #pragma endregion Setting
 	
 	// Called every frame
@@ -184,6 +186,9 @@ public:
 	void PerfectDodgeTimeEnd();
 	UFUNCTION(BlueprintImplementableEvent)
     void PerfectDodgeAttackEnd();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateTailEvent();
     
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);

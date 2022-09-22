@@ -162,8 +162,11 @@ void AEnemySpawnPoint::InsertSupportGroup(AMonster* Monster)
 
 void AEnemySpawnPoint::InitSupportGroup()
 {
+	STARRYLOG_S(Error);
+	BattleMonster= nullptr;
 
-	BattleMonster = nullptr;
+
+
 	for (int i = 0; i < SupportNum; i++)
 	{
 		if (SupportMonsters[i] != nullptr)
@@ -184,7 +187,7 @@ void AEnemySpawnPoint::InitSupportGroup()
 
 void AEnemySpawnPoint::DeleteMonster(AMonster* Monster)
 {
-
+	STARRYLOG_S(Error);
 
 	for (int i = 0; i < SupportNum; i++)
 	{

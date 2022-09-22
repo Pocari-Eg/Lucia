@@ -2,6 +2,7 @@
 
 
 #include "Bouldelith.h"
+#include"../../STGameInstance.h"
 #include "BdAIController.h"
 
 ABouldelith::ABouldelith()
@@ -144,55 +145,136 @@ void ABouldelith::Attack4()
 }
 void ABouldelith::AttackCheck1()
 {
+	//dodge =========================================
 	bIsDodgeTime = false;
 	PerfectDodgeDir.Empty();
-	
-	FHitResult Hit;
-
-	//By 성열현
-	FCollisionQueryParams Params(NAME_None, false, this);
-	bool bResult = GetWorld()->SweepSingleByChannel(
-		Hit,
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
-		ECollisionChannel::ECC_GameTraceChannel6,
-		FCollisionShape::MakeSphere(150.0f),
-		Params);
+	// hitcheck======================================
 
 	if (bTestMode)
 	{
-		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
-		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
-		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
+		FTransform BottomLine = GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation()-FVector(0.0f,0.0f,120.0f));
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
 
-		DrawDebugCapsule(GetWorld(),
-			Center,
-			HalfHeight,
-			150.0f,
-			CapsuleRot,
-			DrawColor,
-			false,
-			DebugLifeTime);
+
+
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
+		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
 	}
 
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+	FVector AttackDirection = ForwardVector.RotateAngleAxis(-90.0f, FVector::UpVector);
+	AttackDirection.Normalize();
+
+
+	FVector Center = GetLocation() + (AttackDirection * GetCapsuleComponent()->GetScaledCapsuleRadius());
+	FVector CenterBottom = Center;
+
+
+	FVector CenterTop = CenterBottom;
+	CenterTop.Z += 250.0f;
+
+
+	FVector Box = FVector(300.0f, 300.0f, 300.0f);
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		Center,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeCapsule(Box),
+		CollisionQueryParam
+	);
 	if (bResult)
 	{
-		auto Player = Cast<AIreneCharacter>(Hit.Actor);
-		if (nullptr == Player)
-			return;
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
+			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
+			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
+			if (Player && Player->GetController()->IsPlayerController())
+			{
+				TArray<FHitResult> Hits;
+				TArray<AActor*> ActorsToIgnore; 
+				bool bTraceResult;
+				if (GetTestMode())
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(), // SphereTrace 시작 위치
+						Player->GetActorLocation(), // SphereTrace 종료 위치
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::ForDuration, // 마지막 인자값으로 시간 조절 가능
+						Hits,
+						true,
+						FLinearColor::Red,
+						FLinearColor::Green,
+						1.0f
+					);
+				}
+				else
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(),
+						Player->GetActorLocation(),
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::None,
+						Hits,
+						true
+					);
+				}
+				for (int i = 0; i < Hits.Num();++i)
+				{
+					STARRYLOG(Warning,TEXT("%s"), *Hits[i].GetActor()->GetName());
+					Player = Cast<AIreneCharacter>(Hits[i].Actor);
+					if (Player!=nullptr	)
+					{
+						break;	
+					}
+				}
+				if (bTraceResult && !(nullptr == Player))
+				{
+					//2차 탐지
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
 
-		    Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
-			UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
-		
+					FVector TargetDir = Player->GetActorLocation() - GetLocation();
+					TargetDir = TargetDir.GetSafeNormal();
+
+					
+					float Radian = FVector::DotProduct(AttackDirection, TargetDir);
+					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
+					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
+					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					if (TargetAngle <= (180.0f * 0.5f))
+					{
+						if (nullptr == Player) {
+							return;
+						}
+      				Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+				
+						UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+						return;
+					}
+				
+                 }
+
+			}
+		}
 	}
-	else
-	{
-		BouldelithInfo.AttackFailedStack++;
-	}
+	BouldelithInfo.AttackFailedStack++;
 }
 void ABouldelith::AttackCheck4()
 {
@@ -232,7 +314,7 @@ void ABouldelith::DodgeCheck()
 		Params);
 
 
-	if (bTestMode)
+	/*if (bTestMode)
 	{
 		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
 		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
@@ -249,7 +331,7 @@ void ABouldelith::DodgeCheck()
 			DrawColor,
 			false,
 			0.1);
-	}
+	}*/
 
 	if (bResult)
 	{
@@ -421,6 +503,7 @@ void ABouldelith::Tick(float DeltaTime)
 	{
 		DodgeCheck();
 	}
+
 }
 void ABouldelith::BeginPlay()
 {
