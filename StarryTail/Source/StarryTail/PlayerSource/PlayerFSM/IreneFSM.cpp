@@ -1190,7 +1190,8 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 
 	CurState->Irene->IreneAttack->SetPlayerPosVec(CurState->Irene->GetActorLocation());
 	CurState->Irene->GetCharacterMovement()->GravityScale = 9999;
-	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*10000,true,false);	
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0.5f;
+	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*5000,true,false);	
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	
 	CurState->Irene->IreneData.IsAttacking = true;
@@ -1220,6 +1221,9 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->GetMesh()->SetVisibility(true);
 		CurState->Irene->Weapon->SetVisibility(true);
+		const FVector Velocity = FVector(0,0,CurState->Irene->GetCharacterMovement()->Velocity.Z);
+		CurState->Irene->GetCharacterMovement()->Velocity = Velocity;
+		CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
 	}
 	// ¸ùÅ¸ÁÖ ½Ã°£
 	if (CurState->PlayTime >= 1.4f)
@@ -1259,7 +1263,10 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 void USpearSkill1::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
-	
+	const FVector Velocity = FVector(0,0,CurState->Irene->GetCharacterMovement()->Velocity.Z);
+    CurState->Irene->GetCharacterMovement()->Velocity = Velocity;
+    CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
+    		
 	CurState->Irene->GetMesh()->SetVisibility(true);
 	CurState->Irene->Weapon->SetVisibility(true);
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
