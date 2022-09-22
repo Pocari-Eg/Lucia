@@ -1190,8 +1190,8 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 
 	CurState->Irene->IreneAttack->SetPlayerPosVec(CurState->Irene->GetActorLocation());
 	CurState->Irene->GetCharacterMovement()->GravityScale = 9999;
-	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0.5f;
-	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*5000,true,false);	
+	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0.45f;
+	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*4500,true,false);	
 	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	
 	CurState->Irene->IreneData.IsAttacking = true;
