@@ -7,7 +7,7 @@
 
 AStarryTailGameMode::AStarryTailGameMode()
 {
-    static ConstructorHelpers::FClassFinder<AIreneCharacter>BP_IRENE(TEXT("/Game/BluePrint/Irene/BP_IreneCharacter.BP_IreneCharacter_C"));
+    static ConstructorHelpers::FClassFinder<AIreneCharacter>BP_IRENE(TEXT("/Game/BluePrint/Irene/BP_IreneCharacter_2.BP_IreneCharacter_2_C"));
     DefaultPawnClass = BP_IRENE.Class;
     HUDClass = UPlayerHudWidget::StaticClass();
 }
