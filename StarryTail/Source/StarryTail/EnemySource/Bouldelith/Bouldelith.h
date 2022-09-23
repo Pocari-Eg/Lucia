@@ -34,7 +34,8 @@ public:
 	void Attack3();
 	void Attack4();
 
-	void AttackCheck1();
+	void LeftAttackCheck();
+	void RightAttackCheck();
 	void AttackCheck4();
 
 	void DodgeCheck();
@@ -95,6 +96,10 @@ private:
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
 
+
+	bool bIsDodgeOn;
+	int IsAttackNum;
+
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
@@ -111,5 +116,6 @@ private:
 	void InitMesh() override;
 	void InitAnime() override;
 	void IsDodgeTimeOn() override;
+	void IsDodgeTimeOff()override;
 
 };

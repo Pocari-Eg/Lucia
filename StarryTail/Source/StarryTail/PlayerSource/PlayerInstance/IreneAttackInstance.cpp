@@ -37,10 +37,9 @@ void UIreneAttackInstance::SetIreneCharacter(AIreneCharacter* Value)
 {
 	Irene = Value;
 }
-void UIreneAttackInstance::SetIsPerfectDodge(const bool Value, const TArray<uint8> PerfectDodgeDir)
+void UIreneAttackInstance::SetIsPerfectDodge(const bool Value)
 {
 	IsPerfectDodge = Value;
-	Irene->IreneInput->SetIsPerfectDodge(PerfectDodgeDir);
 }
 void UIreneAttackInstance::InitMemberVariable()
 {
