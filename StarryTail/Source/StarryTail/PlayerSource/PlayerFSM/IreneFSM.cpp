@@ -707,6 +707,7 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	if(CurState->Irene->CameraLagCurve.Num()>0)
 		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[0]);
@@ -728,7 +729,7 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
-
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -766,6 +767,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
+	
 		if(CurState->PlayTime >= 1.73f)
 		{
 			EndTimeExit(CurState);
@@ -806,6 +808,7 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_2);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	if(CurState->Irene->CameraLagCurve.Num()>0)
 		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[1]);
@@ -833,6 +836,7 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+	
 }
 void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 {
@@ -904,6 +908,7 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::B_Attack_3);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	
 	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
 	if(CurState->Irene->CameraLagCurve.Num()>0)
 		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[2]);
