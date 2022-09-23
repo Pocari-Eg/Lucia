@@ -158,6 +158,7 @@ void ABouldelith::Attack4()
 	BdAnimInstance->PlayAttack4Montage();
 	MonsterAIController->StopMovement();
 }
+
 void ABouldelith::LeftAttackCheck()
 {
 	// hitcheck======================================
@@ -294,14 +295,15 @@ void ABouldelith::LeftAttackCheck()
 
 						if (bIsDodgeTime)
 						{
-							bIsDodgeOn = true;
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
 							return;
 						}
 						else {
 
-							bIsDodgeOn = false;
+						
 							bIsDodgeTime = false;
-							Player->IreneAttack->SetIsPerfectDodge(false);
+							PerfectDodgeOff();
 							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 							return;
 						}
@@ -314,7 +316,7 @@ void ABouldelith::LeftAttackCheck()
 	}
 	BouldelithInfo.AttackFailedStack++;
 
-	bIsDodgeOn = false;
+	PerfectDodgeOff();
 }
 
 void ABouldelith::RightAttackCheck()
@@ -454,14 +456,14 @@ void ABouldelith::RightAttackCheck()
 
 						if (bIsDodgeTime)
 						{
-							bIsDodgeOn = true;
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
 							return;
 						}
 						else {
 
-							bIsDodgeOn = false;
+							PerfectDodgeOff();
 							bIsDodgeTime = false;
-							Player->IreneAttack->SetIsPerfectDodge(false);
 							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
 							return;
 						}
@@ -473,8 +475,58 @@ void ABouldelith::RightAttackCheck()
 		}
 	}
 	BouldelithInfo.AttackFailedStack++;
-	bIsDodgeOn = false;
+	PerfectDodgeOff();
 
+}
+
+void ABouldelith::AttackCheck3()
+{
+
+	FHitResult Hit;
+
+	//By ¼º¿­Çö
+	FCollisionQueryParams Params(NAME_None, false, this);
+	bool bResult = GetWorld()->SweepSingleByChannel(
+		Hit,
+		GetActorLocation() + (GetActorForwardVector() + GetMeleeAttackRange()) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		GetActorLocation() + (GetActorForwardVector() + GetMeleeAttackRange()) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() ).ToQuat(),
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeSphere(GetCapsuleComponent()->GetScaledCapsuleRadius() * 1.5f),
+		Params);
+
+	if (bTestMode)
+	{
+		FVector TraceVec = GetActorForwardVector() + GetMeleeAttackRange();
+		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 0.1f;
+
+		DrawDebugCapsule(GetWorld(),
+			Center,
+			HalfHeight,
+			GetCapsuleComponent()->GetScaledCapsuleRadius()*1.5f,
+			CapsuleRot,
+			DrawColor,
+			false,
+			DebugLifeTime);
+	}
+
+	if (bResult)
+	{
+		auto Player = Cast<AIreneCharacter>(Hit.Actor);
+		if (nullptr == Player)
+			return;
+		if (bIsDodgeTime)
+		{
+			PerfectDodgeOn();
+			return;
+		}
+	}
+
+	PerfectDodgeOff();
 }
 
 void ABouldelith::AttackCheck4()
@@ -602,14 +654,15 @@ void ABouldelith::AttackCheck4()
 
 						if (bIsDodgeTime)
 						{
-							bIsDodgeOn = true;
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
 							return;
 						}
 						else {
 
-							bIsDodgeOn = false;
+							
 							bIsDodgeTime = false;
-							Player->IreneAttack->SetIsPerfectDodge(false);
+							PerfectDodgeOff();
 							UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
 							return;
 						}
@@ -620,8 +673,7 @@ void ABouldelith::AttackCheck4()
 			}
 		}
 	}
-	
-	bIsDodgeOn = false;
+	PerfectDodgeOff();
 	
 }
 void ABouldelith::DodgeCheck()
@@ -636,6 +688,7 @@ void ABouldelith::DodgeCheck()
 		LeftAttackCheck();
 		break;
 	case 3:
+		AttackCheck3();
 		break;
 	case 4:
 		AttackCheck4();
@@ -644,17 +697,6 @@ void ABouldelith::DodgeCheck()
 		break;
 	default:
 		break;
-	}
-	
-
-	if (bIsDodgeOn)
-	{
-		auto instance = Cast<USTGameInstance>(GetGameInstance());
-		if (instance != nullptr) {
-
-			instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
-			instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
-		}
 	}
 }
 #pragma endregion
@@ -757,6 +799,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
+				PerfectDodgeOff();
 			}
 		}
 		if (!bIsWallRushHit)
@@ -777,6 +820,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 						MonsterAnimInstance->PlayGroggyMontage();
 					}
 					bIsWallRushHit = true;
+					PerfectDodgeOff();
 				}
 			}
 		}
@@ -877,6 +921,7 @@ void ABouldelith::BeginPlay()
 		});
 	BdAnimInstance->DodgeTimeOff.AddLambda([this]() -> void {
 		DodgeTimeOff.Broadcast();
+		PerfectDodgeOff();
 		});
 
 

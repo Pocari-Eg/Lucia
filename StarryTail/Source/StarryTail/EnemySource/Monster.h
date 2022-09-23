@@ -244,7 +244,8 @@ private:
 
 	float AttackCoolTimer;
 	float AttackCoolTime;
-
+	
+	bool bIsDodgeOn;
 	
 public:	
 	// Called every frame
@@ -311,6 +312,9 @@ protected:
 
 	virtual void IsDodgeTimeOn() {};
 	virtual void IsDodgeTimeOff() {};
+
+	void PerfectDodgeOff();
+	void PerfectDodgeOn();
 	//object
 	virtual void HitCheck(AIreneCharacter* Irene) {};
 };

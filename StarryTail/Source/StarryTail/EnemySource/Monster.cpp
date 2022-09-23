@@ -108,7 +108,7 @@ AMonster::AMonster()
 
 		Weapon_SoulClass= BP_WEAPONSOUL.Class;
 	}
-
+	bIsDodgeOn = false;
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -1389,4 +1389,26 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		}
 	}
 	return FinalDamage;
+}
+
+void AMonster::PerfectDodgeOff()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (STGameInstance != nullptr) {
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+	}
+	bIsDodgeOn = false;
+}
+
+void AMonster::PerfectDodgeOn()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (STGameInstance != nullptr) {
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+	}
+
+
+	bIsDodgeOn = true;
 }
