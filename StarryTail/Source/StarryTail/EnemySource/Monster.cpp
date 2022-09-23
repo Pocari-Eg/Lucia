@@ -1011,18 +1011,7 @@ void AMonster::InitManaShield()
 void AMonster::InitPerfectDodgeNotify()
 {
 	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
-	RightDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
-		});
-	LeftDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
-		});
-	FrontDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
-		});
-	BackDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
-		});
+	DodgeTimeOff.AddUObject(this, &AMonster::IsDodgeTimeOff);
 }
 void AMonster::SetBattleState()
 {

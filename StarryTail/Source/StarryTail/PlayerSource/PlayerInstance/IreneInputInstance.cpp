@@ -533,7 +533,7 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 		Irene->IreneData.IsInvincibility = true;
 
-		if(Irene->IreneAttack->GetIsPerfectDodge() && CalcPerfectDodgeDir(GetMoveKeyToDirVector()))
+		if(Irene->IreneAttack->GetIsPerfectDodge())
 			PerfectDodge();
 		
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
@@ -561,7 +561,7 @@ void UIreneInputInstance::PerfectDodge()
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-			Irene->IreneAttack->SetIsPerfectDodge(false,PerfectDodgeDir);
+			Irene->IreneAttack->SetIsPerfectDodge(false);
 			Irene->CustomTimeDilation = 1;
 			Irene->IreneAnim->SetDodgeDir(0);
 			SetStopMoveAutoTarget();
@@ -581,64 +581,6 @@ void UIreneInputInstance::PerfectDodge()
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
 }
 
-bool UIreneInputInstance::CalcPerfectDodgeDir(FVector DodgeDirection)
-{
-	if (PerfectDodgeDir.Num() == 0)
-	{
-		return false;
-	}
-	
-	EDodgeDirection Dodge = EDodgeDirection::Front;
-	FVector ViewVector = Irene->CameraComp->GetForwardVector();
-	ViewVector.Normalize();
-	ViewVector = FVector::CrossProduct(FVector::UpVector, ViewVector);
-	float Angle = FVector::DotProduct(ViewVector, DodgeDirection);
-	Angle = FMath::RoundToFloat(Angle);
-
-
-	if (Angle != 0)
-	{
-		if (Angle > 0)
-		{
-			STARRYLOG(Error, TEXT("Right"), Angle);
-			Dodge = EDodgeDirection::Right;
-		}
-		else {
-			STARRYLOG(Error, TEXT("Left"), Angle);
-			Dodge = EDodgeDirection::Left;
-		}
-	}
-
-	ViewVector = Irene->CameraComp->GetForwardVector();
-	ViewVector.Normalize();
-	Angle = FVector::DotProduct(ViewVector, DodgeDirection);
-	Angle = FMath::RoundToFloat(Angle);
-
-	if (Angle != 0)
-	{
-		if (Angle > 0)
-		{
-			STARRYLOG(Error, TEXT("Front"), Angle);
-			Dodge = EDodgeDirection::Front;
-		}
-		else {
-			STARRYLOG(Error, TEXT("Back"), Angle);
-			Dodge = EDodgeDirection::Back;
-		}
-	}
-	uint8 DodgeResult = (uint8)Dodge;
-	for (int i = 0; i < PerfectDodgeDir.Num(); i++)
-	{
-		if (PerfectDodgeDir[i] == DodgeResult)
-		{
-			PerfectDodgeDir.Empty();
-			return true;
-		}
-	}
-	PerfectDodgeDir.Empty();
-
-	return false;
-}
 void UIreneInputInstance::PerfectDodgeStart()
 {
 	Irene->PerfectDodgeStart();

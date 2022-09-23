@@ -138,6 +138,25 @@ bool UBdAnimInstance::GetBattleRunIsPlaying()
 
 	return false;
 }
+void UBdAnimInstance::AnimNotify_Attack1()
+{
+	Attack1.Broadcast();
+}
+void UBdAnimInstance::AnimNotify_Attack2()
+{
+	Attack2.Broadcast();
+}
+
+void UBdAnimInstance::AnimNotify_Right()
+{
+	Right.Broadcast();
+}
+
+void UBdAnimInstance::AnimNotify_Left()
+{
+	Left.Broadcast();
+}
+
 void UBdAnimInstance::AnimNotify_Attack4()
 {
 	Attack4.Broadcast();
