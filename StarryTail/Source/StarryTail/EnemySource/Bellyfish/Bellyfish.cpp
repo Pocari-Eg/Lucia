@@ -547,19 +547,16 @@ void ABellyfish::Tick(float DeltaTime)
 			
 				if(MagicAttack->GetInPlayer() == true)
 				{
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+				PerfectDodgeOn();
 				}
 				else {
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+					PerfectDodgeOff();
 				}
 				
 			}
 			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 			{
-				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
+				PerfectDodgeOff();
 				Skill_Set();
 			}
 		}

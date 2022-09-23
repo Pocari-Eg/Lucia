@@ -36,6 +36,7 @@ public:
 
 	void LeftAttackCheck();
 	void RightAttackCheck();
+	void AttackCheck3();
 	void AttackCheck4();
 
 	void DodgeCheck();
@@ -97,7 +98,6 @@ private:
 	bool bIsWallRushHit;
 
 
-	bool bIsDodgeOn;
 	int IsAttackNum;
 
 public:
