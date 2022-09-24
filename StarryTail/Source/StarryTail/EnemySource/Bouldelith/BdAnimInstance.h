@@ -41,6 +41,11 @@ public:
 	bool GetBattleRunIsPlaying();
 	//Var
 
+
+	void PlayIdleMontage() override;
+	void PlayDeathMontage() override;
+	void PlayDetectMontage() override;
+
 	FAttackDelegate Attack1;
 	FAttackDelegate Attack2;
 
@@ -109,9 +114,13 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BrokenAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* BrokenMontage;
 
-
+	bool bIsStatue = true;
 public:
-	void PlayIdleMontage() override;
-	void PlayDeathMontage() override;
-	void PlayDetectMontage() override;
+
+	void SetbIsState(bool state);
+
+
+	UFUNCTION(BlueprintCallable)
+	bool GetbIsStatue() const;
+
 };

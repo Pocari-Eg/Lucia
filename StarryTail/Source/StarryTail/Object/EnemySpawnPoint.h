@@ -57,6 +57,10 @@ private:
 	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
 	TArray<AMonster*> SpawnMonsters;
 
+
+	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
+	TArray<AMonster*> SpawnedMonster;
+
 	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
 	float Group_Range_Radius;
 public:	
@@ -64,22 +68,23 @@ public:
 	AEnemySpawnPoint();
 	void RandomSpawn();
 
-	int getWaveMonsterCount();
-	int getCurrentWave();
 
 	virtual void Tick(float DeltaTime) override;
+	virtual void BeginPlay() override;
 
-	void SetBattleMonster(AMonster* Monster);
+
 	AMonster* GetBattleMonster();
+	int getWaveMonsterCount();
+	int getCurrentWave();
+	float GetGroupRangeRadius() const;
 
-	void FindNearMontser();
+   void SetBattleMonster(AMonster* Monster);
 
-	void InsertSupportGroup(AMonster* Monster);
-	void InitSupportGroup();
-	void DeleteMonster(AMonster* Monster);
 
-   float GetGroupRangeRadius() const;
-
+   void FindNearMontser();
+   void InsertSupportGroup(AMonster* Monster);
+   void InitSupportGroup();
+   void DeleteMonster(AMonster* Monster);
 
 
    UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))

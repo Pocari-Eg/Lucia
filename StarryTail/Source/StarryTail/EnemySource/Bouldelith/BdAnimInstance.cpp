@@ -181,3 +181,13 @@ void UBdAnimInstance::AnimNotify_Attack4End()
 {
 	Attack4End.Broadcast();
 }
+
+void UBdAnimInstance::SetbIsState(bool state)
+{
+	bIsStatue = state;
+}
+
+bool UBdAnimInstance::GetbIsStatue() const
+{
+	return bIsStatue;
+}

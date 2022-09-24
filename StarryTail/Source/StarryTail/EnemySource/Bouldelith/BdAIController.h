@@ -20,6 +20,7 @@ public:
 	void WallGroggy();
 	void Attacked();
 	void Broken();
+	void SetStatueKey(bool state);
 
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
@@ -33,6 +34,9 @@ public:
 
 	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
+
+	static const FName IsStatueStateKey;
+private:
 private:
 	void OnPossess(APawn* InPawn) override;
 };

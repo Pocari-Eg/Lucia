@@ -125,10 +125,9 @@ protected:
 	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
 	float CalcNormalAttackDamage(float Damage);
-	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
 	void CalcManaShield(float Damage);
 
-	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
+	float CalcManaShieldDamage(float Damage);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 
@@ -231,7 +230,7 @@ private:
 
 	float DeadWaitTimer;
 	
-
+	FVector KnocbackLocation;
 
 	float ShowUITimer;
 	bool bShowUI;
@@ -265,7 +264,6 @@ public:
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
-	EAttributeKeyword GetBarrierAttribute() const;
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
 	int GetMaxAttacked() const;

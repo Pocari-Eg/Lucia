@@ -42,7 +42,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.MeleeAttackRange = 300.0f;
 	MonsterInfo.TraceRange = 3000.0f;
 
-	MonsterInfo.KnockBackPower = 10.0f;
+	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 3.0f;
 
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
@@ -930,6 +930,15 @@ void ABouldelith::BeginPlay()
 
 
 	MonsterAnimInstance = BdAnimInstance;
+	auto BdAIController = Cast<ABdAIController>(MonsterAIController);
+	if (BdAIController != nullptr)
+	{
+		BdAIController->SetStatueKey(true);
+		BdAnimInstance->StopAllMontages(0.0f);
+	}
+
+	InitManaShield();
+	
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {

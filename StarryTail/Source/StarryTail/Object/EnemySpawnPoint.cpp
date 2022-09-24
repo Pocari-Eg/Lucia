@@ -101,6 +101,34 @@ void AEnemySpawnPoint::Tick(float DeltaTime)
 }
 
 
+void AEnemySpawnPoint::BeginPlay()
+{
+	Super::BeginPlay();
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+	if (SpawnedMonster.Num() != 0)
+	{
+		for (int i = 0; i < SpawnedMonster.Num(); i++)
+		{
+			SpawnedMonster[i]->SetSpawnEnemy();
+			SpawnedMonster[i]->SetMonsterContorl(this);
+			SpawnMonsters.Add(SpawnedMonster[i]);
+			SpawnNum++;
+
+
+
+			if (Instance != nullptr)Instance->AddEnemyCount(SpawnedMonster[i]->GetRank());
+		}
+	}
+
+
+
+
+
+
+}
+
 void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
 {
 	if (BattleMonster == nullptr) {

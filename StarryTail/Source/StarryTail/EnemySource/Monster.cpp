@@ -241,17 +241,7 @@ bool AMonster::GetIsBattleState() const
 {
 	return bIsBattleState;
 }
-EAttributeKeyword AMonster::GetBarrierAttribute() const
-{
-	if (!MonsterInfo.bIsShieldOn)
-	{
-		return EAttributeKeyword::e_None;
-	 }
-	else {
 
-		return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type;
-	}
-}
 float AMonster::GetPatrolArea() const
 {
 	return MonsterInfo.PatrolArea;
@@ -290,7 +280,7 @@ int AMonster::GetPlayerEnergy() const
 }
 int AMonster::GetManaShieldCount() const
 {
-	return 0;
+	return MonsterInfo.Ele_Shield.Num();
 }
 
 EMontserState AMonster::GetState() const
@@ -448,21 +438,7 @@ void AMonster::SetEffect()
 
 void AMonster::SetManaShieldEffct()
 {
-	switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-	{
-	case EAttributeKeyword::e_Fire:
-		ManaShiledEffectComponent->SetTemplate(MonsterEffect.FireManaShieldEffect);
-		break;
-	case EAttributeKeyword::e_Water:
-		ManaShiledEffectComponent->SetTemplate(MonsterEffect.WaterManaShieldEffect);
-		break;
-	case EAttributeKeyword::e_Thunder:
-		ManaShiledEffectComponent->SetTemplate(MonsterEffect.ThunderManaShieldEffect);
-		break;
-	case EAttributeKeyword::e_None:
-		ManaShiledEffectComponent->SetTemplate(MonsterEffect.NoneManaShieldEffect);
-		break;
-	}
+ManaShiledEffectComponent->SetTemplate(MonsterEffect.NoneManaShieldEffect);
 }
 
 #pragma region Calc
@@ -528,130 +504,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 	return Damage;
 }
 
-void AMonster::CalcManaShield(float Damage, EAttributeKeyword AttackAttribute)
-{
-	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-	//加己 硅府绢
-	if (MonsterInfo.bIsShieldOn)
-	{
-		switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-		{
-		case EAttributeKeyword::e_Fire:
-			if (AttackAttribute == EAttributeKeyword::e_Water)
-			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
 
-
-				OnBarrierChanged.Broadcast();
-				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-				{
-					SoundInstance->PlayShieldCrashSound();
-					MonsterInfo.Ele_Shield_Count -= 1;
-
-					if (MonsterInfo.Ele_Shield_Count < 0)
-					{
-						MonsterInfo.bIsShieldOn = false;
-						ManaShiledEffectComponent->SetActive(false);
-						ManaShiledEffectComponent->SetVisibility(false);
-						OnBarrierChanged.Broadcast();
-
-						//HitEffectComponent->SetActive(true);
-						//HitEffectComponent->ForceReset();
-
-
-					}
-					else {
-
-						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-						OnBarrierChanged.Broadcast();
-						SetManaShieldEffct();
-					}
-				}
-
-			}
-			break;
-		case EAttributeKeyword::e_Water:
-			if (AttackAttribute == EAttributeKeyword::e_Thunder)
-			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
-				OnBarrierChanged.Broadcast();
-				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-				{
-					SoundInstance->PlayShieldCrashSound();
-					MonsterInfo.Ele_Shield_Count -= 1;
-
-					if (MonsterInfo.Ele_Shield_Count < 0)
-					{
-						MonsterInfo.bIsShieldOn = false;
-						ManaShiledEffectComponent->SetActive(false);
-						ManaShiledEffectComponent->SetVisibility(false);
-						OnBarrierChanged.Broadcast();
-
-					}
-					else {
-
-						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-						OnBarrierChanged.Broadcast();
-						SetManaShieldEffct();
-					}
-				}
-			}
-			break;
-		case EAttributeKeyword::e_Thunder:
-			if (AttackAttribute == EAttributeKeyword::e_Fire)
-			{
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
-				OnBarrierChanged.Broadcast();
-				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-				{
-					SoundInstance->PlayShieldCrashSound();
-					MonsterInfo.Ele_Shield_Count -= 1;
-					if (MonsterInfo.Ele_Shield_Count < 0)
-					{
-						MonsterInfo.bIsShieldOn = false;
-						OnBarrierChanged.Broadcast();
-						ManaShiledEffectComponent->SetActive(false);
-						ManaShiledEffectComponent->SetVisibility(false);
-					}
-					else {
-
-						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-						OnBarrierChanged.Broadcast();
-						SetManaShieldEffct();
-					}
-				}
-			}
-			break;
-		case EAttributeKeyword::e_None:
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
-				OnBarrierChanged.Broadcast();
-				if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
-				{
-					SoundInstance->PlayShieldCrashSound();
-					MonsterInfo.Ele_Shield_Count -= 1;
-					if (MonsterInfo.Ele_Shield_Count < 0)
-					{
-						MonsterInfo.bIsShieldOn = false;
-						OnBarrierChanged.Broadcast();
-						ManaShiledEffectComponent->SetActive(false);
-						ManaShiledEffectComponent->SetVisibility(false);
-					}
-					else {
-
-						MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-						OnBarrierChanged.Broadcast();
-						SetManaShieldEffct();
-					}
-				}
-			break;
-		default:
-			break;
-		}
-		
-
-	}
-	
-}
 void AMonster::CalcManaShield(float Damage)
 {
 	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -674,8 +527,8 @@ void AMonster::CalcManaShield(float Damage)
 				ManaShiledEffectComponent->SetVisibility(false);
 				OnBarrierChanged.Broadcast();
 
-				//HitEffectComponent->SetActive(true);
-				//HitEffectComponent->ForceReset();
+				HitEffectComponent->SetActive(true);
+				HitEffectComponent->ForceReset();
 
 
 			}
@@ -688,59 +541,15 @@ void AMonster::CalcManaShield(float Damage)
 		}
 	}
 }
-float AMonster::CalcManaShieldDamage(bool bIsSword, float Damage, EAttributeKeyword AttackAttribute)
+float AMonster::CalcManaShieldDamage(float Damage)
 {
 	float TotalDamage = 0.0f;
 	//加己 硅府绢
 	if (MonsterInfo.bIsShieldOn)
 	{
 		
-		if (bIsSword)
-		{
-
-			switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-			{
-			case EAttributeKeyword::e_Fire:
-				if (AttackAttribute == EAttributeKeyword::e_Water)TotalDamage = 1.5f * Damage;
-				else TotalDamage = 0.8 * Damage;
-				break;
-			case EAttributeKeyword::e_Water:
-				if (AttackAttribute == EAttributeKeyword::e_Thunder)TotalDamage = 1.5f * Damage;
-				else TotalDamage = 0.8 * Damage;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (AttackAttribute == EAttributeKeyword::e_Fire)TotalDamage = 1.5f * Damage;
-				else TotalDamage = 0.8 * Damage;
-				break;
-			case EAttributeKeyword::e_None:
-				TotalDamage = Damage;
-				break;
-			}
-
-			STARRYLOG(Error, TEXT("Sword Attack : %f"), TotalDamage);
-		}
-		else {
-			switch (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].Type)
-			{
-			case EAttributeKeyword::e_Fire:
-				if (AttackAttribute == EAttributeKeyword::e_Water)TotalDamage =  1.2f * Damage;
-				else TotalDamage =  0.5 * Damage;
-				break;
-			case EAttributeKeyword::e_Water:
-				if (AttackAttribute == EAttributeKeyword::e_Thunder)TotalDamage =  1.2f * Damage;
-				else TotalDamage =  0.5 * Damage;
-				break;
-			case EAttributeKeyword::e_Thunder:
-				if (AttackAttribute == EAttributeKeyword::e_Fire)TotalDamage =  1.2f * Damage;
-				else TotalDamage =   0.5 * Damage;
-				break;
-			case EAttributeKeyword::e_None:
-				TotalDamage = Damage;
-				break;
-			}
-
-			STARRYLOG(Error, TEXT("Quill Attack : %f"), TotalDamage);
-		}
+		TotalDamage += Damage;
+	
 
     }
 
@@ -999,19 +808,18 @@ void AMonster::PlayDeathAnim()
 }
 void AMonster::InitManaShield()
 {
-	MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
-	if (MonsterInfo.Max_Ele_Shield > 0) {
-		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield - 1;
-		MonsterInfo.bIsShieldOn = true;
-		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-		OnBarrierChanged.Broadcast();
+	if (MonsterInfo.Ele_Shield.Num() != 0) {
 
+		MonsterInfo.bIsShieldOn = true;
+
+		MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
+		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield-1;
+		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
 		SetManaShieldEffct();
-		
 		ManaShiledEffectComponent->SetActive(true);
 		ManaShiledEffectComponent->SetVisibility(false);
+		OnBarrierChanged.Broadcast();
 	}
-	OnBarrierChanged.Broadcast();
 }
 void AMonster::InitPerfectDodgeNotify()
 {
@@ -1112,9 +920,6 @@ void AMonster::BeginPlay()
 	OnSpawnEffectEvent();
 
 	InitPerfectDodgeNotify();
-
-
-	SetNormalState();
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1180,14 +985,14 @@ void AMonster::Tick(float DeltaTime)
 	}
 
 
-	if (bIsAttacked) // 0.2
+	if (bIsAttacked&&!MonsterInfo.bIsShieldOn) // 0.2
 	{
 		KnockBackTime += DeltaTime;
 
-		FVector NewLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
+		KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
 		
 
-		SetActorLocation(NewLocation);
+		SetActorLocation(KnocbackLocation);
 
 		if (KnockBackTime > 0.15f)
 		{
@@ -1285,7 +1090,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		if (Player != nullptr)
 		{
 
-			if (this->MonsterInfo.Monster_Rank != EEnemyRank::e_Unique)
+			if (this->MonsterInfo.Monster_Rank != EEnemyRank::e_Raid)
 			{
 				if (bShowUI)
 				{
@@ -1365,7 +1170,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 								
 				if (MonsterInfo.bIsShieldOn)
 				{
-					//CalcManaShield(CalcManaShieldDamage(true,DamageAmount, Player->GetSwordAttribute()),Player->GetSwordAttribute());
+					CalcManaShield(CalcManaShieldDamage(DamageAmount));
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));

@@ -329,6 +329,9 @@ void ABellyfish::BeginPlay()
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
+	InitManaShield();
+	SetNormalState();
+
 }
 
 void ABellyfish::PossessedBy(AController* NewController)
@@ -440,7 +443,6 @@ void ABellyfish::InitMonsterInfo()
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
-	MonsterInfo.bIsShieldOn = false;
 
 	
 	MonsterInfo.KnockBackPower = 50.0f;

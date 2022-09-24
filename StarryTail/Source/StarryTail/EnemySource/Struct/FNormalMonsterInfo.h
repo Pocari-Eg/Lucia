@@ -14,8 +14,6 @@ struct FElementalShield
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int DEF;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EAttributeKeyword Type;
 };
 
 USTRUCT(Atomic, BluePrintType)
