@@ -278,6 +278,7 @@ public:
 	int GetManaShieldCount() const;
 	EMontserState GetState()const;
 	float GetSupportPatrolRadius() const;
+	float GetAttackedTime() const;
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;

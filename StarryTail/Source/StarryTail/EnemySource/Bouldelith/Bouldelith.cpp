@@ -48,6 +48,9 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 
+	MonsterInfo.PatrolArea = 600.0f;
+	MonsterInfo.M_Attacked_Time = 0.5f;
+
 }
 void ABouldelith::InitBouldelithInfo()
 {

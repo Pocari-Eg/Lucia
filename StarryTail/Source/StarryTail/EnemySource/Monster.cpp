@@ -307,6 +307,11 @@ float AMonster::GetSupportPatrolRadius() const
 	}
 }
 
+float AMonster::GetAttackedTime() const
+{
+	return MonsterInfo.M_Attacked_Time;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;

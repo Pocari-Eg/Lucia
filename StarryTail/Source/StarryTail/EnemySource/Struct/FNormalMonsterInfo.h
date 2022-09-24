@@ -58,7 +58,9 @@ public:
 		int Weapon_Soul;
 
 
-
+	//Attacked Time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_Attacked_Time;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)

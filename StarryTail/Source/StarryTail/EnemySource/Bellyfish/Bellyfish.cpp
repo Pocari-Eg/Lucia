@@ -360,10 +360,6 @@ float ABellyfish::GetRunDistance()
 {
 	return Info.M_Run_Distance;
 }
-float ABellyfish::GetAttackedTime()
-{
-	return Info.M_Attacked_Time;
-}
 float ABellyfish::GetRushTime()
 {
 	return Info.M_Run_Time;
@@ -405,6 +401,8 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
 	MonsterInfo.Weapon_Soul = NewData->Weapon_Soul;
 
+
+	MonsterInfo.M_Attacked_Time = 0.5f;
 
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 	MonsterInfo.PatrolArea = 600.0f;
@@ -456,7 +454,6 @@ void ABellyfish::InitMonsterInfo()
 
 	Info.M_Run_Distance = 450.0f;
 	Info.M_Run_Time = 3.0f;
-	Info.M_Attacked_Time = 0.5f;
 	MonsterInfo.M_AttackPercent = 80.0f;
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;

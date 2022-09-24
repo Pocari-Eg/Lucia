@@ -69,7 +69,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetFlyDistance();
 	float GetRunDistance();
-	float GetAttackedTime();
 	float GetRushTime();
 	float GetRushTestRange();
 	float GetRushSpeed();
