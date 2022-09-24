@@ -21,12 +21,12 @@
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
-DECLARE_MULTICAST_DELEGATE(FDodgeDirection);
+
 DECLARE_MULTICAST_DELEGATE(FOnHpDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnBarrierDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
 
-DECLARE_MULTICAST_DELEGATE(FDodgeTimeOn);
+DECLARE_MULTICAST_DELEGATE(FDodgeTimeSwitch);
 
 
 UCLASS()
@@ -113,12 +113,8 @@ public:
 	FOnBarrierDelegate OnBarrierChanged;
 	FOnSwordAttributeChangeDelegate AttributeChange;
 
-	FDodgeTimeOn DodgeTimeOn;
-
-	FDodgeDirection RightDodge;
-	FDodgeDirection LeftDodge;
-	FDodgeDirection FrontDodge;
-	FDodgeDirection BackDodge;
+	FDodgeTimeSwitch DodgeTimeOn;
+	FDodgeTimeSwitch DodgeTimeOff;
 protected:
 	//Function========================================================
 	void InitAttackedInfo();
@@ -205,9 +201,6 @@ protected:
 
 	bool bIsDodgeTime;
 
-	TArray<uint8> PerfectDodgeDir;
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	class AEnemySpawnPoint* MonsterControl;
 
@@ -251,7 +244,8 @@ private:
 
 	float AttackCoolTimer;
 	float AttackCoolTime;
-
+	
+	bool bIsDodgeOn;
 	
 public:	
 	// Called every frame
@@ -317,6 +311,10 @@ protected:
 
 
 	virtual void IsDodgeTimeOn() {};
+	virtual void IsDodgeTimeOff() {};
+
+	void PerfectDodgeOff();
+	void PerfectDodgeOn();
 	//object
 	virtual void HitCheck(AIreneCharacter* Irene) {};
 };

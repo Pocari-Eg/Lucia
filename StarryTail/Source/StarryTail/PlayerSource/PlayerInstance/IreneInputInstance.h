@@ -56,9 +56,7 @@ private:
 	
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
-	//저스트 회피 방향
-	UPROPERTY()
-	TArray<uint8> PerfectDodgeDir;
+
 
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
@@ -69,7 +67,6 @@ private:
 
 #pragma region CoolTimeValue
 private:
-
 	float MaxSoulValue;
 	float CurSoulValue;	
 
@@ -79,10 +76,14 @@ private:
 	float MaxSwordSkillCoolTime;
 	// 검 스킬 쿨타임
 	float SwordSkillCoolTime;
-	// 검 스킬 종료 쿨타임
+	// 검 스킬 종료 시 발동
+	FTimerHandle SwordSkillEndWaitHandle;
+	// 검 스킬 사용 가능 쿨타임
 	FTimerHandle SwordSkillWaitHandle;
 	// 검 2번 스킬 사용가능 시간
 	FTimerHandle SwordSkill2WaitHandle;
+	// 검 2번 스킬 사용가능 시간
+	float CanSwordSkill2Time;
 	// 창 스킬 최대 쿨타임
 	float MaxSpearSkill1CoolTime;
 	// 창 스킬 쿨타임
@@ -132,13 +133,13 @@ public:
 	void RightButton(float Rate);
 	void SpearRightButton();
 	void SkillWait();
+	void SwordSkillEndWait();
 	void SpearSkill1Wait();
 	void MouseWheel(float Rate);
 
 	// 대쉬
 	void DodgeKeyword();
 	void PerfectDodge();
-	bool CalcPerfectDodgeDir(FVector DodgeDirection);
 	void PerfectDodgeStart();
 	void PerfectDodgeTimeEnd();
 	void PerfectDodgeAttackEnd();
@@ -184,7 +185,6 @@ public:
 	void SetStopMoveAutoTarget()const;
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
 	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
-	void SetIsPerfectDodge(const TArray<uint8> Value) { PerfectDodgeDir = Value; }
 	void SetNextAttack(const bool State) { bNextAttack = State; }
 	void SetJumpAttack(const bool State) { bJumpAttack = State; }
 	void SetReAttack(const bool State) { bReAttack = State; }

@@ -108,7 +108,7 @@ AMonster::AMonster()
 
 		Weapon_SoulClass= BP_WEAPONSOUL.Class;
 	}
-
+	bIsDodgeOn = false;
 }
 #pragma region Init
 void AMonster::InitMonsterAttribute()
@@ -1011,18 +1011,7 @@ void AMonster::InitManaShield()
 void AMonster::InitPerfectDodgeNotify()
 {
 	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
-	RightDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
-		});
-	LeftDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
-		});
-	FrontDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
-		});
-	BackDodge.AddLambda([this]() -> void {
-		PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
-		});
+	DodgeTimeOff.AddUObject(this, &AMonster::IsDodgeTimeOff);
 }
 void AMonster::SetBattleState()
 {
@@ -1400,4 +1389,26 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 		}
 	}
 	return FinalDamage;
+}
+
+void AMonster::PerfectDodgeOff()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (STGameInstance != nullptr) {
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false);
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+	}
+	bIsDodgeOn = false;
+}
+
+void AMonster::PerfectDodgeOn()
+{
+	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+	if (STGameInstance != nullptr) {
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true);
+		STGameInstance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+	}
+
+
+	bIsDodgeOn = true;
 }

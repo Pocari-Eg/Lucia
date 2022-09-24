@@ -138,10 +138,6 @@ void ABellyfish::ProjectileAttack()
 void ABellyfish::Skill_Setting()
 {
 	Info.DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
-	PerfectDodgeDir.Add((uint8)EDodgeDirection::Right);
-	PerfectDodgeDir.Add((uint8)EDodgeDirection::Left);
-	PerfectDodgeDir.Add((uint8)EDodgeDirection::Front);
-	PerfectDodgeDir.Add((uint8)EDodgeDirection::Back);
 	STARRYLOG(Error, TEXT("%f"), Info.DodgeTime);
 
 	IsSkillSet = true;
@@ -163,7 +159,6 @@ void ABellyfish::Skill_Set()
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
-	PerfectDodgeDir.Empty();
 	BellyfishAnimInstance->PlayAttackMontage();
 }
 
@@ -552,19 +547,16 @@ void ABellyfish::Tick(float DeltaTime)
 			
 				if(MagicAttack->GetInPlayer() == true)
 				{
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(true, PerfectDodgeDir);
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+				PerfectDodgeOn();
 				}
 				else {
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
-					Instance->GetPlayer()->IreneAttack->SetIsPerfectDodgeMonster(this);
+					PerfectDodgeOff();
 				}
 				
 			}
 			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
 			{
-				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				Instance->GetPlayer()->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+				PerfectDodgeOff();
 				Skill_Set();
 			}
 		}

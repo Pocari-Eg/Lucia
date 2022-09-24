@@ -22,6 +22,8 @@ ABouldelith::ABouldelith()
 	
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 460.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5, 0.5f, 0.5f));
+
+	IsAttackNum = 0;
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
@@ -34,7 +36,7 @@ void ABouldelith::InitMonsterInfo()
 
 	MonsterInfo.M_MoveSpeed = 200.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 200.0f;
-	MonsterInfo.M_Sight_Angle = 180.0f;
+	MonsterInfo.M_Sight_Angle = 200.0f;
 	MonsterInfo.M_Sight_Radius = 1000.0f;
 	MonsterInfo.M_Sight_Height = 200.0f;
 	MonsterInfo.MeleeAttackRange = 300.0f;
@@ -89,6 +91,12 @@ void ABouldelith::IsDodgeTimeOn()
 {
 	bIsDodgeTime = true;
 }
+
+void ABouldelith::IsDodgeTimeOff()
+{
+	bIsDodgeTime = false;
+}
+
 #pragma endregion
 void ABouldelith::Walk()
 {
@@ -112,10 +120,12 @@ void ABouldelith::Attack1()
 	if (Random < 3)
 	{
 		BdAnimInstance->PlayAttack1ComboMontage();
+		IsAttackNum = 5;
 	}
 	else
 	{
 		BdAnimInstance->PlayAttack1Montage();
+		IsAttackNum = 1;
 	}
 	MonsterAIController->StopMovement();
 }
@@ -126,34 +136,45 @@ void ABouldelith::Attack2()
 	if (Random < 3)
 	{
 		BdAnimInstance->PlayAttack2ComboMontage();
+		IsAttackNum = 5;
 	}
 	{
 		BdAnimInstance->PlayAttack2Montage();
+		IsAttackNum = 2;
 	}
 	MonsterAIController->StopMovement();
 }
 void ABouldelith::Attack3()
 {
+	IsAttackNum = 3;
 	BdAnimInstance->PlayAttack3Montage();
 	MonsterAIController->StopMovement();
 	bIsRush = true;
+
 }
 void ABouldelith::Attack4()
 {
+	IsAttackNum = 4;
 	BdAnimInstance->PlayAttack4Montage();
 	MonsterAIController->StopMovement();
 }
-void ABouldelith::AttackCheck1()
+
+void ABouldelith::LeftAttackCheck()
 {
-	//dodge =========================================
-	bIsDodgeTime = false;
-	PerfectDodgeDir.Empty();
 	// hitcheck======================================
 
 	if (bTestMode)
 	{
 		FTransform BottomLine = GetTransform();
 		BottomLine.SetLocation(BottomLine.GetLocation()-FVector(0.0f,0.0f,120.0f));
+
+		
+		FRotator Rotation = FRotator::ZeroRotator;
+		Rotation = GetActorRotation() + FRotator(0.0f, -50.0f, 0.0f);
+		Rotation.Pitch = 0;
+		BottomLine.SetRotation(FQuat(Rotation));
+
+
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
 
@@ -161,13 +182,19 @@ void ABouldelith::AttackCheck1()
 
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
-		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
-		GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 300.0f, 230.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		if (bIsDodgeTime) {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+		}
+		else {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		}
 	}
 
 	FVector ForwardVector = GetActorForwardVector();
 	ForwardVector.Normalize();
-	FVector AttackDirection = ForwardVector.RotateAngleAxis(-90.0f, FVector::UpVector);
+	FVector AttackDirection = ForwardVector.RotateAngleAxis(-50.0f, FVector::UpVector);
 	AttackDirection.Normalize();
 
 
@@ -179,7 +206,7 @@ void ABouldelith::AttackCheck1()
 	CenterTop.Z += 250.0f;
 
 
-	FVector Box = FVector(300.0f, 300.0f, 300.0f);
+	FVector Box = FVector(500.0f, 500.0f, 300.0f);
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
@@ -258,15 +285,28 @@ void ABouldelith::AttackCheck1()
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
 					STARRYLOG(Error, TEXT("%f"), TargetAngle);
-					if (TargetAngle <= (180.0f * 0.5f))
+					if (TargetAngle <= (200.0f * 0.5f))
 					{
 						if (nullptr == Player) {
 							return;
 						}
-      				Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
-				
-						UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
-						return;
+
+
+
+						if (bIsDodgeTime)
+						{
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
+							return;
+						}
+						else {
+
+						
+							bIsDodgeTime = false;
+							PerfectDodgeOff();
+							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+							return;
+						}
 					}
 				
                  }
@@ -275,72 +315,388 @@ void ABouldelith::AttackCheck1()
 		}
 	}
 	BouldelithInfo.AttackFailedStack++;
+
+	PerfectDodgeOff();
 }
-void ABouldelith::AttackCheck4()
+
+void ABouldelith::RightAttackCheck()
 {
-	bIsDodgeTime = false;
-	PerfectDodgeDir.Empty();
 
-	TArray<FOverlapResult> OverlapResults = DetectPlayer(10);
-	if (OverlapResults.Num() != 0)
+	// hitcheck======================================
+
+	if (bTestMode)
 	{
-		for (auto const& Result : OverlapResults)
-		{
-			auto Player = Cast<AIreneCharacter>(Result.Actor);
-			Player->IreneAttack->SetIsPerfectDodge(false, PerfectDodgeDir);
+		FTransform BottomLine = GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 120.0f));
 
-			if (!Player->GetMovementComponent()->IsFalling())
+
+		FRotator Rotation = FRotator::ZeroRotator;
+		Rotation = GetActorRotation() + FRotator(0.0f, 50.0f, 0.0f);
+		Rotation.Pitch = 0;
+		BottomLine.SetRotation(FQuat(Rotation));
+
+
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
+
+
+
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
+		if (bIsDodgeTime) {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+		}
+		else {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		}
+	}
+
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+	FVector AttackDirection = ForwardVector.RotateAngleAxis(50.0f, FVector::UpVector);
+	AttackDirection.Normalize();
+
+
+	FVector Center = GetLocation() + (AttackDirection * GetCapsuleComponent()->GetScaledCapsuleRadius());
+	FVector CenterBottom = Center;
+
+
+	FVector CenterTop = CenterBottom;
+	CenterTop.Z += 250.0f;
+
+
+	FVector Box = FVector(500.0f, 500.0f, 300.0f);
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		Center,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeCapsule(Box),
+		CollisionQueryParam
+	);
+	if (bResult)
+	{
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
+			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
+			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
+			if (Player && Player->GetController()->IsPlayerController())
 			{
-				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
-			
+				TArray<FHitResult> Hits;
+				TArray<AActor*> ActorsToIgnore;
+				bool bTraceResult;
+				if (GetTestMode())
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(), // SphereTrace 시작 위치
+						Player->GetActorLocation(), // SphereTrace 종료 위치
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::ForDuration, // 마지막 인자값으로 시간 조절 가능
+						Hits,
+						true,
+						FLinearColor::Red,
+						FLinearColor::Green,
+						1.0f
+					);
+				}
+				else
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(),
+						Player->GetActorLocation(),
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::None,
+						Hits,
+						true
+					);
+				}
+				for (int i = 0; i < Hits.Num(); ++i)
+				{
+					STARRYLOG(Warning, TEXT("%s"), *Hits[i].GetActor()->GetName());
+					Player = Cast<AIreneCharacter>(Hits[i].Actor);
+					if (Player != nullptr)
+					{
+						break;
+					}
+				}
+				if (bTraceResult && !(nullptr == Player))
+				{
+					//2차 탐지
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
+
+					FVector TargetDir = Player->GetActorLocation() - GetLocation();
+					TargetDir = TargetDir.GetSafeNormal();
+
+
+					float Radian = FVector::DotProduct(AttackDirection, TargetDir);
+					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
+					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
+					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					if (TargetAngle <= (200.0f * 0.5f))
+					{
+						if (nullptr == Player) {
+							return;
+						}
+
+
+
+						if (bIsDodgeTime)
+						{
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
+							return;
+						}
+						else {
+
+							PerfectDodgeOff();
+							bIsDodgeTime = false;
+							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+							return;
+						}
+					}
+
+				}
+
 			}
 		}
 	}
+	BouldelithInfo.AttackFailedStack++;
+	PerfectDodgeOff();
+
 }
-void ABouldelith::DodgeCheck()
+
+void ABouldelith::AttackCheck3()
 {
 
 	FHitResult Hit;
 
+	//By 성열현
 	FCollisionQueryParams Params(NAME_None, false, this);
 	bool bResult = GetWorld()->SweepSingleByChannel(
 		Hit,
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-		GetActorLocation() + (GetActorForwardVector() * MonsterInfo.MeleeAttackRange * 0.5f * 0.5f) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
-		FRotationMatrix::MakeFromZ(GetActorForwardVector() * MonsterInfo.MeleeAttackRange).ToQuat(),
+		GetActorLocation() + (GetActorForwardVector() + GetMeleeAttackRange()) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		GetActorLocation() + (GetActorForwardVector() + GetMeleeAttackRange()) + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight() / 2.0f),
+		FRotationMatrix::MakeFromZ(GetActorForwardVector() ).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel6,
-		FCollisionShape::MakeSphere(150.0f),
+		FCollisionShape::MakeSphere(GetCapsuleComponent()->GetScaledCapsuleRadius() * 1.5f),
 		Params);
 
-
-	/*if (bTestMode)
+	if (bTestMode)
 	{
-		FVector TraceVec = GetActorForwardVector() * MonsterInfo.MeleeAttackRange;
+		FVector TraceVec = GetActorForwardVector() + GetMeleeAttackRange();
 		FVector Center = GetLocation() + TraceVec * 0.5f + FVector(0, 0, GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-		float HalfHeight = MonsterInfo.MeleeAttackRange * 0.5f * 0.5f;
+		float HalfHeight = GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
 		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Blue : FColor::Yellow;
-		float DebugLifeTime = 5.0f;
+		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		float DebugLifeTime = 0.1f;
 
 		DrawDebugCapsule(GetWorld(),
 			Center,
 			HalfHeight,
-			150.0f,
+			GetCapsuleComponent()->GetScaledCapsuleRadius()*1.5f,
 			CapsuleRot,
 			DrawColor,
 			false,
-			0.1);
-	}*/
+			DebugLifeTime);
+	}
 
 	if (bResult)
 	{
 		auto Player = Cast<AIreneCharacter>(Hit.Actor);
 		if (nullptr == Player)
 			return;
-		
-		Player->IreneAttack->SetIsPerfectDodge(true,PerfectDodgeDir);
-		Player->IreneAttack->SetIsPerfectDodgeMonster(this);
+		if (bIsDodgeTime)
+		{
+			PerfectDodgeOn();
+			return;
+		}
+	}
+
+	PerfectDodgeOff();
+}
+
+void ABouldelith::AttackCheck4()
+{
+
+	// hitcheck======================================
+
+	if (bTestMode)
+	{
+		FTransform BottomLine = GetTransform();
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 120.0f));
+		FTransform TopLine = BottomLine;
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
+
+
+
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
+
+		if (bIsDodgeTime) {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+		}
+		else {
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+		}
+	}
+
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+	
+	FVector Center = GetLocation() + (ForwardVector * GetCapsuleComponent()->GetScaledCapsuleRadius());
+	FVector CenterBottom = Center;
+
+
+	FVector CenterTop = CenterBottom;
+	CenterTop.Z += 250.0f;
+
+
+	FVector Box = FVector(500.0f, 500.0f, 300.0f);
+	TArray<FOverlapResult> OverlapResults;
+	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
+	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+		OverlapResults,
+		Center,
+		FQuat::Identity,
+		ECollisionChannel::ECC_GameTraceChannel6,
+		FCollisionShape::MakeCapsule(Box),
+		CollisionQueryParam
+	);
+	if (bResult)
+	{
+		for (auto const& OverlapResult : OverlapResults)
+		{
+			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
+			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
+			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
+			if (Player && Player->GetController()->IsPlayerController())
+			{
+				TArray<FHitResult> Hits;
+				TArray<AActor*> ActorsToIgnore;
+				bool bTraceResult;
+				if (GetTestMode())
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(), // SphereTrace 시작 위치
+						Player->GetActorLocation(), // SphereTrace 종료 위치
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::ForDuration, // 마지막 인자값으로 시간 조절 가능
+						Hits,
+						true,
+						FLinearColor::Red,
+						FLinearColor::Green,
+						1.0f
+					);
+				}
+				else
+				{
+					bTraceResult = UKismetSystemLibrary::SphereTraceMulti(
+						GetWorld(),
+						GetLocation(),
+						Player->GetActorLocation(),
+						5.0f,
+						ETraceTypeQuery::TraceTypeQuery4,
+						false,
+						ActorsToIgnore,
+						EDrawDebugTrace::None,
+						Hits,
+						true
+					);
+				}
+				for (int i = 0; i < Hits.Num(); ++i)
+				{
+					STARRYLOG(Warning, TEXT("%s"), *Hits[i].GetActor()->GetName());
+					Player = Cast<AIreneCharacter>(Hits[i].Actor);
+					if (Player != nullptr)
+					{
+						break;
+					}
+				}
+				if (bTraceResult && !(nullptr == Player))
+				{
+					//2차 탐지
+					//if (Monster->GetTestMode())
+						//STARRYLOG(Warning, TEXT("Attack in Player SphereTrace"));
+
+					FVector TargetDir = Player->GetActorLocation() - GetLocation();
+					TargetDir = TargetDir.GetSafeNormal();
+
+
+					float Radian = FVector::DotProduct(ForwardVector, TargetDir);
+					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
+					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
+					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					if (TargetAngle <= (360.0f * 0.5f))
+					{
+						if (nullptr == Player) {
+							return;
+						}
+
+						if (bIsDodgeTime)
+						{
+							STARRYLOG(Error, TEXT("Dodge On"));
+							PerfectDodgeOn();
+							return;
+						}
+						else {
+
+							
+							bIsDodgeTime = false;
+							PerfectDodgeOff();
+							UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
+							return;
+						}
+					}
+
+				}
+
+			}
+		}
+	}
+	PerfectDodgeOff();
+	
+}
+void ABouldelith::DodgeCheck()
+{
+
+	switch (IsAttackNum)
+	{
+	case 1:
+		RightAttackCheck();
+		break;
+	case 2:
+		LeftAttackCheck();
+		break;
+	case 3:
+		AttackCheck3();
+		break;
+	case 4:
+		AttackCheck4();
+		break;
+	case 5:
+		break;
+	default:
+		break;
 	}
 }
 #pragma endregion
@@ -443,6 +799,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
+				PerfectDodgeOff();
 			}
 		}
 		if (!bIsWallRushHit)
@@ -463,6 +820,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 						MonsterAnimInstance->PlayGroggyMontage();
 					}
 					bIsWallRushHit = true;
+					PerfectDodgeOff();
 				}
 			}
 		}
@@ -542,8 +900,17 @@ void ABouldelith::BeginPlay()
 			BdAnimInstance->Montage_Stop(500.0f, BdAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-	BdAnimInstance->Attack.AddUObject(this, &ABouldelith::AttackCheck1);
+	BdAnimInstance->Attack1.AddUObject(this, &ABouldelith::RightAttackCheck);
+	BdAnimInstance->Attack2.AddUObject(this, &ABouldelith::LeftAttackCheck);
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
+
+	BdAnimInstance->Right.AddLambda([this]() -> void {
+		IsAttackNum = 1;
+		});
+
+	BdAnimInstance->Left.AddLambda([this]() -> void {
+		IsAttackNum = 2;
+		});
 
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
@@ -552,18 +919,11 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
 		DodgeTimeOn.Broadcast();
 		});
-	BdAnimInstance->RightDodge.AddLambda([this]() -> void {
-		RightDodge.Broadcast();
+	BdAnimInstance->DodgeTimeOff.AddLambda([this]() -> void {
+		DodgeTimeOff.Broadcast();
+		PerfectDodgeOff();
 		});
-	BdAnimInstance->LeftDodge.AddLambda([this]() -> void {
-		LeftDodge.Broadcast();
-		});
-	BdAnimInstance->FrontDodge.AddLambda([this]() -> void {
-		FrontDodge.Broadcast();
-		});
-	BdAnimInstance->BackDodge.AddLambda([this]() -> void {
-		BackDodge.Broadcast();
-		});
+
 
 
 	MonsterAnimInstance = BdAnimInstance;

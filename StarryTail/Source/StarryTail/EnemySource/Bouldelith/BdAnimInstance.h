@@ -11,7 +11,7 @@
  */
 DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
-
+DECLARE_MULTICAST_DELEGATE(FAttackDirectionDelegate);
 
 UCLASS()
 class STARRYTAIL_API UBdAnimInstance : public UMonsterAnimInstance
@@ -40,6 +40,14 @@ public:
 	bool GetBackstepIsPlaying();
 	bool GetBattleRunIsPlaying();
 	//Var
+
+	FAttackDelegate Attack1;
+	FAttackDelegate Attack2;
+
+
+	FAttackDirectionDelegate Right;
+	FAttackDirectionDelegate Left;
+
 	FAttackDelegate Attack4;
 	FBackstepEndDelegate BackstepEnd;
 	FAttackEndDelegate Attack1End;
@@ -47,6 +55,16 @@ public:
 	FAttackEndDelegate Attack3End;
 	FAttackEndDelegate Attack4End;
 private:
+	UFUNCTION()
+	void AnimNotify_Attack1();
+	UFUNCTION()
+	void AnimNotify_Attack2();
+	
+	UFUNCTION()
+	void AnimNotify_Right();
+	UFUNCTION()
+	void AnimNotify_Left();
+
 	UFUNCTION()
 		void AnimNotify_Attack4();
 	UFUNCTION()
