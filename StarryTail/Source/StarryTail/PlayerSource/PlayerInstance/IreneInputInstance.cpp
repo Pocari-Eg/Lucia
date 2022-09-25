@@ -44,7 +44,7 @@ void UIreneInputInstance::InitMemberVariable()
 	SwordSkillCoolTime = 0.0f;
 	MaxSpearSkill1CoolTime = 0.5f;
 	SpearSkill1CoolTime = 0.0f;
-	CanSwordSkill2Time = 2.0f;
+	CanSwordSkill2Time = 5.0f;
 
 	bIsThunderAttributeOn = true;
 
