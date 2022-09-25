@@ -142,6 +142,7 @@ void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
 			SpawnMonsters[i]->GetAIController()->SetBattleMonster(BattleMonster);
 		}
 
+
 	}
 
 }
@@ -186,6 +187,7 @@ void AEnemySpawnPoint::InsertSupportGroup(AMonster* Monster)
 	SupportMonsters.Add(Monster);
 	Monster->GetAIController()->SetPlayer();
 	SupportNum++;
+
 }
 
 void AEnemySpawnPoint::InitSupportGroup()

@@ -23,6 +23,8 @@ EBTNodeResult::Type UBTTaskMobMoveToPatrolPos::ExecuteTask(UBehaviorTreeComponen
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
+
+
 	Monster->GetAIController()->MoveToLocation(OwnerComp.GetBlackboardComponent()->GetValueAsVector(AMonsterAIController::PatrolPosKey));
 
 
