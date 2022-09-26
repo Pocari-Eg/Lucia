@@ -11,6 +11,7 @@
 #include "IreneUIManager.h"
 #include "MovieSceneTracksComponentTypes.h"
 #include "../../STGameInstance.h"
+#include "Curves/CurveVector.h"
 #include "Kismet/KismetMathLibrary.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
@@ -56,6 +57,8 @@ void UIreneInputInstance::InitMemberVariable()
 	SpearSkill1Count = MaxSpearSkill1Count;
 	
 	TempAttribute = EAttributeKeyword::e_None;
+
+	bSkillCameraMove = false;
 	
 	CoolTimeRate = 0.008f;
 	SlowScale = 0.4f;
@@ -137,28 +140,28 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 
 void UIreneInputInstance::MoveW(float Rate)
 {
-	if(Rate >= 1)
+	if(Rate >= 1 && !Irene->bInputStop)
 		MovePressedKey(0);
 	else
 		MoveKey[0] = 0;
 }
 void UIreneInputInstance::MoveA(float Rate)
 {
-	if(Rate >= 1)
+	if(Rate >= 1 && !Irene->bInputStop)
 		MovePressedKey(1);
 	else
 		MoveKey[1] = 0;
 }
 void UIreneInputInstance::MoveS(float Rate)
 {
-	if(Rate >= 1)
+	if(Rate >= 1 && !Irene->bInputStop)
 		MovePressedKey(2);
 	else
 		MoveKey[2] = 0;
 }
 void UIreneInputInstance::MoveD(float Rate)
 {
-	if(Rate >= 1)
+	if(Rate >= 1 && !Irene->bInputStop)
 		MovePressedKey(3);
 	else
 		MoveKey[3] = 0;
@@ -226,19 +229,22 @@ int UIreneInputInstance::GetMoveKeyToDirNumber()
 void UIreneInputInstance::Turn(float Rate)
 {
 	// 마우스 좌우 이동
-	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
+	if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState() && !Irene->bInputStop)
 		Irene->AddControllerYawInput(Rate * Irene->IreneData.EDPI / 2);
 }
 void UIreneInputInstance::LookUp(float Rate)
 {
 	// 마우스 상하 이동
-	const float Yaw = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch) + Rate * Irene->IreneData.EDPI * Irene->WorldController->InputPitchScale;
-
-	// 시야각 제한
-	if (Yaw < 50)
+	if(!Irene->bInputStop)
 	{
-		if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
-			Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI / 5.5f);
+		const float Yaw = FRotator::NormalizeAxis(Irene->WorldController->GetControlRotation().Pitch) + Rate * Irene->IreneData.EDPI * Irene->WorldController->InputPitchScale;
+
+		// 시야각 제한
+		if (Yaw < 50)
+		{
+			if (Irene->WorldController->bShowMouseCursor == false && !Irene->IreneState->IsDeathState())
+				Irene->AddControllerPitchInput(Rate * Irene->IreneData.EDPI / 5.5f);
+		}
 	}
 }
 
@@ -248,7 +254,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack)) && !AttackWaitHandle.IsValid() && !bIsDialogOn)
+	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack)) && !AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
 	{
 		if (Rate >= 1.0)
 		{
@@ -349,7 +355,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		bRightButtonPressed = true;
 	else
 		bRightButtonPressed = false;
-	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn)
+	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
 	{
 		if (Rate >= 1.0)
 		{			
@@ -398,6 +404,8 @@ void UIreneInputInstance::RightButton(float Rate)
 				return;
 			}
 			// 아래로는 검 스킬만 작동
+
+			//SkillCameraMoveStart();
 			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
 			if(AttackTable != nullptr)
@@ -537,10 +545,53 @@ void UIreneInputInstance::SpearSkill1Wait()
 	}
 }
 
+void UIreneInputInstance::SkillCameraMoveStart()
+{
+	bSkillCameraMove = true;
+	SkillCameraPlayTime = 0;
+	SkillCameraEndPlayTime = 0;
+	Irene->bInputStop = true;
+}
+void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
+{
+	if(bSkillCameraMove)
+	{
+		if(SkillCameraPlayTime >= 1.0f)
+		{
+			SkillCameraMoveEnd(DeltaTime);
+			return;
+		}
+		SkillCameraPlayTime += DeltaTime;
+		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraPlayTime);
+		Irene->SpringArmComp->TargetArmLength = Value.X;
+		Irene->AddControllerPitchInput(Value.Y);
+		Irene->AddControllerYawInput(Value.Z);
+		SkillCameraEndPlayTime = SkillCameraPlayTime;
+	}
+}
+void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
+{
+	if(bSkillCameraMove)
+	{
+		SkillCameraEndPlayTime -= DeltaTime;
+		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraEndPlayTime);
+		Irene->SpringArmComp->TargetArmLength = Value.X;
+		Irene->AddControllerPitchInput(-Value.Y);
+		Irene->AddControllerYawInput(-Value.Z);
+
+		if(SkillCameraEndPlayTime <= 0)
+		{
+			bSkillCameraMove = false;
+			SkillCameraPlayTime = 0;
+			SkillCameraEndPlayTime = 0;
+			Irene->bInputStop = false;
+		}
+	}
+}
 
 void UIreneInputInstance::MouseWheel(float Rate)
 {
-	if (!Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsDeathState() && !Irene->bInputStop)
 	{
 		// 줌인줌아웃
 		Irene->SpringArmComp->TargetArmLength -= Rate * Irene->IreneData.MouseWheelSpeed;
@@ -555,7 +606,7 @@ void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
-		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn)
+		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn && !Irene->bInputStop)
 	{
 		TUniquePtr<FAttackDataTable> AttackDataTable = nullptr;
 		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
@@ -631,26 +682,29 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
-	if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	if(!Irene->bInputStop)
 	{
-		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
 		{
-			Irene->IreneData.CurrentGauge = 0;
-			Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
-			Irene->IreneAnim->IsSword(false);
-			GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 20*UGameplayStatics::GetGlobalTimeDilation(this), false);
-			Irene->IreneAnim->StopAllMontages(0);
-			Irene->IreneAttack->AttackTimeEndState();
-			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
-			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
-		}
-		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-		{
-			Irene->IreneAnim->IsSword(true);
-			Irene->IreneAnim->StopAllMontages(0);
-			Irene->IreneAttack->AttackTimeEndState();
-			Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
-			Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
+			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			{
+				Irene->IreneData.CurrentGauge = 0;
+				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
+				Irene->IreneAnim->IsSword(false);
+				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 20*UGameplayStatics::GetGlobalTimeDilation(this), false);
+				Irene->IreneAnim->StopAllMontages(0);
+				Irene->IreneAttack->AttackTimeEndState();
+				Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
+				Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
+			}
+			else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			{
+				Irene->IreneAnim->IsSword(true);
+				Irene->IreneAnim->StopAllMontages(0);
+				Irene->IreneAttack->AttackTimeEndState();
+				Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
+				Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
+			}
 		}
 	}
 }
@@ -712,7 +766,7 @@ void UIreneInputInstance::DialogSkip()
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
-	if (!Irene->IreneState->IsDeathState()&&!bIsDialogOn)
+	if (!Irene->IreneState->IsDeathState() && !bIsDialogOn && !Irene->bInputStop)
 	{
 		// 마우스 커서 숨기거나 보이게 하는 함수
 		if (Irene->WorldController->bShowMouseCursor == false)

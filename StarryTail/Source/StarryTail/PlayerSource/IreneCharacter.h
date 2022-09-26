@@ -88,9 +88,13 @@ public:
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
+	UPROPERTY(EditAnywhere)
+	UCurveVector* SkillCamera;
 	
 	UPROPERTY()
 	TMap<AActor*, float>ActorAngleMap;
+
+	bool bInputStop;
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
