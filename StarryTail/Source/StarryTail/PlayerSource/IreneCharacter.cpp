@@ -164,6 +164,13 @@ AIreneCharacter::AIreneCharacter()
 		UseLagCurve = CameraLagCurve[0];
 	}
 	
+	// 스킬 카메라 움직임
+	const ConstructorHelpers::FObjectFinder<UCurveVector>SkillCameraData(TEXT("/Game/Math/SkillCamera.SkillCamera"));
+	if(SkillCameraData.Succeeded())
+	{
+		SkillCamera = SkillCameraData.Object;
+	}
+	
 	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
 	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
@@ -190,6 +197,7 @@ AIreneCharacter::AIreneCharacter()
 	WorldController = nullptr;
 	CameraShakeOn = false;
 	bIsRadialBlurOn = false;
+	bInputStop = false;
 }
 
 void AIreneCharacter::BeginPlay()
@@ -269,6 +277,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 	
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
+	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
 }
@@ -298,6 +307,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("Action", IE_Pressed, IreneInput, &UIreneInputInstance::DialogAction);
 	PlayerInputComponent->BindAction("DialogSkip", IE_Pressed, IreneInput, &UIreneInputInstance::DialogSkip);
+
+	PlayerInputComponent->BindAction("TestSkillCamera", IE_Pressed, IreneInput, &UIreneInputInstance::SkillCameraMoveStart);
 
 	// 스탑워치 컨트롤
 	//PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);
