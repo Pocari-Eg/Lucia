@@ -768,7 +768,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
 	
-		if(CurState->PlayTime >= 1.73f)
+		if(CurState->PlayTime >= 1.33f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -868,7 +868,7 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 1.8f)
+		if(CurState->PlayTime >= 1.37f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -967,7 +967,7 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 	}
 	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
 	{
-		if(CurState->PlayTime >= 3.23f)
+		if(CurState->PlayTime >= 1.63f)
 		{
 			EndTimeExit(CurState);
 		}
