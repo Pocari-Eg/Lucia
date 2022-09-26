@@ -22,7 +22,7 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-
+	
 	bool bNextAttack;
 	bool bJumpAttack;
 	bool bReAttack;
@@ -56,7 +56,6 @@ private:
 	
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
-
 
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
@@ -95,7 +94,10 @@ private:
 	
 	// 닷지 쿨타임
 	FTimerHandle DodgeWaitHandle;
-	
+
+	bool bSkillCameraMove;
+	float SkillCameraPlayTime;
+	float SkillCameraEndPlayTime;
 	float CoolTimeRate;
 #pragma endregion CoolTimeValue
 	
@@ -135,6 +137,11 @@ public:
 	void SkillWait();
 	void SwordSkillEndWait();
 	void SpearSkill1Wait();
+
+	void SkillCameraMoveStart();
+	void SkillCameraMoveLoop(float DeltaTime);
+	void SkillCameraMoveEnd(float DeltaTime);
+
 	void MouseWheel(float Rate);
 
 	// 대쉬
