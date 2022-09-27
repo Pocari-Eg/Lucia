@@ -53,6 +53,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_03;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_04;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int Weapon_Soul;
 
 
@@ -87,8 +89,10 @@ public:
 	FAttackRange Attack2Range;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FAttackRange Attack3Range;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack4Range;
 	//시야
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Sight_Radius; //시야거리
 	UPROPERTY()
@@ -205,6 +209,8 @@ public:
 		int M_Skill_Type_02;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_03;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_04;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Weapon_Soul;
 };

@@ -136,6 +136,14 @@ protected:
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
 
+
+
+	void InitAttack1Data();
+	void InitAttack2Data();
+	void InitAttack3Data();
+	void InitAttack4Data();
+
+
 //Variable========================================================
 	AMonsterAIController* MonsterAIController;
 

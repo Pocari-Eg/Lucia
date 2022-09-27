@@ -85,9 +85,6 @@ private:
 	void InitAnime() override;
 
 
-	void InitAttack1Data();
-	void InitAttack2Data();
-	void InitAttack3Data();
 //Variable
 	//Variable
 	UPROPERTY()

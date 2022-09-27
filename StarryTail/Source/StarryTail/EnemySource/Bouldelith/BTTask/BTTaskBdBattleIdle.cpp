@@ -37,7 +37,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	if (Bouldelith->GetAttackFailedStack() >= 3 && Bouldelith->GetHpPercent() < 50)
 	{
 		Bouldelith->ResetAttackFailedStack();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack4Key, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack4Key, true);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
 		ChangeStateTimer = 0.0f;
@@ -60,10 +60,10 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 			switch (Random)
 			{
 			case 0:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack1Key, true);
 				break;
 			case 1:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack2Key, true);
 				break;
 			}
 		}
@@ -86,10 +86,10 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, true);
 			break;
 		case 1:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack1Key, true);
 			break;
 		case 2:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
+			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack2Key, true);
 			break;
 		}
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);

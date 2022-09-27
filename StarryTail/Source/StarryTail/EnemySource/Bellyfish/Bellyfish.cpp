@@ -73,7 +73,6 @@ void ABellyfish::Attack()
 	//어택 준비 애니메이션 출력
 
 	InitAttack1Data();
-
 	BellyfishAnimInstance->PlayAttackSignMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	Info.AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
@@ -406,8 +405,6 @@ void ABellyfish::InitMonsterInfo()
 
 
 	MonsterInfo.M_Attacked_Time = 0.5f;
-
-	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
 	MonsterInfo.PatrolArea = 600.0f;
 	MonsterInfo.M_MaxFollowTime = 5.0f;
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
@@ -433,13 +430,9 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.Attack3Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
 	MonsterInfo.Attack3Range.M_Atk_Height = NewSkillData->M_Atk_Height;
 	MonsterInfo.Attack3Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
-	//
 
 	MonsterInfo.S_Attack_Time = 8.0f;
-	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-
-	MonsterInfo.Chain_Detect_Radius = 450.0f;
 
 	MonsterInfo.Max_Ele_Shield = 0;
 	MonsterInfo.Ele_Shield_Count = -1;
@@ -448,14 +441,8 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 1.0f;
 
-	
-	MonsterInfo.MeleeAttackRange = 100.0f * GetActorScale().X;
 	MonsterInfo.TraceRange = 1000.0f;
 
-	MonsterInfo.M_MaxAttacked = 3;
-
-	Info.M_Run_Distance = 450.0f;
-	Info.M_Run_Time = 3.0f;
 	MonsterInfo.M_AttackPercent = 80.0f;
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
@@ -603,44 +590,5 @@ void ABellyfish::InitAnime()
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);
 	}
 }
-void ABellyfish::InitAttack1Data()
-{
 
-	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-
-	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
-	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
-	
-	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
-	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
-	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
-	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-
-
-
-}
-void ABellyfish::InitAttack2Data()
-{
-	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_02);
-
-	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
-	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
-
-	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
-	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
-	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
-	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-}
-void ABellyfish::InitAttack3Data()
-{
-	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
-
-	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
-	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
-
-	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
-	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
-	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
-	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
-}
 #pragma endregion Init

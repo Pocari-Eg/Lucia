@@ -42,6 +42,7 @@ public:
 	void SetBattleState(bool State);
 	void SetAttackedState(bool State);
 	void SetSupportState(bool State);
+	void SetShieldKey(bool State);
 	void OnAttack(int i);
 	void OffAttack(int i);
 
@@ -100,8 +101,10 @@ public:
 	static const FName Attack1Key;
 	static const FName Attack2Key;
 	static const FName Attack3Key;
+	static const FName Attack4Key;
 
 	static const FName BattleMonsterKey;
+	static const FName IsShieldOnKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

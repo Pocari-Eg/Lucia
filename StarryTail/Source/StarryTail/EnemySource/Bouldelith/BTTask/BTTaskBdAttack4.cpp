@@ -18,6 +18,7 @@ EBTNodeResult::Type UBTTaskBdAttack4::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
 	Bouldelith->Attack4();
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 
 	bIsAttacking = true;
 	Bouldelith->Attack4End.AddLambda([this]() -> void { bIsAttacking = false; });
@@ -27,11 +28,17 @@ EBTNodeResult::Type UBTTaskBdAttack4::ExecuteTask(UBehaviorTreeComponent& OwnerC
 void UBTTaskBdAttack4::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
 	if (!bIsAttacking)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack4Key, false);
+		
+		Monster->GetAIController()->SetAttackCoolKey(true);
+		Monster->SetIsAttackCool(true);
+		Monster->GetAIController()->OffAttack(4);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
+
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

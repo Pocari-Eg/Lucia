@@ -530,6 +530,7 @@ void AMonster::CalcManaShield(float Damage)
 				HitEffectComponent->SetActive(true);
 				HitEffectComponent->ForceReset();
 
+				MonsterAIController->SetShieldKey(false);
 
 			}
 			else {
@@ -833,6 +834,12 @@ void AMonster::SetBattleState()
 	MonsterAIController->SetSupportState(false);
 
 	CurState = EMontserState::Battle;
+
+	if (MonsterInfo.bIsShieldOn)
+		MonsterAIController->SetShieldKey(true);
+	else {
+		MonsterAIController->SetShieldKey(false);
+	}
 
 
 }
@@ -1221,4 +1228,56 @@ void AMonster::PerfectDodgeOn()
 
 
 	bIsDodgeOn = true;
+}
+void AMonster::InitAttack1Data()
+{
+
+	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
+
+	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
+
+
+
+}
+void AMonster::InitAttack2Data()
+{
+	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_02);
+
+	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
+}
+void AMonster::InitAttack3Data()
+{
+	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
+
+	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
+}
+void AMonster::InitAttack4Data()
+{
+	FMonsterSkillDataTable* NewData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
+
+	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
+	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
+
+	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
+	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
+	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;
+	MonsterInfo.M_Skill_Cool = NewData->M_Skill_Cool;
 }

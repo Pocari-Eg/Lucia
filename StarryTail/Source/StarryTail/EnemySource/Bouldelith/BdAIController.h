@@ -27,16 +27,12 @@ public:
 
 	static const FName IsBackstepKey;
 
-	static const FName IsAttack1Key;
-	static const FName IsAttack2Key;
-	static const FName IsAttack3Key;
-	static const FName IsAttack4Key;
 
 	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
 
 	static const FName IsStatueStateKey;
-private:
+
 private:
 	void OnPossess(APawn* InPawn) override;
 };

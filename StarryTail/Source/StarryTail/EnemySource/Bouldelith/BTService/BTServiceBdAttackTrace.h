@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTService.h"
 #include "Components/LineBatchComponent.h"
-#include "../Monster.h"
-#include "BTServiceAttackTrace.generated.h"
+#include "../../Monster.h"
+#include "BTServiceBdAttackTrace.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTServiceAttackTrace : public UBTService
+class STARRYTAIL_API UBTServiceBdAttackTrace : public UBTService
 {
 	GENERATED_BODY()
 
@@ -20,11 +20,8 @@ private:
 	bool bIsAttack1In;
 	bool bIsAttack2In;
 	bool bIsAttack3In;
-
-	bool bIsAttack12In;
-	bool bIsAttack23In;
 public:
-	UBTServiceAttackTrace();
+	UBTServiceBdAttackTrace();
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	bool Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);

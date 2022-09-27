@@ -19,35 +19,29 @@ EBTNodeResult::Type UBTTaskBdAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
-	Bouldelith->BattleRun();
-
-	bIsNotAttacking = true;
+	Bouldelith->Attack2();
 	bIsAttacking = true;
 	Bouldelith->Attack2End.AddLambda([this]() -> void { bIsAttacking = false; });
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskBdAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
-	if (bIsNotAttacking)
-	{
-		auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-		auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
 
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(Bouldelith->GetController(), Player->GetActorLocation());
-
-		if (Bouldelith->GetDistanceToPlayer() <= 300.0f)
-		{
-			Bouldelith->Attack2();
-			bIsNotAttacking = false;
-		}
-	}
 	if (!bIsAttacking)
 	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, false);
+	
+		Monster->GetAIController()->SetAttackCoolKey(true);
+		Monster->SetIsAttackCool(true);
+		Monster->GetAIController()->OffAttack(2);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
+
+
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 }

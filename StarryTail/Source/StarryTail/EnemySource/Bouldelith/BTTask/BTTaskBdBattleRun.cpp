@@ -61,7 +61,7 @@ void UBTTaskBdBattleRun::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	else if (Bouldelith->GetDistanceToPlayer() <= 500.0f && bIsAway && !Bouldelith->GetIsChangeBattleRunStateToAttackedState())
 	{
 		Bouldelith->SetIsChangeBattleRunStateToAttackedState(false);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack3Key, true);
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack3Key, true);
 		bIsAway = false;
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
