@@ -551,42 +551,39 @@ void UIreneInputInstance::SkillCameraMoveStart()
 	SkillCameraPlayTime = 0;
 	SkillCameraEndPlayTime = 0;
 	Irene->bInputStop = true;
+
+	// 카메라 원점 조정
+	FRotator Rotator = FRotator::ZeroRotator;
+	Rotator.Pitch += 40;
+	Rotator.Yaw -= 90;
+	Irene->WorldController->SetControlRotation(Rotator);
 }
 void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
 {
 	if(bSkillCameraMove)
 	{
-		if(SkillCameraPlayTime >= 1.0f)
-		{
-			SkillCameraMoveEnd(DeltaTime);
-			return;
-		}
 		SkillCameraPlayTime += DeltaTime;
 		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraPlayTime);
 		Irene->SpringArmComp->TargetArmLength = Value.X;
 		Irene->AddControllerPitchInput(Value.Y);
 		Irene->AddControllerYawInput(Value.Z);
 		SkillCameraEndPlayTime = SkillCameraPlayTime;
+		if(SkillCameraPlayTime >= 2.0f)
+		{
+			SkillCameraMoveEnd(DeltaTime);
+			return;
+		}
 	}
 }
 void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
 {
-	if(bSkillCameraMove)
-	{
-		SkillCameraEndPlayTime -= DeltaTime;
-		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraEndPlayTime);
-		Irene->SpringArmComp->TargetArmLength = Value.X;
-		Irene->AddControllerPitchInput(-Value.Y);
-		Irene->AddControllerYawInput(-Value.Z);
+	Irene->SpringArmComp->TargetArmLength = 450;
 
-		if(SkillCameraEndPlayTime <= 0)
-		{
 			bSkillCameraMove = false;
 			SkillCameraPlayTime = 0;
 			SkillCameraEndPlayTime = 0;
 			Irene->bInputStop = false;
-		}
-	}
+
 }
 
 void UIreneInputInstance::MouseWheel(float Rate)
