@@ -21,13 +21,15 @@ class STARRYTAIL_API UBTTaskPatrol : public UBTTaskNode
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-	void FindPatrolPos(class AMonster* Monster);
 
 	private:
 	bool bIsReturn;
 	bool bIsIdle;
 	bool bIsWalk;
+	bool bIsSpawn;
 
+
+	FVector WalkPoint;
 
 	float Timer;
 	float Time;

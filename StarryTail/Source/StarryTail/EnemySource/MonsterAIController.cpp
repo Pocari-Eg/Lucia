@@ -38,6 +38,7 @@ const FName AMonsterAIController::B_IdleKey = (TEXT("B_IdleState"));
 
 const FName AMonsterAIController::BattleMonsterKey = (TEXT("BattleMonster"));
 const FName AMonsterAIController::IsShieldOnKey = (TEXT("bIsShieldOn"));
+const FName AMonsterAIController::IsTraceOnKey = (TEXT("bIsTraceOn"));
 
 AMonsterAIController::AMonsterAIController()
 {

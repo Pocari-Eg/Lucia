@@ -13,6 +13,8 @@ const FName ABdAIController::IsBackstepKey = (TEXT("bIsBackstep"));
 const FName ABdAIController::IsBrokenKey = (TEXT("bIsBroken"));
 const FName ABdAIController::IsWallGroggyKey = (TEXT("bIsWallGroggy"));
 const FName ABdAIController::IsStatueStateKey = (TEXT("StatueState"));
+const FName ABdAIController::IsBattleRunKey = (TEXT("bIsBattleRun"));
+const FName ABdAIController::IsWalkPointKey = (TEXT("WalkPointKey"));
 
 
 ABdAIController::ABdAIController()
@@ -56,6 +58,16 @@ void ABdAIController::Broken()
 void ABdAIController::SetStatueKey(bool state)
 {
 	Blackboard->SetValueAsBool(IsStatueStateKey, state);
+}
+
+void ABdAIController::SetBattleRunKey(bool state)
+{
+	Blackboard->SetValueAsBool(IsBattleRunKey, state);
+}
+
+void ABdAIController::SetWalkPoint(FVector Location)
+{
+	Blackboard->SetValueAsVector(IsWalkPointKey, Location);
 }
 
 void ABdAIController::Attack()

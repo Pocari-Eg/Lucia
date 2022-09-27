@@ -334,6 +334,12 @@ FAttackRange AMonster::GetAttack3Range() const
 {
 	return MonsterInfo.Attack3Range;
 }
+
+FAttackRange AMonster::GetAttack4Range() const
+{
+	return MonsterInfo.Attack4Range;
+}
+
 void AMonster::SetIsAttackCool(bool Cool)
 {
 

@@ -5,6 +5,7 @@
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
+#include"../../../STGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskBdBattleIdle::UBTTaskBdBattleIdle()
@@ -20,7 +21,6 @@ EBTNodeResult::Type UBTTaskBdBattleIdle::ExecuteTask(UBehaviorTreeComponent& Own
 
 	Bouldelith->BattleIdle();
 
-	ChangeStateTime = FMath::RandRange(1, 3);
 
 	return EBTNodeResult::InProgress;
 }
@@ -28,74 +28,15 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	ChangeStateTimer += DeltaSeconds;
-
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
+	auto Instance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
 
-	
-	if (Bouldelith->GetAttackFailedStack() >= 3 && Bouldelith->GetHpPercent() < 50)
+	STARRYLOG(Warning, TEXT("%f"),Bouldelith->GetDistanceTo(Instance->GetPlayer()));
+	if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) >= Bouldelith->GetPlayerMaxDistance())
 	{
-		Bouldelith->ResetAttackFailedStack();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack4Key, true);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
-		ChangeStateTimer = 0.0f;
+		Bouldelith->SetBattleRunState(true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	if (Bouldelith->GetDistanceToPlayer() >= 500.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	else if (Bouldelith->GetDistanceToPlayer() <= 200.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
-
-		if (Bouldelith->GetIsUseBackstep())
-		{
-			int Random = FMath::RandRange(0, 1);
-
-			switch (Random)
-			{
-			case 0:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack1Key, true);
-				break;
-			case 1:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack2Key, true);
-				break;
-			}
-		}
-		else
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBackstepKey, true);
-		}
-
-		ChangeStateTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	
-	if (ChangeStateTimer >= ChangeStateTime)
-	{	
-		int Random = FMath::RandRange(0, 2);
-
-		switch (Random)
-		{
-		case 0:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, true);
-			break;
-		case 1:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack1Key, true);
-			break;
-		case 2:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::Attack2Key, true);
-			break;
-		}
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
-
-		ChangeStateTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	
 }

@@ -19,7 +19,7 @@ EBTNodeResult::Type UBTTaskBdAttack4::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Bouldelith->Attack4();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
-
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleRunKey, false);
 	bIsAttacking = true;
 	Bouldelith->Attack4End.AddLambda([this]() -> void { bIsAttacking = false; });
 

@@ -12,7 +12,7 @@ ABouldelith::ABouldelith()
 	AIControllerClass = ABdAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	InitBouldelithInfo();
+
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -98,9 +98,10 @@ void ABouldelith::InitMonsterInfo()
 void ABouldelith::InitBouldelithInfo()
 {
 	BouldelithInfo.AnotherMonsterStateCheckRange = 1000.0f;
-	BouldelithInfo.DefaultBattleRunSpeed = 450.0f;
+	BouldelithInfo.DefaultBattleRunSpeed = MonsterInfo.M_MoveSpeed*1.5f;
 	BouldelithInfo.BackstepCoolTime = 10.0f;
 	BouldelithInfo.BrokenAnimePlayRate = 1.3f;
+	BouldelithInfo.M_PlayerMaxDistance = 2000.0f;
 }
 void ABouldelith::InitCollision()
 {
@@ -349,7 +350,7 @@ void ABouldelith::LeftAttackCheck()
 						
 							bIsDodgeTime = false;
 							PerfectDodgeOff();
-							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 							return;
 						}
 					}
@@ -504,7 +505,7 @@ void ABouldelith::RightAttackCheck()
 
 							PerfectDodgeOff();
 							bIsDodgeTime = false;
-							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack1Value, NULL, this, NULL);
+							UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk , NULL, this, NULL);
 							return;
 						}
 					}
@@ -698,7 +699,7 @@ void ABouldelith::AttackCheck4()
 							
 							bIsDodgeTime = false;
 							PerfectDodgeOff();
-							UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack4Value), NULL, this, NULL);
+							UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk), NULL, this, NULL);
 							return;
 						}
 					}
@@ -750,6 +751,21 @@ void ABouldelith::SetIsUseBackstep(bool Value)
 {
 	bIsUseBackstep = Value;
 }
+
+void ABouldelith::SetBattleRunState(bool State)
+{
+	auto AIController = Cast<ABdAIController>(GetAIController());
+	if (AIController != nullptr)
+	{
+		AIController->SetBattleRunKey(State);
+	}
+}
+
+float ABouldelith::GetPlayerMaxDistance() const
+{
+	return BouldelithInfo.M_PlayerMaxDistance;
+}
+
 #pragma endregion
 
 UBdAnimInstance* ABouldelith::GetBouldelithAnimInstance() const
@@ -764,7 +780,7 @@ float ABouldelith::GetAnotherMonsterStateCheckRange()
 void ABouldelith::BattleRun()
 {
 	GetCharacterMovement()->MaxWalkSpeed = BouldelithInfo.DefaultBattleRunSpeed;
-	BouldelithInfo.CurrentBattleRunSpeed = BouldelithInfo.DefaultBattleRunSpeed;
+
 
 	BdAnimInstance->PlayBattleRunMontage();
 }
@@ -831,7 +847,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				auto Player = Cast<AIreneCharacter>(OtherActor);
 
 				
-				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value), NULL, this, NULL);
+				UGameplayStatics::ApplyDamage(Player, (MonsterInfo.M_Skill_Atk), NULL, this, NULL);
 				
 				bIsPlayerRushHit = true;
 				PerfectDodgeOff();
@@ -847,7 +863,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 
 				if (FindName == CompCollisionName)
 				{
-					CalcHp(MonsterInfo.M_Skill_Atk * BouldelithInfo.Attack3Value);
+					CalcHp(MonsterInfo.M_Skill_Atk);
 					if (!bIsDead)
 					{
 						auto BdAIController = Cast<ABdAIController>(MonsterAIController);
@@ -905,6 +921,7 @@ void ABouldelith::BeginPlay()
 
 	InitMonsterInfo();
 	InitAttack1Data();
+	InitBouldelithInfo();
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});
@@ -968,8 +985,12 @@ void ABouldelith::BeginPlay()
 	{
 		BdAIController->SetStatueKey(true);
 		BdAnimInstance->StopAllMontages(0.0f);
+
+		if (WalkPoint != nullptr)
+			BdAIController->SetWalkPoint(WalkPoint->GetActorLocation());
 	}
 
+	
 	InitManaShield();
 	
 }

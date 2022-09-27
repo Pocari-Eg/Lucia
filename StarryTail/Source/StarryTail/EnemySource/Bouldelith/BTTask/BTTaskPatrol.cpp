@@ -20,17 +20,20 @@ EBTNodeResult::Type UBTTaskPatrol::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	if (nullptr == Monster)
+	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Bouldelith)
 		return EBTNodeResult::Failed;
 
 
-	Monster->GetAIController()->MoveToLocation(Monster->GetAIController()->
-		GetBlackboardComponent()->GetValueAsVector(Monster->GetAIController()->SpawnPosKey));
+	WalkPoint = Bouldelith->GetAIController()->GetBlackboardComponent()->GetValueAsVector(ABdAIController::IsWalkPointKey);
+
+	WalkPoint.Z = Bouldelith->GetActorLocation().Z;
+
 
 	bIsReturn = true;
 	bIsIdle = false;
 	bIsWalk = false;
+	bIsSpawn = false;
 
 	return EBTNodeResult::InProgress;
 }
@@ -74,13 +77,35 @@ void UBTTaskPatrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 		if (Timer >= Time)
 		{
 			bIsIdle = false;
-			bIsWalk = true;
 			Timer = 0.0f;
 			Monster->PlayWalkAnim();
-			FindPatrolPos(Monster);
-			Monster->GetAIController()->MoveToLocation(Monster->GetAIController()->GetBlackboardComponent()->GetValueAsVector(Monster->GetAIController()->PatrolPosKey));
+
+			if (!bIsSpawn)
+			{
+				Monster->GetAIController()->MoveToLocation(Monster->GetAIController()->GetBlackboardComponent()->GetValueAsVector(Monster->GetAIController()->SpawnPosKey));
+				bIsSpawn = true;
+				bIsWalk = false;
+			}
+			else {
+				Monster->GetAIController()->MoveToLocation(WalkPoint);
+				bIsSpawn = false;
+				bIsWalk = true;
+
+			}
+		
+		}
+		return;
+	}
+
+	if (bIsSpawn) {
+		if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Idle)
+		{
+			Monster->GetAIController()->StopMovement();
+			Monster->PlayIdleAnim();
+			bIsIdle = true;
 		}
 	}
+
 	else if (bIsWalk)
 	{
 		if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Idle)
@@ -88,35 +113,7 @@ void UBTTaskPatrol::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			Monster->GetAIController()->StopMovement();
 			Monster->PlayIdleAnim();
 			bIsIdle = true;
-			bIsWalk = false;
 		}
 	}
 	
-}
-
-void UBTTaskPatrol::FindPatrolPos(AMonster* Monster)
-{
-	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(Monster->GetWorld());
-	if (nullptr == NavSystem)
-		return;
-
-	FVector Origin = Monster->GetAIController()->GetBlackboardComponent()->GetValueAsVector(AMonsterAIController::SpawnPosKey);
-	FNavLocation NextPatrol;
-
-	// Orgin을 중심점으로 반지름이 600인 원 안에서 랜덤 좌표 생성
-	if (NavSystem->GetRandomPointInNavigableRadius(Origin, Monster->GetPatrolArea(), NextPatrol))
-	{
-		float MoveRange = FMath::RandRange((Monster->GetPatrolArea() / 100)-2.0f, Monster->GetPatrolArea() / 100.0f);
-		// 좌표로 향하는 방향 벡터를 구하고
-		FVector MoveDirection = NextPatrol.Location - Monster->GetTransform().GetLocation();
-		// 방향 벡터로 5m 떨어진 위치
-		FVector PatrolPos = FVector(Monster->GetTransform().GetLocation().X + (MoveDirection.GetSafeNormal() * MoveRange * 100.0f).X
-			, Monster->GetTransform().GetLocation().Y + (MoveDirection.GetSafeNormal() * MoveRange * 100.0f).Y,
-			Monster->GetTransform().GetLocation().Z
-		);
-
-
-		// 구해진 위치를 저장
-		Monster->GetAIController()->GetBlackboardComponent()->SetValueAsVector(AMonsterAIController::PatrolPosKey, NextPatrol.Location);
-	}
 }

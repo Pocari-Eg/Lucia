@@ -105,6 +105,7 @@ public:
 
 	static const FName BattleMonsterKey;
 	static const FName IsShieldOnKey;
+	static const FName IsTraceOnKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

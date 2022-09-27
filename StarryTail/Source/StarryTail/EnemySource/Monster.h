@@ -297,6 +297,7 @@ public:
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
 	FAttackRange GetAttack3Range()const;
+	FAttackRange GetAttack4Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);

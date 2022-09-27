@@ -21,18 +21,16 @@ public:
 	void Attacked();
 	void Broken();
 	void SetStatueKey(bool state);
-
+	void SetBattleRunKey(bool state);
+	void SetWalkPoint(FVector Location);
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
-
 	static const FName IsBackstepKey;
-
-
 	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
-
 	static const FName IsStatueStateKey;
-
+	static const FName IsBattleRunKey;
+	static const FName IsWalkPointKey;
 private:
 	void OnPossess(APawn* InPawn) override;
 };
