@@ -39,6 +39,10 @@ AMonster::AMonster()
 	ShowUITime = 5.0f;
 	AttackCoolTimer = 0.0f;
 
+	DpsTime = 2.0f;
+	DpsTime = 0.0f;
+	DpsDamage = 0.0f;
+
 	MonsterWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("MONSTERWIDGET"));
 	MonsterWidget->SetupAttachment(GetMesh());
 
@@ -365,6 +369,25 @@ void AMonster::SetMonsterContorl(class AEnemySpawnPoint* Object)
 	MonsterControl = Object;
 }
 
+void AMonster::SetDpsCheck(bool state)
+{
+	if (!bIsDpsCheck) {
+		bIsDpsCheck = state;
+		DpsTimer = 0.0f;
+		DpsDamage = 0.0f;
+	}
+	else {
+		bIsDpsCheck = state;
+		DpsTimer = 0.0f;
+
+		STARRYLOG(Error, TEXT("DPS : %f "), DpsDamage);
+		if (DpsDamage >= MonsterInfo.M_FSM_DPS)
+		{
+			MonsterAIController->SetBackStepKey(true);
+		}
+	}
+}
+
 void AMonster::Attack()
 {
 	MonsterAIController->Attack();
@@ -494,12 +517,20 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		//방어력 게이지 업데이트
 		OnBarrierChanged.Broadcast();
 
+		auto BdAI = Cast<ABdAIController>(MonsterAIController);
+		if (BdAI->GetBlackboardComponent()->GetValueAsBool(BdAI->B_WalkRightKey) 
+			|| BdAI->GetBlackboardComponent()->GetValueAsBool(BdAI->B_WalkLeftKey))
+		{
+			if(bIsDpsCheck==false)
+			SetDpsCheck(true);
+		}
+
 		if (MonsterAIController->GetIsAttacking() == false) {
 			Attacked();
 		}
 
-		if (AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
-			MonsterAIController->Attacked();
+		//if (AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
+		//	MonsterAIController->Attacked();
 
 
 	}
@@ -528,16 +559,8 @@ void AMonster::CalcManaShield(float Damage)
 
 			if (MonsterInfo.Ele_Shield_Count < 0)
 			{
-				MonsterInfo.bIsShieldOn = false;
-				ManaShiledEffectComponent->SetActive(false);
-				ManaShiledEffectComponent->SetVisibility(false);
-				OnBarrierChanged.Broadcast();
-
-				HitEffectComponent->SetActive(true);
-				HitEffectComponent->ForceReset();
-
-				MonsterAIController->SetShieldKey(false);
-
+			
+				AllShieldDestroyed();
 			}
 			else {
 
@@ -569,7 +592,10 @@ void AMonster::CalcHp(float Damage)
 		Damage = FMath::Abs(Damage);
 
 		MonsterInfo.M_HP -= Damage;
-
+		if (bIsDpsCheck)
+		{
+			DpsDamage += Damage;
+		}
 
 		if (bTestMode)
 			STARRYLOG(Log, TEXT("Monster Hp : %f"), MonsterInfo.M_HP);
@@ -628,6 +654,23 @@ FMonsterDataTable* AMonster::GetMontserData(int32 num)
 FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
 {
 	return MonsterSkillDataTable->FindRow<FMonsterSkillDataTable>(FName(*(FString::FormatAsNumber(num))), FString(""));
+}
+
+void AMonster::AllShieldDestroyed()
+{
+	MonsterInfo.bIsShieldOn = false;
+	ManaShiledEffectComponent->SetActive(false);
+	ManaShiledEffectComponent->SetVisibility(false);
+	OnBarrierChanged.Broadcast();
+	HitEffectComponent->SetActive(true);
+	HitEffectComponent->ForceReset();
+	MonsterAIController->SetShieldKey(false);
+
+	if (MonsterInfo.M_Atk_Type == 1)
+	{
+		PlayGroggyAnim();
+		MonsterAIController->Groggy();
+	}
 }
 
 bool AMonster::CheckPlayerIsBehindMonster()
@@ -1059,6 +1102,15 @@ void AMonster::Tick(float DeltaTime)
 
 	}
 
+	if (bIsDpsCheck)
+	{
+		DpsTimer += DeltaTime;
+		if (DpsTimer >= DpsTime)
+		{
+			SetDpsCheck(false);
+		}
+	}
+
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -1187,7 +1239,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
-				
+				    
 				}
 			
 			}

@@ -31,12 +31,54 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Instance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
 
-	STARRYLOG(Warning, TEXT("%f"),Bouldelith->GetDistanceTo(Instance->GetPlayer()));
-	if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) >= Bouldelith->GetPlayerMaxDistance())
-	{
+	//È¸Àü
+	auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
 
-		Bouldelith->SetBattleRunState(true);
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsShieldOnKey) == true) {
+
+		if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) >= Bouldelith->GetPlayerMaxDistance())
+		{
+
+			Bouldelith->SetBattleRunState(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
+	else {
+
+		auto ran = FMath::RandRange(1, 100);
+		STARRYLOG(Error, TEXT("Percent : %d"), ran);
+		if (ran <= 70)
+		{
+			
+			ran = FMath::RandRange(1, 100);
+			if (ran <= 50)
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, false);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
+
+			ran = FMath::RandRange(1, 100);
+			if (ran > 50)
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, false);
+
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
+			return;
+		}
+
+
+	}
+
+	
 
 }

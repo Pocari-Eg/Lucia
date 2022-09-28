@@ -58,6 +58,8 @@ public:
 		int Weapon_Soul;
 
 
+
+
 	//Attacked Time
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float M_Attacked_Time;
@@ -104,9 +106,11 @@ public:
 
 
 	//etc
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_FSM_DPS;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_MaxAttacked;
+	int M_MaxAttacked;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

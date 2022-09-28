@@ -136,7 +136,7 @@ protected:
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
 
-
+	void AllShieldDestroyed();
 
 	void InitAttack1Data();
 	void InitAttack2Data();
@@ -208,6 +208,11 @@ protected:
 
 	bool bIsDodgeTime;
 
+	bool bIsDpsCheck;
+	float DpsDamage;
+	float DpsTime;
+	float DpsTimer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	class AEnemySpawnPoint* MonsterControl;
 
@@ -246,7 +251,6 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
-
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
@@ -301,6 +305,7 @@ public:
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
+	void SetDpsCheck(bool state);
 
 protected:
 	virtual void InitMonsterInfo() {};

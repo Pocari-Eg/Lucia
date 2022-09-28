@@ -25,12 +25,18 @@ public:
 	void SetWalkPoint(FVector Location);
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
-	static const FName IsBackstepKey;
+
 	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
 	static const FName IsStatueStateKey;
 	static const FName IsBattleRunKey;
 	static const FName IsWalkPointKey;
+
+	static const FName B_WalkLeftKey;
+	static const FName B_WalkRightKey;
+
+	static const FName Attack5Key;
+
 private:
 	void OnPossess(APawn* InPawn) override;
 };

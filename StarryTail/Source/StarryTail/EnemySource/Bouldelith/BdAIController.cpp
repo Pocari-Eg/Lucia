@@ -7,15 +7,16 @@
 const FName ABdAIController::IsBattleIdleKey = (TEXT("bIsBattleIdle"));
 const FName ABdAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
 
-const FName ABdAIController::IsBackstepKey = (TEXT("bIsBackstep"));
-
-
 const FName ABdAIController::IsBrokenKey = (TEXT("bIsBroken"));
 const FName ABdAIController::IsWallGroggyKey = (TEXT("bIsWallGroggy"));
 const FName ABdAIController::IsStatueStateKey = (TEXT("StatueState"));
 const FName ABdAIController::IsBattleRunKey = (TEXT("bIsBattleRun"));
 const FName ABdAIController::IsWalkPointKey = (TEXT("WalkPointKey"));
 
+const FName ABdAIController::B_WalkLeftKey = (TEXT("B_WalkLeft"));
+const FName ABdAIController::B_WalkRightKey = (TEXT("B_WalkRight"));
+
+const FName ABdAIController::Attack5Key = (TEXT("Attack5Active"));
 
 ABdAIController::ABdAIController()
 {
@@ -35,7 +36,11 @@ void ABdAIController::Attacked()
 {
 	SetPlayer();
 
+	SetStatueKey(false);
+	
 	auto Bouldelith = Cast<ABouldelith>(GetPawn());
+
+	Bouldelith->GetBouldelithAnimInstance()->SetbIsState(false);
 
 	if (Bouldelith->GetBouldelithAnimInstance()->GetAttackIsPlaying())
 		return;

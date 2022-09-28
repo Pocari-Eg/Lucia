@@ -35,6 +35,7 @@ public:
 	void Attack2();
 	void Attack3();
 	void Attack4();
+	void Attack5();
 
 	void LeftAttackCheck();
 	void RightAttackCheck();
@@ -72,6 +73,7 @@ public:
 	void SetBattleRunState(bool State);
 
 	float GetPlayerMaxDistance()const;
+	float GetAttack3Distance()const;
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void  BrokenEvent();
@@ -102,7 +104,6 @@ private:
 	bool bIsRush;
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
-
 
 	int IsAttackNum;
 

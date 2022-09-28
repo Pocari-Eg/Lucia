@@ -4,23 +4,20 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskBdAttack4.generated.h"
+#include "BTTaskBdAttack5.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskBdAttack4 : public UBTTaskNode
+class STARRYTAIL_API UBTTaskBdAttack5 : public UBTTaskNode
 {
 	GENERATED_BODY()
 public:
-	UBTTaskBdAttack4();
+	UBTTaskBdAttack5();
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	bool bIsAttacking;
-
-	void Attack4Trace(class AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
-
 };

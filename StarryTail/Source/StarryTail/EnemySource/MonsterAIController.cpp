@@ -39,6 +39,7 @@ const FName AMonsterAIController::B_IdleKey = (TEXT("B_IdleState"));
 const FName AMonsterAIController::BattleMonsterKey = (TEXT("BattleMonster"));
 const FName AMonsterAIController::IsShieldOnKey = (TEXT("bIsShieldOn"));
 const FName AMonsterAIController::IsTraceOnKey = (TEXT("bIsTraceOn"));
+const FName AMonsterAIController::IsBackStepOnKey = (TEXT("bIsBackStepOn"));
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -53,8 +54,6 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::Groggy()
 {
 	SetPlayer();
-
-	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 }
 void AMonsterAIController::Death()
@@ -179,6 +178,11 @@ void AMonsterAIController::OffAttack(int i)
 	default:
 		break;
 	}
+}
+
+void AMonsterAIController::SetBackStepKey(bool State)
+{
+	Blackboard->SetValueAsBool(IsBackStepOnKey, State);
 }
 
 void AMonsterAIController::SetBattleMonster(AActor* Monster)

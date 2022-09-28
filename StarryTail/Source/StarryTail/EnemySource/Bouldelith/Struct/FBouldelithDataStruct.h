@@ -25,6 +25,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_PlayerMaxDistance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Attack3_Distance;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CurrentBattleRunSpeed;

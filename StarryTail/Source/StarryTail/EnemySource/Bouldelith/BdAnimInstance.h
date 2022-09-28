@@ -32,7 +32,8 @@ public:
 	void PlayAttack1ComboMontage();
 	void PlayAttack2ComboMontage();
 
-	void PlayBattleWalkMontage() override;
+	void PlayLeftBattleWalkMontage();
+	void PlayRightBattleWalkMontage();
 
 	void UpgradeBattleRun();
 	bool CheckAttackedMontagePlaying() override;

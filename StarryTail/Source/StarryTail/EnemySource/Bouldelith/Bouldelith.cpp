@@ -51,8 +51,8 @@ void ABouldelith::InitMonsterInfo()
 
 
 	MonsterInfo.M_Sight_Angle = 150.0f;
-	MonsterInfo.M_Sight_Radius = 500.0f;
-	MonsterInfo.M_Sight_Height = 150.0f;
+	MonsterInfo.M_Sight_Radius = 600.0f;
+	MonsterInfo.M_Sight_Height = 300.0f;
 
 	////Attack Range
 
@@ -94,6 +94,9 @@ void ABouldelith::InitMonsterInfo()
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 
+
+	MonsterInfo.M_FSM_DPS = 40.0f;
+
 }
 void ABouldelith::InitBouldelithInfo()
 {
@@ -102,6 +105,9 @@ void ABouldelith::InitBouldelithInfo()
 	BouldelithInfo.BackstepCoolTime = 10.0f;
 	BouldelithInfo.BrokenAnimePlayRate = 1.3f;
 	BouldelithInfo.M_PlayerMaxDistance = 2000.0f;
+
+
+	BouldelithInfo.Attack3_Distance = 1000.0f;
 }
 void ABouldelith::InitCollision()
 {
@@ -163,36 +169,22 @@ void ABouldelith::BattleWalk()
 void ABouldelith::Attack1()
 {
 	InitAttack1Data();
-	int Random = FMath::RandRange(0, 9);
 
-	if (Random < 3)
-	{
-		BdAnimInstance->PlayAttack1ComboMontage();
-		IsAttackNum = 5;
-	}
-	else
-	{
-		BdAnimInstance->PlayAttack1Montage();
-		IsAttackNum = 1;
-	}
+	BdAnimInstance->PlayAttack1Montage();
+	IsAttackNum = 1;
+	
 	MonsterAIController->StopMovement();
 }
 void ABouldelith::Attack2()
 {
 	InitAttack2Data();
-	int Random = FMath::RandRange(0, 9);
 
-	if (Random < 3)
-	{
-		BdAnimInstance->PlayAttack2ComboMontage();
-		IsAttackNum = 5;
-	}
-	{
-		BdAnimInstance->PlayAttack2Montage();
-		IsAttackNum = 2;
-	}
+	
+	BdAnimInstance->PlayAttack2Montage();
+	IsAttackNum = 2;
 	MonsterAIController->StopMovement();
 }
+
 void ABouldelith::Attack3()
 {
 	InitAttack3Data();
@@ -209,7 +201,12 @@ void ABouldelith::Attack4()
 	BdAnimInstance->PlayAttack4Montage();
 	MonsterAIController->StopMovement();
 }
-
+void ABouldelith::Attack5()
+{
+	BdAnimInstance->PlayAttack1ComboMontage();
+	IsAttackNum = 5;
+	MonsterAIController->StopMovement();
+}
 void ABouldelith::LeftAttackCheck()
 {
 	// hitcheck======================================
@@ -766,6 +763,11 @@ float ABouldelith::GetPlayerMaxDistance() const
 	return BouldelithInfo.M_PlayerMaxDistance;
 }
 
+float ABouldelith::GetAttack3Distance() const
+{
+	return	BouldelithInfo.Attack3_Distance;
+}
+
 #pragma endregion
 
 UBdAnimInstance* ABouldelith::GetBouldelithAnimInstance() const
@@ -958,10 +960,12 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
 
 	BdAnimInstance->Right.AddLambda([this]() -> void {
+		InitAttack1Data();
 		IsAttackNum = 1;
 		});
 
 	BdAnimInstance->Left.AddLambda([this]() -> void {
+		InitAttack2Data();
 		IsAttackNum = 2;
 		});
 
