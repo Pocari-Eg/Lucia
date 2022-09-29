@@ -68,23 +68,23 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	FString AttributeName = "Sword_B_Attack_1";
 	if (Irene->IreneState->IsAttackState())
 	{
-		if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if (!Irene->bIsSpiritStance)
 			AttributeName = "Sword_B_Attack_" + FString::FromInt(TrueAttackCount);
-		else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		else
 			AttributeName = "Spear_B_Attack_" + FString::FromInt(TrueAttackCount);
 		if (AttributeName == "Sword_B_Attack_4")
 			AttributeName = "Sword_B_Attack_3";
 	}
 	else if (Irene->IreneState->IsSkillState())
 	{
-		if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if (!Irene->bIsSpiritStance)
 		{
 			if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
 				AttributeName = "Sword_Skill_1_1";
 			else if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
 				AttributeName = "Sword_Skill_1_2";
 		}
-		else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		else
 			AttributeName = "Spear_Skill_1";
 	}
 	return FName(AttributeName);
@@ -94,7 +94,7 @@ FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
 {
 	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수   
 	FString AttributeName = "Sword_B_Attack_1";
-	if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+	if (!Irene->bIsSpiritStance)
 		AttributeName = "Sword_B_Attack_" + FString::FromInt(TrueAttackCount);
 	if (Irene->IreneState->IsSkillState())
 	{
@@ -104,7 +104,6 @@ FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
 			AttributeName = "Sword_Skill_1_2";
 	}
 	return FName(AttributeName);
-
 }
 
 void UIreneAttackInstance::AttackStartComboState()
@@ -141,7 +140,7 @@ void UIreneAttackInstance::AttackCheck()
 	// 노티파이 AttackHitCheck 도달 시 실행
 	if (Irene->IreneAnim->GetCurrentActiveMontage())
 	{
-		if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		if(Irene->IreneAnim->Montage_GetCurrentSection(Irene->IreneAnim->GetCurrentActiveMontage()) == FName("Attack2") && Irene->bIsSpiritStance)
 		{
 			if(TrueAttackCount == 2)
 			{
@@ -177,12 +176,12 @@ void UIreneAttackInstance::DoAttack()
 	
 	TArray<FHitResult> MonsterList;
 
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] || Irene->IreneState->IsAttackState())
+	if(!Irene->bIsSpiritStance || Irene->IreneState->IsAttackState())
 	{
 		FVector BoxSize = FVector::ZeroVector;
-		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if(!Irene->bIsSpiritStance)
 			BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
-		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		else
 			BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 
 		FCollisionQueryParams Params(NAME_None, false, Irene);
@@ -205,7 +204,7 @@ void UIreneAttackInstance::DoAttack()
 		DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 		#endif
 	}
-	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1] && Irene->IreneState->IsSkillState())
+	else if(Irene->bIsSpiritStance && Irene->IreneState->IsSkillState())
 	{
 		FVector MoveForwardVector = PlayerPosVec-Irene->GetActorLocation();
 		MoveForwardVector.Normalize();
@@ -378,16 +377,16 @@ void UIreneAttackInstance::SetSkillState()const
 {
 	// 스킬 상태로 전이 할 수 있는지 확인하는 함수
 	if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) != 0
-		&& Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] && Irene->IreneInput->GetCanUseSecondSwordSkill() == false)
+		&& !Irene->bIsSpiritStance && Irene->IreneInput->GetCanUseSecondSwordSkill() == false)
 	{
 		Irene->ChangeStateAndLog(USwordSkill1::GetInstance());
 	}
 	else if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_2")) != 0
-		&& Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0] && Irene->IreneInput->GetCanUseSecondSwordSkill() == true)
+		&& !Irene->bIsSpiritStance && Irene->IreneInput->GetCanUseSecondSwordSkill() == true)
 	{
 		Irene->ChangeStateAndLog(USwordSkill2::GetInstance());
 	}
-	else if (Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	else if (Irene->bIsSpiritStance)
 	{
 		Irene->ChangeStateAndLog(USpearSkill1::GetInstance());
 	}
@@ -397,7 +396,7 @@ void UIreneAttackInstance::SetSkillState()const
 #pragma region GetSet
 void UIreneAttackInstance::SetGauge(float Value)
 {
-	if(Irene->IreneData.CurrentHP > 0 && Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+	if(Irene->IreneData.CurrentHP > 0 && !Irene->bIsSpiritStance)
 	{
 		Irene->IreneData.CurrentGauge += Value;
 		if(Irene->IreneData.CurrentGauge > Irene->IreneData.MaxGauge)
