@@ -23,11 +23,18 @@ EBTNodeResult::Type UBTTaskBdBattleWalk::ExecuteTask(UBehaviorTreeComponent& Own
 		return EBTNodeResult::Failed;
 
 
+
 	auto BattleMonster = Cast<AMonster>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::BattleMonsterKey));
-	Monster->GetAIController()->MoveToLocation(BattleMonster->GetActorLocation());
+	if (BattleMonster != nullptr) {
+		Monster->GetAIController()->MoveToLocation(BattleMonster->GetActorLocation());
+		return EBTNodeResult::InProgress;
+	}
+	else {
+		return EBTNodeResult::Succeeded;
+	}
 
 
-	return EBTNodeResult::InProgress;
+
 }
 void UBTTaskBdBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {

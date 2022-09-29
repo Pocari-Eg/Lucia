@@ -23,6 +23,9 @@ ABouldelith::ABouldelith()
 	MonsterWidget->SetRelativeScale3D(FVector(0.5, 0.5f, 0.5f));
 
 	IsAttackNum = 0;
+
+	FindRimitTime = 5.0f;
+	FindRimitTimer = 0.0f;
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
@@ -918,18 +921,29 @@ void ABouldelith::Tick(float DeltaTime)
 		DodgeCheck();
 	}
 
-
-	if (CurState == EMontserState::Battle)
+	if (CurState == EMontserState::Support || MonsterAIController->GetIsTraceState() == true)
 	{
-		auto player = Cast<AIreneCharacter>(MonsterAIController->GetBlackboardComponent()->GetValueAsObject(MonsterAIController->PlayerKey));
-		float distance=GetDistanceTo(player);
-
-		if (distance >= BouldelithInfo.BattleDistance)
+		if (MonsterAIController->GetIsFindPlayer() == false)
 		{
-			MonsterAIController->SetBattleState(false);
-			MonsterAIController->SetTraceKey(true);
+			FindRimitTimer += DeltaTime;
+			if (FindRimitTimer >= FindRimitTime)
+			{
+				MonsterAIController->SetBattleState(false);
+				MonsterAIController->SetNormalState(true);
+				MonsterAIController->SetSupportState(false);
+				MonsterAIController->SetTraceKey(false);
+
+				CurState = EMontserState::Normal;
+				FindRimitTimer = 0.0f;
+			}
+		}
+		else {
+
+			FindRimitTimer = 0.0f;
 		}
 	}
+
+
 
 }
 void ABouldelith::BeginPlay()

@@ -32,6 +32,8 @@ auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	Monster->GetMonsterAnimInstance()->PlayBattleWalkMontage();
 	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
+	Monster->GetAIController()->StopMovement();
+
 	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 
 	return EBTNodeResult::InProgress;
@@ -58,6 +60,9 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
+	}
+	else {
+		PlayerFollowTimer = 0.0f;
 	}
 
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)

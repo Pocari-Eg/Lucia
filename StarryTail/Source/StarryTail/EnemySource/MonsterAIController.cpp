@@ -213,6 +213,11 @@ bool AMonsterAIController::GetIsTraceState()
 	return Blackboard->GetValueAsBool(TraceStateKey);
 }
 
+bool AMonsterAIController::GetIsFindPlayer()
+{
+	return Blackboard->GetValueAsBool(IsFindKey);
+}
+
 ULineBatchComponent* AMonsterAIController::GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)
 {
 	return (InWorld ? (bDepthIsForeground ? InWorld->ForegroundLineBatcher : ((bPersistentLines || (LifeTime > 0.f)) ? InWorld->PersistentLineBatcher : InWorld->LineBatcher)) : NULL);

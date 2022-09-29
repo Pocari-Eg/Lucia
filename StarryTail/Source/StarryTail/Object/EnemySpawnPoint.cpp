@@ -30,11 +30,9 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 	 SupportNum = 0;
 	 SpawnNum = 0;
 
-	 PatrolTime = 5.0f;
-	 PatrolTimer = 0.0f;
+
 
 	 bIsNonRagnePlayer = false;
-	 PatrolTimerOn = false;
 }
 
 void AEnemySpawnPoint::RandomSpawn()
@@ -100,27 +98,6 @@ int AEnemySpawnPoint::getCurrentWave()
 void AEnemySpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	if (PatrolTimerOn)
-	{
-		PatrolTimer += DeltaTime;
-		if (PatrolTimer >= PatrolTime)
-		{
-			PatrolTimerOn = false;
-			PatrolTimer = 0.0f;
-
-			for (int i = 0; i < SupportMonsters.Num(); i++)
-			{
-				if (SupportMonsters[i] != nullptr) {
-					if (SupportMonsters[i]->GetMonsterAtkType() == 1)
-					{
-						SupportMonsters[i]->SetNormalState();
-						SupportMonsters.RemoveAt(i);
-					}
-				}
-			}
-		}
-	}
 
 
 
@@ -228,27 +205,18 @@ void AEnemySpawnPoint::CheckInPlayer()
 
 		if (distance >= Group_Range_Radius)
 		{
-			for (int i = 0; i < SupportMonsters.Num(); i++)
-			{
-				if (SupportMonsters[i] != nullptr) {
-					if (SupportMonsters[i]->GetMonsterAtkType() == 2)
-					{
-						SupportMonsters[i]->SetNormalState();
-						SupportMonsters.RemoveAt(i);
-					}
-				}
-			}
+
+			BattleMonster->SetNormalState();
+			InitSupportGroup();
 
 			if (!bIsNonRagnePlayer) {
 				bIsNonRagnePlayer = true;
-				PatrolTimerOn = true;
-				PatrolTimer = 0.0;
+				
 			}
 		}
 		else {
 			bIsNonRagnePlayer = false;
-			PatrolTimerOn = false;
-			PatrolTimer = 0.0;
+		
 		}
 	
 	}
@@ -274,15 +242,15 @@ void AEnemySpawnPoint::InitSupportGroup()
 		if (SupportMonsters[i] != nullptr)
 			SupportMonsters[i]->SetNormalState();
 	}
-
+	SupportMonsters.Empty();
+	SupportNum = 0;
 	for (int i = 0; i < SpawnNum; i++)
 	{
 		if (SpawnMonsters[i] != nullptr)
 			SpawnMonsters[i]->GetAIController()->InitBattleMonster();
 	}
 
-	SupportMonsters.Empty();
-	SupportNum = 0;
+
 }
 
 

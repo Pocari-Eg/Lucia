@@ -64,12 +64,7 @@ private:
 	UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
 	float Group_Range_Radius;
 
-
-	float PatrolTimer;
-	float PatrolTime;
-
 	bool bIsNonRagnePlayer;
-	bool PatrolTimerOn;
 public:	
 	// Sets default values for this actor's properties
 	AEnemySpawnPoint();
