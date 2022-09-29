@@ -1102,6 +1102,8 @@ void AMonster::Tick(float DeltaTime)
 
 	}
 
+
+
 	if (bIsDpsCheck)
 	{
 		DpsTimer += DeltaTime;
@@ -1221,6 +1223,11 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				SoundInstance->PlayHitSound(SoundTransform);
 			}
 
+			if (MonsterAIController->GetIsTraceState())
+			{
+				MonsterAIController->SetTraceKey(false);
+				MonsterAIController->SetBattleState(true);
+			}
 
 
 			//몬스터인지 아닌지
@@ -1232,6 +1239,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				else {
 					SetBattleState();
 				}
+
 								
 				if (MonsterInfo.bIsShieldOn)
 				{

@@ -42,6 +42,7 @@ public:
 	void SetBattleState(bool State);
 	void SetAttackedState(bool State);
 	void SetSupportState(bool State);
+	void SetTraceKey(bool State);
 	void SetShieldKey(bool State);
 	void OnAttack(int i);
 	void OffAttack(int i);
@@ -51,7 +52,7 @@ public:
 	void InitBattleMonster();
 
 	bool GetIsAttacking();
-
+	bool GetIsTraceState();
 
 	//debug
 

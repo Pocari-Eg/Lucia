@@ -108,6 +108,9 @@ void ABouldelith::InitBouldelithInfo()
 
 
 	BouldelithInfo.Attack3_Distance = 1000.0f;
+
+
+	BouldelithInfo.BattleDistance = 2200.0f;
 }
 void ABouldelith::InitCollision()
 {
@@ -915,6 +918,19 @@ void ABouldelith::Tick(float DeltaTime)
 		DodgeCheck();
 	}
 
+
+	if (CurState == EMontserState::Battle)
+	{
+		auto player = Cast<AIreneCharacter>(MonsterAIController->GetBlackboardComponent()->GetValueAsObject(MonsterAIController->PlayerKey));
+		float distance=GetDistanceTo(player);
+
+		if (distance >= BouldelithInfo.BattleDistance)
+		{
+			MonsterAIController->SetBattleState(false);
+			MonsterAIController->SetTraceKey(true);
+		}
+	}
+
 }
 void ABouldelith::BeginPlay()
 {
@@ -924,6 +940,8 @@ void ABouldelith::BeginPlay()
 	InitMonsterInfo();
 	InitAttack1Data();
 	InitBouldelithInfo();
+
+	ManaShiledEffectComponent->SetWorldScale3D(FVector(3.25f, 3.25f, 3.25f));
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});

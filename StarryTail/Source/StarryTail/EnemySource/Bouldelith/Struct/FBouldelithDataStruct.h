@@ -15,23 +15,28 @@ struct FBouldelithDataStruct
 	GENERATED_USTRUCT_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AnotherMonsterStateCheckRange;
+	float AnotherMonsterStateCheckRange;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float DefaultBattleRunSpeed;
+	float DefaultBattleRunSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float BackstepCoolTime;
+	float BackstepCoolTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float BrokenAnimePlayRate;
+	float BrokenAnimePlayRate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_PlayerMaxDistance;
+	float M_PlayerMaxDistance;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Attack3_Distance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float BattleDistance;
 public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float CurrentBattleRunSpeed;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		int AttackFailedStack;
+
+
 
 };

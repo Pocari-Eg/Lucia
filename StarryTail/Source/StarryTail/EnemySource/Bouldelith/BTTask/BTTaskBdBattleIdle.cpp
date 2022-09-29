@@ -32,11 +32,11 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Instance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
 
 	////È¸Àü
-	//auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
-	//FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
-	//LookVector.Z = 0.0f;
-	//FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	//Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
+	auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 0.5f));
 
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsShieldOnKey) == true) {

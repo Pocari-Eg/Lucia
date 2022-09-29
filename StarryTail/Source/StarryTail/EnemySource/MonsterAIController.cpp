@@ -121,6 +121,12 @@ void AMonsterAIController::SetSupportState(bool State)
 	Blackboard->SetValueAsBool(SupportStateKey, State);
 }
 
+void AMonsterAIController::SetTraceKey(bool State)
+{
+	Blackboard->SetValueAsBool(TraceStateKey, State);
+
+}
+
 void AMonsterAIController::SetShieldKey(bool State)
 {
 	Blackboard->SetValueAsBool(IsShieldOnKey, State);
@@ -200,6 +206,11 @@ void AMonsterAIController::InitBattleMonster()
 bool AMonsterAIController::GetIsAttacking()
 {
 	return Blackboard->GetValueAsBool(IsAttackingKey);
+}
+
+bool AMonsterAIController::GetIsTraceState()
+{
+	return Blackboard->GetValueAsBool(TraceStateKey);
 }
 
 ULineBatchComponent* AMonsterAIController::GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)
