@@ -87,10 +87,7 @@ public:
 	// Sprint 최대 속도
 	UPROPERTY(BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
-	// 전기 스택 추가 이동속도
-	UPROPERTY(BlueprintReadWrite)
-	float ThunderQuillStackSpeed = 1;
-	// 전기 스택 추가 이동속도
+	// 전기 디버프 이동속도
 	UPROPERTY(BlueprintReadWrite)
 	float WaterDeBuffSpeed = 1;
 public:

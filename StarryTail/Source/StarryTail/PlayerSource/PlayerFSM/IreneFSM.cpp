@@ -169,7 +169,7 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 		return;
 	}	
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 	if (CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(false);
@@ -301,7 +301,7 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sprint_Loop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
 	//CurState->Irene->SetCameraLagTime(0);
@@ -313,6 +313,13 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.IsComboInputOn = false;
 	CurState->Irene->IreneData.CurrentCombo = 0;
+	CurState->Irene->IreneAnim->SetSprintPlayRate(1.0f);
+
+	if(CurState->Irene->bIsSpiritStance)
+	{
+		CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed * 1.5f;
+		CurState->Irene->IreneAnim->SetSprintPlayRate(1.5f);
+	}
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -671,7 +678,7 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
