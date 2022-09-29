@@ -80,9 +80,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
-	TArray<USkeletalMesh*> WeaponMeshArray;
-	UPROPERTY()
-	TArray<FName> WeaponSocketNameArray;
+	USkeletalMesh* WeaponMesh;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveVector*> CameraShakeCurve;
@@ -95,6 +93,7 @@ public:
 	TMap<AActor*, float>ActorAngleMap;
 
 	bool bInputStop;
+	bool bIsSpiritStance;
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;

@@ -34,6 +34,13 @@ private:
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
+	// 회피 사용 가능
+	bool bIsDodgeOn;
+	// 최대 회피 횟수
+	int MaxDodgeCount;
+	// 회피 횟수
+	int DodgeCount;
+	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 	// 창에서 검으로 변경
@@ -47,12 +54,6 @@ private:
 	int AttackUseSkillNextCount;
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
-	// 전기 스킬 사용 가능
-	bool bIsSpearSkill1On;
-	// 최대 전기 스킬 횟수
-	int MaxSpearSkill1Count;
-	// 전기 스킬 횟수
-	int SpearSkill1Count;
 	
 	// 공격 중 속성변경을 위한 변수
 	EAttributeKeyword TempAttribute;
@@ -83,18 +84,19 @@ private:
 	FTimerHandle SwordSkill2WaitHandle;
 	// 검 2번 스킬 사용가능 시간
 	float CanSwordSkill2Time;
-	// 창 스킬 최대 쿨타임
-	float MaxSpearSkill1CoolTime;
-	// 창 스킬 쿨타임
-	float SpearSkill1CoolTime;
-	// 창 스킬 쿨타임
-	FTimerHandle SpearSkill1WaitHandle;
 	// 공격 중 스킬 사용 후 다음 공격 해야하는 단계 사용 가능 시간
 	FTimerHandle AttackUseSkillNextCountWaitHandle;
 	
-	// 닷지 쿨타임
-	FTimerHandle DodgeWaitHandle;
+	// 회피 입력 쿨타임
+	FTimerHandle DodgeInputWaitHandle;
 
+	// 회피 회복 최대 쿨타임
+	float MaxDodgeCoolTime;
+	// 회피 회복 쿨타임
+	float DodgeCoolTime;
+	// 회피 회복 쿨타임
+	FTimerHandle DodgeWaitHandle;
+	
 	bool bSkillCameraMove;
 	float SkillCameraPlayTime;
 	float SkillCameraEndPlayTime;
@@ -133,10 +135,8 @@ public:
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
 	void RightButton(float Rate);
-	void SpearRightButton();
 	void SkillWait();
 	void SwordSkillEndWait();
-	void SpearSkill1Wait();
 
 	void SkillCameraMoveStart();
 	void SkillCameraMoveLoop(float DeltaTime);
@@ -150,6 +150,8 @@ public:
 	void PerfectDodgeStart();
 	void PerfectDodgeTimeEnd();
 	void PerfectDodgeAttackEnd();
+	void RecoveryDodge();
+	void RecoveryDodgeWait();
 
 	// 무기 변경
 	void WeaponChangeKeyword();
@@ -185,7 +187,6 @@ public:
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
 	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
-	int GetSpearSkill1Count()const{return SpearSkill1Count;}
 
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
