@@ -62,7 +62,8 @@ private:
 	int DodgeDir;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool bSpiritStart;
-	
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	float SprintPlayRate;
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -87,7 +88,8 @@ public:
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 	void SetDodgeDir(const int Value) { DodgeDir = Value; }
 	void SetSpiritStart(const bool Value) { bSpiritStart = Value; }
-
+	void SetSprintPlayRate(float Value) { SprintPlayRate = Value; }
+	
 	bool GetIsinAir()const{return IsInAir;}
 	int GetDodgeDir()const{return DodgeDir;}
 	
