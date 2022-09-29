@@ -482,7 +482,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (MonsterAIController->GetIsAttacking() == false) {
+		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
 			Attacked();
 		}
 
@@ -495,7 +495,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-		if (MonsterAIController->GetIsAttacking() == false) {
+		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
 			Attacked();
 		}
 
@@ -507,7 +507,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (MonsterAIController->GetIsAttacking() == false) {
+		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
 			Attacked();
 		}
 
@@ -525,7 +525,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			SetDpsCheck(true);
 		}
 
-		if (MonsterAIController->GetIsAttacking() == false) {
+		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
 			Attacked();
 		}
 
@@ -1254,7 +1254,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking() == false) {
+			if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
 				Attacked();
 			}
 

@@ -126,7 +126,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
 	float RushTestRange;
 
-
+	
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;

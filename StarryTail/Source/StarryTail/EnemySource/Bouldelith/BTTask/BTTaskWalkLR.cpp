@@ -39,12 +39,12 @@ void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
-	//회전
-	auto GameInstance = Cast<USTGameInstance>(Monster->GetGameInstance());
-	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Monster->GetLocation();
-	LookVector.Z = 0.0f;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
+	////회전
+	//auto GameInstance = Cast<USTGameInstance>(Monster->GetGameInstance());
+	//FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Monster->GetLocation();
+	//LookVector.Z = 0.0f;
+	//FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	//Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
 
 
 	//AttackTarcce

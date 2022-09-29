@@ -29,6 +29,12 @@ AEnemySpawnPoint::AEnemySpawnPoint()
 
 	 SupportNum = 0;
 	 SpawnNum = 0;
+
+	 PatrolTime = 5.0f;
+	 PatrolTimer = 0.0f;
+
+	 bIsNonRagnePlayer = false;
+	 PatrolTimerOn = false;
 }
 
 void AEnemySpawnPoint::RandomSpawn()
@@ -95,8 +101,32 @@ void AEnemySpawnPoint::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (PatrolTimerOn)
+	{
+		PatrolTimer += DeltaTime;
+		if (PatrolTimer >= PatrolTime)
+		{
+			PatrolTimerOn = false;
+			PatrolTimer = 0.0f;
+
+			for (int i = 0; i < SupportMonsters.Num(); i++)
+			{
+				if (SupportMonsters[i] != nullptr) {
+					if (SupportMonsters[i]->GetMonsterAtkType() == 1)
+					{
+						SupportMonsters[i]->SetNormalState();
+						SupportMonsters.RemoveAt(i);
+					}
+				}
+			}
+		}
+	}
+
+
+
 	if (BattleMonster != nullptr) {
 		FindNearMontser();
+		CheckInPlayer();
 	}
 }
 
@@ -111,15 +141,18 @@ void AEnemySpawnPoint::BeginPlay()
 	{
 		for (int i = 0; i < SpawnedMonster.Num(); i++)
 		{
-			SpawnedMonster[i]->SetSpawnEnemy();
-			SpawnedMonster[i]->SetMonsterContorl(this);
-			SpawnMonsters.Add(SpawnedMonster[i]);
-			SpawnNum++;
+			if (SpawnedMonster[i] != nullptr) {
+				SpawnedMonster[i]->SetSpawnEnemy();
+				SpawnedMonster[i]->SetMonsterContorl(this);
+				SpawnMonsters.Add(SpawnedMonster[i]);
+				SpawnNum++;
 
 
 
-			if (Instance != nullptr)Instance->AddEnemyCount(SpawnedMonster[i]->GetRank());
+				if (Instance != nullptr)Instance->AddEnemyCount(SpawnedMonster[i]->GetRank());
+			}
 		}
+
 	}
 
 
@@ -145,6 +178,7 @@ void AEnemySpawnPoint::SetBattleMonster(AMonster* Monster)
 
 	}
 
+
 }
 
 
@@ -159,42 +193,80 @@ AMonster* AEnemySpawnPoint::GetBattleMonster()
 
 void AEnemySpawnPoint::FindNearMontser()
 {
-	TArray<FOverlapResult> AnotherMonsterList = BattleMonster->DetectMonster(Group_Range_Radius);
-	if (AnotherMonsterList.Num() != 0)
-	{
-		for (auto const& AnotherMonster : AnotherMonsterList)
+	if (!bIsNonRagnePlayer) {
+		TArray<FOverlapResult> AnotherMonsterList = BattleMonster->DetectMonster(Group_Range_Radius);
+		if (AnotherMonsterList.Num() != 0)
 		{
-			auto Mob = Cast<AMonster>(AnotherMonster.GetActor());
-			if (Mob == nullptr)
-				continue;
-			if (Mob == BattleMonster) {
-				continue;
+			for (auto const& AnotherMonster : AnotherMonsterList)
+			{
+				auto Mob = Cast<AMonster>(AnotherMonster.GetActor());
+				if (Mob == nullptr)
+					continue;
+				if (Mob == BattleMonster) {
+					continue;
+				}
+				else {
+
+					if (Mob->GetState() != EMontserState::Support) {
+
+						Mob->SetSupportState();
+					}
+				}
+
 			}
-			else {
+		}
+	}
+}
 
-				if (Mob->GetState() != EMontserState::Support) {
+void AEnemySpawnPoint::CheckInPlayer()
+{
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
+	{
 
-					Mob->SetSupportState();
+		float distance = BattleMonster->GetDistanceTo(Instance->GetPlayer());
+
+		if (distance >= Group_Range_Radius)
+		{
+			for (int i = 0; i < SupportMonsters.Num(); i++)
+			{
+				if (SupportMonsters[i] != nullptr) {
+					if (SupportMonsters[i]->GetMonsterAtkType() == 2)
+					{
+						SupportMonsters[i]->SetNormalState();
+						SupportMonsters.RemoveAt(i);
+					}
 				}
 			}
-		
+
+			if (!bIsNonRagnePlayer) {
+				bIsNonRagnePlayer = true;
+				PatrolTimerOn = true;
+				PatrolTimer = 0.0;
+			}
 		}
+		else {
+			bIsNonRagnePlayer = false;
+			PatrolTimerOn = false;
+			PatrolTimer = 0.0;
+		}
+	
 	}
 }
 
 void AEnemySpawnPoint::InsertSupportGroup(AMonster* Monster)
 {
-	SupportMonsters.Add(Monster);
-	Monster->GetAIController()->SetPlayer();
-	SupportNum++;
+	if (Monster != nullptr&&!bIsNonRagnePlayer) {
+		SupportMonsters.Add(Monster);
+		Monster->GetAIController()->SetPlayer();
+		SupportNum++;
+	}
 
 }
 
 void AEnemySpawnPoint::InitSupportGroup()
 {
-	STARRYLOG_S(Error);
 	BattleMonster= nullptr;
-
 
 
 	for (int i = 0; i < SupportNum; i++)
@@ -217,7 +289,6 @@ void AEnemySpawnPoint::InitSupportGroup()
 
 void AEnemySpawnPoint::DeleteMonster(AMonster* Monster)
 {
-	STARRYLOG_S(Error);
 
 	for (int i = 0; i < SupportNum; i++)
 	{

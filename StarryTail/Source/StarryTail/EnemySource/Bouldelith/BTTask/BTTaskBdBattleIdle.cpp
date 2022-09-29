@@ -31,12 +31,12 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 	auto Instance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
 
-	//회전
-	auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
-	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
-	LookVector.Z = 0.0f;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
+	////회전
+	//auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
+	//FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
+	//LookVector.Z = 0.0f;
+	//FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	//Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 5.0f));
 
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsShieldOnKey) == true) {
@@ -56,7 +56,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		{
 			
 			ran = FMath::RandRange(1, 100);
-			if (ran <= 50)
+			if (ran <= 20)
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, true);
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, false);
@@ -65,7 +65,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 			}
 
 			ran = FMath::RandRange(1, 100);
-			if (ran > 50)
+			if (ran <= 20)
 			{
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, true);
 				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, false);
