@@ -32,10 +32,14 @@ const FName AMonsterAIController::SupportStateKey = (TEXT("SupportState"));
 const FName AMonsterAIController::Attack1Key = (TEXT("Attack1Active"));
 const FName AMonsterAIController::Attack2Key = (TEXT("Attack2Active"));
 const FName AMonsterAIController::Attack3Key = (TEXT("Attack3Active"));
+const FName AMonsterAIController::Attack4Key = (TEXT("Attack4Active"));
 
 const FName AMonsterAIController::B_IdleKey = (TEXT("B_IdleState"));
 
 const FName AMonsterAIController::BattleMonsterKey = (TEXT("BattleMonster"));
+const FName AMonsterAIController::IsShieldOnKey = (TEXT("bIsShieldOn"));
+const FName AMonsterAIController::TraceStateKey = (TEXT("TraceState"));
+const FName AMonsterAIController::IsBackStepOnKey = (TEXT("bIsBackStepOn"));
 
 AMonsterAIController::AMonsterAIController()
 {
@@ -50,8 +54,6 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::Groggy()
 {
 	SetPlayer();
-
-	Blackboard->SetValueAsBool(IsAttackedKey, true);
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 }
 void AMonsterAIController::Death()
@@ -119,6 +121,18 @@ void AMonsterAIController::SetSupportState(bool State)
 	Blackboard->SetValueAsBool(SupportStateKey, State);
 }
 
+void AMonsterAIController::SetTraceKey(bool State)
+{
+	Blackboard->SetValueAsBool(TraceStateKey, State);
+
+}
+
+void AMonsterAIController::SetShieldKey(bool State)
+{
+	Blackboard->SetValueAsBool(IsShieldOnKey, State);
+
+}
+
 void AMonsterAIController::OnAttack(int i)
 {
 	switch (i)
@@ -127,17 +141,25 @@ void AMonsterAIController::OnAttack(int i)
 		Blackboard->SetValueAsBool(Attack1Key, true);
 		Blackboard->SetValueAsBool(Attack2Key, false);
 		Blackboard->SetValueAsBool(Attack3Key, false);
+		Blackboard->SetValueAsBool(Attack4Key, false);
 		break;
 	case 2:
 		Blackboard->SetValueAsBool(Attack1Key, false);
 		Blackboard->SetValueAsBool(Attack2Key, true);
 		Blackboard->SetValueAsBool(Attack3Key, false);
+		Blackboard->SetValueAsBool(Attack4Key, false);
 		break;
 	case 3:
 		Blackboard->SetValueAsBool(Attack1Key, false);
 		Blackboard->SetValueAsBool(Attack2Key, false);
 		Blackboard->SetValueAsBool(Attack3Key, true);
+		Blackboard->SetValueAsBool(Attack4Key, false);
 		break;
+	case 4:
+		Blackboard->SetValueAsBool(Attack1Key, false);
+		Blackboard->SetValueAsBool(Attack2Key, false);
+		Blackboard->SetValueAsBool(Attack3Key, false);
+		Blackboard->SetValueAsBool(Attack4Key, true);
 	default:
 		break;
 	}
@@ -156,9 +178,17 @@ void AMonsterAIController::OffAttack(int i)
 	case 3:
 		Blackboard->SetValueAsBool(Attack3Key, false);
 		break;
+	case 4:
+		Blackboard->SetValueAsBool(Attack4Key, false);
+		break;
 	default:
 		break;
 	}
+}
+
+void AMonsterAIController::SetBackStepKey(bool State)
+{
+	Blackboard->SetValueAsBool(IsBackStepOnKey, State);
 }
 
 void AMonsterAIController::SetBattleMonster(AActor* Monster)
@@ -176,6 +206,11 @@ void AMonsterAIController::InitBattleMonster()
 bool AMonsterAIController::GetIsAttacking()
 {
 	return Blackboard->GetValueAsBool(IsAttackingKey);
+}
+
+bool AMonsterAIController::GetIsTraceState()
+{
+	return Blackboard->GetValueAsBool(TraceStateKey);
 }
 
 ULineBatchComponent* AMonsterAIController::GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)

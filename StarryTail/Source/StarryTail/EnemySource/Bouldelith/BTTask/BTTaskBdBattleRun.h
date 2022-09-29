@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
+
 #include "BTTaskBdBattleRun.generated.h"
 
 /**
@@ -17,6 +18,6 @@ private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	float BattleRunTimer;
-	bool bIsAway;
+
+	void Attack4Trace(class AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
 };

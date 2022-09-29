@@ -125,10 +125,9 @@ protected:
 	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
 	float CalcNormalAttackDamage(float Damage);
-	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
 	void CalcManaShield(float Damage);
 
-	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
+	float CalcManaShieldDamage(float Damage);
 
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 
@@ -136,6 +135,14 @@ protected:
 
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
+
+	void AllShieldDestroyed();
+
+	void InitAttack1Data();
+	void InitAttack2Data();
+	void InitAttack3Data();
+	void InitAttack4Data();
+
 
 //Variable========================================================
 	AMonsterAIController* MonsterAIController;
@@ -201,6 +208,11 @@ protected:
 
 	bool bIsDodgeTime;
 
+	bool bIsDpsCheck;
+	float DpsDamage;
+	float DpsTime;
+	float DpsTimer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	class AEnemySpawnPoint* MonsterControl;
 
@@ -231,7 +243,7 @@ private:
 
 	float DeadWaitTimer;
 	
-
+	FVector KnocbackLocation;
 
 	float ShowUITimer;
 	bool bShowUI;
@@ -239,7 +251,6 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
-
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
@@ -265,7 +276,6 @@ public:
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
-	EAttributeKeyword GetBarrierAttribute() const;
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
 	int GetMaxAttacked() const;
@@ -278,6 +288,7 @@ public:
 	int GetManaShieldCount() const;
 	EMontserState GetState()const;
 	float GetSupportPatrolRadius() const;
+	float GetAttackedTime() const;
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
@@ -290,9 +301,11 @@ public:
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
 	FAttackRange GetAttack3Range()const;
+	FAttackRange GetAttack4Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
+	void SetDpsCheck(bool state);
 
 protected:
 	virtual void InitMonsterInfo() {};

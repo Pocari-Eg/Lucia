@@ -1,39 +1,55 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskBdAttack2.h"
+#include "BTTaskWalkLR.h"
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
-#include "../../../PlayerSource/IreneCharacter.h"
-#include "BehaviorTree/BlackboardComponent.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
-
-UBTTaskBdAttack2::UBTTaskBdAttack2()
+#include "../../../STGameInstance.h"
+UBTTaskWalkLR::UBTTaskWalkLR()
 {
-	NodeName = TEXT("Attack2");
+	NodeName = TEXT("Battle_Walk_LR");
 	bNotifyTick = true;
 }
-EBTNodeResult::Type UBTTaskBdAttack2::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+
+EBTNodeResult::Type UBTTaskWalkLR::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
-
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Bouldelith)
+		return EBTNodeResult::Failed;
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::B_WalkLeftKey)==true)
+	{
+		Bouldelith->GetBouldelithAnimInstance()->PlayLeftBattleWalkMontage();
+	}
+	else
+	{
+		Bouldelith->GetBouldelithAnimInstance()->PlayRightBattleWalkMontage();
 
-	Bouldelith->Attack2();
-	bIsAttacking = true;
-	Bouldelith->Attack2End.AddLambda([this]() -> void { bIsAttacking = false; });
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
+	}
+	
+
 
 	return EBTNodeResult::InProgress;
 }
-void UBTTaskBdAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+
+void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
+	////회전
+	auto GameInstance = Cast<USTGameInstance>(Monster->GetGameInstance());
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Monster->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 1.0f));
 
-	if (!bIsAttacking)
-	{
+
+
+	//AttackTarcce
+
 		if (Monster->GetTestMode())
 		{
 			FTransform BottomLine = Monster->GetTransform();
@@ -131,8 +147,6 @@ void UBTTaskBdAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 						FVector TargetDir = Player->GetActorLocation() - Monster->GetLocation();
 						TargetDir = TargetDir.GetSafeNormal();
-
-						//Morbit의 정면으로 향하는 벡터와 플레이어로 향하는 벡터의 내적을 통해 각도를 구할 수 있다. 결과값은 Radian
 						float Radian = FVector::DotProduct(Monster->GetActorForwardVector(), TargetDir);
 						//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 						float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
@@ -140,15 +154,13 @@ void UBTTaskBdAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 						if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 						{
 
-							auto ran = FMath::RandRange(1, 100);
-							STARRYLOG(Error, TEXT("Percent : %d"), ran);
-							if (ran <= 80)
-							{
-								OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-								Monster->GetAIController()->OnAttack(1);
-								FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-								return;
-							}
+						
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, false);
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, false);
+							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::Attack5Key, true);
+							FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+							return;
+						
 
 						}
 					}
@@ -157,14 +169,6 @@ void UBTTaskBdAttack2::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		}
 
 
-	
-		Monster->GetAIController()->SetAttackCoolKey(true);
-		Monster->SetIsAttackCool(true);
-		Monster->GetAIController()->OffAttack(2);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-
-
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-}
+
+

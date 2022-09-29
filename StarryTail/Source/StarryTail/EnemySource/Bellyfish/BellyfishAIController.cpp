@@ -4,9 +4,6 @@
 #include "BellyfishAIController.h"
 #include "Bellyfish.h"
 
-const FName ABellyfishAIController::IsAfterAttacked = (TEXT("bIsAfterAttacked"));
-
-
 ABellyfishAIController::ABellyfishAIController()
 {
 

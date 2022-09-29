@@ -103,11 +103,11 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 	if (bIsRush==true)
 	{
 		FVector Dir = Bellyfish->GetTransform().GetLocation() + (MoveDir.GetSafeNormal() * Bellyfish->GetRushSpeed() * DeltaSeconds);
-		RushDistance += Bellyfish->GetRushSpeed() * DeltaSeconds;
-
+		RushDistance += Bellyfish->GetRushSpeed();
+		STARRYLOG(Error, TEXT("%f"), RushDistance);
 		if (RushDistance < Bellyfish->GetSkillRadius()) {
 			Dir.Z = Bellyfish->GetActorLocation().Z;
-			//Bellyfish->SetActorLocation(Dir);
+			Bellyfish->SetActorLocation(Dir);
 		}
 		return;
 	}

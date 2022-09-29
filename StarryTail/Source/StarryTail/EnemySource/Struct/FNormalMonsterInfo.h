@@ -14,8 +14,6 @@ struct FElementalShield
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int DEF;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		EAttributeKeyword Type;
 };
 
 USTRUCT(Atomic, BluePrintType)
@@ -55,10 +53,16 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_03;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_04;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int Weapon_Soul;
 
 
 
+
+	//Attacked Time
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_Attacked_Time;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
@@ -87,8 +91,10 @@ public:
 	FAttackRange Attack2Range;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FAttackRange Attack3Range;
-
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	FAttackRange Attack4Range;
 	//시야
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Sight_Radius; //시야거리
 	UPROPERTY()
@@ -100,9 +106,11 @@ public:
 
 
 	//etc
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_FSM_DPS;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int M_MaxAttacked;
+	int M_MaxAttacked;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -205,6 +213,8 @@ public:
 		int M_Skill_Type_02;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_03;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		int M_Skill_Type_04;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int Weapon_Soul;
 };
