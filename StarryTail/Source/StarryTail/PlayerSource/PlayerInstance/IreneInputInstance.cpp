@@ -39,12 +39,16 @@ void UIreneInputInstance::InitMemberVariable()
 	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
 
+	MaxDodgeCoolTime = 0.5f;
+	DodgeCoolTime = 0.0f;
+	bIsDodgeOn = true;
+	MaxDodgeCount = 2;
+	DodgeCount = MaxDodgeCount;	
+	
 	CurSoulValue = 0.0f;
 
 	MaxSwordSkillCoolTime = 0.0f;
 	SwordSkillCoolTime = 0.0f;
-	MaxSpearSkill1CoolTime = 0.5f;
-	SpearSkill1CoolTime = 0.0f;
 	CanSwordSkill2Time = 5.0f;
 
 	bIsThunderAttributeOn = true;
@@ -52,9 +56,6 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsSkillOn = false;
 	bAttackUseSkill = false;
 	CanUseSecondSwordSkill = false;
-	bIsSpearSkill1On = true;
-	MaxSpearSkill1Count = 3;
-	SpearSkill1Count = MaxSpearSkill1Count;
 	
 	TempAttribute = EAttributeKeyword::e_None;
 
@@ -359,10 +360,6 @@ void UIreneInputInstance::RightButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{			
-			// 창 스킬 사용 불가 상태
-			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1] && SpearSkill1Count <= 0 && !bIsSpearSkill1On)
-				return;
-			
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.15f;
 			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
@@ -381,14 +378,14 @@ void UIreneInputInstance::RightButton(float Rate)
 				{
 					AttackUseSkillNextCount = 0;
 					AttackUseSkillNextCountWaitHandle.Invalidate();
-				}), 2*UGameplayStatics::GetGlobalTimeDilation(this), false);
+				}), 2, false);
 			}
 			
 			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneAttack->SetSkillState();
 			
 			TUniquePtr<FAttackDataTable> AttackTable = nullptr;
-			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			if(!Irene->bIsSpiritStance)
 			{
 				if(Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0)
 					AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Sword_Skill_1_1"));
@@ -397,14 +394,7 @@ void UIreneInputInstance::RightButton(float Rate)
 				else
 					AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Sword_Skill_1_1"));
 			}
-			else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-			{
-				AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
-				SpearRightButton();
-				return;
-			}
-			// 아래로는 검 스킬만 작동
-
+			
 			//SkillCameraMoveStart();
 			
 			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
@@ -412,7 +402,7 @@ void UIreneInputInstance::RightButton(float Rate)
 			{
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 				// 검 스킬 쿨타임 적용
-				if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+				if(!Irene->bIsSpiritStance)
 					MaxSwordSkillCoolTime = AttackTable->C_Time;
 			}
 			
@@ -425,8 +415,6 @@ void UIreneInputInstance::RightButton(float Rate)
 				Irene->FollowTargetPosition();
 				PerfectDodgeAttackEnd();
 			}
-
-			//Irene->IreneAnim->GetCurrentActiveMontage()->SequenceLength;
 			
 			// 검 스킬 2번 사용 조건
 			if (Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0 && CanUseSecondSwordSkill == false)
@@ -437,7 +425,7 @@ void UIreneInputInstance::RightButton(float Rate)
 				{
 					CanUseSecondSwordSkill = false;
 					SwordSkill2WaitHandle.Invalidate();
-				}), CanSwordSkill2Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
+				}), CanSwordSkill2Time, false);
 			}
 			
 			if(Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0)
@@ -453,43 +441,6 @@ void UIreneInputInstance::RightButton(float Rate)
 				// 검 스킬 2번 사용 즉시 쿨타임 시작
 				SwordSkillEndWait();
 			}
-		}
-	}
-}
-void UIreneInputInstance::SpearRightButton()
-{
-	// UI작성 시 주석 모두 제거
-	if(bIsSpearSkill1On)
-	{
-		if(SpearSkill1Count > 0)
-		{
-			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Spear_Skill_1"));
-			MaxSpearSkill1CoolTime = AttackTable->C_Time;
-
-			if (AttackTable != nullptr)
-			{
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-				Irene->IreneData.IsAttacking = true;
-				//SpearSkill1Count--;
-				if(PerfectDodgeTimerHandle.IsValid())
-				{
-					Irene->IreneAnim->SetDodgeDir(0);
-					Irene->FollowTargetPosition();
-					PerfectDodgeAttackEnd();
-				}
-				if (SpearSkill1Count > 0)
-				{
-					if (SpearSkill1Count == MaxSpearSkill1Count)
-					{
-						GetWorld()->GetTimerManager().SetTimer(SpearSkill1WaitHandle, this, &UIreneInputInstance::SpearSkill1Wait, CoolTimeRate, true, 0.0f);
-					}
-				}
-				else
-				{
-					bIsSpearSkill1On = false;
-				}
-			}
-			//Irene->IreneUIManager->PlayerHud->UseSkill();
 		}
 	}
 }
@@ -519,30 +470,6 @@ void UIreneInputInstance::SwordSkillEndWait()
 {
 	GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true);
 	STARRYLOG_S(Warning);
-}
-
-void UIreneInputInstance::SpearSkill1Wait()
-{
-	SpearSkill1CoolTime += CoolTimeRate;
-	if (SpearSkill1CoolTime > MaxSpearSkill1CoolTime)
-	{
-		bIsSpearSkill1On = true;
-		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
-		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
-		SpearSkill1CoolTime = 0.0f;
-		if (SpearSkill1Count < MaxSpearSkill1Count)
-		{
-		}
-		else
-		{
-			GetWorld()->GetTimerManager().ClearTimer(SpearSkill1WaitHandle);
-		}
-	}
-	else
-	{
-		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
-		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
-	}
 }
 
 void UIreneInputInstance::SkillCameraMoveStart()
@@ -601,14 +528,16 @@ void UIreneInputInstance::MouseWheel(float Rate)
 
 void UIreneInputInstance::DodgeKeyword()
 {
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
-		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && !bIsDialogOn && !Irene->bInputStop)
+		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
 	{
+		RecoveryDodge();
+		
 		TUniquePtr<FAttackDataTable> AttackDataTable = nullptr;
-		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if(!Irene->bIsSpiritStance)
 			AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Sword_Dodge")));
-		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		else
 			AttackDataTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(FName("Spear_Dodge")));
 
 		Irene->IreneAnim->StopAllMontages(0);
@@ -629,11 +558,11 @@ void UIreneInputInstance::DodgeKeyword()
 				Irene->IreneData.IsInvincibility = false;
 			}
 			 DodgeInvincibilityTimerHandle.Invalidate();
-		 }), InvincibilityTime * UGameplayStatics::GetGlobalTimeDilation(this), false);
+		 }), InvincibilityTime, false);
 		
-		GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, FTimerDelegate::CreateLambda([&]()
+		GetWorld()->GetTimerManager().SetTimer(DodgeInputWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
-			 DodgeWaitHandle.Invalidate();
+			 DodgeInputWaitHandle.Invalidate();
 		 }), AttackDataTable->C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 	}
 }
@@ -676,45 +605,95 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 {
 	Irene->PerfectDodgeAttackEnd();
 }
+void UIreneInputInstance::RecoveryDodge()
+{
+	// UI작성 시 주석 모두 제거
+	if(bIsDodgeOn)
+	{
+		if(DodgeCount > 0)
+		{
+			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Sword_Dodge"));
+			MaxDodgeCoolTime = AttackTable->Attack_Distance_2;
+
+			if(Irene->bIsSpiritStance)
+				MaxDodgeCoolTime = 0;
+			
+			if (AttackTable != nullptr)
+			{
+				DodgeCount--;
+				if (DodgeCount != 0)
+				{
+					if(!DodgeWaitHandle.IsValid())
+						GetWorld()->GetTimerManager().SetTimer(DodgeWaitHandle, this, &UIreneInputInstance::RecoveryDodgeWait, CoolTimeRate, true, 0.0f);
+				}
+				else
+				{
+					bIsDodgeOn = false;
+				}
+			}
+			//Irene->IreneUIManager->PlayerHud->UseSkill();
+		}
+	}
+}
+void UIreneInputInstance::RecoveryDodgeWait()
+{
+	DodgeCoolTime += CoolTimeRate;
+	if (DodgeCoolTime > MaxDodgeCoolTime)
+	{
+		bIsDodgeOn = true;
+		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
+		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
+		DodgeCoolTime = 0.0f;
+		if (DodgeCount < MaxDodgeCount)
+		{
+			DodgeCount++;
+		}
+		else
+		{
+			GetWorld()->GetTimerManager().ClearTimer(DodgeWaitHandle);
+		}
+	}
+	else
+	{
+		//Irene->IreneUIManager->UpdateThunderSkillCool(SpearSkill1CoolTime, MaxSpearSkill1CoolTime);
+		//Irene->IreneUIManager->OnThunderSkillCoolChange.Broadcast();
+	}
+}
 
 void UIreneInputInstance::WeaponChangeKeyword()
 {
 	if(!Irene->bInputStop)
 	{
-		if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+		if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->bIsSpiritStance)
 		{
-			if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+			if(!Irene->bIsSpiritStance)
 			{
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
-				Irene->IreneAnim->IsSword(false);
-				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 20*UGameplayStatics::GetGlobalTimeDilation(this), false);
+				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::WeaponChangeTimeOut, 20, false);				
 				Irene->IreneAnim->StopAllMontages(0);
+				Irene->IreneAnim->SetSpiritStart(true);
+				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
 				Irene->IreneAttack->AttackTimeEndState();
-				Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[1]);
-				Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[1]);
+				Irene->bIsSpiritStance = true;
 			}
-			else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+			else
 			{
-				Irene->IreneAnim->IsSword(true);
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
-				Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
-				Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
+				Irene->bIsSpiritStance = false;
 			}
 		}
 	}
 }
 void UIreneInputInstance::WeaponChangeTimeOut()
 {
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
+	if(Irene->bIsSpiritStance)
 	{
-		Irene->IreneAnim->IsSword(true);
 		Irene->IreneAnim->StopAllMontages(0);
 		Irene->IreneAttack->AttackTimeEndState();
-		Irene->Weapon->SetSkeletalMesh(Irene->WeaponMeshArray[0]);
-		Irene->Weapon->AttachToComponent(Irene->GetMesh(),FAttachmentTransformRules::KeepRelativeTransform, Irene->WeaponSocketNameArray[0]);
 		WeaponChangeWaitHandle.Invalidate();
+		Irene->bIsSpiritStance = false;
 	}
 }
 

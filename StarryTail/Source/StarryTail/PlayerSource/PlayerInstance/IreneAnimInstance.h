@@ -49,21 +49,19 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SwordAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* SpearAttackMontage;
+	UAnimMontage* SpiritAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SwordSkill1Montage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SwordSkill2Montage;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* SpearSkill1Montage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	AActor* TargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	int DodgeDir;
-	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	bool bSword;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool bSpiritStart;
 	
 public:
 	void Init(AIreneCharacter* Value);
@@ -88,18 +86,15 @@ public:
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
 	void SetDodgeDir(const int Value) { DodgeDir = Value; }
-	void IsSword(const bool Value) { bSword = Value; }
+	void SetSpiritStart(const bool Value) { bSpiritStart = Value; }
 
 	bool GetIsinAir()const{return IsInAir;}
 	int GetDodgeDir()const{return DodgeDir;}
 	
 public:
-	UFUNCTION(BlueprintImplementableEvent)
-	void SpearSkillEvent();
-
-
 	UFUNCTION(BlueprintCallable)
 	void CallCreateTail();
+	
 private:	
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;
@@ -115,7 +110,5 @@ private:
 	void AnimNotify_RadialBlur() const;
 	UFUNCTION()
 	void AnimNotify_TakeDamageSound() const;
-	UFUNCTION()
-	void AnimNotify_PlayEffect();
 	FName GetAttackMontageSectionName(const int32 Section);
 };
