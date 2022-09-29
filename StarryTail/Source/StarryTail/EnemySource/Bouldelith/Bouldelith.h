@@ -107,6 +107,9 @@ private:
 
 	int IsAttackNum;
 
+	float FindRimitTime;
+	float FindRimitTimer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, Meta = (AllowPrivateAccess = true))
 	AWalkPoint* WalkPoint;
 	

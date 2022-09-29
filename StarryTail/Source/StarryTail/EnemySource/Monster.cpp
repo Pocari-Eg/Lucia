@@ -898,6 +898,10 @@ void AMonster::SetNormalState()
 	MonsterAIController->SetNormalState(true);
 	MonsterAIController->SetSupportState(false);
 
+	if (MonsterInfo.M_Atk_Type == 1) {
+		MonsterAIController->SetTraceKey(true);
+	}
+
 	CurState = EMontserState::Normal;
 }
 void AMonster::SetSupportState()
@@ -1103,7 +1107,6 @@ void AMonster::Tick(float DeltaTime)
 	}
 
 
-
 	if (bIsDpsCheck)
 	{
 		DpsTimer += DeltaTime;
@@ -1222,13 +1225,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				STGameInstance->SetAttributeEffectMonster(this);
 				SoundInstance->PlayHitSound(SoundTransform);
 			}
-
-			if (MonsterAIController->GetIsTraceState())
-			{
-				MonsterAIController->SetTraceKey(false);
-				MonsterAIController->SetBattleState(true);
-			}
-
 
 			//몬스터인지 아닌지
 			if (!bIsObject) {
