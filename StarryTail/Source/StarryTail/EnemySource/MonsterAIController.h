@@ -106,7 +106,7 @@ public:
 
 	static const FName BattleMonsterKey;
 	static const FName IsShieldOnKey;
-	static const FName IsTraceOnKey;
+	static const FName TraceStateKey;
 
 
 	static const FName IsBackStepOnKey;
