@@ -1070,7 +1070,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 0.83f)
+	if(CurState->PlayTime >= 0.9f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1159,7 +1159,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 0.63f)
+	if(CurState->PlayTime >= 1.0f)
 	{
 		EndTimeExit(CurState);
 	}
