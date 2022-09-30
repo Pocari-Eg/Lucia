@@ -20,4 +20,7 @@ private:
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	bool bIsAttacking;
+
+	void Attack4Trace(class AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
+
 };

@@ -8,86 +8,62 @@
 
 UBTTaskBdBattleWalk::UBTTaskBdBattleWalk()
 {
-	NodeName = TEXT("BattleWalk");
+	NodeName = TEXT("B_Walk");
 	bNotifyTick = true;
+
+	B_WalkTime = 5.0f;
+	B_WalkTimer = 0.0f;
 }
 EBTNodeResult::Type UBTTaskBdBattleWalk::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster)
+		return EBTNodeResult::Failed;
 
-	Bouldelith->BattleWalk();
 
-	STARRYLOG(Log, TEXT("1"));
 
-	ChangeStateTime = FMath::RandRange(1, 3);
-	ChangeStateTimer = 0.0f;
+	auto BattleMonster = Cast<AMonster>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::BattleMonsterKey));
+	if (BattleMonster != nullptr) {
+		Monster->GetAIController()->MoveToLocation(BattleMonster->GetActorLocation());
+		return EBTNodeResult::InProgress;
+	}
+	else {
+		return EBTNodeResult::Succeeded;
+	}
 
-	return EBTNodeResult::InProgress;
+
+
 }
 void UBTTaskBdBattleWalk::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	ChangeStateTimer += DeltaSeconds;
-
-	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
-
-	FVector LookVector = Player->GetActorLocation() - Bouldelith->GetLocation();
-	LookVector.Z = 0.0f;
-	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-
-	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
-
-	if (Bouldelith->GetDistanceToPlayer() > 500.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
-
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	else if (Bouldelith->GetDistanceToPlayer() <= 200.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
-
-		if (Bouldelith->GetIsUseBackstep())
-		{
-			int Random = FMath::RandRange(0, 1);
-
-			switch (Random)
-			{
-			case 0:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
-				break;
-			case 1:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
-				break;
-			}
-		}
-		else
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBackstepKey, true);
-		}
-
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	if (nullptr == Monster) {
+		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	if (ChangeStateTimer >= ChangeStateTime)
+
+
+
+	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
-		int Random = FMath::RandRange(0, 1);
 
-		switch (Random)
-		{
-		case 0:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
-			break;
-		case 1:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
-			break;
-		}
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, false);
+		auto BattleMonster = Cast<AMonster>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::BattleMonsterKey));
+		if (BattleMonster != nullptr)
+			Monster->GetAIController()->MoveToLocation(BattleMonster->GetActorLocation());
+	}
 
+	B_WalkTimer += DeltaSeconds;
+	if (B_WalkTimer >= B_WalkTime){
+
+		B_WalkTimer = 0.0f;
+		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+
 }
+

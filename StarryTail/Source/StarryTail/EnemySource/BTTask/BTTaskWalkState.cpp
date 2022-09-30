@@ -49,13 +49,14 @@ void UBTTaskWalkState::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	}
 
 
-
-	WalkTimer += DeltaSeconds;
-	if (WalkTimer >= WalkTime)
-	{
-		WalkTimer = 0.0f;
-		Monster->GetAIController()->StopMovement();
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	if (Monster->GetMonsterAtkType() == 2) {
+		WalkTimer += DeltaSeconds;
+		if (WalkTimer >= WalkTime)
+		{
+			WalkTimer = 0.0f;
+			Monster->GetAIController()->StopMovement();
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
 	
 	if (Wait)

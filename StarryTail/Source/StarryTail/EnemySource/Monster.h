@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "MonsterSoundInstance.h"
+#include"Common/MonsterShield.h"
 
 
 #include "Common/Weapon_Soul.h"
@@ -89,9 +90,6 @@ public:
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
 
-
-	UFUNCTION(BlueprintCallable)
-	void InitManaShield();
 	void InitPerfectDodgeNotify();
 
 	//FSM
@@ -119,23 +117,22 @@ protected:
 	//Function========================================================
 	void InitAttackedInfo();
 	void InitEffect();
-	UFUNCTION(BlueprintCallable)
-		void InitMonsterAttribute();
-	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
 	float CalcNormalAttackDamage(float Damage);
-	void CalcManaShield(float Damage,EAttributeKeyword AttackAttribute);
-	void CalcManaShield(float Damage);
-
-	float CalcManaShieldDamage(bool bIsSword,float Damage, EAttributeKeyword AttackAttribute);
-
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 
 	void Attacked();
 
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
+
+	void ShieldDestroyed();
+
+	void InitAttack1Data();
+	void InitAttack2Data();
+	void InitAttack3Data();
+	void InitAttack4Data();
+
 
 //Variable========================================================
 	AMonsterAIController* MonsterAIController;
@@ -147,20 +144,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* HitEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* BurnEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* FloodingEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* SparkEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-	UParticleSystemComponent* ManaShiledEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, Meta = (AllowPrivateAccess = true))
 	UCapsuleComponent* WidgetPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shield, Meta = (AllowPrivateAccess = true))
+	UMonsterShield* MonsterShield;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	class	UCapsuleComponent* Collision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	class	UParticleSystemComponent* ShiledEffectComponent;
+
+
 	//박찬영 UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
@@ -201,6 +201,11 @@ protected:
 
 	bool bIsDodgeTime;
 
+	bool bIsDpsCheck;
+	float DpsDamage;
+	float DpsTime;
+	float DpsTimer;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	class AEnemySpawnPoint* MonsterControl;
 
@@ -216,7 +221,6 @@ private:
 	bool CheckPlayerIsBehindMonster();
 
 	void SetEffect();
-	void SetManaShieldEffct();
 
 
 	void SetActive();
@@ -231,7 +235,7 @@ private:
 
 	float DeadWaitTimer;
 	
-
+	FVector KnocbackLocation;
 
 	float ShowUITimer;
 	bool bShowUI;
@@ -239,7 +243,6 @@ private:
 
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
-
 	bool bIsAttackCool;
 
 	float AttackCoolTimer;
@@ -261,11 +264,9 @@ public:
 	float GetViewAngle() const;
 	float GetViewRange() const;
 	float GetViewHeight() const;
-	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
-	EAttributeKeyword GetBarrierAttribute() const;
 	float GetPatrolArea() const;
 	float GetMaxFollowTime() const;
 	int GetMaxAttacked() const;
@@ -275,24 +276,27 @@ public:
 	bool GetIsAttackCool()const;
 	float GetAttackPercent() const;
 	int GetPlayerEnergy() const;
-	int GetManaShieldCount() const;
 	EMontserState GetState()const;
 	float GetSupportPatrolRadius() const;
+	float GetAttackedTime() const;
+	EAttributeKeyword GetAttribute() const;
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
-	bool GetIsManaShieldActive() const;
+	bool GetIsMonsterShieldActive() const;
 	float GetSkillRadius() const;
 
 
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
 	FAttackRange GetAttack3Range()const;
+	FAttackRange GetAttack4Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
+	void SetDpsCheck(bool state);
 
 protected:
 	virtual void InitMonsterInfo() {};

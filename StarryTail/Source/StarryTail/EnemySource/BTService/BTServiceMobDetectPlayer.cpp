@@ -26,11 +26,6 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 	UWorld* World = Monster->GetWorld();
 	FVector Center = Monster->GetLocation() + (-Monster->GetActorForwardVector() * Monster->GetCapsuleComponent()->GetScaledCapsuleRadius());
 
-	FVector CenterBottom = Center;
-	CenterBottom.Z -= 85.0f;
-
-	FVector CenterTop = CenterBottom;
-	CenterTop.Z += 150.0f;
 
 	FVector Box = FVector(Monster->GetViewRange(), Monster->GetViewRange(), Monster->GetViewHeight());
 	//모르빗 주변 범위 200 안에 있는 액터 탐지, EnemyDetect 트레이스 채널 사용
@@ -136,7 +131,6 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 					}
 					else {
 						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsFindKey, false);
-
 					}
 					
 				}

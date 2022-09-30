@@ -164,7 +164,12 @@ void URunLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Run_Loop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	if(CurState->Irene->bIsSpiritStance)
+	{
+		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		return;
+	}	
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 	if (CurState->Irene->Weapon->IsVisible())
 	{
 		CurState->Irene->Weapon->SetVisibility(false);
@@ -296,7 +301,7 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Sprint_Loop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
 	//CurState->Irene->SetCameraLagTime(0);
@@ -308,6 +313,13 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.IsComboInputOn = false;
 	CurState->Irene->IreneData.CurrentCombo = 0;
+	CurState->Irene->IreneAnim->SetSprintPlayRate(1.0f);
+
+	if(CurState->Irene->bIsSpiritStance)
+	{
+		CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed * 1.5f;
+		CurState->Irene->IreneAnim->SetSprintPlayRate(1.5f);
+	}
 }
 
 void USprintLoopState::Execute(IBaseGameEntity* CurState)
@@ -666,7 +678,7 @@ void UJumpEndState::Enter(IBaseGameEntity* CurState)
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
-	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.ThunderQuillStackSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
+	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.RunMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
 }
 
 void UJumpEndState::Execute(IBaseGameEntity* CurState)
@@ -765,15 +777,15 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
+	if(!CurState->Irene->bIsSpiritStance)
 	{
 	
-		if(CurState->PlayTime >= 1.33f)
+		if(CurState->PlayTime >= 1.67f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
-	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
+	else
 	{
 		if(CurState->PlayTime >= 2.03f)
 		{
@@ -866,14 +878,14 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
+	if(!CurState->Irene->bIsSpiritStance)
 	{
-		if(CurState->PlayTime >= 1.37f)
+		if(CurState->PlayTime >= 1.47f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
-	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
+	else
 	{
 		if(CurState->PlayTime >= 1.93f)
 		{
@@ -917,9 +929,9 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.CurrentCombo = 3;
 	
-	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
+	if(!CurState->Irene->bIsSpiritStance)
 		CurState->Irene->IreneAttack->SetTrueAttackCount(3);
-	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
+	else
 		CurState->Irene->IreneAttack->SetTrueAttackCount(4);
 
 	CurState->Irene->IreneInput->SetNextAttack(false);
@@ -965,14 +977,14 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[0])
+	if(!CurState->Irene->bIsSpiritStance)
 	{
-		if(CurState->PlayTime >= 1.63f)
+		if(CurState->PlayTime >= 1.3f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
-	else if(CurState->Irene->Weapon->SkeletalMesh == CurState->Irene->WeaponMeshArray[1])
+	else
 	{
 		if(CurState->PlayTime >= 2.13f)
 		{
@@ -1058,7 +1070,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 0.83f)
+	if(CurState->PlayTime >= 0.9f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1147,7 +1159,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 0.63f)
+	if(CurState->PlayTime >= 1.0f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1242,7 +1254,7 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		CurState->Irene->CameraShakeOn = false;
 
 	// 전기 스킬 연속
-	if (CurState->Irene->IreneInput->GetSpearSkill1Count() > 0 && CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
+	if (CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
 	{
 		CurState->Irene->IreneAnim->StopAllMontages(0);
 		CurState->Irene->IreneInput->RightButton(1);

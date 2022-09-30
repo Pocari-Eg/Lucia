@@ -22,21 +22,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* NoneHitEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* BurnEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* FloodingEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* SparkEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* GroggyEffect;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystem* NoneManaShieldEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	 UParticleSystem* FireManaShieldEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystem* WaterManaShieldEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UParticleSystem* ThunderManaShieldEffect;
+	 UParticleSystem* ShieldEffect;
 
 	//Rotation, Scale
 	//Hit
@@ -44,21 +33,11 @@ public:
 		FRotator HitEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector HitEffectScale;
-	//Debuff - Burn/Flooding/Spark
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FRotator DebuffEffectRotation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FVector DebuffEffectScale;
+
 	
 	//Groggy
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FRotator GroggyEffectRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		FVector GroggyEffectScale;
-
-	//ManaSheild
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FRotator ManaShieldEffectRotation;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector ManaShieldEffectScale;
 };

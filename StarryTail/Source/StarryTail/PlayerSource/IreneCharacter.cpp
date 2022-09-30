@@ -1,11 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-//
-//  
-// 나중에 해야할 것: 일반 공격 속성 테이블 따라 값 읽기, 
-// 
-// 로그 출력용 더미
-// UE_LOG(LogTemp, Error, TEXT("Sub"));
-// STARRYLOG(Error, TEXT("Sub"));
 #pragma once
 
 #include "IreneCharacter.h"
@@ -45,7 +37,6 @@ AIreneCharacter::AIreneCharacter()
 
 	// 스켈레톤 메쉬 설정
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
-	//const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Test/NewFolder/idle_KeQing.idle_KeQing"));
 	if (CharacterMesh.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(CharacterMesh.Object);
@@ -56,25 +47,17 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		
 		// 무기
-		WeaponSocketNameArray.Add(TEXT("hand_rSwordSocket"));
-		WeaponSocketNameArray.Add(TEXT("hand_rSpearSocket"));
-
-		if (GetMesh()->DoesSocketExist(WeaponSocketNameArray[0]) && GetMesh()->DoesSocketExist(WeaponSocketNameArray[1]))
+		if (GetMesh()->DoesSocketExist(TEXT("hand_rSwordSocket")))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
 			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Sword(TEXT("/Game/Animation/Irene/Weapon/Sword.Sword"));
-			static ConstructorHelpers::FObjectFinder<USkeletalMesh>SK_Spear(TEXT("/Game/Animation/Irene/Weapon/Spear.Spear"));
 
 			if (SK_Sword.Succeeded())
 			{
-				WeaponMeshArray.Add(SK_Sword.Object);
+				WeaponMesh = SK_Sword.Object;
 			}
-			if(SK_Spear.Succeeded())
-			{
-				WeaponMeshArray.Add(SK_Spear.Object);
-			}
-			Weapon->SetSkeletalMesh(WeaponMeshArray[0]);
-			Weapon->SetupAttachment(GetMesh(), WeaponSocketNameArray[0]);
+			Weapon->SetSkeletalMesh(WeaponMesh);
+			Weapon->SetupAttachment(GetMesh(), TEXT("hand_rSwordSocket"));
 			Weapon->SetCollisionProfileName(TEXT("PlayerAttack"));
 			Weapon->SetGenerateOverlapEvents(false);
 			Weapon->SetVisibility(false);
@@ -83,7 +66,6 @@ AIreneCharacter::AIreneCharacter()
 		// 블루프린트 애니메이션 적용
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
-		//ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Test/NewFolder/BP/BP_TestIrene.BP_TestIrene_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
@@ -198,6 +180,7 @@ AIreneCharacter::AIreneCharacter()
 	CameraShakeOn = false;
 	bIsRadialBlurOn = false;
 	bInputStop = false;
+	bIsSpiritStance = false;
 }
 
 void AIreneCharacter::BeginPlay()
