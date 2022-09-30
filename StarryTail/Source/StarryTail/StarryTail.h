@@ -92,12 +92,10 @@ enum class  EDialogState :uint8
 };
 
 UENUM(BluePrintType)
-enum class  EDodgeDirection :uint8
+enum class  EShieldType :uint8
 {
-	Left = 0 UMETA(DisplayName = "Left"),
-	Right UMETA(DisplayName = "Right"),
-	Front  UMETA(DisplayName = "Front"),
-	Back UMETA(DisplayName = "Back")
+	General = 0 UMETA(DisplayName = "General"),
+	Special UMETA(DisplayName = "Special"),
 };
 
 UENUM(BluePrintType)

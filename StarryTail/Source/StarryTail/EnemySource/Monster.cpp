@@ -80,9 +80,6 @@ AMonster::AMonster()
 	bIsObject = false;
 	InitEffect();
 
-
-	MonsterInfo.ManaShieldDec = 30;
-
     bShowUI = false;
 	ShowUITimer = 0.0f;
 	ShowUITime = 300.0f;
@@ -113,40 +110,14 @@ AMonster::AMonster()
 		Weapon_SoulClass= BP_WEAPONSOUL.Class;
 	}
 	bIsDodgeOn = false;
+
+	MonsterShield = CreateDefaultSubobject<UMonsterShield>(TEXT("SHEILD"));
+	MonsterShield->SetupAttachment(RootComponent);
+
+
 }
 #pragma region Init
-void AMonster::InitMonsterAttribute()
-{
-	switch (MonsterInfo.M_Atk_Type)
-	{
-	case 1:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-		break;
-	case 2:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-		break;
-	case 3:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-		break;
-	case 4:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Fire;
-		break;
-	case 5:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-		break;
-	case 6:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Water;
-		break;
-	case 7:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-		break;
-	case 8:
-		MonsterInfo.MonsterAttribute = EAttributeKeyword::e_Thunder;
-		break;
-	default:
-		break;
-	}
-}
+
 void AMonster::InitAttackedInfo()
 {
 	AttackedInfo.bIsUseMana = false;
@@ -156,37 +127,20 @@ void AMonster::InitAttackedInfo()
 void AMonster::InitEffect()
 {
 	HitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("HitEffect"));
-	BurnEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("BurnEffect"));
-	FloodingEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("FloodingEffect"));
-	SparkEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SparkEffect"));
 	GroggyEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("GroggyEffect"));
-	ManaShiledEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ManaSheildEffect"));
 
 	HitEffectComponent->SetupAttachment(GetMesh());
-	BurnEffectComponent->SetupAttachment(GetMesh());
-	FloodingEffectComponent->SetupAttachment(GetMesh());
-	SparkEffectComponent->SetupAttachment(GetMesh());
 	GroggyEffectComponent->SetupAttachment(RootComponent);
-	ManaShiledEffectComponent->SetupAttachment(GetMesh());
 
 	HitEffectComponent->bAutoActivate = false;
-	BurnEffectComponent->bAutoActivate = false;
-	FloodingEffectComponent->bAutoActivate = false;
-	SparkEffectComponent->bAutoActivate = false;
 	GroggyEffectComponent->bAutoActivate = false;
-	ManaShiledEffectComponent->bAutoActivate = false;
 
 	MonsterEffect.HitEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.HitEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
-	MonsterEffect.DebuffEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	MonsterEffect.DebuffEffectScale = FVector(1.0f, 1.0f, 1.0f);
-
 	MonsterEffect.GroggyEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
 	MonsterEffect.GroggyEffectScale = FVector(1.0f, 1.0f, 1.0f);
 
-	MonsterEffect.ManaShieldEffectRotation = FRotator(0.0f, 0.0f, 0.0f);
-	MonsterEffect.ManaShieldEffectScale = FVector(1.0f, 1.0f, 1.0f);
 }
 #pragma endregion
 
@@ -231,10 +185,7 @@ FVector AMonster::GetLocation() const
 {
 	return GetActorLocation() + FVector(0, 0, -GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 }
-EAttributeKeyword AMonster::GetAttribute() const
-{
-	return MonsterInfo.MonsterAttribute;
-}
+
 float AMonster::GetDistanceToPlayer() const
 {
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
@@ -282,10 +233,6 @@ int AMonster::GetPlayerEnergy() const
 {
 	return 0;
 }
-int AMonster::GetManaShieldCount() const
-{
-	return MonsterInfo.Ele_Shield.Num();
-}
 
 EMontserState AMonster::GetState() const
 {
@@ -306,6 +253,11 @@ float AMonster::GetAttackedTime() const
 	return MonsterInfo.M_Attacked_Time;
 }
 
+EAttributeKeyword AMonster::GetAttribute() const
+{
+	return MonsterInfo.MonsterAttribute;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -318,9 +270,9 @@ float AMonster::GetAtkHeight() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
 }
-bool AMonster::GetIsManaShieldActive() const
+bool AMonster::GetIsMonsterShieldActive() const
 {
-	return MonsterInfo.bIsShieldOn;
+	return MonsterShield->GetShieldAcitve();
 }
 float AMonster::GetSkillRadius() const
 {
@@ -404,14 +356,7 @@ float AMonster::GetHpRatio()
 }
 float AMonster::GetDefRatio()
 {
-
-		if (!MonsterInfo.bIsShieldOn)return 0.0f;
-		else
-		{
-			return MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF < KINDA_SMALL_NUMBER ? 0.0f :
-				MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF / MaxBarrier;
-		}
-
+  return MonsterShield->GetDurabilityRatio();
 }
 void AMonster::ChangeAttributeDelegate()
 {
@@ -440,35 +385,18 @@ void AMonster::SetIsBattleState(bool Value)
 void AMonster::SetEffect()
 {
 	HitEffectComponent->SetTemplate(MonsterEffect.NoneHitEffect);
-	BurnEffectComponent->SetTemplate(MonsterEffect.BurnEffect);
-	FloodingEffectComponent->SetTemplate(MonsterEffect.FloodingEffect);
-	SparkEffectComponent->SetTemplate(MonsterEffect.SparkEffect);
 	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
 
 	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
 	HitEffectComponent->SetRelativeScale3D(MonsterEffect.HitEffectScale);
 
-	BurnEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
-	BurnEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
-
-	FloodingEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
-	FloodingEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
-
-	SparkEffectComponent->SetRelativeRotation(MonsterEffect.DebuffEffectRotation);
-	SparkEffectComponent->SetRelativeScale3D(MonsterEffect.DebuffEffectScale);
 
 	GroggyEffectComponent->SetRelativeRotation(MonsterEffect.GroggyEffectRotation);
 	GroggyEffectComponent->SetRelativeScale3D(MonsterEffect.GroggyEffectScale);
 
-	ManaShiledEffectComponent->SetRelativeRotation(MonsterEffect.ManaShieldEffectRotation);
-	ManaShiledEffectComponent->SetRelativeScale3D(MonsterEffect.ManaShieldEffectScale);
-	
 }
 
-void AMonster::SetManaShieldEffct()
-{
-ManaShiledEffectComponent->SetTemplate(MonsterEffect.NoneManaShieldEffect);
-}
+
 
 #pragma region Calc
 
@@ -482,11 +410,11 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
+		if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
 			Attacked();
 		}
 
-		MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
+		//MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
 	if (Cast<AScientia>(this)) {
@@ -495,7 +423,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
+		if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
 			Attacked();
 		}
 
@@ -507,7 +435,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
+		if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
 			Attacked();
 		}
 
@@ -525,7 +453,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			SetDpsCheck(true);
 		}
 
-		if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
+		if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
 			Attacked();
 		}
 
@@ -537,56 +465,38 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 	MonsterAIController->StopMovement();
 
+	float TotalDamage = 0;
 
-	return Damage;
-}
-
-
-void AMonster::CalcManaShield(float Damage)
-{
-	auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
-	//加己 硅府绢
-	if (MonsterInfo.bIsShieldOn)
+	if (GetIsMonsterShieldActive())
 	{
-		MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF -= Damage;
-
-
-		OnBarrierChanged.Broadcast();
-		if (MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF <= 0)
+		switch (MonsterShield->GetCurShieldState())
 		{
-			SoundInstance->PlayShieldCrashSound();
-			MonsterInfo.Ele_Shield_Count -= 1;
-
-			if (MonsterInfo.Ele_Shield_Count < 0)
-			{
-			
-				AllShieldDestroyed();
-			}
-			else {
-
-				MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-				OnBarrierChanged.Broadcast();
-				SetManaShieldEffct();
-			}
+		case 0:
+			TotalDamage = Damage * 0.3;
+			break;
+		case 1:
+			TotalDamage = Damage * 0.5;
+			break;
+		case 2:
+			TotalDamage = Damage * 0.7;
+			break;
+		case 3:
+			TotalDamage = Damage * 0.9;
+			break;
+		default:
+			break;
 		}
 	}
-}
-float AMonster::CalcManaShieldDamage(float Damage)
-{
-	float TotalDamage = 0.0f;
-	//加己 硅府绢
-	if (MonsterInfo.bIsShieldOn)
-	{
-		
-		TotalDamage += Damage;
-	
-
-    }
+	else {
+		TotalDamage = Damage;
+	}
 
 
-	
 	return TotalDamage;
 }
+
+
+
 void AMonster::CalcHp(float Damage)
 {
 		Damage = FMath::Abs(Damage);
@@ -656,14 +566,10 @@ FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
 	return MonsterSkillDataTable->FindRow<FMonsterSkillDataTable>(FName(*(FString::FormatAsNumber(num))), FString(""));
 }
 
-void AMonster::AllShieldDestroyed()
+void AMonster::ShieldDestroyed()
 {
-	MonsterInfo.bIsShieldOn = false;
-	ManaShiledEffectComponent->SetActive(false);
-	ManaShiledEffectComponent->SetVisibility(false);
+	
 	OnBarrierChanged.Broadcast();
-	HitEffectComponent->SetActive(true);
-	HitEffectComponent->ForceReset();
 	MonsterAIController->SetShieldKey(false);
 
 	if (MonsterInfo.M_Atk_Type == 1)
@@ -752,11 +658,7 @@ void AMonster::SetActive()
 		MonsterWidget->SetHiddenInGame(true);
 		TargetWidget->SetHiddenInGame(true);
 		HitEffectComponent->SetActive(false);
-		BurnEffectComponent->SetActive(false);
-		FloodingEffectComponent->SetActive(false);
-		SparkEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
-		ManaShiledEffectComponent->SetActive(false);
 	}
 }
 void AMonster::MarkerOn()
@@ -827,10 +729,7 @@ void AMonster::Attacked()
 	MonsterAIController->Attacked();
 
 }
-void AMonster::OffShockDebuffEffect()
-{
-	SparkEffectComponent->SetActive(false);
-}
+
 void AMonster::OffIsAttacked()
 {
 	bIsAttacked = false;
@@ -856,21 +755,7 @@ void AMonster::PlayDeathAnim()
 	MonsterAnimInstance->PlayDeathMontage();
 
 }
-void AMonster::InitManaShield()
-{
-	if (MonsterInfo.Ele_Shield.Num() != 0) {
 
-		MonsterInfo.bIsShieldOn = true;
-
-		MonsterInfo.Max_Ele_Shield = MonsterInfo.Ele_Shield.Num();
-		MonsterInfo.Ele_Shield_Count = MonsterInfo.Max_Ele_Shield-1;
-		MaxBarrier = MonsterInfo.Ele_Shield[MonsterInfo.Ele_Shield_Count].DEF;
-		SetManaShieldEffct();
-		ManaShiledEffectComponent->SetActive(true);
-		ManaShiledEffectComponent->SetVisibility(false);
-		OnBarrierChanged.Broadcast();
-	}
-}
 void AMonster::InitPerfectDodgeNotify()
 {
 	DodgeTimeOn.AddUObject(this, &AMonster::IsDodgeTimeOn);
@@ -884,7 +769,7 @@ void AMonster::SetBattleState()
 
 	CurState = EMontserState::Battle;
 
-	if (MonsterInfo.bIsShieldOn)
+	if (GetIsMonsterShieldActive())
 		MonsterAIController->SetShieldKey(true);
 	else {
 		MonsterAIController->SetShieldKey(false);
@@ -1034,7 +919,6 @@ void AMonster::Tick(float DeltaTime)
 		{
 			ShowUITimer = 0.0f;
 			MonsterWidget->SetVisibility(false);
-			ManaShiledEffectComponent->SetVisibility(false);
 			bShowUI = false;
 			TargetWidgetOff();
 		}
@@ -1045,12 +929,16 @@ void AMonster::Tick(float DeltaTime)
 	}
 
 
-	if (bIsAttacked&&!MonsterInfo.bIsShieldOn) // 0.2
+	if (bIsAttacked) // 0.2
 	{
 		KnockBackTime += DeltaTime;
 
+	 if(!GetIsMonsterShieldActive())
 		KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
-		
+	 else {
+		 KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterShield->GetKnockBackDistance() * (0.15f - KnockBackTime)));
+
+	 }
 
 		SetActorLocation(KnocbackLocation);
 
@@ -1069,7 +957,6 @@ void AMonster::Tick(float DeltaTime)
 		{
 			ShowUITimer = 0.0f;
 			MonsterWidget->SetVisibility(false);
-			ManaShiledEffectComponent->SetVisibility(false);
 			bShowUI = false;
 		}
 	}
@@ -1116,6 +1003,15 @@ void AMonster::Tick(float DeltaTime)
 		}
 	}
 
+
+	if (GetIsMonsterShieldActive())
+	{
+		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+		float Distance = GetDistanceTo(STGameInstance->GetPlayer());
+		MonsterShield->SetOpacity(Distance);
+	}
+
+		
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -1170,9 +1066,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					bShowUI = true;
 					ShowUITimer = 0.0f;
 					MonsterWidget->SetVisibility(true);
-					if (MonsterInfo.bIsShieldOn) {
-						ManaShiledEffectComponent->SetVisibility(true);
-					}
 				}
 			}
 
@@ -1237,9 +1130,13 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				}
 
 								
-				if (MonsterInfo.bIsShieldOn)
-				{
-					CalcManaShield(CalcManaShieldDamage(DamageAmount));
+				if (GetIsMonsterShieldActive()){
+
+					MonsterShield->CalcDurability(DamageAmount);
+				    OnBarrierChanged.Broadcast();
+					CalcHp(CalcNormalAttackDamage(DamageAmount));
+
+
 				}
 				else {
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
@@ -1258,7 +1155,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking() == false && MonsterInfo.bIsShieldOn == false) {
+			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
 				Attacked();
 			}
 

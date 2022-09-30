@@ -12,6 +12,7 @@
 #include "GameFramework/Character.h"
 #include "Components/WidgetComponent.h"
 #include "MonsterSoundInstance.h"
+#include"Common/MonsterShield.h"
 
 
 #include "Common/Weapon_Soul.h"
@@ -89,9 +90,6 @@ public:
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
 
-
-	UFUNCTION(BlueprintCallable)
-	void InitManaShield();
 	void InitPerfectDodgeNotify();
 
 	//FSM
@@ -119,16 +117,8 @@ protected:
 	//Function========================================================
 	void InitAttackedInfo();
 	void InitEffect();
-	UFUNCTION(BlueprintCallable)
-		void InitMonsterAttribute();
-	UFUNCTION(BlueprintCallable)
-	EAttributeKeyword GetMonsterAttribute() const { return MonsterInfo.MonsterAttribute; }
 	void CalcHp(float Damage);
 	float CalcNormalAttackDamage(float Damage);
-	void CalcManaShield(float Damage);
-
-	float CalcManaShieldDamage(float Damage);
-
 	void PrintHitEffect(FVector AttackedPosition, AActor* Actor);
 
 	void Attacked();
@@ -136,7 +126,7 @@ protected:
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
 
-	void AllShieldDestroyed();
+	void ShieldDestroyed();
 
 	void InitAttack1Data();
 	void InitAttack2Data();
@@ -154,20 +144,23 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* HitEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* BurnEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* FloodingEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-		UParticleSystemComponent* SparkEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 		UParticleSystemComponent* GroggyEffectComponent;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-	UParticleSystemComponent* ManaShiledEffectComponent;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = AttackedInfo, Meta = (AllowPrivateAccess = true))
 		FAttackedInfo AttackedInfo;
 	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = UI, Meta = (AllowPrivateAccess = true))
 	UCapsuleComponent* WidgetPoint;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shield, Meta = (AllowPrivateAccess = true))
+	UMonsterShield* MonsterShield;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	class	UCapsuleComponent* Collision;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	class	UParticleSystemComponent* ShiledEffectComponent;
+
+
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
@@ -228,7 +221,6 @@ private:
 	bool CheckPlayerIsBehindMonster();
 
 	void SetEffect();
-	void SetManaShieldEffct();
 
 
 	void SetActive();
@@ -272,7 +264,6 @@ public:
 	float GetViewAngle() const;
 	float GetViewRange() const;
 	float GetViewHeight() const;
-	EAttributeKeyword GetAttribute() const;
 	float GetDistanceToPlayer() const;
 	FVector GetLocation() const;
 	bool GetIsBattleState() const;
@@ -285,16 +276,16 @@ public:
 	bool GetIsAttackCool()const;
 	float GetAttackPercent() const;
 	int GetPlayerEnergy() const;
-	int GetManaShieldCount() const;
 	EMontserState GetState()const;
 	float GetSupportPatrolRadius() const;
 	float GetAttackedTime() const;
+	EAttributeKeyword GetAttribute() const;
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
 	float GetAtkHeight() const;
-	bool GetIsManaShieldActive() const;
+	bool GetIsMonsterShieldActive() const;
 	float GetSkillRadius() const;
 
 

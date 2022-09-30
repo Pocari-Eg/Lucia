@@ -84,8 +84,6 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.S_Attack_Time = 8.0f;
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 
-	MonsterInfo.Max_Ele_Shield = 0;
-	MonsterInfo.Ele_Shield_Count = -1;
 
 
 	MonsterInfo.KnockBackPower = 50.0f;
@@ -954,8 +952,7 @@ void ABouldelith::BeginPlay()
 	InitMonsterInfo();
 	InitAttack1Data();
 	InitBouldelithInfo();
-
-	ManaShiledEffectComponent->SetWorldScale3D(FVector(3.25f, 3.25f, 3.25f));
+	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect,MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale);
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});
@@ -1026,8 +1023,7 @@ void ABouldelith::BeginPlay()
 			BdAIController->SetWalkPoint(WalkPoint->GetActorLocation());
 	}
 
-	
-	InitManaShield();
+
 	
 }
 void ABouldelith::PossessedBy(AController* NewController)

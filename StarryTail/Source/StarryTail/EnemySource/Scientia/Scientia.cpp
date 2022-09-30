@@ -43,10 +43,6 @@ void AScientia::InitMonsterInfo()
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Raid;
-
-	MonsterInfo.Max_Ele_Shield = 0;
-	MonsterInfo.Ele_Shield_Count = -1;
-	MonsterInfo.bIsShieldOn = false;
 }
 void AScientia::InitCollision()
 {
