@@ -46,6 +46,8 @@ void UIreneAttackInstance::InitMemberVariable()
 	SwordTargetMonster = nullptr;
 	TrueAttackCount = 0;
 	
+	DamageBeforeTableName = "";
+
 	bFollowCameraTarget = false;
 	FollowTargetCameraAlpha = 0.0f;
 	CameraRot = FRotator::ZeroRotator;
@@ -65,7 +67,7 @@ float UIreneAttackInstance::GetATK()const
 FName UIreneAttackInstance::GetBasicAttackDataTableName()
 {
 	// 기본공격 데이터 테이블 이름 받기 위한 조합 계산 함수
-	FString AttributeName = "Sword_B_Attack_1";
+	FString AttributeName = "None";
 	if (Irene->IreneState->IsAttackState())
 	{
 		if (!Irene->bIsSpiritStance)
@@ -96,8 +98,19 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 		else
 			AttributeName = "Perfect_Dodge";
 	}
-	return FName(AttributeName);
 
+	if(AttributeName == "None" && DamageBeforeTableName != "")
+	{
+		STARRYLOG(Warning,TEXT("%s"),*AttributeName);
+		STARRYLOG(Warning,TEXT("%s"),*DamageBeforeTableName);
+		AttributeName = DamageBeforeTableName;		
+	}
+	if(AttributeName == "None")
+	{
+		STARRYLOG(Error,TEXT("%s"),*Irene->IreneState->GetStateToString());		
+	}
+	STARRYLOG(Warning,TEXT("%s"),*AttributeName);
+	return FName(AttributeName);
 }
 FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
 {
@@ -180,7 +193,7 @@ void UIreneAttackInstance::DoAttack()
 	//}
 
 	bool bResult = false;
-
+		
 	TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 	
 	TArray<FHitResult> MonsterList;
