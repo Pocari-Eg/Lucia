@@ -98,6 +98,8 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void CallCreateTail();
+	UFUNCTION(BlueprintImplementableEvent)
+	void KnockBackEvent();
 private:	
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;
