@@ -1315,9 +1315,7 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
-{
-	CurState->Irene->IreneInput->MoveForward();
-	CurState->Irene->IreneInput->MoveRight();
+{	
 	if (CurState->PlayTime >= 0.56f)
 	{
 		CurState->Irene->ActionEndChangeMoveState();
