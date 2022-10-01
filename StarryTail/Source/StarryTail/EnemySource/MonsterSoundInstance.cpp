@@ -8,7 +8,8 @@ UMonsterSoundInstance::UMonsterSoundInstance()
 
 	//hit Sound
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	ShieldCrash = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_ManaShieldCrash");
+	ShieldCrash = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_ShieldDestroy");
+	ShieldHit = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_ShieldHit");
 }
 
 void UMonsterSoundInstance::Init()
@@ -17,7 +18,10 @@ void UMonsterSoundInstance::Init()
 	HitSound->SetVolume(1.0f);
 
 	ShieldCrashSound = new SoundManager(ShieldCrash, GetWorld());
-	ShieldCrashSound->SetVolume(0.1f);
+	ShieldCrashSound->SetVolume(1.0f);
+
+	ShieldHitSound = new SoundManager(ShieldHit, GetWorld());
+	ShieldHitSound->SetVolume(1.0f);
 }
 
 void UMonsterSoundInstance::PlayHitSound(FTransform Transform)
@@ -31,9 +35,14 @@ void UMonsterSoundInstance::SetHitSound(FString Path)
 	HitSound = new SoundManager(HitEvent, GetWorld());
 }
 
-void UMonsterSoundInstance::PlayShieldCrashSound()
+void UMonsterSoundInstance::PlayShieldDestroySound(FTransform Transform)
 {
-	ShieldCrashSound->SoundPlay2D();
+	ShieldCrashSound->SoundPlay3D(Transform);
+}
+
+void UMonsterSoundInstance::PlayShieldHitSound(FTransform Transform)
+{
+	ShieldHitSound->SoundPlay3D(Transform);
 }
 
 SoundManager* UMonsterSoundInstance::GetHitSound()

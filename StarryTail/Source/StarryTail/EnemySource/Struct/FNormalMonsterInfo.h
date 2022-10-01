@@ -101,6 +101,11 @@ public:
 	FVector MonsterShieldScale;;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ShieldCollisionHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ShieldCollisionRadius;;
+
 
 	//etc
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
