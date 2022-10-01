@@ -3,6 +3,7 @@
 
 #include "Bellyfish.h"
 #include"../../PlayerSource/IreneCharacter.h"
+#include"../../PlayerSource/PlayerInstance/IreneAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -486,6 +487,8 @@ void ABellyfish::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 			{
 				STARRYLOG_S(Warning);
 				auto Player = Cast<AIreneCharacter>(OtherActor);
+
+				Player->IreneAnim->KnockBackEvent();
 				UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 				bIsPlayerRushHit = true;
 				RushEnd.Broadcast();
