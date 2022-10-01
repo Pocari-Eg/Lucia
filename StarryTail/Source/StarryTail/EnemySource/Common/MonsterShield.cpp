@@ -3,6 +3,7 @@
 
 #include "MonsterShield.h"
 #include "Components/CapsuleComponent.h"
+
 #include "Particles/ParticleSystemComponent.h"
 // Sets default values for this component's properties
 UMonsterShield::UMonsterShield()
@@ -35,7 +36,7 @@ UMonsterShield::UMonsterShield()
 
 float UMonsterShield::CalcShieldDamage(float Damage)
 {
-	if (bIsShieldActive) {
+	if (bIsShieldActive&&Type==EShieldType::General) {
 		return Damage;
 	}
 	return 0;
@@ -159,6 +160,16 @@ void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location,
 		Param.Scalar = 1.0f;
 
 		ShiledEffectComponent->InstanceParameters.Add(Param);
+	}
+}
+
+void UMonsterShield::InitShieldCollision(float Height, float Radius)
+{
+	if (bIsShieldActive) {
+		Collision->SetCapsuleHalfHeight(Height);
+		Collision->SetCapsuleRadius(Radius);
+		Collision->SetCollisionProfileName("Enemy");
+
 	}
 }
 
