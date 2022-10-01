@@ -181,6 +181,9 @@ AIreneCharacter::AIreneCharacter()
 	bIsRadialBlurOn = false;
 	bInputStop = false;
 	bIsSpiritStance = false;
+
+	bIsKnockBack = false;
+
 }
 
 void AIreneCharacter::BeginPlay()
@@ -263,6 +266,20 @@ void AIreneCharacter::Tick(float DeltaTime)
 	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
+
+
+	if (bIsKnockBack)
+	{
+		KonckBackTimer += DeltaTime;
+		FVector KnocbackLocation = GetActorLocation() + (KnockBackDir * (KonckBackPower * (0.15f - KonckBackTimer)));
+		SetActorLocation(KnocbackLocation);
+
+		if (KonckBackTimer > KnockBackTime)
+		{
+			KonckBackTimer = 0.0f;
+			bIsKnockBack = false;
+		}
+	}
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -627,7 +644,7 @@ void AIreneCharacter::ActionEndChangeMoveState(bool RunToSprint)const
 }
 #pragma endregion State
 
-#pragma region HitFeel
+#pragma region Battle
 float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
 {
 	const FVector IreneForward = GetCapsuleComponent()->GetForwardVector();
@@ -729,6 +746,22 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;
 }
+
+void AIreneCharacter::PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower)
+{
+	if (!bIsKnockBack) {
+		KnockBackDir = In_KnockBackDir;
+		KnockBackDir.Normalize();
+		KnockBackDir.Z = 0.0f;
+
+		KonckBackPower = In_KnockBackPower;
+		KnockBackTime = 0.15f;
+		KonckBackTimer = 0.0f;
+		bIsKnockBack = true;
+	}
+}
+
+
 void AIreneCharacter::PlayFadeInAnimation()
 {
 	IreneUIManager->PlayHUDAnimation();
@@ -755,7 +788,7 @@ void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
 }
-#pragma endregion HitFeel
+#pragma endregion Battle
 
 #pragma region StopWatch
 //스탑워치 컨트롤 함수

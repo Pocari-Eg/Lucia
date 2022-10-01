@@ -173,7 +173,7 @@ public:
 	void SetHP(float DamageAmount);
 #pragma endregion Collision
 
-#pragma region HitFeel
+#pragma region Battle
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
@@ -215,7 +215,15 @@ public:
 
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
-#pragma endregion HitFeel
+
+	void PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	FVector KnockBackDir;
+	float KonckBackTimer;
+	float KnockBackTime;
+	float KonckBackPower;
+	bool bIsKnockBack;
+
+#pragma endregion Battle
 
 #pragma region UIManager
 	UFUNCTION(BlueprintImplementableEvent)
