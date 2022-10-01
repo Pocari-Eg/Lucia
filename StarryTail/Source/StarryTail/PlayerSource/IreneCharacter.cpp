@@ -541,6 +541,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		if (IreneData.CurrentHP > 0)
 		{
 			SetHP(DamageAmount);
+			IreneAttack->SetDamageBeforeTableName(IreneAttack->GetBasicAttackDataTableName().ToString());
 			
 			if (IreneData.CurrentHP <= 0)
 			{
@@ -569,7 +570,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				}
 
 				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
-				{
+				{					
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
 			}

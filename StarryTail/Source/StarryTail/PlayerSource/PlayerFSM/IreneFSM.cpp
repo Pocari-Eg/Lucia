@@ -503,16 +503,24 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 	else
 	{
 		// 퍼펙트 닷지
+		// 왼클릭으로 도중 끊기
+		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.6f && CurState->Irene->IreneInput->bLeftButtonPressed)
+		{
+			CurState->Irene->IreneAnim->SetDodgeDir(0);
+			CurState->Irene->ActionEndChangeMoveState(true);
+		}
+		// 이동으로 도중 끊기
+		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.8f && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		{
+			CurState->Irene->IreneAnim->SetDodgeDir(0);
+			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		}
+		// 끝까지 재생
 		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale())
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
-
-			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-			
-			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
-				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
-			else
-				CurState->Irene->ActionEndChangeMoveState(true);
+			CurState->Irene->ActionEndChangeMoveState(true);
 		}
 	}
 }
@@ -1307,9 +1315,7 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
-{
-	CurState->Irene->IreneInput->MoveForward();
-	CurState->Irene->IreneInput->MoveRight();
+{	
 	if (CurState->PlayTime >= 0.56f)
 	{
 		CurState->Irene->ActionEndChangeMoveState();

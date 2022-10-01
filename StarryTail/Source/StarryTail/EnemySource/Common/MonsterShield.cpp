@@ -60,14 +60,26 @@ void UMonsterShield::CalcDurability(float Damage)
 	if (CurDurability <= Durability * 0.25)
 	{
 		CurShieldState = 3;
+
+		ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+		ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+		ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
 	}
 	else if (CurDurability <= (Durability * 0.5))
 	{
 		CurShieldState = 2;
+
+		ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+		ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
+		ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
 	}
 	else if (CurDurability <= (Durability * 0.75))
 	{
 		CurShieldState=1;
+
+		ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
+		ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+		ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
 	}
 	else {
 		CurShieldState=0;
@@ -154,12 +166,34 @@ void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location,
 		ShiledEffectComponent->SetRelativeLocation(Location);
 		ShiledEffectComponent->SetTemplate(Effect);
 		ShiledEffectComponent->SetVisibility(true);
-		FParticleSysParam Param;
-		Param.Name = "Opacity";
-		Param.ParamType = PSPT_Scalar;
-		Param.Scalar = 1.0f;
 
-		ShiledEffectComponent->InstanceParameters.Add(Param);
+		FParticleSysParam Opacity;
+		Opacity.Name = "Opacity";
+		Opacity.ParamType = PSPT_Scalar;
+		Opacity.Scalar = 1.0f;
+
+		ShiledEffectComponent->InstanceParameters.Add(Opacity);
+
+		FParticleSysParam Crack_1;
+		Crack_1.Name = "Crack_1";
+		Crack_1.ParamType = PSPT_Scalar;
+		Crack_1.Scalar = 0.0f;
+
+		ShiledEffectComponent->InstanceParameters.Add(Crack_1);
+
+		FParticleSysParam Crack_2;
+		Crack_2.Name = "Crack_2";
+		Crack_2.ParamType = PSPT_Scalar;
+		Crack_2.Scalar = 0.0f;
+
+		ShiledEffectComponent->InstanceParameters.Add(Crack_2);
+
+		FParticleSysParam Crack_3;
+		Crack_3.Name = "Crack_3";
+		Crack_3.ParamType = PSPT_Scalar;
+		Crack_3.Scalar = 0.0f;
+
+		ShiledEffectComponent->InstanceParameters.Add(Crack_3);
 	}
 }
 
