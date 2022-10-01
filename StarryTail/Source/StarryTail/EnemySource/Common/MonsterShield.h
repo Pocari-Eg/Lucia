@@ -72,7 +72,7 @@ public:
 
 
 	void InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale);
-
+	void InitShieldCollision(float Height, float Radius);
 	
 
 private:

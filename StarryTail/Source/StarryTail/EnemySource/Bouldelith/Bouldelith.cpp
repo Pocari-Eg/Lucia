@@ -953,6 +953,8 @@ void ABouldelith::BeginPlay()
 	InitAttack1Data();
 	InitBouldelithInfo();
 	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect,MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale);
+	MonsterShield->InitShieldCollision(MonsterInfo.ShieldCollisionHeight,MonsterInfo.ShieldCollisionRadius);
+
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});
