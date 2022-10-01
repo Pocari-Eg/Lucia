@@ -571,7 +571,6 @@ void AMonster::ShieldDestroyed()
 	
 	OnBarrierChanged.Broadcast();
 	MonsterAIController->SetShieldKey(false);
-
 	if (MonsterInfo.M_Atk_Type == 1)
 	{
 		PlayGroggyAnim();
@@ -932,14 +931,7 @@ void AMonster::Tick(float DeltaTime)
 	if (bIsAttacked) // 0.2
 	{
 		KnockBackTime += DeltaTime;
-
-	 if(!GetIsMonsterShieldActive())
-		KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
-	 else {
-		 KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterShield->GetKnockBackDistance() * (0.15f - KnockBackTime)));
-
-	 }
-
+	    KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
 		SetActorLocation(KnocbackLocation);
 
 		if (KnockBackTime > 0.15f)
@@ -1135,6 +1127,18 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					MonsterShield->CalcDurability(DamageAmount);
 				    OnBarrierChanged.Broadcast();
 					CalcHp(CalcNormalAttackDamage(DamageAmount));
+					
+					
+					if (MonsterShield->GetShieldAcitve())
+					{
+						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
+				
+					}
+					else {
+						ShieldDestroyed();
+						SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+					}
+					//Player->PlayerKnokcBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
 
 
 				}

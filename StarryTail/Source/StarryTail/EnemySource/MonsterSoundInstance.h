@@ -20,6 +20,9 @@ private:
 
 	class UFMODEvent* ShieldCrash;
 	SoundManager* ShieldCrashSound;
+
+	class UFMODEvent* ShieldHit;
+	SoundManager* ShieldHitSound;
 public:
 
 	UMonsterSoundInstance();
@@ -28,7 +31,8 @@ public:
 	void PlayHitSound(FTransform Transform);
 	void SetHitSound(FString Path);
 
-	void PlayShieldCrashSound();
+	void PlayShieldDestroySound(FTransform Transform);
+	void PlayShieldHitSound(FTransform Transform);
 
 	SoundManager* GetHitSound();
 	SoundManager* GetShieldCrashSound();

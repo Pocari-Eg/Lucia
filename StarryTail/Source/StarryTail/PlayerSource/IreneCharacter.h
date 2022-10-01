@@ -104,7 +104,7 @@ private:
 	// 카메라 렉에 사용할 커브
 	UPROPERTY()
 	UCurveFloat* UseLagCurve;
-
+	
 	//float CameraLagTime;
 	//float LastLagTime;
 #pragma endregion GetClassOrObject
@@ -159,6 +159,9 @@ public:
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FollowTargetPosition();
+
+	UFUNCTION(BluePrintCallable)
+	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -192,7 +195,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateTailEvent();
-    
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnGhostEvent();
+	
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
 

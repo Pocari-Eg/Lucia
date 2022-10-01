@@ -66,7 +66,7 @@ enum class EStateEnum : uint8
 	B_Attack_3,
 	Sword_Skill_1,
 	Sword_Skill_2,
-	Spear_Skill_1,
+	Spirit_Skill_1,
 	Form_Change,
 	Hit_1,
 	Hit_2,
