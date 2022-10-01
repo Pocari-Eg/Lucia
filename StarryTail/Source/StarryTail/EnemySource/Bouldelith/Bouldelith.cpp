@@ -269,7 +269,7 @@ void ABouldelith::LeftAttackCheck()
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
-			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
+			//STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
 			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
 			if (Player && Player->GetController()->IsPlayerController())
 			{
@@ -311,7 +311,7 @@ void ABouldelith::LeftAttackCheck()
 				}
 				for (int i = 0; i < Hits.Num();++i)
 				{
-					STARRYLOG(Warning,TEXT("%s"), *Hits[i].GetActor()->GetName());
+					//STARRYLOG(Warning,TEXT("%s"), *Hits[i].GetActor()->GetName());
 					Player = Cast<AIreneCharacter>(Hits[i].Actor);
 					if (Player!=nullptr	)
 					{
@@ -331,7 +331,7 @@ void ABouldelith::LeftAttackCheck()
 					float Radian = FVector::DotProduct(AttackDirection, TargetDir);
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
-					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					//STARRYLOG(Error, TEXT("%f"), TargetAngle);
 					if (TargetAngle <= (200.0f * 0.5f))
 					{
 						if (nullptr == Player) {
@@ -342,7 +342,7 @@ void ABouldelith::LeftAttackCheck()
 
 						if (bIsDodgeTime)
 						{
-							STARRYLOG(Error, TEXT("Dodge On"));
+							//STARRYLOG(Error, TEXT("Dodge On"));
 							PerfectDodgeOn();
 							return;
 						}
@@ -425,7 +425,7 @@ void ABouldelith::RightAttackCheck()
 		for (auto const& OverlapResult : OverlapResults)
 		{
 			//플레이어 클래스 정보를 가져오고 PlayerController를 소유하고 있는가 확인
-			STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
+			//STARRYLOG(Warning, TEXT("%s"), *OverlapResult.GetActor()->GetName());
 			AIreneCharacter* Player = Cast<AIreneCharacter>(OverlapResult.GetActor());
 			if (Player && Player->GetController()->IsPlayerController())
 			{
@@ -467,7 +467,7 @@ void ABouldelith::RightAttackCheck()
 				}
 				for (int i = 0; i < Hits.Num(); ++i)
 				{
-					STARRYLOG(Warning, TEXT("%s"), *Hits[i].GetActor()->GetName());
+					//STARRYLOG(Warning, TEXT("%s"), *Hits[i].GetActor()->GetName());
 					Player = Cast<AIreneCharacter>(Hits[i].Actor);
 					if (Player != nullptr)
 					{
@@ -487,7 +487,7 @@ void ABouldelith::RightAttackCheck()
 					float Radian = FVector::DotProduct(AttackDirection, TargetDir);
 					//내적 결과값은 Cos{^-1}(A dot B / |A||B|)이기 때문에 아크코사인 함수를 사용해주고 Degree로 변환해준다.
 					float TargetAngle = FMath::RadiansToDegrees(FMath::Acos(Radian));
-					STARRYLOG(Error, TEXT("%f"), TargetAngle);
+					//STARRYLOG(Error, TEXT("%f"), TargetAngle);
 					if (TargetAngle <= (200.0f * 0.5f))
 					{
 						if (nullptr == Player) {
@@ -498,7 +498,7 @@ void ABouldelith::RightAttackCheck()
 
 						if (bIsDodgeTime)
 						{
-							STARRYLOG(Error, TEXT("Dodge On"));
+							//STARRYLOG(Error, TEXT("Dodge On"));
 							PerfectDodgeOn();
 							return;
 						}

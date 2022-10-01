@@ -42,6 +42,9 @@ private:
 
 	// 진짜 공격 횟수
 	int TrueAttackCount;
+
+	// 피격이나 사망 전 공격 테이블 이름
+	FString DamageBeforeTableName;
 	
 	// 디버프 효과 타이머
 	FTimerHandle FireDeBuffStackTimerHandle;
@@ -161,6 +164,7 @@ public:
 	void SetIsPerfectDodge(const bool Value);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }
 	void SetTrueAttackCount(const int Value) { TrueAttackCount = Value; }
+	void SetDamageBeforeTableName(const FString Value) {DamageBeforeTableName = Value;}
 #pragma endregion GetSet
 
 private:
