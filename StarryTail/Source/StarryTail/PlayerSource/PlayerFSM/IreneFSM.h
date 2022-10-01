@@ -203,13 +203,12 @@ public:
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
-class STARRYTAIL_API USpearSkill1 final : public UObject, public IState
+class STARRYTAIL_API USpiritSkill1 final : public UObject, public IState
 {
 	GENERATED_BODY()
-	float MaxWalkSpeed;
 public:
 	float StartShakeTime;
-	static USpearSkill1* GetInstance();
+	static USpiritSkill1* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;

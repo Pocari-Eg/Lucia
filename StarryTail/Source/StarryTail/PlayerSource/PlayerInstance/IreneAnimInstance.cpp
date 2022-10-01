@@ -42,10 +42,12 @@ UIreneAnimInstance::UIreneAnimInstance()
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill1_Montage.IreneFireSkill1_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill2_Montage.IreneFireSkill2_Montage"));
-	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_Montage.IreneSpiritSkill_Montage"));
+	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&Spirit_Montage.Succeeded())
 	{
 		SwordSkill1Montage = SwordSkill1_Montage.Object;
 		SwordSkill2Montage = SwordSkill2_Montage.Object;
+		SpiritSkillMontage = Spirit_Montage.Object;
 	}
 }
 
@@ -81,6 +83,10 @@ void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 		else if(Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
 			Montage_Play(SwordSkill2Montage, 1.0f);
 	}
+	else
+	{
+		Montage_Play(SpiritSkillMontage, 1.0f);
+	}
 }
 
 void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
@@ -103,16 +109,14 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SwordAttackMontage);
 		else
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpiritAttackMontage);
-	}
-	
+	}	
 }
 
 void UIreneAnimInstance::CallCreateTail()
 {
-	STARRYLOG_S(Error);
-	if (Irene != nullptr) {
+	if (Irene != nullptr)
+	{
 	  Irene->CreateTailEvent();
-
 	}
 }
 

@@ -53,7 +53,7 @@ FString UIreneFSM::GetStateToString() const
 	case EStateEnum::B_Attack_3: return FString("B_Attack_3");
 	case EStateEnum::Sword_Skill_1: return FString("Sword_Skill_1");
 	case EStateEnum::Sword_Skill_2: return FString("Sword_Skill_2");
-	case EStateEnum::Spear_Skill_1: return FString("Spear_Skill_1");
+	case EStateEnum::Spirit_Skill_1: return FString("Spirit_Skill_1");
 	case EStateEnum::Form_Change: return FString("Form_Change");
 	case EStateEnum::Hit_1: return FString("Hit_1");
 	case EStateEnum::Hit_2: return FString("Hit_2");
@@ -483,9 +483,10 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 	
 	//CurState->Irene->IreneInput->MoveAuto();
 
+	// 일반 대쉬
 	if(CurState->Irene->IreneAnim->GetDodgeDir() != 10)
 	{
-		if (CurState->PlayTime >= 0.32f)
+		if (CurState->PlayTime >= 0.24f)
 		{
 			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
@@ -493,13 +494,16 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 				CurState->ThrowState(UDodgeEndState::GetInstance());
 				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 			}
-			else
-				CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
+		}
+		if (CurState->PlayTime >= 0.76f)
+		{
+			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
 		}
 	}
 	else
 	{
-		if (CurState->PlayTime >= 1.09f * CurState->Irene->IreneInput->GetSlowScale())
+		// 퍼펙트 닷지
+		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale())
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 
@@ -787,7 +791,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	}
 	else
 	{
-		if(CurState->PlayTime >= 2.03f)
+		if(CurState->PlayTime >= 1.67f/2.0f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -795,7 +799,6 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack1State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -880,14 +883,14 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 	}
 	if(!CurState->Irene->bIsSpiritStance)
 	{
-		if(CurState->PlayTime >= 1.47f)
+		if(CurState->PlayTime >= 1.67f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else
 	{
-		if(CurState->PlayTime >= 1.93f)
+		if(CurState->PlayTime >= 1.67f/2.0f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -895,7 +898,6 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack2State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -979,14 +981,14 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 	}
 	if(!CurState->Irene->bIsSpiritStance)
 	{
-		if(CurState->PlayTime >= 1.3f)
+		if(CurState->PlayTime >= 1.67f)
 		{
 			EndTimeExit(CurState);
 		}
 	}
 	else
 	{
-		if(CurState->PlayTime >= 2.13f)
+		if(CurState->PlayTime >= 1.67f/2.0f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -994,7 +996,6 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 }
 void UBasicAttack3State::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -1078,7 +1079,6 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 void USwordSkill1::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -1089,7 +1089,6 @@ void USwordSkill1::EndTimeExit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = false;
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackTimeEndState();
 	CurState->bIsEnd = true;
 }
@@ -1167,7 +1166,6 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 void USwordSkill2::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
@@ -1178,38 +1176,28 @@ void USwordSkill2::EndTimeExit(IBaseGameEntity* CurState)
 	CurState->Irene->IreneData.IsAttacking = false;
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackTimeEndState();
 	CurState->bIsEnd = true;
 }
 #pragma endregion SwordSkill2
-#pragma region SpearSkill1
-USpearSkill1* USpearSkill1::GetInstance()
+#pragma region SpiritSkill1
+USpiritSkill1* USpiritSkill1::GetInstance()
 {
-	static USpearSkill1* Instance;
+	static USpiritSkill1* Instance;
 	if (Instance == nullptr) {
-		Instance = NewObject<USpearSkill1>();
+		Instance = NewObject<USpiritSkill1>();
 		Instance->AddToRoot();
 	}
 	return Instance;
 }
-void USpearSkill1::Enter(IBaseGameEntity* CurState)
+void USpiritSkill1::Enter(IBaseGameEntity* CurState)
 {
-	CurState->SetStateEnum(EStateEnum::Spear_Skill_1);
+	CurState->SetStateEnum(EStateEnum::Spirit_Skill_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	if(CurState->Irene->CameraLagCurve.Num()>0)
 		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
 	StartShakeTime = 0.0f;
-	MaxWalkSpeed = CurState->Irene->GetCharacterMovement()->MaxWalkSpeed;
-	
-	CurState->Irene->IreneAnim->PlaySkillAttackMontage();
-
-	CurState->Irene->IreneAttack->SetPlayerPosVec(CurState->Irene->GetActorLocation());
-	CurState->Irene->GetCharacterMovement()->GravityScale = 9999;
-	CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 0.45f;
-	CurState->Irene->LaunchCharacter(CurState->Irene->GetActorForwardVector()*4500,true,false);	
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("PlayerDodge"));
 	
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = true;
@@ -1219,29 +1207,10 @@ void USpearSkill1::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
 	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
-	
-	CurState->Irene->GetMesh()->SetVisibility(false);
-	CurState->Irene->Weapon->SetVisibility(false);
-	
-	const FVector IrenePosition = CurState->Irene->GetActorLocation();
-	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
-	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 }
 
-void USpearSkill1::Execute(IBaseGameEntity* CurState)
-{
-	// 후딜 이전까지의 시간
-	//CurState->Irene->IreneInput->MoveAuto(0.63f);
-	
-	// 목적지에 도착
-	if (CurState->PlayTime >= 0.63f)
-	{
-		CurState->Irene->GetMesh()->SetVisibility(true);
-		CurState->Irene->Weapon->SetVisibility(true);
-		const FVector Velocity = FVector(0,0,CurState->Irene->GetCharacterMovement()->Velocity.Z);
-		CurState->Irene->GetCharacterMovement()->Velocity = Velocity;
-		CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
-	}
+void USpiritSkill1::Execute(IBaseGameEntity* CurState)
+{	
 	// 몽타주 시간
 	if (CurState->PlayTime >= 1.4f)
 	{
@@ -1252,14 +1221,7 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		StartShakeTime = CurState->PlayTime;
 	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
 		CurState->Irene->CameraShakeOn = false;
-
-	// 전기 스킬 연속
-	if (CurState->Irene->IreneAttack->GetCanSkillSkip() && CurState->Irene->IreneInput->bRightButtonPressed)
-	{
-		CurState->Irene->IreneAnim->StopAllMontages(0);
-		CurState->Irene->IreneInput->RightButton(1);
-	}
-
+	
 	// 이동 스킵
 	if (CurState->Irene->IreneData.IsAttacking)
 	{
@@ -1277,30 +1239,19 @@ void USpearSkill1::Execute(IBaseGameEntity* CurState)
 		}
 	}
 }
-void USpearSkill1::Exit(IBaseGameEntity* CurState)
+void USpiritSkill1::Exit(IBaseGameEntity* CurState)
 {
-	CurState->Irene->GetCharacterMovement()->GravityScale = 1;
-	const FVector Velocity = FVector(0,0,CurState->Irene->GetCharacterMovement()->Velocity.Z);
-    CurState->Irene->GetCharacterMovement()->Velocity = Velocity;
-    CurState->Irene->GetCharacterMovement()->BrakingFrictionFactor = 2.0f;
-    		
-	CurState->Irene->GetMesh()->SetVisibility(true);
-	CurState->Irene->Weapon->SetVisibility(true);
-	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
-	
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
-void USpearSkill1::EndTimeExit(IBaseGameEntity* CurState)
+void USpiritSkill1::EndTimeExit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->CameraShakeOn = false;
 	CurState->Irene->IreneData.IsAttacking = false;
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneInput->SetTempAttribute(EAttributeKeyword::e_None);
 	CurState->Irene->IreneAttack->AttackTimeEndState();
 	CurState->bIsEnd = true;
 }
@@ -1474,7 +1425,7 @@ bool UIreneFSM::IsAttackState()const
 }
 bool UIreneFSM::IsSkillState() const
 {
-	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 || StateEnumValue == EStateEnum::Spear_Skill_1)
+	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 || StateEnumValue == EStateEnum::Spirit_Skill_1)
 		return true;
 	return false;
 }
@@ -1496,7 +1447,6 @@ bool UIreneFSM::IsDeathState()const
 		return true;
 	return false;
 }
-
 #pragma endregion IsState
 
 #pragma region FindState
