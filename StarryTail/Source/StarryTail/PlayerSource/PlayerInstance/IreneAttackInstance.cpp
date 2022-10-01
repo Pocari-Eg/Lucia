@@ -69,23 +69,32 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	if (Irene->IreneState->IsAttackState())
 	{
 		if (!Irene->bIsSpiritStance)
-			AttributeName = "Sword_B_Attack_" + FString::FromInt(TrueAttackCount);
+			AttributeName = "B_Attack_" + FString::FromInt(TrueAttackCount);
 		else
-			AttributeName = "Spear_B_Attack_" + FString::FromInt(TrueAttackCount);
-		if (AttributeName == "Sword_B_Attack_4")
-			AttributeName = "Sword_B_Attack_3";
+			AttributeName = "S_B_Attack_" + FString::FromInt(TrueAttackCount);
+		if (AttributeName == "B_Attack_4")
+			AttributeName = "B_Attack_3";
+		if (AttributeName == "S_B_Attack_4")
+			AttributeName = "S_B_Attack_3";
 	}
 	else if (Irene->IreneState->IsSkillState())
 	{
 		if (!Irene->bIsSpiritStance)
 		{
 			if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
-				AttributeName = "Sword_Skill_1_1";
+				AttributeName = "Skill_1_1";
 			else if (Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
-				AttributeName = "Sword_Skill_1_2";
+				AttributeName = "Skill_1_2";
 		}
 		else
-			AttributeName = "Spear_Skill_1";
+			AttributeName = "S_Skill_1";
+	}
+	else if (Irene->IreneState->IsDodgeState())
+	{
+		if(!IsPerfectDodge)
+			AttributeName = "Dodge";
+		else
+			AttributeName = "Perfect_Dodge";
 	}
 	return FName(AttributeName);
 
@@ -388,7 +397,7 @@ void UIreneAttackInstance::SetSkillState()const
 	}
 	else if (Irene->bIsSpiritStance)
 	{
-		Irene->ChangeStateAndLog(USpearSkill1::GetInstance());
+		Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
 	}
 }
 #pragma endregion State

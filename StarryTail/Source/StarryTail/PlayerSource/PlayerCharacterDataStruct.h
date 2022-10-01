@@ -139,6 +139,8 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Distance_2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Stack_Count;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;

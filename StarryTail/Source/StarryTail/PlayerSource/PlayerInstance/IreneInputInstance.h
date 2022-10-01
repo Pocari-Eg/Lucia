@@ -31,6 +31,9 @@ private:
 	FTimerHandle AttributeChangeWaterTimer;
 	FTimerHandle AttributeChangeElectricTimer;
 
+	// 
+	FTimerHandle SpiritTimeOverTimer;
+	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
@@ -54,9 +57,6 @@ private:
 	int AttackUseSkillNextCount;
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
-	
-	// 공격 중 속성변경을 위한 변수
-	EAttributeKeyword TempAttribute;
 
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
@@ -116,6 +116,7 @@ public:
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
+	void ThunderDeBuffKey();
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
 	void MoveA(float Rate);
@@ -135,6 +136,8 @@ public:
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
 	void RightButton(float Rate);
+	void NonSpiritSkill();
+	void SpiritSkill();
 	void SkillWait();
 	void SwordSkillEndWait();
 
@@ -153,10 +156,11 @@ public:
 	void RecoveryDodge();
 	void RecoveryDodgeWait();
 
-	// 무기 변경
-	void WeaponChangeKeyword();
-	void WeaponChangeTimeOut();
-	
+	// 스탠스 변경
+	void SpiritChangeKeyword();
+	void SpiritChangeTimeOver();
+	void SpiritTimeOverDeBuff();
+
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
@@ -182,7 +186,6 @@ public:
 public:
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetIsDialogOn()const{return bIsDialogOn;}
-	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	float GetSlowScale()const{return SlowScale;}
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
@@ -192,7 +195,6 @@ public:
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
-	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
 	void SetNextAttack(const bool State) { bNextAttack = State; }
 	void SetJumpAttack(const bool State) { bJumpAttack = State; }
 	void SetReAttack(const bool State) { bReAttack = State; }
