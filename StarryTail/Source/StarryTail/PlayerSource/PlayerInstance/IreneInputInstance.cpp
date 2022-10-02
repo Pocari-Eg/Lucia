@@ -723,15 +723,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = true;
-				if(Irene->PetMesh)
-				{
-					STARRYLOG_S(Warning);
-				}
-				else
-				{
-					STARRYLOG_S(Warning);
-				}
-				//Irene->PetMesh->SetVisibility(false);
+				Irene->PetMesh->SetVisibility(false);
 			}
 			else
 			{
@@ -739,7 +731,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = false;
-				//Irene->PetMesh->SetVisibility(true);
+				Irene->PetMesh->SetVisibility(true);
 			}
 		}
 	}
