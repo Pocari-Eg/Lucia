@@ -1224,7 +1224,7 @@ void USpiritSkill1::Enter(IBaseGameEntity* CurState)
 void USpiritSkill1::Execute(IBaseGameEntity* CurState)
 {	
 	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= 1.4f)
+	if (CurState->PlayTime >= 0.4f)
 	{
 		EndTimeExit(CurState);
 	}
