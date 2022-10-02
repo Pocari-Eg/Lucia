@@ -108,7 +108,9 @@ public:
 	void AttackCheck();
 	void AttackStopCheck();
 	void DoAttack();
-
+	void SpiritDoAttack(AActor* Actor);
+	void SendDamage(bool bResult, TArray<FHitResult> MonsterList);
+	
 	// 디버프 스택 함수
 	void SetFireDeBuffStack(const int Value, const float DamageAmount);
 	void SetWaterDeBuffStack(const int Value);

@@ -480,6 +480,18 @@ void UIreneInputInstance::SpiritSkill()
 		PerfectDodgeAttackEnd();
 	}
 
+	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+	auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(50,50,AttackTable->Attack_Distance_2),Irene->CameraComp->GetComponentLocation());
+	auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
+	
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		// 몬스터를 찾고 쳐다보기
+		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));		
+	}
+	
 	Irene->SpawnGhostEvent();
 }
 
@@ -702,6 +714,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 		{
 			if(!Irene->bIsSpiritStance)
 			{
+				// 정령 스탠스 적용
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);				
@@ -710,12 +723,23 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = true;
+				if(Irene->PetMesh)
+				{
+					STARRYLOG_S(Warning);
+				}
+				else
+				{
+					STARRYLOG_S(Warning);
+				}
+				//Irene->PetMesh->SetVisibility(false);
 			}
 			else
 			{
+				// 정령 스탠스 해제
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = false;
+				//Irene->PetMesh->SetVisibility(true);
 			}
 		}
 	}

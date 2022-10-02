@@ -349,6 +349,7 @@ TTuple<FVector, FVector, FVector> AIreneCharacter::SetCameraStartTargetPosition(
 	const FVector TargetPos = GetActorLocation()+(Length) * BoxFarSize;	
 	const FVector CameraPos = StartPosition;
 	const FVector ReturnBoxSize = FVector(BoxSize.X, BoxSize.Y, FVector::Dist(TargetPos,CameraPos)/2);
+	
 	return MakeTuple(ReturnBoxSize, CameraPos, TargetPos);
 }
 
@@ -373,7 +374,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 	const float DebugLifeTime = LifeTime;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime*2);
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 0.1f);
 #endif
 	
 	return MakeTuple(MonsterList, Params, bResult);

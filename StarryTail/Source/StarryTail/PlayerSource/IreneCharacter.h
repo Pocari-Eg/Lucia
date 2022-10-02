@@ -162,6 +162,8 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
+	UFUNCTION(BluePrintCallable)
+	void DoAttack(AActor* Actor){IreneAttack->SpiritDoAttack(Actor);}
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
