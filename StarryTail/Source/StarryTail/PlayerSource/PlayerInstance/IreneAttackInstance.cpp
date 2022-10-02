@@ -101,15 +101,8 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 
 	if(AttributeName == "None" && DamageBeforeTableName != "")
 	{
-		STARRYLOG(Warning,TEXT("%s"),*AttributeName);
-		STARRYLOG(Warning,TEXT("%s"),*DamageBeforeTableName);
 		AttributeName = DamageBeforeTableName;		
 	}
-	if(AttributeName == "None")
-	{
-		STARRYLOG(Error,TEXT("%s"),*Irene->IreneState->GetStateToString());		
-	}
-	STARRYLOG(Warning,TEXT("%s"),*AttributeName);
 	return FName(AttributeName);
 }
 FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
@@ -185,19 +178,17 @@ void UIreneAttackInstance::AttackStopCheck()
 void UIreneAttackInstance::DoAttack()
 {
 	// 실제로 공격을 하는 함수로 위에는 속성에 따른 콜라이더 사용과 아래에는 콜라이더를 보여주는 역할을 하는 코드가 있는 함수
-
-	auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	const auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	//if (STGameInstance->GetPlayerBattleState())
 	//{
 	//   Irene->CameraOutEvent();
 	//}
 
 	bool bResult = false;
-		
-	TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-	
 	TArray<FHitResult> MonsterList;
 
+	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+	
 	if(!Irene->bIsSpiritStance || Irene->IreneState->IsAttackState())
 	{
 		FVector BoxSize = FVector::ZeroVector;
@@ -206,7 +197,7 @@ void UIreneAttackInstance::DoAttack()
 		else
 			BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 
-		FCollisionQueryParams Params(NAME_None, false, Irene);
+		const FCollisionQueryParams Params(NAME_None, false, Irene);
 		bResult = GetWorld()->SweepMultiByChannel(
 		MonsterList,
 		Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
@@ -218,41 +209,60 @@ void UIreneAttackInstance::DoAttack()
 	
 		// 그리기 시작
 		#if ENABLE_DRAW_DEBUG
-		FVector TraceVec = Irene->GetActorForwardVector();
-		FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
-		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
+		const FVector TraceVec = Irene->GetActorForwardVector();
+		const FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+		const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+		const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+		constexpr float DebugLifeTime = 5.0f;
 		DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 		#endif
 	}
-	else if(Irene->bIsSpiritStance && Irene->IreneState->IsSkillState())
-	{
-		FVector MoveForwardVector = PlayerPosVec-Irene->GetActorLocation();
-		MoveForwardVector.Normalize();
-		float MoveDist = FVector::Dist(Irene->GetActorLocation(),PlayerPosVec)/2;
+
+	SendDamage(bResult, MonsterList);
+	
+	// 충돌한 액터가 있으면 카메라 쉐이크 시작
+	if (bResult)
+		Irene->CameraShakeOn = true;
+	
+	//속성공격 기준 몬스터 할당해제
+	if (bResult)
+		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
+			STGameInstance->ResetAttributeEffectMonster();
+}
+void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
+{
+	TArray<FHitResult> MonsterList;
+	bool bResult = false;
+
+	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+
+	const FVector BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 		
-		FCollisionQueryParams Params(NAME_None, false, Irene);
-		bResult = GetWorld()->SweepMultiByChannel(
-		MonsterList,
-		(PlayerPosVec+Irene->GetActorLocation())/2,
-		(PlayerPosVec+Irene->GetActorLocation())/2,
-		FRotationMatrix::MakeFromZ(MoveForwardVector).ToQuat(),
-		ECollisionChannel::ECC_GameTraceChannel1,
-		FCollisionShape::MakeBox(FVector(50, 50, MoveDist)),
-		Params);
+	const FCollisionQueryParams Params(NAME_None, false, Irene);
+	bResult = GetWorld()->SweepMultiByChannel(
+	MonsterList,
+	Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	FRotationMatrix::MakeFromZ(Actor->GetActorForwardVector()).ToQuat(),
+	ECollisionChannel::ECC_GameTraceChannel1,
+	FCollisionShape::MakeBox(BoxSize),
+	Params);
 	
-		// 그리기 시작
-		#if ENABLE_DRAW_DEBUG
-		FVector TraceVec = MoveForwardVector;
-		FVector Center = (PlayerPosVec+Irene->GetActorLocation())/2;
-		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-		float DebugLifeTime = 5.0f;
-		DrawDebugBox(GetWorld(), Center, FVector(50, 50, MoveDist), CapsuleRot, DrawColor, false, DebugLifeTime);
-#endif
-	}
+	// 그리기 시작
+	#if ENABLE_DRAW_DEBUG
+	const FVector TraceVec = Actor->GetActorForwardVector();
+	const FVector Center = Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	constexpr float DebugLifeTime = 5.0f;
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
+	#endif
 	
+	SendDamage(bResult, MonsterList);
+}
+void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterList)
+{
 	// 모든 충돌된 액터에 데미지 전송
 	for (FHitResult Monster : MonsterList)
 	{
@@ -295,16 +305,8 @@ void UIreneAttackInstance::DoAttack()
 			}
 		}
 	}
-	// 충돌한 액터가 있으면 카메라 쉐이크 시작
-	if (bResult)
-		Irene->CameraShakeOn = true;
-	
-	//속성공격 기준 몬스터 할당해제
-	if (bResult)
-		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
-		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
-			STGameInstance->ResetAttributeEffectMonster();
 }
+
 
 void UIreneAttackInstance::SetFireDeBuffStack(const int Value, const float DamageAmount)
 {
