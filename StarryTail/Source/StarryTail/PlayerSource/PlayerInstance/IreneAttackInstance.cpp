@@ -103,6 +103,11 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 	{
 		AttributeName = DamageBeforeTableName;		
 	}
+	if(AttributeName == "None")
+	{
+		STARRYLOG(Error,TEXT("%s"),*Irene->IreneState->GetStateToString());
+		AttributeName = "B_Attack_1";
+	}
 	return FName(AttributeName);
 }
 FName UIreneAttackInstance::GetWeaponGaugeDataTableName()
@@ -219,16 +224,6 @@ void UIreneAttackInstance::DoAttack()
 	}
 
 	SendDamage(bResult, MonsterList);
-	
-	// 충돌한 액터가 있으면 카메라 쉐이크 시작
-	if (bResult)
-		Irene->CameraShakeOn = true;
-	
-	//속성공격 기준 몬스터 할당해제
-	if (bResult)
-		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
-		if (STGameInstance->GetAttributeEffectMonster() != nullptr)
-			STGameInstance->ResetAttributeEffectMonster();
 }
 void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
 {
@@ -305,6 +300,15 @@ void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterLi
 			}
 		}
 	}
+	// 충돌한 액터가 있으면 카메라 쉐이크 시작
+	if (bResult)
+		Irene->CameraShakeOn = true;
+	
+	//속성공격 기준 몬스터 할당해제
+	if (bResult)
+		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
+		if (Irene->STGameInstance->GetAttributeEffectMonster() != nullptr)
+			Irene->STGameInstance->ResetAttributeEffectMonster();
 }
 
 
