@@ -799,7 +799,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 	}
 	else
 	{
-		if(CurState->PlayTime >= 1.67f/2.0f)
+		if(CurState->PlayTime >= 1.67f/1.3f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -898,7 +898,7 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 	}
 	else
 	{
-		if(CurState->PlayTime >= 1.67f/2.0f)
+		if(CurState->PlayTime >= 1.67f/1.3f)
 		{
 			EndTimeExit(CurState);
 		}
@@ -996,7 +996,7 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 	}
 	else
 	{
-		if(CurState->PlayTime >= 1.67f/2.0f)
+		if(CurState->PlayTime >= 1.67f/1.3f)
 		{
 			EndTimeExit(CurState);
 		}
