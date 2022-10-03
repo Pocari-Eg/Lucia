@@ -731,7 +731,14 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = false;
-				Irene->PetMesh->SetVisibility(true);
+				Irene->PetMesh->SetVisibility(true); 
+
+			    
+				auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+				if (Instance != nullptr)
+				{
+					Instance->ExplodeCurStackMonster();
+				}
 			}
 		}
 	}

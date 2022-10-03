@@ -49,6 +49,7 @@ private:
 
 	UMaterialInstanceDynamic* ShieldMateial;
 
+	int MaxStackCount;
 public:
 	// Sets default values for this component's properties
 	UMonsterShield();
@@ -71,9 +72,10 @@ public:
 	void SetEffectVisible(bool State);
 
 
-	void InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale);
+	void InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale,int M_MaxStackCount);
 	void InitShieldCollision(float Height, float Radius);
 	
+	void CalcStackDamageToShield(int Count);
 
 private:
 	float CalcShieldDamage(float Damage);

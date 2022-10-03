@@ -37,6 +37,11 @@ UMonsterShield::UMonsterShield()
 float UMonsterShield::CalcShieldDamage(float Damage)
 {
 	if (bIsShieldActive&&Type==EShieldType::General) {
+		if (Damage == -1.0f)
+		{
+			return 99999999.9f;
+		}
+
 		return Damage;
 	}
 	return 0;
@@ -60,7 +65,6 @@ void UMonsterShield::CalcDurability(float Damage)
 	if (CurDurability <= Durability * 0.25)
 	{
 		CurShieldState = 3;
-
 		ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
 		ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
 		ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
@@ -158,7 +162,7 @@ void UMonsterShield::SetEffectVisible(bool State)
 }
 
 
-void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale)
+void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale, int M_MaxStackCount)
 {
 
 	if (bIsShieldActive) {
@@ -166,6 +170,8 @@ void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location,
 		ShiledEffectComponent->SetRelativeLocation(Location);
 		ShiledEffectComponent->SetTemplate(Effect);
 		ShiledEffectComponent->SetVisibility(true);
+
+		MaxStackCount = M_MaxStackCount;
 
 		FParticleSysParam Opacity;
 		Opacity.Name = "Opacity";
@@ -202,9 +208,46 @@ void UMonsterShield::InitShieldCollision(float Height, float Radius)
 	if (bIsShieldActive) {
 		Collision->SetCapsuleHalfHeight(Height);
 		Collision->SetCapsuleRadius(Radius);
-		Collision->SetCollisionProfileName("Enemy");
+		Collision->SetCollisionProfileName("Shield");
 
 	}
+}
+
+void UMonsterShield::CalcStackDamageToShield(int Count)
+{
+
+	const int Break_1 = MaxStackCount * 0.3;
+	const int Break_2 = MaxStackCount * 0.6;
+	const int Break_3 = MaxStackCount * 0.9;
+
+
+	if (Count == Break_1){
+		if (CurShieldState < 1)
+		{
+			CurShieldState = 1;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+		}
+     }  
+	else if (Count == Break_2) {
+			if (CurShieldState < 2)
+			{
+				CurShieldState = 2;
+				ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+				ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
+				ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+			}
+		}
+	else if (Count == Break_3) {
+			if (CurShieldState < 3)
+			{
+				CurShieldState = 3;
+				ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+				ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+				ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
+			}
+		}
 }
 
 // Called when the game starts
