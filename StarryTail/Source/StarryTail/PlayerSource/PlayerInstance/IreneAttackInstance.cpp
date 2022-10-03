@@ -222,7 +222,8 @@ void UIreneAttackInstance::DoAttack()
 		DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 		#endif
 	}
-
+	StackCount = AttackTable->Stack_Count;
+	STARRYLOG_S(Warning);
 	SendDamage(bResult, MonsterList);
 }
 void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
@@ -231,7 +232,7 @@ void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
 	bool bResult = false;
 
 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-
+	StackCount = AttackTable->Stack_Count;
 	const FVector BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 		
 	const FCollisionQueryParams Params(NAME_None, false, Irene);
@@ -253,7 +254,7 @@ void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
 	constexpr float DebugLifeTime = 5.0f;
 	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
 	#endif
-	
+	STARRYLOG_S(Warning);
 	SendDamage(bResult, MonsterList);
 }
 void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterList)
@@ -295,6 +296,10 @@ void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterLi
 							SetGauge(DataTable->Get_W_Gauge + DataTable->Get_B_Next + (1 * (MonsterList.Num()-1)));
 						}
 					}
+				}
+				if (Irene->bIsSpiritStance)
+				{
+					Mob->AddStackCount(StackCount);
 				}
 				UGameplayStatics::ApplyDamage(Monster.Actor.Get(), Irene->IreneData.Strength, nullptr, Irene, nullptr);
 			}

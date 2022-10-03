@@ -472,10 +472,10 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		Mon->MarkerOn();
 		// ±‚¡∏ ±Í∆Ê ≈∏∞ŸUI ≤Ù∞Ì ∞À ∞¯∞› ≈∏∞Ÿø°∞‘ ±Í∆Ê ≈∏∞ŸUI ∫∏ø©¡÷±‚
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOff();
+		// Mon->StackWidgetOff();
 		// IreneAttack->QuillTargetMonster = RayHit.GetActor();
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOn();
+		// Mon->StackWidgetOn();
 		
 		// ∏ÛΩ∫≈Õ∏¶ √£∞Ì √ƒ¥Ÿ∫∏±‚
 		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
@@ -589,10 +589,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 			Mon->MarkerOn();
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOff();
+			//Mon->StackWidgetOff();
 			//IreneAttack->QuillTargetMonster = DamageCauser;
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOn();
+			//Mon->StackWidgetOn();
 		}
 	}
 	return FinalDamage;

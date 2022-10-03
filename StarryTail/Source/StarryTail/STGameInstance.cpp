@@ -131,6 +131,8 @@ bool USTGameInstance::IsLastWave()
 	return bIsLastWave;
 }
 
+
+
 void USTGameInstance::InitData()
 {
 	EnemyCount = 0;
@@ -214,64 +216,35 @@ FSoundSetting* USTGameInstance::GetSoundSetting()
 	return &SoundSettingData;
 }
 
-#pragma region Occupy
-/*
-void USTGameInstance::OnFirstOccupy()
+#pragma region Stack
+void USTGameInstance::ExplodeCurStackMonster()
 {
-	if (IsFirstOccupied == false)
+	if (StackMonster.Num() != 0)
 	{
-		IsFirstOccupied = true;
-		SpawnTime = UKismetMathLibrary::RandomIntegerInRange(0, 5);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USTGameInstance::SpawnTimeCheck, 1.0f, true, 0.0f);
-	}
-	else {
+		for(int i=0;i<StackMonster.Num();i++)
+		StackMonster[i]->StackExplode();
 	}
 }
 
-void USTGameInstance::SpawnTimeCheck()
+void USTGameInstance::InsertStackMonster(AMonster* Monster)
 {
-	STARRYLOG(Error, TEXT("SpawnTime : %d"), SpawnTime);
+	StackMonster.Add(Monster);
+	Monster->StackWidgetOn();
 
-	if (SpawnTime > 0)
+}
+
+void USTGameInstance::DeleteStackMonster(AMonster* Monster)
+{
+	if (StackMonster.Num() != 0)
 	{
-		SpawnTime--;
-	}
-	else {
-		OnEnemySpawn.Broadcast();
+		for (int i = 0; i < StackMonster.Num(); i++)
+			if (StackMonster[i] == Monster)
+			{
+				StackMonster.RemoveAt(i);
+				Monster->StackWidgetOff();
+				return;
+			}
 	}
 }
-void USTGameInstance::AddEnemyCount()
-{
-	EnemyCount++;
-	if (EnemyCount >= EnemyMaxCount)
-	{
-		STARRYLOG(Warning, TEXT("EnemyCountMax"));
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-
-	}
-	else {
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-		SpawnTime = UKismetMathLibrary::RandomIntegerInRange(10, 30);
-		GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USTGameInstance::SpawnTimeCheck, 1.0f, true, 0.0f);
-
-	}
-}
-void USTGameInstance::DeleteEnemyCount()
-{
-	if (EnemyCount > 0)
-	{
-		EnemyCount--;
-		if (EnemyCount == EnemyMaxCount - 1)
-		{
-			GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
-			SpawnTime = UKismetMathLibrary::RandomIntegerInRange(10, 30);
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &USTGameInstance::SpawnTimeCheck, 1.0f, true, 0.0f);
-		}
-		else {
-
-		}
-	}
-}
-*/
 #pragma endregion
 
