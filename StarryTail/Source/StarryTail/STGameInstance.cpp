@@ -219,10 +219,11 @@ FSoundSetting* USTGameInstance::GetSoundSetting()
 #pragma region Stack
 void USTGameInstance::ExplodeCurStackMonster()
 {
-	if (StackMonster.Num() != 0)
+	
+	while (StackMonster.Num() != 0)
 	{
-		for(int i=0;i<StackMonster.Num();i++)
-		StackMonster[i]->StackExplode();
+		StackMonster[0]->StackExplode();
+
 	}
 }
 
