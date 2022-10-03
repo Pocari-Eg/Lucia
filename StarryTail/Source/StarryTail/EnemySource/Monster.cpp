@@ -115,7 +115,7 @@ AMonster::AMonster()
 	MonsterShield->SetupAttachment(RootComponent);
 
 
-	MonsterInfo.CurStackCount = 1;
+	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
 }
 #pragma region Init
