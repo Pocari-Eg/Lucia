@@ -28,7 +28,7 @@ AMorbit::AMorbit()
 
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	TargetWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
+	StackWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
 
 }
 #pragma region Init

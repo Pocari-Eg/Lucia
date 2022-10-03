@@ -83,8 +83,8 @@ public:
 	void MarkerOn();
     void MarkerOff();
 
-	void TargetWidgetOn();
-	void TargetWidgetOff();
+	void StackWidgetOn();
+	void StackWidgetOff();
 
 	//스폰 생성 몬스터 설정
 	void SetSpawnEnemy();
@@ -165,8 +165,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
 	//박찬영 UI
-	UPROPERTY(VisibleAnywhere, Category = UI)
-	class UWidgetComponent* TargetWidget;
+	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = UI)
+	class UWidgetComponent* StackWidget;
 	//사운드
 	UPROPERTY(BluePrintReadOnly)
 	class UMonsterSoundInstance* SoundInstance;
@@ -249,6 +249,8 @@ private:
 	float AttackCoolTime;
 	
 	bool bIsDodgeOn;
+
+	bool bIsStackOn;
 	
 public:	
 	// Called every frame
@@ -297,6 +299,17 @@ public:
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
 	void SetDpsCheck(bool state);
+
+
+	//Stack
+	UFUNCTION(BlueprintCallable)
+	int GetCurStackCount();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  OnStackCountEvent();
+	void AddStackCount(int Count);
+	void StackExplode();
+	void InitStackCount();
+	float CalcStackDamage(int StackCount);
 
 protected:
 	virtual void InitMonsterInfo() {};

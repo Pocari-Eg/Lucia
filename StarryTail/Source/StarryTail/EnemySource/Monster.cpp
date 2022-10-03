@@ -63,18 +63,18 @@ AMonster::AMonster()
 
 	WidgetPoint = CreateDefaultSubobject<UCapsuleComponent>(TEXT("WIDGETPOINT"));
 	WidgetPoint->SetupAttachment(GetMesh());
-	TargetWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("TARGETWIDGET"));
-	TargetWidget->SetupAttachment(WidgetPoint);
+	StackWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("StackWidget"));
+	StackWidget->SetupAttachment(WidgetPoint);
 
-	TargetWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
-	TargetWidget->SetWidgetSpace(EWidgetSpace::World);
-	static ConstructorHelpers::FClassFinder<UUserWidget> UI_TARGETWIDGET(TEXT("/Game/UI/BluePrint/Monster/BP_TargetWdiget.BP_TargetWdiget_C"));
+	StackWidget->SetRelativeRotation(FRotator(0.0f, 270.0f, 0.0f));
+	StackWidget->SetWidgetSpace(EWidgetSpace::World);
+	static ConstructorHelpers::FClassFinder<UUserWidget> UI_StackWidget(TEXT("/Game/UI/BluePrint/Monster/BP_TargetWdiget.BP_TargetWdiget_C"));
 
-	if (UI_TARGETWIDGET.Succeeded()) {
+	if (UI_StackWidget.Succeeded()) {
 
-		TargetWidget->SetWidgetClass(UI_TARGETWIDGET.Class);
-		TargetWidget->SetDrawSize(FVector2D(50.0f,50.0f));
-		TargetWidget->bAutoActivate = false;
+		StackWidget->SetWidgetClass(UI_StackWidget.Class);
+		StackWidget->SetDrawSize(FVector2D(50.0f,50.0f));
+		StackWidget->bAutoActivate = false;
 	}
 	bIsSpawnEnemy = false;
 	bIsObject = false;
@@ -115,6 +115,8 @@ AMonster::AMonster()
 	MonsterShield->SetupAttachment(RootComponent);
 
 
+	MonsterInfo.CurStackCount = 1;
+	MonsterInfo.StackEnableDistance = 3000.0f;
 }
 #pragma region Init
 
@@ -338,6 +340,146 @@ void AMonster::SetDpsCheck(bool state)
 			MonsterAIController->SetBackStepKey(true);
 		}
 	}
+}
+
+
+int AMonster::GetCurStackCount()
+{
+	return MonsterInfo.CurStackCount;
+}
+void AMonster::AddStackCount(int Count)
+{
+	if (MonsterInfo.MaxStackCount > 0) {
+
+
+		if (!MonsterInfo.bIsStackCheck)
+		{
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (Instance != nullptr)Instance->InsertStackMonster(this);
+		}
+
+		MonsterInfo.StackCheckTimer = 0.0f;
+		MonsterInfo.bIsStackCheck = true;
+		MonsterInfo.CurStackCount += Count;
+
+
+
+
+		OnStackCountEvent();
+
+		int Break_1 = MonsterInfo.MaxStackCount * 0.3;
+		int Break_2 = MonsterInfo.MaxStackCount * 0.6;
+		int Break_3 = MonsterInfo.MaxStackCount * 0.9;
+
+		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
+		{
+			MonsterInfo.OverStackCount = MonsterInfo.CurStackCount - MonsterInfo.MaxStackCount;
+			MonsterInfo.CurStackCount = MonsterInfo.MaxStackCount;
+			StackExplode();
+		}
+		else if (MonsterInfo.CurStackCount >= Break_3)
+		{
+			MonsterShield->CalcStackDamageToShield(Break_3);
+
+		}
+		else if (MonsterInfo.CurStackCount >= Break_2)
+		{
+			MonsterShield->CalcStackDamageToShield(Break_2);
+		}
+		else if (MonsterInfo.CurStackCount >= Break_1)
+		{
+			MonsterShield->CalcStackDamageToShield(Break_1);
+
+		}
+	}
+
+}
+
+void AMonster::StackExplode()
+{
+
+	if (GetIsMonsterShieldActive())
+	{
+		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
+			MonsterShield->CalcDurability(-1.0f);
+			OnBarrierChanged.Broadcast();
+
+			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+			MonsterInfo.OverStackCount = 0;
+			MonsterInfo.bIsStackCheck = false;
+			MonsterInfo.StackCheckTimer = 0.0f;
+
+			if (MonsterInfo.CurStackCount == 0)
+			{
+				InitStackCount();
+			}
+
+			if (!GetIsMonsterShieldActive())
+			{
+				ShieldDestroyed();
+				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+			}
+			
+		}
+		else {
+			MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
+			OnBarrierChanged.Broadcast();
+			InitStackCount();
+			if (!GetIsMonsterShieldActive())
+			{
+				ShieldDestroyed();
+				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+			}
+		}
+	}
+	else {
+
+		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
+			CalcHp(99999999.9f);
+
+			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+			MonsterInfo.OverStackCount = 0;
+			MonsterInfo.StackCheckTimer = 0.0f;
+
+			if (MonsterInfo.CurStackCount == 0)
+			{
+				InitStackCount();
+			}
+
+		}
+		else {
+			CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
+			InitStackCount();
+		}
+	
+	}
+
+
+
+	OnStackCountEvent();
+
+}
+
+void AMonster::InitStackCount()
+{
+	MonsterInfo.StackCheckTimer = 0.0f;
+	MonsterInfo.bIsStackCheck = false;
+	MonsterInfo.CurStackCount =0;
+	MonsterInfo.OverStackCount = 0;
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+}
+
+float AMonster::CalcStackDamage(int StackCount)
+{
+
+	float Count = (float)StackCount;
+	float Percent= 60.0f / MonsterInfo.MaxStackCount - 1.0f;
+	Percent *= 0.01f;
+	Percent = 0.4f+((Count - 1.0f)*Percent);
+
+	return Percent * MonsterInfo.StackDamage;
 }
 
 void AMonster::Attack()
@@ -655,7 +797,7 @@ void AMonster::SetActive()
 	{
 		
 		MonsterWidget->SetHiddenInGame(true);
-		TargetWidget->SetHiddenInGame(true);
+		StackWidget->SetHiddenInGame(true);
 		HitEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
 	}
@@ -676,13 +818,13 @@ void AMonster::MarkerOff()
 		HpBar->MarkerOff();
 	}
 }
-void AMonster::TargetWidgetOn()
+void AMonster::StackWidgetOn()
 {
-	TargetWidget->SetVisibility(true);
+	StackWidget->SetVisibility(true);
 }
-void AMonster::TargetWidgetOff()
+void AMonster::StackWidgetOff()
 {
-	TargetWidget->SetVisibility(false);
+	StackWidget->SetVisibility(false);
 }
 void AMonster::SetSpawnEnemy()
 {
@@ -859,7 +1001,7 @@ void AMonster::BeginPlay()
 	auto HPBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
 	HPBar->BindMonster(this);
 
-	TargetWidgetOff();
+	StackWidgetOff();
 	MonsterWidget->SetVisibility(false);
 	OnSpawnEffectEvent();
 
@@ -893,7 +1035,7 @@ void AMonster::Tick(float DeltaTime)
 	MonsterWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	//
 
-	TargetWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
+	StackWidget->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	WidgetPoint->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	if (bDeadWait)
 	{
@@ -919,7 +1061,7 @@ void AMonster::Tick(float DeltaTime)
 			ShowUITimer = 0.0f;
 			MonsterWidget->SetVisibility(false);
 			bShowUI = false;
-			TargetWidgetOff();
+			StackWidgetOff();
 		}
 	}
 	else
@@ -994,6 +1136,28 @@ void AMonster::Tick(float DeltaTime)
 			SetDpsCheck(false);
 		}
 	}
+
+	if (MonsterInfo.bIsStackCheck)
+	{
+		MonsterInfo.StackCheckTimer += DeltaTime;
+		if (MonsterInfo.StackCheckTimer >= MonsterInfo.StackCheckTime)
+		{
+			InitStackCount();
+			return;
+		}
+
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (Instance != nullptr)
+		{
+			float distance = GetDistanceTo(Instance->GetPlayer());
+			if (distance >= MonsterInfo.StackEnableDistance)
+			{
+				InitStackCount();
+				return;
+			}
+		}
+	}
+
 
 
 	if (GetIsMonsterShieldActive())
@@ -1113,6 +1277,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 			//몬스터인지 아닌지
 			if (!bIsObject) {
+
 
 				if (MonsterControl != nullptr) {
 					MonsterControl->SetBattleMonster(this);

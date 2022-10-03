@@ -95,16 +95,36 @@ public:
 
 
 
+	//Shield
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector MonsterShieldLocation;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FVector MonsterShieldScale;;
-
-
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float ShieldCollisionHeight;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	float ShieldCollisionRadius;;
+
+	//Stack
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category="Stack")
+	int MaxStackCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stack")
+	int CurStackCount;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackDamage;
+	int OverStackCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackCheckTime;
+	float StackCheckTimer;
+
+	bool bIsStackCheck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackEnableDistance;
+
+
 
 
 	//etc

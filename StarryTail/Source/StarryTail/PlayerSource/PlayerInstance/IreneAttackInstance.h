@@ -58,6 +58,9 @@ private:
 	int WaterDeBuffStack;
 	int ThunderDeBuffStack;
 
+	//스택 카운트 저장
+	int StackCount;
+
 	// 불속성 몬스터 고정 데미지
 	float FireMonsterDamageAmount;
 	// 전기 디버프 작동 시간
