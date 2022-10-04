@@ -29,7 +29,7 @@ private:
 
 	FVector MoveDir;
 	FVector NewLocation;
-
+	FRotator TargetRot;
 	bool bCanMove;
 	bool bIsRush;
 
