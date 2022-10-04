@@ -1079,7 +1079,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 0.9f)
+	if(CurState->PlayTime >= 0.83f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1166,7 +1166,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
-	if(CurState->PlayTime >= 1.0f)
+	if(CurState->PlayTime >= 0.63f)
 	{
 		EndTimeExit(CurState);
 	}
@@ -1352,7 +1352,10 @@ void UHit2State::Enter(IBaseGameEntity* CurState)
 
 void UHit2State::Execute(IBaseGameEntity* CurState)
 {
-	CurState->Irene->ChangeStateAndLog(UHit1State::GetInstance());
+	if(CurState->PlayTime > CurState->Irene->GetWorld()->DeltaTimeSeconds)
+	{
+		CurState->Irene->ChangeStateAndLog(UHit1State::GetInstance());
+	}
 	//CurState->Irene->IreneInput->MoveForward();
 	//CurState->Irene->IreneInput->MoveRight();
 }
