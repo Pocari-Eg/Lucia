@@ -88,15 +88,18 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		if (SkillSetTimer >= Bellyfish->GetSkillSetTime())
 		{
 			Bellyfish->RushAttack();
+			Bellyfish->SetActorRotation(TargetRot);
+
 			return;
 		}
 		else {
 
-			MoveDir = Player->GetActorLocation() - Bellyfish->GetActorLocation();
+		
 			FVector LookVector = MoveDir;
 			LookVector.Z = 0.0f;
 			TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 			Bellyfish->SetActorRotation(TargetRot);//FMath::RInterpTo(Bellyfish->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
+			MoveDir =Bellyfish->GetActorForwardVector();
 			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 0.2f);
 			return;
 		}
