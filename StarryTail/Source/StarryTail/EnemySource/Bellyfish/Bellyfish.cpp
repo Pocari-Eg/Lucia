@@ -236,7 +236,7 @@ bool ABellyfish::RushRouteCheck()
 		Params);
 
 #if ENABLE_DRAW_DEBUG
-	FVector TraceVec = GetActorForwardVector() * MonsterInfo.M_Skill_Radius;
+	FVector TraceVec = GetActorForwardVector().GetSafeNormal() * MonsterInfo.M_Skill_Radius;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
 	float HalfHeight = MonsterInfo.M_Skill_Radius* 0.5f + 50.0f;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
@@ -489,6 +489,7 @@ void ABellyfish::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 				auto Player = Cast<AIreneCharacter>(OtherActor);
 
 				Player->IreneAnim->KnockBackEvent();
+
 				UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 				bIsPlayerRushHit = true;
 				RushEnd.Broadcast();
