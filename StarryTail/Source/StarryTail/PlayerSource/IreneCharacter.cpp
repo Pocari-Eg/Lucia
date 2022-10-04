@@ -571,7 +571,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				}
 
 				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
-				{					
+				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
 			}
@@ -611,7 +611,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		//STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s:   %f"), *IreneState->GetStateToString(),GetWorld()->RealTimeSeconds);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
