@@ -24,18 +24,18 @@ void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 
 
 
-			OnBarrierUI();
+	OnBarrierUI();
 
-			if (CurrentMonster->GetManaShieldCount() == 0)
-			{
-				DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
-		       DefLine->SetVisibility(ESlateVisibility::Hidden);
-			}
-			else {
-				DefProgressBar->SetVisibility(ESlateVisibility::Visible);
-				DefLine->SetVisibility(ESlateVisibility::Visible);
-			}
-		
+		//if (!CurrentMonster->GetIsMonsterShieldActive())
+		//{
+		//	DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
+		//      DefLine->SetVisibility(ESlateVisibility::Hidden);
+		//}
+		//else {
+		//	DefProgressBar->SetVisibility(ESlateVisibility::Visible);
+		//	DefLine->SetVisibility(ESlateVisibility::Visible);
+		//}
+		//
 	}
 }
 

@@ -75,6 +75,8 @@ public:
 	float GetPlayerMaxDistance()const;
 	float GetAttack3Distance()const;
 
+	float GetRotateSpeed()const;
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void  BrokenEvent();
 	//Var
@@ -110,6 +112,9 @@ private:
 	float FindRimitTime;
 	float FindRimitTimer;
 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	float RotateSpeed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, Meta = (AllowPrivateAccess = true))
 	AWalkPoint* WalkPoint;
 	

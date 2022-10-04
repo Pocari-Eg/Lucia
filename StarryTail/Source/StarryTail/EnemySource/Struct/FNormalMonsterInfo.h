@@ -8,15 +8,6 @@
 #include "FNormalMonsterInfo.generated.h"
 
 USTRUCT(Atomic, BluePrintType)
-struct FElementalShield
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int DEF;
-};
-
-USTRUCT(Atomic, BluePrintType)
 struct FAttackRange
 {
 	GENERATED_BODY()
@@ -104,6 +95,37 @@ public:
 
 
 
+	//Shield
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector MonsterShieldLocation;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FVector MonsterShieldScale;;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ShieldCollisionHeight;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	float ShieldCollisionRadius;;
+
+	//Stack
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category="Stack")
+	int MaxStackCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Stack")
+	int CurStackCount;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackDamage;
+	int OverStackCount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackCheckTime;
+	float StackCheckTimer;
+
+	bool bIsStackCheck;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Stack")
+	float StackEnableDistance;
+
+
+
 
 	//etc
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -151,20 +173,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 		float DefaultAnimePlayRate;
 
-
-	//shield
-
-		//Shield;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
-		int Max_Ele_Shield;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
-		TArray<FElementalShield> Ele_Shield; 
-	int Ele_Shield_Count;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "ManaShield")
-		bool bIsShieldOn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "ManaShield")
-		int ManaShieldDec;
 };
 
 USTRUCT(Atomic, BluePrintType)

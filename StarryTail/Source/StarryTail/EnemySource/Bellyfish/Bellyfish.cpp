@@ -3,6 +3,7 @@
 
 #include "Bellyfish.h"
 #include"../../PlayerSource/IreneCharacter.h"
+#include"../../PlayerSource/PlayerInstance/IreneAnimInstance.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
@@ -34,7 +35,7 @@ ABellyfish::ABellyfish()
 
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 110.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	TargetWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
+	StackWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
 
 	IsSkillSet = false;
 	IsSkillAttack = false;
@@ -235,7 +236,7 @@ bool ABellyfish::RushRouteCheck()
 		Params);
 
 #if ENABLE_DRAW_DEBUG
-	FVector TraceVec = GetActorForwardVector() * MonsterInfo.M_Skill_Radius;
+	FVector TraceVec = GetActorForwardVector().GetSafeNormal() * MonsterInfo.M_Skill_Radius;
 	FVector Center = GetActorLocation() + TraceVec * 0.5f;
 	float HalfHeight = MonsterInfo.M_Skill_Radius* 0.5f + 50.0f;
 	FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
@@ -328,7 +329,6 @@ void ABellyfish::BeginPlay()
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
-	InitManaShield();
 	SetNormalState();
 
 }
@@ -434,9 +434,6 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.S_Attack_Time = 8.0f;
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 
-	MonsterInfo.Max_Ele_Shield = 0;
-	MonsterInfo.Ele_Shield_Count = -1;
-
 	
 	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 1.0f;
@@ -490,6 +487,9 @@ void ABellyfish::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 			{
 				STARRYLOG_S(Warning);
 				auto Player = Cast<AIreneCharacter>(OtherActor);
+
+				Player->IreneAnim->KnockBackEvent();
+
 				UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 				bIsPlayerRushHit = true;
 				RushEnd.Broadcast();

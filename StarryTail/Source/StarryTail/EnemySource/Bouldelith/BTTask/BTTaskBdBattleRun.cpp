@@ -20,8 +20,8 @@ EBTNodeResult::Type UBTTaskBdBattleRun::ExecuteTask(UBehaviorTreeComponent& Owne
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
 	Bouldelith->BattleRun();
-auto	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
+ auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 Bouldelith->GetAIController()->MoveToLocation(Player->GetActorLocation());
 
 
@@ -34,10 +34,16 @@ void UBTTaskBdBattleRun::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 	auto	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
+	FVector LookVector = Player->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), Bouldelith->GetRotateSpeed()));
+
 	if (Bouldelith->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
 		Bouldelith->GetAIController()->MoveToLocation(Player->GetActorLocation());
 	}
+
 
 	Attack4Trace(Bouldelith, OwnerComp, Bouldelith->GetActorLocation());
 

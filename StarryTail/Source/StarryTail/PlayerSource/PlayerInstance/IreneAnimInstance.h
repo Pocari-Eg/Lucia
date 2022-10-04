@@ -55,6 +55,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SwordSkill2Montage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpiritSkillMontage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsHaveTargetMonster;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	AActor* TargetMonster;
@@ -96,7 +98,8 @@ public:
 public:
 	UFUNCTION(BlueprintCallable)
 	void CallCreateTail();
-	
+	UFUNCTION(BlueprintImplementableEvent)
+	void KnockBackEvent();
 private:	
 	UFUNCTION()
 	void AnimNotify_AttackHitCheck() const;

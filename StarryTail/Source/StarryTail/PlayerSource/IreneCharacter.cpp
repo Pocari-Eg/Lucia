@@ -181,6 +181,9 @@ AIreneCharacter::AIreneCharacter()
 	bIsRadialBlurOn = false;
 	bInputStop = false;
 	bIsSpiritStance = false;
+
+	bIsKnockBack = false;
+
 }
 
 void AIreneCharacter::BeginPlay()
@@ -263,6 +266,20 @@ void AIreneCharacter::Tick(float DeltaTime)
 	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
+
+
+	if (bIsKnockBack)
+	{
+		KonckBackTimer += DeltaTime;
+		FVector KnocbackLocation = GetActorLocation() + (KnockBackDir * (KonckBackPower * (0.15f - KonckBackTimer)));
+		SetActorLocation(KnocbackLocation);
+
+		if (KonckBackTimer > KnockBackTime)
+		{
+			KonckBackTimer = 0.0f;
+			bIsKnockBack = false;
+		}
+	}
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -273,11 +290,12 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
+	PlayerInputComponent->BindAction("ThunderDeBuffKey", IE_Pressed, IreneInput, &UIreneInputInstance::ThunderDeBuffKey);
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
-	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::WeaponChangeKeyword);
+	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::SpiritChangeKeyword);
 	
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
@@ -331,6 +349,7 @@ TTuple<FVector, FVector, FVector> AIreneCharacter::SetCameraStartTargetPosition(
 	const FVector TargetPos = GetActorLocation()+(Length) * BoxFarSize;	
 	const FVector CameraPos = StartPosition;
 	const FVector ReturnBoxSize = FVector(BoxSize.X, BoxSize.Y, FVector::Dist(TargetPos,CameraPos)/2);
+	
 	return MakeTuple(ReturnBoxSize, CameraPos, TargetPos);
 }
 
@@ -355,7 +374,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 	const float DebugLifeTime = LifeTime;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime*2);
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 0.1f);
 #endif
 	
 	return MakeTuple(MonsterList, Params, bResult);
@@ -453,10 +472,10 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		Mon->MarkerOn();
 		// 기존 깃펜 타겟UI 끄고 검 공격 타겟에게 깃펜 타겟UI 보여주기
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOff();
+		// Mon->StackWidgetOff();
 		// IreneAttack->QuillTargetMonster = RayHit.GetActor();
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOn();
+		// Mon->StackWidgetOn();
 		
 		// 몬스터를 찾고 쳐다보기
 		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
@@ -523,6 +542,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		if (IreneData.CurrentHP > 0)
 		{
 			SetHP(DamageAmount);
+			IreneAttack->SetDamageBeforeTableName(IreneAttack->GetBasicAttackDataTableName().ToString());
 			
 			if (IreneData.CurrentHP <= 0)
 			{
@@ -569,10 +589,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 			Mon->MarkerOn();
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOff();
+			//Mon->StackWidgetOff();
 			//IreneAttack->QuillTargetMonster = DamageCauser;
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOn();
+			//Mon->StackWidgetOn();
 		}
 	}
 	return FinalDamage;
@@ -591,7 +611,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s:   %f"), *IreneState->GetStateToString(),GetWorld()->RealTimeSeconds);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
@@ -626,7 +646,7 @@ void AIreneCharacter::ActionEndChangeMoveState(bool RunToSprint)const
 }
 #pragma endregion State
 
-#pragma region HitFeel
+#pragma region Battle
 float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
 {
 	const FVector IreneForward = GetCapsuleComponent()->GetForwardVector();
@@ -728,6 +748,22 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;
 }
+
+void AIreneCharacter::PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower)
+{
+	if (!bIsKnockBack) {
+		KnockBackDir = In_KnockBackDir;
+		KnockBackDir.Normalize();
+		KnockBackDir.Z = 0.0f;
+
+		KonckBackPower = In_KnockBackPower;
+		KnockBackTime = 0.15f;
+		KonckBackTimer = 0.0f;
+		bIsKnockBack = true;
+	}
+}
+
+
 void AIreneCharacter::PlayFadeInAnimation()
 {
 	IreneUIManager->PlayHUDAnimation();
@@ -754,7 +790,7 @@ void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
 }
-#pragma endregion HitFeel
+#pragma endregion Battle
 
 #pragma region StopWatch
 //스탑워치 컨트롤 함수

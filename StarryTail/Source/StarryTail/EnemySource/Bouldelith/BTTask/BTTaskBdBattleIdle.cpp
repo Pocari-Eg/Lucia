@@ -36,7 +36,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 0.5f));
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), Bouldelith->GetRotateSpeed()));
 
 
 	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsShieldOnKey) == true) {
@@ -51,7 +51,7 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 	else {
 
 		auto ran = FMath::RandRange(1, 100);
-		STARRYLOG(Error, TEXT("Percent : %d"), ran);
+		//STARRYLOG(Error, TEXT("Percent : %d"), ran);
 		if (ran <= 70)
 		{
 			
