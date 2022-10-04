@@ -37,14 +37,14 @@ void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Monster = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
 	////È¸Àü
 	auto GameInstance = Cast<USTGameInstance>(Monster->GetGameInstance());
 	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Monster->GetLocation();
 	LookVector.Z = 0.0f;
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
-	Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 1.0f));
+	Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), Monster->GetRotateSpeed()));
 
 
 

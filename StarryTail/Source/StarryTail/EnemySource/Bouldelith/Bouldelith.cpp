@@ -26,6 +26,7 @@ ABouldelith::ABouldelith()
 
 	FindRimitTime = 5.0f;
 	FindRimitTimer = 0.0f;
+	RotateSpeed = 1.0f;
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
@@ -772,6 +773,11 @@ float ABouldelith::GetAttack3Distance() const
 	return	BouldelithInfo.Attack3_Distance;
 }
 
+float ABouldelith::GetRotateSpeed() const
+{
+	return RotateSpeed;
+}
+
 #pragma endregion
 
 UBdAnimInstance* ABouldelith::GetBouldelithAnimInstance() const
@@ -785,7 +791,7 @@ float ABouldelith::GetAnotherMonsterStateCheckRange()
 #pragma region BattleRun
 void ABouldelith::BattleRun()
 {
-	GetCharacterMovement()->MaxWalkSpeed = BouldelithInfo.DefaultBattleRunSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
 
 
 	BdAnimInstance->PlayBattleRunMontage();

@@ -208,8 +208,7 @@ void UMonsterShield::InitShieldCollision(float Height, float Radius)
 	if (bIsShieldActive) {
 		Collision->SetCapsuleHalfHeight(Height);
 		Collision->SetCapsuleRadius(Radius);
-		Collision->SetCollisionProfileName("Shield");
-
+		Collision->SetCollisionProfileName("NoCollision");
 	}
 }
 
