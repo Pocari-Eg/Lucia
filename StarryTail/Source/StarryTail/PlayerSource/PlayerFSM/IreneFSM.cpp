@@ -494,6 +494,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 				CurState->ThrowState(UDodgeEndState::GetInstance());
 				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 			}
+			CurState->Irene->IreneInput->SetIsDodgeToDodge(true);
 		}
 		if (CurState->PlayTime >= 0.76f)
 		{
@@ -569,6 +570,7 @@ void UDodgeEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeEndState::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->IreneInput->SetIsDodgeToDodge(false);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeEndState
