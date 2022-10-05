@@ -43,6 +43,8 @@ private:
 	int MaxDodgeCount;
 	// 회피 횟수
 	int DodgeCount;
+	// 회피 중 회피 사용 가능
+	bool bIsDodgeToDodge;
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
@@ -200,6 +202,7 @@ public:
 	void SetReAttack(const bool State) { bReAttack = State; }
 	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
 	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
+	void SetIsDodgeToDodge(const bool Value) {bIsDodgeToDodge = Value;}
 #pragma endregion GetSet
 
 };
