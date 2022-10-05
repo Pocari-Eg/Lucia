@@ -360,39 +360,58 @@ void AMonster::AddStackCount(int Count)
 
 		MonsterInfo.StackCheckTimer = 0.0f;
 		MonsterInfo.bIsStackCheck = true;
-		MonsterInfo.CurStackCount += Count;
+
+		if (MonsterInfo.CurStackCount < MonsterInfo.MaxStackCount) {
+			MonsterInfo.CurStackCount += Count;
 
 
 
 
-		OnStackCountEvent();
 
-		int Break_1 = MonsterInfo.MaxStackCount * 0.3;
-		int Break_2 = MonsterInfo.MaxStackCount * 0.6;
-		int Break_3 = MonsterInfo.MaxStackCount * 0.9;
+			OnStackCountEvent();
 
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
-		{
-			MonsterInfo.OverStackCount = MonsterInfo.CurStackCount - MonsterInfo.MaxStackCount;
-			MonsterInfo.CurStackCount = MonsterInfo.MaxStackCount;
-			StackExplode();
-		}
-		else if (MonsterInfo.CurStackCount >= Break_3)
-		{
-			MonsterShield->CalcStackDamageToShield(Break_3);
+			int Break_1 = MonsterInfo.MaxStackCount * 0.3;
+			int Break_2 = MonsterInfo.MaxStackCount * 0.6;
+			int Break_3 = MonsterInfo.MaxStackCount * 0.9;
 
-		}
-		else if (MonsterInfo.CurStackCount >= Break_2)
-		{
-			MonsterShield->CalcStackDamageToShield(Break_2);
-		}
-		else if (MonsterInfo.CurStackCount >= Break_1)
-		{
-			MonsterShield->CalcStackDamageToShield(Break_1);
+			//if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
+			//{
+			//	MonsterInfo.OverStackCount = MonsterInfo.CurStackCount - MonsterInfo.MaxStackCount;
+			//	MonsterInfo.CurStackCount = MonsterInfo.MaxStackCount;
+			//	StackExplode();
+			//}
+			//else if (MonsterInfo.CurStackCount >= Break_3)
+			//{
+			//	MonsterShield->CalcStackDamageToShield(Break_3);
 
+			//}
+			//else if (MonsterInfo.CurStackCount >= Break_2)
+			//{
+			//	MonsterShield->CalcStackDamageToShield(Break_2);
+			//}
+			//else if (MonsterInfo.CurStackCount >= Break_1)
+			//{
+			//	MonsterShield->CalcStackDamageToShield(Break_1);
+
+			//}
+
+
+			if (MonsterInfo.CurStackCount >= Break_3)
+			{
+				MonsterShield->CalcStackDamageToShield(Break_3);
+
+			}
+			else if (MonsterInfo.CurStackCount >= Break_2)
+			{
+				MonsterShield->CalcStackDamageToShield(Break_2);
+			}
+			else if (MonsterInfo.CurStackCount >= Break_1)
+			{
+				MonsterShield->CalcStackDamageToShield(Break_1);
+
+			}
 		}
 	}
-
 }
 
 void AMonster::StackExplode()
@@ -404,32 +423,36 @@ void AMonster::StackExplode()
 			MonsterShield->CalcDurability(-1.0f);
 			OnBarrierChanged.Broadcast();
 
-			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
-			MonsterInfo.OverStackCount = 0;
+		  //	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+			//MonsterInfo.OverStackCount = 0;
 			MonsterInfo.bIsStackCheck = false;
 			MonsterInfo.StackCheckTimer = 0.0f;
 
-			if (MonsterInfo.CurStackCount == 0)
-			{
-				InitStackCount();
-			}
+			/*	if (MonsterInfo.CurStackCount == 0)
+				{
+					InitStackCount();
+				}*/
 
 			if (!GetIsMonsterShieldActive())
 			{
 				ShieldDestroyed();
 				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
 			}
-			
+
+	
+			ExplodeStackEvent();
 		}
 		else {
-			MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
+			/*MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
 			OnBarrierChanged.Broadcast();
 			InitStackCount();
 			if (!GetIsMonsterShieldActive())
 			{
 				ShieldDestroyed();
 				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}
+			}*/
+
+			InitStackCount();
 		}
 	}
 	else {
@@ -441,22 +464,22 @@ void AMonster::StackExplode()
 			MonsterInfo.OverStackCount = 0;
 			MonsterInfo.StackCheckTimer = 0.0f;
 
-			if (MonsterInfo.CurStackCount == 0)
-			{
-				InitStackCount();
-			}
-
+			/*	if (MonsterInfo.CurStackCount == 0)
+				{
+					InitStackCount();
+				}*/
+			ExplodeStackEvent();
 		}
 		else {
-			CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
+			//CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
+
 			InitStackCount();
 		}
 	
 	}
 
+	
 
-
-	OnStackCountEvent();
 
 }
 
@@ -469,6 +492,9 @@ void AMonster::InitStackCount()
 
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
 	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
+
+	OnStackCountEvent();
 }
 
 float AMonster::CalcStackDamage(int StackCount)
