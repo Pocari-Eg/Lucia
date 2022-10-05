@@ -137,26 +137,22 @@ void UBTServiceMobAttackInPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, ui
 						return;
 					}
 					else {
-						OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 						OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 					}
 					
 				}
 				else {
-					OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 					OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 				}
 				
 			}
 			else {
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 			}
 		
 		}
 	}
 	else {
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellyfishAIController::IsAfterAttacked, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsInAttackAreaKey, false);
 }
 

@@ -13,8 +13,10 @@ EBTNodeResult::Type UBTTaskBdWallGroggyEnd::ExecuteTask(UBehaviorTreeComponent& 
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsWallGroggyKey, false);
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttackedKey, false);
+	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsGroggyKey, false);
+
+
+
 
 	return EBTNodeResult::Succeeded;
 }

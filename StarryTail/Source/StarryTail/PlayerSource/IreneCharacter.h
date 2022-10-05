@@ -80,17 +80,20 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
-	TArray<USkeletalMesh*> WeaponMeshArray;
-	UPROPERTY()
-	TArray<FName> WeaponSocketNameArray;
+	USkeletalMesh* WeaponMesh;
 
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveVector*> CameraShakeCurve;
 	UPROPERTY(EditAnywhere)
 	TArray<UCurveFloat*> CameraLagCurve;
+	UPROPERTY(EditAnywhere)
+	UCurveVector* SkillCamera;
 	
 	UPROPERTY()
 	TMap<AActor*, float>ActorAngleMap;
+
+	bool bInputStop;
+	bool bIsSpiritStance;
 private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
@@ -101,7 +104,7 @@ private:
 	// 카메라 렉에 사용할 커브
 	UPROPERTY()
 	UCurveFloat* UseLagCurve;
-
+	
 	//float CameraLagTime;
 	//float LastLagTime;
 #pragma endregion GetClassOrObject
@@ -156,6 +159,11 @@ public:
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FollowTargetPosition();
+
+	UFUNCTION(BluePrintCallable)
+	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
+	UFUNCTION(BluePrintCallable)
+	void DoAttack(AActor* Actor){IreneAttack->SpiritDoAttack(Actor);}
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -167,7 +175,7 @@ public:
 	void SetHP(float DamageAmount);
 #pragma endregion Collision
 
-#pragma region HitFeel
+#pragma region Battle
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
@@ -189,7 +197,9 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateTailEvent();
-    
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpawnGhostEvent();
+	
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
 
@@ -207,7 +217,15 @@ public:
 
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
-#pragma endregion HitFeel
+
+	void PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	FVector KnockBackDir;
+	float KonckBackTimer;
+	float KnockBackTime;
+	float KonckBackPower;
+	bool bIsKnockBack;
+
+#pragma endregion Battle
 
 #pragma region UIManager
 	UFUNCTION(BlueprintImplementableEvent)

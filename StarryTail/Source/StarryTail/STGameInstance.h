@@ -102,27 +102,16 @@ private:
 #pragma endregion
 
 
-#pragma region Occupy
-/*
-	//Á¡·É ÄÁÅÙÃ÷
-	bool IsFirstOccupied;
-	int32 SpawnTime;
-
-
+#pragma region Stack
+private:
+	TArray<AMonster*> StackMonster;
 
 public:
-	//Á¡·É ÄÁÅÙÃ÷
-	void OnFirstOccupy();
-	void SpawnTimeCheck();
-	bool GetFirstOccupied() { return IsFirstOccupied; }
+	void ExplodeCurStackMonster();
+	void InsertStackMonster(AMonster* Monster);
+	void DeleteStackMonster(AMonster* Monster);
 
-	void AddEnemyCount();
-	void DeleteEnemyCount();
-	// Timer
-	FTimerHandle TimerHandle;
 
-	FOnSpawnDelegate OnEnemySpawn;
-	*/
 #pragma endregion
 
 

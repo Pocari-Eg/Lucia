@@ -19,8 +19,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_Run_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float M_Attacked_Time;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_MaxFlyDistance;
 	//Rush
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

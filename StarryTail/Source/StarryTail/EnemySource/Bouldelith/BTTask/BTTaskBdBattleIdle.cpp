@@ -5,6 +5,7 @@
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
+#include"../../../STGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskBdBattleIdle::UBTTaskBdBattleIdle()
@@ -20,7 +21,6 @@ EBTNodeResult::Type UBTTaskBdBattleIdle::ExecuteTask(UBehaviorTreeComponent& Own
 
 	Bouldelith->BattleIdle();
 
-	ChangeStateTime = FMath::RandRange(1, 3);
 
 	return EBTNodeResult::InProgress;
 }
@@ -28,74 +28,57 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	ChangeStateTimer += DeltaSeconds;
-
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(ABdAIController::PlayerKey));
+	auto Instance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
 
-	
-	if (Bouldelith->GetAttackFailedStack() >= 3 && Bouldelith->GetHpPercent() < 50)
-	{
-		Bouldelith->ResetAttackFailedStack();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack4Key, true);
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
+	////È¸Àü
+	auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), Bouldelith->GetRotateSpeed()));
 
-		ChangeStateTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	if (Bouldelith->GetDistanceToPlayer() >= 500.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
 
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
-	else if (Bouldelith->GetDistanceToPlayer() <= 200.0f)
-	{
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsShieldOnKey) == true) {
 
-		if (Bouldelith->GetIsUseBackstep())
+		if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) >= Bouldelith->GetPlayerMaxDistance())
 		{
-			int Random = FMath::RandRange(0, 1);
 
-			switch (Random)
+			Bouldelith->SetBattleRunState(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+	}
+	else {
+
+		auto ran = FMath::RandRange(1, 100);
+		//STARRYLOG(Error, TEXT("Percent : %d"), ran);
+		if (ran <= 70)
+		{
+			
+			ran = FMath::RandRange(1, 100);
+			if (ran <= 20)
 			{
-			case 0:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
-				break;
-			case 1:
-				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
-				break;
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, false);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
 			}
-		}
-		else
-		{
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBackstepKey, true);
+
+			ran = FMath::RandRange(1, 100);
+			if (ran <= 20)
+			{
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, true);
+				OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, false);
+
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
+			return;
 		}
 
-		ChangeStateTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
 	}
-	
-	if (ChangeStateTimer >= ChangeStateTime)
-	{	
-		int Random = FMath::RandRange(0, 2);
 
-		switch (Random)
-		{
-		case 0:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleWalkKey, true);
-			break;
-		case 1:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack1Key, true);
-			break;
-		case 2:
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttack2Key, true);
-			break;
-		}
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, false);
-
-		ChangeStateTimer = 0.0f;
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
 	
+
 }

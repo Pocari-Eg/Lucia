@@ -23,10 +23,6 @@ public:
 protected:
 	virtual void OnPossess(APawn* InPawn) override;
 
-public:
-
-	static const FName IsAfterAttacked;
-
 
 private:
 	int M_Attacked;

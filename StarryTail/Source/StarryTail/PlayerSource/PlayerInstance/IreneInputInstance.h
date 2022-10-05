@@ -22,7 +22,7 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
-
+	
 	bool bNextAttack;
 	bool bJumpAttack;
 	bool bReAttack;
@@ -31,9 +31,21 @@ private:
 	FTimerHandle AttributeChangeWaterTimer;
 	FTimerHandle AttributeChangeElectricTimer;
 
+	// 
+	FTimerHandle SpiritTimeOverTimer;
+	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 
+	// 회피 사용 가능
+	bool bIsDodgeOn;
+	// 최대 회피 횟수
+	int MaxDodgeCount;
+	// 회피 횟수
+	int DodgeCount;
+	// 회피 중 회피 사용 가능
+	bool bIsDodgeToDodge;
+	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
 	// 창에서 검으로 변경
@@ -47,16 +59,6 @@ private:
 	int AttackUseSkillNextCount;
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
-	// 전기 스킬 사용 가능
-	bool bIsSpearSkill1On;
-	// 최대 전기 스킬 횟수
-	int MaxSpearSkill1Count;
-	// 전기 스킬 횟수
-	int SpearSkill1Count;
-	
-	// 공격 중 속성변경을 위한 변수
-	EAttributeKeyword TempAttribute;
-
 
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
@@ -84,18 +86,22 @@ private:
 	FTimerHandle SwordSkill2WaitHandle;
 	// 검 2번 스킬 사용가능 시간
 	float CanSwordSkill2Time;
-	// 창 스킬 최대 쿨타임
-	float MaxSpearSkill1CoolTime;
-	// 창 스킬 쿨타임
-	float SpearSkill1CoolTime;
-	// 창 스킬 쿨타임
-	FTimerHandle SpearSkill1WaitHandle;
 	// 공격 중 스킬 사용 후 다음 공격 해야하는 단계 사용 가능 시간
 	FTimerHandle AttackUseSkillNextCountWaitHandle;
 	
-	// 닷지 쿨타임
+	// 회피 입력 쿨타임
+	FTimerHandle DodgeInputWaitHandle;
+
+	// 회피 회복 최대 쿨타임
+	float MaxDodgeCoolTime;
+	// 회피 회복 쿨타임
+	float DodgeCoolTime;
+	// 회피 회복 쿨타임
 	FTimerHandle DodgeWaitHandle;
 	
+	bool bSkillCameraMove;
+	float SkillCameraPlayTime;
+	float SkillCameraEndPlayTime;
 	float CoolTimeRate;
 #pragma endregion CoolTimeValue
 	
@@ -112,6 +118,7 @@ public:
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
+	void ThunderDeBuffKey();
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
 	void MoveA(float Rate);
@@ -131,10 +138,15 @@ public:
 	// 마우스 버튼 및 휠
 	void LeftButton(float Rate);
 	void RightButton(float Rate);
-	void SpearRightButton();
+	void NonSpiritSkill();
+	void SpiritSkill();
 	void SkillWait();
 	void SwordSkillEndWait();
-	void SpearSkill1Wait();
+
+	void SkillCameraMoveStart();
+	void SkillCameraMoveLoop(float DeltaTime);
+	void SkillCameraMoveEnd(float DeltaTime);
+
 	void MouseWheel(float Rate);
 
 	// 대쉬
@@ -143,11 +155,14 @@ public:
 	void PerfectDodgeStart();
 	void PerfectDodgeTimeEnd();
 	void PerfectDodgeAttackEnd();
+	void RecoveryDodge();
+	void RecoveryDodgeWait();
 
-	// 무기 변경
-	void WeaponChangeKeyword();
-	void WeaponChangeTimeOut();
-	
+	// 스탠스 변경
+	void SpiritChangeKeyword();
+	void SpiritChangeTimeOver();
+	void SpiritTimeOverDeBuff();
+
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
@@ -173,23 +188,21 @@ public:
 public:
 	bool GetFallingRoll()const{return IsFallingRoll;}
 	bool GetIsDialogOn()const{return bIsDialogOn;}
-	EAttributeKeyword GetTempAttribute()const{return TempAttribute;}
 	float GetSlowScale()const{return SlowScale;}
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
 	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
-	int GetSpearSkill1Count()const{return SpearSkill1Count;}
 
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
 	void SetDialogState(const bool State) { bIsDialogOn = State; }
-	void SetTempAttribute(const EAttributeKeyword Value){TempAttribute = Value;}
 	void SetNextAttack(const bool State) { bNextAttack = State; }
 	void SetJumpAttack(const bool State) { bJumpAttack = State; }
 	void SetReAttack(const bool State) { bReAttack = State; }
 	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
 	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
+	void SetIsDodgeToDodge(const bool Value) {bIsDodgeToDodge = Value;}
 #pragma endregion GetSet
 
 };

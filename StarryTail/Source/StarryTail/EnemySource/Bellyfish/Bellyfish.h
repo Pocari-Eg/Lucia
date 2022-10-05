@@ -69,7 +69,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetFlyDistance();
 	float GetRunDistance();
-	float GetAttackedTime();
 	float GetRushTime();
 	float GetRushTestRange();
 	float GetRushSpeed();
@@ -86,9 +85,6 @@ private:
 	void InitAnime() override;
 
 
-	void InitAttack1Data();
-	void InitAttack2Data();
-	void InitAttack3Data();
 //Variable
 	//Variable
 	UPROPERTY()
@@ -130,7 +126,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
 	float RushTestRange;
 
-
+	
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;

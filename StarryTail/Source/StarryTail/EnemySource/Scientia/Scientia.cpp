@@ -24,9 +24,9 @@ AScientia::AScientia()
 
 	
 	MonsterWidget->SetRelativeLocation(FVector(0.0f, 0.0f, 540.0f));
-	TargetWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
+	StackWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
 	MonsterWidget->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
-	TargetWidget->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
+	StackWidget->SetRelativeScale3D(FVector(2.0f, 2.0f, 2.0f));
 	SetActorScale3D(FVector(0.5f, 0.5f, 0.5f));
 }
 void AScientia::InitMonsterInfo()
@@ -43,10 +43,6 @@ void AScientia::InitMonsterInfo()
 	
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Raid;
-
-	MonsterInfo.Max_Ele_Shield = 0;
-	MonsterInfo.Ele_Shield_Count = -1;
-	MonsterInfo.bIsShieldOn = false;
 }
 void AScientia::InitCollision()
 {

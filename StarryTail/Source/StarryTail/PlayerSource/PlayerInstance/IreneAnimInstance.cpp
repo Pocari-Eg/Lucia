@@ -28,27 +28,26 @@ void UIreneAnimInstance::InitMemberVariable()
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
 	TargetMonster = nullptr;
-	bSword = true;
 }
 
 UIreneAnimInstance::UIreneAnimInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordAttack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireAttack_Montage.IreneFireAttack_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> SpearAttack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderAttack_Montage.IreneThunderAttack_Montage"));
-	if(SwordAttack_Montage.Succeeded()&&SpearAttack_Montage.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> SpiritAttack_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritAttack_Montage.IreneSpiritAttack_Montage"));
+	if(SwordAttack_Montage.Succeeded() && SpiritAttack_Montage.Succeeded())
 	{
 		SwordAttackMontage = SwordAttack_Montage.Object;
-		SpearAttackMontage = SpearAttack_Montage.Object;
+		SpiritAttackMontage = SpiritAttack_Montage.Object;
 	}
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill1_Montage.IreneFireSkill1_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill2_Montage.IreneFireSkill2_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> SpearSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneThunderSkill_Montage.IreneThunderSkill_Montage"));
-	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&SpearSkill1_Montage.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_Montage.IreneSpiritSkill_Montage"));
+	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&Spirit_Montage.Succeeded())
 	{
 		SwordSkill1Montage = SwordSkill1_Montage.Object;
 		SwordSkill2Montage = SwordSkill2_Montage.Object;
-		SpearSkill1Montage = SpearSkill1_Montage.Object;
+		SpiritSkillMontage = Spirit_Montage.Object;
 	}
 }
 
@@ -69,23 +68,25 @@ void UIreneAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 void UIreneAnimInstance::PlayAttackMontage()
 {
 	// 현재 무기에 따라 기본공격 몽타주 실행하는 함수
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+	if(!Irene->bIsSpiritStance)
 		Montage_Play(SwordAttackMontage, 1.0f);
-	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-		Montage_Play(SpearAttackMontage, 1.0f);
+	else
+		Montage_Play(SpiritAttackMontage, 1.0f);
 }
 void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 {
 	// 스킬 몽타주를 실행하는 함수
-	if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+	if(!Irene->bIsSpiritStance)
 	{
 		if(Irene->IreneState->GetStateToString().Compare("Sword_Skill_1") == 0)
 			Montage_Play(SwordSkill1Montage, 1.0f);
 		else if(Irene->IreneState->GetStateToString().Compare("Sword_Skill_2") == 0)
 			Montage_Play(SwordSkill2Montage, 1.0f);
 	}
-	else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-		Montage_Play(SpearSkill1Montage, 1.0f);
+	else
+	{
+		Montage_Play(SpiritSkillMontage, 1.0f);
+	}
 }
 
 void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
@@ -93,10 +94,10 @@ void UIreneAnimInstance::NextToAttackMontageSection(const int32 NewSection)
 	// 다음 기본공격의 세션을 현재 세션이 종료되면 시작시키는 함수
 	if (NewSection > 1)
 	{
-		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if(!Irene->bIsSpiritStance)
 			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SwordAttackMontage);
-		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SpearAttackMontage);
+		else
+			Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SpiritAttackMontage);
 	}
 }
 void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
@@ -104,20 +105,18 @@ void UIreneAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
 	// 다음 기본공격의 세션을 즉시 시작시키는 함수
 	if (NewSection > 1)
 	{
-		if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[0])
+		if(!Irene->bIsSpiritStance)
 			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SwordAttackMontage);
-		else if(Irene->Weapon->SkeletalMesh == Irene->WeaponMeshArray[1])
-			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpearAttackMontage);
-	}
-	
+		else
+			Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpiritAttackMontage);
+	}	
 }
 
 void UIreneAnimInstance::CallCreateTail()
 {
-	STARRYLOG_S(Error);
-	if (Irene != nullptr) {
+	if (Irene != nullptr)
+	{
 	  Irene->CreateTailEvent();
-
 	}
 }
 
@@ -154,11 +153,6 @@ void UIreneAnimInstance::AnimNotify_RadialBlur() const
 void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
 {
 	Irene->IreneSound->PlayTakeDamageVoiceSound();
-}
-
-void UIreneAnimInstance::AnimNotify_PlayEffect()
-{
-	SpearSkillEvent();
 }
 
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)

@@ -6,7 +6,9 @@
 #include "../Monster.h"
 #include "BdAnimInstance.h"
 #include "BouldelithPatrolTarget.h"
+#include"../../Object/WalkPoint.h"
 #include "Bouldelith.generated.h"
+
 
 /**
  * 
@@ -33,6 +35,7 @@ public:
 	void Attack2();
 	void Attack3();
 	void Attack4();
+	void Attack5();
 
 	void LeftAttackCheck();
 	void RightAttackCheck();
@@ -67,6 +70,13 @@ public:
 	bool GetIsUseBackstep();
 	void SetIsUseBackstep(bool Value);
 
+	void SetBattleRunState(bool State);
+
+	float GetPlayerMaxDistance()const;
+	float GetAttack3Distance()const;
+
+	float GetRotateSpeed()const;
+
 	UFUNCTION(BlueprintImplementableEvent)
 		void  BrokenEvent();
 	//Var
@@ -97,9 +107,17 @@ private:
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
 
-
 	int IsAttackNum;
 
+	float FindRimitTime;
+	float FindRimitTimer;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	float RotateSpeed;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AI, Meta = (AllowPrivateAccess = true))
+	AWalkPoint* WalkPoint;
+	
 public:
 	// Called every frame
 	void Tick(float DeltaTime) override;
