@@ -306,6 +306,8 @@ public:
 	int GetCurStackCount();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnStackCountEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void  ExplodeStackEvent();
 	void AddStackCount(int Count);
 	void StackExplode();
 	void InitStackCount();
