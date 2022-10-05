@@ -74,7 +74,7 @@ void ABellyfish::Attack()
 	//어택 준비 애니메이션 출력
 
 	InitAttack1Data();
-	BellyfishAnimInstance->PlayAttackSignMontage();
+	BellyfishAnimInstance->PlayAttackMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	Info.AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
 	Info.AttackPosition.Z = Info.AttackPosition.Z - 80.0f;
@@ -159,7 +159,7 @@ void ABellyfish::Skill_Set()
 	//스킬셋 애니메이션 해제
 
 	Skill_Attack();
-	BellyfishAnimInstance->PlayAttackMontage();
+
 }
 
 void ABellyfish::PlayRunAnim()
@@ -170,6 +170,7 @@ void ABellyfish::PlayRunAnim()
 void ABellyfish::Skill_Attack()
 {
 	
+	//BellyfishAnimInstance->PlayAttackLoopMontage();
 	IsSkillAttack = true;
 	MagicAttack->EndIndicator();
 	MagicAttack->SetActiveAttack();
@@ -455,7 +456,7 @@ void ABellyfish::InitCollision()
 void ABellyfish::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/MonsterDummy/Bellyfish/Mesh/M_VS_Idle.M_VS_Idle"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster/Bellyfish/Mesh/M_b_idle.M_b_idle"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
