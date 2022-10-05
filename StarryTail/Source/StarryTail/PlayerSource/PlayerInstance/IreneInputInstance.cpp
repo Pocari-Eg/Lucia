@@ -44,6 +44,7 @@ void UIreneInputInstance::InitMemberVariable()
 	bIsDodgeOn = true;
 	MaxDodgeCount = 2;
 	DodgeCount = MaxDodgeCount;	
+	bIsDodgeToDodge = false;
 	
 	CurSoulValue = 0.0f;
 
@@ -577,9 +578,18 @@ void UIreneInputInstance::MouseWheel(float Rate)
 void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
-		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
+		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
 	{
+		// 회피 중 회피
+		if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))==0 && bIsDodgeToDodge)
+		{
+			Irene->ChangeStateAndLog(UIdleState::GetInstance());
+			GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{DodgeKeyword();}));
+			bIsDodgeToDodge = false;
+			return;
+		}
+		
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 
 		RecoveryDodge();
