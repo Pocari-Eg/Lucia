@@ -441,6 +441,7 @@ void AMonster::StackExplode()
 
 	
 			ExplodeStackEvent();
+			
 		}
 		else {
 			/*MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
@@ -452,7 +453,7 @@ void AMonster::StackExplode()
 				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
 			}*/
 
-			InitStackCount();
+
 		}
 	}
 	else {
@@ -473,12 +474,12 @@ void AMonster::StackExplode()
 		else {
 			//CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
 
-			InitStackCount();
+		
 		}
 	
 	}
 
-	
+	InitStackCount();
 
 
 }
@@ -739,11 +740,10 @@ void AMonster::ShieldDestroyed()
 	
 	OnBarrierChanged.Broadcast();
 	MonsterAIController->SetShieldKey(false);
-	if (MonsterInfo.M_Atk_Type == 1)
-	{
-		PlayGroggyAnim();
-		MonsterAIController->Groggy();
-	}
+
+	PlayGroggyAnim();
+	MonsterAIController->Groggy();
+	
 }
 
 bool AMonster::CheckPlayerIsBehindMonster()

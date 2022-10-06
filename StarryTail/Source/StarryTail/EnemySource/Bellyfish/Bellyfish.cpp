@@ -17,9 +17,9 @@ ABellyfish::ABellyfish()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 
-
-
-
+	MonsterInfo.Monster_Code = 1;
+	InitMonsterInfo();
+	InitAttack3Data();
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -282,10 +282,9 @@ void ABellyfish::BeginPlay()
 	Super::BeginPlay();
 
 
-	InitMonsterInfo();
-	InitAttack3Data();
 
-
+	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect, MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale, MonsterInfo.MaxStackCount);
+	MonsterShield->InitShieldCollision(MonsterInfo.ShieldCollisionHeight, MonsterInfo.ShieldCollisionRadius);
 	MonsterAnimInstance = BellyfishAnimInstance;
 
 	if (BellyfishAnimInstance == nullptr)
@@ -351,6 +350,9 @@ void ABellyfish::PossessedBy(AController* NewController)
 void ABellyfish::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	
+
 	BellyfishAnimInstance = Cast<UBellyfishAnimInstance>(GetMesh()->GetAnimInstance());
 }
 
@@ -392,6 +394,8 @@ void ABellyfish::SetFlyDistance(float Distance)
 void ABellyfish::InitMonsterInfo()
 {
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
+
+
 	
 	 FMonsterDataTable* NewData =  GetMontserData(MonsterInfo.Monster_Code);
 

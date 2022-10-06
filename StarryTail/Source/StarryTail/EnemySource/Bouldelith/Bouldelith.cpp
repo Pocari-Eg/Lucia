@@ -12,7 +12,12 @@ ABouldelith::ABouldelith()
 	AIControllerClass = ABdAIController::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
+	MonsterInfo.Monster_Code = 2;
 
+
+	InitMonsterInfo();
+	InitAttack1Data();
+	InitBouldelithInfo();
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -955,9 +960,7 @@ void ABouldelith::BeginPlay()
 	Super::BeginPlay();
 
 
-	InitMonsterInfo();
-	InitAttack1Data();
-	InitBouldelithInfo();
+
 	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect,MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale,MonsterInfo.MaxStackCount);
 	MonsterShield->InitShieldCollision(MonsterInfo.ShieldCollisionHeight,MonsterInfo.ShieldCollisionRadius);
 
@@ -1050,6 +1053,8 @@ void ABouldelith::PossessedBy(AController* NewController)
 void ABouldelith::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+
+	
 
 	BdAnimInstance = Cast<UBdAnimInstance>(GetMesh()->GetAnimInstance());
 }
