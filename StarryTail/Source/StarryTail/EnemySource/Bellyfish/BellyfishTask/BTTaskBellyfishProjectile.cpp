@@ -18,6 +18,7 @@ EBTNodeResult::Type UBTTaskBellyfishProjectile::ExecuteTask(UBehaviorTreeCompone
 	if (nullptr == Bellyfish)
 		return EBTNodeResult::Failed;
 
+	Bellyfish->GetAIController()->StopMovement();
 
 	bIsAttacking = true;
 	Bellyfish->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
@@ -47,7 +48,7 @@ void UBTTaskBellyfishProjectile::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			LookVector.Z = 0.0f;
 			FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 			Bellyfish->SetActorRotation(TargetRot);//FMath::RInterpTo(Bellyfish->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 2.0f));
-			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 0.2f);
+			DrawDebugLine(GetWorld(), Bellyfish->GetActorLocation(), Bellyfish->GetActorLocation() + (LookVector * Bellyfish->GetSkillRadius()), FColor::Red, false, 2.0f);
 			return;
 		}
 	}

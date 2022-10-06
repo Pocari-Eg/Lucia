@@ -29,6 +29,9 @@ ABF_Projectile::ABF_Projectile()
 	bIsFire = false;
 	MoveDistance = 0.0f;
 
+	SkillEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SkillEffect"));
+	SkillEffectComponent->SetupAttachment(RootComponent);
+	SkillEffectComponent->bAutoActivate = true;
 }
 
 void ABF_Projectile::SetProjectile(float SetDamage, float SetSpeed, float SetDistance)
@@ -44,6 +47,7 @@ void ABF_Projectile::BeginPlay()
 {
 	Super::BeginPlay();
 	//CapsuleComponent->OnComponentHit.AddDynamic(this, &ABF_Projectile::OnHit);
+	SkillEffectComponent->SetTemplate(SkillEffect);
 	CapsuleComponent->OnComponentBeginOverlap.AddDynamic(this, &ABF_Projectile::OnBeginOverlap);
 }
 

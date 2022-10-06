@@ -21,11 +21,12 @@ public:
 		UStaticMeshComponent* Mesh;
 
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* SkillEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "ture"))
+	UParticleSystem* SkillEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FQuat RotationQuat;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		FRotator RealRotation;
+
 private:
 	bool bIsFire;
 	UPROPERTY(VisibleAnywhere, Category = "Info")
