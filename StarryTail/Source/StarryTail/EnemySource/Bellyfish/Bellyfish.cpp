@@ -61,7 +61,6 @@ ABellyfish::ABellyfish()
 	 bIsRush = false;
 	 bIsPlayerRushHit = false;
 
-	 RushFlyOn=false;
 }
 UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 {
@@ -93,7 +92,6 @@ void ABellyfish::RushAttack()
 	InitAttack3Data();
 	if (RushRouteCheck())
 	{
-		RushFlyOn = true;
 		BellyfishAnimInstance->PlayRushMontage();
 
 	}
@@ -313,13 +311,11 @@ void ABellyfish::BeginPlay()
 		bIsRush = false;
 		bIsPlayerRushHit = false;
 		bIsWallRushHit = false;
-		RushFlyOff = true;
 		GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 	});
 
 	BellyfishAnimInstance->RushStart.AddLambda([this]() -> void {
 		RushStart.Broadcast();
-		RushFlyOn = false;
 		bIsRush = true;
 		GetCapsuleComponent()->SetCollisionProfileName("RushCheck");
 	});
@@ -569,19 +565,7 @@ void ABellyfish::Tick(float DeltaTime)
 		}
 	}
 
-	if (RushFlyOn== true)
-	{
-		Info.M_MaxFlyDistance += (DeltaTime*100.0f);
-	}
-	if (RushFlyOff==true)
-	{
-		Info.M_MaxFlyDistance -= (DeltaTime * 100.0f);
-		if (Info.M_MaxFlyDistance <= 100.0f)
-		{
-			Info.M_MaxFlyDistance = 100.0f;
-			RushFlyOff = false;
-		}
-	}
+
 }
 void ABellyfish::InitAnime()
 {

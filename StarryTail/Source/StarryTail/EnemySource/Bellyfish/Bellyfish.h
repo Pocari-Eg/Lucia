@@ -119,10 +119,6 @@ private:
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
 
-
-	bool RushFlyOn;
-	bool RushFlyOff;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
 	float RushTestRange;
 
