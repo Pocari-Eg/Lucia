@@ -93,18 +93,6 @@ public:
 	UPROPERTY()
 		float M_Sight_Height;
 
-
-
-	//Shield
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FVector MonsterShieldLocation;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	FVector MonsterShieldScale;;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ShieldCollisionHeight;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	float ShieldCollisionRadius;;
-
 	//Stack
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly,Category="Stack")

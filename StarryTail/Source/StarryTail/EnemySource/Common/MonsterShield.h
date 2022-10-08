@@ -19,7 +19,10 @@ private:
 	UCapsuleComponent* Collision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ShiledEffectComponent;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledCrackEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledHitEffectComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category = INFO, Meta = (AllowPrivateAccess = true))
 	bool bIsShieldActive;
@@ -72,8 +75,12 @@ public:
 	void SetEffectVisible(bool State);
 
 
-	void InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale,int M_MaxStackCount);
-	void InitShieldCollision(float Height, float Radius);
+	void InitShieldEffect(int M_MaxStackCount);
+
+
+	
+	void InitShield(UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
+		UParticleSystemComponent* ShiledCrackEffect, UParticleSystemComponent* ShiledHitEffect);
 	
 	void CalcStackDamageToShield(int Count);
 
