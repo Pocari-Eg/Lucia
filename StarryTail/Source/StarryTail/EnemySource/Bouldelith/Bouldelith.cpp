@@ -959,11 +959,6 @@ void ABouldelith::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
-	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect,MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale,MonsterInfo.MaxStackCount);
-	MonsterShield->InitShieldCollision(MonsterInfo.ShieldCollisionHeight,MonsterInfo.ShieldCollisionRadius);
-
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});
@@ -1034,7 +1029,7 @@ void ABouldelith::BeginPlay()
 			BdAIController->SetWalkPoint(WalkPoint->GetActorLocation());
 	}
 
-
+	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
 	
 }
 void ABouldelith::PossessedBy(AController* NewController)
