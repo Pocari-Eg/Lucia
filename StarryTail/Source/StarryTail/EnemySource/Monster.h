@@ -154,12 +154,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shield, Meta = (AllowPrivateAccess = true))
 	UMonsterShield* MonsterShield;
 
-
+	//shield
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
-	class	UCapsuleComponent* Collision;
+	UCapsuleComponent* ShieldCollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-	class	UParticleSystemComponent* ShiledEffectComponent;
-
+	UParticleSystemComponent* ShiledCrackEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledHitEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledEffectComponent;
 
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)

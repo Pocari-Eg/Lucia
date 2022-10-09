@@ -11,11 +11,7 @@ UMonsterShield::UMonsterShield()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = false;
-	Collision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SHEILD_COLLISION"));
-	ShiledEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_EFFECT"));
 
-	Collision->SetupAttachment(this);
-	ShiledEffectComponent->SetupAttachment(this);
 
 
 
@@ -30,17 +26,21 @@ UMonsterShield::UMonsterShield()
 
 	Type = EShieldType::General;
 
-	ShiledEffectComponent->SetVisibility(false);
+
+
+	STARRYLOG_S(Error);
 	// ...
 }
 
 float UMonsterShield::CalcShieldDamage(float Damage)
 {
+	if (Damage == -1.0f)
+	{
+		return 99999999.9f;
+	}
+
 	if (bIsShieldActive&&Type==EShieldType::General) {
-		if (Damage == -1.0f)
-		{
-			return 99999999.9f;
-		}
+	
 
 		return Damage;
 	}
@@ -49,53 +49,59 @@ float UMonsterShield::CalcShieldDamage(float Damage)
 
 void UMonsterShield::DestroyedShield()
 {
+	ShiledCrackEffectComponent->SetActive(true, true);
 	bIsShieldActive = false;
-	ShiledEffectComponent->SetVisibility(false);
 }
 
 void UMonsterShield::CalcDurability(float Damage)
 {
 	if (bIsShieldActive) {
 
-	int TotalDamage=CalcShieldDamage(Damage);
+		int TotalDamage = CalcShieldDamage(Damage);
 
-	CurDurability -= TotalDamage;
+		ShiledHitEffectComponent->SetActive(true, true);
+		CurDurability -= TotalDamage;
 
 
-	if (CurDurability <= Durability * 0.25)
-	{
-		CurShieldState = 3;
-		ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
-		ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
-		ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
-	}
-	else if (CurDurability <= (Durability * 0.5))
-	{
-		CurShieldState = 2;
+		if (CurDurability <= Durability * 0.25)
+		{
+			CurShieldState = 3;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
+			ShiledCrackEffectComponent->SetActive(true, true);
+		}
+		else if (CurDurability <= (Durability * 0.5))
+		{
+			CurShieldState = 2;
 
-		ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
-		ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
-		ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-	}
-	else if (CurDurability <= (Durability * 0.75))
-	{
-		CurShieldState=1;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+			ShiledCrackEffectComponent->SetActive(true, true);
 
-		ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
-		ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
-		ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-	}
-	else {
-		CurShieldState=0;
-	}
+		}
+		else if (CurDurability <= (Durability * 0.75))
+		{
+			CurShieldState = 1;
+
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+			ShiledCrackEffectComponent->SetActive(true, true);
+
+		}
+		else {
+			CurShieldState = 0;
+		}
 
 
 		if (CurDurability <= 0)
 		{
 			DestroyedShield();
 		}
-
 	}
+	
 }
 
 void UMonsterShield::SetOpacity(float CurDistance)
@@ -156,23 +162,19 @@ void UMonsterShield::SetEffectVisible(bool State)
 {
 	if (bIsShieldActive)
 	{
-		
+
 		ShiledEffectComponent->SetVisibility(State);
 	}
 }
 
 
-void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location, FVector Scale, int M_MaxStackCount)
+void UMonsterShield::InitShieldEffect(int M_MaxStackCount)
 {
 
 	if (bIsShieldActive) {
-		ShiledEffectComponent->SetRelativeScale3D(Scale);
-		ShiledEffectComponent->SetRelativeLocation(Location);
-		ShiledEffectComponent->SetTemplate(Effect);
-		ShiledEffectComponent->SetVisibility(true);
-
+		
 		MaxStackCount = M_MaxStackCount;
-
+		ShiledEffectComponent->SetVisibility(true);
 		FParticleSysParam Opacity;
 		Opacity.Name = "Opacity";
 		Opacity.ParamType = PSPT_Scalar;
@@ -203,13 +205,21 @@ void UMonsterShield::InitShieldEffect(UParticleSystem* Effect, FVector Location,
 	}
 }
 
-void UMonsterShield::InitShieldCollision(float Height, float Radius)
+
+
+void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
+	UParticleSystemComponent* ShiledCrackEffect, UParticleSystemComponent* ShiledHitEffect)
 {
-	if (bIsShieldActive) {
-		Collision->SetCapsuleHalfHeight(Height);
-		Collision->SetCapsuleRadius(Radius);
-		Collision->SetCollisionProfileName("NoCollision");
-	}
+	this->Collision = ShieldCollision;
+	this->ShiledEffectComponent = ShiledEffect;
+	this->ShiledCrackEffectComponent = ShiledCrackEffect;
+	this->ShiledHitEffectComponent = ShiledHitEffect;
+
+
+	this->ShiledEffectComponent->SetVisibility(false);
+	this->ShiledCrackEffectComponent->SetAutoActivate(false);
+	this->ShiledHitEffectComponent->SetAutoActivate(false);
+
 }
 
 void UMonsterShield::CalcStackDamageToShield(int Count)
@@ -255,9 +265,6 @@ void UMonsterShield::BeginPlay()
 	Super::BeginPlay();
 	CurDurability = Durability;
 	// ...
-
-
-	
 }
 
 

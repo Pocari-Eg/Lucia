@@ -111,9 +111,23 @@ AMonster::AMonster()
 	}
 	bIsDodgeOn = false;
 
+
 	MonsterShield = CreateDefaultSubobject<UMonsterShield>(TEXT("SHEILD"));
 	MonsterShield->SetupAttachment(RootComponent);
 
+
+	ShieldCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SHEILD_COLLISION"));
+	ShiledEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_EFFECT"));
+	ShiledCrackEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_CRACK_EFFECT"));
+	ShiledHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_HIT_EFFECT"));
+
+	ShieldCollision->SetupAttachment(MonsterShield);
+	ShiledEffectComponent->SetupAttachment(MonsterShield);
+	ShiledCrackEffectComponent->SetupAttachment(MonsterShield);
+	ShiledHitEffectComponent->SetupAttachment(MonsterShield);
+
+
+	
 
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
@@ -439,7 +453,7 @@ void AMonster::StackExplode()
 				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
 			}
 
-	
+	     
 			ExplodeStackEvent();
 			
 		}
@@ -1045,6 +1059,8 @@ void AMonster::PostInitializeComponents()
 	//사운드 세팅
 	SoundInstance = NewObject<UMonsterSoundInstance>(this);
 	SoundInstance->Init();
+	MonsterShield->InitShield(ShieldCollision, ShiledEffectComponent, ShiledCrackEffectComponent, ShiledHitEffectComponent);
+
 }
 
 // Called every frame
