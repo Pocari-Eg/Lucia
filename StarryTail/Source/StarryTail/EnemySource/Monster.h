@@ -285,7 +285,7 @@ public:
 	float GetSupportPatrolRadius() const;
 	float GetAttackedTime() const;
 	EAttributeKeyword GetAttribute() const;
-
+	float GetAttackTraceInterver() const;
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -302,7 +302,7 @@ public:
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
 	void SetDpsCheck(bool state);
-
+	void InitWalkSpeed();
 
 	//Stack
 	UFUNCTION(BlueprintCallable)

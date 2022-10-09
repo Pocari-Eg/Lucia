@@ -9,6 +9,7 @@ UBTTaskWalkLR::UBTTaskWalkLR()
 {
 	NodeName = TEXT("Battle_Walk_LR");
 	bNotifyTick = true;
+	AttackInterverTimer = 0.0f;
 }
 
 EBTNodeResult::Type UBTTaskWalkLR::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -46,9 +47,11 @@ void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
 	Monster->SetActorRotation(FMath::RInterpTo(Monster->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), Monster->GetRotateSpeed()));
 
+	AttackInterverTimer += DeltaSeconds;
+	if (AttackInterverTimer >= Monster->GetAttackTraceInterver()) {
 
-
-	//AttackTarcce
+		AttackInterverTimer = 0.0f;
+		//AttackTarcce
 
 		if (Monster->GetTestMode())
 		{
@@ -154,20 +157,20 @@ void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 						if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 						{
 
-						
+
 							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkLeftKey, false);
 							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::B_WalkRightKey, false);
 							OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::Attack5Key, true);
 							FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 							return;
-						
+
 
 						}
 					}
 				}
 			}
 		}
-
+	}
 
 	}
 
