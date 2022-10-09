@@ -127,10 +127,11 @@ AMonster::AMonster()
 	ShiledHitEffectComponent->SetupAttachment(MonsterShield);
 
 
-	
+	ShieldCollision->SetCollisionProfileName("Shield");
 
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
+	MonsterInfo.M_AttackTraceInterver = 0.5f;
 }
 #pragma region Init
 
@@ -274,6 +275,11 @@ EAttributeKeyword AMonster::GetAttribute() const
 	return MonsterInfo.MonsterAttribute;
 }
 
+float AMonster::GetAttackTraceInterver() const
+{
+	return MonsterInfo.M_AttackTraceInterver;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -356,6 +362,11 @@ void AMonster::SetDpsCheck(bool state)
 	}
 }
 
+
+void AMonster::InitWalkSpeed()
+{
+	MonsterInfo.DefaultMoveSpeed = MonsterInfo.M_MoveSpeed;
+}
 
 int AMonster::GetCurStackCount()
 {
