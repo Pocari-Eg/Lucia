@@ -13,6 +13,8 @@
 #include "../../STGameInstance.h"
 #include "Curves/CurveVector.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "../PlayerSpirit/IreneSpirit.h"
+#include "../PlayerSpirit/IreneSpiritAnimInstance.h"
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
@@ -50,8 +52,10 @@ void UIreneInputInstance::InitMemberVariable()
 
 	MaxSwordSkillCoolTime = 0.0f;
 	SwordSkillCoolTime = 0.0f;
-	CanSwordSkill2Time = 5.0f;
+	CanSwordSkill2Time = 2.0f;
 
+	SpiritSpawnCoolTime = 0.1f;
+	
 	bIsThunderAttributeOn = true;
 
 	bIsSkillOn = false;
@@ -272,10 +276,20 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
-	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack)) && !AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
+	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack) || (Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())) &&
+		!AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
 	{
 		if (Rate >= 1.0)
 		{
+			if(Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())
+			{
+				if(Irene->IreneSpirit != nullptr)
+				{
+					Irene->SetActorLocation(Irene->IreneSpirit->GetActorLocation());
+					Irene->IreneSpirit->DestroySpirit();
+				}
+			}
+			
 			if(AttackUseSkillNextCount==0)
 				Irene->IreneAttack->SetAttackState();
 			else
@@ -302,11 +316,11 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
 			
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			constexpr float WaitTime = 0.15f;
-			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					AttackWaitHandle.Invalidate();
-				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			// constexpr float WaitTime = 0.05f;
+			// GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+			// 	{
+			// 		AttackWaitHandle.Invalidate();
+			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			if(AttackUseSkillNextCount>0)
 			{
@@ -379,7 +393,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		if (Rate >= 1.0)
 		{
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			constexpr float WaitTime = 0.15f;
+			constexpr float WaitTime = 0.05f;
 			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					SwordSkillWaitHandle.Invalidate();
@@ -398,8 +412,71 @@ void UIreneInputInstance::RightButton(float Rate)
 					AttackUseSkillNextCountWaitHandle.Invalidate();
 				}), 2, false);
 			}
+
+			if(!Irene->bIsSpiritStance)
+				Irene->IreneAnim->StopAllMontages(0);
+
+			if(Irene->bIsSpiritStance)
+			{
+				if(Irene->IreneSpirit == nullptr)
+				{
+					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
+					Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
+					if(Irene->IreneSpirit != nullptr)
+					{
+						Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
+					}
+					else
+					{
+						Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
+						if(Irene->IreneSpirit != nullptr)
+							Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
+						else
+							return;
+					}
+				}
+
+				if (Irene->IreneData.IsAttacking)
+				{
+					if(bNextAttack)
+					{
+						if (Irene->IreneData.CanNextCombo)
+							Irene->IreneData.IsComboInputOn = true;
+					}
+					if(bJumpAttack)
+					{
+						Irene->IreneAttack->AttackStartComboState();
+						if(Irene->IreneSpirit != nullptr)
+							Irene->IreneSpirit->IreneSpiritAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
+					}
+					if(bReAttack)
+					{
+						if(Irene->IreneSpirit != nullptr && Irene->IreneState->IsSkillState())
+							Irene->IreneSpirit->IreneSpiritAnim->StopAllMontages(0);
+						Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
+						Irene->IreneData.IsAttacking = true;
+						Irene->IreneData.CurrentCombo = 0;
+						Irene->IreneAttack->AttackStartComboState();
+						if(Irene->IreneSpirit != nullptr)
+						{
+							if(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr)
+								Irene->IreneSpirit->IreneSpiritAnim->PlaySkillAttackMontage();
+							else
+								Irene->IreneSpirit->IreneSpiritAnim->Montage_JumpToSection(FName("Attack1"), Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage());
+						}
+					}
+				}
+				else
+				{
+					Irene->IreneAttack->AttackStartComboState();
+					if(Irene->IreneSpirit != nullptr)
+					{
+						Irene->IreneSpirit->IreneSpiritAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
+					}
+					Irene->IreneData.IsAttacking = true;
+				}
+			}
 			
-			Irene->IreneAnim->StopAllMontages(0);
 			Irene->IreneAttack->SetSkillState();
 			
 			//SkillCameraMoveStart();
@@ -422,7 +499,7 @@ void UIreneInputInstance::NonSpiritSkill()
 	{
 		Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 		// 검 스킬 쿨타임 적용
-		MaxSwordSkillCoolTime = AttackTable->C_Time;
+		MaxSwordSkillCoolTime = AttackTable->ATTACK_DAMAGE_2;
 	}
 	
 	Irene->IreneAnim->PlaySkillAttackMontage();
@@ -492,10 +569,18 @@ void UIreneInputInstance::SpiritSkill()
 		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));		
 	}
-	
-	Irene->SpawnGhostEvent();
-}
 
+	Irene->GetWorld()->GetTimerManager().SetTimer(SpiritSpawnWaitHandle,this, &UIreneInputInstance::SpawnSpirit, SpiritSpawnCoolTime, false);
+}
+void UIreneInputInstance::SpawnSpirit()
+{
+	if(Irene->IreneSpirit != nullptr && Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr)
+	{
+		Irene->GetMesh()->SetVisibility(false,true);
+		Irene->IreneSpirit->GetMesh()->SetVisibility(true,true);
+		Irene->IreneSpirit->StartSpawn();
+	}
+}
 void UIreneInputInstance::SkillWait()
 {
 	// UI작성 시 주석 모두 제거
@@ -579,7 +664,8 @@ void UIreneInputInstance::DodgeKeyword()
 {
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
-		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
+		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
+		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
 	{
 		// 회피 중 회피
 		if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))==0 && bIsDodgeToDodge)
@@ -725,6 +811,8 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			if(!Irene->bIsSpiritStance)
 			{
 				// 정령 스탠스 적용
+				SwordSkillWaitHandle.Invalidate();
+
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);				
@@ -738,11 +826,12 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			else
 			{
 				// 정령 스탠스 해제
+				SwordSkillWaitHandle.Invalidate();
+
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = false;
 				Irene->PetMesh->SetVisibility(true); 
-
 			    
 				auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 				if (Instance != nullptr)
@@ -887,6 +976,4 @@ void UIreneInputInstance::SetStopMoveAutoTarget()const
 	Irene->IreneAttack->SetPlayerPosVec(FVector::ZeroVector);
 	Irene->IreneAttack->SetTargetPosVec(FVector::ZeroVector);	
 }
-
-
 #pragma endregion GetSet

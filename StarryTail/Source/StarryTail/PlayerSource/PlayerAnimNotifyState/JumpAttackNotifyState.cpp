@@ -4,7 +4,8 @@
 #include "JumpAttackNotifyState.h"
 
 #include "../IreneCharacter.h"
-#include "StarryTail/PlayerSource/PlayerInstance/IreneInputInstance.h"
+#include "../PlayerInstance/IreneInputInstance.h"
+#include "../PlayerSpirit/IreneSpirit.h"
 
 UJumpAttackNotifyState::UJumpAttackNotifyState()
 {
@@ -20,6 +21,14 @@ void UJumpAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayl
 	{
 		Irene->IreneInput->SetJumpAttack(true);
 	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneInput->SetJumpAttack(true);
+		}
+	}
 }
 void UJumpAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -33,5 +42,13 @@ void UJumpAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayloa
 	if(Irene != nullptr)
 	{
 		Irene->IreneInput->SetJumpAttack(false);
+	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneInput->SetJumpAttack(false);
+		}
 	}
 }

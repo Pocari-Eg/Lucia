@@ -14,6 +14,8 @@
 #include "Curves/CurveVector.h"
 #include "../EnemySource/Bouldelith/Bouldelith.h"
 #include "../EnemySource/Morbit/Morbit.h"
+#include "PlayerSpirit/IreneSpirit.h"
+#include "PlayerSpirit/IreneSpiritAnimInstance.h"
 
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()
@@ -70,6 +72,10 @@ AIreneCharacter::AIreneCharacter()
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
+	// 잔상 블루프린트
+	ConstructorHelpers::FClassFinder<AIreneSpirit>BP_IreneSpirit(TEXT("/Game/BluePrint/Irene/IreneSpirit.IreneSpirit_C"));
+	if(BP_IreneSpirit.Succeeded())
+		IreneSpiritOrigin = BP_IreneSpirit.Class;
 
 	// 펫 세팅
 	PetSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("PetSprintArm"));
@@ -200,7 +206,7 @@ void AIreneCharacter::BeginPlay()
 	// 스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
-	
+
 	IreneUIManager->Begin();
 	IreneInput->Begin();
 	
@@ -222,7 +228,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
 	IreneInput->Init(this);
-
+	
 	IreneSound= NewObject<UIreneSoundInstance>(this);
 	IreneSound->Init(this);
 

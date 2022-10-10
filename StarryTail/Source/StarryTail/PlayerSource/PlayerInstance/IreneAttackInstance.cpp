@@ -11,6 +11,8 @@
 #include "DrawDebugHelpers.h"
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
+#include "../PlayerSpirit/IreneSpirit.h"
+#include "../PlayerSpirit/IreneSpiritAnimInstance.h"
 
 UIreneAttackInstance::UIreneAttackInstance()
 {
@@ -56,6 +58,7 @@ void UIreneAttackInstance::InitMemberVariable()
 	bMoveSkip = false;
 	bDodgeJumpSkip = false;
 	bSkillSkip = false;
+	bSkillToAttack = false;
 }
 
 #pragma region Attack
@@ -89,7 +92,11 @@ FName UIreneAttackInstance::GetBasicAttackDataTableName()
 				AttributeName = "Skill_1_2";
 		}
 		else
-			AttributeName = "S_Skill_1";
+		{
+			AttributeName = "S_Skill_" + FString::FromInt(TrueAttackCount);
+			if (AttributeName == "S_Skill_4")
+				AttributeName = "S_Skill_3";
+		}
 	}
 	else if (Irene->IreneState->IsDodgeState())
 	{
@@ -223,40 +230,9 @@ void UIreneAttackInstance::DoAttack()
 		#endif
 	}
 	StackCount = AttackTable->Stack_Count;
-	STARRYLOG_S(Warning);
 	SendDamage(bResult, MonsterList);
 }
-void UIreneAttackInstance::SpiritDoAttack(AActor* Actor)
-{
-	TArray<FHitResult> MonsterList;
-	bool bResult = false;
 
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-	StackCount = AttackTable->Stack_Count;
-	const FVector BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
-		
-	const FCollisionQueryParams Params(NAME_None, false, Irene);
-	bResult = GetWorld()->SweepMultiByChannel(
-	MonsterList,
-	Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	FRotationMatrix::MakeFromZ(Actor->GetActorForwardVector()).ToQuat(),
-	ECollisionChannel::ECC_GameTraceChannel1,
-	FCollisionShape::MakeBox(BoxSize),
-	Params);
-	
-	// 그리기 시작
-	#if ENABLE_DRAW_DEBUG
-	const FVector TraceVec = Actor->GetActorForwardVector();
-	const FVector Center = Actor->GetActorLocation() + (Actor->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
-	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-	const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-	constexpr float DebugLifeTime = 5.0f;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
-	#endif
-	STARRYLOG_S(Warning);
-	SendDamage(bResult, MonsterList);
-}
 void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterList)
 {
 	// 모든 충돌된 액터에 데미지 전송
@@ -419,9 +395,23 @@ void UIreneAttackInstance::SetSkillState()const
 	{
 		Irene->ChangeStateAndLog(USwordSkill2::GetInstance());
 	}
-	else if (Irene->bIsSpiritStance)
+	else if (Irene->bIsSpiritStance && Irene->IreneSpirit != nullptr)
 	{
-		Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
+		if (Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr
+			&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_1")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_3")) != 0)
+		{
+			Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
+		}
+		else if(Irene->IreneSpirit->IreneSpiritAnim->Montage_GetCurrentSection(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage()) == FName("Attack2")
+		&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_2")) != 0)
+		{
+			Irene->ChangeStateAndLog(USpiritSkill2::GetInstance());
+		}
+		else if(Irene->IreneSpirit->IreneSpiritAnim->Montage_GetCurrentSection(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage()) == FName("Attack3")
+		&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_3")) != 0)
+		{
+			Irene->ChangeStateAndLog(USpiritSkill3::GetInstance());
+		}
 	}
 }
 #pragma endregion State
