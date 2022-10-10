@@ -96,6 +96,8 @@ private:
 	bool bDodgeJumpSkip;
 	// 후딜 중 스킬 사용 가능 타이밍 노티파이
 	bool bSkillSkip;
+	// 스킬 사용 중 일반 공격 가능 타이밍 노티파이
+	bool bSkillToAttack;
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -111,7 +113,6 @@ public:
 	void AttackCheck();
 	void AttackStopCheck();
 	void DoAttack();
-	void SpiritDoAttack(AActor* Actor);
 	void SendDamage(bool bResult, TArray<FHitResult> MonsterList);
 	
 	// 디버프 스택 함수
@@ -146,6 +147,7 @@ public:
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanSkillSkip()const{return bSkillSkip;}
+	bool GetCanSkillToAttack()const{return bSkillToAttack;}
 	int GetFireDeBuffStack()const{return FireDeBuffStack;}
 	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
 	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
@@ -165,11 +167,13 @@ public:
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
+	void SetCanSkillToAttack(const bool Value){bSkillToAttack = Value;}
 	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
 	void SetIsPerfectDodge(const bool Value);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }
 	void SetTrueAttackCount(const int Value) { TrueAttackCount = Value; }
 	void SetDamageBeforeTableName(const FString Value) {DamageBeforeTableName = Value;}
+	void SetStackCount(const int Value) {StackCount = Value;}
 #pragma endregion GetSet
 
 private:
