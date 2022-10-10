@@ -765,6 +765,8 @@ void ABouldelith::SetBattleRunState(bool State)
 	if (AIController != nullptr)
 	{
 		AIController->SetBattleRunKey(State);
+
+
 	}
 }
 

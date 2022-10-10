@@ -20,4 +20,6 @@ private:
 
 
 	void Attack4Trace(class AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
+
+	float AttackInterverTimer;
 };

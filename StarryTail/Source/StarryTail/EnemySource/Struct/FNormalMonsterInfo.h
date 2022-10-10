@@ -142,7 +142,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float M_AttackPercent;
 //
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_AttackTraceInterver;
 
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

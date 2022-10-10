@@ -12,6 +12,7 @@ UBTTaskBdBattleRun::UBTTaskBdBattleRun()
 {
 	NodeName = TEXT("BattleRun");
 	bNotifyTick = true;
+	AttackInterverTimer = 0.0f;
 }
 EBTNodeResult::Type UBTTaskBdBattleRun::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -44,9 +45,15 @@ void UBTTaskBdBattleRun::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 		Bouldelith->GetAIController()->MoveToLocation(Player->GetActorLocation());
 	}
 
+	AttackInterverTimer += DeltaSeconds;
 
+	if (AttackInterverTimer >= Bouldelith->GetAttackTraceInterver())
+	{
+	
+	AttackInterverTimer = 0.0f;
 	Attack4Trace(Bouldelith, OwnerComp, Bouldelith->GetActorLocation());
 
+    }
 }
 
 void UBTTaskBdBattleRun::Attack4Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center)
@@ -161,6 +168,7 @@ void UBTTaskBdBattleRun::Attack4Trace(AMonster* Monster, UBehaviorTreeComponent&
 						Monster->GetAIController()->OnAttack(4);
 						auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 						Bouldelith->SetBattleRunState(false);
+						Bouldelith->InitWalkSpeed();
 						FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 						return;
 					}

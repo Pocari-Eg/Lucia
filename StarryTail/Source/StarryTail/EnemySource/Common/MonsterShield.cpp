@@ -50,6 +50,7 @@ float UMonsterShield::CalcShieldDamage(float Damage)
 void UMonsterShield::DestroyedShield()
 {
 	ShiledCrackEffectComponent->SetActive(true, true);
+	SetEffectVisible(false);
 	bIsShieldActive = false;
 }
 
