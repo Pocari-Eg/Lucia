@@ -4,6 +4,7 @@
 #include "MoveSkipNotifyState.h"
 
 #include "../IreneCharacter.h"
+#include "../PlayerSpirit/IreneSpirit.h"
 
 UMoveSkipNotifyState::UMoveSkipNotifyState()
 {
@@ -19,6 +20,14 @@ void UMoveSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayloa
 	{
 		Irene->IreneAttack->SetCanMoveSkip(true);
 	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneAttack->SetCanMoveSkip(true);
+		}
+	}
 }
 void UMoveSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -31,6 +40,14 @@ void UMoveSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload&
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanMoveSkip(false);
+	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneAttack->SetCanMoveSkip(false);
+		}
 	}
 }
 

@@ -67,9 +67,12 @@ enum class EStateEnum : uint8
 	Sword_Skill_1,
 	Sword_Skill_2,
 	Spirit_Skill_1,
+	Spirit_Skill_2,
+	Spirit_Skill_3,
 	Form_Change,
 	Hit_1,
 	Hit_2,
+	KnockBack,
 	Death
 };
 

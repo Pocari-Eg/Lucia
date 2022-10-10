@@ -98,6 +98,11 @@ private:
 	float DodgeCoolTime;
 	// 회피 회복 쿨타임
 	FTimerHandle DodgeWaitHandle;
+
+	// 잔상 소환 딜레이
+	FTimerHandle SpiritSpawnWaitHandle;
+	// 잔상 소환 딜레이 쿨타임
+	float SpiritSpawnCoolTime;
 	
 	bool bSkillCameraMove;
 	float SkillCameraPlayTime;
@@ -140,6 +145,7 @@ public:
 	void RightButton(float Rate);
 	void NonSpiritSkill();
 	void SpiritSkill();
+	void SpawnSpirit();
 	void SkillWait();
 	void SwordSkillEndWait();
 

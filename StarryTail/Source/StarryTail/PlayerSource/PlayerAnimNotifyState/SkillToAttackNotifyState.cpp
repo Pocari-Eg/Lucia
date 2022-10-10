@@ -1,52 +1,52 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "SkillSkipNotifyState.h"
+#include "SkillToAttackNotifyState.h"
+
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../IreneCharacter.h"
 
-USkillSkipNotifyState::USkillSkipNotifyState()
+USkillToAttackNotifyState::USkillToAttackNotifyState()
 {
 	bIsNativeBranchingPoint = true;
 }
 
-void USkillSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayload& BranchingPointPayload)
+void USkillToAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
 	
 	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
-		Irene->IreneAttack->SetCanSkillSkip(true);
+		Irene->IreneAttack->SetCanSkillToAttack(true);
 	}
 	else
 	{
 		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
 		if(Spirit != nullptr)
 		{
-			Spirit->Irene->IreneAttack->SetCanSkillSkip(true);
+			Spirit->Irene->IreneAttack->SetCanSkillToAttack(true);
 		}
 	}
 }
-void USkillSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
+void USkillToAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
 	Super::BranchingPointNotifyTick(BranchingPointPayload, FrameDeltaTime);
 	
 }
-void USkillSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
+void USkillToAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
 	if(Irene != nullptr)
 	{
-		Irene->IreneAttack->SetCanSkillSkip(false);
+		Irene->IreneAttack->SetCanSkillToAttack(false);
 	}
 	else
 	{
 		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
 		if(Spirit != nullptr)
 		{
-			Spirit->Irene->IreneAttack->SetCanSkillSkip(true);
+			Spirit->Irene->IreneAttack->SetCanSkillToAttack(true);
 		}
 	}
 }
-
