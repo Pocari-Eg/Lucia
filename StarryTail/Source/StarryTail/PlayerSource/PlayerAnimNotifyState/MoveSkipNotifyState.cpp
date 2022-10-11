@@ -18,7 +18,6 @@ void UMoveSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayloa
 	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
-		Irene->AddToRoot();
 		Irene->IreneAttack->SetCanMoveSkip(true);
 	}
 	else

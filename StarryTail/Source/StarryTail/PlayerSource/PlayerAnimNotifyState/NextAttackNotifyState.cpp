@@ -21,7 +21,6 @@ void UNextAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayl
 	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
-		Irene->AddToRoot();
 		Irene->IreneData.CanNextCombo = true;
 		Irene->IreneInput->SetNextAttack(true);
 	}

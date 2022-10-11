@@ -18,7 +18,6 @@ void UDodgeJumpSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
-		Irene->AddToRoot();
 		Irene->IreneAttack->SetCanDodgeJumpSkip(true);
 	}
 	else

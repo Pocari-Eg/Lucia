@@ -19,7 +19,6 @@ void USkillToAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillToAttack(true);
-		Irene->AddToRoot();
 	}
 	else
 	{

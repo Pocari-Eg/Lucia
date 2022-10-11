@@ -18,7 +18,6 @@ void USkillSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPaylo
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillSkip(true);
-		Irene->AddToRoot();
 	}
 	else
 	{
