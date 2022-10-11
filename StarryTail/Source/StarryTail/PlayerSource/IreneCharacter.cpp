@@ -617,7 +617,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		//STARRYLOG(Error,TEXT("%s:   %f"), *IreneState->GetStateToString(),GetWorld()->RealTimeSeconds);
+		STARRYLOG(Error,TEXT("%s:   %f"), *IreneState->GetStateToString(),GetWorld()->RealTimeSeconds);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
