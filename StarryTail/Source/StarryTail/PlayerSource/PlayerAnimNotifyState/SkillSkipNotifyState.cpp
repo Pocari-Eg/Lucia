@@ -14,10 +14,11 @@ void USkillSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPaylo
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
 	
-	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillSkip(true);
+		Irene->AddToRoot();
 	}
 	else
 	{
@@ -36,6 +37,7 @@ void USkillSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayloa
 void USkillSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillSkip(false);
