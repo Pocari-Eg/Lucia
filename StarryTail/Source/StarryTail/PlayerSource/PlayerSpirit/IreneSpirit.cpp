@@ -69,7 +69,8 @@ void AIreneSpirit::BeginPlay()
 void AIreneSpirit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	Irene->SetActorLocation(GetActorLocation()+GetActorForwardVector()*-100.0f);
+	Irene->SetActorRotation(GetActorRotation());
 }
 
 // Called to bind functionality to input
