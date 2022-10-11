@@ -128,8 +128,7 @@ AMonster::AMonster()
 
 
 	ShieldCollision->SetCollisionProfileName("Shield");
-	ShiledCrackEffectComponent->SetAutoActivate(false);
-	ShiledHitEffectComponent->SetAutoActivate(false);
+
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
 	MonsterInfo.M_AttackTraceInterver = 0.5f;

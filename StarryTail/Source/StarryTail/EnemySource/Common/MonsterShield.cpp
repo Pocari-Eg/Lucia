@@ -25,6 +25,10 @@ UMonsterShield::UMonsterShield()
 	CurShieldState = 0;
 
 	Type = EShieldType::General;
+
+
+
+	STARRYLOG_S(Error);
 	// ...
 }
 
@@ -214,7 +218,8 @@ void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSys
 
 
 	this->ShiledEffectComponent->SetVisibility(false);
-
+	this->ShiledCrackEffectComponent->SetAutoActivate(false);
+	this->ShiledHitEffectComponent->SetAutoActivate(false);
 
 }
 
