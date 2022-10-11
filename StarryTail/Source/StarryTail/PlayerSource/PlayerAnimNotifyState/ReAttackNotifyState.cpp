@@ -20,7 +20,6 @@ void UReAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayloa
 	if(Irene != nullptr)
 	{
 		Irene->IreneInput->SetReAttack(true);
-		Irene->AddToRoot();
 	}
 	else
 	{
