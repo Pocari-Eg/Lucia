@@ -73,8 +73,9 @@ AMonster::AMonster()
 	if (UI_StackWidget.Succeeded()) {
 
 		StackWidget->SetWidgetClass(UI_StackWidget.Class);
-		StackWidget->SetDrawSize(FVector2D(50.0f,50.0f));
+		StackWidget->SetDrawSize(FVector2D(512.0f,512.0f));
 		StackWidget->bAutoActivate = false;
+		StackWidget->SetWorldScale3D(FVector(0.5f, 0.5f, 0.5f));
 	}
 	bIsSpawnEnemy = false;
 	bIsObject = false;
@@ -125,11 +126,11 @@ AMonster::AMonster()
 	ShiledEffectComponent->SetupAttachment(MonsterShield);
 	ShiledCrackEffectComponent->SetupAttachment(MonsterShield);
 	ShiledHitEffectComponent->SetupAttachment(MonsterShield);
-
-
-	ShieldCollision->SetCollisionProfileName("Shield");
 	ShiledCrackEffectComponent->SetAutoActivate(false);
 	ShiledHitEffectComponent->SetAutoActivate(false);
+
+	ShieldCollision->SetCollisionProfileName("Shield");
+
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
 	MonsterInfo.M_AttackTraceInterver = 0.5f;
@@ -443,48 +444,45 @@ void AMonster::AddStackCount(int Count)
 void AMonster::StackExplode()
 {
 
-	if (GetIsMonsterShieldActive())
+	if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
 	{
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
-			MonsterShield->CalcDurability(-1.0f);
-			OnBarrierChanged.Broadcast();
 
-		  //	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
-			//MonsterInfo.OverStackCount = 0;
-			MonsterInfo.bIsStackCheck = false;
-			MonsterInfo.StackCheckTimer = 0.0f;
+		ExplodeStackEvent();
 
-			/*	if (MonsterInfo.CurStackCount == 0)
-				{
-					InitStackCount();
-				}*/
-
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}
-
-	     
-			ExplodeStackEvent();
-			
-		}
-		else {
-			/*MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
-			OnBarrierChanged.Broadcast();
-			InitStackCount();
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}*/
-
-
-		}
 	}
 	else {
 
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
+		InitStackCount();
+	}
+}
+
+void AMonster::MaxStackExplode()
+{
+
+	if (GetIsMonsterShieldActive()) {
+		MonsterShield->CalcDurability(-1.0f);
+		OnBarrierChanged.Broadcast();
+
+		//	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+		  //MonsterInfo.OverStackCount = 0;
+		MonsterInfo.bIsStackCheck = false;
+		MonsterInfo.StackCheckTimer = 0.0f;
+
+		/*	if (MonsterInfo.CurStackCount == 0)
+			{
+				InitStackCount();
+			}*/
+
+		if (!GetIsMonsterShieldActive())
+		{
+			ShieldDestroyed();
+			SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+		}
+
+	}
+	else {
+
+	
 			CalcHp(99999999.9f);
 
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
@@ -495,30 +493,26 @@ void AMonster::StackExplode()
 				{
 					InitStackCount();
 				}*/
-			ExplodeStackEvent();
-		}
-		else {
-			//CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
 
 		
-		}
 	
+		
 	}
-
 	InitStackCount();
-
 
 }
 
 void AMonster::InitStackCount()
 {
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
 	MonsterInfo.CurStackCount =0;
 	MonsterInfo.OverStackCount = 0;
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 
 
 	OnStackCountEvent();

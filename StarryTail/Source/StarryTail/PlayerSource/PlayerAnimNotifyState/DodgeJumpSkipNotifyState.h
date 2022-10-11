@@ -20,8 +20,4 @@ class STARRYTAIL_API UDodgeJumpSkipNotifyState : public UAnimNotifyState
 
 public:
 	UDodgeJumpSkipNotifyState();
-
-private:
-	UPROPERTY()
-	class AIreneCharacter* Irene;
 };
