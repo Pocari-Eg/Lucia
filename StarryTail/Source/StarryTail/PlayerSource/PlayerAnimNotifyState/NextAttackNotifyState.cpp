@@ -18,9 +18,10 @@ UNextAttackNotifyState::UNextAttackNotifyState()
 void UNextAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
-	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
+		Irene->AddToRoot();
 		Irene->IreneData.CanNextCombo = true;
 		Irene->IreneInput->SetNextAttack(true);
 	}
@@ -41,6 +42,7 @@ void UNextAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPaylo
 void UNextAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneData.CanNextCombo = false;
