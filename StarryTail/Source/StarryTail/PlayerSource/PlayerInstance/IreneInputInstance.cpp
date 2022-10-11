@@ -54,7 +54,7 @@ void UIreneInputInstance::InitMemberVariable()
 	SwordSkillCoolTime = 0.0f;
 	CanSwordSkill2Time = 2.0f;
 
-	SpiritSpawnCoolTime = 0.1f;
+	SpiritSpawnCoolTime = 0.3f;
 	
 	bIsThunderAttributeOn = true;
 
@@ -393,11 +393,11 @@ void UIreneInputInstance::RightButton(float Rate)
 		if (Rate >= 1.0)
 		{
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			constexpr float WaitTime = 0.05f;
-			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					SwordSkillWaitHandle.Invalidate();
-				}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			// constexpr float WaitTime = 0.05f;
+			// GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+			// 	{
+			// 		SwordSkillWaitHandle.Invalidate();
+			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			// X번째 일반 공격 중 스킬 사용 후 다시 일반 공격하면 X+1번째 공격 하도록 지정
 			if(Irene->IreneAttack->GetCanSkillSkip())
@@ -418,8 +418,13 @@ void UIreneInputInstance::RightButton(float Rate)
 
 			if(Irene->bIsSpiritStance)
 			{
-				if(Irene->IreneSpirit == nullptr)
+				if(Irene->IreneSpirit == nullptr || !Irene->IreneState->IsSkillState())
 				{
+					if(Irene->IreneSpirit != nullptr)
+					{
+						Irene->IreneSpirit->DestroySpirit();
+						Irene->IreneSpirit = nullptr;
+					}
 					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
 					Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
 					if(Irene->IreneSpirit != nullptr)
@@ -451,9 +456,14 @@ void UIreneInputInstance::RightButton(float Rate)
 					}
 					if(bReAttack)
 					{
+						if(Irene->IreneSpirit != nullptr)
+						{
+							const FVector IrenePosition = Irene->GetActorLocation();
+							const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+							Irene->IreneSpirit->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+						}
 						if(Irene->IreneSpirit != nullptr && Irene->IreneState->IsSkillState())
 							Irene->IreneSpirit->IreneSpiritAnim->StopAllMontages(0);
-						Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
 						Irene->IreneData.IsAttacking = true;
 						Irene->IreneData.CurrentCombo = 0;
 						Irene->IreneAttack->AttackStartComboState();
@@ -464,6 +474,7 @@ void UIreneInputInstance::RightButton(float Rate)
 							else
 								Irene->IreneSpirit->IreneSpiritAnim->Montage_JumpToSection(FName("Attack1"), Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage());
 						}
+						Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
 					}
 				}
 				else
@@ -569,7 +580,8 @@ void UIreneInputInstance::SpiritSkill()
 		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
 		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));		
 	}
-
+	if(Irene->GetMesh()->IsVisible())
+		Irene->Weapon->SetVisibility(true);
 	Irene->GetWorld()->GetTimerManager().SetTimer(SpiritSpawnWaitHandle,this, &UIreneInputInstance::SpawnSpirit, SpiritSpawnCoolTime, false);
 }
 void UIreneInputInstance::SpawnSpirit()
@@ -667,6 +679,15 @@ void UIreneInputInstance::DodgeKeyword()
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
 		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
 	{
+		// 잔상 공격 중 회피
+		if(Irene->IreneSpirit != nullptr)
+		{
+			Irene->IreneSpirit->DestroySpirit();
+			Irene->IreneSpirit = nullptr;
+			Irene->GetMesh()->SetVisibility(true);
+			Irene->Weapon->SetVisibility(false);
+		}
+		
 		// 회피 중 회피
 		if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))==0 && bIsDodgeToDodge)
 		{

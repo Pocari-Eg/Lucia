@@ -22,10 +22,10 @@ AIreneCharacter::AIreneCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
-	// 콜라이더 설정
+	// ?????? ????
 	GetCapsuleComponent()->InitCapsuleSize(25.0f, 80.0f);
 	
-	// 카메라 설정
+	// ???? ????
 	SpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraSpringArm"));
 	SpringArmComp->TargetArmLength = IreneData.FollowCameraZPosition;
 	SpringArmComp->bEnableCameraLag = true;
@@ -37,7 +37,7 @@ AIreneCharacter::AIreneCharacter()
 	CameraComp->SetupAttachment(SpringArmComp);
 	CameraComp->FieldOfView = IreneData.FieldOfView;
 
-	// 스켈레톤 메쉬 설정
+	// ??????? ??? ????
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>CharacterMesh(TEXT("/Game/Animation/Irene/Idle.Idle"));
 	if (CharacterMesh.Succeeded())
 	{
@@ -48,7 +48,7 @@ AIreneCharacter::AIreneCharacter()
 		GetCapsuleComponent()->SetNotifyRigidBodyCollision(true);
 		GetCapsuleComponent()->SetGenerateOverlapEvents(true);
 		
-		// 무기
+		// ????
 		if (GetMesh()->DoesSocketExist(TEXT("hand_rSwordSocket")))
 		{
 			Weapon = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("WEAPON"));
@@ -65,19 +65,19 @@ AIreneCharacter::AIreneCharacter()
 			Weapon->SetVisibility(false);
 		}
 		
-		// 블루프린트 애니메이션 적용
+		// ????????? ??????? ????
 		GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 		ConstructorHelpers::FClassFinder<UAnimInstance>CharacterAnimInstance(TEXT("/Game/Animation/Irene/Animation/BP/BP_IreneAnimation.BP_IreneAnimation_C"));
 
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
-	// 잔상 블루프린트
+	// ??? ?????????
 	ConstructorHelpers::FClassFinder<AIreneSpirit>BP_IreneSpirit(TEXT("/Game/BluePrint/Irene/IreneSpirit.IreneSpirit_C"));
 	if(BP_IreneSpirit.Succeeded())
 		IreneSpiritOrigin = BP_IreneSpirit.Class;
 
-	// 펫 세팅
+	// ?? ????
 	PetSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("PetSprintArm"));
 	PetSpringArmComp->TargetArmLength = 0;
 	PetSpringArmComp->bEnableCameraLag = true;
@@ -93,7 +93,7 @@ AIreneCharacter::AIreneCharacter()
 	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
 	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
 	
-	// 카메라 쉐이크 커브
+	// ???? ????? Ŀ??
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack1(TEXT("/Game/Math/AttackCurve/FireAttack1.FireAttack1"));
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack2(TEXT("/Game/Math/AttackCurve/FireAttack2.FireAttack2"));
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack3(TEXT("/Game/Math/AttackCurve/FireAttack3.FireAttack3"));
@@ -152,31 +152,31 @@ AIreneCharacter::AIreneCharacter()
 		UseLagCurve = CameraLagCurve[0];
 	}
 	
-	// 스킬 카메라 움직임
+	// ??? ???? ??????
 	const ConstructorHelpers::FObjectFinder<UCurveVector>SkillCameraData(TEXT("/Game/Math/SkillCamera.SkillCamera"));
 	if(SkillCameraData.Succeeded())
 	{
 		SkillCamera = SkillCameraData.Object;
 	}
 	
-	// 카메라 회전과 캐릭터 회전 연동 안되도록 설정
+	// ???? ????? ĳ???? ??? ???? ?????? ????
 	bUseControllerRotationYaw = false;
 	SpringArmComp->bUsePawnControlRotation = true;
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0.0f, 1050.0f, 0.0f);
 
-	// 기본 최대 이동속도
+	// ?? ??? ??????
 	GetCharacterMovement()->MaxWalkSpeed = IreneData.RunMaxSpeed;
 
-	// 플레이어 스폰 시 기본 제어 설정
+	// ?÷???? ???? ?? ?? ???? ????
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
-	// PlayerCharacterDataStruct.h의 변수들 초기화
+	// PlayerCharacterDataStruct.h?? ?????? ????
 	IreneData.CurrentHP = IreneData.MaxHP;
 	IreneData.CurrentEnergy = 0;
 	IreneData.CurrentGauge = 100;
 	
-	// IreneCharacter.h의 변수 초기화
+	// IreneCharacter.h?? ???? ????
 	HpRecoveryData.bIsRecovering = false;
 	HpRecoveryData.Amount = 300;
 	HpRecoveryData.HP_Re_Time = 4;
@@ -196,14 +196,14 @@ void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// 컨트롤러 받아오기
+	// ?????? ??????
 	WorldController = GetWorld()->GetFirstPlayerController();
 	
 	STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	if (STGameInstance != nullptr)
 		STGameInstance->SetPlayer(this);
 
-	// 스탑워치 생성 
+	// ?????? ???? 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
 
@@ -243,10 +243,10 @@ void AIreneCharacter::PostInitializeComponents()
 
 void AIreneCharacter::TargetReset()const
 {
-	// 타겟을 조건에 따라 초기화하는 함수
+	// ????? ????? ???? ??????? ???
 	if (IreneAttack->SwordTargetMonster != nullptr)
 	{
-		// 타겟몹이 죽거나 렌더링이 안거나 거리가 멀어지면 초기화
+		// ?????? ???? ???????? ???? ????? ??????? ????
 		const auto Mob = Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		if (Mob != nullptr)
 		{
@@ -291,33 +291,33 @@ void AIreneCharacter::Tick(float DeltaTime)
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
-	// 움직임 관련 키보드 입력
+	// ?????? ???? ????? ???
 	PlayerInputComponent->BindAxis("MoveW", IreneInput, &UIreneInputInstance::MoveW).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("ThunderDeBuffKey", IE_Pressed, IreneInput, &UIreneInputInstance::ThunderDeBuffKey);
 
-	// 움직임 외 키보드 입력
+	// ?????? ?? ????? ???
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::SpiritChangeKeyword);
 	
-	// 마우스
+	// ???콺
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
 	PlayerInputComponent->BindAxis("LeftButton", IreneInput, &UIreneInputInstance::LeftButton);
 	PlayerInputComponent->BindAxis("RightButton", IreneInput, &UIreneInputInstance::RightButton);
 	PlayerInputComponent->BindAxis("MouseWheel", IreneInput, &UIreneInputInstance::MouseWheel);
 	
-	// 그 외
+	// ?? ??
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("Action", IE_Pressed, IreneInput, &UIreneInputInstance::DialogAction);
 	PlayerInputComponent->BindAction("DialogSkip", IE_Pressed, IreneInput, &UIreneInputInstance::DialogSkip);
 
 	PlayerInputComponent->BindAction("TestSkillCamera", IE_Pressed, IreneInput, &UIreneInputInstance::SkillCameraMoveStart);
 
-	// 스탑워치 컨트롤
+	// ?????? ?????
 	//PlayerInputComponent->BindAction("WatchControl", IE_Pressed, this, &AIreneCharacter::WatchControl);
 	//PlayerInputComponent->BindAction("WatchReset", IE_Pressed, this, &AIreneCharacter::WatchReset);
 }
@@ -325,22 +325,22 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 #pragma region Collision
 void AIreneCharacter::FindNearMonster()const
 {
-	// 가장 가까운 몬스터를 찾고 공격범위 보다 멀면 다가가게 하고 공격하는 함수	
+	// ???? ????? ????? ??? ??????? ???? ??? ??????? ??? ??????? ???	
 	if(IreneAttack->SwordTargetMonster!=nullptr && IreneState->IsFirstAttack())
 	{
-		// 기존 타겟팅 취소
+		// ???? ????? ???
 		const auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		Mon->MarkerOff();		
 		IreneAnim->SetIsHaveTargetMonster(false);
 		IreneAttack->SwordTargetMonster = nullptr;
 	}
 
-	// 몹 추적 박스 넓이, 높이, 거리
-	// 플레이어 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법
+	// ?? ???? ??? ????, ????, ???
+	// ?÷???? ????? ??????? ????? ????? ??????? ?????? ???
 	//const FVector BoxSize = FVector(200, 50, 150);
 	//auto HitMonsterList = IreneAttack->StartPositionFindNearMonster(BoxSize,GetActorLocation(),GetActorForwardVector());
 
-	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+	// ???? ????? ??????? ????? ????? ??????? ?????? ???	
 	auto AllPosition = SetCameraStartTargetPosition(FVector(200,200,500),CameraComp->GetComponentLocation());
 	auto HitMonsterList = StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
 	NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
@@ -363,7 +363,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 {
 	const FVector Center = (TargetPosition + StartPosition) /2;
 
-	// 리스트에 모든 충돌 결과 담는다.
+	// ??????? ??? ?浹 ??? ??´?.
 	TArray<FHitResult> MonsterList;
 	const FCollisionQueryParams Params(NAME_None, false, this);
 	const bool bResult = GetWorld()->SweepMultiByChannel(
@@ -387,14 +387,14 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 }
 void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far)const
 {
-	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
-	// 최대거리
+	// ???? ?浹? ?? ???? ????? ?浹? ????? ??????? ???
+	// ?????
 	float CurNearPosition = Far;
 	FName TargetCollisionProfileName;
 
 	for (FHitResult Monster : MonsterList)
 	{
-		// 카메라와 캐릭터 사이의 몬스터는 제외
+		// ????? ĳ???? ?????? ????? ????
 		if(FVector::Dist(CameraComp->GetComponentLocation(),Monster.GetActor()->GetActorLocation())<=FVector::Dist(CameraComp->GetComponentLocation(),GetActorLocation()))
 		{
 			continue;
@@ -402,7 +402,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 		if (bResult)
 		{
 			//STARRYLOG(Warning,TEXT("%s"), *Monster.GetActor()->GetName());
-			// 리스트결과에 레이케스트 발사(반복)
+			// ?????????? ???????? ???(???)
 			FHitResult RayHit;
 			bool bLayResult = GetWorld()->LineTraceSingleByChannel(
 				RayHit,
@@ -411,22 +411,22 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 				ECollisionChannel::ECC_GameTraceChannel8,
 				Params);
 
-			// 맞춘 액터가 캡슐오브젝트를 가지고 있는지 확인
+			// ???? ????? ĸ??????????? ?????? ????? ???
 			if (bLayResult && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>() != nullptr)
 			{
-				// 캐릭터와 타겟 사이 최소거리 찾기
+				// ĳ????? ??? ???? ????? ???
 				float FindNearTarget = FVector::Dist(GetActorLocation(), RayHit.GetActor()->GetActorLocation());
-				// 기존 오브젝트 충돌체 프로필 이름
-				// 새로운 오브젝트 충돌체 프로필 이름
+				// ???? ??????? ?浹? ?????? ???
+				// ???ο? ??????? ?浹? ?????? ???
 				const FName RayCollisionProfileName = RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 				const FName EnemyProfile = "Enemy";
 				const FName ObjectProfile = "Object";	
-				// 맞췄을 때 캡슐컴포넌트를 가지고 카메라에 렌더링 되며 정상적으로 살아있는 몬스터 또는 오브젝트 찾기
+				// ?????? ?? ĸ??????????? ?????? ???? ?????? ??? ?????????? ?????? ???? ??? ??????? ???
 				if (RayHit.Actor.IsValid() &&
 					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
 					&& RayHit.GetActor()->WasRecentlyRendered())
 				{
-					// 첫 몬스터 할당
+					// ? ???? ???
 					if (IreneAttack->SwordTargetMonster == nullptr)
 					{
 						IreneAttack->SwordTargetMonster = RayHit.GetActor();
@@ -436,10 +436,10 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 					}
 					TargetCollisionProfileName = IreneAttack->SwordTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 
-					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
+					// ???? ??? ????????? ?÷???? ????? ???? ???? ????? ??´?.
 					if (CurNearPosition >= FindNearTarget)
 					{
-						// 만약 최단거리가 같은 액터가 있다면
+						// ???? ??????? ???? ????? ????
 						if (CurNearPosition == FindNearTarget)
 						{
 							if ((TargetCollisionProfileName == EnemyProfile && RayCollisionProfileName == EnemyProfile)||
@@ -466,7 +466,7 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 
 void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const
 {
-	// 가장 가까운 몬스터를 타겟 몬스터로 지정하는 함수
+	// ???? ????? ????? ??? ????? ??????? ???
 	if (IreneAttack->SwordTargetMonster == RayHit.GetActor())
 	{
 		NearPosition = FindNearTarget;
@@ -476,14 +476,14 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 
 		auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		Mon->MarkerOn();
-		// 기존 깃펜 타겟UI 끄고 검 공격 타겟에게 깃펜 타겟UI 보여주기
+		// ???? ???? ???UI ???? ?? ???? ?????? ???? ???UI ???????
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
 		// Mon->StackWidgetOff();
 		// IreneAttack->QuillTargetMonster = RayHit.GetActor();
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
 		// Mon->StackWidgetOn();
 		
-		// 몬스터를 찾고 쳐다보기
+		// ????? ??? ??????
 		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
 		//GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 	}
@@ -491,10 +491,10 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 
 void AIreneCharacter::FollowTargetPosition()
 {
-	// 몬스터를 찾고 쳐다보기
+	// ????? ??? ??????
 	if (IreneAttack->PerfectDodgeMonster != nullptr)
 	{
-		// 몹을 따라가는 조건
+		// ???? ????? ????
 		if(IreneState->IsFirstAttack() || IreneInput->bLeftButtonPressed)
 		{
 			const auto Mon=Cast<AMonster>(IreneAttack->PerfectDodgeMonster);
@@ -502,15 +502,15 @@ void AIreneCharacter::FollowTargetPosition()
 			const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->PerfectDodgeMonster->GetActorLocation()).Yaw;
 			GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 
-			// 다가가야하는 거리 계산
+			// ?????????? ??? ???
 			const auto CharacterRadius = GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;
 			const auto MonsterRadius = Mon->GetCapsuleComponent()->GetScaledCapsuleRadius() * GetActorScale().X;			
 			const float TargetPos = FVector::Dist(GetActorLocation(), Mon->GetLocation());
 			CustomTimeDilation = 1.0f/0.4f;
-			// 몬스터가 공격범위 보다 멀리 있다면
+			// ????? ??????? ???? ??? ????
 			if (TargetPos - (CharacterRadius + MonsterRadius) > IreneData.AttackRange)
 			{
-				// 추적 세팅
+				// ???? ????
 				IreneInput->SetStartMoveAutoTarget(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * TargetPos);
 			}
 			else
@@ -588,7 +588,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				return FinalDamage;
 
 
-			// 공격한 몬스터를 타겟 몬스터로 지정
+			// ?????? ????? ??? ????? ????
 			IreneAttack->SwordTargetMonster = DamageCauser;
 			IreneAnim->SetTargetMonster(IreneAttack->SwordTargetMonster);
 			IreneAnim->SetIsHaveTargetMonster(true);
@@ -624,7 +624,6 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 
 void AIreneCharacter::ActionEndChangeMoveState(bool RunToSprint)const
 {
-	// 현재 키 입력에 따라 상태를 전이하는 함수
 	if (IreneInput->MoveKey[0] > 2)
 		IreneInput->MoveKey[0] -= 2;
 	if (IreneInput->MoveKey[1] > 2)
@@ -718,7 +717,7 @@ void AIreneCharacter::OnRadialBlur()
 }
 void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 {
-	// 공격을 해서 몹과 충돌을 하면 함수가 실행되며 카메라 쉐이크를 하는 함수
+	// ?????? ??? ???? ?浹?? ??? ????? ?????? ???? ??????? ??? ???
 	if (CameraShakeOn)
 	{
 		if(!FixedUpdateCameraShakeTimer.IsValid())
@@ -799,7 +798,7 @@ void AIreneCharacter::PlayFadeOutAnimation()
 #pragma endregion Battle
 
 #pragma region StopWatch
-//스탑워치 컨트롤 함수
+//?????? ????? ???
 //void AIreneCharacter::WatchControl()
 //{
 //	StopWatch->WatchControl();
