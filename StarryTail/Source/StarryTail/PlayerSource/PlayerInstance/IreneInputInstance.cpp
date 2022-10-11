@@ -418,8 +418,13 @@ void UIreneInputInstance::RightButton(float Rate)
 
 			if(Irene->bIsSpiritStance)
 			{
-				if(Irene->IreneSpirit == nullptr)
+				if(Irene->IreneSpirit == nullptr || !Irene->IreneState->IsSkillState())
 				{
+					if(Irene->IreneSpirit != nullptr)
+					{
+						Irene->IreneSpirit->DestroySpirit();
+						Irene->IreneSpirit = nullptr;
+					}
 					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
 					Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
 					if(Irene->IreneSpirit != nullptr)
@@ -451,6 +456,12 @@ void UIreneInputInstance::RightButton(float Rate)
 					}
 					if(bReAttack)
 					{
+						if(Irene->IreneSpirit != nullptr)
+						{
+							const FVector IrenePosition = Irene->GetActorLocation();
+							const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+							Irene->IreneSpirit->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+						}
 						if(Irene->IreneSpirit != nullptr && Irene->IreneState->IsSkillState())
 							Irene->IreneSpirit->IreneSpiritAnim->StopAllMontages(0);
 						Irene->IreneData.IsAttacking = true;
