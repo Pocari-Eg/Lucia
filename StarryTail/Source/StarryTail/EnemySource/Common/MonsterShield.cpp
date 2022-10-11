@@ -25,6 +25,7 @@ UMonsterShield::UMonsterShield()
 	CurShieldState = 0;
 
 	Type = EShieldType::General;
+
 	// ...
 }
 
@@ -214,7 +215,7 @@ void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSys
 
 
 	this->ShiledEffectComponent->SetVisibility(false);
-
+	
 
 }
 

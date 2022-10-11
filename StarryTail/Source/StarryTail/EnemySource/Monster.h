@@ -313,6 +313,8 @@ public:
 	void  ExplodeStackEvent();
 	void AddStackCount(int Count);
 	void StackExplode();
+	UFUNCTION(BlueprintCallable)
+	void MaxStackExplode();
 	void InitStackCount();
 	float CalcStackDamage(int StackCount);
 
