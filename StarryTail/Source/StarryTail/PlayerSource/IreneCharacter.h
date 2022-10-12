@@ -221,11 +221,11 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 
-	void PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	void PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower);
 	FVector KnockBackDir;
-	float KonckBackTimer;
+	float KnockBackTimer;
 	float KnockBackTime;
-	float KonckBackPower;
+	float KnockBackPower;
 	bool bIsKnockBack;
 
 #pragma endregion Battle

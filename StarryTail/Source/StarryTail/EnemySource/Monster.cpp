@@ -1345,7 +1345,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					if (MonsterShield->GetShieldAcitve())
 					{
 						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
-						Player->PlayerKnokcBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
+						Player->PlayerKnockBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
 
 					}
 					else {
