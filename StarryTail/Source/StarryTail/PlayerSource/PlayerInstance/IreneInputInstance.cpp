@@ -911,45 +911,55 @@ void UIreneInputInstance::BreakAttackKeyword()
 
 		const FVector SpawnLocation = Irene->GetActorLocation();
 		BreakAttackSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackSpiritTimeTimer,FTimerDelegate::CreateLambda([&]
-		{
-			FVector BoxSize = FVector(200, 50, 200);
-			TArray<FHitResult> MonsterList;
-
-			const FCollisionQueryParams Params(NAME_None, false, Irene);
-			bool bResult = GetWorld()->SweepMultiByChannel(
-			MonsterList,
-			Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(200-50.0f)),
-			Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(200-50.0f)),
-			FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
-			ECollisionChannel::ECC_GameTraceChannel1,
-			FCollisionShape::MakeBox(BoxSize),
-			Params);
-	
-			// 그리기 시작
-			#if ENABLE_DRAW_DEBUG
-			const FVector TraceVec = Irene->GetActorForwardVector();
-			const FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(200-50.0f));
-			const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-			const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-			constexpr float DebugLifeTime = 5.0f;
-			DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
-			#endif
-
-			Irene->IreneAttack->SendDamage(bResult, MonsterList);
-
-			BreakAttackSpirit->Destroy();
-			BreakAttackSpirit = nullptr;
-			Irene->bInputStop = false;
-
-			Irene->GetMesh()->SetVisibility(true,true);
-		}), 0.4f, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackSpiritTimeTimer,this,&UIreneInputInstance::BreakAttackEnd, 0.4f, false);
 
 		const float Dist = FVector::Dist(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());		
 		Irene->LaunchCharacter(Irene->GetActorForwardVector() * Dist * 1000, false, false);
 	}
 }
+void UIreneInputInstance::BreakAttackEnd()
+{
+	if(Irene->IreneAttack->SwordTargetMonster == nullptr)
+		return;
+	
+	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Break_Attack"));
 
+	const FVector BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
+	TArray<FHitResult> MonsterList;
+
+	const FCollisionQueryParams Params(NAME_None, false, Irene);
+	const bool bResult = GetWorld()->SweepMultiByChannel(
+	MonsterList,
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
+	ECollisionChannel::ECC_GameTraceChannel1,
+	FCollisionShape::MakeBox(BoxSize),
+	Params);
+	
+	// 그리기 시작
+	#if ENABLE_DRAW_DEBUG
+	const FVector TraceVec = Irene->GetActorForwardVector();
+	const FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	constexpr float DebugLifeTime = 5.0f;
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
+	#endif
+
+	const auto Mon = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+	if(Mon->GetCurStackCount() == 6)
+	{
+		Irene->IreneData.Strength = 100;	
+		Irene->IreneAttack->SendDamage(bResult, MonsterList);
+	}	
+
+	BreakAttackSpirit->Destroy();
+	BreakAttackSpirit = nullptr;
+	Irene->bInputStop = false;
+
+	Irene->GetMesh()->SetVisibility(true,true);
+}
 
 void UIreneInputInstance::DialogAction()
 {
