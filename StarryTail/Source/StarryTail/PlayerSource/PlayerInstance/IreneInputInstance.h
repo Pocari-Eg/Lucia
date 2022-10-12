@@ -177,6 +177,8 @@ public:
 
 	// 브레이킹어택
 	void BreakAttackKeyword();
+	// 브레이킹어택 종료
+	void BreakAttackEnd();
 	
 	// 액션 
 	void DialogAction();
