@@ -31,12 +31,15 @@ private:
 	FTimerHandle AttributeChangeWaterTimer;
 	FTimerHandle AttributeChangeElectricTimer;
 
-	// 
-	FTimerHandle SpiritTimeOverTimer;
-	
+	// 정령 상태 지속 시간 넘김
+	FTimerHandle SpiritTimeDamageOverTimer;
+	FTimerHandle SpiritTimeStunOverTimer;
+
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
-
+	// 스턴 상태인지 확인
+	bool bIsStun;
+	
 	// 회피 사용 가능
 	bool bIsDodgeOn;
 	// 최대 회피 횟수
@@ -48,9 +51,11 @@ private:
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-	// 창에서 검으로 변경
+	// 검에서 창으로 변경 이후 시간 지나서 디버프 발동
 	FTimerHandle WeaponChangeWaitHandle;
-	
+	// 검에서 창으로 변경 이후 강제 검으로 변경
+	FTimerHandle WeaponChangeMaxWaitHandle;
+
 	// 스킬 사용중
 	bool bIsSkillOn;
 	// 공격 중 스킬 사용
@@ -123,7 +128,6 @@ public:
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
-	void ThunderDeBuffKey();
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
 	void MoveA(float Rate);

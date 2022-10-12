@@ -38,9 +38,9 @@ void UIreneInputInstance::InitMemberVariable()
 	
 	bReAttack = false;
 	
-	// 추락 중 구르기 입력 초기화
 	IsFallingRoll = false;
-
+	bIsStun = false;
+	
 	MaxDodgeCoolTime = 0.5f;
 	DodgeCoolTime = 0.0f;
 	bIsDodgeOn = true;
@@ -118,11 +118,11 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 #pragma region MoveInput
 void UIreneInputInstance::MovePressedKey(const int Value)
 {
-	if (!bIsDialogOn && Irene->IreneAttack->GetThunderSustainTime() <= 0)
+	if (!bIsDialogOn)
 	{
 		// 런 상태로 전이가 가능한 상태에서 키를 입력하면 1, 스프린트 속도에서 키를 입력하면 2, 런 상태가 불가능한 상태에서 키를 입력하면 3
 		// 3은 나중에 AIreneCharacter::ActionEndChangeMoveState에서 1로 적용
-		if (CanRunState())
+		if (CanRunState() && !bIsStun)
 		{
 			MoveKey[Value] = 1;
 			if (Irene->GetCharacterMovement()->MaxWalkSpeed == Irene->IreneData.SprintMaxSpeed)
@@ -146,19 +146,6 @@ void UIreneInputInstance::MovePressedKey(const int Value)
 	{
 		MoveKey[Value] = 3;
 		Irene->ChangeStateAndLog(UIdleState::GetInstance());
-	}
-}
-void UIreneInputInstance::ThunderDeBuffKey()
-{
-	if (!bIsDialogOn)
-	{
-		if(Irene->IreneAttack->GetThunderSustainTime() > 0)
-		{
-			if(Irene->IreneAttack->GetThunderSustainTime() - 1.5f <= 0)
-				Irene->IreneAttack->ResetThunderDeBuffStack();
-			else
-				Irene->IreneAttack->SetThunderSustainTime(Irene->IreneAttack->GetThunderSustainTime() - 1.5f);
-		}
 	}
 }
 
@@ -277,7 +264,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 	else
 		bLeftButtonPressed = false;
 	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack) || (Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())) &&
-		!AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
+		!AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
 	{
 		if (Rate >= 1.0)
 		{
@@ -319,7 +306,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			// constexpr float WaitTime = 0.05f;
 			// GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
 			// 	{
-			// 		AttackWaitHandle.Invalidate();
+			// 			GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
 			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			if(AttackUseSkillNextCount>0)
@@ -334,7 +321,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 					Irene->IreneAnim->PlayAttackMontage();
 				else
 					Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
-				AttackUseSkillNextCountWaitHandle.Invalidate();
+				GetWorld()->GetTimerManager().ClearTimer(AttackUseSkillNextCountWaitHandle);
 				return;
 			}
 			
@@ -388,7 +375,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		bRightButtonPressed = true;
 	else
 		bRightButtonPressed = false;
-	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop)
+	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
 	{
 		if (Rate >= 1.0)
 		{
@@ -396,7 +383,7 @@ void UIreneInputInstance::RightButton(float Rate)
 			// constexpr float WaitTime = 0.05f;
 			// GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
 			// 	{
-			// 		SwordSkillWaitHandle.Invalidate();
+			//		GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
 
 			// X번째 일반 공격 중 스킬 사용 후 다시 일반 공격하면 X+1번째 공격 하도록 지정
@@ -409,7 +396,7 @@ void UIreneInputInstance::RightButton(float Rate)
 				GetWorld()->GetTimerManager().SetTimer(AttackUseSkillNextCountWaitHandle, FTimerDelegate::CreateLambda([&]()
 				{
 					AttackUseSkillNextCount = 0;
-					AttackUseSkillNextCountWaitHandle.Invalidate();
+					GetWorld()->GetTimerManager().ClearTimer(AttackUseSkillNextCountWaitHandle);
 				}), 2, false);
 			}
 
@@ -426,14 +413,14 @@ void UIreneInputInstance::RightButton(float Rate)
 						Irene->IreneSpirit = nullptr;
 					}
 					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
-					Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
+					Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
 					if(Irene->IreneSpirit != nullptr)
 					{
 						Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
 					}
 					else
 					{
-						Irene->IreneSpirit = Irene->GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
+						Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
 						if(Irene->IreneSpirit != nullptr)
 							Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
 						else
@@ -530,7 +517,7 @@ void UIreneInputInstance::NonSpiritSkill()
 		GetWorld()->GetTimerManager().SetTimer(SwordSkill2WaitHandle, FTimerDelegate::CreateLambda([&]()
 		{
 			CanUseSecondSwordSkill = false;
-			SwordSkill2WaitHandle.Invalidate();
+			GetWorld()->GetTimerManager().ClearTimer(SwordSkill2WaitHandle);
 		}), CanSwordSkill2Time, false);
 	}
 			
@@ -582,7 +569,7 @@ void UIreneInputInstance::SpiritSkill()
 	}
 	if(Irene->GetMesh()->IsVisible())
 		Irene->Weapon->SetVisibility(true);
-	Irene->GetWorld()->GetTimerManager().SetTimer(SpiritSpawnWaitHandle,this, &UIreneInputInstance::SpawnSpirit, SpiritSpawnCoolTime, false);
+	GetWorld()->GetTimerManager().SetTimer(SpiritSpawnWaitHandle,this, &UIreneInputInstance::SpawnSpirit, SpiritSpawnCoolTime, false);
 }
 void UIreneInputInstance::SpawnSpirit()
 {
@@ -677,7 +664,7 @@ void UIreneInputInstance::DodgeKeyword()
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
-		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop)
+		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
 	{
 		// 잔상 공격 중 회피
 		if(Irene->IreneSpirit != nullptr)
@@ -718,12 +705,12 @@ void UIreneInputInstance::DodgeKeyword()
 			{
 				Irene->IreneData.IsInvincibility = false;
 			}
-			 DodgeInvincibilityTimerHandle.Invalidate();
+			GetWorld()->GetTimerManager().ClearTimer(DodgeInvincibilityTimerHandle);
 		 }), InvincibilityTime, false);
 		
 		GetWorld()->GetTimerManager().SetTimer(DodgeInputWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
-			 DodgeInputWaitHandle.Invalidate();
+			GetWorld()->GetTimerManager().ClearTimer(DodgeInputWaitHandle);
 		 }), AttackTable->C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
 	}
 }
@@ -739,12 +726,12 @@ void UIreneInputInstance::PerfectDodge()
 			Irene->IreneAnim->SetDodgeDir(0);
 			SetStopMoveAutoTarget();
 			PerfectDodgeTimeEnd();
-			 PerfectDodgeTimerHandle.Invalidate();
+			GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
 		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
-		 PerfectDodgeInvincibilityTimerHandle.Invalidate();
+		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeInvincibilityTimerHandle);
 	 }), InvincibilityTime * UGameplayStatics::GetGlobalTimeDilation(this), false);
 	
 	const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(FName("Perfect_Dodge")));
@@ -832,11 +819,18 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			if(!Irene->bIsSpiritStance)
 			{
 				// 정령 스탠스 적용
-				SwordSkillWaitHandle.Invalidate();
+				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
-				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);				
+				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
+				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,FTimerDelegate::CreateLambda([&]
+				{
+					GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+					bIsStun = true;
+					GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]{bIsStun = false;}), 10, false);
+					SpiritChangeKeyword();
+				}), 80, false);				
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
 				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
@@ -847,7 +841,10 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			else
 			{
 				// 정령 스탠스 해제
-				SwordSkillWaitHandle.Invalidate();
+				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+
+				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
 
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAttack->AttackTimeEndState();
@@ -868,22 +865,18 @@ void UIreneInputInstance::SpiritChangeTimeOver()
 	if(Irene->bIsSpiritStance)
 	{
 		SpiritTimeOverDeBuff();
-		GetWorld()->GetTimerManager().SetTimer(SpiritTimeOverTimer,this, &UIreneInputInstance::SpiritTimeOverDeBuff, 3, true);
-		//Irene->IreneAnim->StopAllMontages(0);
-		//Irene->IreneAttack->AttackTimeEndState();
-		WeaponChangeWaitHandle.Invalidate();
+		GetWorld()->GetTimerManager().SetTimer(SpiritTimeDamageOverTimer,this, &UIreneInputInstance::SpiritTimeOverDeBuff, 0.2, true);
+		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 	}
 }
 void UIreneInputInstance::SpiritTimeOverDeBuff()
 {
-	if(!Irene->bIsSpiritStance)
+	if(!Irene->bIsSpiritStance || Irene->IreneState->IsDeathState())
 	{
-		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeOverTimer);
-		SpiritTimeOverTimer.Invalidate();
+		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeDamageOverTimer);
 		return;
 	}
-	Irene->SetHP(150);
-	Irene->IreneAttack->SetThunderDeBuffStack(1);
+	Irene->SetHP(100);
 }
 #pragma endregion Spirit
 
