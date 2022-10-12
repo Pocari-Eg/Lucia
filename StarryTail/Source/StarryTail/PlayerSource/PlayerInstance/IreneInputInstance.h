@@ -22,19 +22,21 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
+
+	UPROPERTY()
+	AActor* BreakAttackSpirit;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
 	bool bReAttack;
-	
-	FTimerHandle AttributeChangeFireTimer;
-	FTimerHandle AttributeChangeWaterTimer;
-	FTimerHandle AttributeChangeElectricTimer;
 
 	// 정령 상태 지속 시간 넘김
 	FTimerHandle SpiritTimeDamageOverTimer;
 	FTimerHandle SpiritTimeStunOverTimer;
 
+	// 브레이킹어택 정령 지속 시간
+	FTimerHandle BreakAttackSpiritTimeTimer;
+	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
 	// 스턴 상태인지 확인
@@ -173,6 +175,9 @@ public:
 	void SpiritChangeTimeOver();
 	void SpiritTimeOverDeBuff();
 
+	// 브레이킹어택
+	void BreakAttackKeyword();
+	
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
