@@ -32,6 +32,10 @@ ABouldelith::ABouldelith()
 	FindRimitTime = 5.0f;
 	FindRimitTimer = 0.0f;
 	RotateSpeed = 1.0f;
+
+	StateChangeParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StateChangeParticle"));
+	StateChangeParticle->SetupAttachment(GetMesh());
+	StateChangeParticle->SetAutoActivate(false);
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
@@ -770,6 +774,21 @@ void ABouldelith::SetBattleRunState(bool State)
 	}
 }
 
+void ABouldelith::SetStatueState(bool State)
+{
+	auto AIController = Cast<ABdAIController>(GetAIController());
+	if (AIController != nullptr)
+	{
+		AIController->SetStatueKey(State);
+	}
+
+	if (!State)
+	{
+		StateChangeParticle->SetActive(true, true);
+	}
+
+}
+
 float ABouldelith::GetPlayerMaxDistance() const
 {
 	return BouldelithInfo.M_PlayerMaxDistance;
@@ -1024,7 +1043,7 @@ void ABouldelith::BeginPlay()
 	auto BdAIController = Cast<ABdAIController>(MonsterAIController);
 	if (BdAIController != nullptr)
 	{
-		BdAIController->SetStatueKey(true);
+		SetStatueState(true);
 		BdAnimInstance->StopAllMontages(0.0f);
 
 		if (WalkPoint != nullptr)
