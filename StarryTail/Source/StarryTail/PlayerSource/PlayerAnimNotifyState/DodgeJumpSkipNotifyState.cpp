@@ -4,6 +4,7 @@
 #include "DodgeJumpSkipNotifyState.h"
 
 #include "../IreneCharacter.h"
+#include "../PlayerSpirit/IreneSpirit.h"
 
 UDodgeJumpSkipNotifyState::UDodgeJumpSkipNotifyState()
 {
@@ -14,10 +15,18 @@ void UDodgeJumpSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
 
-	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanDodgeJumpSkip(true);
+	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneAttack->SetCanDodgeJumpSkip(true);
+		}
 	}
 }
 void UDodgeJumpSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
@@ -28,9 +37,18 @@ void UDodgeJumpSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPa
 void UDodgeJumpSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	}
+	else
+	{
+		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
+		if(Spirit != nullptr)
+		{
+			Spirit->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+		}
 	}
 }
 

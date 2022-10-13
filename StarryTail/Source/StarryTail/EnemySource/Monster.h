@@ -154,12 +154,15 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Shield, Meta = (AllowPrivateAccess = true))
 	UMonsterShield* MonsterShield;
 
-
+	//shield
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
-	class	UCapsuleComponent* Collision;
+	UCapsuleComponent* ShieldCollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
-	class	UParticleSystemComponent* ShiledEffectComponent;
-
+	UParticleSystemComponent* ShiledCrackEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledHitEffectComponent;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShiledEffectComponent;
 
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
@@ -282,7 +285,7 @@ public:
 	float GetSupportPatrolRadius() const;
 	float GetAttackedTime() const;
 	EAttributeKeyword GetAttribute() const;
-
+	float GetAttackTraceInterver() const;
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -299,7 +302,7 @@ public:
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorl(class AEnemySpawnPoint* Object);
 	void SetDpsCheck(bool state);
-
+	void InitWalkSpeed();
 
 	//Stack
 	UFUNCTION(BlueprintCallable)
@@ -310,6 +313,8 @@ public:
 	void  ExplodeStackEvent();
 	void AddStackCount(int Count);
 	void StackExplode();
+	UFUNCTION(BlueprintCallable)
+	void MaxStackExplode();
 	void InitStackCount();
 	float CalcStackDamage(int StackCount);
 

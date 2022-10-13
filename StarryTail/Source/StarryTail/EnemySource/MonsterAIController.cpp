@@ -54,6 +54,7 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 void AMonsterAIController::Groggy()
 {
 	SetPlayer();
+	StopMovement();
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 }
 void AMonsterAIController::Death()

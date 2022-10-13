@@ -32,6 +32,10 @@ ABouldelith::ABouldelith()
 	FindRimitTime = 5.0f;
 	FindRimitTimer = 0.0f;
 	RotateSpeed = 1.0f;
+
+	StateChangeParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StateChangeParticle"));
+	StateChangeParticle->SetupAttachment(GetMesh());
+	StateChangeParticle->SetAutoActivate(false);
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()
@@ -765,7 +769,24 @@ void ABouldelith::SetBattleRunState(bool State)
 	if (AIController != nullptr)
 	{
 		AIController->SetBattleRunKey(State);
+
+
 	}
+}
+
+void ABouldelith::SetStatueState(bool State)
+{
+	auto AIController = Cast<ABdAIController>(GetAIController());
+	if (AIController != nullptr)
+	{
+		AIController->SetStatueKey(State);
+	}
+
+	if (!State)
+	{
+		StateChangeParticle->SetActive(true, true);
+	}
+
 }
 
 float ABouldelith::GetPlayerMaxDistance() const
@@ -959,11 +980,6 @@ void ABouldelith::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
-	MonsterShield->InitShieldEffect(MonsterEffect.ShieldEffect,MonsterInfo.MonsterShieldLocation, MonsterInfo.MonsterShieldScale,MonsterInfo.MaxStackCount);
-	MonsterShield->InitShieldCollision(MonsterInfo.ShieldCollisionHeight,MonsterInfo.ShieldCollisionRadius);
-
 	BdAnimInstance->BackstepEnd.AddLambda([this]() -> void {
 		BackstepEnd.Broadcast();
 		});
@@ -1027,14 +1043,14 @@ void ABouldelith::BeginPlay()
 	auto BdAIController = Cast<ABdAIController>(MonsterAIController);
 	if (BdAIController != nullptr)
 	{
-		BdAIController->SetStatueKey(true);
+		SetStatueState(true);
 		BdAnimInstance->StopAllMontages(0.0f);
 
 		if (WalkPoint != nullptr)
 			BdAIController->SetWalkPoint(WalkPoint->GetActorLocation());
 	}
 
-
+	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
 	
 }
 void ABouldelith::PossessedBy(AController* NewController)

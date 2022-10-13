@@ -143,6 +143,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack1State final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float EndTime;
 	float StartShakeTime;
 public:
 	static UBasicAttack1State* GetInstance();
@@ -155,6 +156,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack2State final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float EndTime;
 	float StartShakeTime;
 public:
 	static UBasicAttack2State* GetInstance();
@@ -167,6 +169,7 @@ UCLASS()
 class STARRYTAIL_API UBasicAttack3State final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float EndTime;
 	float StartShakeTime;
 public:
 	static UBasicAttack3State* GetInstance();
@@ -182,8 +185,9 @@ UCLASS()
 class STARRYTAIL_API USwordSkill1 final : public UObject, public IState
 {
 	GENERATED_BODY()
-public:
+	float EndTime;
 	float StartShakeTime;
+public:
 	static USwordSkill1* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
@@ -194,8 +198,9 @@ UCLASS()
 class STARRYTAIL_API USwordSkill2 final : public UObject, public IState
 {
 	GENERATED_BODY()
-public:
+	float EndTime;
 	float StartShakeTime;
+public:
 	static USwordSkill2* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
@@ -206,9 +211,36 @@ UCLASS()
 class STARRYTAIL_API USpiritSkill1 final : public UObject, public IState
 {
 	GENERATED_BODY()
-public:
+	float EndTime;
 	float StartShakeTime;
+public:
 	static USpiritSkill1* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
+UCLASS()
+class STARRYTAIL_API USpiritSkill2 final : public UObject, public IState
+{
+	GENERATED_BODY()
+	float EndTime;
+	float StartShakeTime;
+public:
+	static USpiritSkill2* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
+UCLASS()
+class STARRYTAIL_API USpiritSkill3 final : public UObject, public IState
+{
+	GENERATED_BODY()
+	float EndTime;
+	float StartShakeTime;
+public:
+	static USpiritSkill3* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
@@ -246,6 +278,16 @@ class STARRYTAIL_API UHit2State final : public UObject, public IState
 	GENERATED_BODY()
 public:
 	static UHit2State* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+};
+UCLASS()
+class STARRYTAIL_API UKnockBackState final : public UObject, public IState
+{
+	GENERATED_BODY()
+public:
+	static UKnockBackState* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;
@@ -299,7 +341,6 @@ public:
 	}
 
 	FString GetStateToString() const;
-	FName GetStateToAttackDataTableName() const;
 
 	bool IsIdleState()const;
 	bool IsRunState()const;

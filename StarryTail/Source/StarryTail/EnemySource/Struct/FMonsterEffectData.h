@@ -24,9 +24,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* GroggyEffect;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	 UParticleSystem* ShieldEffect;
-
 	//Rotation, Scale
 	//Hit
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

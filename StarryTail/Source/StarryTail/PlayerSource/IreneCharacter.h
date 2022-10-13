@@ -61,6 +61,13 @@ public:
 	class UIreneInputInstance* IreneInput;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneSoundInstance* IreneSound;
+
+	// 정령 블루프린트
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AActor> IreneSpiritOrigin;
+	UPROPERTY(EditAnywhere)
+	class AIreneSpirit* IreneSpirit;
+	
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
 
@@ -162,8 +169,6 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
-	UFUNCTION(BluePrintCallable)
-	void DoAttack(AActor* Actor){IreneAttack->SpiritDoAttack(Actor);}
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -197,8 +202,6 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateTailEvent();
-	UFUNCTION(BlueprintImplementableEvent)
-	void SpawnGhostEvent();
 	
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
@@ -218,11 +221,11 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 
-	void PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	void PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower);
 	FVector KnockBackDir;
-	float KonckBackTimer;
+	float KnockBackTimer;
 	float KnockBackTime;
-	float KonckBackPower;
+	float KnockBackPower;
 	bool bIsKnockBack;
 
 #pragma endregion Battle

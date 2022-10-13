@@ -46,25 +46,8 @@ private:
 	// 피격이나 사망 전 공격 테이블 이름
 	FString DamageBeforeTableName;
 	
-	// 디버프 효과 타이머
-	FTimerHandle FireDeBuffStackTimerHandle;
-	FTimerHandle FireDeBuffTickTimerHandle;
-	FTimerHandle WaterDeBuffStackTimerHandle;
-	FTimerHandle ThunderDeBuffStackTimerHandle;
-	FTimerHandle ThunderDeBuffTickTimerHandle;
-
-	// 디버프 중첩 단계
-	int FireDeBuffStack;
-	int WaterDeBuffStack;
-	int ThunderDeBuffStack;
-
-	//스택 카운트 저장
+	// 스택 카운트 저장
 	int StackCount;
-
-	// 불속성 몬스터 고정 데미지
-	float FireMonsterDamageAmount;
-	// 전기 디버프 작동 시간
-	float ThunderSustainTime;
 	
 	// 타켓 추적 유무
 	bool bFollowTarget;
@@ -96,6 +79,8 @@ private:
 	bool bDodgeJumpSkip;
 	// 후딜 중 스킬 사용 가능 타이밍 노티파이
 	bool bSkillSkip;
+	// 스킬 사용 중 일반 공격 가능 타이밍 노티파이
+	bool bSkillToAttack;
 public:
 	void Init(AIreneCharacter* Value);
 
@@ -111,18 +96,7 @@ public:
 	void AttackCheck();
 	void AttackStopCheck();
 	void DoAttack();
-	void SpiritDoAttack(AActor* Actor);
 	void SendDamage(bool bResult, TArray<FHitResult> MonsterList);
-	
-	// 디버프 스택 함수
-	void SetFireDeBuffStack(const int Value, const float DamageAmount);
-	void SetWaterDeBuffStack(const int Value);
-	void SetThunderDeBuffStack(const int Value);
-	void LoopFireDeBuff()const;
-	void ResetFireDeBuffStack();
-	void ResetWaterDeBuffStack();
-	void ResetThunderDeBuffStack();
-	void OverSustainTime();
 	
 	FAttackDataTable* GetNameAtAttackDataTable(const FName Value) const { if (Value != FName("")) return (AttackDataTable->FindRow<FAttackDataTable>(Value, "")); return nullptr; }
 	FElementDataTable* GetNameAtElementDataTable(const FName Value) const { if (Value != FName("")) return (ElementDataTable->FindRow<FElementDataTable>(Value, "")); return nullptr; }
@@ -130,7 +104,7 @@ public:
 	FWeaponSoul* GetNameAtWeaponSoulDataTable() const { return WeaponSoulDataTable->FindRow<FWeaponSoul>(FName("Weapon_Soul"), "");}
 
 #pragma region GetSet
-	//공격력 반환
+	// 공격력 반환
 	float GetATK()const;
 
 	FName GetBasicAttackDataTableName();
@@ -146,10 +120,7 @@ public:
 	bool GetCanMoveSkip()const{return bMoveSkip;}
 	bool GetCanDodgeJumpSkip()const{return bDodgeJumpSkip;}
 	bool GetCanSkillSkip()const{return bSkillSkip;}
-	int GetFireDeBuffStack()const{return FireDeBuffStack;}
-	int GetWaterDeBuffStack()const{return WaterDeBuffStack;}
-	int GetThunderDeBuffStack()const{return ThunderDeBuffStack;}
-	float GetThunderSustainTime()const{return ThunderSustainTime;}
+	bool GetCanSkillToAttack()const{return bSkillToAttack;}
 	bool GetIsPerfectDodge()const{return IsPerfectDodge;}
 
 	void SetAttackState()const;
@@ -165,11 +136,12 @@ public:
 	void SetCanMoveSkip(const bool Value){bMoveSkip = Value;}
 	void SetCanDodgeJumpSkip(const bool Value){bDodgeJumpSkip = Value;}
 	void SetCanSkillSkip(const bool Value){bSkillSkip = Value;}
-	void SetThunderSustainTime(const float Value){ThunderSustainTime = Value;}
+	void SetCanSkillToAttack(const bool Value){bSkillToAttack = Value;}
 	void SetIsPerfectDodge(const bool Value);
 	void SetIsPerfectDodgeMonster(AActor* Monster) { PerfectDodgeMonster = Monster; }
 	void SetTrueAttackCount(const int Value) { TrueAttackCount = Value; }
 	void SetDamageBeforeTableName(const FString Value) {DamageBeforeTableName = Value;}
+	void SetStackCount(const int Value) {StackCount = Value;}
 #pragma endregion GetSet
 
 private:

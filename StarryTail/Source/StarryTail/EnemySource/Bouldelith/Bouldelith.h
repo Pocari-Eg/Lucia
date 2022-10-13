@@ -71,6 +71,7 @@ public:
 	void SetIsUseBackstep(bool Value);
 
 	void SetBattleRunState(bool State);
+	void SetStatueState(bool State);
 
 	float GetPlayerMaxDistance()const;
 	float GetAttack3Distance()const;
@@ -94,6 +95,9 @@ private:
 		FBouldelithDataStruct BouldelithInfo;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PatrolList, Meta = (AllowPrivateAccess = true))
 		TArray<ABouldelithPatrolTarget*> PatrolList;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* StateChangeParticle;
+
 	ABouldelithPatrolTarget* UsePatrol;
 	UBdAnimInstance* BdAnimInstance;
 

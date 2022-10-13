@@ -13,6 +13,7 @@
 #include"./Bellyfish/BellyfishAIController.h"
 
 #include "MonsterAIController.h"
+#include "MonsterProjectile.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/PlayerInstance/IreneAttackInstance.h"
@@ -73,8 +74,9 @@ AMonster::AMonster()
 	if (UI_StackWidget.Succeeded()) {
 
 		StackWidget->SetWidgetClass(UI_StackWidget.Class);
-		StackWidget->SetDrawSize(FVector2D(50.0f,50.0f));
+		StackWidget->SetDrawSize(FVector2D(512.0f,512.0f));
 		StackWidget->bAutoActivate = false;
+		StackWidget->SetWorldScale3D(FVector(0.5f, 0.5f, 0.5f));
 	}
 	bIsSpawnEnemy = false;
 	bIsObject = false;
@@ -111,12 +113,28 @@ AMonster::AMonster()
 	}
 	bIsDodgeOn = false;
 
+
 	MonsterShield = CreateDefaultSubobject<UMonsterShield>(TEXT("SHEILD"));
 	MonsterShield->SetupAttachment(RootComponent);
 
 
+	ShieldCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SHEILD_COLLISION"));
+	ShiledEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_EFFECT"));
+	ShiledCrackEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_CRACK_EFFECT"));
+	ShiledHitEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("SHEILD_HIT_EFFECT"));
+
+	ShieldCollision->SetupAttachment(MonsterShield);
+	ShiledEffectComponent->SetupAttachment(MonsterShield);
+	ShiledCrackEffectComponent->SetupAttachment(MonsterShield);
+	ShiledHitEffectComponent->SetupAttachment(MonsterShield);
+	ShiledCrackEffectComponent->SetAutoActivate(false);
+	ShiledHitEffectComponent->SetAutoActivate(false);
+
+	ShieldCollision->SetCollisionProfileName("Shield");
+
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
+	MonsterInfo.M_AttackTraceInterver = 0.5f;
 }
 #pragma region Init
 
@@ -260,6 +278,11 @@ EAttributeKeyword AMonster::GetAttribute() const
 	return MonsterInfo.MonsterAttribute;
 }
 
+float AMonster::GetAttackTraceInterver() const
+{
+	return MonsterInfo.M_AttackTraceInterver;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -343,6 +366,11 @@ void AMonster::SetDpsCheck(bool state)
 }
 
 
+void AMonster::InitWalkSpeed()
+{
+	MonsterInfo.DefaultMoveSpeed = MonsterInfo.M_MoveSpeed;
+}
+
 int AMonster::GetCurStackCount()
 {
 	return MonsterInfo.CurStackCount;
@@ -417,48 +445,45 @@ void AMonster::AddStackCount(int Count)
 void AMonster::StackExplode()
 {
 
-	if (GetIsMonsterShieldActive())
+	if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
 	{
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
-			MonsterShield->CalcDurability(-1.0f);
-			OnBarrierChanged.Broadcast();
 
-		  //	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
-			//MonsterInfo.OverStackCount = 0;
-			MonsterInfo.bIsStackCheck = false;
-			MonsterInfo.StackCheckTimer = 0.0f;
+		ExplodeStackEvent();
 
-			/*	if (MonsterInfo.CurStackCount == 0)
-				{
-					InitStackCount();
-				}*/
-
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}
-
-	
-			ExplodeStackEvent();
-			
-		}
-		else {
-			/*MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
-			OnBarrierChanged.Broadcast();
-			InitStackCount();
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}*/
-
-
-		}
 	}
 	else {
 
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
+		InitStackCount();
+	}
+}
+
+void AMonster::MaxStackExplode()
+{
+
+	if (GetIsMonsterShieldActive()) {
+		MonsterShield->CalcDurability(-1.0f);
+		OnBarrierChanged.Broadcast();
+
+		//	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+		  //MonsterInfo.OverStackCount = 0;
+		MonsterInfo.bIsStackCheck = false;
+		MonsterInfo.StackCheckTimer = 0.0f;
+
+		/*	if (MonsterInfo.CurStackCount == 0)
+			{
+				InitStackCount();
+			}*/
+
+		if (!GetIsMonsterShieldActive())
+		{
+			ShieldDestroyed();
+			SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+		}
+
+	}
+	else {
+
+	
 			CalcHp(99999999.9f);
 
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
@@ -469,30 +494,26 @@ void AMonster::StackExplode()
 				{
 					InitStackCount();
 				}*/
-			ExplodeStackEvent();
-		}
-		else {
-			//CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
 
 		
-		}
 	
+		
 	}
-
 	InitStackCount();
-
 
 }
 
 void AMonster::InitStackCount()
 {
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
 	MonsterInfo.CurStackCount =0;
 	MonsterInfo.OverStackCount = 0;
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 
 
 	OnStackCountEvent();
@@ -1045,6 +1066,8 @@ void AMonster::PostInitializeComponents()
 	//사운드 세팅
 	SoundInstance = NewObject<UMonsterSoundInstance>(this);
 	SoundInstance->Init();
+	MonsterShield->InitShield(ShieldCollision, ShiledEffectComponent, ShiledCrackEffectComponent, ShiledHitEffectComponent);
+
 }
 
 // Called every frame
@@ -1323,7 +1346,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					if (MonsterShield->GetShieldAcitve())
 					{
 						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
-						Player->PlayerKnokcBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
+						Player->PlayerKnockBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
 
 					}
 					else {
@@ -1357,6 +1380,38 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	
 			return FinalDamage;
+		}
+	}
+	if (Cast<AMonsterProjectile>(DamageCauser))
+	{
+		if (!bIsObject) {
+
+
+
+			if (GetIsMonsterShieldActive()) {
+
+				MonsterShield->CalcDurability(1);
+				OnBarrierChanged.Broadcast();
+				CalcHp(CalcNormalAttackDamage(1));
+
+
+				if (MonsterShield->GetShieldAcitve())
+				{
+					SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
+
+				}
+				else {
+					ShieldDestroyed();
+					SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+				}
+
+
+			}
+			else {
+				CalcHp(1);
+
+			}
+
 		}
 	}
 	return FinalDamage;

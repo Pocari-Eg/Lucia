@@ -219,12 +219,20 @@ FSoundSetting* USTGameInstance::GetSoundSetting()
 #pragma region Stack
 void USTGameInstance::ExplodeCurStackMonster()
 {
-	
-	while (StackMonster.Num() != 0)
+	int size =StackMonster.Num();
+
+	for (int i = 0; i<size; i++)
+	{
+		if(StackMonster[i]!=nullptr)
+		StackMonster[i]->StackExplode();
+	}
+	StackMonster.Empty();
+	/*while (StackMonster.Num() != 0)
 	{
 		StackMonster[0]->StackExplode();
 
-	}
+	}*/
+
 }
 
 void USTGameInstance::InsertStackMonster(AMonster* Monster)
@@ -241,7 +249,7 @@ void USTGameInstance::DeleteStackMonster(AMonster* Monster)
 		for (int i = 0; i < StackMonster.Num(); i++)
 			if (StackMonster[i] == Monster)
 			{
-				StackMonster.RemoveAt(i);
+				StackMonster[i] = nullptr;
 				Monster->StackWidgetOff();
 				return;
 			}

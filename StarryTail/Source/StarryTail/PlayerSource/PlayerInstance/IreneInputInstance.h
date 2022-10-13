@@ -22,21 +22,26 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
+
+	UPROPERTY()
+	AActor* BreakAttackSpirit;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
 	bool bReAttack;
-	
-	FTimerHandle AttributeChangeFireTimer;
-	FTimerHandle AttributeChangeWaterTimer;
-	FTimerHandle AttributeChangeElectricTimer;
 
-	// 
-	FTimerHandle SpiritTimeOverTimer;
+	// 정령 상태 지속 시간 넘김
+	FTimerHandle SpiritTimeDamageOverTimer;
+	FTimerHandle SpiritTimeStunOverTimer;
+
+	// 브레이킹어택 정령 지속 시간
+	FTimerHandle BreakAttackSpiritTimeTimer;
 	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
-
+	// 스턴 상태인지 확인
+	bool bIsStun;
+	
 	// 회피 사용 가능
 	bool bIsDodgeOn;
 	// 최대 회피 횟수
@@ -48,9 +53,11 @@ private:
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-	// 창에서 검으로 변경
+	// 검에서 창으로 변경 이후 시간 지나서 디버프 발동
 	FTimerHandle WeaponChangeWaitHandle;
-	
+	// 검에서 창으로 변경 이후 강제 검으로 변경
+	FTimerHandle WeaponChangeMaxWaitHandle;
+
 	// 스킬 사용중
 	bool bIsSkillOn;
 	// 공격 중 스킬 사용
@@ -98,6 +105,11 @@ private:
 	float DodgeCoolTime;
 	// 회피 회복 쿨타임
 	FTimerHandle DodgeWaitHandle;
+
+	// 잔상 소환 딜레이
+	FTimerHandle SpiritSpawnWaitHandle;
+	// 잔상 소환 딜레이 쿨타임
+	float SpiritSpawnCoolTime;
 	
 	bool bSkillCameraMove;
 	float SkillCameraPlayTime;
@@ -118,7 +130,6 @@ public:
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
-	void ThunderDeBuffKey();
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
 	void MoveA(float Rate);
@@ -140,6 +151,7 @@ public:
 	void RightButton(float Rate);
 	void NonSpiritSkill();
 	void SpiritSkill();
+	void SpawnSpirit();
 	void SkillWait();
 	void SwordSkillEndWait();
 
@@ -163,6 +175,11 @@ public:
 	void SpiritChangeTimeOver();
 	void SpiritTimeOverDeBuff();
 
+	// 브레이킹어택
+	void BreakAttackKeyword();
+	// 브레이킹어택 종료
+	void BreakAttackEnd();
+	
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
