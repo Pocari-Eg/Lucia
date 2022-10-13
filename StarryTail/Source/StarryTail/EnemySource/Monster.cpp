@@ -13,6 +13,7 @@
 #include"./Bellyfish/BellyfishAIController.h"
 
 #include "MonsterAIController.h"
+#include "MonsterProjectile.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/PlayerInstance/IreneAttackInstance.h"
@@ -1379,6 +1380,38 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 	
 			return FinalDamage;
+		}
+	}
+	if (Cast<AMonsterProjectile>(DamageCauser))
+	{
+		if (!bIsObject) {
+
+
+
+			if (GetIsMonsterShieldActive()) {
+
+				MonsterShield->CalcDurability(1);
+				OnBarrierChanged.Broadcast();
+				CalcHp(CalcNormalAttackDamage(1));
+
+
+				if (MonsterShield->GetShieldAcitve())
+				{
+					SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
+
+				}
+				else {
+					ShieldDestroyed();
+					SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+				}
+
+
+			}
+			else {
+				CalcHp(1);
+
+			}
+
 		}
 	}
 	return FinalDamage;
