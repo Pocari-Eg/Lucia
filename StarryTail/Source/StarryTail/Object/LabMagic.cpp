@@ -3,18 +3,22 @@
 
 #include "LabMagic.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "Kismet/GameplayStatics.h"
 // Sets default values
 ALabMagic::ALabMagic()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	AreaCheckCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AREACEHCK"));
+	MagicAOECollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AREACEHCK"));
 	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AttackSign_Particle"));
 
-	AreaCheckCollision->SetupAttachment(RootComponent);
-	ExplosionSignEffectComponent->SetupAttachment(RootComponent);
+	RootComponent = ExplosionSignEffectComponent;
 
-	ExplosionSignEffectComponent->SetAutoActivate(false);
+	MagicAOECollision->SetupAttachment(RootComponent);
+	ExplosionSignEffectComponent->SetAutoActivate(true);
+
+	MagicAOECollision->SetCollisionProfileName("AOE");
+	MagicAOECollision->SetGenerateOverlapEvents(false);
 
 	Explosion_Wait_Time = 10.0f;
 	Explosion_SignWait_Time = 10.0f;
@@ -27,7 +31,18 @@ ALabMagic::ALabMagic()
 	Explosion_SignWait_Timer = 0.0f;
 
 	bIsExplosion_Timer = false;
-	Explosion_Timer = 0.0f;
+	Explosion_Timer = 5.0f;
+
+
+	SpiritRecovery_Gauge = 3.0f;
+	SpiritRecovery_HP = 10.0f;
+
+	MagicAOE_Power = 50.0f;
+
+	MagicAOE_Time = 0.5f;
+
+	MagicAOE_Timer=0.0f;
+
 	
 }
 void ALabMagic::StartExplosionSignWait()
@@ -42,6 +57,16 @@ void ALabMagic::ExplosionSign()
 
 	ExplosionSignEffectComponent->SetActive(true, true);
 	bIsExplosion_Wait_Timer = true;
+
+	//정령 발판 생성 및 정령 움직이기 
+
+	if (SpiritPlates.Num() != 0)
+	{
+		for (int i = 0; i < SpiritPlates.Num(); i++)
+		{
+			SpiritPlates[i]->SpiritPlateOn();
+		}
+	}
 }
 
 void ALabMagic::StartExplosion()
@@ -49,18 +74,83 @@ void ALabMagic::StartExplosion()
 	bIsExplosion_Wait_Timer = false;
 	Explosion_Wait_Timer = 0.0f;
 	ExplosionSignEffectComponent->SetActive(false, true);
+
+	MagicAOECollision->SetGenerateOverlapEvents(true);
+	bIsExplosion_Timer = true;
+
 }
 
-void ALabMagic::Explosion()
+void ALabMagic::EndExplosion()
 {
+	MagicAOECollision->SetGenerateOverlapEvents(false);
+	bIsExplosion_Timer = false;
+	Explosion_Time = 0.0f;
+	AOEInActor.Empty();
+
+	if (SpiritPlates.Num() != 0)
+	{
+		for (int i = 0; i < SpiritPlates.Num(); i++)
+		{
+			SpiritPlates[i]->SpiritPlateOff();
+		}
+	}
+
+	MagicAOECollision->SetRelativeLocation(InitLocation);
+}
+
+void ALabMagic::Explosion(float DeltaTime)
+{
+	FVector ForwardVec = GetActorForwardVector();
+	ForwardVec.Normalize();
+	MagicAOECollision->SetRelativeLocation(MagicAOECollision->GetRelativeLocation() + (ForwardVec * MagicAOE_Speed * DeltaTime));
+}
+
+void ALabMagic::AOEAttack()
+{
+	if (AOEInActor.Num() != 0)
+	{
+		for (int i = 0; i < AOEInActor.Num(); i++)
+		{
+			UGameplayStatics::ApplyDamage(AOEInActor[i], MagicAOE_Power, NULL, this, NULL);
+		}
+	}
+	MagicAOE_Timer = 0.0f;
 }
 
 // Called when the game starts or when spawned
 void ALabMagic::BeginPlay()
 {
 	Super::BeginPlay();
+	ExplosionSignEffectComponent->SetActive(false, true);
+	StartExplosionSignWait();
+	MagicAOECollision->OnComponentBeginOverlap.AddDynamic(this, &ALabMagic::OnBeginOverlap);
+
+
+	if (SpiritPlates.Num() != 0)
+	{
+		for (int i = 0; i < SpiritPlates.Num(); i++)
+		{
+			SpiritPlates[i]->InitSpiritPlate(SpiritRecovery_HP, SpiritRecovery_Gauge);
+		}
+	}
 	
+
+	InitLocation = MagicAOECollision->GetRelativeLocation();
 }
+
+void ALabMagic::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if (AOEInActor.Num() != 0)
+	{
+		for (int i = 0; i < AOEInActor.Num(); i++)
+		{
+			if (AOEInActor[i] == OtherActor)return;
+		}
+	}
+	AOEInActor.Add(OtherActor);
+}
+
+
 
 // Called every frame
 void ALabMagic::Tick(float DeltaTime)
@@ -87,9 +177,18 @@ void ALabMagic::Tick(float DeltaTime)
 	if (bIsExplosion_Timer)
 	{
 		Explosion_Timer += DeltaTime;
-		if (Explosion_Timer >= Explosion_Time) {
-			Explosion();
+		MagicAOE_Timer += DeltaTime;
+		Explosion(DeltaTime);
+		if (Explosion_Timer >= Explosion_Time)
+		{
+			EndExplosion();
 		}
+
+		if (MagicAOE_Timer >= MagicAOE_Time)
+		{
+			AOEAttack();
+		}
+		
 	}
 }
 

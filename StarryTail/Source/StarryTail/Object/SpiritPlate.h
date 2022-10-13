@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Components/CapsuleComponent.h"
 #include "SpiritPlate.generated.h"
 
 UCLASS()
@@ -13,18 +14,34 @@ class STARRYTAIL_API ASpiritPlate : public AActor
 
 //var
 private:
- UPROPERTY(VisibleAnyWhere, Category = Mesh, meta = (AllowPrivateAccess = "ture"))
+ UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "ture"))
  UStaticMeshComponent* Mesh;
-	
+ UPROPERTY(EditAnywhere, Category = Mesh, meta = (AllowPrivateAccess = "ture"))
+ UCapsuleComponent* SpiritPlateColiision;
+ UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+ UParticleSystemComponent* PlateEffectComponent;
+
+
+ float SpiritRecovery_HP;
+ float SpiritRecovery_Gauge;
 public:	
 	// Sets default values for this actor's properties
 	ASpiritPlate();
 
 	
+	void SpiritPlateOn();
+	void SpiritPlateOff();
+	void InitSpiritPlate(float HP,float Gauge);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	UFUNCTION()
+	void OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

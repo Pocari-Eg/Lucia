@@ -2,14 +2,15 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "../EnemySource/MonsterProjectile.h"
 #include"SpiritPlate.h"
 #include "LabMagic.generated.h"
 
 UCLASS()
-class STARRYTAIL_API ALabMagic : public AActor
+class STARRYTAIL_API ALabMagic : public AMonsterProjectile
 {
 	GENERATED_BODY()
 
@@ -18,7 +19,7 @@ private:
  
 	//Min Var
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
-	UBoxComponent* AreaCheckCollision;
+	UBoxComponent* MagicAOECollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ExplosionSignEffectComponent;
 
@@ -46,6 +47,10 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	float SpiritRecovery_Gauge;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	TArray<ASpiritPlate*> SpiritPlates;
+
+
 
 	//Etc Var
 	bool bIsExplosion_Wait_Timer;
@@ -57,6 +62,13 @@ private:
 	bool bIsExplosion_Timer;
 	float Explosion_Timer;
 	
+
+	float MagicAOE_Timer;
+
+	TArray<AActor*> AOEInActor;
+
+
+	FVector InitLocation;
 public:	
 	// Sets default values for this actor's properties
 	ALabMagic();
@@ -67,6 +79,9 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	UFUNCTION()
+	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 public:	
 	// Called every frame
@@ -75,5 +90,9 @@ public:
 
 	void ExplosionSign();
 	void StartExplosion();
-	void Explosion();
+	void EndExplosion();
+
+	void Explosion(float DeltaTime);
+
+	void AOEAttack();
 };
