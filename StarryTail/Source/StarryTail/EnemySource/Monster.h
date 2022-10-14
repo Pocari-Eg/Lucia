@@ -286,6 +286,7 @@ public:
 	float GetAttackedTime() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetAttackTraceInterver() const;
+	FNormalMonsterInfo GetMonsterInfo() const;
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;

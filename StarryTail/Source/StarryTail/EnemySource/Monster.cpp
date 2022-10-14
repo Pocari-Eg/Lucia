@@ -283,6 +283,11 @@ float AMonster::GetAttackTraceInterver() const
 	return MonsterInfo.M_AttackTraceInterver;
 }
 
+FNormalMonsterInfo AMonster::GetMonsterInfo() const
+{
+	return MonsterInfo;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -484,7 +489,7 @@ void AMonster::MaxStackExplode()
 	else {
 
 	
-			CalcHp(99999999.9f);
+			CalcHp(MonsterInfo.StackDamage);
 
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
 			MonsterInfo.OverStackCount = 0;
