@@ -173,6 +173,7 @@ public:
 	// 스탠스 변경
 	void SpiritChangeKeyword();
 	void SpiritChangeTimeOver();
+	void SpiritChangeMaxTime();
 	void SpiritTimeOverDeBuff();
 
 	// 브레이킹어택
