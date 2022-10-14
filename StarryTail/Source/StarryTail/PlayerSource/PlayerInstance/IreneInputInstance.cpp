@@ -824,13 +824,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
-				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,FTimerDelegate::CreateLambda([&]
-				{
-					GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
-					bIsStun = true;
-					GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]{bIsStun = false;}), 10, false);
-					SpiritChangeKeyword();
-				}), 80, false);				
+				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,this, &UIreneInputInstance::SpiritChangeMaxTime, 80, false);				
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
 				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
@@ -851,7 +845,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->bIsSpiritStance = false;
 				Irene->PetMesh->SetVisibility(true); 
 			    
-				auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+				const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 				if (Instance != nullptr)
 				{
 					Instance->ExplodeCurStackMonster();
@@ -867,6 +861,16 @@ void UIreneInputInstance::SpiritChangeTimeOver()
 		SpiritTimeOverDeBuff();
 		GetWorld()->GetTimerManager().SetTimer(SpiritTimeDamageOverTimer,this, &UIreneInputInstance::SpiritTimeOverDeBuff, 0.2, true);
 		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+	}
+}
+void UIreneInputInstance::SpiritChangeMaxTime()
+{
+	if(Irene->bIsSpiritStance)
+	{
+		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+		bIsStun = true;
+		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]{bIsStun = false;}), 10, false);
+		SpiritChangeKeyword();
 	}
 }
 void UIreneInputInstance::SpiritTimeOverDeBuff()
