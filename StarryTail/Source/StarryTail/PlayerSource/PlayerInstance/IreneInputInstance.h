@@ -24,8 +24,12 @@ private:
 	class AIreneCharacter* Irene;
 
 	UPROPERTY()
-	AActor* BreakAttackSpirit;
-	bool bCameraStop;
+	ACharacter* BreakAttackSpirit;
+
+	UPROPERTY()
+	UParticleSystem* BreakAttackStartEffect;
+	UPROPERTY()
+	UParticleSystem* BreakAttackEndEffect;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
@@ -35,12 +39,16 @@ private:
 	FTimerHandle SpiritTimeDamageOverTimer;
 	FTimerHandle SpiritTimeStunOverTimer;
 
+	// 브레이킹어택 선딜애니 시간
+	FTimerHandle BreakAttackFirstAnimTimer;
 	// 브레이킹어택 카메라 정지 시간
-	FTimerHandle BreakAttackCameraStopTimeTimer;
+	FTimerHandle BreakAttackCameraStopTimer;
+	// 브레이킹어택 정령 공격 시간
+	FTimerHandle BreakAttackAttackTimer;
 	// 브레이킹어택 정령 지속 시간
-	FTimerHandle BreakAttackSpiritTimeTimer;
+	FTimerHandle BreakAttackSpiritTimer;
 	// 브레이킹어택 애니메이션 시간
-	FTimerHandle BreakAttackAnimTimeTimer;
+	FTimerHandle BreakAttackAnimTimer;
 	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
@@ -72,6 +80,13 @@ private:
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
 
+	// 카메라 이동 정지
+	bool bCameraStop;
+	// 브레이크 어택 쿨타임
+	FTimerHandle BreakAttackWaitHandle;
+	// 애니메이션 별 종료 시간
+	float BreakAttackWaitTime;
+	
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
 	FTimerHandle PerfectDodgeInvincibilityTimerHandle;
@@ -126,6 +141,8 @@ public:
 	void Init(AIreneCharacter* Value);
 	void Begin();
 private:
+	UIreneInputInstance();
+	
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
 
@@ -183,6 +200,10 @@ public:
 
 	// 브레이킹어택
 	void BreakAttackKeyword();
+	// 브레이킹어택 선딜
+	void BreakAttackFirst();
+	// 브레이킹어택 공격
+	void BreakAttackSendAttack();
 	// 브레이킹어택 종료
 	void BreakAttackEnd();
 	

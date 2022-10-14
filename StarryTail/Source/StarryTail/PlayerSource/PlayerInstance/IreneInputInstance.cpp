@@ -16,6 +16,17 @@
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../PlayerSpirit/IreneSpiritAnimInstance.h"
 
+UIreneInputInstance::UIreneInputInstance()
+{
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackStartEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_Spawn.Ps_Light_Spawn"));
+	static ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackEndEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_End.Ps_Light_End"));
+	if(BreakAttackStartEffectObject.Succeeded() && BreakAttackEndEffectObject.Succeeded())
+	{
+		BreakAttackStartEffect = BreakAttackStartEffectObject.Object;
+		BreakAttackEndEffect = BreakAttackEndEffectObject.Object;
+	}
+}
+
 void UIreneInputInstance::Init(AIreneCharacter* Value)
 {
 	SetIreneCharacter(Value);
@@ -305,11 +316,11 @@ void UIreneInputInstance::LeftButton(float Rate)
 				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
 			
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			// constexpr float WaitTime = 0.05f;
-			// GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-			// 	{
-			// 			GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
-			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			 constexpr float WaitTime = 0.05f;
+			 GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+			 	{
+			 			GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+			 	}), WaitTime, false);
 
 			if(AttackUseSkillNextCount>0)
 			{
@@ -690,7 +701,9 @@ void UIreneInputInstance::DodgeKeyword()
 
 		RecoveryDodge();
 		
-		Irene->IreneAnim->SetIsBreakAttack(false);
+		Irene->IreneAnim->SetIsStartBreakAttack(false);
+		Irene->IreneAnim->SetIsMoveStopBreakAttack(false);
+		Irene->IreneAnim->SetIsDoAttackBreakAttack(false);
 		Irene->IreneAnim->StopAllMontages(0);
 		
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
@@ -890,10 +903,28 @@ void UIreneInputInstance::SpiritTimeOverDeBuff()
 
 void UIreneInputInstance::BreakAttackKeyword()
 {
-	if(BreakAttackSpirit == nullptr && Irene->bIsSpiritStance)
+	if(BreakAttackSpirit == nullptr && !BreakAttackWaitHandle.IsValid() && Irene->bIsSpiritStance)
 	{
+		Irene->IreneAnim->StopAllMontages(0.0f);
+		
+		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("S_Dodge"));
+		
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			GetWorld()->GetTimerManager().ClearTimer(BreakAttackWaitHandle);
+		}), AttackTable->C_Time, false);
+
+		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+		{
+			const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+			Mon->MarkerOff();
+			Irene->IreneAnim->SetIsHaveTargetMonster(false);
+			Irene->IreneAnim->SetTargetMonster(nullptr);
+			Irene->IreneAttack->SwordTargetMonster = nullptr;
+		}
+		
 		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
-		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(100,100,600),Irene->CameraComp->GetComponentLocation());
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
 		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
 		Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
 
@@ -902,8 +933,7 @@ void UIreneInputInstance::BreakAttackKeyword()
 
 		Irene->bInputStop = true;
 		bCameraStop = true;
-		Irene->GetMesh()->SetVisibility(false,true);
-		Irene->IreneAnim->SetIsBreakAttack(true);
+		Irene->IreneAnim->SetIsStartBreakAttack(true);
 		
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 		{
@@ -921,43 +951,65 @@ void UIreneInputInstance::BreakAttackKeyword()
 		
 		const FVector SpawnLocation = Irene->GetActorLocation();
 		BreakAttackSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackCameraStopTimeTimer,[&]
+		BreakAttackSpirit->GetMesh()->SetVisibility(false,true);
+		
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackFirstAnimTimer,this,&UIreneInputInstance::BreakAttackFirst, 0.17f, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackAttackTimer,this,&UIreneInputInstance::BreakAttackSendAttack, 0.01f, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackCameraStopTimer,[&]
 		{
 			bCameraStop = false;
 			Irene->SpringArmComp->CameraLagSpeed = 10.0f;
-		}, 0.2f, false);
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackSpiritTimeTimer,this,&UIreneInputInstance::BreakAttackEnd, 0.4f, false);
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackAnimTimeTimer,[&]
-		{			
-			Irene->IreneAnim->SetIsBreakAttack(false);
-		}, 0.66f, false);
-
-		const float Dist = FVector::Dist(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());		
-		Irene->LaunchCharacter(Irene->GetActorForwardVector() * Dist * 1000, false, false);
+		}, 0.4f, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackSpiritTimer,this,&UIreneInputInstance::BreakAttackEnd, 0.4f, false);
 	}
 }
-void UIreneInputInstance::BreakAttackEnd()
+void UIreneInputInstance::BreakAttackFirst()
 {
+	Irene->GetMesh()->SetVisibility(false,true);
+	BreakAttackSpirit->GetMesh()->SetVisibility(true,true);
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BreakAttackStartEffect, Irene->GetActorLocation());
+	
 	if(Irene->IreneAttack->SwordTargetMonster == nullptr)
 		return;
 
 	const auto Mon = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+	const float Dist = FVector::Dist(Irene->IreneAttack->SwordTargetMonster->GetActorLocation(), Irene->GetActorLocation());
+	const float Collision = Irene->GetCapsuleComponent()->GetScaledCapsuleRadius() + Mon->GetCapsuleComponent()->GetScaledCapsuleRadius();
+	Irene->SetActorLocation(Irene->GetActorLocation()+Irene->GetActorForwardVector()*(Dist-Collision));
+}
+void UIreneInputInstance::BreakAttackSendAttack()
+{
+	if(Irene->IreneAttack->SwordTargetMonster == nullptr)
+		return;
+	
+	const auto Mon = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
 	if(Mon->GetCurStackCount() == 6)
 	{
-		if(Mon->GetIsMonsterShieldActive())
-		{
-			Mon->StackExplode();
-		}
-		else
-		{
-			Mon->StackExplode();
-		}
+		BreakAttackWaitTime = 0.66f;
+		Irene->IreneAnim->SetIsDoAttackBreakAttack(true);
+		Mon->StackExplode();
 	}
-
+	else
+	{
+		BreakAttackWaitTime = 0.83f;
+		Irene->IreneAnim->SetIsMoveStopBreakAttack(true);
+	}
+}
+void UIreneInputInstance::BreakAttackEnd()
+{	
+	GetWorld()->GetTimerManager().SetTimer(BreakAttackAnimTimer,[&]
+	{
+		Irene->IreneAnim->SetIsMoveStopBreakAttack(false);
+		Irene->IreneAnim->SetIsDoAttackBreakAttack(false);
+	}, BreakAttackWaitTime, false);
+	
+	Irene->IreneAnim->SetIsStartBreakAttack(false);
 	BreakAttackSpirit->Destroy();
 	BreakAttackSpirit = nullptr;
 	Irene->bInputStop = false;
-	
+
+	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BreakAttackEndEffect, Irene->GetActorLocation());
 	Irene->GetMesh()->SetVisibility(true,true);
 }
 

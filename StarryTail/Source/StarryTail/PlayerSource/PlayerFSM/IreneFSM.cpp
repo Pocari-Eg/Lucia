@@ -500,7 +500,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 	{
 		// ÆÛÆåÆ® ´åÁö
 		// ¿ÞÅ¬¸¯À¸·Î µµÁß ²÷±â
-		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.6f && CurState->Irene->IreneInput->bLeftButtonPressed)
+		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.0f && CurState->Irene->IreneInput->bLeftButtonPressed)
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
