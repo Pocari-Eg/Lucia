@@ -35,6 +35,8 @@ void UIreneInputInstance::InitMemberVariable()
 
 	bLeftButtonPressed = false;
 	bRightButtonPressed = false;
+
+	bCameraStop = false;
 	
 	bReAttack = false;
 	
@@ -688,6 +690,7 @@ void UIreneInputInstance::DodgeKeyword()
 
 		RecoveryDodge();
 		
+		Irene->IreneAnim->SetIsBreakAttack(false);
 		Irene->IreneAnim->StopAllMontages(0);
 		
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
@@ -868,6 +871,7 @@ void UIreneInputInstance::SpiritChangeMaxTime()
 	if(Irene->bIsSpiritStance)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeDamageOverTimer);
 		bIsStun = true;
 		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]{bIsStun = false;}), 10, false);
 		SpiritChangeKeyword();
@@ -889,7 +893,7 @@ void UIreneInputInstance::BreakAttackKeyword()
 	if(BreakAttackSpirit == nullptr && Irene->bIsSpiritStance)
 	{
 		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
-		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(100,100,400),Irene->CameraComp->GetComponentLocation());
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(100,100,600),Irene->CameraComp->GetComponentLocation());
 		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
 		Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
 
@@ -897,7 +901,9 @@ void UIreneInputInstance::BreakAttackKeyword()
 			return;
 
 		Irene->bInputStop = true;
+		bCameraStop = true;
 		Irene->GetMesh()->SetVisibility(false,true);
+		Irene->IreneAnim->SetIsBreakAttack(true);
 		
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 		{
@@ -912,10 +918,19 @@ void UIreneInputInstance::BreakAttackKeyword()
 			Rotator.Yaw = Z;
 			Irene->WorldController->SetControlRotation(Rotator);
 		}
-
+		
 		const FVector SpawnLocation = Irene->GetActorLocation();
 		BreakAttackSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackCameraStopTimeTimer,[&]
+		{
+			bCameraStop = false;
+			Irene->SpringArmComp->CameraLagSpeed = 10.0f;
+		}, 0.2f, false);
 		GetWorld()->GetTimerManager().SetTimer(BreakAttackSpiritTimeTimer,this,&UIreneInputInstance::BreakAttackEnd, 0.4f, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackAnimTimeTimer,[&]
+		{			
+			Irene->IreneAnim->SetIsBreakAttack(false);
+		}, 0.66f, false);
 
 		const float Dist = FVector::Dist(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());		
 		Irene->LaunchCharacter(Irene->GetActorForwardVector() * Dist * 1000, false, false);
@@ -925,43 +940,24 @@ void UIreneInputInstance::BreakAttackEnd()
 {
 	if(Irene->IreneAttack->SwordTargetMonster == nullptr)
 		return;
-	
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("Break_Attack"));
-
-	const FVector BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
-	TArray<FHitResult> MonsterList;
-
-	const FCollisionQueryParams Params(NAME_None, false, Irene);
-	const bool bResult = GetWorld()->SweepMultiByChannel(
-	MonsterList,
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
-	ECollisionChannel::ECC_GameTraceChannel1,
-	FCollisionShape::MakeBox(BoxSize),
-	Params);
-	
-	// 그리기 시작
-	#if ENABLE_DRAW_DEBUG
-	const FVector TraceVec = Irene->GetActorForwardVector();
-	const FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
-	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-	const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-	constexpr float DebugLifeTime = 5.0f;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
-	#endif
 
 	const auto Mon = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
 	if(Mon->GetCurStackCount() == 6)
 	{
-		Irene->IreneData.Strength = 100;	
-		Irene->IreneAttack->SendDamage(bResult, MonsterList);
-	}	
+		if(Mon->GetIsMonsterShieldActive())
+		{
+			Mon->StackExplode();
+		}
+		else
+		{
+			Mon->StackExplode();
+		}
+	}
 
 	BreakAttackSpirit->Destroy();
 	BreakAttackSpirit = nullptr;
 	Irene->bInputStop = false;
-
+	
 	Irene->GetMesh()->SetVisibility(true,true);
 }
 

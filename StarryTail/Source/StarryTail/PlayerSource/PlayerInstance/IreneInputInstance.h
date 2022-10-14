@@ -25,6 +25,7 @@ private:
 
 	UPROPERTY()
 	AActor* BreakAttackSpirit;
+	bool bCameraStop;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
@@ -34,8 +35,12 @@ private:
 	FTimerHandle SpiritTimeDamageOverTimer;
 	FTimerHandle SpiritTimeStunOverTimer;
 
+	// 브레이킹어택 카메라 정지 시간
+	FTimerHandle BreakAttackCameraStopTimeTimer;
 	// 브레이킹어택 정령 지속 시간
 	FTimerHandle BreakAttackSpiritTimeTimer;
+	// 브레이킹어택 애니메이션 시간
+	FTimerHandle BreakAttackAnimTimeTimer;
 	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
@@ -210,7 +215,8 @@ public:
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
 	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
-
+	bool GetCameraStop()const{return bCameraStop;}
+	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;
