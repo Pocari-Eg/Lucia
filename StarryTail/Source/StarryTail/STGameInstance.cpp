@@ -255,5 +255,15 @@ void USTGameInstance::DeleteStackMonster(AMonster* Monster)
 			}
 	}
 }
+void USTGameInstance::InitCurStackMonster()
+{
+	int size = StackMonster.Num();
+	for (int i = 0; i < size; i++)
+	{
+		if (StackMonster[i] != nullptr)
+			StackMonster[i]->InitStackCount();
+	}
+	StackMonster.Empty();
+}
 #pragma endregion
 

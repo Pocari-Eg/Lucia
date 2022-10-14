@@ -110,7 +110,7 @@ public:
 	void ExplodeCurStackMonster();
 	void InsertStackMonster(AMonster* Monster);
 	void DeleteStackMonster(AMonster* Monster);
-
+	void InitCurStackMonster();
 
 #pragma endregion
 
