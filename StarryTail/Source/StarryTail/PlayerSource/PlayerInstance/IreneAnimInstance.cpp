@@ -25,7 +25,9 @@ void UIreneAnimInstance::InitMemberVariable()
 	IsDead = false;
 	IsSprintState = false;
 	IsSprintStop = false;
-	IsBreakAttack = false;
+	IsStartBreakAttack = false;
+	IsMoveStopBreakAttack = false;
+	IsDoAttackBreakAttack = false;
 	IreneState = EStateEnum::Idle;
 	IsHaveTargetMonster = false;
 	TargetMonster = nullptr;

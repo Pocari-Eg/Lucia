@@ -250,13 +250,13 @@ void AIreneCharacter::TargetReset()const
 		const auto Mob = Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		if (Mob != nullptr)
 		{
-			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 1000.0f)
+			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 1500.0f)
 			{
 				const auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 				Mon->MarkerOff();
 				IreneAnim->SetIsHaveTargetMonster(false);
 				IreneAnim->SetTargetMonster(nullptr);
-				IreneAttack->SwordTargetMonster = nullptr;				
+				IreneAttack->SwordTargetMonster = nullptr;
 			}			
 		}
 	}

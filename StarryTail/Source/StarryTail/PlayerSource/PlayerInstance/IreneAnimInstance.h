@@ -45,7 +45,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	bool IsSprintStop;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	bool IsBreakAttack;
+	bool IsStartBreakAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsMoveStopBreakAttack;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	bool IsDoAttackBreakAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EStateEnum IreneState;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -87,7 +91,9 @@ public:
 	void SetDeadAnim(const bool Value) { IsDead = Value; }
 	void SetSprintStateAnim(const bool Value) { IsSprintState = Value; }
 	void SetSprintStopAnim(const bool Value) { IsSprintStop = Value; }
-	void SetIsBreakAttack(const bool Value) { IsBreakAttack = Value; }
+	void SetIsStartBreakAttack(const bool Value) { IsStartBreakAttack = Value; }
+	void SetIsMoveStopBreakAttack(const bool Value) { IsMoveStopBreakAttack = Value; }
+	void SetIsDoAttackBreakAttack(const bool Value) { IsDoAttackBreakAttack = Value; }
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
 	void SetIsHaveTargetMonster(const bool Value) { IsHaveTargetMonster = Value; }
 	void SetTargetMonster(AActor* Value) { TargetMonster = Value; }
