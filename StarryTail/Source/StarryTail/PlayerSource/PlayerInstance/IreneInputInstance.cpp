@@ -25,6 +25,8 @@ UIreneInputInstance::UIreneInputInstance()
 		BreakAttackStartEffect = BreakAttackStartEffectObject.Object;
 		BreakAttackEndEffect = BreakAttackEndEffectObject.Object;
 	}
+
+	bIsSpiritChangeEnable = true;
 }
 
 void UIreneInputInstance::Init(AIreneCharacter* Value)
@@ -830,7 +832,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 {
 	if(!Irene->bInputStop)
 	{
-		if(Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->bIsSpiritStance)
+		if((Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->bIsSpiritStance)&& bIsSpiritChangeEnable)
 		{
 			if(!Irene->bIsSpiritStance)
 			{
@@ -898,6 +900,27 @@ void UIreneInputInstance::SpiritTimeOverDeBuff()
 		return;
 	}
 	Irene->SetHP(100);
+}
+void UIreneInputInstance::SpiritChangeBlock()
+{
+	// 정령 스탠스 해제
+	GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+
+	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
+
+	Irene->IreneAnim->StopAllMontages(0);
+	Irene->IreneAttack->AttackTimeEndState();
+	Irene->bIsSpiritStance = false;
+	Irene->PetMesh->SetVisibility(true);
+
+	const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	if (Instance != nullptr)
+	{
+		Instance->InitCurStackMonster();
+	}
+
+	bIsSpiritChangeEnable = false;
 }
 #pragma endregion Spirit
 

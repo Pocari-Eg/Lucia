@@ -10,12 +10,17 @@ ALabMagic::ALabMagic()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	MagicAOECollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AREACEHCK"));
-	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("AttackSign_Particle"));
+	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionSign_Particle"));
+	ExplosionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionParticle"));
 
 	RootComponent = ExplosionSignEffectComponent;
 
+
 	MagicAOECollision->SetupAttachment(RootComponent);
-	ExplosionSignEffectComponent->SetAutoActivate(true);
+	ExplosionEffectComponent->SetupAttachment(MagicAOECollision);
+
+	ExplosionSignEffectComponent->SetAutoActivate(false);
+	ExplosionEffectComponent->SetAutoActivate(false);
 
 	MagicAOECollision->SetCollisionProfileName("AOE");
 	MagicAOECollision->SetGenerateOverlapEvents(false);
@@ -60,13 +65,21 @@ void ALabMagic::ExplosionSign()
 
 	//정령 발판 생성 및 정령 움직이기 
 
-	if (SpiritPlates.Num() != 0)
+	int Size = SpiritPlates.Num();
+	auto num = FMath::RandRange(0, Size-1);
+
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
 	{
-		for (int i = 0; i < SpiritPlates.Num(); i++)
-		{
-			SpiritPlates[i]->SpiritPlateOn();
-		}
+		Instance->GetPlayer()->SpawnPet(SpiritPlates[num]);
+
+		SpiritPlates.RemoveAt(num);
+
+		Instance->GetPlayer()->IreneInput->SpiritChangeBlock();
 	}
+
+
 }
 
 void ALabMagic::StartExplosion()
@@ -77,7 +90,7 @@ void ALabMagic::StartExplosion()
 
 	MagicAOECollision->SetGenerateOverlapEvents(true);
 	bIsExplosion_Timer = true;
-
+	ExplosionEffectComponent->SetActive(true, true);
 }
 
 void ALabMagic::EndExplosion()
@@ -96,6 +109,19 @@ void ALabMagic::EndExplosion()
 	}
 
 	MagicAOECollision->SetRelativeLocation(InitLocation);
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
+	{
+		Instance->GetPlayer()->VisiblePet();
+
+		Instance->GetPlayer()->IreneData.IsInvincibility = false;
+		Instance->GetPlayer()->IreneData.IsSkipMonsterAttack = false;
+		Instance->GetPlayer()->IreneInput->SetSpiritChangeEnable(true);
+	}
+
+
+	StartExplosionSignWait();
 }
 
 void ALabMagic::Explosion(float DeltaTime)
@@ -112,6 +138,7 @@ void ALabMagic::AOEAttack()
 		for (int i = 0; i < AOEInActor.Num(); i++)
 		{
 			UGameplayStatics::ApplyDamage(AOEInActor[i], MagicAOE_Power, NULL, this, NULL);
+			STARRYLOG_S(Warning);
 		}
 	}
 	MagicAOE_Timer = 0.0f;
@@ -121,11 +148,7 @@ void ALabMagic::AOEAttack()
 void ALabMagic::BeginPlay()
 {
 	Super::BeginPlay();
-	ExplosionSignEffectComponent->SetActive(false, true);
-	StartExplosionSignWait();
 	MagicAOECollision->OnComponentBeginOverlap.AddDynamic(this, &ALabMagic::OnBeginOverlap);
-
-
 	if (SpiritPlates.Num() != 0)
 	{
 		for (int i = 0; i < SpiritPlates.Num(); i++)
@@ -133,9 +156,11 @@ void ALabMagic::BeginPlay()
 			SpiritPlates[i]->InitSpiritPlate(SpiritRecovery_HP, SpiritRecovery_Gauge);
 		}
 	}
-	
-
 	InitLocation = MagicAOECollision->GetRelativeLocation();
+
+
+
+	StartExplosionSignWait();
 }
 
 void ALabMagic::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)

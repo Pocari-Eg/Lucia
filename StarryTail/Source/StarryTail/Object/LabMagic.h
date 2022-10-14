@@ -6,11 +6,14 @@
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
 #include "../EnemySource/MonsterProjectile.h"
+#include "../PlayerSource/IreneCharacter.h"
+#include "../PlayerSource/PlayerInstance/IreneInputInstance.h"
+#include "../STGameInstance.h"
 #include"SpiritPlate.h"
 #include "LabMagic.generated.h"
 
 UCLASS()
-class STARRYTAIL_API ALabMagic : public AMonsterProjectile
+class STARRYTAIL_API ALabMagic : public AActor
 {
 	GENERATED_BODY()
 
@@ -22,6 +25,9 @@ private:
 	UBoxComponent* MagicAOECollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ExplosionSignEffectComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ExplosionEffectComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	float Explosion_SignWait_Time;

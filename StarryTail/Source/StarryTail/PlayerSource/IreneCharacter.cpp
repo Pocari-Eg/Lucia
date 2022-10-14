@@ -17,6 +17,9 @@
 #include "PlayerSpirit/IreneSpirit.h"
 #include "PlayerSpirit/IreneSpiritAnimInstance.h"
 
+#include "../Object/ShieldSpirit.h"
+#include "../Object/LabMagic.h"
+
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()
 {
@@ -89,7 +92,7 @@ AIreneCharacter::AIreneCharacter()
 	PetMesh->SetupAttachment(PetSpringArmComp);
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
 	if(PetStatic.Succeeded())
-		PetMesh->SetSkeletalMesh(PetStatic.Object);
+	PetMesh->SetSkeletalMesh(PetStatic.Object);
 	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
 	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
 	
@@ -290,6 +293,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 			bIsKnockBack = false;
 		}
 	}
+
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -561,7 +565,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
+			
+				if(!IreneState->IsAttackState() && !IreneState->IsJumpState()&& !Cast<ALabMagic>(DamageCauser))
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
@@ -569,7 +574,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AMonsterProjectile>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser)|| Cast<ALabMagic>(DamageCauser))
 				return FinalDamage;
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
@@ -779,6 +784,19 @@ void AIreneCharacter::SetRaidBattleCamera()
 void AIreneCharacter::SetFirstLevel(bool isFirst)
 {
 	IreneUIManager->PlayerHud->bIsFirstLevel = isFirst;
+}
+
+void AIreneCharacter::SpawnPet(ASpiritPlate* Target)
+{
+	PetMesh->SetVisibility(false);
+	AShieldSpirit* NewPet = GetWorld()->SpawnActor<AShieldSpirit>(AShieldSpirit::StaticClass(),GetActorLocation()+PetSpringArmComp->GetRelativeLocation() , FRotator::ZeroRotator);
+	NewPet->SetSpiritPlate(Target);
+}
+
+void AIreneCharacter::VisiblePet()
+{
+	PetMesh->SetVisibility(true);
+
 }
 
 void AIreneCharacter::PlayFadeOutAnimation()

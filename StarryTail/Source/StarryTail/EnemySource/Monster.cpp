@@ -27,6 +27,7 @@
 //object
 #include "../Object/AttributeObject.h"
 #include "../Object/EnemySpawnPoint.h"
+#include "../Object/LabMagic.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -398,6 +399,7 @@ void AMonster::AddStackCount(int Count)
 			MonsterInfo.CurStackCount += Count;
 
 
+			if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)MonsterInfo.CurStackCount = MonsterInfo.MaxStackCount;
 
 
 
@@ -1387,36 +1389,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			return FinalDamage;
 		}
 	}
-	if (Cast<AMonsterProjectile>(DamageCauser))
+
+	if (Cast<ALabMagic>(DamageCauser))
 	{
 		if (!bIsObject) {
-
-
-
-			if (GetIsMonsterShieldActive()) {
-
-				MonsterShield->CalcDurability(1);
-				OnBarrierChanged.Broadcast();
-				CalcHp(CalcNormalAttackDamage(1));
-
-
-				if (MonsterShield->GetShieldAcitve())
-				{
-					SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
-
-				}
-				else {
-					ShieldDestroyed();
-					SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-				}
-
-
-			}
-			else {
-				CalcHp(1);
-
-			}
-
+			CalcHp(1);
+			Attacked();
 		}
 	}
 	return FinalDamage;

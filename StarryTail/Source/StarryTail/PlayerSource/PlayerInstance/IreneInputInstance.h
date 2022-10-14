@@ -63,6 +63,9 @@ private:
 	int DodgeCount;
 	// 회피 중 회피 사용 가능
 	bool bIsDodgeToDodge;
+
+	//정령 체인지 가능한지
+	bool bIsSpiritChangeEnable;
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
@@ -197,6 +200,10 @@ public:
 	void SpiritChangeTimeOver();
 	void SpiritChangeMaxTime();
 	void SpiritTimeOverDeBuff();
+
+
+	void SpiritChangeBlock();
+	void SetSpiritChangeEnable(bool Set) { bIsSpiritChangeEnable = Set; }
 
 	// 브레이킹어택
 	void BreakAttackKeyword();
