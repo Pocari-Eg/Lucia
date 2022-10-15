@@ -788,9 +788,9 @@ void AIreneCharacter::SetFirstLevel(bool isFirst)
 
 void AIreneCharacter::SpawnPet(ASpiritPlate* Target)
 {
-	PetMesh->SetVisibility(false);
 	AShieldSpirit* NewPet = GetWorld()->SpawnActor<AShieldSpirit>(AShieldSpirit::StaticClass(),GetActorLocation()+PetSpringArmComp->GetRelativeLocation() , FRotator::ZeroRotator);
 	NewPet->SetSpiritPlate(Target);
+	PetMesh->SetVisibility(false);
 }
 
 void AIreneCharacter::VisiblePet()

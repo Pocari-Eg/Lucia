@@ -24,6 +24,12 @@ private:
 
  float SpiritRecovery_HP;
  float SpiritRecovery_Gauge;
+
+ bool bIsInPlayer;
+ float RecoveryTimer;
+
+ float InitHeight;
+
 public:	
 	// Sets default values for this actor's properties
 	ASpiritPlate();
