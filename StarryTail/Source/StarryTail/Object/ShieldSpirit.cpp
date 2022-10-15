@@ -59,9 +59,10 @@ void AShieldSpirit::MoveToPlate(float DeltaTime)
 
 	TargetVec.Normalize();
 
-	FQuat RotationQuat = Math::VectorA2BRotation(ForwardVec, TargetVec);
-    AddActorWorldRotation(RotationQuat * 0.025f);
 
+	FQuat RotationQuat = Math::VectorA2BRotation(ForwardVec, TargetVec);
+    AddActorWorldRotation(RotationQuat * 0.005f);
+	SetActorRotation(FRotator(0.0f, GetActorRotation().Yaw, GetActorRotation().Roll));
 	
 
 

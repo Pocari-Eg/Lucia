@@ -3,6 +3,8 @@
 
 #include "SpiritPlate.h"
 #include "../PlayerSource/IreneCharacter.h"
+#include "../PlayerSource/PlayerInstance/IreneUIManager.h"
+#include "../STGameInstance.h"
 #include "Particles/ParticleSystemComponent.h"
 // Sets default values
 ASpiritPlate::ASpiritPlate()
@@ -19,20 +21,28 @@ ASpiritPlate::ASpiritPlate()
 	PlateEffectComponent->SetupAttachment(RootComponent);
 
 	PlateEffectComponent->SetAutoActivate(false);
-	SpiritPlateColiision->SetCollisionProfileName("Trigger");
+	SpiritPlateColiision->SetCollisionProfileName("NoCollision");
 	SpiritPlateColiision->SetGenerateOverlapEvents(false);
+
+	bIsInPlayer = false;
+
+	InitHeight = SpiritPlateColiision->GetRelativeLocation().Z;
 }
 
 void ASpiritPlate::SpiritPlateOn()
 {
 	PlateEffectComponent->SetActive(true, true);
 	SpiritPlateColiision->SetGenerateOverlapEvents(true);
+	SpiritPlateColiision->SetCollisionProfileName("AOEShield");
+	SpiritPlateColiision->SetRelativeLocation(FVector(SpiritPlateColiision->GetRelativeLocation().X, SpiritPlateColiision->GetRelativeLocation().Y, InitHeight));
 }
 
 void ASpiritPlate::SpiritPlateOff()
 {
+	SpiritPlateColiision->SetRelativeLocation(FVector(SpiritPlateColiision->GetRelativeLocation().X, SpiritPlateColiision->GetRelativeLocation().Y, SpiritPlateColiision->GetRelativeLocation().Z + 3000.0f));
 	PlateEffectComponent->SetActive(false, true);
 	SpiritPlateColiision->SetGenerateOverlapEvents(false);
+	SpiritPlateColiision->SetCollisionProfileName("NoCollision");
 }
 
 void ASpiritPlate::InitSpiritPlate(float HP, float Gauge)
@@ -47,6 +57,7 @@ void ASpiritPlate::BeginPlay()
 	Super::BeginPlay();
 	SpiritPlateColiision->OnComponentBeginOverlap.AddDynamic(this, &ASpiritPlate::OnBeginOverlap);
 	SpiritPlateColiision->OnComponentEndOverlap.AddDynamic(this, &ASpiritPlate::OnEndOverlap);
+	SpiritPlateColiision->SetRelativeLocation(FVector(SpiritPlateColiision->GetRelativeLocation().X, SpiritPlateColiision->GetRelativeLocation().Y, SpiritPlateColiision->GetRelativeLocation().Z + 3000.0f));
 
 }
 
@@ -58,6 +69,7 @@ void ASpiritPlate::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 		STARRYLOG_S(Error);
 		Irene->IreneData.IsInvincibility = true;
 		Irene->IreneData.IsSkipMonsterAttack = true;
+		bIsInPlayer = true;
 	}
 }
 
@@ -69,6 +81,8 @@ void ASpiritPlate::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 
 		Irene->IreneData.IsInvincibility = false;
 		Irene->IreneData.IsSkipMonsterAttack = false;
+		bIsInPlayer = false;
+		RecoveryTimer = 0.0f;
 
 	}
 }
@@ -77,6 +91,20 @@ void ASpiritPlate::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 void ASpiritPlate::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (bIsInPlayer)
+	{
+		RecoveryTimer += DeltaTime;
+		if (RecoveryTimer >= 1.0f)
+		{
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (Instance != nullptr) {
+				Instance->GetPlayer()->IreneUIManager->HpRecovery(SpiritRecovery_HP);
+			}
+
+			RecoveryTimer = 0.0f;
+		}
+	}
 
 }
 

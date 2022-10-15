@@ -22,7 +22,7 @@ private:
  
 	//Min Var
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
-	UBoxComponent* MagicAOECollision;
+	UCapsuleComponent* MagicAOECollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ExplosionSignEffectComponent;
 
@@ -73,6 +73,7 @@ private:
 
 	TArray<AActor*> AOEInActor;
 
+	ASpiritPlate* CurPlate;
 
 	FVector InitLocation;
 public:	

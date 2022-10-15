@@ -9,13 +9,13 @@ ALabMagic::ALabMagic()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	MagicAOECollision = CreateDefaultSubobject<UBoxComponent>(TEXT("AREACEHCK"));
+	MagicAOECollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AREACEHCK"));
 	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionSign_Particle"));
 	ExplosionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionParticle"));
 
 	RootComponent = ExplosionSignEffectComponent;
 
-
+	
 	MagicAOECollision->SetupAttachment(RootComponent);
 	ExplosionEffectComponent->SetupAttachment(MagicAOECollision);
 
@@ -48,7 +48,9 @@ ALabMagic::ALabMagic()
 
 	MagicAOE_Timer=0.0f;
 
-	
+	MagicAOECollision->SetCapsuleHalfHeight(1.0f);
+	MagicAOECollision->SetCapsuleRadius(1.0f);
+
 }
 void ALabMagic::StartExplosionSignWait()
 {
@@ -57,28 +59,31 @@ void ALabMagic::StartExplosionSignWait()
 
 void ALabMagic::ExplosionSign()
 {
-	bIsExplosion_SignWait_Timer = false;
-	Explosion_SignWait_Timer = 0.0f;
 
-	ExplosionSignEffectComponent->SetActive(true, true);
-	bIsExplosion_Wait_Timer = true;
+	if (SpiritPlates.Num() != 0) {
+		bIsExplosion_SignWait_Timer = false;
+		Explosion_SignWait_Timer = 0.0f;
 
-	//정령 발판 생성 및 정령 움직이기 
+		ExplosionSignEffectComponent->SetActive(true, true);
+		bIsExplosion_Wait_Timer = true;
 
-	int Size = SpiritPlates.Num();
-	auto num = FMath::RandRange(0, Size-1);
+		//정령 발판 생성 및 정령 움직이기 
 
+		int Size = SpiritPlates.Num();
+		auto num = FMath::RandRange(0, Size - 1);
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)
-	{
-		Instance->GetPlayer()->SpawnPet(SpiritPlates[num]);
+		CurPlate = SpiritPlates[num];
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (Instance != nullptr)
+		{
+			Instance->GetPlayer()->IreneInput->SpiritChangeBlock();
+			Instance->GetPlayer()->SpawnPet(CurPlate);
 
-		SpiritPlates.RemoveAt(num);
+			SpiritPlates.RemoveAt(num);
 
-		Instance->GetPlayer()->IreneInput->SpiritChangeBlock();
+			
+		}
 	}
-
 
 }
 
@@ -100,14 +105,13 @@ void ALabMagic::EndExplosion()
 	Explosion_Time = 0.0f;
 	AOEInActor.Empty();
 
-	if (SpiritPlates.Num() != 0)
+	if (CurPlate != nullptr)
 	{
-		for (int i = 0; i < SpiritPlates.Num(); i++)
-		{
-			SpiritPlates[i]->SpiritPlateOff();
-		}
+		
+			CurPlate->SpiritPlateOff();
+	
 	}
-
+	CurPlate = nullptr;
 	MagicAOECollision->SetRelativeLocation(InitLocation);
 
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
@@ -126,9 +130,13 @@ void ALabMagic::EndExplosion()
 
 void ALabMagic::Explosion(float DeltaTime)
 {
-	FVector ForwardVec = GetActorForwardVector();
-	ForwardVec.Normalize();
-	MagicAOECollision->SetRelativeLocation(MagicAOECollision->GetRelativeLocation() + (ForwardVec * MagicAOE_Speed * DeltaTime));
+	//FVector ForwardVec = GetActorForwardVector();
+	//ForwardVec.Normalize();
+	//MagicAOECollision->SetRelativeLocation(MagicAOECollision->GetRelativeLocation() + (ForwardVec * MagicAOE_Speed * DeltaTime));
+
+
+	MagicAOECollision->SetCapsuleHalfHeight(MagicAOECollision->GetScaledCapsuleHalfHeight()+ MagicAOE_Speed * DeltaTime);
+	MagicAOECollision->SetCapsuleRadius(MagicAOECollision->GetScaledCapsuleRadius() + MagicAOE_Speed * DeltaTime);
 }
 
 void ALabMagic::AOEAttack()
@@ -157,7 +165,6 @@ void ALabMagic::BeginPlay()
 		}
 	}
 	InitLocation = MagicAOECollision->GetRelativeLocation();
-
 
 
 	StartExplosionSignWait();
