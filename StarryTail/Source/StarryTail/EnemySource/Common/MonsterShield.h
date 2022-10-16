@@ -52,6 +52,10 @@ private:
 
 	UMaterialInstanceDynamic* ShieldMateial;
 
+
+	float CrackTimer;
+	float CrackTime;
+	bool bIsCrackOn;
 	int MaxStackCount;
 public:
 	// Sets default values for this component's properties
@@ -92,6 +96,9 @@ private:
 protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
+	// Called every frame
+public:
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 		
 };

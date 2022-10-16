@@ -607,7 +607,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -620,7 +620,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -632,7 +632,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -650,7 +650,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			SetDpsCheck(true);
 		}
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -731,14 +731,7 @@ void AMonster::CalcHp(float Damage)
 
 
 			//DropWeaponSoul();
-
-			MonsterDeadEvent();
-			bIsDead = true;
-			SetActive();
-			MonsterAIController->Death();
-			PlayDeathAnim();
-
-
+			
 			if (bIsSpawnEnemy) {
 				auto instnace = Cast<USTGameInstance>(GetGameInstance());
 				if (instnace != nullptr)
@@ -750,6 +743,20 @@ void AMonster::CalcHp(float Damage)
 				if (instnace != nullptr)
 					instnace->SubDetectedMonster();
 			}
+
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
+
+			MonsterDeadEvent();
+			bIsDead = true;
+			SetActive();
+			MonsterAIController->Death();
+			PlayDeathAnim();
+
+
+		
 			return;
 		}
 }
@@ -771,6 +778,8 @@ void AMonster::ShieldDestroyed()
 
 	PlayGroggyAnim();
 	MonsterAIController->Groggy();
+
+	STARRYLOG_S(Warning);
 	
 }
 
@@ -1380,7 +1389,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
+			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
 				Attacked();
 			}
 

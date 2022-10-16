@@ -106,7 +106,6 @@ private:
 	bool bIsChangeBattleRunStateToAttackedState;
 	bool bIsUseBackstep;
 
-	bool bIsBroken;
 	bool bIsRush;
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
