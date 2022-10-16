@@ -395,11 +395,11 @@ void UIreneInputInstance::RightButton(float Rate)
 		if (Rate >= 1.0)
 		{
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			// constexpr float WaitTime = 0.05f;
-			// GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-			// 	{
-			//		GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
-			// 	}), WaitTime*UGameplayStatics::GetGlobalTimeDilation(this), false);
+			constexpr float WaitTime = 0.05f;
+			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
+			{
+					GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+				}), WaitTime, false);
 
 			// X번째 일반 공격 중 스킬 사용 후 다시 일반 공격하면 X+1번째 공격 하도록 지정
 			if(Irene->IreneAttack->GetCanSkillSkip())
