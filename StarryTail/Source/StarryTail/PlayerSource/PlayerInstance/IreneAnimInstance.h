@@ -103,7 +103,8 @@ public:
 
 	bool GetIsinAir()const{return IsInAir;}
 	int GetDodgeDir()const{return DodgeDir;}
-	
+	bool GetIsMoveStopBreakAttack()const{return IsMoveStopBreakAttack;}
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void CallCreateTail();
