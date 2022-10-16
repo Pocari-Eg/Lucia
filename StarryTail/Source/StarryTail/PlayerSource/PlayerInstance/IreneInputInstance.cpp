@@ -676,6 +676,12 @@ void UIreneInputInstance::MouseWheel(float Rate)
 #pragma region Dodge
 void UIreneInputInstance::DodgeKeyword()
 {
+	// 브레이킹어택 중 타겟몬스터 6스택 미만일 때 회피 가능처리
+	if(Irene->bInputStop && !Irene->IreneState->IsDeathState() && Irene->IreneAnim->GetIsMoveStopBreakAttack())
+	{
+		Irene->bInputStop = false;
+	}
+	
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
@@ -1025,12 +1031,12 @@ void UIreneInputInstance::BreakAttackEnd()
 	{
 		Irene->IreneAnim->SetIsMoveStopBreakAttack(false);
 		Irene->IreneAnim->SetIsDoAttackBreakAttack(false);
+		Irene->bInputStop = false;
 	}, BreakAttackWaitTime, false);
 	
 	Irene->IreneAnim->SetIsStartBreakAttack(false);
 	BreakAttackSpirit->Destroy();
 	BreakAttackSpirit = nullptr;
-	Irene->bInputStop = false;
 
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BreakAttackEndEffect, Irene->GetActorLocation());
 	Irene->GetMesh()->SetVisibility(true,true);
