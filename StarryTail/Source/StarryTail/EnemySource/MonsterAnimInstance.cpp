@@ -20,6 +20,8 @@ void UMonsterAnimInstance::SetPlayRate(float Value)
 #pragma region Montage
 void UMonsterAnimInstance::PlayWalkMontage()
 {
+	if (Montage_IsPlaying(WalkMontage))
+		return;
 	Montage_Play(WalkMontage, PlayRate);
 }
 void UMonsterAnimInstance::PlayBattleIdleMontage()
