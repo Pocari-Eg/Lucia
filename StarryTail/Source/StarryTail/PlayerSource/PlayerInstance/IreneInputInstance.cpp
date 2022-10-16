@@ -937,12 +937,14 @@ void UIreneInputInstance::BreakAttackKeyword()
 		Irene->IreneAnim->StopAllMontages(0.0f);
 		
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable("S_Dodge"));
-		
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			GetWorld()->GetTimerManager().ClearTimer(BreakAttackWaitHandle);
-		}), AttackTable->C_Time, false);
 
+		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
+		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+
+		if(!HitMonsterList.Get<2>())
+			return;
+		
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 		{
 			const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
@@ -950,13 +952,15 @@ void UIreneInputInstance::BreakAttackKeyword()
 			Irene->IreneAnim->SetIsHaveTargetMonster(false);
 			Irene->IreneAnim->SetTargetMonster(nullptr);
 			Irene->IreneAttack->SwordTargetMonster = nullptr;
-		}
+		}		
 		
-		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
-		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
-		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
 		Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
-
+		
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			GetWorld()->GetTimerManager().ClearTimer(BreakAttackWaitHandle);
+		}), AttackTable->C_Time, false);
+		
 		if(Irene->IreneAttack->SwordTargetMonster == nullptr)
 			return;
 
