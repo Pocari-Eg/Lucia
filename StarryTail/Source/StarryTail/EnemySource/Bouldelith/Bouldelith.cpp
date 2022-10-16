@@ -891,7 +891,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 				PerfectDodgeOff();
 			}
 		}
-		if (!bIsWallRushHit)
+	/*	if (!bIsWallRushHit)
 		{
 			if (Cast<UStaticMeshComponent>(OtherComponent))
 			{
@@ -912,7 +912,7 @@ void ABouldelith::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, U
 					PerfectDodgeOff();
 				}
 			}
-		}
+		}*/
 	}
 }
 void ABouldelith::Tick(float DeltaTime)
@@ -927,22 +927,6 @@ void ABouldelith::Tick(float DeltaTime)
 		{
 			bIsUseBackstep = false;
 			BackstepCoolTimer = 0.0f;
-		}
-	}
-	if (!bIsBroken)
-	{
-		if (bIsDead)
-			return;
-
-		if (GetHpPercent() <= 40)
-		{
-			auto BdAIController = Cast<ABdAIController>(MonsterAIController);
-			BdAIController->Broken();
-			BdAnimInstance->PlayBrokenMontage();
-			BrokenEvent();
-			MonsterInfo.DefaultAnimePlayRate = BouldelithInfo.BrokenAnimePlayRate;
-			BdAnimInstance->SetPlayRate(MonsterInfo.DefaultAnimePlayRate);
-			bIsBroken = true;
 		}
 	}
 
