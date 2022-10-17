@@ -750,7 +750,7 @@ void AMonster::CalcHp(float Damage)
 			{
 				PerfectDodgeOff();
 			}
-
+			InitStackCount();
 			MonsterDeadEvent();
 			bIsDead = true;
 			SetActive();

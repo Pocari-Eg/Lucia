@@ -63,24 +63,24 @@ void UMonsterShield::CalcDurability(float Damage)
 
 		ShiledHitEffectComponent->SetActive(true, true);
 		CurDurability -= TotalDamage;
+		ShiledCrackEffectComponent->SetActive(true, true);
 
 
 		if (CurDurability <= Durability * 0.25)
 		{
 			CurShieldState = 3;
-			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
-			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
 		}
 		else if (CurDurability <= (Durability * 0.5))
 		{
 			CurShieldState = 2;
 
-			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
+
 
 		}
 		else if (CurDurability <= (Durability * 0.75))
@@ -90,8 +90,7 @@ void UMonsterShield::CalcDurability(float Damage)
 			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
-
+		
 		}
 		else {
 			CurShieldState = 0;
@@ -99,7 +98,6 @@ void UMonsterShield::CalcDurability(float Damage)
 
 		bIsCrackOn = true;
 		CrackTimer = 0.0f;
-
 		if (CurDurability <= 0)
 		{
 			DestroyedShield();
@@ -279,9 +277,12 @@ void UMonsterShield::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		CrackTimer += DeltaTime;
 		if (CrackTimer >= CrackTime)
 		{
+			STARRYLOG_S(Error);
 			CrackTimer = 0.0f;
 			bIsCrackOn = false;
-			ShiledCrackEffectComponent->SetActive(false, true);
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
 		}
 	}
 }
