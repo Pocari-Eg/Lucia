@@ -9,13 +9,17 @@ ALabMagic::ALabMagic()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	
+	RootPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("RootPoint"));
 	MagicAOECollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AREACEHCK"));
 	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionSign_Particle"));
 	ExplosionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionParticle"));
 
-	RootComponent = ExplosionSignEffectComponent;
+	RootComponent = RootPoint;
 
-	
+
+
+	ExplosionSignEffectComponent->SetupAttachment(RootComponent);
 	MagicAOECollision->SetupAttachment(RootComponent);
 	ExplosionEffectComponent->SetupAttachment(MagicAOECollision);
 
@@ -91,7 +95,8 @@ void ALabMagic::StartExplosion()
 {
 	bIsExplosion_Wait_Timer = false;
 	Explosion_Wait_Timer = 0.0f;
-	ExplosionSignEffectComponent->SetActive(false, true);
+
+	ExplosionSignEffectComponent->Deactivate();
 
 	MagicAOECollision->SetGenerateOverlapEvents(true);
 	bIsExplosion_Timer = true;
@@ -102,9 +107,8 @@ void ALabMagic::EndExplosion()
 {
 	MagicAOECollision->SetGenerateOverlapEvents(false);
 	bIsExplosion_Timer = false;
-	Explosion_Time = 0.0f;
 	AOEInActor.Empty();
-
+	Explosion_Timer = 0.0f;
 	if (CurPlate != nullptr)
 	{
 		
@@ -124,6 +128,7 @@ void ALabMagic::EndExplosion()
 		Instance->GetPlayer()->IreneInput->SetSpiritChangeEnable(true);
 	}
 
+	ExplosionEffectComponent->Deactivate();
 
 	StartExplosionSignWait();
 }

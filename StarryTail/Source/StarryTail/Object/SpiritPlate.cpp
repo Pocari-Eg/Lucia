@@ -31,6 +31,8 @@ ASpiritPlate::ASpiritPlate()
 
 void ASpiritPlate::SpiritPlateOn()
 {
+	STARRYLOG(Error, TEXT("Plate Effect On"));
+
 	PlateEffectComponent->SetActive(true, true);
 	SpiritPlateColiision->SetGenerateOverlapEvents(true);
 	SpiritPlateColiision->SetCollisionProfileName("AOEShield");
@@ -39,8 +41,10 @@ void ASpiritPlate::SpiritPlateOn()
 
 void ASpiritPlate::SpiritPlateOff()
 {
+	STARRYLOG(Warning, TEXT("%s"),*GetName());
+	STARRYLOG(Warning, TEXT("Plate Effect Off"));
+	PlateEffectComponent->Deactivate();
 	SpiritPlateColiision->SetRelativeLocation(FVector(SpiritPlateColiision->GetRelativeLocation().X, SpiritPlateColiision->GetRelativeLocation().Y, SpiritPlateColiision->GetRelativeLocation().Z + 3000.0f));
-	PlateEffectComponent->SetActive(false, true);
 	SpiritPlateColiision->SetGenerateOverlapEvents(false);
 	SpiritPlateColiision->SetCollisionProfileName("NoCollision");
 }
@@ -65,8 +69,7 @@ void ASpiritPlate::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 {
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr) {
-	
-		STARRYLOG_S(Error);
+
 		Irene->IreneData.IsInvincibility = true;
 		Irene->IreneData.IsSkipMonsterAttack = true;
 		bIsInPlayer = true;
@@ -77,7 +80,6 @@ void ASpiritPlate::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 {
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr) {
-		STARRYLOG_S(Error);
 
 		Irene->IreneData.IsInvincibility = false;
 		Irene->IreneData.IsSkipMonsterAttack = false;
