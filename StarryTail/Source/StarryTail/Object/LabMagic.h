@@ -22,6 +22,8 @@ private:
  
 	//Min Var
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
+	UStaticMeshComponent* RootPoint;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
 	UCapsuleComponent* MagicAOECollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ExplosionSignEffectComponent;
