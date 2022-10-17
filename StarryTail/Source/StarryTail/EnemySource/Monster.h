@@ -163,7 +163,8 @@ protected:
 	UParticleSystemComponent* ShiledHitEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ShiledEffectComponent;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	FName ShieldSocketName;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;

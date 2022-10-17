@@ -116,7 +116,7 @@ AMonster::AMonster()
 
 
 	MonsterShield = CreateDefaultSubobject<UMonsterShield>(TEXT("SHEILD"));
-	MonsterShield->SetupAttachment(RootComponent);
+	MonsterShield->SetupAttachment(GetMesh());
 
 
 	ShieldCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SHEILD_COLLISION"));
@@ -132,6 +132,8 @@ AMonster::AMonster()
 	ShiledHitEffectComponent->SetAutoActivate(false);
 
 	ShieldCollision->SetCollisionProfileName("Shield");
+
+	ShieldSocketName = "RootSocket";
 
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
@@ -1069,6 +1071,10 @@ void AMonster::BeginPlay()
 	OnSpawnEffectEvent();
 
 	InitPerfectDodgeNotify();
+
+	
+	MonsterShield->AttachTo(GetMesh(), ShieldSocketName, EAttachLocation::SnapToTarget, false);
+
 }
 void AMonster::PossessedBy(AController* NewController)
 {
