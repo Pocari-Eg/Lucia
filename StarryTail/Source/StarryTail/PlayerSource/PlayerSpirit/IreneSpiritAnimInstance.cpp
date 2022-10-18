@@ -8,8 +8,8 @@
 UIreneSpiritAnimInstance::UIreneSpiritAnimInstance()
 {
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_1_Montage.Spirit_1_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_1_Montage.Spirit_2_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_3_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_1_Montage.Spirit_3_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_2_Montage.Spirit_2_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_3_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_3_Montage.Spirit_3_Montage"));
 	if(Spirit_1_Montage.Succeeded()&&Spirit_2_Montage.Succeeded()&&Spirit_3_Montage.Succeeded())
 	{
 		SpiritSkill1Montage = Spirit_1_Montage.Object;
