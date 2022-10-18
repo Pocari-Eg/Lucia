@@ -489,6 +489,15 @@ void UIreneInputInstance::NonSpiritSkill()
 		Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
 		// 검 스킬 쿨타임 적용
 		MaxSwordSkillCoolTime = AttackTable->ATTACK_DAMAGE_2;
+
+		if (Irene->makeIngameWidget != nullptr)
+		{
+			if (MaxSwordSkillCoolTime != 10.0f)
+				Irene->FInGameBattle.Broadcast(4, MaxSwordSkillCoolTime + CanSwordSkill2Time);
+			else
+				Irene->FInGameBattle.Broadcast(4, MaxSwordSkillCoolTime);
+			Irene->FInGameBattle.Broadcast(2, 0.0f);
+		}
 	}
 	
 	Irene->IreneAnim->PlaySkillAttackMontage();
@@ -615,6 +624,12 @@ void UIreneInputInstance::SkillWait()
 		//Irene->IreneUIManager->OnSkillCoolChange.Broadcast();
 		SwordSkillCoolTime = 0.0f;
 		GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+
+		if (Irene->makeIngameWidget != nullptr)
+		{
+			Irene->FInGameBattle.Broadcast(3, 0.0f);
+			Irene->FInGameBattle.Broadcast(3, 0.0f);
+		}
 	}
 	//else
 	//{
