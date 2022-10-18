@@ -498,6 +498,9 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 	}
 	else
 	{
+		if (CurState->Irene->makeIngameWidget != nullptr)
+			CurState->Irene->FInGameBattle.Broadcast(5, 5.0f);
+		
 		// ÆÛÆåÆ® ´åÁö
 		// ¿ÞÅ¬¸¯À¸·Î µµÁß ²÷±â
 		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.6f && CurState->Irene->IreneInput->bLeftButtonPressed)
