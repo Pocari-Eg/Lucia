@@ -61,6 +61,7 @@ public:
 	// Sets default values for this component's properties
 	UMonsterShield();
 
+
 public:
    void CalcDurability(float Damage);
 
