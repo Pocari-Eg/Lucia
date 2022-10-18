@@ -109,6 +109,8 @@ public:
 	void PlayHUDAnimation();
 	
 	void SetDialogState(const bool State);
+
+	void HpRecovery(float Hp);
 #pragma endregion HUDPublic
 
 

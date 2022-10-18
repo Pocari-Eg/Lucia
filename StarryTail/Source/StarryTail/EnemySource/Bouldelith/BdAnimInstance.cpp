@@ -9,6 +9,7 @@ void UBdAnimInstance::PlayDetectMontage()
 }
 void UBdAnimInstance::PlayDeathMontage()
 {
+	StopAllMontages(0.0f);
 	Montage_Play(DeathMontage, 1.0f);
 }
 void UBdAnimInstance::PlayBattleRunMontage()
@@ -36,18 +37,7 @@ void UBdAnimInstance::PlayIdleMontage()
 	else
 		Montage_Play(IdleMontage2, PlayRate);
 }
-void UBdAnimInstance::PlayBattleWalkMontage()
-{
-	if (Montage_IsPlaying(BattleLeftWalkMontage) || Montage_IsPlaying(BattleRightWalkMontage))
-		return;
 
-	auto Random = FMath::RandRange(0, 1);
-
-	if (Random == 0)
-		Montage_Play(BattleLeftWalkMontage, PlayRate);
-	else
-		Montage_Play(BattleRightWalkMontage, PlayRate);
-}
 #pragma region Attack
 void UBdAnimInstance::PlayAttack1Montage()
 {
@@ -72,6 +62,24 @@ void UBdAnimInstance::PlayAttack1ComboMontage()
 void UBdAnimInstance::PlayAttack2ComboMontage()
 {
 	Montage_Play(AttackComboMontage2, PlayRate);
+}
+void UBdAnimInstance::PlayLeftBattleWalkMontage()
+{
+
+	if (Montage_IsPlaying(BattleLeftWalkMontage))
+		return;
+
+	Montage_Play(BattleLeftWalkMontage, PlayRate);
+
+}
+void UBdAnimInstance::PlayRightBattleWalkMontage()
+{
+
+	if (Montage_IsPlaying(BattleRightWalkMontage))
+		return;
+
+	Montage_Play(BattleRightWalkMontage, PlayRate);
+
 }
 #pragma endregion
 void UBdAnimInstance::PlayAttackedMontage()
@@ -180,4 +188,14 @@ void UBdAnimInstance::AnimNotify_Attack3End()
 void UBdAnimInstance::AnimNotify_Attack4End()
 {
 	Attack4End.Broadcast();
+}
+
+void UBdAnimInstance::SetbIsState(bool state)
+{
+	bIsStatue = state;
+}
+
+bool UBdAnimInstance::GetbIsStatue() const
+{
+	return bIsStatue;
 }

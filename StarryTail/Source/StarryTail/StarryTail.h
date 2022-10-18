@@ -66,10 +66,13 @@ enum class EStateEnum : uint8
 	B_Attack_3,
 	Sword_Skill_1,
 	Sword_Skill_2,
-	Spear_Skill_1,
+	Spirit_Skill_1,
+	Spirit_Skill_2,
+	Spirit_Skill_3,
 	Form_Change,
 	Hit_1,
 	Hit_2,
+	KnockBack,
 	Death
 };
 
@@ -92,12 +95,10 @@ enum class  EDialogState :uint8
 };
 
 UENUM(BluePrintType)
-enum class  EDodgeDirection :uint8
+enum class  EShieldType :uint8
 {
-	Left = 0 UMETA(DisplayName = "Left"),
-	Right UMETA(DisplayName = "Right"),
-	Front  UMETA(DisplayName = "Front"),
-	Back UMETA(DisplayName = "Back")
+	General = 0 UMETA(DisplayName = "General"),
+	Special UMETA(DisplayName = "Special"),
 };
 
 UENUM(BluePrintType)

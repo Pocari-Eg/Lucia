@@ -27,52 +27,24 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 
 
-		FVector Center = Monster->GetLocation() + (-Monster->GetActorForwardVector() * Monster->GetCapsuleComponent()->GetScaledCapsuleRadius());
+		FVector Center = Monster->GetLocation();
 
-		FVector CenterBottom = Center;
-		CenterBottom.Z -= 85.0f;
+		if (Monster->GetMonsterAtkType() == 2)
+		{
+			Center -= FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		}
 
-		FVector CenterTop = CenterBottom;
-		CenterTop.Z += 150.0f;
+			if (Monster->GetState() == EMontserState::Battle) {
 
-	
-
-		if (Monster->GetState() == EMontserState::Battle) {
-
-			if (Attack3Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
-			{
-				if (bIsAttack23In)
+				if (Attack3Trace(Monster, OwnerComp, Center))
 				{
-					auto ran = FMath::RandRange(1, 100);
-					STARRYLOG(Error, TEXT("Percent : %d"), ran);
-					if (ran <= 20)
-					{
-						Monster->GetAIController()->OnAttack(3);
-						return;
-					}
-					else {
-						Monster->GetAIController()->OnAttack(2);
-						return;
-					}
-				}
-
-				if (bIsAttack3In)
-				{
-					Monster->GetAIController()->OnAttack(3);
-					return;
-				}
-			}
-			else {
-				if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop))
-				{
-
-					if (bIsAttack12In)
+					if (bIsAttack23In)
 					{
 						auto ran = FMath::RandRange(1, 100);
 						STARRYLOG(Error, TEXT("Percent : %d"), ran);
-						if (ran <= 40)
+						if (ran <= 20)
 						{
-							Monster->GetAIController()->OnAttack(1);
+							Monster->GetAIController()->OnAttack(3);
 							return;
 						}
 						else {
@@ -81,44 +53,65 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 						}
 					}
 
-					if (bIsAttack2In)
+					if (bIsAttack3In)
 					{
-						Monster->GetAIController()->OnAttack(2);
+						Monster->GetAIController()->OnAttack(3);
 						return;
 					}
-
 				}
 				else {
-					if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
-						Monster->GetAIController()->OnAttack(1);
-						return;
-					}
-				}
-			}
-		}
-		else if (Monster->GetState() == EMontserState::Support) {
-			if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop)) {
-
-				if (bIsAttack2In)
-				{
-					auto ran = FMath::RandRange(1, 100);
-					STARRYLOG(Error, TEXT("Percent : %d"), ran);
-					if (ran <= 80)
+					if (Attack2Trace(Monster, OwnerComp, Center))
 					{
-						Monster->GetAIController()->OnAttack(2);
-						return;
+
+						if (bIsAttack12In)
+						{
+							auto ran = FMath::RandRange(1, 100);
+							STARRYLOG(Error, TEXT("Percent : %d"), ran);
+							if (ran <= 40)
+							{
+								Monster->GetAIController()->OnAttack(1);
+								return;
+							}
+							else {
+								Monster->GetAIController()->OnAttack(2);
+								return;
+							}
+						}
+
+						if (bIsAttack2In)
+						{
+							Monster->GetAIController()->OnAttack(2);
+							return;
+						}
+
 					}
 					else {
-						return;
+						if (Attack1Trace(Monster, OwnerComp, Center)) {
+							Monster->GetAIController()->OnAttack(1);
+							return;
+						}
 					}
 				}
 			}
+			else if (Monster->GetState() == EMontserState::Support) {
+				if (Attack2Trace(Monster, OwnerComp, Center)) {
 
-		}
-	
+					if (bIsAttack2In)
+					{
+						auto ran = FMath::RandRange(1, 100);
+						STARRYLOG(Error, TEXT("Percent : %d"), ran);
+						if (ran <= 80)
+						{
+							Monster->GetAIController()->OnAttack(2);
+							return;
+						}
+						else {
+							return;
+						}
+					}
+				}
 
-
-
+			}
 		
 
 		
@@ -144,17 +137,19 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 	}
 }
 
-bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center)
 {
 	bIsAttack1In = false;
 
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation());
+
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+	
+		
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
-
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
@@ -285,14 +280,15 @@ bool UBTServiceAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeCompone
 	return false;
 }
 
-bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center)
 {
 	bIsAttack2In = false;
 	bIsAttack12In = false;
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation());
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
 
@@ -402,7 +398,7 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 							//3Â÷ Å½Áö
 							float Distance = Monster->GetDistanceTo(Player);
 							//Monster->GetAIController()->SetInAttackArea(true);
-							if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+							if (Attack1Trace(Monster, OwnerComp, Center) == true)
 							{
 								float line = (Monster->GetAttack1Range().M_Atk_Radius * 0.95);
 								if (Distance >= line)
@@ -459,7 +455,7 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 	return false;
 }
 
-bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center, FVector CenterBottom, FVector CenterTop)
+bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center)
 {
 
 	bIsAttack3In = false;
@@ -467,7 +463,8 @@ bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 	if (Monster->GetTestMode())
 	{
 		FTransform BottomLine = Monster->GetTransform();
-		BottomLine.SetLocation(BottomLine.GetLocation());
+		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetAtkHeight()));
 
@@ -566,7 +563,7 @@ bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 					if (TargetAngle <= (Monster->GetAttack3Range().M_Atk_Angle * 0.5f))
 					{
 
-						if (Attack1Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+						if (Attack1Trace(Monster, OwnerComp, Center) == true)
 						{
 							return false;
 						}
@@ -574,7 +571,7 @@ bool UBTServiceAttackTrace::Attack3Trace(AMonster* Monster, UBehaviorTreeCompone
 						//3Â÷ Å½Áö
 						float Distance = Monster->GetDistanceTo(Player);
 						//Monster->GetAIController()->SetInAttackArea(true);
-						if (Attack2Trace(Monster, OwnerComp, Center, CenterBottom, CenterTop) == true)
+						if (Attack2Trace(Monster, OwnerComp, Center) == true)
 						{
 							float line = (Monster->GetAttack2Range().M_Atk_Radius * 0.95);
 							if (Distance >= line)

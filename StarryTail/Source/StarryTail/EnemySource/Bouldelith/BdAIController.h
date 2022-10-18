@@ -20,19 +20,22 @@ public:
 	void WallGroggy();
 	void Attacked();
 	void Broken();
-
+	void SetStatueKey(bool state);
+	void SetBattleRunKey(bool state);
+	void SetWalkPoint(FVector Location);
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
 
-	static const FName IsBackstepKey;
-
-	static const FName IsAttack1Key;
-	static const FName IsAttack2Key;
-	static const FName IsAttack3Key;
-	static const FName IsAttack4Key;
-
-	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
+	static const FName IsStatueStateKey;
+	static const FName IsBattleRunKey;
+	static const FName IsWalkPointKey;
+
+	static const FName B_WalkLeftKey;
+	static const FName B_WalkRightKey;
+
+	static const FName Attack5Key;
+
 private:
 	void OnPossess(APawn* InPawn) override;
 };

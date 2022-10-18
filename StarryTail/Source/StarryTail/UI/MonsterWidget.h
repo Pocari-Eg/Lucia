@@ -32,13 +32,9 @@ public:
 
 	void MarkerOff();
 
-	UFUNCTION(BluePrintCallable)
-	EAttributeKeyword GetBarrierAttribute();
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnBarrierUI();
-	UFUNCTION(BlueprintImplementableEvent)
-	void  OnBarrierAttributeChange();
 
 	void SetQuillStackCount(const int Num);
 protected:

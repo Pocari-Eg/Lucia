@@ -16,7 +16,7 @@ struct FPlayerCharacterDataStruct
 public:
 	// 캐릭터 외 설정 값
 	
-	// 스프링암과 플레이어 간 기본 거리
+	// 스프링암과 프레이어 간 기본 거리
 	UPROPERTY(BlueprintReadWrite)
 	float FollowCameraZPosition = 425;
 	// 스프링암과 플레이어 간 최대 거리
@@ -58,7 +58,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool IsSkipMonsterAttack = false;
 	
-	//공격력
+	// 공격력
 	UPROPERTY(BlueprintReadWrite)
 	float Strength = 20;
 	
@@ -87,10 +87,7 @@ public:
 	// Sprint 최대 속도
 	UPROPERTY(BlueprintReadWrite)
 	float SprintMaxSpeed = 720.0f;
-	// 전기 스택 추가 이동속도
-	UPROPERTY(BlueprintReadWrite)
-	float ThunderQuillStackSpeed = 1;
-	// 전기 스택 추가 이동속도
+	// 전기 디버프 이동속도
 	UPROPERTY(BlueprintReadWrite)
 	float WaterDeBuffSpeed = 1;
 public:
@@ -142,6 +139,8 @@ struct FAttackDataTable : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Attack_Distance_2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Stack_Count;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float C_Time;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Key_Set;
@@ -192,7 +191,6 @@ struct FPlayerRecoveryDataStruct
 {
   GENERATED_BODY()  
 public:
-	//
 	UPROPERTY(EditAnywhere,Category="HP_Recovery")
 	int Amount;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")

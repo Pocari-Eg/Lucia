@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
+#include"../Object/SpiritPlate.h"
 #include "PlayerCharacterDataStruct.h"
 #include "Chaos/Vector.h"
 
@@ -61,6 +62,13 @@ public:
 	class UIreneInputInstance* IreneInput;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneSoundInstance* IreneSound;
+
+	// 정령 블루프린트
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<class AActor> IreneSpiritOrigin;
+	UPROPERTY(EditAnywhere)
+	class AIreneSpirit* IreneSpirit;
+	
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
 
@@ -104,7 +112,7 @@ private:
 	// 카메라 렉에 사용할 커브
 	UPROPERTY()
 	UCurveFloat* UseLagCurve;
-
+	
 	//float CameraLagTime;
 	//float LastLagTime;
 #pragma endregion GetClassOrObject
@@ -159,6 +167,9 @@ public:
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FollowTargetPosition();
+
+	UFUNCTION(BluePrintCallable)
+	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
 	
 	// 겹침 충돌 처리
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
@@ -170,7 +181,7 @@ public:
 	void SetHP(float DamageAmount);
 #pragma endregion Collision
 
-#pragma region HitFeel
+#pragma region Battle
 	public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void HitStopEvent();
@@ -192,7 +203,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateTailEvent();
-    
+	
 	UFUNCTION(BluePrintCallable, Category = "CameraRoation")
 	float BattleCameraRotation(UPARAM(ref) float& Angle);
 
@@ -210,7 +221,15 @@ public:
 
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
-#pragma endregion HitFeel
+
+	void PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	FVector KnockBackDir;
+	float KnockBackTimer;
+	float KnockBackTime;
+	float KnockBackPower;
+	bool bIsKnockBack;
+
+#pragma endregion Battle
 
 #pragma region UIManager
 	UFUNCTION(BlueprintImplementableEvent)
@@ -233,7 +252,13 @@ public:
 	void SetRaidBattleCamera();
 	UFUNCTION(BluePrintCallable)
 	void SetFirstLevel(bool isFirst);
+
+
+	void SpawnPet(ASpiritPlate* Target);
+	void VisiblePet();
 #pragma endregion UIManager
+
+
 //스탑워치 
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
 	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}

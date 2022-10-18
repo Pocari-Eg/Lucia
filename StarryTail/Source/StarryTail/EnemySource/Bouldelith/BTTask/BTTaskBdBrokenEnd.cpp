@@ -13,7 +13,6 @@ EBTNodeResult::Type UBTTaskBdBrokenEnd::ExecuteTask(UBehaviorTreeComponent& Owne
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
-	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBrokenKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsAttackedKey, false);
 
 	return EBTNodeResult::Succeeded;

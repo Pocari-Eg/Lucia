@@ -7,15 +7,11 @@
 void UBellyfishAnimInstance::PlayIdleMontage()
 {
 
-		if (Montage_IsPlaying(IdleMontage1) || Montage_IsPlaying(IdleMontage2))
+		if (Montage_IsPlaying(IdleMontage))
 			return;
 
-		auto Random = FMath::RandRange(0, 1);
 
-		if (Random == 0)
-			Montage_Play(IdleMontage1, PlayRate);
-		else
-			Montage_Play(IdleMontage2, PlayRate);
+			Montage_Play(IdleMontage, PlayRate);
 }
 
 void UBellyfishAnimInstance::PlayDeathMontage()
@@ -45,41 +41,27 @@ void UBellyfishAnimInstance::PlayAttackedMontage()
 
 void UBellyfishAnimInstance::PlayWalkMontage()
 {
-	if (Montage_IsPlaying(WalkMontage1) || Montage_IsPlaying(WalkMontage2))
+	if (Montage_IsPlaying(WalkMontage))
 		return;
 
-	auto Random = FMath::RandRange(0, 1);
-
-	if (Random == 0)
-		Montage_Play(WalkMontage1, PlayRate);
-	else
-		Montage_Play(WalkMontage2, PlayRate);
+		Montage_Play(WalkMontage, PlayRate);
 }
 
-void UBellyfishAnimInstance::PlayAttackSignMontage()
+
+
+void UBellyfishAnimInstance::PlayAttackLoopMontage()
 {
-	if (Montage_IsPlaying(AttackSignMontage1) || Montage_IsPlaying(AttackSignMontage2))
-		return;
-
-	auto Random = FMath::RandRange(0, 1);
-
-	if (Random == 0)
-		Montage_Play(AttackSignMontage1, PlayRate);
-	else
-		Montage_Play(AttackSignMontage2, PlayRate);
+	Montage_Stop(0.0f);
+	Montage_Play(AttackLoopMontage, PlayRate);
 }
 
 void UBellyfishAnimInstance::PlayRunMontage()
 {
-	if (Montage_IsPlaying(WalkMontage1) || Montage_IsPlaying(WalkMontage2))
+	if (Montage_IsPlaying(WalkMontage))
 		return;
 
-	auto Random = FMath::RandRange(0, 1);
-
-	if (Random == 0)
-		Montage_Play(WalkMontage1, PlayRate);
-	else
-		Montage_Play(WalkMontage2, PlayRate);
+	
+		Montage_Play(WalkMontage, PlayRate);
 }
 
 void UBellyfishAnimInstance::PlayRushMontage()

@@ -32,6 +32,8 @@ auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 	Monster->GetMonsterAnimInstance()->PlayBattleWalkMontage();
 	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
+	Monster->GetAIController()->StopMovement();
+
 	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 
 	return EBTNodeResult::InProgress;
@@ -59,42 +61,47 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
+	else {
+		PlayerFollowTimer = 0.0f;
+	}
 
 	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
 	{
 		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 	}
 
-	if (AttackTimer+=DeltaSeconds)
-	{
-		if (AttackTimer >= AttackTime)
-		{
-			AttackTimer = 0.0f;
-			float distance = Monster->GetDistanceTo(Player);
-			if (distance < 1000.0f&& distance > Monster->GetAttack3Range().M_Atk_Radius) {
-				auto ran = FMath::RandRange(1, 100);
-				STARRYLOG(Error, TEXT("Percent : %d"), ran);
-				if (ran <= 15)
-				{
-					Monster->GetAIController()->OnAttack(1);
-					return;
-				}
-				else if (ran > 15 && ran <= 50)
-				{
-					Monster->GetAIController()->OnAttack(2);
-					return;
-				}
-				else {
 
+	if (Monster->GetMonsterAtkType() == 2) {
+		if (AttackTimer += DeltaSeconds)
+		{
+			if (AttackTimer >= AttackTime)
+			{
+				AttackTimer = 0.0f;
+				float distance = Monster->GetDistanceTo(Player);
+				if (distance < 1000.0f && distance > Monster->GetAttack3Range().M_Atk_Radius) {
+					auto ran = FMath::RandRange(1, 100);
+					STARRYLOG(Error, TEXT("Percent : %d"), ran);
+					if (ran <= 15)
+					{
+						Monster->GetAIController()->OnAttack(1);
+						return;
+					}
+					else if (ran > 15 && ran <= 50)
+					{
+						Monster->GetAIController()->OnAttack(2);
+						return;
+					}
+					else {
+
+					}
 				}
-			}
-			else if(distance > 1000.0f) {
-				Monster->GetAIController()->OnAttack(3);
-				return;
+				else if (distance > 1000.0f) {
+					Monster->GetAIController()->OnAttack(3);
+					return;
+				}
 			}
 		}
 	}
-
 	
 
 

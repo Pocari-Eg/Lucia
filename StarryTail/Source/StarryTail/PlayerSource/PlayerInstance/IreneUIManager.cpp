@@ -171,6 +171,13 @@ void UIreneUIManager::SetDialogState(const bool State)
 	Irene->IreneInput->SetDialogState(State);
 }
 
+void UIreneUIManager::HpRecovery(float Hp)
+{
+	Irene->IreneData.CurrentHP += Hp;
+	if (Irene->IreneData.CurrentHP >= Irene->IreneData.MaxHP) Irene->IreneData.CurrentHP = Irene->IreneData.MaxHP;
+	OnHpChanged.Broadcast();
+}
+
 void UIreneUIManager::PauseWidgetOn()
 {
 	bIsOnPauseWidget = true;

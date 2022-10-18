@@ -69,7 +69,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	float GetFlyDistance();
 	float GetRunDistance();
-	float GetAttackedTime();
 	float GetRushTime();
 	float GetRushTestRange();
 	float GetRushSpeed();
@@ -86,9 +85,6 @@ private:
 	void InitAnime() override;
 
 
-	void InitAttack1Data();
-	void InitAttack2Data();
-	void InitAttack3Data();
 //Variable
 	//Variable
 	UPROPERTY()
@@ -105,7 +101,8 @@ private:
 
 	TSubclassOf<ABF_MagicAttack> MagicAttackClass;
 	ABF_MagicAttack* MagicAttack;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	FName FireSocketName;
 	bool IsSkillSet;
 	bool IsSkillAttack;
 
@@ -123,14 +120,10 @@ private:
 	bool bIsPlayerRushHit;
 	bool bIsWallRushHit;
 
-
-	bool RushFlyOn;
-	bool RushFlyOff;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Test, Meta = (AllowPrivateAccess = true))
 	float RushTestRange;
 
-
+	
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;

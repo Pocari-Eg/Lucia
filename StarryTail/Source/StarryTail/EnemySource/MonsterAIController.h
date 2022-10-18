@@ -42,14 +42,19 @@ public:
 	void SetBattleState(bool State);
 	void SetAttackedState(bool State);
 	void SetSupportState(bool State);
+	void SetTraceKey(bool State);
+	void SetShieldKey(bool State);
 	void OnAttack(int i);
 	void OffAttack(int i);
+	void SetBackStepKey(bool State);
 
 	void SetBattleMonster(AActor* Monster);
 	void InitBattleMonster();
 
 	bool GetIsAttacking();
-
+	bool GetIsTraceState();
+	bool GetIsFindPlayer();
+	bool GetIsGorggy();
 
 	//debug
 
@@ -100,8 +105,14 @@ public:
 	static const FName Attack1Key;
 	static const FName Attack2Key;
 	static const FName Attack3Key;
+	static const FName Attack4Key;
 
 	static const FName BattleMonsterKey;
+	static const FName IsShieldOnKey;
+	static const FName TraceStateKey;
+
+
+	static const FName IsBackStepOnKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

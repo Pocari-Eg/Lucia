@@ -7,15 +7,15 @@
 const FName ABdAIController::IsBattleIdleKey = (TEXT("bIsBattleIdle"));
 const FName ABdAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
 
-const FName ABdAIController::IsBackstepKey = (TEXT("bIsBackstep"));
-
-const FName ABdAIController::IsAttack1Key = (TEXT("bIsAttack1"));
-const FName ABdAIController::IsAttack2Key = (TEXT("bIsAttack2"));
-const FName ABdAIController::IsAttack3Key = (TEXT("bIsAttack3"));
-const FName ABdAIController::IsAttack4Key = (TEXT("bIsAttack4"));
-
-const FName ABdAIController::IsBrokenKey = (TEXT("bIsBroken"));
 const FName ABdAIController::IsWallGroggyKey = (TEXT("bIsWallGroggy"));
+const FName ABdAIController::IsStatueStateKey = (TEXT("StatueState"));
+const FName ABdAIController::IsBattleRunKey = (TEXT("bIsBattleRun"));
+const FName ABdAIController::IsWalkPointKey = (TEXT("WalkPointKey"));
+
+const FName ABdAIController::B_WalkLeftKey = (TEXT("B_WalkLeft"));
+const FName ABdAIController::B_WalkRightKey = (TEXT("B_WalkRight"));
+
+const FName ABdAIController::Attack5Key = (TEXT("Attack5Active"));
 
 ABdAIController::ABdAIController()
 {
@@ -35,7 +35,11 @@ void ABdAIController::Attacked()
 {
 	SetPlayer();
 
+	SetStatueKey(false);
+	
 	auto Bouldelith = Cast<ABouldelith>(GetPawn());
+
+	Bouldelith->GetBouldelithAnimInstance()->SetbIsState(false);
 
 	if (Bouldelith->GetBouldelithAnimInstance()->GetAttackIsPlaying())
 		return;
@@ -52,8 +56,23 @@ void ABdAIController::Attacked()
 void ABdAIController::Broken()
 {
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
-	Blackboard->SetValueAsBool(IsBrokenKey, true);
 }
+
+void ABdAIController::SetStatueKey(bool state)
+{
+	Blackboard->SetValueAsBool(IsStatueStateKey, state);
+}
+
+void ABdAIController::SetBattleRunKey(bool state)
+{
+	Blackboard->SetValueAsBool(IsBattleRunKey, state);
+}
+
+void ABdAIController::SetWalkPoint(FVector Location)
+{
+	Blackboard->SetValueAsVector(IsWalkPointKey, Location);
+}
+
 void ABdAIController::Attack()
 {
 

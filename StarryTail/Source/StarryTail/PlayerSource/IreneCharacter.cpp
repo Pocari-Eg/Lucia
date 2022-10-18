@@ -14,6 +14,11 @@
 #include "Curves/CurveVector.h"
 #include "../EnemySource/Bouldelith/Bouldelith.h"
 #include "../EnemySource/Morbit/Morbit.h"
+#include "PlayerSpirit/IreneSpirit.h"
+#include "PlayerSpirit/IreneSpiritAnimInstance.h"
+
+#include "../Object/ShieldSpirit.h"
+#include "../Object/LabMagic.h"
 
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()
@@ -70,6 +75,10 @@ AIreneCharacter::AIreneCharacter()
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
+	// 잔상 원본 세팅
+	ConstructorHelpers::FClassFinder<AIreneSpirit>BP_IreneSpirit(TEXT("/Game/BluePrint/Irene/IreneSpirit.IreneSpirit_C"));
+	if(BP_IreneSpirit.Succeeded())
+		IreneSpiritOrigin = BP_IreneSpirit.Class;
 
 	// 펫 세팅
 	PetSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("PetSprintArm"));
@@ -83,7 +92,7 @@ AIreneCharacter::AIreneCharacter()
 	PetMesh->SetupAttachment(PetSpringArmComp);
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
 	if(PetStatic.Succeeded())
-		PetMesh->SetSkeletalMesh(PetStatic.Object);
+	PetMesh->SetSkeletalMesh(PetStatic.Object);
 	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
 	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
 	
@@ -181,6 +190,9 @@ AIreneCharacter::AIreneCharacter()
 	bIsRadialBlurOn = false;
 	bInputStop = false;
 	bIsSpiritStance = false;
+
+	bIsKnockBack = false;
+
 }
 
 void AIreneCharacter::BeginPlay()
@@ -197,7 +209,7 @@ void AIreneCharacter::BeginPlay()
 	// 스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
-	
+
 	IreneUIManager->Begin();
 	IreneInput->Begin();
 	
@@ -219,7 +231,7 @@ void AIreneCharacter::PostInitializeComponents()
 	IreneAttack->Init(this);
 	IreneInput = NewObject<UIreneInputInstance>(this);
 	IreneInput->Init(this);
-
+	
 	IreneSound= NewObject<UIreneSoundInstance>(this);
 	IreneSound->Init(this);
 
@@ -241,13 +253,13 @@ void AIreneCharacter::TargetReset()const
 		const auto Mob = Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		if (Mob != nullptr)
 		{
-			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 700.0f)
+			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 1500.0f)
 			{
 				const auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 				Mon->MarkerOff();
 				IreneAnim->SetIsHaveTargetMonster(false);
 				IreneAnim->SetTargetMonster(nullptr);
-				IreneAttack->SwordTargetMonster = nullptr;				
+				IreneAttack->SwordTargetMonster = nullptr;
 			}			
 		}
 	}
@@ -263,6 +275,25 @@ void AIreneCharacter::Tick(float DeltaTime)
 	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
+
+	if(IreneInput->GetCameraStop())
+	{
+		SpringArmComp->CameraLagSpeed = 0.0001f;
+	}
+
+	if (bIsKnockBack)
+	{
+		KnockBackTimer += DeltaTime;
+		const FVector KnockBackLocation = GetActorLocation() + (KnockBackDir * (KnockBackPower * (0.15f - KnockBackTimer)));
+		SetActorLocation(KnockBackLocation);
+
+		if (KnockBackTimer > KnockBackTime)
+		{
+			KnockBackTimer = 0.0f;
+			bIsKnockBack = false;
+		}
+	}
+
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -277,7 +308,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
-	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::WeaponChangeKeyword);
+	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::SpiritChangeKeyword);
+	PlayerInputComponent->BindAction("BreakAttack", IE_Pressed, IreneInput, &UIreneInputInstance::BreakAttackKeyword);
 	
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
@@ -331,6 +363,7 @@ TTuple<FVector, FVector, FVector> AIreneCharacter::SetCameraStartTargetPosition(
 	const FVector TargetPos = GetActorLocation()+(Length) * BoxFarSize;	
 	const FVector CameraPos = StartPosition;
 	const FVector ReturnBoxSize = FVector(BoxSize.X, BoxSize.Y, FVector::Dist(TargetPos,CameraPos)/2);
+	
 	return MakeTuple(ReturnBoxSize, CameraPos, TargetPos);
 }
 
@@ -355,7 +388,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 	const float DebugLifeTime = LifeTime;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime*2);
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 0.1f);
 #endif
 	
 	return MakeTuple(MonsterList, Params, bResult);
@@ -453,10 +486,10 @@ void AIreneCharacter::SetAttackNearMonster(const FHitResult RayHit, float& NearP
 		Mon->MarkerOn();
 		// 기존 깃펜 타겟UI 끄고 검 공격 타겟에게 깃펜 타겟UI 보여주기
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOff();
+		// Mon->StackWidgetOff();
 		// IreneAttack->QuillTargetMonster = RayHit.GetActor();
 		// Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-		// Mon->TargetWidgetOn();
+		// Mon->StackWidgetOn();
 		
 		// 몬스터를 찾고 쳐다보기
 		//const float Z = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
@@ -523,6 +556,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		if (IreneData.CurrentHP > 0)
 		{
 			SetHP(DamageAmount);
+			IreneAttack->SetDamageBeforeTableName(IreneAttack->GetBasicAttackDataTableName().ToString());
 			
 			if (IreneData.CurrentHP <= 0)
 			{
@@ -531,26 +565,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
-				const auto Monster = Cast<AMonster>(DamageCauser);
-				if(Monster)
-				{
-					switch (Monster->GetAttribute())
-					{
-					case EAttributeKeyword::e_Fire:
-						IreneAttack->SetFireDeBuffStack(IreneAttack->GetFireDeBuffStack()+1, DamageAmount);
-						break;
-					case EAttributeKeyword::e_Water:
-						IreneAttack->SetWaterDeBuffStack(IreneAttack->GetWaterDeBuffStack()+1);
-						break;
-					case EAttributeKeyword::e_Thunder:
-						IreneAttack->SetThunderDeBuffStack(IreneAttack->GetThunderDeBuffStack()+1);
-						break;
-					case EAttributeKeyword::e_None:
-						break;
-					}
-				}
-
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
+			
+				if(!IreneState->IsAttackState() && !IreneState->IsJumpState()&& !Cast<ALabMagic>(DamageCauser))
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
@@ -558,9 +574,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AMonsterProjectile>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser)|| Cast<ALabMagic>(DamageCauser))
 				return FinalDamage;
-
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->SwordTargetMonster = DamageCauser;
@@ -569,10 +584,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 			Mon->MarkerOn();
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOff();
+			//Mon->StackWidgetOff();
 			//IreneAttack->QuillTargetMonster = DamageCauser;
 			//Mon=Cast<AMonster>(IreneAttack->QuillTargetMonster);
-			//Mon->TargetWidgetOn();
+			//Mon->StackWidgetOn();
 		}
 	}
 	return FinalDamage;
@@ -581,6 +596,11 @@ void AIreneCharacter::SetHP(float DamageAmount)
 {	
 	IreneData.CurrentHP -= DamageAmount;	
 	IreneUIManager->OnHpChanged.Broadcast();
+	if(IreneData.CurrentHP <= 0 && !IreneState->IsDeathState() && bIsSpiritStance)
+	{
+		ChangeStateAndLog(UDeathState::GetInstance());
+		LevelRestartEvent();
+	}
 }
 
 #pragma endregion Collision
@@ -591,7 +611,7 @@ void AIreneCharacter::ChangeStateAndLog(IState* NewState)const
 	if(!IreneState->IsDeathState())
 	{
 		IreneState->ChangeState(NewState);
-		STARRYLOG(Error,TEXT("%s"), *IreneState->GetStateToString());
+		//STARRYLOG(Error,TEXT("%s:   %f"), *IreneState->GetStateToString(),GetWorld()->RealTimeSeconds);
 		IreneAnim->SetIreneStateAnim(IreneState->GetState());
 	}
 }
@@ -626,7 +646,7 @@ void AIreneCharacter::ActionEndChangeMoveState(bool RunToSprint)const
 }
 #pragma endregion State
 
-#pragma region HitFeel
+#pragma region Battle
 float AIreneCharacter::BattleCameraRotation(UPARAM(ref) float& Angle)
 {
 	const FVector IreneForward = GetCapsuleComponent()->GetForwardVector();
@@ -715,7 +735,6 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 		if(FixedUpdateCameraShakeTimer.IsValid())
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraShakeTimer);
-			FixedUpdateCameraShakeTimer.Invalidate();
 		}
 	}
 }
@@ -728,6 +747,23 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 {
 	UseLagCurve = Curve;
 }
+
+void AIreneCharacter::PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower)
+{
+	if (!bIsKnockBack)
+	{
+		KnockBackDir = In_KnockBackDir;
+		KnockBackDir.Normalize();
+		KnockBackDir.Z = 0.0f;
+
+		KnockBackPower = In_KnockBackPower;
+		KnockBackTime = 0.15f;
+		KnockBackTimer = 0.0f;
+		bIsKnockBack = true;
+	}
+}
+
+
 void AIreneCharacter::PlayFadeInAnimation()
 {
 	IreneUIManager->PlayHUDAnimation();
@@ -750,11 +786,24 @@ void AIreneCharacter::SetFirstLevel(bool isFirst)
 	IreneUIManager->PlayerHud->bIsFirstLevel = isFirst;
 }
 
+void AIreneCharacter::SpawnPet(ASpiritPlate* Target)
+{
+	AShieldSpirit* NewPet = GetWorld()->SpawnActor<AShieldSpirit>(AShieldSpirit::StaticClass(),GetActorLocation()+PetSpringArmComp->GetRelativeLocation() , FRotator::ZeroRotator);
+	NewPet->SetSpiritPlate(Target);
+	PetMesh->SetVisibility(false);
+}
+
+void AIreneCharacter::VisiblePet()
+{
+	PetMesh->SetVisibility(true);
+
+}
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
 }
-#pragma endregion HitFeel
+#pragma endregion Battle
 
 #pragma region StopWatch
 //스탑워치 컨트롤 함수
