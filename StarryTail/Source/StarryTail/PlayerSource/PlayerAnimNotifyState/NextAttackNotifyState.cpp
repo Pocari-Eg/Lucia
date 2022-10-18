@@ -24,15 +24,6 @@ void UNextAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayl
 		Irene->IreneData.CanNextCombo = true;
 		Irene->IreneInput->SetNextAttack(true);
 	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneData.CanNextCombo = true;
-			Spirit->Irene->IreneInput->SetNextAttack(true);
-		}
-	}
 }
 void UNextAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -51,26 +42,5 @@ void UNextAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayloa
 			Irene->IreneAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
 		}
 		Irene->IreneInput->SetNextAttack(false);
-	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneData.CanNextCombo = false;
-			if (Spirit->Irene->IreneData.IsComboInputOn)
-			{
-				Spirit->Irene->IreneAttack->AttackStartComboState();
-				if(Spirit->Irene->IreneSpirit != nullptr)
-				{
-					if(Spirit->Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_3")) != 0)
-					{
-						Spirit->Irene->IreneSpirit->IreneSpiritAnim->JumpToAttackMontageSection(Spirit->Irene->IreneData.CurrentCombo);
-						Spirit->Irene->IreneAttack->SetSkillState();
-					}
-				}
-			}
-			Spirit->Irene->IreneInput->SetNextAttack(false);
-		}
 	}
 }

@@ -5,6 +5,7 @@
 #include "IreneAnimInstance.h"
 
 #include "IreneAttackInstance.h"
+#include "IreneInputInstance.h"
 #include "IreneSoundInstance.h"
 #include "../PlayerFSM/IreneFSM.h"
 #include "../IreneCharacter.h"
@@ -45,12 +46,17 @@ UIreneAnimInstance::UIreneAnimInstance()
 	
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill1_Montage.IreneFireSkill1_Montage"));
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> SwordSkill2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneFireSkill2_Montage.IreneFireSkill2_Montage"));
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_Montage.IreneSpiritSkill_Montage"));
-	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&Spirit_Montage.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_1_Montage.IreneSpiritSkill_1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_2_Montage.IreneSpiritSkill_2_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_3_Montage(TEXT("/Game/Animation/Irene/Animation/BP/IreneSpiritSkill_3_Montage.IreneSpiritSkill_3_Montage"));
+	
+	if(SwordSkill1_Montage.Succeeded()&&SwordSkill2_Montage.Succeeded()&&Spirit_1_Montage.Succeeded()&&Spirit_2_Montage.Succeeded()&&Spirit_3_Montage.Succeeded())
 	{
 		SwordSkill1Montage = SwordSkill1_Montage.Object;
 		SwordSkill2Montage = SwordSkill2_Montage.Object;
-		SpiritSkillMontage = Spirit_Montage.Object;
+		SpiritSkill1Montage = Spirit_1_Montage.Object;
+		SpiritSkill2Montage = Spirit_2_Montage.Object;
+		SpiritSkill3Montage = Spirit_3_Montage.Object;
 	}
 }
 
@@ -88,7 +94,20 @@ void UIreneAnimInstance::PlaySkillAttackMontage(const int AttackCount)
 	}
 	else
 	{
-		Montage_Play(SpiritSkillMontage, 1.0f);
+		switch (Irene->IreneInput->GetSpiritChainAttackCount())
+		{
+		case 1:
+			Montage_Play(SpiritSkill1Montage, 1.0f);
+			break;
+		case 2:
+			Montage_Play(SpiritSkill2Montage, 1.0f);
+			break;
+		case 3:
+			Montage_Play(SpiritSkill3Montage, 1.0f);
+			break;
+		default:
+			break;
+		}
 	}
 }
 

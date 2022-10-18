@@ -62,6 +62,8 @@ void UIreneInputInstance::InitMemberVariable()
 	MaxDodgeCount = 2;
 	DodgeCount = MaxDodgeCount;	
 	bIsDodgeToDodge = false;
+
+	SpiritChainAttackCount = 0;
 	
 	CurSoulValue = 0.0f;
 
@@ -69,13 +71,15 @@ void UIreneInputInstance::InitMemberVariable()
 	SwordSkillCoolTime = 0.0f;
 	CanSwordSkill2Time = 2.0f;
 
-	SpiritSpawnCoolTime = 0.3f;
+	SpiritSpawnCoolTime = 0.1f;
+	SpiritAnimJumpCoolTime = 1.5f;
 	
 	bIsThunderAttributeOn = true;
 
 	bIsSkillOn = false;
 	bAttackUseSkill = false;
 	CanUseSecondSwordSkill = false;
+	CanUseSpiritAnimJump = false;
 	
 	bSkillCameraMove = false;
 	
@@ -427,6 +431,25 @@ void UIreneInputInstance::RightButton(float Rate)
 						Irene->IreneSpirit->DestroySpirit();
 						Irene->IreneSpirit = nullptr;
 					}
+					const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+					
+					// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+					auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(50,50,AttackTable->Attack_Distance_2),Irene->CameraComp->GetComponentLocation());
+					auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+					Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
+	
+					if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+					{
+						// 몬스터를 찾고 쳐다보기
+						const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+						GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+					}
+					else
+					{
+						const FVector IrenePosition = Irene->GetActorLocation();
+						const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+						Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+					}
 					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
 					Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
 					if(Irene->IreneSpirit != nullptr)
@@ -442,63 +465,16 @@ void UIreneInputInstance::RightButton(float Rate)
 							return;
 					}
 				}
-
-				if (Irene->IreneData.IsAttacking)
-				{
-					if(bNextAttack)
-					{
-						if (Irene->IreneData.CanNextCombo)
-							Irene->IreneData.IsComboInputOn = true;
-					}
-					if(bJumpAttack)
-					{
-						Irene->IreneAttack->AttackStartComboState();
-						if(Irene->IreneSpirit != nullptr)
-							Irene->IreneSpirit->IreneSpiritAnim->JumpToAttackMontageSection(Irene->IreneData.CurrentCombo);
-					}
-					if(bReAttack)
-					{
-						if(Irene->IreneSpirit != nullptr)
-						{
-							const FVector IrenePosition = Irene->GetActorLocation();
-							const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
-							Irene->IreneSpirit->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-						}
-						if(Irene->IreneSpirit != nullptr && Irene->IreneState->IsSkillState())
-							Irene->IreneSpirit->IreneSpiritAnim->StopAllMontages(0);
-						Irene->IreneData.IsAttacking = true;
-						Irene->IreneData.CurrentCombo = 0;
-						Irene->IreneAttack->AttackStartComboState();
-						if(Irene->IreneSpirit != nullptr)
-						{
-							if(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr)
-								Irene->IreneSpirit->IreneSpiritAnim->PlaySkillAttackMontage();
-							else
-								Irene->IreneSpirit->IreneSpiritAnim->Montage_JumpToSection(FName("Attack1"), Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage());
-						}
-						Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
-					}
-				}
-				else
-				{
-					Irene->IreneAttack->AttackStartComboState();
-					if(Irene->IreneSpirit != nullptr)
-					{
-						Irene->IreneSpirit->IreneSpiritAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
-					}
-					Irene->IreneData.IsAttacking = true;
-				}
 			}
 			
+			//SkillCameraMoveStart();			
+			if(Irene->bIsSpiritStance)
+				SpiritSkill();
+
 			Irene->IreneAttack->SetSkillState();
 			
-			//SkillCameraMoveStart();
-
 			if(!Irene->bIsSpiritStance)
 				NonSpiritSkill();
-			else
-				SpiritSkill();
-				
 			//Irene->IreneUIManager->PlayerHud->UseSkill();			
 		}
 	}
@@ -558,11 +534,52 @@ void UIreneInputInstance::SpiritSkill()
 	if(AttackTable != nullptr)
 	{
 		Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;
-		// 검 스킬 쿨타임 적용
-		MaxSwordSkillCoolTime = AttackTable->C_Time;
+	}
+
+	// 잔상 다음 공격 애니메이션 실행 조건
+	if (CanUseSpiritAnimJump == false)
+	{
+		CanUseSpiritAnimJump = true;
+		// 특정 시간안에 다시 우클릭하면 다음 공격 애니로 넘길 수 있다.
+		GetWorld()->GetTimerManager().SetTimer(SpiritAnimJumpWaitHandle, FTimerDelegate::CreateLambda([&]()
+		{
+			CanUseSpiritAnimJump = false;
+			SpiritChainAttackCount = 0;
+			GetWorld()->GetTimerManager().ClearTimer(SpiritAnimJumpWaitHandle);
+		}), SpiritAnimJumpCoolTime, false);
+	}
+	
+	if(Irene->IreneSpirit != nullptr && CanUseSpiritAnimJump == true)
+	{
+		switch (SpiritChainAttackCount)
+		{
+		case 1:
+			SpiritSpawnCoolTime = 0.17f;
+			SpiritChainAttackCount = 2;
+			break;
+		case 2:
+			SpiritSpawnCoolTime = 0.33f;
+			SpiritChainAttackCount = 3;
+			break;
+		case 3:
+			SpiritSpawnCoolTime = 0.54f;
+			SpiritChainAttackCount = 1;
+			break;
+		default:
+			break;
+		}
+	}
+
+	if(SpiritChainAttackCount == 0)
+	{
+		SpiritSpawnCoolTime = 0.54f;
+		SpiritChainAttackCount = 1;
 	}
 	
 	Irene->IreneAnim->PlaySkillAttackMontage();
+	if(Irene->IreneSpirit != nullptr)
+		Irene->IreneSpirit->IreneSpiritAnim->PlaySkillAttackMontage(SpiritChainAttackCount);
+	
 	Irene->IreneData.IsAttacking = true;
 	if(PerfectDodgeTimerHandle.IsValid())
 	{
@@ -570,29 +587,20 @@ void UIreneInputInstance::SpiritSkill()
 		Irene->FollowTargetPosition();
 		PerfectDodgeAttackEnd();
 	}
-
-	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
-	auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(50,50,AttackTable->Attack_Distance_2),Irene->CameraComp->GetComponentLocation());
-	auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
-	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
 	
-	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-	{
-		// 몬스터를 찾고 쳐다보기
-		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
-		GetWorld()->GetFirstPlayerController()->GetPawn()->SetActorRotation(FRotator(0.0f, Z, 0.0f));		
-	}
 	if(Irene->GetMesh()->IsVisible())
 		Irene->Weapon->SetVisibility(true);
 	GetWorld()->GetTimerManager().SetTimer(SpiritSpawnWaitHandle,this, &UIreneInputInstance::SpawnSpirit, SpiritSpawnCoolTime, false);
 }
 void UIreneInputInstance::SpawnSpirit()
 {
-	if(Irene->IreneSpirit != nullptr && Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr)
+	if(Irene->IreneSpirit != nullptr)
 	{
+		STARRYLOG_S(Warning);
+
 		Irene->GetMesh()->SetVisibility(false,true);
 		Irene->IreneSpirit->GetMesh()->SetVisibility(true,true);
-		Irene->IreneSpirit->StartSpawn();
+		//Irene->IreneSpirit->IreneSpiritAnim->PlaySkillAttackMontage(SpiritChainAttackCount);
 	}
 }
 void UIreneInputInstance::SkillWait()

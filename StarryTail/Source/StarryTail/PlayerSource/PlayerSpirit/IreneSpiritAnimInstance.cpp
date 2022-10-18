@@ -7,10 +7,14 @@
 
 UIreneSpiritAnimInstance::UIreneSpiritAnimInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_Montage.Spirit_Montage"));
-	if(Spirit_Montage.Succeeded())
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_1_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_1_Montage.Spirit_1_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_2_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_2_Montage.Spirit_2_Montage"));
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> Spirit_3_Montage(TEXT("/Game/Animation/Irene/Animation/BP/Spirit_3_Montage.Spirit_3_Montage"));
+	if(Spirit_1_Montage.Succeeded()&&Spirit_2_Montage.Succeeded()&&Spirit_3_Montage.Succeeded())
 	{
-		SpiritSkillMontage = Spirit_Montage.Object;
+		SpiritSkill1Montage = Spirit_1_Montage.Object;
+		SpiritSkill2Montage = Spirit_2_Montage.Object;
+		SpiritSkill3Montage = Spirit_3_Montage.Object;
 	}
 }
 
@@ -34,36 +38,26 @@ void UIreneSpiritAnimInstance::NativeUpdateAnimation(const float DeltaSeconds)
 
 }
 
-void UIreneSpiritAnimInstance::PlaySkillAttackMontage()
+void UIreneSpiritAnimInstance::PlaySkillAttackMontage(const int SkillNumber)
 {
-	// 스킬 몽타주를 실행하는 함수
-	Montage_Play(SpiritSkillMontage, 1.0f);
-}
-
-void UIreneSpiritAnimInstance::NextToAttackMontageSection(const int32 NewSection)
-{
-	// 다음 기본공격의 세션을 현재 세션이 종료되면 시작시키는 함수
-	if (NewSection > 1)
+	switch (SkillNumber)
 	{
-		Montage_SetNextSection(GetAttackMontageSectionName(NewSection - 1), GetAttackMontageSectionName(NewSection), SpiritSkillMontage);
-	}
-}
-void UIreneSpiritAnimInstance::JumpToAttackMontageSection(const int32 NewSection)
-{
-	// 다음 기본공격의 세션을 즉시 시작시키는 함수
-	if (NewSection > 1)
-	{
-		Montage_JumpToSection(GetAttackMontageSectionName(NewSection), SpiritSkillMontage);
+	case 1:
+		Montage_Play(SpiritSkill1Montage);
+		break;
+	case 2:
+		Montage_Play(SpiritSkill2Montage);
+		break;
+	case 3:
+		Montage_Play(SpiritSkill3Montage);
+		break;
+	default:
+		break;
 	}
 }
 
 void UIreneSpiritAnimInstance::AnimNotify_SpiritAttackHitCheck() const
 {
 	OnSpiritAttackHitCheck.Broadcast();
-}
-
-FName UIreneSpiritAnimInstance::GetAttackMontageSectionName(const int32 Section)
-{
-	return FName(*FString::Printf(TEXT("Attack%d"),Section));
 }
 

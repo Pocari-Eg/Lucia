@@ -28,7 +28,11 @@ private:
 	EStateEnum IreneState;
 
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
-	UAnimMontage* SpiritSkillMontage;
+	UAnimMontage* SpiritSkill1Montage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpiritSkill2Montage;
+	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SpiritSkill3Montage;
 
 public:
 	void Init(AIreneCharacter* Value);
@@ -41,15 +45,10 @@ private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
 public:
-	void PlaySkillAttackMontage();
-	void NextToAttackMontageSection(const int32 NewSection);
-	void JumpToAttackMontageSection(const int32 NewSection);
+	void PlaySkillAttackMontage(const int SkillNumber);
 	
 	void SetIreneStateAnim(const EStateEnum Value) { IreneState = Value; }
-
 private:	
 	UFUNCTION()
 	void AnimNotify_SpiritAttackHitCheck() const;
-
-	FName GetAttackMontageSectionName(const int32 Section);
 };
