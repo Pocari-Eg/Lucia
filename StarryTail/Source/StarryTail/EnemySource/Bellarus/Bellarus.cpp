@@ -32,12 +32,7 @@ ABellarus::ABellarus()
 	MonsterWidget->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
 	StackWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
 
-	
 
-	
-
-
-	DodgeTimePercent = 10.0f;
 
 
 }

@@ -27,8 +27,9 @@ public:
 	UBellarusAnimInstance* GetBellarusAnimInstance() const;
 
 	void Attack();
-
-
+	void Wing_L();
+	void Wing_R();
+	void Tail();
 
 protected:
 	// Called when the game starts or when spawned
@@ -56,17 +57,13 @@ private:
 	void InitMesh() override;
 	void InitAnime() override;
 
+	bool AttackCheck(float Radius, float Hegiht, float Angle,float AttackAxis);
 
 //Variable
 	//Variable
 	UPROPERTY()
 		class UBellarusAnimInstance* BellarusAnimInstance;
 private:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect,meta = (ClampMin = "0.0", ClampMax = "100.0", AllowPrivateAccess = true))
-	float DodgeTimePercent;
-
-
 
 	
 public:
