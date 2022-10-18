@@ -19,6 +19,7 @@
 
 #include "../Object/ShieldSpirit.h"
 #include "../Object/LabMagic.h"
+#include "../EnemySource/Bellarus/Swirl.h"
 
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()
@@ -572,8 +573,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
+				bool DotDamage = Cast<ASwirl>(DamageCauser)->GetbIsOnDotDamage();
 			
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState()&& !Cast<ALabMagic>(DamageCauser))
+				if(!IreneState->IsAttackState() && !IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage)
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
@@ -581,7 +583,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AMonsterProjectile>(DamageCauser)|| Cast<ALabMagic>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser)|| Cast<ALabMagic>(DamageCauser)|| Cast<ASwirl>(DamageCauser))
 				return FinalDamage;
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
