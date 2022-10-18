@@ -35,7 +35,6 @@ public:
 	AIreneSpirit();
 
 	void AttackCheck();
-	void StartSpawn();
 	void DestroySpiritTimer(float Time);
 	void DestroySpirit();
 	

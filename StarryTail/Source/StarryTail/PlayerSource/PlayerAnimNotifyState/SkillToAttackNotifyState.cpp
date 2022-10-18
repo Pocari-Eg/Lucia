@@ -20,14 +20,6 @@ void USkillToAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 	{
 		Irene->IreneAttack->SetCanSkillToAttack(true);
 	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneAttack->SetCanSkillToAttack(true);
-		}
-	}
 }
 void USkillToAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -41,13 +33,5 @@ void USkillToAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPay
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillToAttack(false);
-	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneAttack->SetCanSkillToAttack(true);
-		}
 	}
 }
