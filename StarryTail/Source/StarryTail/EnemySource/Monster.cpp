@@ -774,7 +774,7 @@ FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
 
 void AMonster::ShieldDestroyed()
 {
-	
+	ShieldDestroyEvent();
 	OnBarrierChanged.Broadcast();
 	MonsterAIController->SetShieldKey(false);
 
