@@ -55,9 +55,7 @@ FString UIreneFSM::GetStateToString() const
 	case EStateEnum::B_Attack_3: return FString("B_Attack_3");
 	case EStateEnum::Sword_Skill_1: return FString("Sword_Skill_1");
 	case EStateEnum::Sword_Skill_2: return FString("Sword_Skill_2");
-	case EStateEnum::Spirit_Skill_1: return FString("Spirit_Skill_1");
-	case EStateEnum::Spirit_Skill_2: return FString("Spirit_Skill_2");
-	case EStateEnum::Spirit_Skill_3: return FString("Spirit_Skill_3");
+	case EStateEnum::Spirit_Skill: return FString("Spirit_Skill");
 	case EStateEnum::Form_Change: return FString("Form_Change");
 	case EStateEnum::Hit_1: return FString("Hit_1");
 	case EStateEnum::Hit_2: return FString("Hit_2");
@@ -1191,19 +1189,19 @@ void USwordSkill2::EndTimeExit(IBaseGameEntity* CurState)
 	CurState->bIsEnd = true;
 }
 #pragma endregion SwordSkill2
-#pragma region USpiritSkill1
-USpiritSkill1* USpiritSkill1::GetInstance()
+#pragma region USpiritSkill
+USpiritSkill* USpiritSkill::GetInstance()
 {
-	static USpiritSkill1* Instance;
+	static USpiritSkill* Instance;
 	if (Instance == nullptr) {
-		Instance = NewObject<USpiritSkill1>();
+		Instance = NewObject<USpiritSkill>();
 		Instance->AddToRoot();
 	}
 	return Instance;
 }
-void USpiritSkill1::Enter(IBaseGameEntity* CurState)
+void USpiritSkill::Enter(IBaseGameEntity* CurState)
 {
-	CurState->SetStateEnum(EStateEnum::Spirit_Skill_1);
+	CurState->SetStateEnum(EStateEnum::Spirit_Skill);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	if(CurState->Irene->CameraLagCurve.Num()>0)
@@ -1212,8 +1210,27 @@ void USpiritSkill1::Enter(IBaseGameEntity* CurState)
 	
 	CurState->Irene->IreneData.IsAttacking = true;
 	CurState->Irene->IreneData.CanNextCombo = false;
-	CurState->Irene->IreneData.CurrentCombo = 1;
-
+	
+	CurState->Irene->IreneAttack->SetTrueAttackCount(1);
+	if(CurState->Irene->IreneSpirit != nullptr && CurState->Irene->IreneInput->GetSpiritChainAttackCount())
+	{
+		CurState->Irene->IreneAttack->SetTrueAttackCount(CurState->Irene->IreneInput->GetSpiritChainAttackCount());
+	}
+	switch (CurState->Irene->IreneInput->GetSpiritChainAttackCount())
+	{
+	case 1:
+		OriginEndTime = 0.76f;
+		break;
+	case 2:
+		OriginEndTime = 0.4f;
+		break;
+	case 3:
+		OriginEndTime = 0.53f;
+		break;
+	default:
+		break;
+	}
+	
 	CurState->Irene->IreneInput->SetNextAttack(false);
 	CurState->Irene->IreneInput->SetJumpAttack(false);
 	CurState->Irene->IreneInput->SetReAttack(false);
@@ -1222,29 +1239,32 @@ void USpiritSkill1::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
 	CurState->Irene->IreneAttack->SetCanSkillToAttack(false);
 
-	const FVector IrenePosition = CurState->Irene->GetActorLocation();
-	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
-	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+	// const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	// const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	// CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 
-	CurState->Irene->IreneAttack->SetTrueAttackCount(1);	
 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
-	EndTime = AttackTable->C_Time+=0.3f;
+	EndTime = AttackTable->C_Time;
 	if(CurState->Irene->IreneSpirit != nullptr)
-	{
-		if(CurState->Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() != nullptr)
-			EndTime-=0.3f;
 		CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
-	}
 	
 	CurState->Irene->IreneAttack->SetDamageBeforeTableName(CurState->Irene->IreneAttack->GetBasicAttackDataTableName().ToString());
 }
-void USpiritSkill1::Execute(IBaseGameEntity* CurState)
+void USpiritSkill::Execute(IBaseGameEntity* CurState)
 {	
-	// ¸ùÅ¸ÁÖ ½Ã°£
+	// ÀÜ»ó ¸ùÅ¸ÁÖ ½Ã°£
 	if (CurState->PlayTime >= EndTime)
 	{
+		CurState->Irene->GetMesh()->SetVisibility(true,true);
 		if(CurState->Irene->IreneSpirit != nullptr)
+		{
 			CurState->Irene->IreneSpirit->DestroySpirit();
+			CurState->Irene->IreneSpirit = nullptr;
+		}
+	}
+	// º»Ã¼ ¸ùÅ¸ÁÖ ½Ã°£
+	if (CurState->PlayTime >= OriginEndTime)
+	{
 		EndTimeExit(CurState);
 	}
 
@@ -1266,20 +1286,18 @@ void USpiritSkill1::Execute(IBaseGameEntity* CurState)
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ActionEndChangeMoveState();
-			CurState->Irene->IreneSpirit->DestroySpirit();
-			CurState->Irene->IreneSpirit = nullptr;
 			CurState->Irene->GetMesh()->SetVisibility(true);
 		}
 	}
 }
-void USpiritSkill1::Exit(IBaseGameEntity* CurState)
+void USpiritSkill::Exit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->IreneInput->SetAttackUseSkill(false);
 	CurState->Irene->IreneAttack->AttackEndComboState();
 	CurState->Irene->CameraShakeOn = false;
 	CurState->bIsEnd = true;
 }
-void USpiritSkill1::EndTimeExit(IBaseGameEntity* CurState)
+void USpiritSkill::EndTimeExit(IBaseGameEntity* CurState)
 {
 	CurState->Irene->CameraShakeOn = false;
 	CurState->Irene->IreneData.IsAttacking = false;
@@ -1289,194 +1307,6 @@ void USpiritSkill1::EndTimeExit(IBaseGameEntity* CurState)
 	CurState->bIsEnd = true;
 }
 #pragma endregion USpiritSkill1
-#pragma region USpiritSkill2
-USpiritSkill2* USpiritSkill2::GetInstance()
-{
-	static USpiritSkill2* Instance;
-	if (Instance == nullptr) {
-		Instance = NewObject<USpiritSkill2>();
-		Instance->AddToRoot();
-	}
-	return Instance;
-}
-void USpiritSkill2::Enter(IBaseGameEntity* CurState)
-{
-	CurState->SetStateEnum(EStateEnum::Spirit_Skill_2);
-	CurState->PlayTime = 0.0f;
-	CurState->bIsEnd = false;
-	if(CurState->Irene->CameraLagCurve.Num()>0)
-		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
-	StartShakeTime = 0.0f;
-	
-	CurState->Irene->IreneData.IsAttacking = true;
-	CurState->Irene->IreneData.CanNextCombo = false;
-	CurState->Irene->IreneData.CurrentCombo = 2;
-
-	CurState->Irene->IreneInput->SetNextAttack(false);
-	CurState->Irene->IreneInput->SetJumpAttack(false);
-	CurState->Irene->IreneInput->SetReAttack(false);
-	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
-	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillToAttack(false);
-
-	const FVector IrenePosition = CurState->Irene->GetActorLocation();
-	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
-	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-
-	CurState->Irene->IreneAttack->SetTrueAttackCount(2);
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
-	EndTime = AttackTable->C_Time;
-	if(CurState->Irene->IreneSpirit != nullptr)
-		CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
-	CurState->Irene->IreneAttack->SetDamageBeforeTableName(CurState->Irene->IreneAttack->GetBasicAttackDataTableName().ToString());
-}
-void USpiritSkill2::Execute(IBaseGameEntity* CurState)
-{	
-	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= EndTime)
-	{
-		if(CurState->Irene->IreneSpirit != nullptr)
-			CurState->Irene->IreneSpirit->DestroySpirit();
-		EndTimeExit(CurState);
-	}
-
-	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
-		StartShakeTime = CurState->PlayTime;
-	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
-		CurState->Irene->CameraShakeOn = false;
-	
-	// ÀÌµ¿ ½ºÅµ
-	if (CurState->Irene->IreneData.IsAttacking)
-	{
-		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
-		{
-			if (CurState->Irene->Weapon->IsVisible())
-			{
-				CurState->Irene->Weapon->SetVisibility(false);
-				CurState->Irene->WeaponVisible(false);
-			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ActionEndChangeMoveState();
-			CurState->Irene->IreneSpirit->DestroySpirit();
-			CurState->Irene->IreneSpirit = nullptr;
-			CurState->Irene->GetMesh()->SetVisibility(true);
-		}
-	}
-}
-void USpiritSkill2::Exit(IBaseGameEntity* CurState)
-{
-	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneAttack->AttackEndComboState();
-	CurState->Irene->CameraShakeOn = false;
-	CurState->bIsEnd = true;
-}
-void USpiritSkill2::EndTimeExit(IBaseGameEntity* CurState)
-{
-	CurState->Irene->CameraShakeOn = false;
-	CurState->Irene->IreneData.IsAttacking = false;
-	CurState->Irene->IreneData.CanNextCombo = false;
-	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneAttack->AttackTimeEndState();
-	CurState->bIsEnd = true;
-}
-#pragma endregion USpiritSkill2
-#pragma region USpiritSkill3
-USpiritSkill3* USpiritSkill3::GetInstance()
-{
-	static USpiritSkill3* Instance;
-	if (Instance == nullptr) {
-		Instance = NewObject<USpiritSkill3>();
-		Instance->AddToRoot();
-	}
-	return Instance;
-}
-void USpiritSkill3::Enter(IBaseGameEntity* CurState)
-{
-	CurState->SetStateEnum(EStateEnum::Spirit_Skill_3);
-	CurState->PlayTime = 0.0f;
-	CurState->bIsEnd = false;
-	if(CurState->Irene->CameraLagCurve.Num()>0)
-		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[11]);
-	StartShakeTime = 0.0f;
-	
-	CurState->Irene->IreneData.IsAttacking = true;
-	CurState->Irene->IreneData.CanNextCombo = false;
-	CurState->Irene->IreneData.CurrentCombo = 3;
-
-	CurState->Irene->IreneInput->SetNextAttack(false);
-	CurState->Irene->IreneInput->SetJumpAttack(false);
-	CurState->Irene->IreneInput->SetReAttack(false);
-	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
-	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
-	CurState->Irene->IreneAttack->SetCanSkillToAttack(false);
-
-	const FVector IrenePosition = CurState->Irene->GetActorLocation();
-	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
-	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-	
-	CurState->Irene->IreneAttack->SetTrueAttackCount(3);
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
-	EndTime = AttackTable->C_Time;
-	
-	if(CurState->Irene->IreneSpirit != nullptr)
-		CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
-	
-	CurState->Irene->IreneAttack->SetDamageBeforeTableName(CurState->Irene->IreneAttack->GetBasicAttackDataTableName().ToString());
-}
-void USpiritSkill3::Execute(IBaseGameEntity* CurState)
-{	
-	// ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= EndTime)
-	{
-		if(CurState->Irene->IreneSpirit != nullptr)
-			CurState->Irene->IreneSpirit->DestroySpirit();
-		EndTimeExit(CurState);
-	}
-
-	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
-		StartShakeTime = CurState->PlayTime;
-	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
-		CurState->Irene->CameraShakeOn = false;
-	
-	// ÀÌµ¿ ½ºÅµ
-	if (CurState->Irene->IreneData.IsAttacking)
-	{
-		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
-		{
-			if (CurState->Irene->Weapon->IsVisible())
-			{
-				CurState->Irene->Weapon->SetVisibility(false);
-				CurState->Irene->WeaponVisible(false);
-			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
-			CurState->Irene->ActionEndChangeMoveState();
-			CurState->Irene->IreneSpirit->DestroySpirit();
-			CurState->Irene->IreneSpirit = nullptr;
-			CurState->Irene->GetMesh()->SetVisibility(true);
-		}
-	}
-}
-void USpiritSkill3::Exit(IBaseGameEntity* CurState)
-{
-	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneAttack->AttackEndComboState();
-	CurState->Irene->CameraShakeOn = false;
-	CurState->bIsEnd = true;
-}
-void USpiritSkill3::EndTimeExit(IBaseGameEntity* CurState)
-{
-	CurState->Irene->CameraShakeOn = false;
-	CurState->Irene->IreneData.IsAttacking = false;
-	CurState->Irene->IreneData.CanNextCombo = false;
-	CurState->Irene->IreneInput->SetAttackUseSkill(false);
-	CurState->Irene->IreneAttack->AttackTimeEndState();
-	CurState->bIsEnd = true;
-}
-#pragma endregion USpiritSkill3
 #pragma endregion Skill
 
 #pragma region FormChangeState
@@ -1676,8 +1506,7 @@ bool UIreneFSM::IsAttackState()const
 }
 bool UIreneFSM::IsSkillState() const
 {
-	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 ||
-		StateEnumValue == EStateEnum::Spirit_Skill_1 || StateEnumValue == EStateEnum::Spirit_Skill_2 || StateEnumValue == EStateEnum::Spirit_Skill_3)
+	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 || StateEnumValue == EStateEnum::Spirit_Skill)
 		return true;
 	return false;
 }

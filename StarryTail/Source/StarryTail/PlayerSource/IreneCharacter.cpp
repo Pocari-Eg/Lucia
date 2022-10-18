@@ -757,7 +757,7 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 
 void AIreneCharacter::PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower)
 {
-	if (!bIsKnockBack)
+	if (!bIsKnockBack && !IreneSpirit)
 	{
 		KnockBackDir = In_KnockBackDir;
 		KnockBackDir.Normalize();

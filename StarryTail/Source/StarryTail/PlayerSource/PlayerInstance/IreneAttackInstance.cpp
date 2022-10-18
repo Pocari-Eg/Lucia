@@ -287,9 +287,11 @@ void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterLi
 	
 	//속성공격 기준 몬스터 할당해제
 	if (bResult)
+	{
 		//auto STGameInstance = Cast<USTGameInstance>(Irene->GetGameInstance());
 		if (Irene->STGameInstance->GetAttributeEffectMonster() != nullptr)
 			Irene->STGameInstance->ResetAttributeEffectMonster();
+	}
 }
 #pragma endregion Attack
 
@@ -326,23 +328,9 @@ void UIreneAttackInstance::SetSkillState()const
 	{
 		Irene->ChangeStateAndLog(USwordSkill2::GetInstance());
 	}
-	else if (Irene->bIsSpiritStance && Irene->IreneSpirit != nullptr)
+	else if (Irene->bIsSpiritStance)
 	{
-		if (Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() == nullptr
-			&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_1")) != 0 && Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_3")) != 0)
-		{
-			Irene->ChangeStateAndLog(USpiritSkill1::GetInstance());
-		}
-		else if(Irene->IreneSpirit->IreneSpiritAnim->Montage_GetCurrentSection(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage()) == FName("Attack2")
-		&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_2")) != 0)
-		{
-			Irene->ChangeStateAndLog(USpiritSkill2::GetInstance());
-		}
-		else if(Irene->IreneSpirit->IreneSpiritAnim->Montage_GetCurrentSection(Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage()) == FName("Attack3")
-		&& Irene->IreneState->GetStateToString().Compare(FString("Spirit_Skill_3")) != 0)
-		{
-			Irene->ChangeStateAndLog(USpiritSkill3::GetInstance());
-		}
+		Irene->ChangeStateAndLog(USpiritSkill::GetInstance());
 	}
 }
 #pragma endregion State
