@@ -78,7 +78,8 @@ public:
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
-
+	UFUNCTION(BlueprintImplementableEvent)
+		void  ShieldDestroyEvent();
 	//UI
 	void MarkerOn();
     void MarkerOff();
