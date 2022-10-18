@@ -20,14 +20,6 @@ void UDodgeJumpSkipNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 	{
 		Irene->IreneAttack->SetCanDodgeJumpSkip(true);
 	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneAttack->SetCanDodgeJumpSkip(true);
-		}
-	}
 }
 void UDodgeJumpSkipNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -41,14 +33,6 @@ void UDodgeJumpSkipNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPay
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
-		}
 	}
 }
 

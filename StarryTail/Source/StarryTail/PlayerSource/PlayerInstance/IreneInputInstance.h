@@ -66,6 +66,8 @@ private:
 
 	//정령 체인지 가능한지
 	bool bIsSpiritChangeEnable;
+	// 잔상 공격 단계
+	int SpiritChainAttackCount;
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
@@ -82,7 +84,9 @@ private:
 	int AttackUseSkillNextCount;
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
-
+	// 2번째 검 스킬 사용
+	bool CanUseSpiritAnimJump;
+	
 	// 카메라 이동 정지
 	bool bCameraStop;
 	// 브레이크 어택 쿨타임
@@ -133,6 +137,10 @@ private:
 	FTimerHandle SpiritSpawnWaitHandle;
 	// 잔상 소환 딜레이 쿨타임
 	float SpiritSpawnCoolTime;
+	// 잔상 다음 공격 가능 시간
+	FTimerHandle SpiritAnimJumpWaitHandle;
+	// 잔상 다음 공격 가능 쿨타임
+	float SpiritAnimJumpCoolTime;
 	
 	bool bSkillCameraMove;
 	float SkillCameraPlayTime;
@@ -244,6 +252,8 @@ public:
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
 	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
 	bool GetCameraStop()const{return bCameraStop;}
+	float GetSpiritSpawnCoolTime()const{return SpiritSpawnCoolTime;}
+	int GetSpiritChainAttackCount()const{return SpiritChainAttackCount;}
 	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;

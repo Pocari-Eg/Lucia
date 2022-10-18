@@ -70,11 +70,6 @@ void AIreneSpirit::BeginPlay()
 void AIreneSpirit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if(Irene->IreneState->IsSkillState() && !Irene->GetMesh()->IsVisible())
-	{
-		Irene->SetActorLocation(GetActorLocation()+GetActorForwardVector()*-100.0f);
-		//Irene->SetActorRotation(GetActorRotation());
-	}
 }
 
 // Called to bind functionality to input
@@ -82,12 +77,6 @@ void AIreneSpirit::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-}
-
-void AIreneSpirit::StartSpawn()
-{
-	IreneSpiritAnim->PlaySkillAttackMontage();
-	//Irene->GetWorld()->GetTimerManager().SetTimer(MeshVisibilityWaitHandle,FTimerDelegate::CreateLambda([&]{Irene->GetMesh()->SetVisibility(true,true);}), MeshVisibilityCoolTime, false);
 }
 
 void AIreneSpirit::DestroySpiritTimer(float Time)

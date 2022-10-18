@@ -208,39 +208,14 @@ public:
 	void EndTimeExit(IBaseGameEntity* CurState);
 };
 UCLASS()
-class STARRYTAIL_API USpiritSkill1 final : public UObject, public IState
+class STARRYTAIL_API USpiritSkill final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float OriginEndTime;
 	float EndTime;
 	float StartShakeTime;
 public:
-	static USpiritSkill1* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API USpiritSkill2 final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float EndTime;
-	float StartShakeTime;
-public:
-	static USpiritSkill2* GetInstance();
-	virtual void Enter(IBaseGameEntity* CurState) override;
-	virtual void Execute(IBaseGameEntity* CurState) override;
-	virtual void Exit(IBaseGameEntity* CurState) override;
-	void EndTimeExit(IBaseGameEntity* CurState);
-};
-UCLASS()
-class STARRYTAIL_API USpiritSkill3 final : public UObject, public IState
-{
-	GENERATED_BODY()
-	float EndTime;
-	float StartShakeTime;
-public:
-	static USpiritSkill3* GetInstance();
+	static USpiritSkill* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
 	virtual void Execute(IBaseGameEntity* CurState) override;
 	virtual void Exit(IBaseGameEntity* CurState) override;

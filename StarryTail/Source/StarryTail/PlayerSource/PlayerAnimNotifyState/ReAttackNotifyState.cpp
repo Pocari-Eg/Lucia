@@ -21,14 +21,6 @@ void UReAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayloa
 	{
 		Irene->IreneInput->SetReAttack(true);
 	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneInput->SetReAttack(true);
-		}
-	}
 }
 void UReAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPayload& BranchingPointPayload, float FrameDeltaTime)
 {
@@ -43,13 +35,5 @@ void UReAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload&
 	if(Irene != nullptr)
 	{
 		Irene->IreneInput->SetReAttack(false);
-	}
-	else
-	{
-		const auto Spirit = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneSpirit>();
-		if(Spirit != nullptr)
-		{
-			Spirit->Irene->IreneInput->SetReAttack(false);
-		}
 	}
 }
