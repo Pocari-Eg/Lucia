@@ -17,6 +17,9 @@
 #include "PlayerSpirit/IreneSpirit.h"
 #include "PlayerSpirit/IreneSpiritAnimInstance.h"
 
+#include "../Object/ShieldSpirit.h"
+#include "../Object/LabMagic.h"
+
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()
 {
@@ -72,7 +75,7 @@ AIreneCharacter::AIreneCharacter()
 		if (CharacterAnimInstance.Succeeded())
 			GetMesh()->SetAnimClass(CharacterAnimInstance.Class);
 	}
-	// 잔상 블루프린트
+	// 잔상 원본 세팅
 	ConstructorHelpers::FClassFinder<AIreneSpirit>BP_IreneSpirit(TEXT("/Game/BluePrint/Irene/IreneSpirit.IreneSpirit_C"));
 	if(BP_IreneSpirit.Succeeded())
 		IreneSpiritOrigin = BP_IreneSpirit.Class;
@@ -89,7 +92,7 @@ AIreneCharacter::AIreneCharacter()
 	PetMesh->SetupAttachment(PetSpringArmComp);
 	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
 	if(PetStatic.Succeeded())
-		PetMesh->SetSkeletalMesh(PetStatic.Object);
+	PetMesh->SetSkeletalMesh(PetStatic.Object);
 	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
 	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
 	
@@ -257,13 +260,13 @@ void AIreneCharacter::TargetReset()const
 		const auto Mob = Cast<AMonster>(IreneAttack->SwordTargetMonster);
 		if (Mob != nullptr)
 		{
-			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 700.0f)
+			if (Mob->GetHp() <= 0 || !IreneAttack->SwordTargetMonster->WasRecentlyRendered() || FVector::Dist(GetActorLocation(), IreneAttack->SwordTargetMonster->GetActorLocation()) > 1500.0f)
 			{
 				const auto Mon=Cast<AMonster>(IreneAttack->SwordTargetMonster);
 				Mon->MarkerOff();
 				IreneAnim->SetIsHaveTargetMonster(false);
 				IreneAnim->SetTargetMonster(nullptr);
-				IreneAttack->SwordTargetMonster = nullptr;				
+				IreneAttack->SwordTargetMonster = nullptr;
 			}			
 		}
 	}
@@ -280,19 +283,24 @@ void AIreneCharacter::Tick(float DeltaTime)
 	TargetReset();
 	IreneState->Update(DeltaTime);
 
+	if(IreneInput->GetCameraStop())
+	{
+		SpringArmComp->CameraLagSpeed = 0.0001f;
+	}
 
 	if (bIsKnockBack)
 	{
-		KonckBackTimer += DeltaTime;
-		FVector KnocbackLocation = GetActorLocation() + (KnockBackDir * (KonckBackPower * (0.15f - KonckBackTimer)));
-		SetActorLocation(KnocbackLocation);
+		KnockBackTimer += DeltaTime;
+		const FVector KnockBackLocation = GetActorLocation() + (KnockBackDir * (KnockBackPower * (0.15f - KnockBackTimer)));
+		SetActorLocation(KnockBackLocation);
 
-		if (KonckBackTimer > KnockBackTime)
+		if (KnockBackTimer > KnockBackTime)
 		{
-			KonckBackTimer = 0.0f;
+			KnockBackTimer = 0.0f;
 			bIsKnockBack = false;
 		}
 	}
+
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -303,12 +311,12 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAxis("MoveA", IreneInput, &UIreneInputInstance::MoveA).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveS", IreneInput, &UIreneInputInstance::MoveS).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAxis("MoveD", IreneInput, &UIreneInputInstance::MoveD).bExecuteWhenPaused = true;
-	PlayerInputComponent->BindAction("ThunderDeBuffKey", IE_Pressed, IreneInput, &UIreneInputInstance::ThunderDeBuffKey);
 
 	// 움직임 외 키보드 입력
 	PlayerInputComponent->BindAction("Dodge", IE_Pressed, IreneInput, &UIreneInputInstance::DodgeKeyword);
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::SpiritChangeKeyword);
+	PlayerInputComponent->BindAction("BreakAttack", IE_Pressed, IreneInput, &UIreneInputInstance::BreakAttackKeyword);
 	
 	// 마우스
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
@@ -564,26 +572,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
-				const auto Monster = Cast<AMonster>(DamageCauser);
-				if(Monster)
-				{
-					switch (Monster->GetAttribute())
-					{
-					case EAttributeKeyword::e_Fire:
-						IreneAttack->SetFireDeBuffStack(IreneAttack->GetFireDeBuffStack()+1, DamageAmount);
-						break;
-					case EAttributeKeyword::e_Water:
-						IreneAttack->SetWaterDeBuffStack(IreneAttack->GetWaterDeBuffStack()+1);
-						break;
-					case EAttributeKeyword::e_Thunder:
-						IreneAttack->SetThunderDeBuffStack(IreneAttack->GetThunderDeBuffStack()+1);
-						break;
-					case EAttributeKeyword::e_None:
-						break;
-					}
-				}
-
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState())
+			
+				if(!IreneState->IsAttackState() && !IreneState->IsJumpState()&& !Cast<ALabMagic>(DamageCauser))
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
@@ -591,9 +581,8 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 		}
 		if (IreneAttack->SwordTargetMonster == nullptr)
 		{
-			if (Cast<AMonsterProjectile>(DamageCauser))
+			if (Cast<AMonsterProjectile>(DamageCauser)|| Cast<ALabMagic>(DamageCauser))
 				return FinalDamage;
-
 
 			// 공격한 몬스터를 타겟 몬스터로 지정
 			IreneAttack->SwordTargetMonster = DamageCauser;
@@ -614,6 +603,11 @@ void AIreneCharacter::SetHP(float DamageAmount)
 {	
 	IreneData.CurrentHP -= DamageAmount;	
 	IreneUIManager->OnHpChanged.Broadcast();
+	if(IreneData.CurrentHP <= 0 && !IreneState->IsDeathState() && bIsSpiritStance)
+	{
+		ChangeStateAndLog(UDeathState::GetInstance());
+		LevelRestartEvent();
+	}
 }
 
 #pragma endregion Collision
@@ -748,7 +742,6 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 		if(FixedUpdateCameraShakeTimer.IsValid())
 		{
 			GetWorld()->GetTimerManager().ClearTimer(FixedUpdateCameraShakeTimer);
-			FixedUpdateCameraShakeTimer.Invalidate();
 		}
 	}
 }
@@ -762,16 +755,17 @@ void AIreneCharacter::SetUseCameraLag(UCurveFloat* Curve)
 	UseLagCurve = Curve;
 }
 
-void AIreneCharacter::PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower)
+void AIreneCharacter::PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower)
 {
-	if (!bIsKnockBack) {
+	if (!bIsKnockBack)
+	{
 		KnockBackDir = In_KnockBackDir;
 		KnockBackDir.Normalize();
 		KnockBackDir.Z = 0.0f;
 
-		KonckBackPower = In_KnockBackPower;
+		KnockBackPower = In_KnockBackPower;
 		KnockBackTime = 0.15f;
-		KonckBackTimer = 0.0f;
+		KnockBackTimer = 0.0f;
 		bIsKnockBack = true;
 	}
 }
@@ -797,6 +791,19 @@ void AIreneCharacter::SetRaidBattleCamera()
 void AIreneCharacter::SetFirstLevel(bool isFirst)
 {
 	IreneUIManager->PlayerHud->bIsFirstLevel = isFirst;
+}
+
+void AIreneCharacter::SpawnPet(ASpiritPlate* Target)
+{
+	AShieldSpirit* NewPet = GetWorld()->SpawnActor<AShieldSpirit>(AShieldSpirit::StaticClass(),GetActorLocation()+PetSpringArmComp->GetRelativeLocation() , FRotator::ZeroRotator);
+	NewPet->SetSpiritPlate(Target);
+	PetMesh->SetVisibility(false);
+}
+
+void AIreneCharacter::VisiblePet()
+{
+	PetMesh->SetVisibility(true);
+
 }
 
 void AIreneCharacter::PlayFadeOutAnimation()

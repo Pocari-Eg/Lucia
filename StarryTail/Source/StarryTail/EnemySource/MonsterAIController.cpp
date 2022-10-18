@@ -219,6 +219,11 @@ bool AMonsterAIController::GetIsFindPlayer()
 	return Blackboard->GetValueAsBool(IsFindKey);
 }
 
+bool AMonsterAIController::GetIsGorggy()
+{
+	return Blackboard->GetValueAsBool(IsGroggyKey);
+}
+
 ULineBatchComponent* AMonsterAIController::GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)
 {
 	return (InWorld ? (bDepthIsForeground ? InWorld->ForegroundLineBatcher : ((bPersistentLines || (LifeTime > 0.f)) ? InWorld->PersistentLineBatcher : InWorld->LineBatcher)) : NULL);

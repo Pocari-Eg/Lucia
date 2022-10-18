@@ -10,7 +10,7 @@ UMonsterShield::UMonsterShield()
 {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = false;
+	PrimaryComponentTick.bCanEverTick = true;
 
 
 
@@ -26,10 +26,11 @@ UMonsterShield::UMonsterShield()
 
 	Type = EShieldType::General;
 
-
-
-	STARRYLOG_S(Error);
 	// ...
+
+	CrackTimer = 0.0f;
+	CrackTime = 0.2f;
+	bIsCrackOn = false;
 }
 
 float UMonsterShield::CalcShieldDamage(float Damage)
@@ -49,6 +50,7 @@ float UMonsterShield::CalcShieldDamage(float Damage)
 
 void UMonsterShield::DestroyedShield()
 {
+
 	ShiledCrackEffectComponent->SetActive(true, true);
 	SetEffectVisible(false);
 	bIsShieldActive = false;
@@ -62,24 +64,24 @@ void UMonsterShield::CalcDurability(float Damage)
 
 		ShiledHitEffectComponent->SetActive(true, true);
 		CurDurability -= TotalDamage;
+		ShiledCrackEffectComponent->SetActive(true, true);
 
 
 		if (CurDurability <= Durability * 0.25)
 		{
 			CurShieldState = 3;
-			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
-			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 1.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
 		}
 		else if (CurDurability <= (Durability * 0.5))
 		{
 			CurShieldState = 2;
 
-			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[2].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
+
 
 		}
 		else if (CurDurability <= (Durability * 0.75))
@@ -89,14 +91,14 @@ void UMonsterShield::CalcDurability(float Damage)
 			ShiledEffectComponent->InstanceParameters[1].Scalar = 1.0f;
 			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
 			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
-			ShiledCrackEffectComponent->SetActive(true, true);
-
+		
 		}
 		else {
 			CurShieldState = 0;
 		}
 
-
+		bIsCrackOn = true;
+		CrackTimer = 0.0f;
 		if (CurDurability <= 0)
 		{
 			DestroyedShield();
@@ -218,8 +220,7 @@ void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSys
 
 
 	this->ShiledEffectComponent->SetVisibility(false);
-	this->ShiledCrackEffectComponent->SetAutoActivate(false);
-	this->ShiledHitEffectComponent->SetAutoActivate(false);
+	
 
 }
 
@@ -266,6 +267,25 @@ void UMonsterShield::BeginPlay()
 	Super::BeginPlay();
 	CurDurability = Durability;
 	// ...
+}
+
+void UMonsterShield::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+
+	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	if (bIsCrackOn)
+	{
+		CrackTimer += DeltaTime;
+		if (CrackTimer >= CrackTime)
+		{
+			STARRYLOG_S(Error);
+			CrackTimer = 0.0f;
+			bIsCrackOn = false;
+			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+			ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+		}
+	}
 }
 
 

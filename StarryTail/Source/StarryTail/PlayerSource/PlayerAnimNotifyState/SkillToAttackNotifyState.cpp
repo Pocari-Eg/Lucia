@@ -15,7 +15,7 @@ void USkillToAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyP
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
 	
-	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillToAttack(true);
@@ -37,6 +37,7 @@ void USkillToAttackNotifyState::BranchingPointNotifyTick(FBranchingPointNotifyPa
 void USkillToAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayload& BranchingPointPayload)
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneAttack->SetCanSkillToAttack(false);

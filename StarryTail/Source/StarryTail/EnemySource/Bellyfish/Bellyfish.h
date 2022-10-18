@@ -101,7 +101,8 @@ private:
 
 	TSubclassOf<ABF_MagicAttack> MagicAttackClass;
 	ABF_MagicAttack* MagicAttack;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	FName FireSocketName;
 	bool IsSkillSet;
 	bool IsSkillAttack;
 

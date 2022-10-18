@@ -54,6 +54,7 @@ public:
 	bool GetIsAttacking();
 	bool GetIsTraceState();
 	bool GetIsFindPlayer();
+	bool GetIsGorggy();
 
 	//debug
 

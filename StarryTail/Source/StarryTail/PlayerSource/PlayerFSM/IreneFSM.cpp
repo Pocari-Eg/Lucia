@@ -503,7 +503,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		
 		// ÆÛÆåÆ® ´åÁö
 		// ¿ÞÅ¬¸¯À¸·Î µµÁß ²÷±â
-		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.6f && CurState->Irene->IreneInput->bLeftButtonPressed)
+		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.0f && CurState->Irene->IreneInput->bLeftButtonPressed)
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
@@ -1228,11 +1228,11 @@ void USpiritSkill1::Enter(IBaseGameEntity* CurState)
 
 	CurState->Irene->IreneAttack->SetTrueAttackCount(1);	
 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
-	EndTime = AttackTable->C_Time+0.1f;
+	EndTime = AttackTable->C_Time+=0.3f;
 	if(CurState->Irene->IreneSpirit != nullptr)
 	{
 		if(CurState->Irene->IreneSpirit->IreneSpiritAnim->GetCurrentActiveMontage() != nullptr)
-			EndTime+=0.1f;
+			EndTime-=0.3f;
 		CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
 	}
 	
@@ -1259,7 +1259,6 @@ void USpiritSkill1::Execute(IBaseGameEntity* CurState)
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
 		{
-			STARRYLOG_S(Warning);
 			if (CurState->Irene->Weapon->IsVisible())
 			{
 				CurState->Irene->Weapon->SetVisibility(false);
@@ -1267,6 +1266,9 @@ void USpiritSkill1::Execute(IBaseGameEntity* CurState)
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ActionEndChangeMoveState();
+			CurState->Irene->IreneSpirit->DestroySpirit();
+			CurState->Irene->IreneSpirit = nullptr;
+			CurState->Irene->GetMesh()->SetVisibility(true);
 		}
 	}
 }
@@ -1357,6 +1359,9 @@ void USpiritSkill2::Execute(IBaseGameEntity* CurState)
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ActionEndChangeMoveState();
+			CurState->Irene->IreneSpirit->DestroySpirit();
+			CurState->Irene->IreneSpirit = nullptr;
+			CurState->Irene->GetMesh()->SetVisibility(true);
 		}
 	}
 }
@@ -1449,6 +1454,9 @@ void USpiritSkill3::Execute(IBaseGameEntity* CurState)
 			}
 			CurState->Irene->IreneAnim->StopAllMontages(0);
 			CurState->Irene->ActionEndChangeMoveState();
+			CurState->Irene->IreneSpirit->DestroySpirit();
+			CurState->Irene->IreneSpirit = nullptr;
+			CurState->Irene->GetMesh()->SetVisibility(true);
 		}
 	}
 }

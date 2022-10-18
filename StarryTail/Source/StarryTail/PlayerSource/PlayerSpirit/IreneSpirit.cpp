@@ -6,6 +6,7 @@
 #include "../IreneCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
+#include "StarryTail/PlayerSource/PlayerFSM/IreneFSM.h"
 
 // Sets default values
 AIreneSpirit::AIreneSpirit()
@@ -69,7 +70,11 @@ void AIreneSpirit::BeginPlay()
 void AIreneSpirit::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if(Irene->IreneState->IsSkillState() && !Irene->GetMesh()->IsVisible())
+	{
+		Irene->SetActorLocation(GetActorLocation()+GetActorForwardVector()*-100.0f);
+		//Irene->SetActorRotation(GetActorRotation());
+	}
 }
 
 // Called to bind functionality to input

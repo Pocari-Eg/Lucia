@@ -11,6 +11,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
 #include "../StarryTail.h"
+#include"../Object/SpiritPlate.h"
 #include "PlayerCharacterDataStruct.h"
 #include "Chaos/Vector.h"
 
@@ -234,11 +235,11 @@ public:
 	UPROPERTY(BluePrintReadWrite)
 	bool IsTimeStopping;
 
-	void PlayerKnokcBack(FVector In_KnockBackDir, float In_KnockBackPower);
+	void PlayerKnockBack(FVector In_KnockBackDir, float In_KnockBackPower);
 	FVector KnockBackDir;
-	float KonckBackTimer;
+	float KnockBackTimer;
 	float KnockBackTime;
-	float KonckBackPower;
+	float KnockBackPower;
 	bool bIsKnockBack;
 
 #pragma endregion Battle
@@ -264,7 +265,13 @@ public:
 	void SetRaidBattleCamera();
 	UFUNCTION(BluePrintCallable)
 	void SetFirstLevel(bool isFirst);
+
+
+	void SpawnPet(ASpiritPlate* Target);
+	void VisiblePet();
 #pragma endregion UIManager
+
+
 //스탑워치 
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
 	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}

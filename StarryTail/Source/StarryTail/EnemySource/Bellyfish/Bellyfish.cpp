@@ -41,9 +41,11 @@ ABellyfish::ABellyfish()
 	IsSkillAttack = false;
 	IsCloseOtherAttack = false;
 
-	ProjectileFirePos = CreateDefaultSubobject<UBoxComponent>(TEXT("FIREPOS"));
-	ProjectileFirePos->SetupAttachment(GetMesh());
+	FireSocketName = "FireSocket";
 
+	ProjectileFirePos = CreateDefaultSubobject<UBoxComponent>(TEXT("FIREPOS"));
+	//ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
+	ProjectileFirePos->SetupAttachment(GetMesh());
 	static ConstructorHelpers::FClassFinder<ABF_MagicAttack> BP_MAGICATTACK(TEXT("/Game/BluePrint/Monster/Bellyfish/BP_BF_MagicAttack.BP_BF_MagicAttack_C")); 
 	if (BP_MAGICATTACK.Succeeded() && BP_MAGICATTACK.Class != NULL) {
 		MagicAttackClass=BP_MAGICATTACK.Class;
@@ -326,7 +328,7 @@ void ABellyfish::BeginPlay()
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
 	SetNormalState();
-
+	ProjectileFirePos->AttachTo(GetMesh(), FireSocketName, EAttachLocation::SnapToTarget, false);
 }
 
 void ABellyfish::PossessedBy(AController* NewController)

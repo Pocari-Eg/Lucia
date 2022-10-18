@@ -20,8 +20,4 @@ class STARRYTAIL_API USkillSkipNotifyState : public UAnimNotifyState
 
 public:
 	USkillSkipNotifyState();
-
-private:
-	UPROPERTY()
-	class AIreneCharacter* Irene;
 };

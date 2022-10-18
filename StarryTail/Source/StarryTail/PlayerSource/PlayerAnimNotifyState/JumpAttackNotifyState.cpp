@@ -16,7 +16,7 @@ void UJumpAttackNotifyState::BranchingPointNotifyBegin(FBranchingPointNotifyPayl
 {
 	Super::BranchingPointNotifyBegin(BranchingPointPayload);
 
-	Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneInput->SetJumpAttack(true);
@@ -39,6 +39,7 @@ void UJumpAttackNotifyState::BranchingPointNotifyEnd(FBranchingPointNotifyPayloa
 {
 	Super::BranchingPointNotifyEnd(BranchingPointPayload);
 
+	const auto Irene = BranchingPointPayload.SkelMeshComponent->GetOwner<AIreneCharacter>();
 	if(Irene != nullptr)
 	{
 		Irene->IreneInput->SetJumpAttack(false);

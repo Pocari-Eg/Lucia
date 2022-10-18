@@ -22,21 +22,39 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
+
+	UPROPERTY()
+	ACharacter* BreakAttackSpirit;
+
+	UPROPERTY()
+	UParticleSystem* BreakAttackStartEffect;
+	UPROPERTY()
+	UParticleSystem* BreakAttackEndEffect;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
 	bool bReAttack;
-	
-	FTimerHandle AttributeChangeFireTimer;
-	FTimerHandle AttributeChangeWaterTimer;
-	FTimerHandle AttributeChangeElectricTimer;
 
-	// 
-	FTimerHandle SpiritTimeOverTimer;
+	// 정령 상태 지속 시간 넘김
+	FTimerHandle SpiritTimeDamageOverTimer;
+	FTimerHandle SpiritTimeStunOverTimer;
+
+	// 브레이킹어택 선딜애니 시간
+	FTimerHandle BreakAttackFirstAnimTimer;
+	// 브레이킹어택 카메라 정지 시간
+	FTimerHandle BreakAttackCameraStopTimer;
+	// 브레이킹어택 정령 공격 시간
+	FTimerHandle BreakAttackAttackTimer;
+	// 브레이킹어택 정령 지속 시간
+	FTimerHandle BreakAttackSpiritTimer;
+	// 브레이킹어택 애니메이션 시간
+	FTimerHandle BreakAttackAnimTimer;
 	
 	// 추락중 구르기 시 빠르게 떨어지는 지 확인
 	bool IsFallingRoll;
-
+	// 스턴 상태인지 확인
+	bool bIsStun;
+	
 	// 회피 사용 가능
 	bool bIsDodgeOn;
 	// 최대 회피 횟수
@@ -45,12 +63,17 @@ private:
 	int DodgeCount;
 	// 회피 중 회피 사용 가능
 	bool bIsDodgeToDodge;
+
+	//정령 체인지 가능한지
+	bool bIsSpiritChangeEnable;
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
-	// 창에서 검으로 변경
+	// 검에서 창으로 변경 이후 시간 지나서 디버프 발동
 	FTimerHandle WeaponChangeWaitHandle;
-	
+	// 검에서 창으로 변경 이후 강제 검으로 변경
+	FTimerHandle WeaponChangeMaxWaitHandle;
+
 	// 스킬 사용중
 	bool bIsSkillOn;
 	// 공격 중 스킬 사용
@@ -60,6 +83,13 @@ private:
 	// 2번째 검 스킬 사용
 	bool CanUseSecondSwordSkill;
 
+	// 카메라 이동 정지
+	bool bCameraStop;
+	// 브레이크 어택 쿨타임
+	FTimerHandle BreakAttackWaitHandle;
+	// 애니메이션 별 종료 시간
+	float BreakAttackWaitTime;
+	
 	FTimerHandle DodgeInvincibilityTimerHandle;
 	FTimerHandle PerfectDodgeTimerHandle;
 	FTimerHandle PerfectDodgeInvincibilityTimerHandle;
@@ -114,6 +144,8 @@ public:
 	void Init(AIreneCharacter* Value);
 	void Begin();
 private:
+	UIreneInputInstance();
+	
 	void SetIreneCharacter(AIreneCharacter* Value);
 	void InitMemberVariable();
 
@@ -123,7 +155,6 @@ public:
 	void MoveRight();
 	void MoveAuto(const float EndTimer = 1.0f)const;
 
-	void ThunderDeBuffKey();
 	void MovePressedKey(const int Value);
 	void MoveW(float Rate);
 	void MoveA(float Rate);
@@ -167,8 +198,22 @@ public:
 	// 스탠스 변경
 	void SpiritChangeKeyword();
 	void SpiritChangeTimeOver();
+	void SpiritChangeMaxTime();
 	void SpiritTimeOverDeBuff();
 
+
+	void SpiritChangeBlock();
+	void SetSpiritChangeEnable(bool Set) { bIsSpiritChangeEnable = Set; }
+
+	// 브레이킹어택
+	void BreakAttackKeyword();
+	// 브레이킹어택 선딜
+	void BreakAttackFirst();
+	// 브레이킹어택 공격
+	void BreakAttackSendAttack();
+	// 브레이킹어택 종료
+	void BreakAttackEnd();
+	
 	// 액션 
 	void DialogAction();
 	void DialogSkip();
@@ -198,7 +243,8 @@ public:
 	bool GetReAttack()const{return bReAttack;}
 	bool GetAttackUseSkill()const{return bAttackUseSkill;}
 	bool GetCanUseSecondSwordSkill()const{return CanUseSecondSwordSkill;}
-
+	bool GetCameraStop()const{return bCameraStop;}
+	
 	void SetFallingRoll(const bool Value){IsFallingRoll = Value;}
 	void SetStartMoveAutoTarget(const FVector SetPlayerPosVec, const FVector SetTargetPosVec)const;
 	void SetStopMoveAutoTarget()const;

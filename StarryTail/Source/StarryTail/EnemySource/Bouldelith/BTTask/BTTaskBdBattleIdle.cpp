@@ -43,9 +43,22 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 
 		if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) >= Bouldelith->GetPlayerMaxDistance())
 		{
-
 			Bouldelith->SetBattleRunState(true);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+		
+
+		else if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) > 600.0f)
+		{
+			Bouldelith->PlayWalkAnim();
+			
+
+			Bouldelith->GetAIController()->MoveToLocation(Instance->GetPlayer()->GetActorLocation());
+		}
+		else {
+			Bouldelith->GetAIController()->StopMovement();
+			Bouldelith->PlayIdleAnim();
+
 		}
 	}
 	else {

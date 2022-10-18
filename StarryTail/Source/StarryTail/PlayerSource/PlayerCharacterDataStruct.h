@@ -16,7 +16,7 @@ struct FPlayerCharacterDataStruct
 public:
 	// 캐릭터 외 설정 값
 	
-	// 스프링암과 플레이어 간 기본 거리
+	// 스프링암과 프레이어 간 기본 거리
 	UPROPERTY(BlueprintReadWrite)
 	float FollowCameraZPosition = 425;
 	// 스프링암과 플레이어 간 최대 거리
@@ -58,7 +58,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool IsSkipMonsterAttack = false;
 	
-	//공격력
+	// 공격력
 	UPROPERTY(BlueprintReadWrite)
 	float Strength = 20;
 	
@@ -191,7 +191,6 @@ struct FPlayerRecoveryDataStruct
 {
   GENERATED_BODY()  
 public:
-	//
 	UPROPERTY(EditAnywhere,Category="HP_Recovery")
 	int Amount;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")

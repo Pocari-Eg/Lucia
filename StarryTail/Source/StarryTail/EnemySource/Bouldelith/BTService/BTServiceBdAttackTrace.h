@@ -6,6 +6,7 @@
 #include "BehaviorTree/BTService.h"
 #include "Components/LineBatchComponent.h"
 #include "../../Monster.h"
+#include "../Bouldelith.h"
 #include "BTServiceBdAttackTrace.generated.h"
 
 /**
@@ -26,7 +27,7 @@ public:
 
 	bool Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
 	bool Attack2Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
-	bool Attack3Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
+	bool StatueTrace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center);
 };
 
 

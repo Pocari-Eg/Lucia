@@ -26,7 +26,6 @@ public:
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
 
-	static const FName IsBrokenKey;
 	static const FName IsWallGroggyKey;
 	static const FName IsStatueStateKey;
 	static const FName IsBattleRunKey;

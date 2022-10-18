@@ -78,7 +78,8 @@ public:
 	void  HitStopEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
-
+	UFUNCTION(BlueprintImplementableEvent)
+		void  ShieldDestroyEvent();
 	//UI
 	void MarkerOn();
     void MarkerOff();
@@ -163,7 +164,8 @@ protected:
 	UParticleSystemComponent* ShiledHitEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ShiledEffectComponent;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	FName ShieldSocketName;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
@@ -286,6 +288,7 @@ public:
 	float GetAttackedTime() const;
 	EAttributeKeyword GetAttribute() const;
 	float GetAttackTraceInterver() const;
+	FNormalMonsterInfo GetMonsterInfo() const;
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -313,6 +316,8 @@ public:
 	void  ExplodeStackEvent();
 	void AddStackCount(int Count);
 	void StackExplode();
+	UFUNCTION(BlueprintCallable)
+	void MaxStackExplode();
 	void InitStackCount();
 	float CalcStackDamage(int StackCount);
 

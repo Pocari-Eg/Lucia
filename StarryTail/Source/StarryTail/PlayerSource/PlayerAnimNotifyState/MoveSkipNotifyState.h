@@ -20,8 +20,4 @@ class STARRYTAIL_API UMoveSkipNotifyState : public UAnimNotifyState
 
 public:
 	UMoveSkipNotifyState();
-
-private:
-	UPROPERTY()
-	class AIreneCharacter* Irene;
 };

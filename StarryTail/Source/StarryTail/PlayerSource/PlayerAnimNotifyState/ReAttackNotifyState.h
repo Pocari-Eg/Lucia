@@ -20,8 +20,4 @@ class STARRYTAIL_API UReAttackNotifyState : public UAnimNotifyState
 
 public:
 	UReAttackNotifyState();
-
-private:
-	UPROPERTY()
-	class AIreneCharacter* Irene;
 };

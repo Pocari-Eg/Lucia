@@ -13,6 +13,7 @@
 #include"./Bellyfish/BellyfishAIController.h"
 
 #include "MonsterAIController.h"
+#include "MonsterProjectile.h"
 //UI
 #include "../STGameInstance.h"
 #include "../PlayerSource/PlayerInstance/IreneAttackInstance.h"
@@ -26,6 +27,7 @@
 //object
 #include "../Object/AttributeObject.h"
 #include "../Object/EnemySpawnPoint.h"
+#include "../Object/LabMagic.h"
 // Sets default values
 AMonster::AMonster()
 {
@@ -73,8 +75,9 @@ AMonster::AMonster()
 	if (UI_StackWidget.Succeeded()) {
 
 		StackWidget->SetWidgetClass(UI_StackWidget.Class);
-		StackWidget->SetDrawSize(FVector2D(50.0f,50.0f));
+		StackWidget->SetDrawSize(FVector2D(512.0f,512.0f));
 		StackWidget->bAutoActivate = false;
+		StackWidget->SetWorldScale3D(FVector(0.5f, 0.5f, 0.5f));
 	}
 	bIsSpawnEnemy = false;
 	bIsObject = false;
@@ -113,7 +116,7 @@ AMonster::AMonster()
 
 
 	MonsterShield = CreateDefaultSubobject<UMonsterShield>(TEXT("SHEILD"));
-	MonsterShield->SetupAttachment(RootComponent);
+	MonsterShield->SetupAttachment(GetMesh());
 
 
 	ShieldCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("SHEILD_COLLISION"));
@@ -125,9 +128,12 @@ AMonster::AMonster()
 	ShiledEffectComponent->SetupAttachment(MonsterShield);
 	ShiledCrackEffectComponent->SetupAttachment(MonsterShield);
 	ShiledHitEffectComponent->SetupAttachment(MonsterShield);
-
+	ShiledCrackEffectComponent->SetAutoActivate(false);
+	ShiledHitEffectComponent->SetAutoActivate(false);
 
 	ShieldCollision->SetCollisionProfileName("Shield");
+
+	ShieldSocketName = "RootSocket";
 
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
@@ -280,6 +286,11 @@ float AMonster::GetAttackTraceInterver() const
 	return MonsterInfo.M_AttackTraceInterver;
 }
 
+FNormalMonsterInfo AMonster::GetMonsterInfo() const
+{
+	return MonsterInfo;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -390,6 +401,7 @@ void AMonster::AddStackCount(int Count)
 			MonsterInfo.CurStackCount += Count;
 
 
+			if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)MonsterInfo.CurStackCount = MonsterInfo.MaxStackCount;
 
 
 
@@ -442,49 +454,46 @@ void AMonster::AddStackCount(int Count)
 void AMonster::StackExplode()
 {
 
-	if (GetIsMonsterShieldActive())
+	if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount)
 	{
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
-			MonsterShield->CalcDurability(-1.0f);
-			OnBarrierChanged.Broadcast();
 
-		  //	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
-			//MonsterInfo.OverStackCount = 0;
-			MonsterInfo.bIsStackCheck = false;
-			MonsterInfo.StackCheckTimer = 0.0f;
+		ExplodeStackEvent();
 
-			/*	if (MonsterInfo.CurStackCount == 0)
-				{
-					InitStackCount();
-				}*/
-
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}
-
-	     
-			ExplodeStackEvent();
-			
-		}
-		else {
-			/*MonsterShield->CalcDurability(CalcStackDamage(MonsterInfo.CurStackCount));
-			OnBarrierChanged.Broadcast();
-			InitStackCount();
-			if (!GetIsMonsterShieldActive())
-			{
-				ShieldDestroyed();
-				SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
-			}*/
-
-
-		}
 	}
 	else {
 
-		if (MonsterInfo.CurStackCount >= MonsterInfo.MaxStackCount) {
-			CalcHp(99999999.9f);
+		InitStackCount();
+	}
+}
+
+void AMonster::MaxStackExplode()
+{
+
+	if (GetIsMonsterShieldActive()) {
+		MonsterShield->CalcDurability(-1.0f);
+		OnBarrierChanged.Broadcast();
+
+		//	MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
+		  //MonsterInfo.OverStackCount = 0;
+		MonsterInfo.bIsStackCheck = false;
+		MonsterInfo.StackCheckTimer = 0.0f;
+
+		/*	if (MonsterInfo.CurStackCount == 0)
+			{
+				InitStackCount();
+			}*/
+
+		if (!GetIsMonsterShieldActive())
+		{
+			ShieldDestroyed();
+			SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+		}
+
+	}
+	else {
+
+	
+			CalcHp(MonsterInfo.StackDamage);
 
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
 			MonsterInfo.OverStackCount = 0;
@@ -494,30 +503,26 @@ void AMonster::StackExplode()
 				{
 					InitStackCount();
 				}*/
-			ExplodeStackEvent();
-		}
-		else {
-			//CalcHp(CalcStackDamage(MonsterInfo.CurStackCount));
 
 		
-		}
 	
+		
 	}
-
 	InitStackCount();
-
 
 }
 
 void AMonster::InitStackCount()
 {
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
 	MonsterInfo.CurStackCount =0;
 	MonsterInfo.OverStackCount = 0;
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 
 
 	OnStackCountEvent();
@@ -604,7 +609,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -617,7 +622,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -629,7 +634,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -647,7 +652,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			SetDpsCheck(true);
 		}
 
-		if (GetIsMonsterShieldActive() == false) {
+		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
 			Attacked();
 		}
 
@@ -728,14 +733,7 @@ void AMonster::CalcHp(float Damage)
 
 
 			//DropWeaponSoul();
-
-			MonsterDeadEvent();
-			bIsDead = true;
-			SetActive();
-			MonsterAIController->Death();
-			PlayDeathAnim();
-
-
+			
 			if (bIsSpawnEnemy) {
 				auto instnace = Cast<USTGameInstance>(GetGameInstance());
 				if (instnace != nullptr)
@@ -747,6 +745,20 @@ void AMonster::CalcHp(float Damage)
 				if (instnace != nullptr)
 					instnace->SubDetectedMonster();
 			}
+
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
+			InitStackCount();
+			MonsterDeadEvent();
+			bIsDead = true;
+			SetActive();
+			MonsterAIController->Death();
+			PlayDeathAnim();
+
+
+		
 			return;
 		}
 }
@@ -762,12 +774,14 @@ FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
 
 void AMonster::ShieldDestroyed()
 {
-	
+	ShieldDestroyEvent();
 	OnBarrierChanged.Broadcast();
 	MonsterAIController->SetShieldKey(false);
 
 	PlayGroggyAnim();
 	MonsterAIController->Groggy();
+
+	STARRYLOG_S(Warning);
 	
 }
 
@@ -1057,6 +1071,10 @@ void AMonster::BeginPlay()
 	OnSpawnEffectEvent();
 
 	InitPerfectDodgeNotify();
+
+	
+	MonsterShield->AttachTo(GetMesh(), ShieldSocketName, EAttachLocation::SnapToTarget, false);
+
 }
 void AMonster::PossessedBy(AController* NewController)
 {
@@ -1350,7 +1368,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					if (MonsterShield->GetShieldAcitve())
 					{
 						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
-						Player->PlayerKnokcBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
+						Player->PlayerKnockBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
 
 					}
 					else {
@@ -1377,13 +1395,21 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			}
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false) {
+			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
 				Attacked();
 			}
 
 
 	
 			return FinalDamage;
+		}
+	}
+
+	if (Cast<ALabMagic>(DamageCauser))
+	{
+		if (!bIsObject) {
+			CalcHp(1);
+			Attacked();
 		}
 	}
 	return FinalDamage;
