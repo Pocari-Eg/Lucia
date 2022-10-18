@@ -25,6 +25,10 @@
 DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FOnQuillAttributeChangeDelegate);
 
+//Ingame 위젯 델리게이트
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInGameBattleDelegate, int32, _FUNC, float, _CTIME);
+
 UCLASS()
 class STARRYTAIL_API AIreneCharacter : public ACharacter
 {
@@ -62,6 +66,15 @@ public:
 	class UIreneInputInstance* IreneInput;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneSoundInstance* IreneSound;
+
+	// InGame 위젯 블루프린트
+	UPROPERTY(EditAnyWhere)
+	TSubclassOf<class UUserWidget> InGame_C;
+	UPROPERTY(BlueprintReadWrite)
+	class UUserWidget* makeIngameWidget;
+
+	UPROPERTY(BlueprintAssignable)
+	FInGameBattleDelegate FInGameBattle;
 
 	// 정령 블루프린트
 	UPROPERTY(EditAnywhere)

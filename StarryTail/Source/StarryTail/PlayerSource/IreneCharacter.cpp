@@ -199,6 +199,13 @@ void AIreneCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// Ingame 전투위젯 생성
+	if (InGame_C != nullptr)
+	{
+		makeIngameWidget = CreateWidget<UUserWidget>(GetWorld(), InGame_C);
+		makeIngameWidget->AddToViewport();
+	}
+
 	// 컨트롤러 받아오기
 	WorldController = GetWorld()->GetFirstPlayerController();
 	
