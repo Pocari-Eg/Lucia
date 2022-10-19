@@ -81,6 +81,17 @@ AIreneCharacter::AIreneCharacter()
 	if(BP_IreneSpirit.Succeeded())
 		IreneSpiritOrigin = BP_IreneSpirit.Class;
 
+	// ±√±ÿ±‚ ΩØµÂ ¿Ã∆Â∆Æ
+	ShieldParticleSystemComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShieldEffect"));
+	ShieldParticleSystemComponent->SetupAttachment(GetMesh());
+	const ConstructorHelpers::FObjectFinder<UParticleSystem>Shield(TEXT("/Game/Effect/VFX_Monster/Shield/Palyer/PS_Shield_Player.PS_Shield_Player"));
+	if(Shield.Succeeded())
+	{
+		ShieldParticleSystemComponent->Template = Shield.Object;
+		ShieldParticleSystemComponent->SetAutoActivate(false);
+		ShieldParticleSystemComponent->Activate(false);
+	}
+	
 	// ∆Í ºº∆√
 	PetSpringArmComp = CreateDefaultSubobject<USpringArmComponent>(TEXT("PetSprintArm"));
 	PetSpringArmComp->TargetArmLength = 0;
@@ -177,6 +188,7 @@ AIreneCharacter::AIreneCharacter()
 
 	// PlayerCharacterDataStruct.h¿« ∫ØºˆµÈ √ ±‚»≠
 	IreneData.CurrentHP = IreneData.MaxHP;
+	IreneData.CurrentShield = 0;
 	IreneData.CurrentEnergy = 0;
 	IreneData.CurrentGauge = 100;
 	
@@ -221,8 +233,6 @@ void AIreneCharacter::BeginPlay()
 	IreneUIManager->Begin();
 	IreneInput->Begin();
 	
-	FOnSwordAttributeChange.Broadcast();
-
 	InitComplete();
 }
 
@@ -318,7 +328,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	PlayerInputComponent->BindAction("MouseCursor", IE_Pressed, IreneInput, &UIreneInputInstance::MouseCursorKeyword);
 	PlayerInputComponent->BindAction("WeaponChange", IE_Pressed, IreneInput, &UIreneInputInstance::SpiritChangeKeyword);
 	PlayerInputComponent->BindAction("BreakAttack", IE_Pressed, IreneInput, &UIreneInputInstance::BreakAttackKeyword);
-	
+	PlayerInputComponent->BindAction("UltimateAttack", IE_Pressed, IreneInput, &UIreneInputInstance::UltimateAttackKeyword);
+
 	// ∏∂øÏΩ∫
 	PlayerInputComponent->BindAxis("Turn", IreneInput, &UIreneInputInstance::Turn);
 	PlayerInputComponent->BindAxis("LookUp", IreneInput, &UIreneInputInstance::LookUp);
@@ -563,6 +574,18 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 	{
 		if (IreneData.CurrentHP > 0)
 		{
+			IreneData.CurrentShield	-= DamageAmount;
+			if(IreneData.CurrentShield > 0)
+			{
+				DamageAmount = 0;
+			}
+			else
+			{
+				DamageAmount = -IreneData.CurrentShield;
+				IreneData.CurrentShield = 0;
+				ShieldParticleSystemComponent->Deactivate();
+			}
+			
 			SetHP(DamageAmount);
 			IreneAttack->SetDamageBeforeTableName(IreneAttack->GetBasicAttackDataTableName().ToString());
 			
@@ -573,8 +596,10 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			}
 			else
 			{
-				bool DotDamage = Cast<ASwirl>(DamageCauser)->GetbIsOnDotDamage();
-			
+				bool DotDamage = false;
+				if(Cast<ASwirl>(DamageCauser) != nullptr)
+					DotDamage = Cast<ASwirl>(DamageCauser)->GetbIsOnDotDamage();
+
 				if(!IreneState->IsAttackState() && !IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage)
 				{
 					ChangeStateAndLog(UHit2State::GetInstance());

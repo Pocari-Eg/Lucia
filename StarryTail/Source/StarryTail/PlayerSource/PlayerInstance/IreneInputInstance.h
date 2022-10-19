@@ -64,7 +64,7 @@ private:
 	// 회피 중 회피 사용 가능
 	bool bIsDodgeToDodge;
 
-	//정령 체인지 가능한지
+	// 정령 체인지 가능한지
 	bool bIsSpiritChangeEnable;
 	// 잔상 공격 단계
 	int SpiritChainAttackCount;
@@ -141,10 +141,14 @@ private:
 	FTimerHandle SpiritAnimJumpWaitHandle;
 	// 잔상 다음 공격 가능 쿨타임
 	float SpiritAnimJumpCoolTime;
-	
+
+	// 카메라 연출
+	FTimerHandle UltimateAttackWaitHandle;
 	bool bSkillCameraMove;
+	float MaxSkillCameraPlayTime;
 	float SkillCameraPlayTime;
 	float SkillCameraEndPlayTime;
+	
 	float CoolTimeRate;
 #pragma endregion CoolTimeValue
 	
@@ -221,6 +225,10 @@ public:
 	void BreakAttackSendAttack();
 	// 브레이킹어택 종료
 	void BreakAttackEnd();
+
+	// 궁극기
+	void UltimateAttackKeyword();
+	void UltimateAttack();
 	
 	// 액션 
 	void DialogAction();
