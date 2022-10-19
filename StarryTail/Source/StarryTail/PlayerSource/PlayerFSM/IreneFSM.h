@@ -223,6 +223,22 @@ public:
 };
 #pragma endregion Skill
 
+#pragma region UltimateAttack
+UCLASS()
+class STARRYTAIL_API UUltimateAttack final : public UObject, public IState
+{
+	GENERATED_BODY()
+	float EndTime;
+	float StartShakeTime;
+public:
+	static UUltimateAttack* GetInstance();
+	virtual void Enter(IBaseGameEntity* CurState) override;
+	virtual void Execute(IBaseGameEntity* CurState) override;
+	virtual void Exit(IBaseGameEntity* CurState) override;
+	void EndTimeExit(IBaseGameEntity* CurState);
+};
+#pragma endregion UltimateAttack
+
 #pragma region FormChange
 UCLASS()
 class STARRYTAIL_API UFormChangeState final : public UObject, public IState
@@ -324,6 +340,7 @@ public:
 	bool IsJumpState()const;
 	bool IsAttackState()const;
 	bool IsSkillState()const;
+	bool IsUltimateAttackState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;
 	bool IsDeathState()const;

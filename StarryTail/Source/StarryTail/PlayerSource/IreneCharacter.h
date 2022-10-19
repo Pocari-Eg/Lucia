@@ -21,10 +21,6 @@
 
 #include "IreneCharacter.generated.h"
 
-//속성 변경 델리데이트
-DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
-DECLARE_MULTICAST_DELEGATE(FOnQuillAttributeChangeDelegate);
-
 //Ingame 위젯 델리게이트
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInGameBattleDelegate, int32, _FUNC, float, _CTIME);
@@ -35,9 +31,6 @@ class STARRYTAIL_API AIreneCharacter : public ACharacter
 	GENERATED_BODY()
 
 public:
-	//속성변환 델리게이트
-	FOnSwordAttributeChangeDelegate FOnSwordAttributeChange;
-	FOnQuillAttributeChangeDelegate FOnQuillAttributeChange;
 
 protected:
 
@@ -81,6 +74,9 @@ public:
 	TSubclassOf<class AActor> IreneSpiritOrigin;
 	UPROPERTY(EditAnywhere)
 	class AIreneSpirit* IreneSpirit;
+
+	UPROPERTY(EditAnywhere)
+	UParticleSystemComponent* ShieldParticleSystemComponent;
 	
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
