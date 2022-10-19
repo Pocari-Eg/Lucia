@@ -10,13 +10,13 @@ ABellyfishAIController::ABellyfishAIController()
      M_Attacked = 0;
 
 	
-	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Bellyfish/BB_Bellyfish"));
+	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/AI/Bellarus/BB_Bellarus"));
 	if (BBObject.Succeeded())
 	{
 		BBAsset = BBObject.Object;
 	}
 
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/AI/Bellyfish/BT_Bellyfish"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/AI/Bellarus/BT_Bellarus"));
 	if (BTObject.Succeeded())
 	{
 		BTAsset = BTObject.Object;

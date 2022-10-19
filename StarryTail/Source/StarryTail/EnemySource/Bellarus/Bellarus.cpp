@@ -33,7 +33,10 @@ ABellarus::ABellarus()
 	StackWidget->SetRelativeLocation(FVector(30.0f, 0.0f, 25.0f));
 
 
-
+	static ConstructorHelpers::FClassFinder<ASwirl> BP_Swirl(TEXT("/Game/BluePrint/Monster/Bellarus/BP_Swirl.BP_Swirl_C"));
+	if (BP_Swirl.Succeeded() && BP_Swirl.Class != NULL) {
+		SwirlClass = BP_Swirl.Class;
+	}
 
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
@@ -53,6 +56,27 @@ void ABellarus::Attack()
 }
 
 
+
+
+void ABellarus::BasicSwirlAttack()
+{
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+
+	FVector RightVector = ForwardVector.RotateAngleAxis(75.0f, FVector::UpVector);
+	FVector LetfVector = ForwardVector.RotateAngleAxis(-75.0f, FVector::UpVector);
+
+	// 총구 위치에 발사체를 스폰시킵니다.
+    ASwirl* CenterSwirl =  GetWorld()->SpawnActor<ASwirl>(SwirlClass,GetActorLocation()+(ForwardVector*10), GetActorRotation(), SpawnParams);
+	if (CenterSwirl!=nullptr)
+	{
+		CenterSwirl->SwirlCoreActive(ForwardVector);
+	}
+}
 
 
 void ABellarus::BeginPlay()
@@ -196,7 +220,7 @@ void ABellarus::InitCollision()
 void ABellarus::InitMesh()
 {
 	//메쉬 변경 
-	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster/Bellyfish/Mesh/M_b_idle.M_b_idle"));
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMesh(TEXT("/Game/Animation/Monster/Bellarus/mesh/M_Bl_Idle.M_Bl_Idle"));
 	if (SkeletalMesh.Succeeded()) {
 		GetMesh()->SetSkeletalMesh(SkeletalMesh.Object);
 	}
@@ -223,7 +247,7 @@ void ABellarus::InitAnime()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellyfish/BellyfishAnimBluePrint.BellyfishAnimBluePrint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellarus/BellyfishAnimBluePrint.BellyfishAnimBluePrint_C"));
 	if (FrenoAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);
