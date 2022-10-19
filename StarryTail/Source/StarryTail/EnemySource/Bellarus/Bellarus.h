@@ -6,6 +6,7 @@
 #include "../Monster.h"
 #include "BellarusAIController.h"
 #include"BellarusAnimInstance.h"
+#include "Swirl.h"
 #include "Bellarus.generated.h"
 
 /**
@@ -30,6 +31,8 @@ public:
 	void Wing_L();
 	void Wing_R();
 	void Tail();
+
+	void BasicSwirlAttack();
 
 protected:
 	// Called when the game starts or when spawned
@@ -65,7 +68,7 @@ private:
 		class UBellarusAnimInstance* BellarusAnimInstance;
 private:
 
-	
+	TSubclassOf<ASwirl> SwirlClass;
 public:
 
 
