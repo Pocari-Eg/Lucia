@@ -68,6 +68,12 @@ public:
 	// 체력
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentHP;
+	// 최대 쉴드
+	UPROPERTY(BlueprintReadWrite)
+	float MaxShield = 300;
+	// 쉴드
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	float CurrentShield;
 	// 최대 에너지 - 대쉬
 	UPROPERTY(BlueprintReadWrite)
 	float MaxScrollEnergy = 100;
@@ -80,6 +86,12 @@ public:
 	// 게이지
 	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
 	float CurrentGauge;
+	// 최대 게이지 - 궁극기
+	UPROPERTY(BlueprintReadWrite)
+	float MaxUltimateAttackGauge = 100;
+	// 게이지
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite)
+	float CurrentUltimateAttackGauge;
 	
 	// Run 최대 속도
 	UPROPERTY(BlueprintReadWrite)

@@ -1309,6 +1309,94 @@ void USpiritSkill::EndTimeExit(IBaseGameEntity* CurState)
 #pragma endregion USpiritSkill1
 #pragma endregion Skill
 
+#pragma region UltimateAttack
+UUltimateAttack* UUltimateAttack::GetInstance()
+{
+	static UUltimateAttack* Instance;
+	if (Instance == nullptr) {
+		Instance = NewObject<UUltimateAttack>();
+		Instance->AddToRoot();
+	}
+	return Instance;
+}
+void UUltimateAttack::Enter(IBaseGameEntity* CurState)
+{
+	CurState->SetStateEnum(EStateEnum::Ultimate_Attack);
+	CurState->PlayTime = 0.0f;
+	CurState->bIsEnd = false;
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	StartShakeTime = 0.0f;
+	CurState->Irene->IreneData.IsAttacking = true;
+	CurState->Irene->IreneData.CanNextCombo = false;
+	CurState->Irene->IreneInput->SetNextAttack(false);
+	CurState->Irene->IreneInput->SetJumpAttack(false);
+	CurState->Irene->IreneInput->SetReAttack(false);
+	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
+	CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillSkip(false);
+	CurState->Irene->IreneAttack->SetCanSkillToAttack(false);
+
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->GetMesh()->SetVisibility(true);
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
+
+	const FVector IrenePosition = CurState->Irene->GetActorLocation();
+	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
+	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+
+	//const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
+	//EndTime = AttackTable->C_Time;
+	EndTime = 2.0f;
+}
+
+void UUltimateAttack::Execute(IBaseGameEntity* CurState)
+{
+	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
+	// ÀÌµ¿ ½ºÅµ
+	// if (CurState->Irene->IreneData.IsAttacking)
+	// {
+	// 	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+	// 	if (CurState->Irene->IreneAttack->GetCanMoveSkip() && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+	// 	{
+	// 		if (CurState->Irene->Weapon->IsVisible())
+	// 		{
+	// 			CurState->Irene->Weapon->SetVisibility(false);
+	// 			CurState->Irene->WeaponVisible(false);
+	// 		}
+	// 		CurState->Irene->IreneAnim->StopAllMontages(0);
+	// 		CurState->Irene->ActionEndChangeMoveState();
+	// 	}
+	// }
+	
+	if(CurState->PlayTime >= EndTime)
+	{
+		EndTimeExit(CurState);
+	}
+}
+void UUltimateAttack::Exit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->IreneAttack->AttackEndComboState();
+	CurState->Irene->CameraShakeOn = false;
+	CurState->bIsEnd = true;
+}
+void UUltimateAttack::EndTimeExit(IBaseGameEntity* CurState)
+{
+	CurState->Irene->CameraShakeOn = false;
+	CurState->Irene->IreneData.IsAttacking = false;
+	CurState->Irene->IreneData.CanNextCombo = false;
+	CurState->Irene->IreneAttack->AttackTimeEndState();
+	CurState->bIsEnd = true;
+}
+#pragma endregion UltimateAttack
+
 #pragma region FormChangeState
 UFormChangeState* UFormChangeState::GetInstance()
 {
@@ -1509,6 +1597,12 @@ bool UIreneFSM::IsSkillState() const
 	if (StateEnumValue == EStateEnum::Sword_Skill_1 || StateEnumValue == EStateEnum::Sword_Skill_2 || StateEnumValue == EStateEnum::Spirit_Skill)
 		return true;
 	return false;
+}
+bool UIreneFSM::IsUltimateAttackState() const
+{
+	if (StateEnumValue == EStateEnum::Ultimate_Attack)
+		return true;
+	return false; 
 }
 bool UIreneFSM::IsFormChangeState()const
 {

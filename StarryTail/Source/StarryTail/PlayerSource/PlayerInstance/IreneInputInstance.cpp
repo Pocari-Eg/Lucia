@@ -18,14 +18,13 @@
 
 UIreneInputInstance::UIreneInputInstance()
 {
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackStartEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_Spawn.Ps_Light_Spawn"));
-	static ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackEndEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_End.Ps_Light_End"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackStartEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_Spawn.Ps_Light_Spawn"));
+	const ConstructorHelpers::FObjectFinder<UParticleSystem> BreakAttackEndEffectObject(TEXT("/Game/Effect/VFX_Dodge/Ps_Light_End.Ps_Light_End"));
 	if(BreakAttackStartEffectObject.Succeeded() && BreakAttackEndEffectObject.Succeeded())
 	{
 		BreakAttackStartEffect = BreakAttackStartEffectObject.Object;
 		BreakAttackEndEffect = BreakAttackEndEffectObject.Object;
 	}
-
 	bIsSpiritChangeEnable = true;
 }
 
@@ -82,6 +81,7 @@ void UIreneInputInstance::InitMemberVariable()
 	CanUseSpiritAnimJump = false;
 	
 	bSkillCameraMove = false;
+	MaxSkillCameraPlayTime = 2.0f;
 	
 	CoolTimeRate = 0.008f;
 	SlowScale = 0.4f;
@@ -467,7 +467,6 @@ void UIreneInputInstance::RightButton(float Rate)
 				}
 			}
 			
-			//SkillCameraMoveStart();			
 			if(Irene->bIsSpiritStance)
 				SpiritSkill();
 
@@ -665,7 +664,7 @@ void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
 		Irene->AddControllerPitchInput(Value.Y);
 		Irene->AddControllerYawInput(Value.Z);
 		SkillCameraEndPlayTime = SkillCameraPlayTime;
-		if(SkillCameraPlayTime >= 2.0f)
+		if(SkillCameraPlayTime >= MaxSkillCameraPlayTime)
 		{
 			SkillCameraMoveEnd(DeltaTime);
 			return;
@@ -953,6 +952,7 @@ void UIreneInputInstance::SpiritChangeBlock()
 }
 #pragma endregion Spirit
 
+#pragma region BreakAttack
 void UIreneInputInstance::BreakAttackKeyword()
 {
 	if(BreakAttackSpirit == nullptr && !BreakAttackWaitHandle.IsValid() && Irene->bIsSpiritStance)
@@ -1068,6 +1068,27 @@ void UIreneInputInstance::BreakAttackEnd()
 	UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), BreakAttackEndEffect, Irene->GetActorLocation());
 	Irene->GetMesh()->SetVisibility(true,true);
 }
+#pragma endregion BreakAttack
+
+#pragma region UltimateAttack
+void UIreneInputInstance::UltimateAttackKeyword()
+{
+	//if(!Irene->bInputStop && Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge)
+	//{
+		Irene->IreneData.CurrentUltimateAttackGauge = 0;
+		SkillCameraMoveStart();
+		GetWorld()->GetTimerManager().SetTimer(UltimateAttackWaitHandle,this,&UIreneInputInstance::UltimateAttack, MaxSkillCameraPlayTime, false);
+	//}
+}
+void UIreneInputInstance::UltimateAttack()
+{
+	// 쉴드
+	Irene->ShieldParticleSystemComponent->Activate(true);
+	Irene->IreneData.CurrentShield = Irene->IreneData.MaxShield;
+
+	// 공격
+}
+#pragma endregion UltimateAttack
 
 void UIreneInputInstance::DialogAction()
 {
