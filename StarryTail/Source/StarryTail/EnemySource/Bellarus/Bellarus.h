@@ -6,6 +6,8 @@
 #include "../Monster.h"
 #include "BellarusAIController.h"
 #include"BellarusAnimInstance.h"
+#include "Swirl.h"
+#include "FBellarusDataStruct.h"
 #include "Bellarus.generated.h"
 
 /**
@@ -31,6 +33,8 @@ public:
 	void Wing_R();
 	void Tail();
 
+	void BasicSwirlAttack();
+
 protected:
 	// Called when the game starts or when spawned
 	void BeginPlay() override;
@@ -51,12 +55,14 @@ public:
 	//set
 	UFUNCTION(BlueprintCallable)
 	void SetFlyDistance(float Distance);
+
+
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
-
+	void InitBellarusInfo();
 	bool AttackCheck(float Radius, float Hegiht, float Angle,float AttackAxis);
 
 //Variable
@@ -64,8 +70,10 @@ private:
 	UPROPERTY()
 		class UBellarusAnimInstance* BellarusAnimInstance;
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BellarusInfo, Meta = (AllowPrivateAccess = true))
+	FBellarusDataStruct BellarusInfo;
 
-	
+	TSubclassOf<ASwirl> SwirlClass;
 public:
 
 

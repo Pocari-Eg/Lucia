@@ -328,7 +328,7 @@ void ABellyfish::BeginPlay()
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
 	SetNormalState();
-	ProjectileFirePos->AttachTo(GetMesh(), FireSocketName, EAttachLocation::SnapToTarget, false);
+	ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
 }
 
 void ABellyfish::PossessedBy(AController* NewController)
@@ -404,7 +404,7 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_01 = NewData->M_Skill_Type_01;
 	MonsterInfo.M_Skill_Type_02 = NewData->M_Skill_Type_02;
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
-	MonsterInfo.Weapon_Soul = NewData->Weapon_Soul;
+	MonsterInfo.Spirit_Soul = NewData->Spirit_Soul;
 
 
 	MonsterInfo.M_Attacked_Time = 0.5f;

@@ -265,7 +265,16 @@ void UMonsterShield::CalcStackDamageToShield(int Count)
 void UMonsterShield::BeginPlay()
 {
 	Super::BeginPlay();
-	CurDurability = Durability;
+
+	if (Durability == 0)
+	{
+		bIsShieldActive = false;
+	}
+	else {
+		CurDurability = Durability;
+	}
+	
+
 	// ...
 }
 

@@ -27,23 +27,33 @@ private:
 	UPROPERTY(EditAnywhere, Category = Effect, meta = (AllowPrivateAccess = "ture"))
 	UParticleSystemComponent* Swirl_Pull_Range_Effect;
 
+
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float Damage;
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float Swirl_Dot_Damage;
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float Pull_Force;
 	
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float MoveSpeed;
 	
 
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float SwirlRadius;
 
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float CoreSetTime;
 	float CoreSetTimer;
 
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float KeepSwirlTime;
 	float KeepSwirlTimer;
 
-	float DotDamageTimer;
+
+	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float DotDamageTime;
+	float DotDamageTimer;
 
 	bool bIsOnDotDamage;
 	bool bIsOnSwirlCore;
@@ -51,7 +61,15 @@ private:
 
 	bool bIsOnCorePull;
 
+	float MaxDistance;
+	float MinDistance;
+
 	class AIreneCharacter* Irene;
+
+	FVector MoveDirection;
+	bool bIsMove;
+
+
 //func
 public:	
 	// Sets default values for this actor's properties
@@ -60,10 +78,9 @@ public:
 	void InitSwirl(float DamageVal,float SwirlDotDamageVal,float PullForceVal,float CoreSetTimeVal,
 		float KeepSwirlTime,float MoveSpeedVal,float SwirlRadiusVal);
 
-	void SwirlCoreActive();
+	void SwirlCoreActive(FVector MoveDirectionVal);
 	void SwirlPullRangeActive();
 	void SwirlDestroy();
-
 	bool GetbIsOnDotDamage();
 protected:
 	// Called when the game starts or when spawned
@@ -87,5 +104,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
+private:
+	float CalcCurPullPower(float CurDistance);
 };

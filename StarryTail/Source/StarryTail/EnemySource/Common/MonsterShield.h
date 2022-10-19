@@ -67,6 +67,7 @@ public:
 
 	void SetOpacity(float CurDistance);
 
+	void SetDurabilty(int DurabiltyVal) { Durability = DurabiltyVal; }
 	float GetDurability() { return Durability;}
 
 	float GetKnockBackDistance();

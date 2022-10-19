@@ -3,6 +3,7 @@
 
 #include "Swirl.h"
 #include "../../PlayerSource/IreneCharacter.h"
+#include "../../PlayerSource/PlayerFSM/IreneFSM.h"
 #include "Kismet/GameplayStatics.h"
 // Sets default values
 ASwirl::ASwirl()
@@ -26,8 +27,8 @@ ASwirl::ASwirl()
 	Swirl_Core->SetGenerateOverlapEvents(false);
 	Swirl_Pull_Range->SetGenerateOverlapEvents(false);
 
-	Swirl_Core->SetCollisionProfileName("Trigger");
-	Swirl_Pull_Range->SetCollisionProfileName("Trigger");
+	Swirl_Core->SetCollisionProfileName("NoCollision");
+	Swirl_Pull_Range->SetCollisionProfileName("NoCollision");
 
 	Swirl_Core_Effect->SetAutoActivate(false);
 	Swirl_Pull_Range_Effect->SetAutoActivate(false);
@@ -40,6 +41,12 @@ ASwirl::ASwirl()
 
 	KeepSwirlTimer = 0.0f;
 	CoreSetTimer = 0.0f;
+
+
+
+	bIsMove = false;
+	MoveDirection = FVector(0.0f, 0.0f, 0.0f);
+
 }
 
 void ASwirl::InitSwirl(float DamageVal, float SwirlDotDamageVal,float PullForceVal, float CoreSetTimeVal,float KeepSwirlTimeVal ,float MoveSpeedVal,float SwirlRadiusVal)
@@ -55,19 +62,25 @@ void ASwirl::InitSwirl(float DamageVal, float SwirlDotDamageVal,float PullForceV
 	Swirl_Core->SetCapsuleRadius(SwirlRadius);
 	Swirl_Core->SetCapsuleHalfHeight(SwirlRadius);
 
-	Swirl_Pull_Range->SetCapsuleRadius(SwirlRadius*1.8f);
-	Swirl_Pull_Range->SetCapsuleHalfHeight(SwirlRadius * 1.8f);
+	Swirl_Pull_Range->SetCapsuleRadius(SwirlRadius* 4.0f);
+	Swirl_Pull_Range->SetCapsuleHalfHeight(SwirlRadius * 4.0f);
+
+
+	MinDistance = SwirlRadius;
+	MaxDistance = MinDistance * 4.0f;
 
 }
 
-void ASwirl::SwirlCoreActive()
+void ASwirl::SwirlCoreActive(FVector MoveDirectionVal)
 {
 	Swirl_Core_Effect->SetActive(true, true);
 	Swirl_Core->SetGenerateOverlapEvents(true);
 
-
+	MoveDirection = MoveDirectionVal;
 	CoreSetTimer = 0.0f;
 	bIsOnSwirlCore = true;
+	Swirl_Core->SetCollisionProfileName("Trigger");
+	bIsMove = true;
 }
 
 void ASwirl::SwirlPullRangeActive()
@@ -75,6 +88,7 @@ void ASwirl::SwirlPullRangeActive()
 	Swirl_Pull_Range_Effect->SetActive(true, true);
 	Swirl_Pull_Range->SetGenerateOverlapEvents(true);
 	SwirlKeepcheck = true;
+	Swirl_Pull_Range->SetCollisionProfileName("Trigger");
 }
 
 void ASwirl::SwirlDestroy()
@@ -95,8 +109,7 @@ void ASwirl::BeginPlay()
 
 	Swirl_Pull_Range->OnComponentBeginOverlap.AddDynamic(this, &ASwirl::SwirlPullRangeBegin);
 	Swirl_Pull_Range->OnComponentEndOverlap.AddDynamic(this, &ASwirl::SwirlPullRangeEnd);
-	InitSwirl(100, 4, 50.0f, 5, 10, 20, 200);
-	SwirlCoreActive();
+	InitSwirl(100, 4, 0.7f, 5, 10, 300, 120);
 }
 
 void ASwirl::SwirlCoreBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -104,10 +117,11 @@ void ASwirl::SwirlCoreBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
 		Irene = Cast<AIreneCharacter>(OtherActor);
-		
 		UGameplayStatics::ApplyDamage(Irene, Damage, NULL, this, NULL);
 		bIsOnDotDamage = true;
+
 	}
+
 }
 
 void ASwirl::SwirlCoreEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
@@ -115,7 +129,6 @@ void ASwirl::SwirlCoreEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActo
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
 		bIsOnDotDamage = false;
-		Irene = nullptr;
 	}
 	
 	
@@ -125,6 +138,7 @@ void ASwirl::SwirlPullRangeBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
+		
 		Irene = Cast<AIreneCharacter>(OtherActor);
 		bIsOnCorePull = true;
 	}
@@ -178,12 +192,40 @@ void ASwirl::Tick(float DeltaTime)
 	{
 		if (Irene != nullptr)
 		{
-			STARRYLOG_S(Error);
-			FVector PullDirection = GetActorLocation() - Irene->GetActorLocation();
-			PullDirection.Z = 0.0f;
-			Irene->SetActorLocation(GetActorLocation() + (PullDirection * Pull_Force* DeltaTime));
+			float CurDistance = GetDistanceTo(Irene);
+			float CurPullPower = CalcCurPullPower(CurDistance);
+			if (!Irene->IreneState->IsAttackState() && !Irene->IreneState->IsDodgeState()) {
+				FVector PullDirection = GetActorLocation() - Irene->GetActorLocation();
+				PullDirection.Z = 0.0f;
+				Irene->SetActorLocation(Irene->GetActorLocation() + (PullDirection * CurPullPower * DeltaTime));
+			}
 		}
 
 	}
+
+	if (bIsMove)
+	{
+		SetActorLocation(GetActorLocation() + (MoveDirection*MoveSpeed * DeltaTime));
+	}
+}
+
+float ASwirl::CalcCurPullPower(float CurDistance)
+{
+
+	if (CurDistance >= MaxDistance)
+	{
+		return Pull_Force * 0.0f;
+	}
+	else if (CurDistance <= MinDistance)
+	{
+		return Pull_Force * 1.0f;
+	}
+	else {    
+		float Ratio = 1.0f-((CurDistance-MinDistance) / (MaxDistance-MinDistance));
+		return Pull_Force * Ratio;
+	}
+	
+
+	return 0.0f;
 }
 
