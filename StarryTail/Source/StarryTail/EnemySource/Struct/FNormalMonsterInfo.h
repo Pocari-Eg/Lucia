@@ -45,8 +45,16 @@ public:
 		int M_Skill_Type_03;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_04;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_05;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_06;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_07;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_08;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		int Weapon_Soul;
+	int Spirit_Soul;
 
 
 
@@ -213,5 +221,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		int M_Skill_Type_04;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		int Weapon_Soul;
+	int M_Skill_Type_05;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_06;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_07;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Skill_Type_08;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Spirit_Soul;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Shield_Def;
+	
 };

@@ -54,7 +54,7 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_02 = NewData->M_Skill_Type_02;
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
 	MonsterInfo.M_Skill_Type_04 = NewData->M_Skill_Type_04;
-	MonsterInfo.Weapon_Soul = NewData->Weapon_Soul;
+	MonsterInfo.Spirit_Soul = NewData->Spirit_Soul;
 
 
 	MonsterInfo.M_Attacked_Time = 0.5f;
