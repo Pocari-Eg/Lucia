@@ -1019,11 +1019,11 @@ void AMonster::DropWeaponSoul()
 
 
 	TArray<AWeapon_Soul*> Souls;
-	for (int i = 0; i < MonsterInfo.Weapon_Soul; i++)
+	for (int i = 0; i < MonsterInfo.Spirit_Soul; i++)
 	{
 		Souls.Add(GetWorld()->SpawnActor<AWeapon_Soul>(Weapon_SoulClass, GetActorLocation(), FRotator::ZeroRotator));
 	}
-	for (int i = 0; i < MonsterInfo.Weapon_Soul; i++)
+	for (int i = 0; i < MonsterInfo.Spirit_Soul; i++)
 	{
 
 		auto Y = FMath::RandRange(1, 3);
@@ -1073,7 +1073,7 @@ void AMonster::BeginPlay()
 	InitPerfectDodgeNotify();
 
 	
-	MonsterShield->AttachTo(GetMesh(), ShieldSocketName, EAttachLocation::SnapToTarget, false);
+	MonsterShield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, ShieldSocketName);
 
 }
 void AMonster::PossessedBy(AController* NewController)

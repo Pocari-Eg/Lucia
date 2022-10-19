@@ -17,8 +17,9 @@ ABellarus::ABellarus()
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 
-	MonsterInfo.Monster_Code = 1;
+	MonsterInfo.Monster_Code = 3;
 	InitMonsterInfo();
+	InitBellarusInfo();
 	InitCollision();
 	InitMesh();
 	InitAnime();
@@ -49,7 +50,7 @@ void ABellarus::Attack()
 {
 	//어택 준비 애니메이션 출력
 
-	InitAttack1Data();
+	//InitAttack1Data();
 	BellarusAnimInstance->PlayAttackMontage();
 
 	
@@ -60,6 +61,11 @@ void ABellarus::Attack()
 
 void ABellarus::BasicSwirlAttack()
 {
+	STARRYLOG_S(Error);
+
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
+
+
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
@@ -70,11 +76,38 @@ void ABellarus::BasicSwirlAttack()
 	FVector RightVector = ForwardVector.RotateAngleAxis(75.0f, FVector::UpVector);
 	FVector LetfVector = ForwardVector.RotateAngleAxis(-75.0f, FVector::UpVector);
 
+	ForwardVector.Z = 0.0f;
+	RightVector.Z = 0.0f;
+	LetfVector.Z = 0.0f;
 	// 총구 위치에 발사체를 스폰시킵니다.
-    ASwirl* CenterSwirl =  GetWorld()->SpawnActor<ASwirl>(SwirlClass,GetActorLocation()+(ForwardVector*10), GetActorRotation(), SpawnParams);
+    ASwirl* CenterSwirl =  GetWorld()->SpawnActor<ASwirl>(SwirlClass,
+		(GetActorLocation()+(RightVector * 20))-FVector(0.0f,0.0f,GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorRotation(), SpawnParams);
+
+
 	if (CenterSwirl!=nullptr)
 	{
-		CenterSwirl->SwirlCoreActive(ForwardVector);
+		CenterSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time, NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
+		CenterSwirl->SwirlCoreActive(RightVector);
+
+	}
+
+	ASwirl* RightSwirl = GetWorld()->SpawnActor<ASwirl>(SwirlClass,
+		(GetActorLocation() + (ForwardVector * 20)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorRotation(), SpawnParams);
+	if (RightSwirl != nullptr)
+	{
+		RightSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time, NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
+		RightSwirl->SwirlCoreActive(ForwardVector);
+	}
+
+	ASwirl* LeftSwirl = GetWorld()->SpawnActor<ASwirl>(SwirlClass,
+		(GetActorLocation() + (LetfVector * 20)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorRotation(), SpawnParams);
+	if (LeftSwirl != nullptr)
+	{
+		LeftSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time, NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
+		LeftSwirl->SwirlCoreActive(LetfVector);
 	}
 }
 
@@ -108,7 +141,7 @@ void ABellarus::BeginPlay()
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::Attack);
+	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::BasicSwirlAttack);
 
 	
 	SetNormalState();
@@ -166,8 +199,14 @@ void ABellarus::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_01 = NewData->M_Skill_Type_01;
 	MonsterInfo.M_Skill_Type_02 = NewData->M_Skill_Type_02;
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
-	MonsterInfo.Weapon_Soul = NewData->Weapon_Soul;
+	MonsterInfo.M_Skill_Type_04 = NewData->M_Skill_Type_04;
+	MonsterInfo.M_Skill_Type_05 = NewData->M_Skill_Type_05;
+	MonsterInfo.M_Skill_Type_06 = NewData->M_Skill_Type_06;
+	MonsterInfo.M_Skill_Type_07 = NewData->M_Skill_Type_07;
+	MonsterInfo.M_Skill_Type_08 = NewData->M_Skill_Type_08;
 
+	MonsterInfo.Spirit_Soul = NewData->Spirit_Soul;
+	MonsterShield->SetDurabilty(NewData->M_Shield_Def);
 
 	MonsterInfo.M_Attacked_Time = 0.5f;
 	MonsterInfo.PatrolArea = 600.0f;
@@ -182,24 +221,10 @@ void ABellarus::InitMonsterInfo()
 	//Attack Range
 
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-	MonsterInfo.Attack1Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
-	MonsterInfo.Attack1Range.M_Atk_Height = NewSkillData->M_Atk_Height;
-	MonsterInfo.Attack1Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
 
-	NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_02);
-	MonsterInfo.Attack2Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
-	MonsterInfo.Attack2Range.M_Atk_Height = NewSkillData->M_Atk_Height;
-	MonsterInfo.Attack2Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
-
-	NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
-	MonsterInfo.Attack3Range.M_Atk_Angle = NewSkillData->M_Atk_Angle;
-	MonsterInfo.Attack3Range.M_Atk_Height = NewSkillData->M_Atk_Height;
-	MonsterInfo.Attack3Range.M_Atk_Radius = NewSkillData->M_Atk_Radius;
 
 	MonsterInfo.S_Attack_Time = 8.0f;
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
-
-	
 	MonsterInfo.KnockBackPower = 50.0f;
 	MonsterInfo.DeadWaitTime = 1.0f;
 
@@ -252,6 +277,14 @@ void ABellarus::InitAnime()
 	{
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);
 	}
+}
+
+void ABellarus::InitBellarusInfo()
+{
+	BellarusInfo.Swirl_MoveSpeed = 300.0f;
+	BellarusInfo.Swirl_Pull_Force = 0.7f;
+	BellarusInfo.Swirl_DOT_Damage = 30.0f;
+
 }
 
 #pragma endregion Init
