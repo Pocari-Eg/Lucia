@@ -18,7 +18,8 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = Collision, meta = (AllowPrivateAccess = "ture"))
 	UCapsuleComponent* GuidedSwirlCore;
-
+	UPROPERTY(EditAnywhere, Category = Effect, meta = (AllowPrivateAccess = "ture"))
+	UParticleSystem* SwirlExplosionParticle;
 	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float ExplosionRadius;
 	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
@@ -33,8 +34,7 @@ private:
 	float CollisionTime;
 
 
-	float DestroyTimer;
-	bool bIsDestroy;
+
 
 	FVector ExplosionLocation;
 
@@ -51,6 +51,7 @@ public:
 	virtual void BeginPlay() override;
 
 	void AttackCheck(float Radius, float Hegiht, float Angle, float AttackAxis);
+
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

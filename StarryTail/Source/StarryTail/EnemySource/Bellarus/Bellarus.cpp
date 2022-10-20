@@ -43,8 +43,11 @@ ABellarus::ABellarus()
 	if (BP_GuidedSwirl.Succeeded() && BP_GuidedSwirl.Class != NULL) {
 		GuidedSwirlClass = BP_GuidedSwirl.Class;
 	}
-
-
+	static ConstructorHelpers::FClassFinder<ATornadoSwirl> BP_TornadoSwirl(TEXT("/Game/BluePrint/Monster/Bellarus/BP_TornadoSwirl.BP_TornadoSwirl_C"));
+	if (BP_TornadoSwirl.Succeeded() && BP_TornadoSwirl.Class != NULL) {
+		ATornadoSwirlClass = BP_TornadoSwirl.Class;
+	}
+	
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 {
@@ -254,6 +257,72 @@ void ABellarus::GuidedSwirlAttack()
 
 }
 
+void ABellarus::TornadoSwirlAttack()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
+	FMonsterSkillDataTable* TornadoData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+
+	FVector RightVector = ForwardVector.RotateAngleAxis(45, FVector::UpVector);
+	FVector LetfVector = ForwardVector.RotateAngleAxis(-45, FVector::UpVector);
+
+	ForwardVector.Z = 0.0f;
+	RightVector.Z = 0.0f;
+	LetfVector.Z = 0.0f;
+	// 총구 위치에 발사체를 스폰시킵니다.
+
+	ATornadoSwirl* RightSwirl = GetWorld()->SpawnActor<ATornadoSwirl>(ATornadoSwirlClass,
+		(GetActorLocation() + (RightVector * 500.0f)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorRotation() + FRotator(0.0f, -45.0f, 0.0f), SpawnParams);
+	if (RightSwirl != nullptr)
+	{
+		RightSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time,
+			NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
+		RightSwirl->SwirlCoreActive(ForwardVector);
+
+		
+		RightSwirl->InitTornade(TornadoData->M_Skill_Atk, BellarusInfo.Tornado_DOT_Damage, BellarusInfo.Tornado_Pull_Force, TornadoData->M_Skill_Set_Time,
+			TornadoData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 240.0f);
+	}
+
+	ATornadoSwirl* LeftSwirl = GetWorld()->SpawnActor<ATornadoSwirl>(ATornadoSwirlClass,
+		(GetActorLocation() + (LetfVector * 500.0f)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		GetActorRotation() + FRotator(0.0f, 45.0f, 0.0f), SpawnParams);
+	if (LeftSwirl != nullptr)
+	{
+		LeftSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time,
+			NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
+		LeftSwirl->SwirlCoreActive(ForwardVector);
+		LeftSwirl->InitTornade(TornadoData->M_Skill_Atk, BellarusInfo.Tornado_DOT_Damage, BellarusInfo.Tornado_Pull_Force, TornadoData->M_Skill_Set_Time,
+			TornadoData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 240.0f);
+	}
+}
+
+void ABellarus::SwirlAttack()
+{
+	switch (SwirlAttackType)
+	{
+	case 0:
+		BasicSwirlAttack();
+		break;
+	case 1:
+		GuidedSwirlAttack();
+		break;
+	case 2:
+		TornadoSwirlAttack();
+		break;
+	default:
+		BasicSwirlAttack();
+		break;
+	}
+}
+
 
 void ABellarus::BeginPlay()
 {
@@ -284,7 +353,7 @@ void ABellarus::BeginPlay()
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::GuidedSwirlAttack);
+	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::SwirlAttack);
 
 	
 	SetNormalState();
@@ -429,6 +498,9 @@ void ABellarus::InitBellarusInfo()
 	BellarusInfo.Swirl_DOT_Damage = 30.0f;
 	BellarusInfo.Swirl_Explosion_Radius = 400.0f;
 	BellarusInfo.Swirl_Explosion_Damage = 400.0f;
+
+	BellarusInfo.Tornado_DOT_Damage = 50.0f;
+	BellarusInfo.Tornado_Pull_Force = 4;
 }
 
 bool ABellarus::AttackCheck(float Radius, float Hegiht, float Angle, float AttackAxis)

@@ -19,7 +19,7 @@
 
 #include "../Object/ShieldSpirit.h"
 #include "../Object/LabMagic.h"
-#include "../EnemySource/Bellarus/Swirl.h"
+#include "../EnemySource/Bellarus/Swirls/Swirl.h"
 
 #pragma region Setting
 AIreneCharacter::AIreneCharacter()

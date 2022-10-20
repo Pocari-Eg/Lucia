@@ -2,9 +2,9 @@
 
 
 #include "GuidedSwirl.h"
-#include "../../PlayerSource/IreneCharacter.h"
-#include "../../PlayerSource/PlayerFSM/IreneFSM.h"
-#include "../../STgameInstance.h"
+#include "../../../PlayerSource/IreneCharacter.h"
+#include "../../../PlayerSource/PlayerFSM/IreneFSM.h"
+#include "../../../STgameInstance.h"
 #include "Kismet/GameplayStatics.h"
 
 AGuidedSwirl::AGuidedSwirl()
@@ -16,15 +16,11 @@ AGuidedSwirl::AGuidedSwirl()
 	GuidedSwirlCore->SetGenerateOverlapEvents(false);
 	GuidedSwirlCore->SetCollisionProfileName("NoCollision");
 
-
-
 	RotationTimer = 0.0f;
 	RotationTime = 0.1f;
 	bIsGuidedMove = false;
 	CollisionTimer = 0.0f;
 	CollisionTime = 2.0f;
-	DestroyTimer = 0.0f;
-	bIsDestroy = false;
 }
 
 void AGuidedSwirl::InitSwirl(float DamageVal, float SwirlDotDamageVal, float PullForceVal, float CoreSetTimeVal, float KeepSwirlTimeVal,
@@ -51,13 +47,18 @@ void AGuidedSwirl::GuidedSwirlBegin(UPrimitiveComponent* OverlappedComp, AActor*
 {
 	if (Cast<AGuidedSwirl>(OtherActor)&& Cast<AGuidedSwirl>(OtherActor)!=this)
 	{
-		FVector Direction =  OtherActor->GetActorLocation()- GetActorLocation();
-		Direction.Normalize();
+		auto OtherSwirl = Cast<AGuidedSwirl>(OtherActor);
 
+			FVector Direction = OtherActor->GetActorLocation() - GetActorLocation();
+			Direction.Normalize();
+			ExplosionLocation = Direction * MinDistance;
 		
-		ExplosionLocation = Direction * MinDistance;
+			AttackCheck(ExplosionRadius, 200.0f, 360.0f, 0.0f);
+			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwirlExplosionParticle, GetActorLocation() + ExplosionLocation);
 
-		bIsDestroy = true;
+			OtherSwirl->Destroy();
+			Destroy();
+	
 	}
 }
 
@@ -107,7 +108,7 @@ void AGuidedSwirl::Tick(float DeltaTime)
 				FQuat RotationQuat = Math::VectorA2BRotation(ForwardVec, PlayerVec);
 				RotationQuat.Y = 0.0f;
 				RotationQuat.X = 0.0f;
-				RotationQuat.Z *= DeltaTime*0.7f;
+				RotationQuat.Z *= DeltaTime;
 				AddActorWorldRotation(RotationQuat);
 				FVector RotateVec = RotationQuat.RotateVector(ForwardVec);
 
@@ -118,16 +119,7 @@ void AGuidedSwirl::Tick(float DeltaTime)
 
 	}
 
-	if (bIsDestroy)
-	{
-		DestroyTimer += DeltaTime;
-		if (DestroyTimer >= 0.1)
-		{
-			AttackCheck(ExplosionRadius, 200.0f, 360.0f, 0.0f);
 
-			Destroy();
-		}
-	}
 }
 
 void AGuidedSwirl::AttackCheck(float Radius, float Hegiht, float Angle, float AttackAxis)
