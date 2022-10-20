@@ -24,4 +24,9 @@ public:
 	float Swirl_Explosion_Damage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Swirl_Explosion_Radius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Tornado_DOT_Damage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float	Tornado_Pull_Force;
 };
