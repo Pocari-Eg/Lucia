@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "../IreneCharacter.h"
 #include "IreneSpirit.generated.h"
 
 UCLASS()
@@ -43,6 +44,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetAttackCount()const{return AttackCount;}
 	void SetAttackCount(const int Value){AttackCount = Value;}
+
+	UFUNCTION(BlueprintCallable)
+	void SetDestroy()const{Irene->IreneSpirit = nullptr;}
 private:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;

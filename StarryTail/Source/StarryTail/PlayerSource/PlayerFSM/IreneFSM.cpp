@@ -1216,20 +1216,6 @@ void USpiritSkill::Enter(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAttack->SetTrueAttackCount(CurState->Irene->IreneInput->GetSpiritChainAttackCount());
 	}
-	switch (CurState->Irene->IreneInput->GetSpiritChainAttackCount())
-	{
-	case 1:
-		OriginEndTime = 0.76f;
-		break;
-	case 2:
-		OriginEndTime = 0.4f;
-		break;
-	case 3:
-		OriginEndTime = 0.53f;
-		break;
-	default:
-		break;
-	}
 	
 	CurState->Irene->IreneInput->SetNextAttack(false);
 	CurState->Irene->IreneInput->SetJumpAttack(false);
@@ -1245,26 +1231,20 @@ void USpiritSkill::Enter(IBaseGameEntity* CurState)
 
 	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
 	EndTime = AttackTable->C_Time;
-	if(CurState->Irene->IreneSpirit != nullptr)
-		CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
+	//if(CurState->Irene->IreneSpirit != nullptr)
+		//CurState->Irene->IreneSpirit->DestroySpiritTimer(EndTime);
 	
 	CurState->Irene->IreneAttack->SetDamageBeforeTableName(CurState->Irene->IreneAttack->GetBasicAttackDataTableName().ToString());
 }
 void USpiritSkill::Execute(IBaseGameEntity* CurState)
 {	
-	// ÀÜ»ó ¸ùÅ¸ÁÖ ½Ã°£
+	// ¸ùÅ¸ÁÖ ½Ã°£
 	if (CurState->PlayTime >= EndTime)
 	{
-		CurState->Irene->GetMesh()->SetVisibility(true,true);
 		if(CurState->Irene->IreneSpirit != nullptr)
 		{
-			CurState->Irene->IreneSpirit->DestroySpirit();
-			CurState->Irene->IreneSpirit = nullptr;
+			//CurState->Irene->IreneSpirit = nullptr;
 		}
-	}
-	// º»Ã¼ ¸ùÅ¸ÁÖ ½Ã°£
-	if (CurState->PlayTime >= OriginEndTime)
-	{
 		EndTimeExit(CurState);
 	}
 
