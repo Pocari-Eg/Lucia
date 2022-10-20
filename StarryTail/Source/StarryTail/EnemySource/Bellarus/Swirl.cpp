@@ -88,7 +88,7 @@ void ASwirl::SwirlPullRangeActive()
 	Swirl_Pull_Range_Effect->SetActive(true, true);
 	Swirl_Pull_Range->SetGenerateOverlapEvents(true);
 	SwirlKeepcheck = true;
-	Swirl_Pull_Range->SetCollisionProfileName("Trigger");
+	Swirl_Pull_Range->SetCollisionProfileName("EnemyAttack");
 }
 
 void ASwirl::SwirlDestroy()
