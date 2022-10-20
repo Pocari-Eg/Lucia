@@ -287,14 +287,14 @@ void UIreneInputInstance::LeftButton(float Rate)
 	{
 		if (Rate >= 1.0)
 		{
-			if(Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())
-			{
-				if(Irene->IreneSpirit != nullptr)
-				{
-					Irene->SetActorLocation(Irene->IreneSpirit->GetActorLocation());
-					Irene->IreneSpirit->DestroySpirit();
-				}
-			}
+			// if(Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())
+			// {
+			// 	if(Irene->IreneSpirit != nullptr)
+			// 	{
+			// 		Irene->SetActorLocation(Irene->IreneSpirit->GetActorLocation());
+			// 		Irene->IreneSpirit->DestroySpirit();
+			// 	}
+			// }
 			
 			if(AttackUseSkillNextCount==0)
 				Irene->IreneAttack->SetAttackState();
@@ -428,8 +428,8 @@ void UIreneInputInstance::RightButton(float Rate)
 				{
 					if(Irene->IreneSpirit != nullptr)
 					{
-						Irene->IreneSpirit->DestroySpirit();
-						Irene->IreneSpirit = nullptr;
+						//Irene->IreneSpirit->DestroySpirit();
+						//Irene->IreneSpirit = nullptr;
 					}
 					const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 					
@@ -452,16 +452,10 @@ void UIreneInputInstance::RightButton(float Rate)
 					}
 					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
 					Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
-					if(Irene->IreneSpirit != nullptr)
-					{
-						Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
-					}
-					else
+					if(Irene->IreneSpirit == nullptr)
 					{
 						Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
-						if(Irene->IreneSpirit != nullptr)
-							Irene->IreneSpirit->GetMesh()->SetVisibility(false,true);
-						else
+						if(Irene->IreneSpirit == nullptr)
 							return;
 					}
 				}
@@ -604,10 +598,6 @@ void UIreneInputInstance::SpawnSpirit()
 {
 	if(Irene->IreneSpirit != nullptr)
 	{
-		STARRYLOG_S(Warning);
-
-		Irene->GetMesh()->SetVisibility(false,true);
-		Irene->IreneSpirit->GetMesh()->SetVisibility(true,true);
 		//Irene->IreneSpirit->IreneSpiritAnim->PlaySkillAttackMontage(SpiritChainAttackCount);
 	}
 }
