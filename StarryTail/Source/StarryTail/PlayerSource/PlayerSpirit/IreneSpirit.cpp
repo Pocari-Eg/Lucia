@@ -92,7 +92,7 @@ void AIreneSpirit::DestroySpiritTimer(float Time)
 }
 void AIreneSpirit::DestroySpirit()
 {
-	Irene->IreneSpirit = nullptr;
+	//Irene->IreneSpirit = nullptr;
 	Irene->GetMesh()->SetVisibility(true,true);
 	Destroy();
 }

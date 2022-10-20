@@ -310,8 +310,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 			KnockBackTimer = 0.0f;
 			bIsKnockBack = false;
 		}
-	}
-
+	}	
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

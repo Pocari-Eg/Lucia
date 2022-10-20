@@ -211,7 +211,6 @@ UCLASS()
 class STARRYTAIL_API USpiritSkill final : public UObject, public IState
 {
 	GENERATED_BODY()
-	float OriginEndTime;
 	float EndTime;
 	float StartShakeTime;
 public:
