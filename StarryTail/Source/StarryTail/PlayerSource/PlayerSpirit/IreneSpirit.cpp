@@ -6,7 +6,8 @@
 #include "../IreneCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "DrawDebugHelpers.h"
-#include "StarryTail/PlayerSource/PlayerFSM/IreneFSM.h"
+#include "../../STGameInstance.h"
+#include "../PlayerFSM/IreneFSM.h"
 
 // Sets default values
 AIreneSpirit::AIreneSpirit()
@@ -48,14 +49,14 @@ AIreneSpirit::AIreneSpirit()
 	}
 
 	MeshVisibilityCoolTime = 0.35f;
+	AttackCount = 0;
 }
 
 void AIreneSpirit::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 	IreneSpiritAnim = Cast<UIreneSpiritAnimInstance>(GetMesh()->GetAnimInstance());
-	IreneSpiritAnim->Init(Irene);
-	
+
 	IreneSpiritAnim->OnSpiritAttackHitCheck.AddUObject(this, &AIreneSpirit::AttackCheck);
 }
 
@@ -64,6 +65,7 @@ void AIreneSpirit::BeginPlay()
 {
 	Super::BeginPlay();
 	Irene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+	IreneSpiritAnim->Init(Irene);
 }
 
 // Called every frame

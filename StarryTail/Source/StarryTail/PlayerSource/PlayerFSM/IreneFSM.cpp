@@ -794,7 +794,7 @@ void UBasicAttack1State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
@@ -888,7 +888,7 @@ void UBasicAttack2State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
@@ -982,7 +982,7 @@ void UBasicAttack3State::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
@@ -1070,7 +1070,7 @@ void USwordSkill1::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
@@ -1163,7 +1163,7 @@ void USwordSkill2::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 		}
 	}
@@ -1284,7 +1284,7 @@ void USpiritSkill::Execute(IBaseGameEntity* CurState)
 				CurState->Irene->Weapon->SetVisibility(false);
 				CurState->Irene->WeaponVisible(false);
 			}
-			CurState->Irene->IreneAnim->StopAllMontages(0);
+			CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 			CurState->Irene->ActionEndChangeMoveState();
 			CurState->Irene->GetMesh()->SetVisibility(true);
 		}
@@ -1371,7 +1371,7 @@ void UUltimateAttack::Execute(IBaseGameEntity* CurState)
 	// 			CurState->Irene->Weapon->SetVisibility(false);
 	// 			CurState->Irene->WeaponVisible(false);
 	// 		}
-	// 		CurState->Irene->IreneAnim->StopAllMontages(0);
+	// 		CurState->Irene->IreneAnim->StopAllMontages(0.1f);
 	// 		CurState->Irene->ActionEndChangeMoveState();
 	// 	}
 	// }
