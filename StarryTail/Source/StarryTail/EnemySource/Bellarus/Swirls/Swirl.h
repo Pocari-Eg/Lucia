@@ -49,8 +49,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float KeepSwirlTime;
 	float KeepSwirlTimer;
-
-
 	UPROPERTY(EditAnywhere, Category = Info, meta = (AllowPrivateAccess = "ture"))
 	float DotDamageTime;
 	float DotDamageTimer;

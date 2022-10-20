@@ -6,8 +6,9 @@
 #include "../Monster.h"
 #include "BellarusAIController.h"
 #include"BellarusAnimInstance.h"
-#include "Swirl.h"
-#include "GuidedSwirl.h"
+#include "Swirls/Swirl.h"
+#include "Swirls/GuidedSwirl.h"
+#include "Swirls/TornadoSwirl.h"
 #include "FBellarusDataStruct.h"
 #include "Bellarus.generated.h"
 
@@ -36,6 +37,11 @@ public:
 
 	void BasicSwirlAttack();
 	void GuidedSwirlAttack();
+	void TornadoSwirlAttack();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swirl)
+	int SwirlAttackType;
+	void SwirlAttack();
 
 protected:
 	// Called when the game starts or when spawned
@@ -77,6 +83,7 @@ private:
 
 	TSubclassOf<ASwirl> SwirlClass;
 	TSubclassOf<AGuidedSwirl> GuidedSwirlClass;
+	TSubclassOf<ATornadoSwirl> ATornadoSwirlClass;
 public:
 
 
