@@ -12,7 +12,7 @@ UCLASS()
 class STARRYTAIL_API ASwirl : public AActor
 {
 	GENERATED_BODY()
-private:
+protected:
 	//var
 	UPROPERTY(EditAnywhere, Category = Root, meta = (AllowPrivateAccess = "ture"))
 	UStaticMeshComponent* RootPoint;
@@ -76,7 +76,7 @@ public:
 	ASwirl();
 
 	void InitSwirl(float DamageVal,float SwirlDotDamageVal,float PullForceVal,float CoreSetTimeVal,
-		float KeepSwirlTime,float MoveSpeedVal,float SwirlRadiusVal);
+		float KeepSwirlTimeVal,float MoveSpeedVal,float SwirlRadiusVal);
 
 	void SwirlCoreActive(FVector MoveDirectionVal);
 	void SwirlPullRangeActive();
@@ -99,11 +99,11 @@ protected:
 	UFUNCTION()
 	void  SwirlPullRangeEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
+	float CalcCurPullPower(float CurDistance);
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-	float CalcCurPullPower(float CurDistance);
+
 };
