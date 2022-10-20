@@ -22,7 +22,6 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UIreneSpiritAnimInstance* IreneSpiritAnim;
-
 private:
 	// 소환 이후 캐릭터 보이는 딜레이
 	FTimerHandle MeshVisibilityWaitHandle;
@@ -31,6 +30,9 @@ private:
 
 	// 정령 삭제
 	FTimerHandle DestroyWaitHandle;
+
+	// 공격 단계
+	int AttackCount;
 public:
 	AIreneSpirit();
 
@@ -38,6 +40,9 @@ public:
 	void DestroySpiritTimer(float Time);
 	void DestroySpirit();
 	
+	UFUNCTION(BlueprintCallable)
+	int GetAttackCount()const{return AttackCount;}
+	void SetAttackCount(const int Value){AttackCount = Value;}
 private:
 	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;

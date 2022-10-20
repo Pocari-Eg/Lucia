@@ -23,6 +23,8 @@ public:
 private:
 	UPROPERTY()
 	class AIreneCharacter* Irene;
+	UPROPERTY()
+	class AIreneSpirit* IreneSpirit;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	EStateEnum IreneState;
