@@ -610,6 +610,10 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
 		if (GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
 			Attacked();
 		}
 
@@ -623,6 +627,10 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
 			Attacked();
 		}
 
@@ -635,6 +643,10 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
 		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
 			Attacked();
 		}
 
@@ -653,6 +665,10 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		}
 
 		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+			if (bIsDodgeOn)
+			{
+				PerfectDodgeOff();
+			}
 			Attacked();
 		}
 
@@ -1396,6 +1412,10 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			InitAttackedInfo();
 
 			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
+				if (bIsDodgeOn)
+				{
+					PerfectDodgeOff();
+				}
 				Attacked();
 			}
 

@@ -7,6 +7,7 @@
 #include "BellarusAIController.h"
 #include"BellarusAnimInstance.h"
 #include "Swirl.h"
+#include "GuidedSwirl.h"
 #include "FBellarusDataStruct.h"
 #include "Bellarus.generated.h"
 
@@ -34,6 +35,7 @@ public:
 	void Tail();
 
 	void BasicSwirlAttack();
+	void GuidedSwirlAttack();
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,6 +76,7 @@ private:
 	FBellarusDataStruct BellarusInfo;
 
 	TSubclassOf<ASwirl> SwirlClass;
+	TSubclassOf<AGuidedSwirl> GuidedSwirlClass;
 public:
 
 
