@@ -3,6 +3,7 @@
 
 #include "IreneSpiritAnimInstance.h"
 
+#include "IreneSpirit.h"
 #include "../IreneCharacter.h"
 
 UIreneSpiritAnimInstance::UIreneSpiritAnimInstance()
@@ -43,12 +44,15 @@ void UIreneSpiritAnimInstance::PlaySkillAttackMontage(const int SkillNumber)
 	switch (SkillNumber)
 	{
 	case 1:
+		Irene->IreneSpirit->SetAttackCount(1);
 		Montage_Play(SpiritSkill1Montage);
 		break;
 	case 2:
+		Irene->IreneSpirit->SetAttackCount(2);
 		Montage_Play(SpiritSkill2Montage);
 		break;
 	case 3:
+		Irene->IreneSpirit->SetAttackCount(3);
 		Montage_Play(SpiritSkill3Montage);
 		break;
 	default:
