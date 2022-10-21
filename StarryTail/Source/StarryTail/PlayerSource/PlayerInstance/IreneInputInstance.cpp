@@ -3,7 +3,6 @@
 
 #include "IreneInputInstance.h"
 
-#include "GeomTools.h"
 #include "../IreneCharacter.h"
 #include "../PlayerFSM/IreneFSM.h"
 #include "IreneAnimInstance.h"
@@ -89,7 +88,6 @@ void UIreneInputInstance::InitMemberVariable()
 }
 void UIreneInputInstance::Begin()
 {
-
 	const TUniquePtr<FElementDataTable> ThunderFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Thunder_Ele")));
 	if(ThunderFormTimeDataTable != nullptr)
 		MaxSoulValue = ThunderFormTimeDataTable->Ele_C_Time;
@@ -633,6 +631,19 @@ void UIreneInputInstance::SwordSkillEndWait()
 
 void UIreneInputInstance::SkillCameraMoveStart()
 {
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		// 카메라
+		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+		const float Y = Irene->WorldController->GetControlRotation().Pitch;
+		// 카메라 원점 조정
+		FRotator Rotator = FRotator::ZeroRotator;
+		Rotator.Pitch = Y;
+		Rotator.Yaw = Z;
+		Irene->WorldController->SetControlRotation(Rotator);
+	}
+	
 	bSkillCameraMove = true;
 	SkillCameraPlayTime = 0;
 	SkillCameraEndPlayTime = 0;
@@ -669,6 +680,8 @@ void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
 	SkillCameraPlayTime = 0;
 	SkillCameraEndPlayTime = 0;
 	Irene->bInputStop = false;
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttackSetCamera();}));
 }
 #pragma endregion Skill
 
@@ -1065,10 +1078,46 @@ void UIreneInputInstance::UltimateAttackKeyword()
 {
 	//if(!Irene->bInputStop && Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge)
 	//{
-		Irene->IreneData.CurrentUltimateAttackGauge = 0;
+	Irene->IreneData.CurrentUltimateAttackGauge = 0;
+	// 선딜
+	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+	auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
+	auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+
+	if(!HitMonsterList.Get<2>())
+		return;
+		
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+		Mon->MarkerOff();
+		Irene->IreneAnim->SetIsHaveTargetMonster(false);
+		Irene->IreneAnim->SetTargetMonster(nullptr);
+		Irene->IreneAttack->SwordTargetMonster = nullptr;
+	}
+		
+	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
+
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 		SkillCameraMoveStart();
-		GetWorld()->GetTimerManager().SetTimer(UltimateAttackWaitHandle,this,&UIreneInputInstance::UltimateAttack, MaxSkillCameraPlayTime, false);
 	//}
+}
+void UIreneInputInstance::UltimateAttackSetCamera()
+{
+	// 카메라
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+		const float Y = Irene->WorldController->GetControlRotation().Pitch;
+		// 카메라 원점 조정
+		FRotator Rotator = FRotator::ZeroRotator;
+		Rotator.Pitch = Y;
+		Rotator.Yaw = Z;
+		Irene->WorldController->SetControlRotation(Rotator);
+		
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttack();}));
+	}	
 }
 void UIreneInputInstance::UltimateAttack()
 {
@@ -1077,7 +1126,25 @@ void UIreneInputInstance::UltimateAttack()
 	Irene->IreneData.CurrentShield = Irene->IreneData.MaxShield;
 
 	// 공격
+	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법
+	auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(500,100,1200),Irene->CameraComp->GetComponentLocation());
+	auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+
+	if(!HitMonsterList.Get<2>())
+		return;
+		
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+		Mon->MarkerOff();
+		Irene->IreneAnim->SetIsHaveTargetMonster(false);
+		Irene->IreneAnim->SetTargetMonster(nullptr);
+		Irene->IreneAttack->SwordTargetMonster = nullptr;
+	}
+
+	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z,true);
 }
+
 #pragma endregion UltimateAttack
 
 void UIreneInputInstance::DialogAction()
