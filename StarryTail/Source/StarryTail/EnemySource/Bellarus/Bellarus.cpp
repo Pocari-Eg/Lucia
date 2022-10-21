@@ -58,6 +58,11 @@ ABellarus::ABellarus()
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
 
+
+	bIsRegening = false;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 {
@@ -420,6 +425,24 @@ void ABellarus::TelePortEnd()
 
 }
 
+void ABellarus::ShieldRegening()
+{
+	bIsRegening = true;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+}
+
+void ABellarus::ShieldRegen()
+{
+	bIsRegening = false;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+
+	MonsterShield->ShieldRegen();
+
+	OnBarrierChanged.Broadcast();
+}
+
 void ABellarus::SwirlAttack()
 {
 	switch (SwirlAttackType)
@@ -469,7 +492,7 @@ void ABellarus::BeginPlay()
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::TelePortStart);
+	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::SwirlAttack);
 
 	TeleportLocation = GetActorLocation();
 
@@ -600,7 +623,14 @@ void ABellarus::Tick(float DeltaTime)
 			TelePortEnd();
 		}
 	}
-
+	if (bIsRegening)
+	{
+		RegenTimer += DeltaTime;
+		if (RegenTimer >= RegenTime)
+		{
+			ShieldRegen();
+		}
+	}
 
 }
 void ABellarus::InitAnime()

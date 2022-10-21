@@ -6,11 +6,10 @@
 #include "./Morbit/MbAIController.h"
 #include "./Bouldelith/Bouldelith.h"
 #include "./Bouldelith/BdAIController.h"
-#include "./Scientia/Scientia.h"
-#include "./Scientia/ScAIController.h"
-
 #include "./Bellyfish/Bellyfish.h"
 #include"./Bellyfish/BellyfishAIController.h"
+#include "./Bellarus/Bellarus.h"
+#include"./Bellarus/BellarusAIController.h"
 
 #include "MonsterAIController.h"
 #include "MonsterProjectile.h"
@@ -583,7 +582,7 @@ void AMonster::SetIsBattleState(bool Value)
 }
 void AMonster::SetEffect()
 {
-	HitEffectComponent->SetTemplate(MonsterEffect.NoneHitEffect);
+	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
 	GroggyEffectComponent->SetTemplate(MonsterEffect.GroggyEffect);
 
 	HitEffectComponent->SetRelativeRotation(MonsterEffect.HitEffectRotation);
@@ -620,7 +619,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		//MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
 
 	}
-	if (Cast<AScientia>(this)) {
+	if (Cast<ABellarus>(this)) {
 
 		auto GameInstance = Cast<USTGameInstance>(GetGameInstance());
 		auto Player = GameInstance->GetPlayer();
@@ -797,7 +796,12 @@ void AMonster::ShieldDestroyed()
 	PlayGroggyAnim();
 	MonsterAIController->Groggy();
 
-	STARRYLOG_S(Warning);
+	
+	if (Cast<ABellarus>(this))
+	{
+		auto Bellarus = Cast<ABellarus>(this);
+		Bellarus->ShieldRegening();
+	}
 	
 }
 
@@ -925,22 +929,9 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	
-	switch (STGameInstance->GetPlayerAttribute())
-	{
-	case EAttributeKeyword::e_Fire:
-		HitEffectComponent->SetTemplate(MonsterEffect.FireHitEffect);
-		break;
-	case EAttributeKeyword::e_Water:
-		EffectPosition = AttackedPosition + (CompToMonsterDir * (Distance / 10.0f));
-		HitEffectComponent->SetTemplate(MonsterEffect.WaterHitEffect);
-		break;
-	case EAttributeKeyword::e_Thunder:
-		HitEffectComponent->SetTemplate(MonsterEffect.ThunderHitEffect);
-		break;
-	case EAttributeKeyword::e_None:
-		HitEffectComponent->SetTemplate(MonsterEffect.NoneHitEffect);
-		break;
-	}
+
+	HitEffectComponent->SetTemplate(MonsterEffect.HitEffect);
+
 	HitEffectComponent->SetWorldLocation(EffectPosition);
 
 	HitEffectComponent->SetActive(true);
@@ -1270,13 +1261,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 {
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	/*if (Cast<AScientia>(this))
-	{
-		auto Scientia = Cast<AScientia>(this);
-
-		if (Scientia->GetIsRush())
-			return FinalDamage;
-	}*/
 
 	if (bIsAttacking)
 		bIsAttacking = false;

@@ -13,14 +13,9 @@ struct FMonsterEffectData
 {
 	GENERATED_USTRUCT_BODY()
 public:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* FireHitEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* WaterHitEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* ThunderHitEffect;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		UParticleSystem* NoneHitEffect;
+		UParticleSystem* HitEffect;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		UParticleSystem* GroggyEffect;
 
