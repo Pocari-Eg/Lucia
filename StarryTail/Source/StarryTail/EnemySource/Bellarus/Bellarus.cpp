@@ -47,7 +47,22 @@ ABellarus::ABellarus()
 	if (BP_TornadoSwirl.Succeeded() && BP_TornadoSwirl.Class != NULL) {
 		ATornadoSwirlClass = BP_TornadoSwirl.Class;
 	}
-	
+
+	static ConstructorHelpers::FClassFinder<ABF_Projectile> BP_BL_Projectile(TEXT("/Game/BluePrint/Monster/Bellarus/BP_BL_Projectile.BP_BL_Projectile_C"));
+	if (BP_BL_Projectile.Succeeded() && BP_BL_Projectile.Class != NULL) {
+		AProjectileClass = BP_BL_Projectile.Class;
+	}
+
+
+
+	bIsTeleporting = false;
+	TelePortTimer = 0.0f;
+
+
+	bIsRegening = false;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 {
@@ -304,6 +319,130 @@ void ABellarus::TornadoSwirlAttack()
 	}
 }
 
+void ABellarus::ProjectileAttack()
+{
+
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(14);
+
+
+	FActorSpawnParameters SpawnParams;
+	SpawnParams.Owner = this;
+	SpawnParams.Instigator = GetInstigator();
+
+	FVector ForwardVector = GetActorForwardVector();
+	ForwardVector.Normalize();
+
+	FVector RightVector_1 = ForwardVector.RotateAngleAxis(80, FVector::UpVector);
+	FVector RightVector_2 = ForwardVector.RotateAngleAxis(40, FVector::UpVector);
+	FVector LetfVector_1 = ForwardVector.RotateAngleAxis(-80, FVector::UpVector);
+	FVector LetfVector_2 = ForwardVector.RotateAngleAxis(-40, FVector::UpVector);
+
+
+	RightVector_1.Normalize();
+	RightVector_2.Normalize();
+	LetfVector_1.Normalize();
+	LetfVector_2.Normalize();
+
+
+	// 총구 위치에 발사체를 스폰시킵니다.
+	ABF_Projectile* FowardProjectile = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (ForwardVector * 100.0f), GetActorRotation(), SpawnParams);
+	if (FowardProjectile)
+	{
+		FowardProjectile->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
+	}
+	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation()+(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
+	if (RightProjectile_1)
+	{
+		RightProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
+	}
+	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
+	if (RightProjectile_2)
+	{
+		RightProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
+	}
+	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
+	if (LeftProjectile_1)
+	{
+		LeftProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
+	}
+	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
+	if (LeftProjectile_2)
+	{
+		LeftProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
+	}
+}
+
+void ABellarus::TelePortStart()
+{
+	bIsTeleporting = true;
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(15);
+	TelePortTime = NewSkillData->M_Skill_Set_Time;
+	TelePortTimer = 0.0f;
+	GetMesh()->SetVisibility(false);
+	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+	SetActorLocation(TeleportLocation);
+
+
+}
+
+void ABellarus::TelePortEnd()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(15);
+
+	bIsTeleporting = false;
+	TelePortTimer = 0.0f;
+	GetMesh()->SetVisibility(true);
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+
+	if (AttackCheck(NewSkillData->M_Skill_Radius, 300.0f, 360.0f, 0.0f))
+	{
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+		if (Instance != nullptr) {
+			if (bIsDodgeTime)
+			{
+				//STARRYLOG(Error, TEXT("Dodge On"));
+				PerfectDodgeOn();
+				return;
+			}
+			else {
+
+
+				bIsDodgeTime = false;
+				PerfectDodgeOff();
+				UGameplayStatics::ApplyDamage(Instance->GetPlayer(), NewSkillData->M_Skill_Atk, NULL, this, NULL);
+				return;
+			}
+		}
+	}
+
+	else {
+
+	  PerfectDodgeOff();
+
+	}
+
+
+}
+
+void ABellarus::ShieldRegening()
+{
+	bIsRegening = true;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+}
+
+void ABellarus::ShieldRegen()
+{
+	bIsRegening = false;
+	RegenTimer = 0.0f;
+	RegenTime = BellarusInfo.M_NShield_Time;
+
+	MonsterShield->ShieldRegen();
+
+	OnBarrierChanged.Broadcast();
+}
+
 void ABellarus::SwirlAttack()
 {
 	switch (SwirlAttackType)
@@ -355,7 +494,8 @@ void ABellarus::BeginPlay()
 		});
 	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::SwirlAttack);
 
-	
+	TeleportLocation = GetActorLocation();
+
 	SetNormalState();
 }
 
@@ -475,7 +615,22 @@ void ABellarus::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-
+	if (bIsTeleporting)
+	{
+		TelePortTimer += DeltaTime;
+		if (TelePortTimer >= TelePortTime)
+		{
+			TelePortEnd();
+		}
+	}
+	if (bIsRegening)
+	{
+		RegenTimer += DeltaTime;
+		if (RegenTimer >= RegenTime)
+		{
+			ShieldRegen();
+		}
+	}
 
 }
 void ABellarus::InitAnime()

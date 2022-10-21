@@ -14,6 +14,7 @@ ALabMagic::ALabMagic()
 	MagicAOECollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AREACEHCK"));
 	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionSign_Particle"));
 	ExplosionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionParticle"));
+	ActiveTrigger= CreateDefaultSubobject<UBoxComponent>(TEXT("ACTVIETRIGGER"));
 
 	RootComponent = RootPoint;
 
@@ -23,11 +24,18 @@ ALabMagic::ALabMagic()
 	MagicAOECollision->SetupAttachment(RootComponent);
 	ExplosionEffectComponent->SetupAttachment(MagicAOECollision);
 
+	ActiveTrigger->SetupAttachment(RootComponent);
+
 	ExplosionSignEffectComponent->SetAutoActivate(false);
 	ExplosionEffectComponent->SetAutoActivate(false);
 
 	MagicAOECollision->SetCollisionProfileName("AOE");
 	MagicAOECollision->SetGenerateOverlapEvents(false);
+
+
+
+	ActiveTrigger->SetCollisionProfileName("Trigger");
+	ActiveTrigger->SetGenerateOverlapEvents(true);
 
 	Explosion_Wait_Time = 10.0f;
 	Explosion_SignWait_Time = 10.0f;
@@ -64,7 +72,7 @@ void ALabMagic::StartExplosionSignWait()
 void ALabMagic::ExplosionSign()
 {
 
-	if (SpiritPlates.Num() != 0) {
+	if (Use_SpiritPlates.Num() != 0) {
 		bIsExplosion_SignWait_Timer = false;
 		Explosion_SignWait_Timer = 0.0f;
 
@@ -73,17 +81,17 @@ void ALabMagic::ExplosionSign()
 
 		//정령 발판 생성 및 정령 움직이기 
 
-		int Size = SpiritPlates.Num();
+		int Size = Use_SpiritPlates.Num();
 		auto num = FMath::RandRange(0, Size - 1);
 
-		CurPlate = SpiritPlates[num];
+		CurPlate = Use_SpiritPlates[num];
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 		if (Instance != nullptr)
 		{
 			Instance->GetPlayer()->IreneInput->SpiritChangeBlock();
 			Instance->GetPlayer()->SpawnPet(CurPlate);
 
-			SpiritPlates.RemoveAt(num);
+			Use_SpiritPlates.RemoveAt(num);
 
 			
 		}
@@ -157,11 +165,56 @@ void ALabMagic::AOEAttack()
 	MagicAOE_Timer = 0.0f;
 }
 
+void ALabMagic::EndLabMagic()
+{
+
+	ExplosionSignEffectComponent->Deactivate();
+	ExplosionEffectComponent->Deactivate();
+
+	MagicAOECollision->SetCollisionProfileName("AOE");
+	MagicAOECollision->SetGenerateOverlapEvents(false);
+
+	Explosion_Wait_Time = 10.0f;
+	Explosion_SignWait_Time = 10.0f;
+	Explosion_Time = 10.0f;
+
+	bIsExplosion_Wait_Timer = false;
+	Explosion_Wait_Timer = 0.0f;
+
+	bIsExplosion_SignWait_Timer = false;
+	Explosion_SignWait_Timer = 0.0f;
+
+	bIsExplosion_Timer = false;
+	Explosion_Timer = 5.0f;
+
+
+	SpiritRecovery_Gauge = 3.0f;
+	SpiritRecovery_HP = 10.0f;
+
+	MagicAOE_Power = 50.0f;
+
+	MagicAOE_Time = 0.5f;
+
+	MagicAOE_Timer = 0.0f;
+
+	MagicAOECollision->SetCapsuleHalfHeight(1.0f);
+	MagicAOECollision->SetCapsuleRadius(1.0f);
+
+	Use_SpiritPlates = SpiritPlates;
+
+	for (int i = 0; i < SpiritPlates.Num(); i++)
+	{
+		SpiritPlates[i]->SpiritPlateOff();
+	}
+
+}
+
 // Called when the game starts or when spawned
 void ALabMagic::BeginPlay()
 {
 	Super::BeginPlay();
 	MagicAOECollision->OnComponentBeginOverlap.AddDynamic(this, &ALabMagic::OnBeginOverlap);
+	ActiveTrigger->OnComponentBeginOverlap.AddDynamic(this, &ALabMagic::ActiveLabMagic);
 	if (SpiritPlates.Num() != 0)
 	{
 		for (int i = 0; i < SpiritPlates.Num(); i++)
@@ -170,9 +223,7 @@ void ALabMagic::BeginPlay()
 		}
 	}
 	InitLocation = MagicAOECollision->GetRelativeLocation();
-
-
-	StartExplosionSignWait();
+	Use_SpiritPlates = SpiritPlates;
 }
 
 void ALabMagic::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -185,6 +236,13 @@ void ALabMagic::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Othe
 		}
 	}
 	AOEInActor.Add(OtherActor);
+}
+
+void ALabMagic::ActiveLabMagic(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+
+	ActiveTrigger->SetGenerateOverlapEvents(false);
+	StartExplosionSignWait();
 }
 
 

@@ -9,6 +9,7 @@
 #include "Swirls/Swirl.h"
 #include "Swirls/GuidedSwirl.h"
 #include "Swirls/TornadoSwirl.h"
+#include"../Bellyfish/BF_Projectile.h"
 #include "FBellarusDataStruct.h"
 #include "Bellarus.generated.h"
 
@@ -38,6 +39,13 @@ public:
 	void BasicSwirlAttack();
 	void GuidedSwirlAttack();
 	void TornadoSwirlAttack();
+	void ProjectileAttack();
+
+	void TelePortStart();
+	void TelePortEnd();
+
+	void ShieldRegening();
+	void ShieldRegen();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swirl)
 	int SwirlAttackType;
@@ -64,6 +72,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetFlyDistance(float Distance);
 
+	void SetTelePortLocation(FVector Location) { TeleportLocation = Location; }
 
 private:
 	void InitMonsterInfo() override;
@@ -81,9 +90,20 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = BellarusInfo, Meta = (AllowPrivateAccess = true))
 	FBellarusDataStruct BellarusInfo;
 
+
+	bool bIsTeleporting;
+	float TelePortTime;
+	float TelePortTimer;
+	FVector TeleportLocation;
+
+	bool bIsRegening;
+	float RegenTime;
+	float RegenTimer;
+
 	TSubclassOf<ASwirl> SwirlClass;
 	TSubclassOf<AGuidedSwirl> GuidedSwirlClass;
 	TSubclassOf<ATornadoSwirl> ATornadoSwirlClass;
+	TSubclassOf<ABF_Projectile> AProjectileClass;
 public:
 
 

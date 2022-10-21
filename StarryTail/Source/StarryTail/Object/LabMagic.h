@@ -23,6 +23,13 @@ private:
 	//Min Var
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
 	UStaticMeshComponent* RootPoint;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
+	UBoxComponent* ActiveTrigger;
+
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Area, Meta = (AllowPrivateAccess = true))
 	UCapsuleComponent* MagicAOECollision;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
@@ -59,7 +66,7 @@ private:
 	TArray<ASpiritPlate*> SpiritPlates;
 
 
-
+	TArray<ASpiritPlate*> Use_SpiritPlates;
 	//Etc Var
 	bool bIsExplosion_Wait_Timer;
 	float Explosion_Wait_Timer;
@@ -92,6 +99,10 @@ protected:
 	void OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void ActiveLabMagic(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
+			UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -104,4 +115,7 @@ public:
 	void Explosion(float DeltaTime);
 
 	void AOEAttack();
+
+
+	void EndLabMagic();
 };
