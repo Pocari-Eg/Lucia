@@ -29,4 +29,7 @@ public:
 	float Tornado_DOT_Damage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float	Tornado_Pull_Force;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float M_NShield_Time;
 };

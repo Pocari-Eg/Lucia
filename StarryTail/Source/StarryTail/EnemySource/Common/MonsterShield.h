@@ -90,6 +90,8 @@ public:
 	
 	void CalcStackDamageToShield(int Count);
 
+	void ShieldRegen();
+
 private:
 	float CalcShieldDamage(float Damage);
 

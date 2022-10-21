@@ -91,6 +91,10 @@ public:
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
 
+
+	//GroupTrigger 몬스터 설정
+	void SetGroup();
+
 	void InitPerfectDodgeNotify();
 
 	//FSM
@@ -249,6 +253,8 @@ private:
 	//스폰 으로 생성된 몬스터인지;
 	bool bIsSpawnEnemy;
 	bool bIsAttackCool;
+	//
+	bool bIsGroupTriggerEnemy;
 
 	float AttackCoolTimer;
 	float AttackCoolTime;

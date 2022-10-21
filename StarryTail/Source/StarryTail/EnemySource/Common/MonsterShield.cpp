@@ -261,6 +261,17 @@ void UMonsterShield::CalcStackDamageToShield(int Count)
 		}
 }
 
+void UMonsterShield::ShieldRegen()
+{
+	SetEffectVisible(true);
+	bIsShieldActive = true;
+	CurDurability = Durability;
+
+	ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
+	ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
+	ShiledEffectComponent->InstanceParameters[3].Scalar = 0.0f;
+}
+
 // Called when the game starts
 void UMonsterShield::BeginPlay()
 {

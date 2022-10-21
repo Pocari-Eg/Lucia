@@ -44,7 +44,8 @@ public:
 	void TelePortStart();
 	void TelePortEnd();
 
-
+	void ShieldRegening();
+	void ShieldRegen();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swirl)
 	int SwirlAttackType;
@@ -94,6 +95,10 @@ private:
 	float TelePortTime;
 	float TelePortTimer;
 	FVector TeleportLocation;
+
+	bool bIsRegening;
+	float RegenTime;
+	float RegenTimer;
 
 	TSubclassOf<ASwirl> SwirlClass;
 	TSubclassOf<AGuidedSwirl> GuidedSwirlClass;
