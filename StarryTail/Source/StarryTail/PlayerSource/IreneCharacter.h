@@ -172,7 +172,7 @@ public:
 	TTuple<FVector, FVector, FVector> SetCameraStartTargetPosition(const FVector BoxSize, const FVector StartPosition)const;
 	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> StartPositionFindNearMonster(const FVector BoxSize, const FVector StartPosition, const FVector TargetPosition, const float LifeTime = 0.0f)const;
 
-	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far)const;
+	void NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far, const bool UltimateAttack = false)const;
 	void SetAttackNearMonster(const FHitResult RayHit, float& NearPosition, const float FindNearTarget)const;
 
 	void FollowTargetPosition();
