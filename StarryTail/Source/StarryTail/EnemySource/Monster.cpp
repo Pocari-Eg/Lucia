@@ -82,6 +82,8 @@ AMonster::AMonster()
 	bIsObject = false;
 	InitEffect();
 
+	bIsGroupTriggerEnemy=false;
+
     bShowUI = false;
 	ShowUITimer = 0.0f;
 	ShowUITime = 300.0f;
@@ -579,6 +581,7 @@ void AMonster::SetIsBattleState(bool Value)
 	if (Instance != nullptr) {
 		bIsBattleState == true ? Instance->AddDetectedMonster() : Instance->SubDetectedMonster();
 	}
+
 }
 void AMonster::SetEffect()
 {
@@ -761,6 +764,14 @@ void AMonster::CalcHp(float Damage)
 					instnace->SubDetectedMonster();
 			}
 
+			if (bIsGroupTriggerEnemy)
+			{
+				auto instnace = Cast<USTGameInstance>(GetGameInstance());
+				if (instnace != nullptr)
+					instnace->SubEnemyCount(GetRank());
+			}
+
+			
 			if (bIsDodgeOn)
 			{
 				PerfectDodgeOff();
@@ -967,6 +978,19 @@ void AMonster::PlayDeathAnim()
 {
 	MonsterAnimInstance->PlayDeathMontage();
 
+}
+
+void AMonster::SetGroup()
+{
+	bIsGroupTriggerEnemy = true;
+
+	if (Cast<ABouldelith>(this))
+	{
+		auto Bouldelith = Cast<ABouldelith>(this);
+		Bouldelith->SetStatueState(false);
+	}
+
+	SetBattleState();
 }
 
 void AMonster::InitPerfectDodgeNotify()
