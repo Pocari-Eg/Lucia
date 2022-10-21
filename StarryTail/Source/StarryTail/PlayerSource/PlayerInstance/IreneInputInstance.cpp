@@ -765,6 +765,11 @@ void UIreneInputInstance::DodgeKeyword()
 }
 void UIreneInputInstance::PerfectDodge()
 {
+	if(MoveKey[0] == 0 && MoveKey[1] == 0 && MoveKey[2] == 0 && MoveKey[3] == 0)
+	{
+		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->PerfectDodgeMonster->GetActorLocation()).Yaw;
+		Irene->SetActorRotation(FRotator(0.0f, Z+180, 0.0f));
+	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
