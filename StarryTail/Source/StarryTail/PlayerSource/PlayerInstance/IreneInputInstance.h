@@ -143,7 +143,6 @@ private:
 	float SpiritAnimJumpCoolTime;
 
 	// 카메라 연출
-	FTimerHandle UltimateAttackWaitHandle;
 	bool bSkillCameraMove;
 	float MaxSkillCameraPlayTime;
 	float SkillCameraPlayTime;
@@ -228,6 +227,7 @@ public:
 
 	// 궁극기
 	void UltimateAttackKeyword();
+	void UltimateAttackSetCamera();
 	void UltimateAttack();
 	
 	// 액션 

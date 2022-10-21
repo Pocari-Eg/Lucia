@@ -406,12 +406,12 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 	const float DebugLifeTime = LifeTime;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 0.1f);
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 5.1f);
 #endif
 	
 	return MakeTuple(MonsterList, Params, bResult);
 }
-void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far)const
+void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far,const bool UltimateAttack)const
 {
 	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
 	// 최대거리
@@ -458,10 +458,28 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 						IreneAttack->SwordTargetMonster = RayHit.GetActor();
 						IreneAnim->SetTargetMonster(RayHit.GetActor());
 						IreneAnim->SetIsHaveTargetMonster(true);
-						CurNearPosition = FindNearTarget;							
+						CurNearPosition = FindNearTarget;		
 					}
 					TargetCollisionProfileName = IreneAttack->SwordTargetMonster->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
 
+					// 궁극기 처리
+					if(UltimateAttack)
+					{
+						auto Mon=Cast<AMonster>(Monster.Actor);
+						if(Mon != nullptr)
+						{
+							if(Mon->GetCurStackCount() == 6)
+							{
+								if(Mon->GetIsMonsterShieldActive())
+									Mon->StackExplode();
+								else
+									UGameplayStatics::ApplyDamage(Monster.Actor.Get(),
+										Mon->GetMonsterInfo().StackDamage + Mon->GetMonsterInfo().StackDamage * 0.2f,nullptr, STGameInstance->GetPlayer(), nullptr);
+							}
+							Mon->AddStackCount(6);
+						}
+					}
+					
 					// 몬스터 또는 오브젝트와 플레이어간 거리가 가장 작은 액터를 찾는다.
 					if (CurNearPosition >= FindNearTarget)
 					{

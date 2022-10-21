@@ -58,7 +58,7 @@ ALabMagic::ALabMagic()
 }
 void ALabMagic::StartExplosionSignWait()
 {
-	bIsExplosion_SignWait_Timer = true;
+	//bIsExplosion_SignWait_Timer = true;
 }
 
 void ALabMagic::ExplosionSign()
