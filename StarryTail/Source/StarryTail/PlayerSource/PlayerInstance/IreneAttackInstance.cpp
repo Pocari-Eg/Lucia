@@ -343,7 +343,10 @@ void UIreneAttackInstance::SetGauge(float Value)
 		Irene->IreneData.CurrentGauge += Value;
 		if(Irene->IreneData.CurrentGauge > Irene->IreneData.MaxGauge)
 			Irene->IreneData.CurrentGauge = Irene->IreneData.MaxGauge;
-
+		if(Irene->IreneData.CurrentGauge < 0)
+			Irene->IreneData.CurrentGauge = 0;
+		// 이쯤에 UI 게이지 수치 변경
+		
 		Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 	}
 }
