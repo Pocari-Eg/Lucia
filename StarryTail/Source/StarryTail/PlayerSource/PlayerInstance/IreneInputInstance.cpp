@@ -483,10 +483,11 @@ void UIreneInputInstance::NonSpiritSkill()
 
 		if (Irene->makeIngameWidget != nullptr)
 		{
-			if (MaxSwordSkillCoolTime != 10.0f)
+			if(AttackTable->Name == "Skill_1_1")
 				Irene->FInGameBattle.Broadcast(4, MaxSwordSkillCoolTime + CanSwordSkill2Time);
 			else
 				Irene->FInGameBattle.Broadcast(4, MaxSwordSkillCoolTime);
+
 			Irene->FInGameBattle.Broadcast(2, 0.0f);
 		}
 	}
