@@ -155,7 +155,7 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 		FTransform BottomLine = Monster->GetTransform();
 		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 220.0f));
 		FTransform TopLine = BottomLine;
-		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Monster->GetViewHeight()));
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 200.0f));
 
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();

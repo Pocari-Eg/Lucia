@@ -1486,7 +1486,6 @@ void AMonster::InitAttack2Data()
 
 	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
 	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
-
 	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
 	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
 	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;

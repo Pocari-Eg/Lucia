@@ -17,9 +17,6 @@
  * 
  */
 
-DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
-DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
-
 UCLASS()
 class STARRYTAIL_API ABellarus : public AMonster
 {
@@ -31,9 +28,14 @@ public:
 
 	UBellarusAnimInstance* GetBellarusAnimInstance() const;
 
-	void Attack();
+
+	void PlayWingLAnim();
 	void Wing_L();
+
+	void PlayWingRAnim();
 	void Wing_R();
+
+	void PlayTailAnim();
 	void Tail();
 
 	void BasicSwirlAttack();
@@ -74,13 +76,20 @@ public:
 
 	void SetTelePortLocation(FVector Location) { TeleportLocation = Location; }
 
+	float GetFirstJugdeRadius();
+
+
+	FMonsterSkillDataTable* GetWingData();
+	FMonsterSkillDataTable* GetTailData();
+
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
 	void InitBellarusInfo();
-	bool AttackCheck(float Radius, float Hegiht, float Angle,float AttackAxis);
+	bool AttackCheck(float Radius, float Height, float Angle,float AttackAxis);
+
 
 //Variable
 	//Variable

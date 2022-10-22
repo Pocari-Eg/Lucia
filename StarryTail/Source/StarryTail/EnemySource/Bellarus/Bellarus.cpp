@@ -70,22 +70,19 @@ UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 }
 
 
-void ABellarus::Attack()
+
+
+void ABellarus::PlayWingLAnim()
 {
-	//어택 준비 애니메이션 출력
-
-	//InitAttack1Data();
-	BellarusAnimInstance->PlayAttackMontage();
-
-	
+	BellarusAnimInstance->PlayWingLMontage();
 }
 
 void ABellarus::Wing_L()
 {
 
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-
-	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, NewSkillData->M_Atk_Angle, -80.0f))
+	FMonsterSkillDataTable* NewSkillData = GetWingData();
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
+	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, -(160.0f / 2.0f)))
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 
@@ -114,11 +111,16 @@ void ABellarus::Wing_L()
 	
 }
 
+void ABellarus::PlayWingRAnim()
+{
+	BellarusAnimInstance->PlayWingRMontage();
+}
+
 void ABellarus::Wing_R()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-
-	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, NewSkillData->M_Atk_Angle, 80.0f))
+	FMonsterSkillDataTable* NewSkillData = GetWingData();
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
+	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, 160.0f /2.0f))
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 
@@ -146,11 +148,16 @@ void ABellarus::Wing_R()
 
 }
 
+void ABellarus::PlayTailAnim()
+{
+	BellarusAnimInstance->PlayTailMontage();
+}
+
 void ABellarus::Tail()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
-
-	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, NewSkillData->M_Atk_Angle, 180.0f))
+	FMonsterSkillDataTable* NewSkillData = GetTailData();
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
+	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 80.0f, 180.0f))
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 
@@ -183,7 +190,7 @@ void ABellarus::BasicSwirlAttack()
 {
 
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
-
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -233,7 +240,7 @@ void ABellarus::BasicSwirlAttack()
 void ABellarus::GuidedSwirlAttack()
 {
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
-
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -276,7 +283,7 @@ void ABellarus::TornadoSwirlAttack()
 {
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
 	FMonsterSkillDataTable* TornadoData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
-
+	MonsterInfo.M_Skill_Cool = TornadoData->M_Skill_Cool;
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
 	SpawnParams.Instigator = GetInstigator();
@@ -323,7 +330,7 @@ void ABellarus::ProjectileAttack()
 {
 
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(14);
-
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
 	SpawnParams.Owner = this;
@@ -388,7 +395,7 @@ void ABellarus::TelePortStart()
 void ABellarus::TelePortEnd()
 {
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(15);
-
+	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
 	GetMesh()->SetVisibility(true);
@@ -479,6 +486,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
 		AttackEnd.Broadcast();
+		Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
 		});
 	BellarusAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
@@ -492,11 +500,16 @@ void ABellarus::BeginPlay()
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
 		}
 		});
-	BellarusAnimInstance->Attack.AddUObject(this, &ABellarus::SwirlAttack);
+	BellarusAnimInstance->TailAttack.AddUObject(this, &ABellarus::Tail);
+	BellarusAnimInstance->WingLAttack.AddUObject(this, &ABellarus::Wing_L);
+	BellarusAnimInstance->WingRAttack.AddUObject(this, &ABellarus::Wing_R);
+
 
 	TeleportLocation = GetActorLocation();
 
+	SetSpawnPos();
 	SetNormalState();
+	Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
 }
 
 void ABellarus::PossessedBy(AController* NewController)
@@ -536,6 +549,20 @@ void ABellarus::SetFlyDistance(float Distance)
 {
 	//Info.M_Fly_Distance = Distance;
 }
+float ABellarus::GetFirstJugdeRadius()
+{
+	return BellarusInfo.FirstJudgeRadius;
+}
+FMonsterSkillDataTable* ABellarus::GetWingData()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
+	return NewSkillData;
+}
+FMonsterSkillDataTable* ABellarus::GetTailData()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
+	return NewSkillData;
+}
 void ABellarus::InitMonsterInfo()
 {
 	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
@@ -566,14 +593,11 @@ void ABellarus::InitMonsterInfo()
 	MonsterInfo.BattleWalkMoveSpeed = 90.0f;
 	
 
-	MonsterInfo.M_Sight_Angle = 150.0f;
-	MonsterInfo.M_Sight_Radius = 500.0f;
-	MonsterInfo.M_Sight_Height = 150.0f;
+	MonsterInfo.M_Sight_Angle = 360.0f;
+	MonsterInfo.M_Sight_Radius = 1000;
+	MonsterInfo.M_Sight_Height = 1000;
 
 	//Attack Range
-
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-
 
 	MonsterInfo.S_Attack_Time = 8.0f;
 	MonsterInfo.MonsterAttribute = EAttributeKeyword::e_None;
@@ -656,9 +680,10 @@ void ABellarus::InitBellarusInfo()
 
 	BellarusInfo.Tornado_DOT_Damage = 50.0f;
 	BellarusInfo.Tornado_Pull_Force = 4;
+	BellarusInfo.FirstJudgeRadius = 3000.0f;
 }
 
-bool ABellarus::AttackCheck(float Radius, float Hegiht, float Angle, float AttackAxis)
+bool ABellarus::AttackCheck(float Radius, float Height, float Angle, float AttackAxis)
 {
 	// hitcheck======================================
 
@@ -675,7 +700,7 @@ bool ABellarus::AttackCheck(float Radius, float Hegiht, float Angle, float Attac
 
 
 		FTransform TopLine = BottomLine;
-		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Hegiht));
+		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, Height));
 
 
 
@@ -700,7 +725,7 @@ bool ABellarus::AttackCheck(float Radius, float Hegiht, float Angle, float Attac
 	FVector Center = GetLocation();
 
 
-	FVector Box = FVector(Radius, Radius, Hegiht);
+	FVector Box = FVector(Radius, Radius, Height);
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 

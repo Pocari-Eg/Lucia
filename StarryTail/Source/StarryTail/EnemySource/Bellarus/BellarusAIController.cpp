@@ -4,6 +4,11 @@
 #include "BellarusAIController.h"
 #include "Bellarus.h"
 
+
+const FName ABellarusAIController::Wing_LKey = (TEXT("Wing_L"));
+const FName ABellarusAIController::Wing_RKey = (TEXT("Wing_R"));
+const FName ABellarusAIController::TailKey = (TEXT("Tail"));
+const FName ABellarusAIController::TraceTimeKey = (TEXT("TraceTime"));
 ABellarusAIController::ABellarusAIController()
 {
 
@@ -19,6 +24,8 @@ ABellarusAIController::ABellarusAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+
+
 
 }
 
@@ -45,7 +52,52 @@ void ABellarusAIController::Attacked(EAttackedDirection AttackedDirection, EAtta
 
 
 }
+#pragma region SET
+void ABellarusAIController::AllAttackOff()
+{
+	Blackboard->SetValueAsBool(Wing_LKey, false);
+	Blackboard->SetValueAsBool(Wing_RKey, false);
+	Blackboard->SetValueAsBool(TailKey, false);
+}
+void ABellarusAIController::SetWingLKey(bool State)
+{
+	Blackboard->SetValueAsBool(Wing_LKey, State);
+}
 
+void ABellarusAIController::SetWingRKey(bool State)
+{
+	Blackboard->SetValueAsBool(Wing_RKey, State);
+}
+
+void ABellarusAIController::SetTailKey(bool State)
+{
+	Blackboard->SetValueAsBool(TailKey, State);
+}
+void ABellarusAIController::SetTraceTime(float Time)
+{
+	Blackboard->SetValueAsFloat(TraceTimeKey, Time);
+}
+#pragma endregion SET
+
+
+#pragma region GET
+bool ABellarusAIController::GetWingLKey()
+{
+	return Blackboard->GetValueAsBool(Wing_LKey);
+}
+bool ABellarusAIController::GetWingRKey()
+{
+	return Blackboard->GetValueAsBool(Wing_RKey);
+}
+bool ABellarusAIController::GetTailKey()
+{
+	return Blackboard->GetValueAsBool(TailKey);
+}
+float ABellarusAIController::GetTraceTime()
+{
+	return 	Blackboard->GetValueAsFloat(TraceTimeKey);
+}
+#pragma endregion GET
 void ABellarusAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

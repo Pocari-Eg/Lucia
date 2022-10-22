@@ -32,4 +32,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float M_NShield_Time;
+
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float FirstJudgeRadius;
 };
