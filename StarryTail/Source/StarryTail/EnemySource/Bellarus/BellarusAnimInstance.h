@@ -19,12 +19,17 @@ public:
 	FAttackDelegate WingLAttack;
 	FAttackDelegate WingRAttack;
 	FAttackDelegate TailAttack;
+	FAttackDelegate SwirlAttack;
+	FAttackDelegate FeatherAttack;
+	FAttackDelegate TelePortAttack;
 
 	FAttackEndDelegate WingLEnd;
 	FAttackEndDelegate WingREnd;
 	FAttackEndDelegate TailEnd;
+	FAttackEndDelegate SwirlEnd;
+	FAttackEndDelegate FeatherEnd;
 
-
+	FAttackEndDelegate TelePortEnd;
 public:
 	void PlayIdleMontage() override;
 	void PlayDeathMontage() override;
@@ -36,7 +41,11 @@ public:
 	void PlayWingLMontage();
 	void PlayWingRMontage();
 	void PlayTailMontage();
+	void PlaySwirlMontage();
+	void PlayFeatherMontage();
 
+	void PlayStartTelePortMontage();
+	void PlayEndTelePortMontage();
 
 	UFUNCTION()
 	void AnimNotify_Tail();
@@ -44,6 +53,12 @@ public:
 	void AnimNotify_WingL();
 	UFUNCTION()
 	void AnimNotify_WingR();
+	UFUNCTION()
+	void AnimNotify_Swirl();
+	UFUNCTION()
+	void AnimNotify_Feather();
+	UFUNCTION()
+	void AnimNotify_TelePort();
 private:
 	bool CheckAttackedMontagePlaying() override;
 
@@ -57,5 +72,14 @@ private:
 	UAnimMontage* WingRMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* TailMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* SwirlMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* FeatherMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* TelePortStartMontage;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackAnimation, Meta = (AllowPrivateAccess = true))
+	UAnimMontage* TelePortEndMontage;
 
 };

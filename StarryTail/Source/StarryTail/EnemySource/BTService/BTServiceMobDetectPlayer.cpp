@@ -54,8 +54,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 			if (Player && Player->GetController()->IsPlayerController())
 			{
 				//1차 탐지
-				if(Monster->GetTestMode())
-					STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));
+		/*		if(Monster->GetTestMode())
+					STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));*/
 
 				TArray<FHitResult> Hits;
 				TArray<AActor*> ActorsToIgnore; // 무시할 액터 유형?
@@ -109,8 +109,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 				if (bTraceResult && !(nullptr == Player))
 				{
 					//2차 탐지
-					if (Monster->GetTestMode())
-						STARRYLOG(Warning, TEXT("Detect Player in SphereTrace"));
+					/*if (Monster->GetTestMode())
+						STARRYLOG(Warning, TEXT("Detect Player in SphereTrace"));*/
 
 					FVector TargetDir = Player->GetActorLocation() - Monster->GetLocation();
 					TargetDir = TargetDir.GetSafeNormal();
@@ -123,8 +123,8 @@ void UBTServiceMobDetectPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint
 					if (TargetAngle <= (360.0f * 0.5f))
 					{
 						//3차 탐지
-						if (Monster->GetTestMode())
-							STARRYLOG(Warning, TEXT("Detect Player in MorbitFOV"));
+		/*				if (Monster->GetTestMode())
+							STARRYLOG(Warning, TEXT("Detect Player in MorbitFOV"));*/
 						//몬스터 대기상태 지정
 						Monster->GetAIController()->SetFind();
 						return;

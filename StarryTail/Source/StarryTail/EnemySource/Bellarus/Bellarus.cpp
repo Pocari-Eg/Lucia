@@ -62,6 +62,8 @@ ABellarus::ABellarus()
 	bIsRegening = false;
 	RegenTimer = 0.0f;
 	RegenTime = BellarusInfo.M_NShield_Time;
+	bIsInSpawnRadius = false;
+	AttacekdTeleportTimer = 0.0f;
 
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
@@ -326,6 +328,11 @@ void ABellarus::TornadoSwirlAttack()
 	}
 }
 
+void ABellarus::PlayFeatherAnim()
+{
+	BellarusAnimInstance->PlayFeatherMontage();
+}
+
 void ABellarus::ProjectileAttack()
 {
 
@@ -379,6 +386,11 @@ void ABellarus::ProjectileAttack()
 	}
 }
 
+void ABellarus::PlayTelePortAnim()
+{
+	BellarusAnimInstance->PlayStartTelePortMontage();
+}
+
 void ABellarus::TelePortStart()
 {
 	bIsTeleporting = true;
@@ -386,6 +398,7 @@ void ABellarus::TelePortStart()
 	TelePortTime = NewSkillData->M_Skill_Set_Time;
 	TelePortTimer = 0.0f;
 	GetMesh()->SetVisibility(false);
+	MonsterWidget->SetVisibility(false);
 	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	SetActorLocation(TeleportLocation);
 
@@ -398,7 +411,12 @@ void ABellarus::TelePortEnd()
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
+
+	AttacekdTeleportTimer = 0.0f;
+
+	BellarusAnimInstance->PlayEndTelePortMontage();
 	GetMesh()->SetVisibility(true);
+	MonsterWidget->SetVisibility(true);
 	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 
 	if (AttackCheck(NewSkillData->M_Skill_Radius, 300.0f, 360.0f, 0.0f))
@@ -447,7 +465,13 @@ void ABellarus::ShieldRegen()
 
 	MonsterShield->ShieldRegen();
 
+	GetAIController()->SetShieldKey(true);
 	OnBarrierChanged.Broadcast();
+}
+
+void ABellarus::PlaySwirlAnim()
+{
+	BellarusAnimInstance->PlaySwirlMontage();
 }
 
 void ABellarus::SwirlAttack()
@@ -503,7 +527,9 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->TailAttack.AddUObject(this, &ABellarus::Tail);
 	BellarusAnimInstance->WingLAttack.AddUObject(this, &ABellarus::Wing_L);
 	BellarusAnimInstance->WingRAttack.AddUObject(this, &ABellarus::Wing_R);
-
+	BellarusAnimInstance->SwirlAttack.AddUObject(this, &ABellarus::SwirlAttack);
+	BellarusAnimInstance->FeatherAttack.AddUObject(this, &ABellarus::ProjectileAttack);
+	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStart);
 
 	TeleportLocation = GetActorLocation();
 
@@ -553,6 +579,18 @@ float ABellarus::GetFirstJugdeRadius()
 {
 	return BellarusInfo.FirstJudgeRadius;
 }
+float ABellarus::GetSecondJugdeRadius()
+{
+	return BellarusInfo.SecondJudgeRadius;
+}
+float ABellarus::GetCalibrationRadius()
+{
+	return BellarusInfo.CalibrationRadius;
+}
+float ABellarus::GetCheckTime()
+{
+	return BellarusInfo.B_CheckTime;
+}
 FMonsterSkillDataTable* ABellarus::GetWingData()
 {
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
@@ -561,6 +599,27 @@ FMonsterSkillDataTable* ABellarus::GetWingData()
 FMonsterSkillDataTable* ABellarus::GetTailData()
 {
 	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
+	return NewSkillData;
+}
+FMonsterSkillDataTable* ABellarus::GetSwirlData()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
+
+	return NewSkillData;
+}
+FMonsterSkillDataTable* ABellarus::GetFeatherData()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(14);
+	return NewSkillData;
+}
+FMonsterSkillDataTable* ABellarus::GetTornado()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+	return NewSkillData;
+}
+FMonsterSkillDataTable* ABellarus::GetGuidedSwirlData()
+{
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
 	return NewSkillData;
 }
 void ABellarus::InitMonsterInfo()
@@ -656,6 +715,42 @@ void ABellarus::Tick(float DeltaTime)
 		}
 	}
 
+	float distance = (GetAIController()->GetSpawnPos() - GetActorLocation()).Size();
+	if (distance < BellarusInfo.SpawnRadius)
+	{
+		OutSpawnRadiusTimer = 0.0f;
+	}
+	else {
+		if (!GetIsAttackCool()&&GetAIController()->GetIsBattleState()) {
+			OutSpawnRadiusTimer += DeltaTime;
+			if (OutSpawnRadiusTimer >= BellarusInfo.OutSpawnRadiusTime)
+			{
+				SetBattleState();
+				SetTelePortLocation(GetAIController()->GetSpawnPos());
+				Cast<ABellarusAIController>(GetAIController())->SetTelePortKey(true);
+			}
+		}
+		else {
+			OutSpawnRadiusTimer = 0.0f;
+		}
+	}
+
+
+		if (!GetIsAttackCool() && GetAIController()->GetIsBattleState()) {
+			AttacekdTeleportTimer += DeltaTime;
+			if (AttacekdTeleportTimer >= BellarusInfo.AttacekdTeleportTime)
+			{
+				SetBattleState();
+
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				SetTelePortLocation(Instance->GetPlayer()->GetActorLocation()+FVector(10.0f,10.0f,10.0f));
+				Cast<ABellarusAIController>(GetAIController())->SetTelePortKey(true);
+			}
+		}
+		else {
+			AttacekdTeleportTimer = 0.0f;
+		}
+	
 }
 void ABellarus::InitAnime()
 {

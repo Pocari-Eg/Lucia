@@ -20,6 +20,7 @@ EBTNodeResult::Type UBTTaskWingL::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 	auto Bellarus = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
 
 	Bellarus->PlayWingLAnim();
+	Bellarus->GetAIController()->StopMovement();
 	bIsAttacking = true;
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
 	Bellarus->AttackEnd.AddLambda([this]() -> void { bIsAttacking = false; });
@@ -41,8 +42,8 @@ void UBTTaskWingL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		Monster->GetAIController()->SetAttackCoolKey(true);
 		Monster->SetIsAttackCool(true);
 
-		Cast<ABellarusAIController>(Monster->GetAIController())->SetWingLKey(false);
-		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
+		Cast<ABellarusAIController>(Monster->GetAIController())->AllAttackOff();
+		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellarusAIController::CheckKey, false);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 
 

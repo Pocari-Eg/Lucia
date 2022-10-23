@@ -38,11 +38,11 @@ public:
 	void PlayTailAnim();
 	void Tail();
 
-	void BasicSwirlAttack();
-	void GuidedSwirlAttack();
-	void TornadoSwirlAttack();
+
+	void PlayFeatherAnim();
 	void ProjectileAttack();
 
+	void PlayTelePortAnim();
 	void TelePortStart();
 	void TelePortEnd();
 
@@ -51,7 +51,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swirl)
 	int SwirlAttackType;
+
+	void PlaySwirlAnim();
 	void SwirlAttack();
+
+	void BasicSwirlAttack();
+	void GuidedSwirlAttack();
+	void TornadoSwirlAttack();
+
+
+	bool bIsInSpawnRadius;
+
+	float OutSpawnRadiusTimer;
 
 protected:
 	// Called when the game starts or when spawned
@@ -77,10 +88,16 @@ public:
 	void SetTelePortLocation(FVector Location) { TeleportLocation = Location; }
 
 	float GetFirstJugdeRadius();
-
+	float GetSecondJugdeRadius();
+	float GetCalibrationRadius();
+	float GetCheckTime();
 
 	FMonsterSkillDataTable* GetWingData();
 	FMonsterSkillDataTable* GetTailData();
+	FMonsterSkillDataTable* GetSwirlData();
+	FMonsterSkillDataTable* GetFeatherData();
+	FMonsterSkillDataTable* GetTornado();
+	FMonsterSkillDataTable* GetGuidedSwirlData();
 
 private:
 	void InitMonsterInfo() override;
@@ -104,6 +121,7 @@ private:
 	float TelePortTime;
 	float TelePortTimer;
 	FVector TeleportLocation;
+
 
 	bool bIsRegening;
 	float RegenTime;

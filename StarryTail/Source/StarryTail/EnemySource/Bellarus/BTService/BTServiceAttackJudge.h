@@ -19,6 +19,9 @@ private:
 	float AttackCheckTimer;
 
 	bool InFirstJudge;
+	bool InSecondJudge;
+	bool InCalibration;
+
 
 	bool InTail;
 	bool InWing_L;
@@ -27,8 +30,12 @@ public:
 	UBTServiceAttackJudge();
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	bool AttackJudge(class AMonster* Monster, FVector Center,float Radius);
-	bool AttackCheck(class AMonster* Monster, FVector Center, float Radius,float Height,float Angle, float AttackAxis);
+	bool AttackJudge(class AMonster* Monster, FVector Center,float Radius, FColor Color);
+	bool AttackCheck(class AMonster* Monster, FVector Center, float Radius,float Height,float Angle, float AttackAxis, FColor Color);
+
+
+	void MeleeAttck(class ABellarus* Bellarus,FVector Center);
+	void ShieldFristRangeAttackCheck(class ABellarus* Bellarus, FVector Center);
 
 };
 

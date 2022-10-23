@@ -312,6 +312,12 @@ float AMonster::GetSkillRadius() const
 {
 	return MonsterInfo.M_Skill_Radius;
 }
+float AMonster::GetToPlayerDistance()
+{
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	float distance = GetDistanceTo(Instance->GetPlayer());
+	return distance;
+}
 FAttackRange AMonster::GetAttack1Range() const
 {
 	return MonsterInfo.Attack1Range;
@@ -1373,7 +1379,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			//몬스터인지 아닌지
 			if (!bIsObject) {
 
-
+				AttacekdTeleportTimer = 0.0f;
 				if (MonsterControl != nullptr) {
 					MonsterControl->SetBattleMonster(this);
 				}

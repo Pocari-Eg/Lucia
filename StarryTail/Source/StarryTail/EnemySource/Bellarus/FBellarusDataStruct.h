@@ -36,4 +36,23 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float FirstJudgeRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SecondJudgeRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float CalibrationRadius;
+
+
+	;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float SpawnRadius;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float OutSpawnRadiusTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AttacekdTeleportTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float B_CheckTime;
 };

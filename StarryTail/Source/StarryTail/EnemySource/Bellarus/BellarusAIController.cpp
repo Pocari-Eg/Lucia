@@ -8,6 +8,12 @@
 const FName ABellarusAIController::Wing_LKey = (TEXT("Wing_L"));
 const FName ABellarusAIController::Wing_RKey = (TEXT("Wing_R"));
 const FName ABellarusAIController::TailKey = (TEXT("Tail"));
+const FName ABellarusAIController::FeatherKey = (TEXT("Feather"));
+const FName ABellarusAIController::SwirlKey = (TEXT("Swirl"));
+const FName ABellarusAIController::TelePortKey = (TEXT("Teleport"));
+const FName ABellarusAIController::CheckKey = (TEXT("Check"));
+
+
 const FName ABellarusAIController::TraceTimeKey = (TEXT("TraceTime"));
 ABellarusAIController::ABellarusAIController()
 {
@@ -55,9 +61,12 @@ void ABellarusAIController::Attacked(EAttackedDirection AttackedDirection, EAtta
 #pragma region SET
 void ABellarusAIController::AllAttackOff()
 {
-	Blackboard->SetValueAsBool(Wing_LKey, false);
-	Blackboard->SetValueAsBool(Wing_RKey, false);
-	Blackboard->SetValueAsBool(TailKey, false);
+	SetWingLKey(false);
+	SetWingRKey(false);
+	SetTailKey(false);
+	SetFeatherKey(false);
+	SetSwirlKey(false);
+	SetTelePortKey(false);
 }
 void ABellarusAIController::SetWingLKey(bool State)
 {
@@ -72,6 +81,24 @@ void ABellarusAIController::SetWingRKey(bool State)
 void ABellarusAIController::SetTailKey(bool State)
 {
 	Blackboard->SetValueAsBool(TailKey, State);
+}
+void ABellarusAIController::SetFeatherKey(bool State)
+{
+	Blackboard->SetValueAsBool(FeatherKey, State);
+
+}
+void ABellarusAIController::SetSwirlKey(bool State)
+{
+	Blackboard->SetValueAsBool(SwirlKey, State);
+
+}
+void ABellarusAIController::SetTelePortKey(bool State)
+{
+	Blackboard->SetValueAsBool(TelePortKey, State);
+}
+void ABellarusAIController::SetCheckKey(bool State)
+{
+	Blackboard->SetValueAsBool(CheckKey, State);
 }
 void ABellarusAIController::SetTraceTime(float Time)
 {
@@ -92,6 +119,22 @@ bool ABellarusAIController::GetWingRKey()
 bool ABellarusAIController::GetTailKey()
 {
 	return Blackboard->GetValueAsBool(TailKey);
+}
+bool ABellarusAIController::GetFeatherKey()
+{
+	return Blackboard->GetValueAsBool(FeatherKey);
+}
+bool ABellarusAIController::GetSwirlKey()
+{
+	return Blackboard->GetValueAsBool(SwirlKey);
+}
+bool ABellarusAIController::GetTelePortKey()
+{
+	return Blackboard->GetValueAsBool(TelePortKey);
+}
+bool ABellarusAIController::GetCheckKey()
+{
+	return Blackboard->GetValueAsBool(CheckKey);
 }
 float ABellarusAIController::GetTraceTime()
 {

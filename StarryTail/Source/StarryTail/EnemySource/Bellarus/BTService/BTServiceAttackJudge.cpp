@@ -20,8 +20,7 @@ UBTServiceAttackJudge::UBTServiceAttackJudge()
 void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-		OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+
 		auto Bellarus = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
 		if (nullptr == Bellarus)
 			return;
@@ -30,144 +29,121 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 		FVector Center = Bellarus->GetLocation();
 
-		if (Bellarus->GetMonsterAtkType() == 2)
-		{
-			Center -= FVector(0.0f, 0.0f, Bellarus->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
-		}
-		InFirstJudge = AttackJudge(Bellarus, Center, Bellarus->GetFirstJugdeRadius());
+		Center -= FVector(0.0f, 0.0f, Bellarus->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 		
+		InFirstJudge = AttackJudge(Bellarus, Center, Bellarus->GetFirstJugdeRadius(),FColor::Green);
+		InSecondJudge = AttackJudge(Bellarus, Center, Bellarus->GetSecondJugdeRadius(), FColor::Blue);
+		InCalibration = AttackJudge(Bellarus, Center, Bellarus->GetCalibrationRadius(), FColor::Red);
 
 		AttackCheckTimer += Interval;
 		if (AttackCheckTimer >= 1.0f)
 		{
 			AttackCheckTimer = 0.0f;
 
-			if (InFirstJudge)
-			{
-				 InTail = AttackCheck(Bellarus,Center, Bellarus->GetTailData()->M_Atk_Radius, Bellarus->GetTailData()->M_Atk_Height, Bellarus->GetTailData()->M_Atk_Angle, 180.0f);
-				 InWing_L= AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, -(Bellarus->GetWingData()->M_Atk_Angle/2.0f));
-				 InWing_R= AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, Bellarus->GetWingData()->M_Atk_Angle / 2.0f);
 
+			//쉴드 있을때
+			if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetIsShieldOn()) {
+				if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+					OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+					if (InFirstJudge)
+					{
+						MeleeAttck(Bellarus, Center);
+					}
+					else {
 
-				 if (InTail)
-				 {
-					 Bellarus->SetBattleState();
-					
-					 if (InWing_L) {
+						if (InCalibration)
+						{
+							auto ran = FMath::RandRange(1, 100);
+							if (ran <= 80)
+							{
+								MeleeAttck(Bellarus, Center);
+							}
 
-						 auto ran = FMath::RandRange(1, 100);
-						 if (ran <= 30)
-						 {
-							 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
-						 }
-						 else {
-							 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
-						 }
+						}
+						else {
 
-					 }
-					 else if (InWing_R) {
-						 auto ran = FMath::RandRange(1, 100);
-						 if (ran <= 30)
-						 {
-							 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
-						 }
-						 else {
-							 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
-						 }
-					 }
-					 else {
-						 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
-					 }
-				 }
-				 else if (InWing_L) {
-					 Bellarus->SetBattleState();
-					 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+							if (InSecondJudge)
+							{
 
-				 }
-				 else if (InWing_R) {
-					 Bellarus->SetBattleState();
-					 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
-				 }
-				 else {
+								ShieldFristRangeAttackCheck(Bellarus, Center);
 
-					 FVector FrontVector = Bellarus->GetActorForwardVector();
-					 FrontVector.Normalize();
+							}
 
-					 auto Instance = Cast<USTGameInstance>(Bellarus->GetGameInstance());
-					 FVector PlayerVector = Instance->GetPlayer()->GetActorLocation() - Bellarus->GetActorLocation();
-					 PlayerVector.Normalize();
-
-					 PlayerVector.Z = 0.0f;
-					 FrontVector.Z = 0.0f;
-
-					 float dot = FVector::DotProduct(FrontVector, PlayerVector);
-					 float AcosAngle = FMath::Acos(dot);
-					 float AngleDegree = FMath::RadiansToDegrees(AcosAngle);
-
-					 if (AngleDegree > 90)
-					 {
-						 auto ran = FMath::RandRange(1, 100);
-						 if (ran <= 80)
-						 {
-							 Bellarus->SetBattleState();
-							 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
-							 return;
-						 }
-
-						  ran = FMath::RandRange(1, 100);
-						 if (ran <= 50)
-						 {
-							 Bellarus->SetBattleState();
-							 ran = FMath::RandRange(1, 100);
-
-							 if (ran <= 50)
-							 {
-								
-								 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
-								
-							 }
-							 else {
-								
-								 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
-							 }
-
-							 return;
-						 }
-
-					
-					 }
-					 else {
-						 auto ran = FMath::RandRange(1, 100);
-						 if (ran <= 50)
-						 {
-							 Bellarus->SetBattleState();
-							 ran = FMath::RandRange(1, 100);
-
-							 if (ran <= 50)
-							 {
-								
-								 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
-
-							 }
-							 else {
-							
-								 Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
-							 }
-
-							 return;
-						 }
-					 }
-				 }
+						}
+					}
+				}
 			}
+			else {
+				//쉴드 없을때
+
+
+				//체크가 true일떄
+				if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
+				{
+					if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+						OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+						if (InFirstJudge)
+						{
+							MeleeAttck(Bellarus, Center);
+						}
+					}
+				}
+				else {
+					//기본
+						if (InFirstJudge)
+						{
+							STARRYLOG_S(Error);
+							auto ran = FMath::RandRange(1, 100);
+							if (ran <= 70)
+							{
+								Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(true);
+								return;
+							}
+
+							ran = FMath::RandRange(1, 100);
+							if (ran <= 40)
+							{
+								if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+									MeleeAttck(Bellarus, Center);
+								}
+							}
+						}
+						else {
+							if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+
+								if (InCalibration)
+								{
+									auto ran = FMath::RandRange(1, 100);
+									if (ran <= 80)
+									{
+										MeleeAttck(Bellarus, Center);
+									}
+
+								}
+								else {
+
+									if (InSecondJudge)
+									{
+
+										ShieldFristRangeAttackCheck(Bellarus, Center);
+
+									}
+
+								}
+							}
+						}
+					
+				}
+			}
+			
 		    
 		}
-
-
-	}
 	
 }
 
-bool UBTServiceAttackJudge::AttackJudge(AMonster* Monster, FVector Center,float Radius)
+bool UBTServiceAttackJudge::AttackJudge(AMonster* Monster, FVector Center,float Radius, FColor Color)
 {
 
 	if (Monster->GetTestMode())
@@ -182,8 +158,8 @@ bool UBTServiceAttackJudge::AttackJudge(AMonster* Monster, FVector Center,float 
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
-		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Radius,360.0f, FColor::Red, 10, 0.1f, false, 0, 2);
-		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Radius, 360.0f, FColor::Red, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Radius,360.0f, Color, 10, 0.1f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Radius, 360.0f, Color, 10, 0.1f, false, 0, 2);
 	}
 
 	FVector Box = FVector(Radius, Radius, Monster->GetAttack1Range().M_Atk_Height);
@@ -286,7 +262,7 @@ bool UBTServiceAttackJudge::AttackJudge(AMonster* Monster, FVector Center,float 
 	return false;
 }
 
-bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float Radius, float Height, float Angle, float AttackAxis)
+bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float Radius, float Height, float Angle, float AttackAxis, FColor Color)
 {
 	if (Monster->GetTestMode())
 	{
@@ -309,8 +285,8 @@ bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
 
-		Monster->GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, Radius, Angle, FColor::Red, 10, 0.5f, false, 0, 2);
-		Monster->GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, Radius, Angle, FColor::Red, 10, 0.5f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
 	
 	}
 
@@ -418,6 +394,167 @@ bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float
 	}
 
 	return false;
+}
+
+void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center)
+{
+
+	InTail = AttackCheck(Bellarus, Center, Bellarus->GetTailData()->M_Atk_Radius, Bellarus->GetTailData()->M_Atk_Height, Bellarus->GetTailData()->M_Atk_Angle, 180.0f, FColor::Yellow);
+	InWing_L = AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, -(Bellarus->GetWingData()->M_Atk_Angle / 2.0f), FColor::Yellow);
+	InWing_R = AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, Bellarus->GetWingData()->M_Atk_Angle / 2.0f, FColor::Yellow);
+
+
+	if (InTail)
+	{
+		Bellarus->SetBattleState();
+
+		if (InWing_L) {
+
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 30)
+			{
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+			}
+			else {
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+			}
+
+		}
+		else if (InWing_R) {
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 30)
+			{
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+			}
+			else {
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+			}
+		}
+		else {
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+		}
+	}
+	else if (InWing_L) {
+		Bellarus->SetBattleState();
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+
+	}
+	else if (InWing_R) {
+		Bellarus->SetBattleState();
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+	}
+	else {
+
+		FVector FrontVector = Bellarus->GetActorForwardVector();
+		FrontVector.Normalize();
+
+		auto Instance = Cast<USTGameInstance>(Bellarus->GetGameInstance());
+		FVector PlayerVector = Instance->GetPlayer()->GetActorLocation() - Bellarus->GetActorLocation();
+		PlayerVector.Normalize();
+
+		PlayerVector.Z = 0.0f;
+		FrontVector.Z = 0.0f;
+
+		float dot = FVector::DotProduct(FrontVector, PlayerVector);
+		float AcosAngle = FMath::Acos(dot);
+		float AngleDegree = FMath::RadiansToDegrees(AcosAngle);
+
+		if (AngleDegree > 90)
+		{
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 80)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+				return;
+			}
+
+			ran = FMath::RandRange(1, 100);
+			if (ran <= 50)
+			{
+				Bellarus->SetBattleState();
+				ran = FMath::RandRange(1, 100);
+
+				if (ran <= 50)
+				{
+
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+
+				}
+				else {
+
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+				}
+
+				return;
+			}
+
+
+		}
+		else {
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 50)
+			{
+				Bellarus->SetBattleState();
+				ran = FMath::RandRange(1, 100);
+
+				if (ran <= 50)
+				{
+
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+
+				}
+				else {
+
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+				}
+
+				return;
+			}
+		}
+	}
+}
+
+void UBTServiceAttackJudge::ShieldFristRangeAttackCheck(ABellarus* Bellarus, FVector Center)
+{
+
+	bool InSwirlAttack = AttackCheck(Bellarus, Center, Bellarus->GetSwirlData()->M_Atk_Radius, Bellarus->GetSwirlData()->M_Atk_Height, Bellarus->GetSwirlData()->M_Atk_Angle, 0.0f,  FColor::Purple);
+	bool InFeatherAttack = AttackCheck(Bellarus, Center, Bellarus->GetFeatherData()->M_Atk_Radius, Bellarus->GetFeatherData()->M_Atk_Height, Bellarus->GetFeatherData()->M_Atk_Angle, 0.0f, FColor::Purple);
+
+
+	if (InSwirlAttack)
+	{
+
+		if (Bellarus->GetToPlayerDistance() > Bellarus->GetSwirlData()->M_Atk_Radius * 0.95f && InFeatherAttack)
+		{
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 70) {
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+				return;
+			}
+			ran = FMath::RandRange(1, 100);
+			if (ran <= 50) {
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+				return;
+			}
+		}
+		else {
+			Bellarus->SetBattleState();
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+		}
+
+	}
+	else {
+		if (InFeatherAttack)
+		{
+			Bellarus->SetBattleState();
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+		}
+	}
+
+
 }
 
 

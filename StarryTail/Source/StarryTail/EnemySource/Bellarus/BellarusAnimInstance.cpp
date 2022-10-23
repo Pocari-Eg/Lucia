@@ -64,6 +64,28 @@ void UBellarusAnimInstance::PlayTailMontage()
 	Montage_Play(TailMontage, 1.0f);
 }
 
+void UBellarusAnimInstance::PlaySwirlMontage()
+{
+	Montage_Play(SwirlMontage, 1.0f);
+
+}
+
+void UBellarusAnimInstance::PlayFeatherMontage()
+{
+	Montage_Play(FeatherMontage, 1.0f);
+
+}
+
+void UBellarusAnimInstance::PlayStartTelePortMontage()
+{
+	Montage_Play(TelePortStartMontage, 1.0f);
+}
+
+void UBellarusAnimInstance::PlayEndTelePortMontage()
+{
+	Montage_Play(TelePortEndMontage, 1.0f);
+}
+
 
 
 void UBellarusAnimInstance::AnimNotify_Tail()
@@ -79,6 +101,21 @@ void UBellarusAnimInstance::AnimNotify_WingL()
 void UBellarusAnimInstance::AnimNotify_WingR()
 {
 	WingRAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_Swirl()
+{
+	SwirlAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_Feather()
+{
+	FeatherAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_TelePort()
+{
+	TelePortAttack.Broadcast();
 }
 
 bool UBellarusAnimInstance::CheckAttackedMontagePlaying()

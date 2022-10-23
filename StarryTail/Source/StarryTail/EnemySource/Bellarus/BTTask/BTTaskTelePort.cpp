@@ -1,25 +1,25 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskTail.h"
+#include "BTTaskTelePort.h"
 #include "../Bellarus.h"
 #include "../BellarusAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
-UBTTaskTail::UBTTaskTail()
+UBTTaskTelePort::UBTTaskTelePort()
 {
-	NodeName = TEXT("TAILATTACK");
+	NodeName = TEXT("TelePortATTACK");
 	bNotifyTick = true;
 }
-EBTNodeResult::Type UBTTaskTail::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskTelePort::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	auto Bellarus = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
 
-	Bellarus->PlayTailAnim();
+	Bellarus->PlayTelePortAnim();
 	Bellarus->GetAIController()->StopMovement();
 	bIsAttacking = true;
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
@@ -29,7 +29,7 @@ EBTNodeResult::Type UBTTaskTail::ExecuteTask(UBehaviorTreeComponent& OwnerComp, 
 
 	return EBTNodeResult::InProgress;
 }
-void UBTTaskTail::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTaskTelePort::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
@@ -43,7 +43,7 @@ void UBTTaskTail::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory,
 		Monster->SetIsAttackCool(true);
 
 		Cast<ABellarusAIController>(Monster->GetAIController())->AllAttackOff();
-		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellarusAIController::CheckKey, false);
+		//OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
 
 
