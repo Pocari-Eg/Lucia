@@ -92,7 +92,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					//±âº»
 						if (InFirstJudge)
 						{
-							STARRYLOG_S(Error);
+
 							auto ran = FMath::RandRange(1, 100);
 							if (ran <= 70)
 							{

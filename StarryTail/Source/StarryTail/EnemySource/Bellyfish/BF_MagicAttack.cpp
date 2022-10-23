@@ -128,7 +128,6 @@ void ABF_MagicAttack::OnPlayerInOverlap(UPrimitiveComponent* OverlappedComp, AAc
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr)
 	{
-		STARRYLOG(Error, TEXT("Player In"));
 		bIsInPlayer = true;
 	}
 }
@@ -138,7 +137,6 @@ void ABF_MagicAttack::OnPlayerOutOverlap(UPrimitiveComponent* OverlappedComp, AA
 	//나간 물체가 플레이어라면 
 	if (OtherComp->GetCollisionProfileName() == "Player")
 	{
-		STARRYLOG(Error, TEXT("Player Out"));
 		bIsInPlayer = false;
 	}
 }

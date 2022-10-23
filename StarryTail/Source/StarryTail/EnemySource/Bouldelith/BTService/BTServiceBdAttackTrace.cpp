@@ -38,7 +38,6 @@ void UBTServiceBdAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 				
 
 							auto ran = FMath::RandRange(1, 100);
-							STARRYLOG(Error, TEXT("Percent : %d"), ran);
 							if (ran <= 50)
 							{
 								Monster->GetAIController()->OnAttack(2);

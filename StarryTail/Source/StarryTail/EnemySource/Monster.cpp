@@ -372,7 +372,6 @@ void AMonster::SetDpsCheck(bool state)
 		bIsDpsCheck = state;
 		DpsTimer = 0.0f;
 
-		STARRYLOG(Error, TEXT("DPS : %f "), DpsDamage);
 		if (DpsDamage >= MonsterInfo.M_FSM_DPS)
 		{
 			MonsterAIController->SetBackStepKey(true);
@@ -750,7 +749,7 @@ void AMonster::CalcHp(float Damage)
 
 			if (CurState == EMontserState::Battle)
 			{
-				STARRYLOG_S(Error);
+				
 				if (MonsterControl != nullptr)
 					MonsterControl->InitSupportGroup();
 			}
