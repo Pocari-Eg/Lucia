@@ -312,6 +312,12 @@ float AMonster::GetSkillRadius() const
 {
 	return MonsterInfo.M_Skill_Radius;
 }
+float AMonster::GetToPlayerDistance()
+{
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	float distance = GetDistanceTo(Instance->GetPlayer());
+	return distance;
+}
 FAttackRange AMonster::GetAttack1Range() const
 {
 	return MonsterInfo.Attack1Range;
@@ -366,7 +372,6 @@ void AMonster::SetDpsCheck(bool state)
 		bIsDpsCheck = state;
 		DpsTimer = 0.0f;
 
-		STARRYLOG(Error, TEXT("DPS : %f "), DpsDamage);
 		if (DpsDamage >= MonsterInfo.M_FSM_DPS)
 		{
 			MonsterAIController->SetBackStepKey(true);
@@ -744,7 +749,7 @@ void AMonster::CalcHp(float Damage)
 
 			if (CurState == EMontserState::Battle)
 			{
-				STARRYLOG_S(Error);
+				
 				if (MonsterControl != nullptr)
 					MonsterControl->InitSupportGroup();
 			}
@@ -1373,7 +1378,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			//몬스터인지 아닌지
 			if (!bIsObject) {
 
-
+				AttacekdTeleportTimer = 0.0f;
 				if (MonsterControl != nullptr) {
 					MonsterControl->SetBattleMonster(this);
 				}
@@ -1486,7 +1491,6 @@ void AMonster::InitAttack2Data()
 
 	MonsterInfo.M_Skill_Range = NewData->M_Skill_Range;
 	MonsterInfo.M_Skill_Radius = NewData->M_Skill_Radius;
-
 	MonsterInfo.M_Skill_Atk = NewData->M_Skill_Atk;
 	MonsterInfo.M_Skill_Time = NewData->M_Skill_Time;
 	MonsterInfo.M_Skill_Set_Time = NewData->M_Skill_Set_Time;

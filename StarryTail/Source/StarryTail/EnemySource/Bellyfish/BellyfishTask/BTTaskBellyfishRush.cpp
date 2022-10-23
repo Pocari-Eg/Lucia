@@ -67,7 +67,6 @@ void UBTTaskBellyfishRush::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		Bellyfish->GetAIController()->OffAttack(3);
 
 		auto ran = FMath::RandRange(1, 100);
-		STARRYLOG(Error, TEXT("Attacked Percent : %d"), ran);
 		if (ran <=70)
 		{
 			Bellyfish->GetAIController()->OnAttack(1);

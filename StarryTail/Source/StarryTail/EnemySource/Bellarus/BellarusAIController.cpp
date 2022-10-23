@@ -4,6 +4,17 @@
 #include "BellarusAIController.h"
 #include "Bellarus.h"
 
+
+const FName ABellarusAIController::Wing_LKey = (TEXT("Wing_L"));
+const FName ABellarusAIController::Wing_RKey = (TEXT("Wing_R"));
+const FName ABellarusAIController::TailKey = (TEXT("Tail"));
+const FName ABellarusAIController::FeatherKey = (TEXT("Feather"));
+const FName ABellarusAIController::SwirlKey = (TEXT("Swirl"));
+const FName ABellarusAIController::TelePortKey = (TEXT("Teleport"));
+const FName ABellarusAIController::CheckKey = (TEXT("Check"));
+
+
+const FName ABellarusAIController::TraceTimeKey = (TEXT("TraceTime"));
 ABellarusAIController::ABellarusAIController()
 {
 
@@ -19,6 +30,8 @@ ABellarusAIController::ABellarusAIController()
 	{
 		BTAsset = BTObject.Object;
 	}
+
+
 
 }
 
@@ -45,7 +58,89 @@ void ABellarusAIController::Attacked(EAttackedDirection AttackedDirection, EAtta
 
 
 }
+#pragma region SET
+void ABellarusAIController::AllAttackOff()
+{
+	SetWingLKey(false);
+	SetWingRKey(false);
+	SetTailKey(false);
+	SetFeatherKey(false);
+	SetSwirlKey(false);
+	SetTelePortKey(false);
+}
+void ABellarusAIController::SetWingLKey(bool State)
+{
+	Blackboard->SetValueAsBool(Wing_LKey, State);
+}
 
+void ABellarusAIController::SetWingRKey(bool State)
+{
+	Blackboard->SetValueAsBool(Wing_RKey, State);
+}
+
+void ABellarusAIController::SetTailKey(bool State)
+{
+	Blackboard->SetValueAsBool(TailKey, State);
+}
+void ABellarusAIController::SetFeatherKey(bool State)
+{
+	Blackboard->SetValueAsBool(FeatherKey, State);
+
+}
+void ABellarusAIController::SetSwirlKey(bool State)
+{
+	Blackboard->SetValueAsBool(SwirlKey, State);
+
+}
+void ABellarusAIController::SetTelePortKey(bool State)
+{
+	Blackboard->SetValueAsBool(TelePortKey, State);
+}
+void ABellarusAIController::SetCheckKey(bool State)
+{
+	Blackboard->SetValueAsBool(CheckKey, State);
+}
+void ABellarusAIController::SetTraceTime(float Time)
+{
+	Blackboard->SetValueAsFloat(TraceTimeKey, Time);
+}
+#pragma endregion SET
+
+
+#pragma region GET
+bool ABellarusAIController::GetWingLKey()
+{
+	return Blackboard->GetValueAsBool(Wing_LKey);
+}
+bool ABellarusAIController::GetWingRKey()
+{
+	return Blackboard->GetValueAsBool(Wing_RKey);
+}
+bool ABellarusAIController::GetTailKey()
+{
+	return Blackboard->GetValueAsBool(TailKey);
+}
+bool ABellarusAIController::GetFeatherKey()
+{
+	return Blackboard->GetValueAsBool(FeatherKey);
+}
+bool ABellarusAIController::GetSwirlKey()
+{
+	return Blackboard->GetValueAsBool(SwirlKey);
+}
+bool ABellarusAIController::GetTelePortKey()
+{
+	return Blackboard->GetValueAsBool(TelePortKey);
+}
+bool ABellarusAIController::GetCheckKey()
+{
+	return Blackboard->GetValueAsBool(CheckKey);
+}
+float ABellarusAIController::GetTraceTime()
+{
+	return 	Blackboard->GetValueAsFloat(TraceTimeKey);
+}
+#pragma endregion GET
 void ABellarusAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);

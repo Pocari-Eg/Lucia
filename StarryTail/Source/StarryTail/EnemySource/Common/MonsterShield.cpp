@@ -298,7 +298,6 @@ void UMonsterShield::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		CrackTimer += DeltaTime;
 		if (CrackTimer >= CrackTime)
 		{
-			STARRYLOG_S(Error);
 			CrackTimer = 0.0f;
 			bIsCrackOn = false;
 			ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;

@@ -41,7 +41,6 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					if (bIsAttack23In)
 					{
 						auto ran = FMath::RandRange(1, 100);
-						STARRYLOG(Error, TEXT("Percent : %d"), ran);
 						if (ran <= 20)
 						{
 							Monster->GetAIController()->OnAttack(3);
@@ -66,7 +65,6 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 						if (bIsAttack12In)
 						{
 							auto ran = FMath::RandRange(1, 100);
-							STARRYLOG(Error, TEXT("Percent : %d"), ran);
 							if (ran <= 40)
 							{
 								Monster->GetAIController()->OnAttack(1);
@@ -99,7 +97,6 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					if (bIsAttack2In)
 					{
 						auto ran = FMath::RandRange(1, 100);
-						STARRYLOG(Error, TEXT("Percent : %d"), ran);
 						if (ran <= 80)
 						{
 							Monster->GetAIController()->OnAttack(2);

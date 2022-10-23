@@ -40,7 +40,6 @@ void UBTTaskBdBackstep::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) > Bouldelith->GetAttack3Distance())
 		{
 			auto ran = FMath::RandRange(1, 100);
-			STARRYLOG(Error, TEXT("Percent : %d"), ran);
 			if (ran <= 70)
 			{
 				Bouldelith->GetAIController()->OnAttack(3);
@@ -51,7 +50,6 @@ void UBTTaskBdBackstep::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		}
 		else {
 			auto ran = FMath::RandRange(1, 100);
-			STARRYLOG(Error, TEXT("Percent : %d"), ran);
 			if (ran <= 70)
 			{
 				Bouldelith->GetAIController()->OnAttack(4);

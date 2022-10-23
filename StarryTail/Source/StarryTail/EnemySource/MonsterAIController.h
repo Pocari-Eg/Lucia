@@ -47,6 +47,7 @@ public:
 	void OnAttack(int i);
 	void OffAttack(int i);
 	void SetBackStepKey(bool State);
+	 
 
 	void SetBattleMonster(AActor* Monster);
 	void InitBattleMonster();
@@ -55,6 +56,10 @@ public:
 	bool GetIsTraceState();
 	bool GetIsFindPlayer();
 	bool GetIsGorggy();
+	bool GetIsShieldOn();
+	bool GetIsBattleState();
+
+	FVector GetSpawnPos();
 
 	//debug
 

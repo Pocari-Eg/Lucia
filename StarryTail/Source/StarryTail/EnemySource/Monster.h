@@ -222,6 +222,8 @@ protected:
 
 	TSubclassOf<AWeapon_Soul> Weapon_SoulClass;
 
+	float AttacekdTeleportTimer;
+
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
@@ -262,6 +264,8 @@ private:
 	bool bIsDodgeOn;
 
 	bool bIsStackOn;
+
+
 	
 public:	
 	// Called every frame
@@ -301,6 +305,7 @@ public:
 	float GetAtkHeight() const;
 	bool GetIsMonsterShieldActive() const;
 	float GetSkillRadius() const;
+	float GetToPlayerDistance();
 
 
 	FAttackRange GetAttack1Range()const;

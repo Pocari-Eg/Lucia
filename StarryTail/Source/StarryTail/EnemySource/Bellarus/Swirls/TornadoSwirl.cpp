@@ -52,7 +52,6 @@ void ATornadoSwirl::TornadoSwirlBegin(UPrimitiveComponent* OverlappedComp, AActo
 {
 	if (Cast<ATornadoSwirl>(OtherActor)&& Cast<ATornadoSwirl>(OtherActor)!=this)
 	{
-		STARRYLOG_S(Error);
 		
 			FVector Direction = OtherActor->GetActorLocation() - GetActorLocation();
 			Direction.Normalize();

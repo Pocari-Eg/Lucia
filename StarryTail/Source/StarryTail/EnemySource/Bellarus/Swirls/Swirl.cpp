@@ -138,7 +138,6 @@ void ASwirl::SwirlPullRangeBegin(UPrimitiveComponent* OverlappedComp, AActor* Ot
 {
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
-		STARRYLOG_S(Error);
 
 		Irene = Cast<AIreneCharacter>(OtherActor);
 		bIsOnCorePull = true;
@@ -149,7 +148,6 @@ void ASwirl::SwirlPullRangeEnd(UPrimitiveComponent* OverlappedComp, AActor* Othe
 {
 	if (Cast<AIreneCharacter>(OtherActor))
 	{
-		STARRYLOG_S(Error);
 		Irene = nullptr;
 		bIsOnCorePull = false;
 	}

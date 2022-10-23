@@ -224,6 +224,21 @@ bool AMonsterAIController::GetIsGorggy()
 	return Blackboard->GetValueAsBool(IsGroggyKey);
 }
 
+bool AMonsterAIController::GetIsShieldOn()
+{
+	return  Blackboard->GetValueAsBool(IsShieldOnKey);
+}
+
+bool AMonsterAIController::GetIsBattleState()
+{
+	return  Blackboard->GetValueAsBool(BattleStateKey);
+}
+
+FVector AMonsterAIController::GetSpawnPos()
+{
+	return Blackboard->GetValueAsVector(SpawnPosKey);
+}
+
 ULineBatchComponent* AMonsterAIController::GetDebugLineBatcher(const UWorld* InWorld, bool bPersistentLines, float LifeTime, bool bDepthIsForeground)
 {
 	return (InWorld ? (bDepthIsForeground ? InWorld->ForegroundLineBatcher : ((bPersistentLines || (LifeTime > 0.f)) ? InWorld->PersistentLineBatcher : InWorld->LineBatcher)) : NULL);
