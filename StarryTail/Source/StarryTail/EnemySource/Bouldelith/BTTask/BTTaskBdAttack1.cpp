@@ -148,7 +148,6 @@ void UBTTaskBdAttack1::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 
 
 							auto ran = FMath::RandRange(1, 100);
-							STARRYLOG(Error, TEXT("Percent : %d"), ran);
 							if (ran <= 80)
 							{
 								OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);

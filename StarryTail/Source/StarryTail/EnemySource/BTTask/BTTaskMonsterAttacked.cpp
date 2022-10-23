@@ -33,8 +33,6 @@ EBTNodeResult::Type UBTTaskMonsterAttacked::ExecuteTask(UBehaviorTreeComponent& 
 		Monster->GetMonsterAnimInstance()->PlayAttackedMontage();
 	}
 
-	STARRYLOG_S(Error);
-
 	return EBTNodeResult::InProgress;
 }
 
