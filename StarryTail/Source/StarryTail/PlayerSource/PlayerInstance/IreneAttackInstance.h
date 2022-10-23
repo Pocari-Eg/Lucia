@@ -126,6 +126,7 @@ public:
 	void SetAttackState()const;
 	void SetSkillState()const;
 	void SetGauge(float Value);
+	void SetUltimateGauge(float Value);
 	void SetFollowTarget(const bool Value){bFollowTarget = Value;}
 	void SetFollowTargetAlpha(const float Value){FollowTargetAlpha = Value;}
 	void SetPlayerPosVec(const FVector Value){PlayerPosVec = Value;}

@@ -209,11 +209,14 @@ void UIreneAttackInstance::DoAttack()
 		else
 			BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 
+		FVector StartPos = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+		//StartPos.Z -= Irene->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
+		
 		const FCollisionQueryParams Params(NAME_None, false, Irene);
 		bResult = GetWorld()->SweepMultiByChannel(
 		MonsterList,
-		Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-		Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+		StartPos,
+		StartPos,
 		FRotationMatrix::MakeFromZ(Irene->GetActorForwardVector()).ToQuat(),
 		ECollisionChannel::ECC_GameTraceChannel1,
 		FCollisionShape::MakeBox(BoxSize),
@@ -222,7 +225,7 @@ void UIreneAttackInstance::DoAttack()
 		// 그리기 시작
 		#if ENABLE_DRAW_DEBUG
 		const FVector TraceVec = Irene->GetActorForwardVector();
-		const FVector Center = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+		const FVector Center = StartPos;
 		const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 		const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
 		constexpr float DebugLifeTime = 5.0f;
@@ -240,6 +243,29 @@ void UIreneAttackInstance::SendDamage(bool bResult, TArray<FHitResult> MonsterLi
 	{
 		if (bResult)
 		{
+			const FCollisionQueryParams Params(NAME_None, false, Irene);
+
+			// 리스트결과에 레이케스트 발사(반복)
+			FHitResult RayHit;
+			bool bLayResult = GetWorld()->LineTraceSingleByChannel(
+				RayHit,
+				Irene->GetActorLocation(),
+				Monster.GetActor()->GetActorLocation(),
+				ECollisionChannel::ECC_GameTraceChannel8,
+				Params);
+			
+			if(bLayResult && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>() == nullptr)
+				continue;
+			if (bLayResult && RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>() != nullptr)
+			{
+				//STARRYLOG(Warning,TEXT("%s"), *Monster.GetActor()->GetName());
+				const FName RayCollisionProfileName = RayHit.GetActor()->FindComponentByClass<UCapsuleComponent>()->GetCollisionProfileName();
+				const FName EnemyProfile = "Enemy";
+				const FName ObjectProfile = "Object";
+				if (RayHit.Actor.IsValid() && (RayCollisionProfileName != EnemyProfile && RayCollisionProfileName != ObjectProfile))
+					continue;
+			}
+				
 			if (Monster.Actor.IsValid())
 			{
 				FDamageEvent DamageEvent;
@@ -348,6 +374,19 @@ void UIreneAttackInstance::SetGauge(float Value)
 		// 이쯤에 UI 게이지 수치 변경
 		
 		Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
+	}
+}
+void UIreneAttackInstance::SetUltimateGauge(float Value)
+{
+	if(Irene->IreneData.CurrentHP > 0)
+	{
+		Irene->IreneData.CurrentUltimateAttackGauge += Value;
+		if(Irene->IreneData.CurrentUltimateAttackGauge > Irene->IreneData.MaxUltimateAttackGauge)
+			Irene->IreneData.CurrentUltimateAttackGauge = Irene->IreneData.MaxUltimateAttackGauge;
+		if(Irene->IreneData.CurrentUltimateAttackGauge < 0)
+			Irene->IreneData.CurrentUltimateAttackGauge = 0;
+		// 이쯤에 UI 게이지 수치 변경
+		
 	}
 }
 #pragma endregion GetSet
