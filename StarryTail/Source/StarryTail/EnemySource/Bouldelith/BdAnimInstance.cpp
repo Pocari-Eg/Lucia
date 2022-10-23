@@ -9,6 +9,7 @@ void UBdAnimInstance::PlayDetectMontage()
 }
 void UBdAnimInstance::PlayDeathMontage()
 {
+	STARRYLOG_S(Error);
 	StopAllMontages(0.0f);
 	Montage_Play(DeathMontage, 1.0f);
 }

@@ -90,8 +90,7 @@ void UBTTaskWalkLR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 				if (Player && Player->GetController()->IsPlayerController())
 				{
 					//1차 탐지
-					//if (Monster->GetTestMode())
-						//STARRYLOG(Warning, TEXT("Detect Player in DetectSphere"));
+			
 
 					TArray<FHitResult> Hits;
 					TArray<AActor*> ActorsToIgnore; // 무시할 액터 유형?

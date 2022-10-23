@@ -40,7 +40,7 @@ AAttributeObject::AAttributeObject()
 
 void AAttributeObject::SetObject(EState NewState, EAttributeKeyword NewAttribute)
 {
-	STARRYLOG_S(Error);
+
 	State = NewState;
 	Attribute = NewAttribute;
 

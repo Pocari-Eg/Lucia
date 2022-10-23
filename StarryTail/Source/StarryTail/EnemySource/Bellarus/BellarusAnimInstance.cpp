@@ -19,11 +19,7 @@ void UBellarusAnimInstance::PlayDeathMontage()
 	Montage_Play(DeathMontage);
 }
 
-void UBellarusAnimInstance::PlayAttackMontage()
-{
-	
-	Montage_Play(AttackMontage, PlayRate);
-}
+
 
 void UBellarusAnimInstance::PlayDetectMontage()
 {
@@ -48,12 +44,79 @@ void UBellarusAnimInstance::PlayWalkMontage()
 }
 
 
-bool UBellarusAnimInstance::GetAttackIsPlaying()
+
+
+void UBellarusAnimInstance::PlayWingLMontage()
 {
-	return (Montage_IsPlaying(AttackMontage));
+
+	Montage_Play(WingLMontage, 1.0f);
+}
+
+void UBellarusAnimInstance::PlayWingRMontage()
+{
+
+	Montage_Play(WingRMontage, 1.0f);
+}
+
+void UBellarusAnimInstance::PlayTailMontage()
+{
+
+	Montage_Play(TailMontage, 1.0f);
+}
+
+void UBellarusAnimInstance::PlaySwirlMontage()
+{
+	Montage_Play(SwirlMontage, 1.0f);
+
+}
+
+void UBellarusAnimInstance::PlayFeatherMontage()
+{
+	Montage_Play(FeatherMontage, 1.0f);
+
+}
+
+void UBellarusAnimInstance::PlayStartTelePortMontage()
+{
+	Montage_Play(TelePortStartMontage, 1.0f);
+}
+
+void UBellarusAnimInstance::PlayEndTelePortMontage()
+{
+	Montage_Play(TelePortEndMontage, 1.0f);
 }
 
 
+
+void UBellarusAnimInstance::AnimNotify_Tail()
+{
+	TailAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_WingL()
+{
+	WingLAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_WingR()
+{
+	WingRAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_Swirl()
+{
+	SwirlAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_Feather()
+{
+	FeatherAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_TelePort()
+{
+	TelePortAttack.Broadcast();
+}
 
 bool UBellarusAnimInstance::CheckAttackedMontagePlaying()
 {

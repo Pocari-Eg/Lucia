@@ -17,9 +17,6 @@
  * 
  */
 
-DECLARE_MULTICAST_DELEGATE(FRushEndDelegate);
-DECLARE_MULTICAST_DELEGATE(FRushStartDelegate);
-
 UCLASS()
 class STARRYTAIL_API ABellarus : public AMonster
 {
@@ -31,16 +28,21 @@ public:
 
 	UBellarusAnimInstance* GetBellarusAnimInstance() const;
 
-	void Attack();
+
+	void PlayWingLAnim();
 	void Wing_L();
+
+	void PlayWingRAnim();
 	void Wing_R();
+
+	void PlayTailAnim();
 	void Tail();
 
-	void BasicSwirlAttack();
-	void GuidedSwirlAttack();
-	void TornadoSwirlAttack();
+
+	void PlayFeatherAnim();
 	void ProjectileAttack();
 
+	void PlayTelePortAnim();
 	void TelePortStart();
 	void TelePortEnd();
 
@@ -49,7 +51,18 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Swirl)
 	int SwirlAttackType;
+
+	void PlaySwirlAnim();
 	void SwirlAttack();
+
+	void BasicSwirlAttack();
+	void GuidedSwirlAttack();
+	void TornadoSwirlAttack();
+
+
+	bool bIsInSpawnRadius;
+
+	float OutSpawnRadiusTimer;
 
 protected:
 	// Called when the game starts or when spawned
@@ -74,13 +87,26 @@ public:
 
 	void SetTelePortLocation(FVector Location) { TeleportLocation = Location; }
 
+	float GetFirstJugdeRadius();
+	float GetSecondJugdeRadius();
+	float GetCalibrationRadius();
+	float GetCheckTime();
+
+	FMonsterSkillDataTable* GetWingData();
+	FMonsterSkillDataTable* GetTailData();
+	FMonsterSkillDataTable* GetSwirlData();
+	FMonsterSkillDataTable* GetFeatherData();
+	FMonsterSkillDataTable* GetTornado();
+	FMonsterSkillDataTable* GetGuidedSwirlData();
+
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
 	void InitMesh() override;
 	void InitAnime() override;
 	void InitBellarusInfo();
-	bool AttackCheck(float Radius, float Hegiht, float Angle,float AttackAxis);
+	bool AttackCheck(float Radius, float Height, float Angle,float AttackAxis);
+
 
 //Variable
 	//Variable
@@ -95,6 +121,7 @@ private:
 	float TelePortTime;
 	float TelePortTimer;
 	FVector TeleportLocation;
+
 
 	bool bIsRegening;
 	float RegenTime;
