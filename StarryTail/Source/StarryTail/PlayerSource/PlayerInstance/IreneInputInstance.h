@@ -191,10 +191,6 @@ public:
 	void SkillWait();
 	void SwordSkillEndWait();
 
-	void SkillCameraMoveStart();
-	void SkillCameraMoveLoop(float DeltaTime);
-	void SkillCameraMoveEnd(float DeltaTime);
-
 	void MouseWheel(float Rate);
 
 	// 대쉬
@@ -227,9 +223,12 @@ public:
 
 	// 궁극기
 	void UltimateAttackKeyword();
-	void UltimateAttackSetCamera();
 	void UltimateAttack();
-	
+	void SkillCameraMoveStart();
+	void SkillCameraMoveLoop(float DeltaTime);
+	void SkillCameraMoveEnd(float DeltaTime);
+	void UltimateAttackSetCamera();
+
 	// 액션 
 	void DialogAction();
 	void DialogSkip();

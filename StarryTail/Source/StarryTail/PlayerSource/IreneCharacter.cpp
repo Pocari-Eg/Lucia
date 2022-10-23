@@ -265,7 +265,7 @@ void AIreneCharacter::PostInitializeComponents()
 void AIreneCharacter::TargetReset()const
 {
 	// 타겟을 조건에 따라 초기화하는 함수
-	if (IreneAttack->SwordTargetMonster != nullptr)
+	if (IreneAttack->SwordTargetMonster != nullptr && !IreneState->IsUltimateAttackState())
 	{
 		// 타겟몹이 죽거나 렌더링이 안거나 거리가 멀어지면 초기화
 		const auto Mob = Cast<AMonster>(IreneAttack->SwordTargetMonster);
@@ -452,6 +452,12 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 					(RayCollisionProfileName == EnemyProfile || RayCollisionProfileName == ObjectProfile)
 					&& RayHit.GetActor()->WasRecentlyRendered())
 				{
+					//auto RayMonster = Cast<AMonster>(Monster.Actor);
+
+					//if(GetActorLocation().Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() < RayMonster->GetLocation().Z - 5 ||
+					//	GetActorLocation().Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight() > RayMonster->GetLocation().Z + 5)
+					//	continue;
+					
 					// 첫 몬스터 할당
 					if (IreneAttack->SwordTargetMonster == nullptr)
 					{

@@ -1328,9 +1328,8 @@ void UUltimateAttack::Enter(IBaseGameEntity* CurState)
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 
-	//const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(CurState->Irene->IreneAttack->GetBasicAttackDataTableName()));
-	//EndTime = AttackTable->C_Time;
-	EndTime = 2.0f;
+	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*CurState->Irene->IreneAttack->GetNameAtAttackDataTable(FName("Ultimate_Attack")));
+	EndTime = AttackTable->C_Time;
 }
 
 void UUltimateAttack::Execute(IBaseGameEntity* CurState)
@@ -1358,6 +1357,7 @@ void UUltimateAttack::Execute(IBaseGameEntity* CurState)
 	
 	if(CurState->PlayTime >= EndTime)
 	{
+		CurState->Irene->IreneData.IsInvincibility = false;
 		EndTimeExit(CurState);
 	}
 }

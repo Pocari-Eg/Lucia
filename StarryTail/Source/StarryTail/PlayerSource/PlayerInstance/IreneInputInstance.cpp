@@ -629,61 +629,6 @@ void UIreneInputInstance::SwordSkillEndWait()
 {
 	GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, this, &UIreneInputInstance::SkillWait, CoolTimeRate, true);
 }
-
-void UIreneInputInstance::SkillCameraMoveStart()
-{
-	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-	{
-		// 카메라
-		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
-		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-		const float Y = Irene->WorldController->GetControlRotation().Pitch;
-		// 카메라 원점 조정
-		FRotator Rotator = FRotator::ZeroRotator;
-		Rotator.Pitch = Y;
-		Rotator.Yaw = Z;
-		Irene->WorldController->SetControlRotation(Rotator);
-	}
-	
-	bSkillCameraMove = true;
-	SkillCameraPlayTime = 0;
-	SkillCameraEndPlayTime = 0;
-	Irene->bInputStop = true;
-
-	// 카메라 원점 조정
-	FRotator Rotator = FRotator::ZeroRotator;
-	Rotator.Pitch += 40;
-	Rotator.Yaw -= 90;
-	Irene->WorldController->SetControlRotation(Rotator);
-}
-void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
-{
-	if(bSkillCameraMove)
-	{
-		SkillCameraPlayTime += DeltaTime;
-		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraPlayTime);
-		Irene->SpringArmComp->TargetArmLength = Value.X;
-		Irene->AddControllerPitchInput(Value.Y);
-		Irene->AddControllerYawInput(Value.Z);
-		SkillCameraEndPlayTime = SkillCameraPlayTime;
-		if(SkillCameraPlayTime >= MaxSkillCameraPlayTime)
-		{
-			SkillCameraMoveEnd(DeltaTime);
-			return;
-		}
-	}
-}
-void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
-{
-	Irene->SpringArmComp->TargetArmLength = 450;
-
-	bSkillCameraMove = false;
-	SkillCameraPlayTime = 0;
-	SkillCameraEndPlayTime = 0;
-	Irene->bInputStop = false;
-
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttackSetCamera();}));
-}
 #pragma endregion Skill
 
 void UIreneInputInstance::MouseWheel(float Rate)
@@ -743,7 +688,7 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->SetActorRelativeRotation(GetMoveKeyToDirVector().Rotation());
 		Irene->IreneData.IsInvincibility = true;
 
-		if(Irene->IreneAttack->GetIsPerfectDodge())
+		if(Irene->IreneAttack->GetIsPerfectDodge() && Irene->IreneAttack->PerfectDodgeMonster != nullptr)
 			PerfectDodge();
 		
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
@@ -1082,48 +1027,40 @@ void UIreneInputInstance::BreakAttackEnd()
 #pragma region UltimateAttack
 void UIreneInputInstance::UltimateAttackKeyword()
 {
-	//if(!Irene->bInputStop && Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge)
-	//{
-	Irene->IreneData.CurrentUltimateAttackGauge = 0;
-	// 선딜
-	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
-	auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
-	auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
-
-	if(!HitMonsterList.Get<2>())
-		return;
-		
-	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	//Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge &&
+	if(!Irene->bInputStop && !Irene->IreneState->IsUltimateAttackState())
 	{
-		const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
-		Mon->MarkerOff();
-		Irene->IreneAnim->SetIsHaveTargetMonster(false);
-		Irene->IreneAnim->SetTargetMonster(nullptr);
-		Irene->IreneAttack->SwordTargetMonster = nullptr;
+		// 선딜
+		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
+		auto AllPosition = Irene->SetCameraStartTargetPosition(FVector(10,100,1200),Irene->CameraComp->GetComponentLocation());
+		auto HitMonsterList = Irene->StartPositionFindNearMonster(AllPosition.Get<0>(),AllPosition.Get<1>(),AllPosition.Get<2>());	
+
+		if(!HitMonsterList.Get<2>())
+			return;
+
+		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+		{
+			const auto Mon=Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
+			Mon->MarkerOff();
+			Irene->IreneAnim->SetIsHaveTargetMonster(false);
+			Irene->IreneAnim->SetTargetMonster(nullptr);
+			Irene->IreneAttack->SwordTargetMonster = nullptr;
+		}
+		
+		Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);	
+		
+		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+		{
+			Irene->IreneData.CurrentUltimateAttackGauge = 0;
+			Irene->ChangeStateAndLog(UUltimateAttack::GetInstance());
+			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.1f);
+			Irene->CustomTimeDilation = 1/0.1f;
+			Irene->IreneData.IsInvincibility = true;
+			Irene->CameraComp->PostProcessSettings.bOverride_MotionBlurMax = true;
+			Irene->CameraComp->PostProcessSettings.MotionBlurMax = 0;
+			SkillCameraMoveStart();
+		}
 	}
-		
-	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
-
-	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-		SkillCameraMoveStart();
-	//}
-}
-void UIreneInputInstance::UltimateAttackSetCamera()
-{
-	// 카메라
-	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
-	{
-		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
-		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-		const float Y = Irene->WorldController->GetControlRotation().Pitch;
-		// 카메라 원점 조정
-		FRotator Rotator = FRotator::ZeroRotator;
-		Rotator.Pitch = Y;
-		Rotator.Yaw = Z;
-		Irene->WorldController->SetControlRotation(Rotator);
-		
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttack();}));
-	}	
 }
 void UIreneInputInstance::UltimateAttack()
 {
@@ -1150,7 +1087,75 @@ void UIreneInputInstance::UltimateAttack()
 
 	Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z,true);
 }
+void UIreneInputInstance::SkillCameraMoveStart()
+{
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		// 카메라
+		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
+		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
+		const float Y = Irene->WorldController->GetControlRotation().Pitch;
+		// 카메라 원점 조정
+		FRotator Rotator = FRotator::ZeroRotator;
+		Rotator.Pitch = Y;
+		Rotator.Yaw = Z;
+		Irene->WorldController->SetControlRotation(Rotator);
 
+		bSkillCameraMove = true;
+		SkillCameraPlayTime = 0;
+		SkillCameraEndPlayTime = 0;
+		Irene->bInputStop = true;
+	}	
+}
+void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
+{
+	if(bSkillCameraMove)
+	{
+		SkillCameraPlayTime += DeltaTime;
+		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraPlayTime);
+		Irene->SpringArmComp->TargetArmLength = Value.X;
+		Irene->AddControllerPitchInput(Value.Y);
+		Irene->AddControllerYawInput(Value.Z);
+		SkillCameraEndPlayTime = SkillCameraPlayTime;
+		if(SkillCameraPlayTime >= MaxSkillCameraPlayTime)
+		{
+			SkillCameraMoveEnd(DeltaTime);
+			return;
+		}
+	}
+}
+void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
+{
+	Irene->SpringArmComp->TargetArmLength = 450;
+
+	bSkillCameraMove = false;
+	SkillCameraPlayTime = 0;
+	SkillCameraEndPlayTime = 0;
+	Irene->bInputStop = false;
+
+	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+	Irene->CustomTimeDilation = 1;
+	Irene->CameraComp->PostProcessSettings.bOverride_MotionBlurMax = false;
+	Irene->CameraComp->PostProcessSettings.MotionBlurMax = 5.0f;
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttackSetCamera();}));
+}
+void UIreneInputInstance::UltimateAttackSetCamera()
+{
+	// 카메라
+	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
+	{
+		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());
+		Irene->SetActorRotation(FRotator(0.0f, Rotator.Yaw, 0.0f));
+		// 카메라 원점 조정
+		FRotator CameraRotator = FRotator::ZeroRotator;
+		CameraRotator.Pitch = Rotator.Pitch;
+		CameraRotator.Yaw = Rotator.Yaw;
+		Irene->WorldController->SetControlRotation(CameraRotator);
+		
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttack();}));
+	}	
+}
 #pragma endregion UltimateAttack
 
 void UIreneInputInstance::DialogAction()
