@@ -1396,7 +1396,10 @@ void UFormChangeState::Enter(IBaseGameEntity* CurState)
 
 void UFormChangeState::Execute(IBaseGameEntity* CurState)
 {
-
+	if(CurState->PlayTime >= 1.07f)
+	{
+		CurState->Irene->ActionEndChangeMoveState();
+	}
 }
 
 void UFormChangeState::Exit(IBaseGameEntity* CurState)

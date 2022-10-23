@@ -820,15 +820,15 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			{
 				// 정령 스탠스 적용
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
-
+				
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,this, &UIreneInputInstance::SpiritChangeMaxTime, 80, false);				
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
+				Irene->ChangeStateAndLog(UFormChangeState::GetInstance());
 				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
-				Irene->IreneAttack->AttackTimeEndState();
 				Irene->bIsSpiritStance = true;
 				Irene->PetMesh->SetVisibility(false);
 			}
@@ -841,7 +841,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
 
 				Irene->IreneAnim->StopAllMontages(0);
-				Irene->IreneAttack->AttackTimeEndState();
+				Irene->ActionEndChangeMoveState();
 				Irene->bIsSpiritStance = false;
 				Irene->PetMesh->SetVisibility(true); 
 			    
@@ -1239,7 +1239,7 @@ bool UIreneInputInstance::CanAttackState() const
 {
 	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
 		return true;
-	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsFormChangeState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
 		return true;
 	return false;
 }
@@ -1247,7 +1247,7 @@ bool UIreneInputInstance::CanSkillState() const
 {
 	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
 		return true;
-	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsFormChangeState() &&  !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsAttackState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
 		return true;
 	return false;
 }
