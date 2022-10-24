@@ -48,8 +48,13 @@ void UBTTaskWalkState::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
+	if (Monster->GetAIController()->GetIsFindPlayer() == true)
+	{
+		Monster->GetAIController()->StopMovement();
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 
-	if (Monster->GetMonsterAtkType() == 2) {
+	if (Monster->GetMonsterAtkType() == 2|| Monster->GetMonsterAtkType() == 0) {
 		WalkTimer += DeltaSeconds;
 		if (WalkTimer >= WalkTime)
 		{

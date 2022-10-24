@@ -29,7 +29,6 @@ void AAttributeObjectManager::BeginPlay()
 
 void AAttributeObjectManager::ObjectInit()
 {
-	STARRYLOG_S(Error);
 	if (Puzzle.Num() > 0) {
 		for (int i = 0; i < Puzzle.Num(); i++)
 		{

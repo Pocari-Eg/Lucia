@@ -175,7 +175,6 @@ void UBTTaskBdAttack4::Attack4Trace(class AMonster* Monster, UBehaviorTreeCompon
 		}
 	}
 	auto ran = FMath::RandRange(1, 100);
-	STARRYLOG(Error, TEXT("Percent : %d"), ran);
 	if (ran <= 70)
 	{
 		Monster->GetAIController()->OnAttack(3);

@@ -80,7 +80,6 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 				float distance = Monster->GetDistanceTo(Player);
 				if (distance < 1000.0f && distance > Monster->GetAttack3Range().M_Atk_Radius) {
 					auto ran = FMath::RandRange(1, 100);
-					STARRYLOG(Error, TEXT("Percent : %d"), ran);
 					if (ran <= 15)
 					{
 						Monster->GetAIController()->OnAttack(1);

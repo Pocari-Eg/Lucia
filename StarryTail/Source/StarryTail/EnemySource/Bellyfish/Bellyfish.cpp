@@ -138,7 +138,6 @@ void ABellyfish::ProjectileAttack()
 void ABellyfish::Skill_Setting()
 {
 	Info.DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
-	STARRYLOG(Error, TEXT("%f"), Info.DodgeTime);
 
 	IsSkillSet = true;
 	Magic_CircleComponent->SetActive(true);
@@ -256,7 +255,7 @@ bool ABellyfish::RushRouteCheck()
 
 	if (bResult)
 	{
-		STARRYLOG(Error,TEXT("%s"),*Hit.Actor->GetName())
+
 		if (Cast<AIreneCharacter>(Hit.Actor))
 		{
 			return true;

@@ -51,10 +51,6 @@ void AHoming_Projectile::Tick(float DeltaTime)
 
    PlayerVec.Normalize();
 
-
-   STARRYLOG(Error, TEXT("%f,%f,%f"), ForwardVec.X, ForwardVec.Y, ForwardVec.Z);
-   STARRYLOG(Error, TEXT("%f,%f,%f"), PlayerVec.X, PlayerVec.Y, PlayerVec.Z);
-
    RotationQuat=Math::VectorA2BRotation(ForwardVec, PlayerVec);
   FVector RotateVec = RotationQuat.RotateVector(ForwardVec);
 
