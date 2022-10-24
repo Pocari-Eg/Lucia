@@ -21,9 +21,12 @@ public:
 	class UImage* skill_count_left;
 	UPROPERTY()
 	class UImage* skill_cooltime;
+	UPROPERTY()
+	class UImage* skill_bg;
 
 	UMaterialInstanceDynamic* mat_Progress;
 	FTimerHandle AttackCtimeHandle;
+	FTimerHandle BGRedHandle;
 	float Ctime_n, Ctime_f;
 
 public:
@@ -36,5 +39,6 @@ public:
 	void SetAttackCooltime(float Ctime);
 
 	void AttackCtime();
+	void BGWhite();
 	
 };

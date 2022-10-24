@@ -35,6 +35,16 @@ void UNormalSkillWidget_D::SetAttackCooltime(float Ctime)
 	mat_Progress = skill_cooltime->GetDynamicMaterial();
 	mat_Progress->SetScalarParameterValue("Progress", 1.0f);
 
+	if (Ctime == 5.0f)
+	{
+		skill_bg->SetColorAndOpacity(FLinearColor::Red);
+		GetWorld()->GetTimerManager().SetTimer(BGRedHandle, this, &UNormalSkillWidget_D::BGWhite, 2.0f, false, 2.0f);
+	}
+	else if (Ctime == 2.0f)
+	{
+		skill_bg->SetColorAndOpacity(FLinearColor::White);
+	}
+
 	GetWorld()->GetTimerManager().SetTimer(AttackCtimeHandle, this, &UNormalSkillWidget_D::AttackCtime, 0.05f, true, 0.05f);
 }
 
@@ -49,4 +59,9 @@ void UNormalSkillWidget_D::AttackCtime()
 
 	Ctime_f -= 0.05f;
 	mat_Progress->SetScalarParameterValue("Progress", Ctime_f / Ctime_n);
+}
+
+void UNormalSkillWidget_D::BGWhite()
+{
+	skill_bg->SetColorAndOpacity(FLinearColor::White);
 }

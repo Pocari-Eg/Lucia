@@ -13,6 +13,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../PlayerSpirit/IreneSpiritAnimInstance.h"
+#include "../../UI/IngameWidget_D.h"
 
 UIreneAttackInstance::UIreneAttackInstance()
 {
@@ -373,6 +374,10 @@ void UIreneAttackInstance::SetGauge(float Value)
 			Irene->IreneData.CurrentGauge = 0;
 		// 이쯤에 UI 게이지 수치 변경
 		
+		auto IngameW = Cast<UIngameWidget_D>(Irene->makeIngameWidget);
+		if (IngameW != nullptr)
+			IngameW->STANCEGAUGEeCtime(Value);
+
 		Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 	}
 }
@@ -386,7 +391,6 @@ void UIreneAttackInstance::SetUltimateGauge(float Value)
 		if(Irene->IreneData.CurrentUltimateAttackGauge < 0)
 			Irene->IreneData.CurrentUltimateAttackGauge = 0;
 		// 이쯤에 UI 게이지 수치 변경
-		
 	}
 }
 #pragma endregion GetSet

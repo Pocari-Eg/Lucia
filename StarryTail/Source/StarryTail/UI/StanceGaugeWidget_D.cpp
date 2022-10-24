@@ -4,28 +4,48 @@
 #include "StanceGaugeWidget_D.h"
 #include "Components/Image.h"
 
-void UStanceGaugeWidget_D::eCtime(float Ctime)
+void UStanceGaugeWidget_D::ResetStanceGague()
 {
-	Ctime_n = Ctime;
-	Ctime_f = Ctime;
 	GetWorld()->GetTimerManager().ClearTimer(AttackCtimeHandle);
 
-	mat_Progress = gauge_full->GetDynamicMaterial();
-	mat_Progress->SetScalarParameterValue("Progress", 1.0f);
+	PLUS = 0.0f;
+	auto MAT = gauge_full->GetDynamicMaterial();
+	MAT->SetScalarParameterValue("Progress", 0.0f);
+}
 
+void UStanceGaugeWidget_D::eCtime(float Ctime)
+{
+	if (Ctime == -1.0f)
+	{
+		ResetStanceGague();
+		return;
+	}
+	else if (Ctime == -2.0f)
+	{
+		SetCoolTime(60.0f);
+		return;
+	}
+	PLUS += Ctime;
+	auto MAT = gauge_full->GetDynamicMaterial();
+	MAT->SetScalarParameterValue("Progress", PLUS / 100.0f);
+}
+
+void UStanceGaugeWidget_D::SetCoolTime(float Time)
+{
+	Timer = Time;
+	maxTimer = Time;
 	GetWorld()->GetTimerManager().SetTimer(AttackCtimeHandle, this, &UStanceGaugeWidget_D::eCtimeflow, 0.05f, true, 0.05f);
-
 }
 
 void UStanceGaugeWidget_D::eCtimeflow()
 {
-	if (Ctime_f <= 0.0f)
+	Timer -= 0.05f;
+	if (Timer <= 0.0f)
 	{
 		GetWorld()->GetTimerManager().ClearTimer(AttackCtimeHandle);
-		mat_Progress->SetScalarParameterValue("Progress", 0.0f);
 		return;
 	}
 
-	Ctime_f -= 0.05f;
-	mat_Progress->SetScalarParameterValue("Progress", Ctime_f / Ctime_n);
+	auto MAT = gauge_full->GetDynamicMaterial();
+	MAT->SetScalarParameterValue("Progress", Timer / maxTimer);
 }

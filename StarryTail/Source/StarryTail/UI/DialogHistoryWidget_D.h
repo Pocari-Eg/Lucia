@@ -35,6 +35,11 @@ public:
 	UPROPERTY(EditAnyWhere)
 	class UImage* A_2;
 
+	class ADialogHistoryTrigger* Owner;
+
+	UPROPERTY(EditAnyWhere)
+	class UCanvasPanel* DialogueHistoryCanvas;
+
 	FText lastTalkingPerson;
 
 	UPROPERTY()

@@ -16,7 +16,7 @@
 #include "../EnemySource/Morbit/Morbit.h"
 #include "PlayerSpirit/IreneSpirit.h"
 #include "PlayerSpirit/IreneSpiritAnimInstance.h"
-
+#include "HeliosInstance/HeliosAnimInstance.h"
 #include "../Object/ShieldSpirit.h"
 #include "../Object/LabMagic.h"
 #include "../EnemySource/Bellarus/Swirls/Swirl.h"
@@ -102,11 +102,19 @@ AIreneCharacter::AIreneCharacter()
 
 	PetMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("PetMesh"));
 	PetMesh->SetupAttachment(PetSpringArmComp);
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Irene/Helios/PC_s_idle.PC_s_idle"));
 	if(PetStatic.Succeeded())
-	PetMesh->SetSkeletalMesh(PetStatic.Object);
-	PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
-	PetMesh->SetWorldScale3D(FVector(2.5f,2.5f,2.5f));
+	{
+		PetMesh->SetSkeletalMesh(PetStatic.Object);
+		PetMesh->SetRelativeLocationAndRotation(FVector(0, 0, 0), FRotator(0, 270, 0));
+
+		// 블루프린트 애니메이션 적용
+		PetMesh->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+		ConstructorHelpers::FClassFinder<UAnimInstance>HeliosAnimInstance(TEXT("/Game/Animation/Irene/Helios/BP/BP_HeliosAnimation.BP_HeliosAnimation_C"));
+
+		if (HeliosAnimInstance.Succeeded())
+			PetMesh->SetAnimClass(HeliosAnimInstance.Class);
+	}
 	
 	// 카메라 쉐이크 커브
 	const ConstructorHelpers::FObjectFinder<UCurveVector>FireAttack1(TEXT("/Game/Math/AttackCurve/FireAttack1.FireAttack1"));
@@ -255,6 +263,8 @@ void AIreneCharacter::PostInitializeComponents()
 
 	IreneUIManager = NewObject<UIreneUIManager>(this);
 	IreneUIManager->Init(this);
+
+	PetAnim = Cast<UHeliosAnimInstance>(PetMesh->GetAnimInstance());
 	
 	IreneAnim->OnAttackHitCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackCheck);
 	IreneAnim->OnAttackStopCheck.AddUObject(IreneAttack, &UIreneAttackInstance::AttackStopCheck);
@@ -607,6 +617,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				DamageAmount = -IreneData.CurrentShield;
 				IreneData.CurrentShield = 0;
 				ShieldParticleSystemComponent->Deactivate();
+				PetAnim->SetShield(false);
 			}
 			
 			SetHP(DamageAmount);
