@@ -46,7 +46,6 @@ enum class EAttackedPower : uint8
 	Critical UMETA(DisplayName = "Critical")
 };
 
-// 13°³
 UENUM(BlueprintType)
 enum class EStateEnum : uint8
 {
@@ -72,6 +71,18 @@ enum class EStateEnum : uint8
 	Hit_1,
 	Hit_2,
 	KnockBack,
+	Death
+};
+UENUM(BlueprintType)
+enum class EHeliosStateEnum : uint8
+{
+	Idle = 0,
+	RunLoop,
+	DodgeStart,
+	Shield,
+	FormChange,
+	FormChangeNormal,
+	Stun,
 	Death
 };
 
