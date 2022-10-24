@@ -58,6 +58,8 @@ public:
 	UPROPERTY(EditAnywhere, Category = WAll)
 	ALabMagic* LabMagic;
 	
+
+	bool bIsOn;
 	//Function
 public:
 	// Sets default values for this actor's properties
@@ -75,7 +77,7 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
+	virtual void PostInitializeComponents() override;
 private:
 	void WaveManager();
 	void WaveStart();

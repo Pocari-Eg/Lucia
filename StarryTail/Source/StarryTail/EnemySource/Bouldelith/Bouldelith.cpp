@@ -777,12 +777,7 @@ void ABouldelith::SetBattleRunState(bool State)
 
 void ABouldelith::SetStatueState(bool State)
 {
-	auto AIController = Cast<ABdAIController>(GetAIController());
-	if (AIController != nullptr)
-	{
-		AIController->SetStatueKey(State);
-	}
-
+	
 	if (!State)
 	{
 		StateChangeParticle->SetActive(true, true);
@@ -1028,7 +1023,6 @@ void ABouldelith::BeginPlay()
 	auto BdAIController = Cast<ABdAIController>(MonsterAIController);
 	if (BdAIController != nullptr)
 	{
-		SetStatueState(true);
 		BdAnimInstance->StopAllMontages(0.0f);
 
 		if (WalkPoint != nullptr)

@@ -20,14 +20,14 @@ public:
 	void WallGroggy();
 	void Attacked();
 	void Broken();
-	void SetStatueKey(bool state);
+
 	void SetBattleRunKey(bool state);
 	void SetWalkPoint(FVector Location);
 	static const FName IsBattleIdleKey;
 	static const FName IsBattleWalkKey;
 
 	static const FName IsWallGroggyKey;
-	static const FName IsStatueStateKey;
+
 	static const FName IsBattleRunKey;
 	static const FName IsWalkPointKey;
 

@@ -326,7 +326,6 @@ void ABellyfish::BeginPlay()
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
-	SetNormalState();
 	ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
 }
 

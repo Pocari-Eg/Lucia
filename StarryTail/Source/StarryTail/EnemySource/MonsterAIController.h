@@ -47,7 +47,7 @@ public:
 	void OnAttack(int i);
 	void OffAttack(int i);
 	void SetBackStepKey(bool State);
-	 
+	void SetStatueKey(bool state);
 
 	void SetBattleMonster(AActor* Monster);
 	void InitBattleMonster();
@@ -118,6 +118,7 @@ public:
 
 
 	static const FName IsBackStepOnKey;
+	static const FName IsStatueStateKey;
 protected:
 	UPROPERTY()
 		class UBehaviorTree* BTAsset;

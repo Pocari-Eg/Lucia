@@ -8,7 +8,6 @@ const FName ABdAIController::IsBattleIdleKey = (TEXT("bIsBattleIdle"));
 const FName ABdAIController::IsBattleWalkKey = (TEXT("bIsBattleWalk"));
 
 const FName ABdAIController::IsWallGroggyKey = (TEXT("bIsWallGroggy"));
-const FName ABdAIController::IsStatueStateKey = (TEXT("StatueState"));
 const FName ABdAIController::IsBattleRunKey = (TEXT("bIsBattleRun"));
 const FName ABdAIController::IsWalkPointKey = (TEXT("WalkPointKey"));
 
@@ -58,10 +57,6 @@ void ABdAIController::Broken()
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 }
 
-void ABdAIController::SetStatueKey(bool state)
-{
-	Blackboard->SetValueAsBool(IsStatueStateKey, state);
-}
 
 void ABdAIController::SetBattleRunKey(bool state)
 {
