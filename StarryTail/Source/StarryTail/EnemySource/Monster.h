@@ -94,7 +94,9 @@ public:
 
 	//GroupTrigger 몬스터 설정
 	void SetGroup();
+	void SetStatue(bool state);
 
+	void SetStatueStart();
 	void InitPerfectDodgeNotify();
 
 	//FSM
@@ -105,7 +107,7 @@ public:
 	void DropWeaponSoul();
 
 
-
+	void DeathCheck();
 
 //delegete========================================================
 	FAttackEndDelegate AttackEnd;
@@ -214,6 +216,8 @@ protected:
 	float DpsDamage;
 	float DpsTime;
 	float DpsTimer;
+
+	bool bIsStatueStart;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	class AEnemySpawnPoint* MonsterControl;

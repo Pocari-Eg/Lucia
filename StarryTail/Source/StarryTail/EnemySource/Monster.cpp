@@ -139,6 +139,8 @@ AMonster::AMonster()
 	MonsterInfo.CurStackCount = 0;
 	MonsterInfo.StackEnableDistance = 3000.0f;
 	MonsterInfo.M_AttackTraceInterver = 0.5f;
+
+	bIsStatueStart = false;
 }
 #pragma region Init
 
@@ -930,6 +932,7 @@ void AMonster::StackWidgetOff()
 void AMonster::SetSpawnEnemy()
 {
 	bIsSpawnEnemy = true;
+	SetBattleState();
 }
 EEnemyRank AMonster::GetRank()
 {
@@ -988,14 +991,28 @@ void AMonster::PlayDeathAnim()
 void AMonster::SetGroup()
 {
 	bIsGroupTriggerEnemy = true;
+    SetStatue(false);
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+	SetBattleState();
+}
 
+void AMonster::SetStatue(bool state)
+{
+	
 	if (Cast<ABouldelith>(this))
 	{
-		auto Bouldelith = Cast<ABouldelith>(this);
-		Bouldelith->SetStatueState(false);
+		MonsterAIController->SetStatueKey(state);
+		auto bouldelith = Cast<ABouldelith>(this);
+		bouldelith->SetStatueState(state);
 	}
+	else {
+		MonsterAIController->SetStatueKey(state);
+	}
+}
 
-	SetBattleState();
+void AMonster::SetStatueStart()
+{
+	bIsStatueStart = true;
 }
 
 void AMonster::InitPerfectDodgeNotify()
@@ -1005,6 +1022,7 @@ void AMonster::InitPerfectDodgeNotify()
 }
 void AMonster::SetBattleState()
 {
+	SetStatue(false);
 	MonsterAIController->SetBattleState(true);
 	MonsterAIController->SetNormalState(false);
 	MonsterAIController->SetSupportState(false);
@@ -1021,6 +1039,7 @@ void AMonster::SetBattleState()
 }
 void AMonster::SetNormalState()
 {
+	SetStatue(false);
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(true);
 	MonsterAIController->SetSupportState(false);
@@ -1033,7 +1052,7 @@ void AMonster::SetNormalState()
 }
 void AMonster::SetSupportState()
 {
-
+	SetStatue(false);
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(false);
 	MonsterAIController->SetSupportState(true);
@@ -1066,6 +1085,15 @@ void AMonster::DropWeaponSoul()
 		auto Z = FMath::RandRange(1, 3);
 		Souls[i]->SetValue(Instance->GetPlayer()->IreneAttack->GetNameAtWeaponSoulDataTable());
 		Souls[i]->FireInDirection(FVector(0.0f,Y,Z));
+	}
+}
+
+void AMonster::DeathCheck()
+{
+	if (bIsDead)
+	{
+		STARRYLOG_S(Error);
+		PlayDeathAnim();
 	}
 }
 
@@ -1108,8 +1136,11 @@ void AMonster::BeginPlay()
 
 	InitPerfectDodgeNotify();
 
-	
+	SetStatue(true);
 	MonsterShield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, ShieldSocketName);
+
+
+		
 
 }
 void AMonster::PossessedBy(AController* NewController)

@@ -20,7 +20,7 @@ const FName AMonsterAIController::IsAttackedKey = (TEXT("bIsAttacked"));
 const FName AMonsterAIController::IsGroggyKey = (TEXT("bIsGroggy"));
 
 const FName AMonsterAIController::IsDeadKey = (TEXT("bIsDead"));
-
+const FName AMonsterAIController::IsStatueStateKey = (TEXT("StatueState"));
 const FName AMonsterAIController::ReturnKey = (TEXT("bReturn"));
 
 //state
@@ -87,7 +87,10 @@ void AMonsterAIController::SetSpawnPos(FVector Position)
 {
 	Blackboard->SetValueAsVector(SpawnPosKey, Position);
 }
-
+void AMonsterAIController::SetStatueKey(bool state)
+{
+	Blackboard->SetValueAsBool(IsStatueStateKey, state);
+}
 void AMonsterAIController::SetInAttackArea(bool Set)
 {
 	Blackboard->SetValueAsBool(IsInAttackAreaKey, Set);

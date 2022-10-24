@@ -221,14 +221,7 @@ void ABouldelith::Attack5()
 	IsAttackNum = 5;
 	MonsterAIController->StopMovement();
 }
-void ABouldelith::DeathCheck()
-{
-	if (bIsDead)
-	{
-		STARRYLOG_S(Error);
-		PlayDeathAnim();
-	}
-}
+
 void ABouldelith::LeftAttackCheck()
 {
 	// hitcheck======================================
@@ -784,12 +777,7 @@ void ABouldelith::SetBattleRunState(bool State)
 
 void ABouldelith::SetStatueState(bool State)
 {
-	auto AIController = Cast<ABdAIController>(GetAIController());
-	if (AIController != nullptr)
-	{
-		AIController->SetStatueKey(State);
-	}
-
+	
 	if (!State)
 	{
 		StateChangeParticle->SetActive(true, true);
@@ -1006,7 +994,7 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Attack1.AddUObject(this, &ABouldelith::RightAttackCheck);
 	BdAnimInstance->Attack2.AddUObject(this, &ABouldelith::LeftAttackCheck);
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
-	BdAnimInstance->OnGroggyEnd.AddUObject(this, &ABouldelith::DeathCheck);
+	
 	BdAnimInstance->Right.AddLambda([this]() -> void {
 		InitAttack1Data();
 		IsAttackNum = 1;
@@ -1018,7 +1006,7 @@ void ABouldelith::BeginPlay()
 		});
 
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
-
+	BdAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 
 	//Perfect Dodge
 	BdAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
@@ -1035,7 +1023,6 @@ void ABouldelith::BeginPlay()
 	auto BdAIController = Cast<ABdAIController>(MonsterAIController);
 	if (BdAIController != nullptr)
 	{
-		SetStatueState(true);
 		BdAnimInstance->StopAllMontages(0.0f);
 
 		if (WalkPoint != nullptr)

@@ -82,4 +82,9 @@ void UMonsterAnimInstance::AnimNotify_DodgeTimeOff()
 	DodgeTimeOff.Broadcast();
 }
 
+void UMonsterAnimInstance::AnimNotify_GroggyEnd()
+{
+	OnGroggyEnd.Broadcast();
+}
+
 

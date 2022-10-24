@@ -513,10 +513,7 @@ void ABellarus::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-
 	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
-
 	MonsterAnimInstance = BellarusAnimInstance;
 
 	if (BellarusAnimInstance == nullptr)
@@ -545,7 +542,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->SwirlAttack.AddUObject(this, &ABellarus::SwirlAttack);
 	BellarusAnimInstance->FeatherAttack.AddUObject(this, &ABellarus::ProjectileAttack);
 	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStart);
-
+	BellarusAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	TeleportLocation = GetActorLocation();
 
 	SetSpawnPos();

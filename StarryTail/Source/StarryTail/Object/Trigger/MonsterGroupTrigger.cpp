@@ -28,6 +28,8 @@ AMonsterGroupTrigger::AMonsterGroupTrigger()
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
 
 	CurrentWave = 0;
+
+	bIsOn = false;
 }
 
 void AMonsterGroupTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -38,6 +40,7 @@ void AMonsterGroupTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, A
 		Instance->InitData();
 	}
 
+	bIsOn = true;
 	TriggerOff();
 	if (WAVE.Num() != 0) {
 		WaveStart();
@@ -63,21 +66,45 @@ void AMonsterGroupTrigger::BeginPlay()
 		Instance->WaveStart.AddUObject(this, &AMonsterGroupTrigger::WaveManager);
 		Instance->SetNextWaveCount(0);
 	}
+	if (WAVE.Num() != 0) {
+		for (int i = 0; i < WAVE.Num(); i++)
+		{
+			if (WAVE[i].Monster.Num() != 0) {
+
+				for (int j = 0; j < WAVE[i].Monster.Num(); j++)
+				{
+					WAVE[i].Monster[j]->GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+				}
+
+			}
+		}
+	}
+
+
+	
+	
+}
+
+void AMonsterGroupTrigger::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
 
 }
 
 void AMonsterGroupTrigger::WaveManager()
 {
+	if (bIsOn) {
 
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)
-	{
-		if (Instance->IsLastWave())
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (Instance != nullptr)
 		{
-			WaveClear();
-		}
-		else {
-			WaveStart();
+			if (Instance->IsLastWave())
+			{
+				WaveClear();
+			}
+			else {
+				WaveStart();
+			}
 		}
 	}
 }
@@ -123,6 +150,7 @@ void AMonsterGroupTrigger::WaveClear()
 	{
 		LabMagic->EndLabMagic();
 	}
+	bIsOn = false;
 }
 
 void AMonsterGroupTrigger::OnBattleWall()
