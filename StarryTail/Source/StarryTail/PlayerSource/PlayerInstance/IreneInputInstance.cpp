@@ -15,6 +15,7 @@
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../PlayerSpirit/IreneSpiritAnimInstance.h"
 #include "../../UI/IngameWidget_D.h"
+#include "StarryTail/PlayerSource/HeliosInstance/HeliosAnimInstance.h"
 
 UIreneInputInstance::UIreneInputInstance()
 {
@@ -678,6 +679,9 @@ void UIreneInputInstance::DodgeKeyword()
 		}
 		
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
+		
+		Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::DodgeStart);
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);}));
 
 		RecoveryDodge();
 		
@@ -821,6 +825,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			{
 				// 정령 스탠스 적용
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChange);
 
 				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
 					INGAME->STANCEGAUGEeCtime(-2.0f);
@@ -832,9 +837,13 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
 				Irene->ChangeStateAndLog(UFormChangeState::GetInstance());
-				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->IreneAnim->SetSpiritStart(false);}));
+				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]
+				{
+					Irene->IreneAnim->SetSpiritStart(false);
+					Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
+				}));
 				Irene->bIsSpiritStance = true;
-				Irene->PetMesh->SetVisibility(false);
+				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]{Irene->PetMesh->SetVisibility(false);} , 1.0f, false);				
 			}
 			else
 			{
@@ -843,7 +852,9 @@ void UIreneInputInstance::SpiritChangeKeyword()
 
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
-
+				
+				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->ActionEndChangeMoveState();}));
+				
 				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
 					INGAME->STANCEGAUGEeCtime(-1.0f);
 
@@ -851,7 +862,8 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->ActionEndChangeMoveState();
 				Irene->bIsSpiritStance = false;
 				Irene->PetMesh->SetVisibility(true); 
-			    
+				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChangeNormal);
+
 				const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 				if (Instance != nullptr)
 				{
@@ -877,8 +889,13 @@ void UIreneInputInstance::SpiritChangeMaxTime()
 		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeDamageOverTimer);
 		bIsStun = true;
-		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]{bIsStun = false;}), 10, false);
+		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]
+		{
+			bIsStun = false;
+			Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
+		}), 10, false);
 		SpiritChangeKeyword();
+		Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Stun);
 	}
 }
 void UIreneInputInstance::SpiritTimeOverDeBuff()
@@ -1074,6 +1091,7 @@ void UIreneInputInstance::UltimateAttack()
 	// 쉴드
 	Irene->ShieldParticleSystemComponent->Activate(true);
 	Irene->IreneData.CurrentShield = Irene->IreneData.MaxShield;
+	Irene->PetAnim->SetShield(true);
 
 	// 공격
 	// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법

@@ -50,6 +50,8 @@ public:
 	USpringArmComponent* PetSpringArmComp;
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Pet)
 	USkeletalMeshComponent* PetMesh;
+	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Pet)
+	class UHeliosAnimInstance* PetAnim;
 	
 	UPROPERTY(BlueprintReadWrite)
 	class UIreneAnimInstance* IreneAnim;
