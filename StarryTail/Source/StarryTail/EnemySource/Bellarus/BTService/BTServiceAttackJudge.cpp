@@ -517,43 +517,44 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 
 void UBTServiceAttackJudge::ShieldFristRangeAttackCheck(ABellarus* Bellarus, FVector Center)
 {
+	if (Bellarus->ProjectileCheck()) {
 
-	bool InSwirlAttack = AttackCheck(Bellarus, Center, Bellarus->GetSwirlData()->M_Atk_Radius, Bellarus->GetSwirlData()->M_Atk_Height, Bellarus->GetSwirlData()->M_Atk_Angle, 0.0f,  FColor::Purple);
-	bool InFeatherAttack = AttackCheck(Bellarus, Center, Bellarus->GetFeatherData()->M_Atk_Radius, Bellarus->GetFeatherData()->M_Atk_Height, Bellarus->GetFeatherData()->M_Atk_Angle, 0.0f, FColor::Purple);
+		bool InSwirlAttack = AttackCheck(Bellarus, Center, Bellarus->GetSwirlData()->M_Atk_Radius, Bellarus->GetSwirlData()->M_Atk_Height, Bellarus->GetSwirlData()->M_Atk_Angle, 0.0f, FColor::Purple);
+		bool InFeatherAttack = AttackCheck(Bellarus, Center, Bellarus->GetFeatherData()->M_Atk_Radius, Bellarus->GetFeatherData()->M_Atk_Height, Bellarus->GetFeatherData()->M_Atk_Angle, 0.0f, FColor::Purple);
 
 
-	if (InSwirlAttack)
-	{
-
-		if (Bellarus->GetToPlayerDistance() > Bellarus->GetSwirlData()->M_Atk_Radius * 0.95f && InFeatherAttack)
+		if (InSwirlAttack)
 		{
-			auto ran = FMath::RandRange(1, 100);
-			if (ran <= 70) {
+
+			if (Bellarus->GetToPlayerDistance() > Bellarus->GetSwirlData()->M_Atk_Radius * 0.95f && InFeatherAttack)
+			{
+				auto ran = FMath::RandRange(1, 100);
+				if (ran <= 70) {
+					Bellarus->SetBattleState();
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+					return;
+				}
+				ran = FMath::RandRange(1, 100);
+				if (ran <= 50) {
+					Bellarus->SetBattleState();
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+					return;
+				}
+			}
+			else {
 				Bellarus->SetBattleState();
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
-				return;
 			}
-			ran = FMath::RandRange(1, 100);
-			if (ran <= 50) {
-				Bellarus->SetBattleState();
-				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
-				return;
-			}
+
 		}
 		else {
-			Bellarus->SetBattleState();
-			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
-		}
-
-	}
-	else {
-		if (InFeatherAttack)
-		{
-			Bellarus->SetBattleState();
-			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+			if (InFeatherAttack)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+			}
 		}
 	}
-
 
 }
 

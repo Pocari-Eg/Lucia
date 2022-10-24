@@ -7,7 +7,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../STGameInstance.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "EngineUtils.h"
 
 ABellarus::ABellarus()
 {
@@ -493,6 +493,21 @@ void ABellarus::SwirlAttack()
 	}
 }
 
+
+bool ABellarus::ProjectileCheck()
+{
+	int count = 0;
+	for (ASwirl* Swirl : TActorRange<ASwirl>(GetWorld()))
+	{
+		count++;
+	}
+	for (ABF_Projectile* Swirl : TActorRange<ABF_Projectile>(GetWorld()))
+	{
+		count++;
+	}
+
+	return count == 0 ? true : false;
+}
 
 void ABellarus::BeginPlay()
 {
