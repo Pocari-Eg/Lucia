@@ -9,6 +9,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../PlayerSpirit/IreneSpiritAnimInstance.h"
+#include "StarryTail/PlayerSource/HeliosInstance/HeliosAnimInstance.h"
 
 #pragma region IreneFSM
 void UIreneFSM::Update(const float Value)
@@ -80,6 +81,8 @@ UIdleState* UIdleState::GetInstance()
 void UIdleState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Idle);
+	if(CurState->Irene && CurState->Irene->PetAnim != nullptr)
+		CurState->Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	// Irene이 없으면 UI메니저 확인 안함
@@ -155,6 +158,7 @@ URunLoopState* URunLoopState::GetInstance()
 void URunLoopState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Run_Loop);
+	CurState->Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::RunLoop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	if(CurState->Irene->bIsSpiritStance)
@@ -292,6 +296,7 @@ USprintLoopState* USprintLoopState::GetInstance()
 void USprintLoopState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Sprint_Loop);
+	CurState->Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::RunLoop);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->GetCharacterMovement()->MaxWalkSpeed = CurState->Irene->IreneData.SprintMaxSpeed * CurState->Irene->IreneData.WaterDeBuffSpeed;
@@ -1521,6 +1526,7 @@ UDeathState* UDeathState::GetInstance()
 void UDeathState::Enter(IBaseGameEntity* CurState)
 {
 	CurState->SetStateEnum(EStateEnum::Death);
+	CurState->Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Death);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
 	CurState->Irene->IreneAnim->StopAllMontages(0);

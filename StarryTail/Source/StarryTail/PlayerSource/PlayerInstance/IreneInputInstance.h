@@ -68,6 +68,8 @@ private:
 	bool bIsSpiritChangeEnable;
 	// 잔상 공격 단계
 	int SpiritChainAttackCount;
+	// 정령 사라지기까지 남은 시간
+	FTimerHandle NormalToSpiritWaitHandle;
 	
 	// 공격 연속 입력 지연
 	FTimerHandle AttackWaitHandle;
