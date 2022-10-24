@@ -9,8 +9,6 @@ void UBdAnimInstance::PlayDetectMontage()
 }
 void UBdAnimInstance::PlayDeathMontage()
 {
-	STARRYLOG_S(Error);
-	StopAllMontages(0.0f);
 	Montage_Play(DeathMontage, 1.0f);
 }
 void UBdAnimInstance::PlayBattleRunMontage()
@@ -54,7 +52,7 @@ void UBdAnimInstance::PlayAttack3Montage()
 }
 void UBdAnimInstance::PlayAttack4Montage()
 {
-	Montage_Play(AttackMontage4, 1.0f);
+	Montage_Play(AttackMontage4, PlayRate);
 }
 void UBdAnimInstance::PlayAttack1ComboMontage()
 {
@@ -87,11 +85,11 @@ void UBdAnimInstance::PlayAttackedMontage()
 {
 	if (CheckAttackedMontagePlaying())
 		return;
-	Montage_Play(AttackedMontage, 1.0f);
+	Montage_Play(AttackedMontage, PlayRate);
 }
 void UBdAnimInstance::PlayBrokenMontage()
 {
-	Montage_Play(BrokenMontage, 1.0f);
+	Montage_Play(BrokenMontage, PlayRate);
 }
 
 void UBdAnimInstance::UpgradeBattleRun()
@@ -189,6 +187,11 @@ void UBdAnimInstance::AnimNotify_Attack3End()
 void UBdAnimInstance::AnimNotify_Attack4End()
 {
 	Attack4End.Broadcast();
+}
+
+void UBdAnimInstance::AnimNotify_GroggyEnd()
+{
+	OnGroggyEnd.Broadcast();
 }
 
 void UBdAnimInstance::SetbIsState(bool state)
