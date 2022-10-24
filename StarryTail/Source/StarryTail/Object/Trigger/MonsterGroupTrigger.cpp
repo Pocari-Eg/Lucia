@@ -73,7 +73,7 @@ void AMonsterGroupTrigger::BeginPlay()
 
 				for (int j = 0; j < WAVE[i].Monster.Num(); j++)
 				{
-					WAVE[i].Monster[j]->GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+					WAVE[i].Monster[j]->GetCapsuleComponent()->SetCollisionProfileName("Wall");
 				}
 
 			}
