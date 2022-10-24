@@ -105,7 +105,7 @@ public:
 	void DropWeaponSoul();
 
 
-
+	void DeathCheck();
 
 //delegete========================================================
 	FAttackEndDelegate AttackEnd;

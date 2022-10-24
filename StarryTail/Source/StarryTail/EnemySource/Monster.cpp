@@ -1069,6 +1069,15 @@ void AMonster::DropWeaponSoul()
 	}
 }
 
+void AMonster::DeathCheck()
+{
+	if (bIsDead)
+	{
+		STARRYLOG_S(Error);
+		PlayDeathAnim();
+	}
+}
+
 
 	
 

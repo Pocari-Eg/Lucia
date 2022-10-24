@@ -12,7 +12,7 @@
 DECLARE_MULTICAST_DELEGATE(FBackstepEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackDirectionDelegate);
-DECLARE_MULTICAST_DELEGATE(FGroggyEndDelegate)
+
 
 UCLASS()
 class STARRYTAIL_API UBdAnimInstance : public UMonsterAnimInstance
@@ -62,7 +62,7 @@ public:
 	FAttackEndDelegate Attack3End;
 	FAttackEndDelegate Attack4End;
 
-	FGroggyEndDelegate OnGroggyEnd;
+
 private:
 	UFUNCTION()
 	void AnimNotify_Attack1();
@@ -86,8 +86,7 @@ private:
 		void AnimNotify_Attack3End();
 	UFUNCTION()
 		void AnimNotify_Attack4End();
-	UFUNCTION()
-	void AnimNotify_GroggyEnd();
+
 	//Var
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* IdleMontage1;

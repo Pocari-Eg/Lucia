@@ -16,6 +16,7 @@ DECLARE_MULTICAST_DELEGATE(FAttackEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FAttackedEndDelegate);
 DECLARE_MULTICAST_DELEGATE(FDeathDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeTimeSwitch);
+DECLARE_MULTICAST_DELEGATE(FGroggyEndDelegate)
 UCLASS()
 class STARRYTAIL_API UMonsterAnimInstance : public UAnimInstance
 {
@@ -50,6 +51,7 @@ public:
 	FDodgeTimeSwitch DodgeTimeOn;
 	FDodgeTimeSwitch DodgeTimeOff;
 
+	FGroggyEndDelegate OnGroggyEnd;
 protected:
 	//Function
 	UFUNCTION()
@@ -64,6 +66,8 @@ protected:
 	void AnimNotify_DodgeTimeOn();
 	UFUNCTION()
 	void AnimNotify_DodgeTimeOff();
+	UFUNCTION()
+	void AnimNotify_GroggyEnd();
 	//Variable
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AnimationSpeed, Meta = (AllowPrivateAccess = true))
 		float PlayRate;
