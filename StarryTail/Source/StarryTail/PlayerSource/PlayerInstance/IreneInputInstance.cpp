@@ -14,6 +14,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "../PlayerSpirit/IreneSpirit.h"
 #include "../PlayerSpirit/IreneSpiritAnimInstance.h"
+#include "../../UI/IngameWidget_D.h"
 
 UIreneInputInstance::UIreneInputInstance()
 {
@@ -820,7 +821,10 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			{
 				// 정령 스탠스 적용
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
-				
+
+				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
+					INGAME->STANCEGAUGEeCtime(-2.0f);
+
 				Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
@@ -839,6 +843,9 @@ void UIreneInputInstance::SpiritChangeKeyword()
 
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
+
+				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
+					INGAME->STANCEGAUGEeCtime(-1.0f);
 
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->ActionEndChangeMoveState();

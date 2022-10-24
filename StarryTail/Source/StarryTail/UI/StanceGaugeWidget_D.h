@@ -22,11 +22,16 @@ public:
 	FTimerHandle AttackCtimeHandle;
 	float PLUS = 0.0f;
 
+	float Timer, maxTimer;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void eCtime(float Ctime);
-
+	UFUNCTION(BlueprintCallable)
 	void ResetStanceGague();
+
+	UFUNCTION(BlueprintCallable)
+	void SetCoolTime(float Time);
 
 	void eCtimeflow();
 };
