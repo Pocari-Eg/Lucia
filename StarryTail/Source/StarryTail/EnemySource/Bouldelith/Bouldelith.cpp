@@ -221,6 +221,14 @@ void ABouldelith::Attack5()
 	IsAttackNum = 5;
 	MonsterAIController->StopMovement();
 }
+void ABouldelith::DeathCheck()
+{
+	if (bIsDead)
+	{
+		STARRYLOG_S(Error);
+		PlayDeathAnim();
+	}
+}
 void ABouldelith::LeftAttackCheck()
 {
 	// hitcheck======================================
@@ -998,7 +1006,7 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Attack1.AddUObject(this, &ABouldelith::RightAttackCheck);
 	BdAnimInstance->Attack2.AddUObject(this, &ABouldelith::LeftAttackCheck);
 	BdAnimInstance->Attack4.AddUObject(this, &ABouldelith::AttackCheck4);
-
+	BdAnimInstance->OnGroggyEnd.AddUObject(this, &ABouldelith::DeathCheck);
 	BdAnimInstance->Right.AddLambda([this]() -> void {
 		InitAttack1Data();
 		IsAttackNum = 1;
