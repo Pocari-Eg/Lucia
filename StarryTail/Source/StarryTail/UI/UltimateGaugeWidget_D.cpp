@@ -7,6 +7,7 @@
 
 void UUltimateGaugeWidget_D::SetUltimate(float pErcent)
 {
-	auto _pErcent = ultimate_fillBar->Percent + (pErcent / 100.0f);
-	ultimate_fillBar->SetPercent(_pErcent);
+	//auto _pErcent = ultimate_fillBar->Percent + (pErcent / 100.0f);
+	//ultimate_fillBar->SetPercent(_pErcent);
+	GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Red, FString::Printf(TEXT("%f"), pErcent));
 }

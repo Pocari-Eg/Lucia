@@ -6,10 +6,14 @@
 #include "Kismet/KismetArrayLibrary.h"
 #include "ScriptDataTable.h"
 #include "DialogChildWidget_D.h"
-
+#include "../PlayerSource/PlayerInstance/IreneUIManager.h"
+#include "../PlayerSource/IreneCharacter.h"
+#include "../Object/Trigger/DialogHistoryTrigger.h"
+#include "Kismet/GameplayStatics.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/ScrollBox.h"
+#include "Components/CanvasPanel.h"
 
 void UDialogHistoryWidget_D::DialogueStart(UDataTable* table, FName startName, FName endName)
 {
@@ -56,8 +60,12 @@ void UDialogHistoryWidget_D::nextTalk()
 {
 	if (!dialogueArr.IsValidIndex(dialogueIndex))
 	{
+		if (Owner != nullptr)
+			Owner->PlaySeq.Broadcast();
+
 		RemoveFromParent();
 		RemoveFromViewport();
+
 		return;
 	}
 
@@ -104,10 +112,26 @@ void UDialogHistoryWidget_D::nextTalk()
 
 void UDialogHistoryWidget_D::trySkipDialogue()
 {
+	if (DialogueHistoryCanvas->GetVisibility() == ESlateVisibility::Collapsed)
+	{
+		auto AutoIrene = Cast<AIreneCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+		AutoIrene->IreneUIManager->PlayerHud->ActionWidgetOff();
+
+		DialogueHistoryCanvas->SetVisibility(ESlateVisibility::Visible);
+		DialogueHistoryCanvas->SetRenderOpacity(1.0f);
+		nextTalk();
+		return;
+	}
+
 	if (DialgoueScroll->GetChildrenCount() >= 1)
 	{
 		auto ChildPanel = Cast<UDialogChildWidget_D>(DialgoueScroll->GetChildAt(DialgoueScroll->GetChildrenCount() - 1));
 		if (ChildPanel != nullptr)
-			ChildPanel->SkipDialogue();
+		{
+			if (ChildPanel->IsHandleActive())
+				ChildPanel->SkipDialogue();
+			else
+				nextTalk();
+		}
 	}
 }

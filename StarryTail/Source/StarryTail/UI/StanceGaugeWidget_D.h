@@ -20,11 +20,13 @@ public:
 
 	UMaterialInstanceDynamic* mat_Progress;
 	FTimerHandle AttackCtimeHandle;
-	float Ctime_n, Ctime_f;
+	float PLUS = 0.0f;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void eCtime(float Ctime);
+
+	void ResetStanceGague();
 
 	void eCtimeflow();
 };
