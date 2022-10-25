@@ -148,6 +148,7 @@ void AMonsterGroupTrigger::WaveClear()
 
 	if (LabMagic != nullptr)
 	{
+		LabMagic->EndExplosion();
 		LabMagic->EndLabMagic();
 	}
 	bIsOn = false;
