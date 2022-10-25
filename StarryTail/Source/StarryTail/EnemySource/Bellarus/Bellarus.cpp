@@ -527,6 +527,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
 		AttackedEnd.Broadcast();
+		DeathCheck();
 		});
 	BellarusAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)

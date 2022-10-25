@@ -296,6 +296,7 @@ void ABellyfish::BeginPlay()
 	BellyfishAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
 		AttackedEnd.Broadcast();
+		DeathCheck();
 		});
 	BellyfishAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
