@@ -982,6 +982,7 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
 		AttackedEnd.Broadcast();
+		DeathCheck();
 		});
 	BdAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
