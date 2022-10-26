@@ -57,6 +57,8 @@ void ATornadoSwirl::TornadoSwirlBegin(UPrimitiveComponent* OverlappedComp, AActo
 			Direction.Normalize();
 			SpawnLocation = Direction * MinDistance;
 			SpawnTornado();
+
+			OnSwirlDestroy.Broadcast();
 			OtherActor->Destroy();
 			Destroy();
 	

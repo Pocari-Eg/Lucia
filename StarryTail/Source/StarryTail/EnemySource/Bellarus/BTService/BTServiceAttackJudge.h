@@ -30,11 +30,12 @@ public:
 	UBTServiceAttackJudge();
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-	bool AttackJudge(class AMonster* Monster, FVector Center,float Radius, FColor Color);
+	static bool AttackJudge(class AMonster* Monster, FVector Center,float Radius, FColor Color);
 	bool AttackCheck(class AMonster* Monster, FVector Center, float Radius,float Height,float Angle, float AttackAxis, FColor Color);
 
 
 	void MeleeAttck(class ABellarus* Bellarus,FVector Center);
+	void RangeAttck(class ABellarus* Bellarus, FVector Center);
 	void ShieldFristRangeAttackCheck(class ABellarus* Bellarus, FVector Center);
 
 };

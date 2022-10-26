@@ -65,6 +65,12 @@ ABellarus::ABellarus()
 	bIsInSpawnRadius = false;
 	AttacekdTeleportTimer = 0.0f;
 
+	SwirlWait = false;
+	//MonsterShield->SetDurabilty(MonsterInfo.M_Shield_Def);
+
+	SwirlWaitTime = 0.0f;
+	SwirlWaitTimer = 0.0f;
+
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 {
@@ -212,6 +218,8 @@ void ABellarus::BasicSwirlAttack()
 		(GetActorLocation()+(RightVector * 20))-FVector(0.0f,0.0f,GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
 		GetActorRotation(), SpawnParams);
 
+	
+	SwirlWait = true;
 
 	if (CenterSwirl!=nullptr)
 	{
@@ -237,6 +245,15 @@ void ABellarus::BasicSwirlAttack()
 		LeftSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time, NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f);
 		LeftSwirl->SwirlCoreActive(LetfVector);
 	}
+
+	m_CenterSwirl = CenterSwirl;
+	m_LeftSwirl = LeftSwirl;
+	RightSwirl = RightSwirl;
+
+	m_CenterSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::SwirlDestroy);
+	m_LeftSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::SwirlDestroy);
+	RightSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::SwirlDestroy);
+
 }
 
 void ABellarus::GuidedSwirlAttack()
@@ -258,10 +275,15 @@ void ABellarus::GuidedSwirlAttack()
 	RightVector.Z = 0.0f;
 	LetfVector.Z = 0.0f;
 	// 총구 위치에 발사체를 스폰시킵니다.
+	SwirlWait = true;
 
 	AGuidedSwirl* RightSwirl = GetWorld()->SpawnActor<AGuidedSwirl>(GuidedSwirlClass,
 		(GetActorLocation() + (RightVector * 40)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
 		GetActorRotation()+FRotator(0.0f,45.0f,0.0f), SpawnParams);
+
+	
+
+
 	if (RightSwirl != nullptr)
 	{
 		RightSwirl->InitSwirl(NewSkillData->M_Skill_Atk, BellarusInfo.Swirl_DOT_Damage, BellarusInfo.Swirl_Pull_Force, NewSkillData->M_Skill_Set_Time,
@@ -278,6 +300,12 @@ void ABellarus::GuidedSwirlAttack()
 			NewSkillData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 120.0f,BellarusInfo.Swirl_Explosion_Radius, BellarusInfo.Swirl_Explosion_Damage);
 		LeftSwirl->SwirlCoreActive(ForwardVector);
 	}
+
+	m_RightSwirl = RightSwirl;
+	m_LeftSwirl = LeftSwirl;
+
+	m_RightSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::GuidedSwirlDestory);
+	m_LeftSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::GuidedSwirlDestory);
 
 }
 
@@ -300,6 +328,8 @@ void ABellarus::TornadoSwirlAttack()
 	RightVector.Z = 0.0f;
 	LetfVector.Z = 0.0f;
 	// 총구 위치에 발사체를 스폰시킵니다.
+	SwirlWait = true;
+
 
 	ATornadoSwirl* RightSwirl = GetWorld()->SpawnActor<ATornadoSwirl>(ATornadoSwirlClass,
 		(GetActorLocation() + (RightVector * 500.0f)) - FVector(0.0f, 0.0f, GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
@@ -326,6 +356,14 @@ void ABellarus::TornadoSwirlAttack()
 		LeftSwirl->InitTornade(TornadoData->M_Skill_Atk, BellarusInfo.Tornado_DOT_Damage, BellarusInfo.Tornado_Pull_Force, TornadoData->M_Skill_Set_Time,
 			TornadoData->M_Skill_Time, BellarusInfo.Swirl_MoveSpeed, 240.0f);
 	}
+
+
+	m_LeftSwirl = LeftSwirl;
+	RightSwirl = RightSwirl;
+
+
+	m_LeftSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::TornadoSwirlDestroy);
+	RightSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::TornadoSwirlDestroy);
 }
 
 void ABellarus::PlayFeatherAnim()
@@ -464,7 +502,6 @@ void ABellarus::ShieldRegen()
 	RegenTime = BellarusInfo.M_NShield_Time;
 
 	MonsterShield->ShieldRegen();
-
 	GetAIController()->SetShieldKey(true);
 	OnBarrierChanged.Broadcast();
 }
@@ -549,6 +586,7 @@ void ABellarus::BeginPlay()
 	SetSpawnPos();
 	SetNormalState();
 	Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
+
 }
 
 void ABellarus::PossessedBy(AController* NewController)
@@ -763,7 +801,17 @@ void ABellarus::Tick(float DeltaTime)
 		else {
 			AttacekdTeleportTimer = 0.0f;
 		}
-	
+
+		if (TornadoWait)
+		{
+			SwirlWaitTimer += DeltaTime;
+			if (SwirlWaitTimer >= SwirlWaitTime)
+			{
+				TornadoWait = false;
+				SwirlWait = false;
+			}
+		}
+
 }
 void ABellarus::InitAnime()
 {
@@ -928,6 +976,52 @@ bool ABellarus::AttackCheck(float Radius, float Height, float Angle, float Attac
 	}
 
 	return false;
+}
+
+void ABellarus::SwirlDestroy()
+{
+	STARRYLOG(Error, TEXT("SwirlDestroy"));
+	m_LeftSwirl = nullptr;
+	m_RightSwirl = nullptr;
+	m_CenterSwirl = nullptr;
+
+	SwirlWait = false;
+}
+
+void ABellarus::GuidedSwirlDestory()
+{
+	STARRYLOG(Error, TEXT("GuidedSwirlDestroy"));
+	m_LeftSwirl = nullptr;
+	m_RightSwirl = nullptr;
+
+	SwirlWait = false;
+
+}
+
+void ABellarus::TornadoSwirlDestroy()
+{
+
+	STARRYLOG(Error, TEXT("TornadoDestroy"));
+	m_LeftSwirl = nullptr;
+	m_RightSwirl = nullptr;
+	m_CenterSwirl = nullptr;
+
+	FMonsterSkillDataTable* TornadoData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+	SwirlWaitTime = TornadoData->M_Skill_Time;
+	SwirlWaitTimer = 0.0f;
+	TornadoWait = true;
+}
+
+void ABellarus::SetSecondPhase()
+{
+	MonsterInfo.Monster_Code = 4;
+	InitMonsterInfo();
+
+	PlayGroggyAnim();
+	MonsterAIController->Groggy();
+	MonsterShield->ShieldRegen();
+	GetAIController()->SetShieldKey(true);
+	OnBarrierChanged.Broadcast();
 }
 
 #pragma endregion Init

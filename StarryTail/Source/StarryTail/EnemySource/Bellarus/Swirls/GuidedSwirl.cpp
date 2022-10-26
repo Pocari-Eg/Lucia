@@ -56,6 +56,7 @@ void AGuidedSwirl::GuidedSwirlBegin(UPrimitiveComponent* OverlappedComp, AActor*
 			AttackCheck(ExplosionRadius, 200.0f, 360.0f, 0.0f);
 			UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), SwirlExplosionParticle, GetActorLocation() + ExplosionLocation);
 
+			OnSwirlDestroy.Broadcast();
 			OtherSwirl->Destroy();
 			Destroy();
 	

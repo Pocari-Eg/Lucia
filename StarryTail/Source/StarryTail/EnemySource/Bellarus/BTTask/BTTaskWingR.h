@@ -18,6 +18,7 @@ public:
 private:
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
+	void SecondPhaseAction(class ABellarus* Monster, UBehaviorTreeComponent& OwnerComp);
 
 	bool bIsAttacking;
 	bool bIsNotAttacking;

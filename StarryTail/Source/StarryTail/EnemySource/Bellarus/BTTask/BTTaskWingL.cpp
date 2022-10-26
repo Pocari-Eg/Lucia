@@ -6,6 +6,7 @@
 #include "../BellarusAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "../BTService/BTServiceAttackJudge.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTaskWingL::UBTTaskWingL()
@@ -34,7 +35,7 @@ void UBTTaskWingL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Monster = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
 
 	if (!bIsAttacking)
 	{
@@ -45,8 +46,32 @@ void UBTTaskWingL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		Cast<ABellarusAIController>(Monster->GetAIController())->AllAttackOff();
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellarusAIController::CheckKey, false);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-
-
+		if (Cast<ABellarusAIController>(Monster->GetAIController())->GetSecondPhaseKey() == true) {
+			SecondPhaseAction(Monster, OwnerComp);
+		}
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
+}
+
+void UBTTaskWingL::SecondPhaseAction(ABellarus* Monster, UBehaviorTreeComponent& OwnerComp)
+{
+	FVector Center = Monster->GetLocation();
+	Center -= FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+	bool FirstJudge = UBTServiceAttackJudge::AttackJudge(Monster, Center, Monster->GetFirstJugdeRadius(), FColor::Green);
+	if (FirstJudge)
+	{
+		auto Ran = FMath::RandRange(1, 100);
+		if (Ran <= 40)
+		{
+			Cast<ABellarusAIController>(Monster->GetAIController())->SetWingRKey(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+
+		Ran = FMath::RandRange(1, 100);
+		if (Ran <= 40)
+		{
+			Cast<ABellarusAIController>(Monster->GetAIController())->SetTailKey(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
 }

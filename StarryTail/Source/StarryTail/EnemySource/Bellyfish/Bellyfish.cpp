@@ -63,6 +63,8 @@ ABellyfish::ABellyfish()
 	 bIsRush = false;
 	 bIsPlayerRushHit = false;
 
+	 //MonsterShield->SetDurabilty(MonsterInfo.M_Shield_Def);
+
 }
 UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 {

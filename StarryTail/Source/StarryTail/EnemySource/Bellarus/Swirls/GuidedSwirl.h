@@ -9,10 +9,13 @@
 /**
  * 
  */
+
 UCLASS()
 class STARRYTAIL_API AGuidedSwirl : public ASwirl
 {
 	GENERATED_BODY()
+
+
 private:
 
 
