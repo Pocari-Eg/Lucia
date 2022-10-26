@@ -36,6 +36,8 @@ ABouldelith::ABouldelith()
 	StateChangeParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StateChangeParticle"));
 	StateChangeParticle->SetupAttachment(GetMesh());
 	StateChangeParticle->SetAutoActivate(false);
+
+	//MonsterShield->SetDurabilty(MonsterInfo.M_Shield_Def);
 }
 #pragma region Init
 void ABouldelith::InitMonsterInfo()

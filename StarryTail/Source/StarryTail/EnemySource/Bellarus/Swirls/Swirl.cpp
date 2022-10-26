@@ -184,6 +184,7 @@ void ASwirl::Tick(float DeltaTime)
 		KeepSwirlTimer += DeltaTime;
 		if (KeepSwirlTimer >= KeepSwirlTime)
 		{
+			OnSwirlDestroy.Broadcast();
 			Destroy();
 		}
 

@@ -95,6 +95,12 @@ public:
 	float GetCalibrationRadius();
 	float GetCheckTime();
 
+	void SetSecondPhase();
+
+
+	bool GetSwirlWaitState() { return SwirlWait; }
+	void SetSwirlWaiteState(bool State) { SwirlWait = State; }
+
 	FMonsterSkillDataTable* GetWingData();
 	FMonsterSkillDataTable* GetTailData();
 	FMonsterSkillDataTable* GetSwirlData();
@@ -110,6 +116,11 @@ private:
 	void InitBellarusInfo();
 	bool AttackCheck(float Radius, float Height, float Angle,float AttackAxis);
 
+
+
+	void SwirlDestroy();
+	void GuidedSwirlDestory();
+	void TornadoSwirlDestroy();
 
 //Variable
 	//Variable
@@ -130,10 +141,20 @@ private:
 	float RegenTime;
 	float RegenTimer;
 
+
+	bool SwirlWait;
+
+	bool TornadoWait;
+	float SwirlWaitTime;
+	float SwirlWaitTimer;
 	TSubclassOf<ASwirl> SwirlClass;
 	TSubclassOf<AGuidedSwirl> GuidedSwirlClass;
 	TSubclassOf<ATornadoSwirl> ATornadoSwirlClass;
 	TSubclassOf<ABF_Projectile> AProjectileClass;
+
+	ASwirl* m_CenterSwirl;
+	ASwirl* m_RightSwirl;
+	ASwirl* m_LeftSwirl;
 public:
 
 

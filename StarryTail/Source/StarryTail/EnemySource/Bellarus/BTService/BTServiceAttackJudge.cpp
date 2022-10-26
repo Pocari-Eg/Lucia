@@ -31,9 +31,13 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 		Center -= FVector(0.0f, 0.0f, Bellarus->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 		
-		InFirstJudge = AttackJudge(Bellarus, Center, Bellarus->GetFirstJugdeRadius(),FColor::Green);
-		InSecondJudge = AttackJudge(Bellarus, Center, Bellarus->GetSecondJugdeRadius(), FColor::Blue);
-		InCalibration = AttackJudge(Bellarus, Center, Bellarus->GetCalibrationRadius(), FColor::Red);
+		if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+			OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false &&
+			!Bellarus->GetSwirlWaitState()) {
+			InFirstJudge = AttackJudge(Bellarus, Center, Bellarus->GetFirstJugdeRadius(), FColor::Green);
+			InSecondJudge = AttackJudge(Bellarus, Center, Bellarus->GetSecondJugdeRadius(), FColor::Blue);
+			InCalibration = AttackJudge(Bellarus, Center, Bellarus->GetCalibrationRadius(), FColor::Red);
+		}
 
 		AttackCheckTimer += Interval;
 		if (AttackCheckTimer >= 1.0f)
@@ -42,54 +46,58 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 
 
 			//쉴드 있을때
-			if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetIsShieldOn()) {
-				if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-					OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
-					if (InFirstJudge)
-					{
-						MeleeAttck(Bellarus, Center);
-					}
-					else {
 
-						if (InCalibration)
-						{
-							auto ran = FMath::RandRange(1, 100);
-							if (ran <= 80)
-							{
-								MeleeAttck(Bellarus, Center);
-							}
-
-						}
-						else {
-
-							if (InSecondJudge)
-							{
-
-								ShieldFristRangeAttackCheck(Bellarus, Center);
-
-							}
-
-						}
-					}
-				}
-			}
-			else {
-				//쉴드 없을때
-
-
-				//체크가 true일떄
-				if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
-				{
+			if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetSecondPhaseKey() == false) {
+				if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetIsShieldOn()) {
 					if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-						OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+						OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+						!Bellarus->GetSwirlWaitState()) {
 						if (InFirstJudge)
 						{
 							MeleeAttck(Bellarus, Center);
 						}
+						else {
+
+							if (InCalibration)
+							{
+								auto ran = FMath::RandRange(1, 100);
+								if (ran <= 80)
+								{
+									MeleeAttck(Bellarus, Center);
+								}
+
+							}
+							else {
+
+								if (InSecondJudge)
+								{
+
+									ShieldFristRangeAttackCheck(Bellarus, Center);
+
+								}
+
+							}
+						}
 					}
 				}
 				else {
-					//기본
+					//쉴드 없을때
+
+
+					//체크가 true일떄
+					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
+					{
+						if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+							OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+							!Bellarus->GetSwirlWaitState()) {
+							if (InFirstJudge)
+							{
+								MeleeAttck(Bellarus, Center);
+							}
+						}
+					}
+					else {
+						//기본
 						if (InFirstJudge)
 						{
 
@@ -104,14 +112,16 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							if (ran <= 40)
 							{
 								if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+									!Bellarus->GetSwirlWaitState()) {
 									MeleeAttck(Bellarus, Center);
 								}
 							}
 						}
 						else {
 							if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false) {
+								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+								!Bellarus->GetSwirlWaitState()) {
 
 								if (InCalibration)
 								{
@@ -134,7 +144,108 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								}
 							}
 						}
-					
+
+					}
+				}
+			}
+			else {
+				if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetIsShieldOn()) {
+					if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+						OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+						!Bellarus->GetSwirlWaitState()) {
+						if (InFirstJudge)
+						{
+							MeleeAttck(Bellarus, Center);
+						}
+						else {
+
+							if (InCalibration)
+							{
+								auto ran = FMath::RandRange(1, 100);
+								if (ran <= 80)
+								{
+									MeleeAttck(Bellarus, Center);
+								}
+							}
+							else {
+
+								if (InSecondJudge)
+								{
+
+									RangeAttck(Bellarus, Center);
+
+								}
+
+							}
+						}
+					}
+				}
+				else {
+					//쉴드 없을때
+
+
+					//체크가 true일떄
+					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
+					{
+						if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+							OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+							!Bellarus->GetSwirlWaitState()) {
+							if (InFirstJudge)
+							{
+								MeleeAttck(Bellarus, Center);
+							}
+						}
+					}
+					else {
+						//기본
+						if (InFirstJudge)
+						{
+
+							auto ran = FMath::RandRange(1, 100);
+							if (ran <= 70)
+							{
+								Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(true);
+								return;
+							}
+
+							ran = FMath::RandRange(1, 100);
+							if (ran <= 40)
+							{
+								if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+									!Bellarus->GetSwirlWaitState()) {
+									MeleeAttck(Bellarus, Center);
+								}
+							}
+						}
+						else {
+							if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
+								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+								!Bellarus->GetSwirlWaitState()) {
+
+								if (InCalibration)
+								{
+									auto ran = FMath::RandRange(1, 100);
+									if (ran <= 80)
+									{
+										MeleeAttck(Bellarus, Center);
+									}
+
+								}
+								else {
+
+									if (InSecondJudge)
+									{
+
+										ShieldFristRangeAttackCheck(Bellarus, Center);
+
+									}
+
+								}
+							}
+						}
+
+					}
 				}
 			}
 			
@@ -510,6 +621,52 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 				}
 
 				return;
+			}
+		}
+	}
+}
+
+void UBTServiceAttackJudge::RangeAttck(ABellarus* Bellarus, FVector Center)
+{
+	
+	if (Bellarus->ProjectileCheck()) {
+
+		bool InSwirlAttack = AttackCheck(Bellarus, Center, Bellarus->GetSwirlData()->M_Atk_Radius, Bellarus->GetSwirlData()->M_Atk_Height, Bellarus->GetSwirlData()->M_Atk_Angle, 0.0f, FColor::Red);
+		bool InFeatherAttack = AttackCheck(Bellarus, Center, Bellarus->GetFeatherData()->M_Atk_Radius, Bellarus->GetFeatherData()->M_Atk_Height, Bellarus->GetFeatherData()->M_Atk_Angle, 0.0f, FColor::Orange);
+		bool InTornadoAttack = AttackCheck(Bellarus, Center, Bellarus->GetTornado()->M_Atk_Radius, Bellarus->GetTornado()->M_Atk_Height, Bellarus->GetTornado()->M_Atk_Angle, 0.0f, FColor::Yellow);
+		bool InGuidedSwirlAttack = AttackCheck(Bellarus, Center, Bellarus->GetGuidedSwirlData()->M_Atk_Radius, Bellarus->GetGuidedSwirlData()->M_Atk_Height, Bellarus->GetGuidedSwirlData()->M_Atk_Angle, 0.0f, FColor::Green);
+
+		if (InSwirlAttack)
+		{
+
+			Bellarus->SetBattleState();
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+		
+
+		}
+		else {
+			if (InFeatherAttack)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+			}
+
+			else {
+				if (InTornadoAttack)
+				{
+					Bellarus->SetBattleState();
+					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTornadoKey(true);
+			    }
+				else {
+
+					if (InGuidedSwirlAttack)
+					{
+						Bellarus->SetBattleState();
+						Cast<ABellarusAIController>(Bellarus->GetAIController())->SetGuidedSwirlKey(true);
+					}
+				}
+			  
+
 			}
 		}
 	}
