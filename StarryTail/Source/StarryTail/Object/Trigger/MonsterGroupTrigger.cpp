@@ -1,7 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "MonsterGroupTrigger.h"
 #include"../../STGameInstance.h"
-
+#include "GameFramework/GameModeBase.h"
 
 // Sets default values
 AMonsterGroupTrigger::AMonsterGroupTrigger()
@@ -39,7 +39,6 @@ void AMonsterGroupTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, A
 	{
 		Instance->InitData();
 	}
-
 	bIsOn = true;
 	TriggerOff();
 	if (WAVE.Num() != 0) {

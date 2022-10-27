@@ -82,8 +82,6 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 				}
 				else {
 					//쉴드 없을때
-
-
 					//체크가 true일떄
 					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
 					{
@@ -191,9 +189,10 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 						if (InFirstJudge)
 						{
 							auto ran = FMath::RandRange(1, 100);
-							STARRYLOG(Error, TEXT("%d"), ran);
+						
 							if (ran <= 70)
 							{
+
 								Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(true);
 								return;
 							}

@@ -46,6 +46,7 @@ public:
 	bool RushRouteCheck();
 	void RushEndFunc();
 	
+	void DestroyMagicAttack();
 
 protected:
 	// Called when the game starts or when spawned

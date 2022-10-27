@@ -719,6 +719,8 @@ void ABellarus::InitMonsterInfo()
 	MonsterInfo.M_AttackPercent = 80.0f;
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+
+	MonsterInfo.RotationRate = 0.025f;
 }
 
 void ABellarus::InitCollision()

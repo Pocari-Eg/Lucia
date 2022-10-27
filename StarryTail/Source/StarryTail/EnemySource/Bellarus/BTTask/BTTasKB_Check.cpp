@@ -16,6 +16,8 @@ UBTTasKB_Check::UBTTasKB_Check()
 	CheckTimer = 0.0f;
 
 
+	ShieldOffCheckTime = 3.0f;
+
 }
 EBTNodeResult::Type UBTTasKB_Check::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -48,12 +50,13 @@ void UBTTasKB_Check::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	}
 	CheckTimer += DeltaSeconds;
 
-	if (CheckTimer >= 3.0f&& !Cast<ABellarusAIController>(Monster->GetAIController())->GetIsShieldOn()&&
+	if (CheckTimer >= ShieldOffCheckTime && !Cast<ABellarusAIController>(Monster->GetAIController())->GetIsShieldOn()&&
 		Cast<ABellarusAIController>(Monster->GetAIController())->GetSecondPhaseKey())
 	{
 		
 		FVector Center = Monster->GetLocation();
 		Center -= FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		ShieldOffCheckTime = 10.0f;
 		MeleeAttck(Monster, Center, OwnerComp);
 	}
 
@@ -63,7 +66,7 @@ void UBTTasKB_Check::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	if (CheckTimer >= Monster->GetCheckTime())
 	{
 		Monster->GetAIController()->StopMovement();
-
+		CheckTimer = 0.0f;
 		auto ran = FMath::RandRange(0, 2);
 		switch (ran)
 		{
@@ -79,7 +82,7 @@ void UBTTasKB_Check::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		default:
 			break;
 		}
-
+		Cast<ABellarusAIController>(Monster->GetAIController())->SetCheckKey(false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
@@ -114,11 +117,13 @@ bool	InWing_R = UBTServiceAttackJudge::AttackCheck(Bellarus, Center, Bellarus->G
 			if (ran <= 30)
 			{
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 			}
 			else {
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			}
 
@@ -128,27 +133,32 @@ bool	InWing_R = UBTServiceAttackJudge::AttackCheck(Bellarus, Center, Bellarus->G
 			if (ran <= 30)
 			{
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			}
 			else {
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			}
 		}
 		else {
 			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
 	else if (InWing_L) {
 		Bellarus->SetBattleState();
 		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 
 	}
 	else if (InWing_R) {
 		Bellarus->SetBattleState();
 		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(false);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 

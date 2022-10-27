@@ -320,6 +320,10 @@ float AMonster::GetToPlayerDistance()
 	float distance = GetDistanceTo(Instance->GetPlayer());
 	return distance;
 }
+float AMonster::GetMoveSpeed() const
+{
+	return MonsterInfo.M_MoveSpeed;
+}
 FAttackRange AMonster::GetAttack1Range() const
 {
 	return MonsterInfo.Attack1Range;
@@ -545,6 +549,53 @@ float AMonster::CalcStackDamage(int StackCount)
 	Percent = 0.4f+((Count - 1.0f)*Percent);
 
 	return Percent * MonsterInfo.StackDamage;
+}
+
+void AMonster::MoveToPlayer(float DeltaSeconds)
+{
+
+		SetActorLocation(GetActorLocation() + (GetActorForwardVector() * GetMoveSpeed() * DeltaSeconds));
+
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+		//2개의 벡터를 a to b 로 회전 하는 행렬 구하기
+		FVector ForwardVec = GetActorForwardVector();
+		ForwardVec.Normalize();
+
+		FVector PlayerVec = Instance->GetPlayer()->GetActorLocation() - GetActorLocation();
+
+		PlayerVec.Normalize();
+
+		FQuat RotationQuat = Math::VectorA2BRotation(ForwardVec, PlayerVec);
+
+		RotationQuat *= MonsterInfo.RotationRate;
+
+		RotationQuat.X = 0.0f;
+		RotationQuat.Y = 0.0f;
+		RotationQuat.W = 1.0f;
+		AddActorWorldRotation(RotationQuat);
+}
+
+void AMonster::RotationPlayer(float DeltaSeconds)
+{
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+	//2개의 벡터를 a to b 로 회전 하는 행렬 구하기
+	FVector ForwardVec = GetActorForwardVector();
+	ForwardVec.Normalize();
+
+	FVector PlayerVec = Instance->GetPlayer()->GetActorLocation() - GetActorLocation();
+
+	PlayerVec.Normalize();
+
+	FQuat RotationQuat = Math::VectorA2BRotation(ForwardVec, PlayerVec);
+
+	RotationQuat *= MonsterInfo.RotationRate;
+
+	RotationQuat.X = 0.0f;
+	RotationQuat.Y = 0.0f;
+	RotationQuat.W = 1.0f;
+	AddActorWorldRotation(RotationQuat);
 }
 
 void AMonster::Attack()
@@ -793,6 +844,11 @@ void AMonster::CalcHp(float Damage)
 				if (bIsDodgeOn)
 				{
 					PerfectDodgeOff();
+				}
+				if (Cast<ABellyfish>(this))
+				{
+					auto Bellyfish = Cast<ABellyfish>(this);
+					Bellyfish->DestroyMagicAttack();
 				}
 				InitStackCount();
 				MonsterDeadEvent();

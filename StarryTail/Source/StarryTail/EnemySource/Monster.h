@@ -310,6 +310,7 @@ public:
 	bool GetIsMonsterShieldActive() const;
 	float GetSkillRadius() const;
 	float GetToPlayerDistance();
+	float GetMoveSpeed()const;
 
 
 	FAttackRange GetAttack1Range()const;
@@ -336,6 +337,8 @@ public:
 	void InitStackCount();
 	float CalcStackDamage(int StackCount);
 
+	void MoveToPlayer(float DeltaSeconds);
+	void RotationPlayer(float DeltaSeconds);
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};

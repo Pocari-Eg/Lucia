@@ -17,6 +17,7 @@ class STARRYTAIL_API UBTTasKB_Check : public UBTTaskNode
 private:
 	FVector MoveDirection;
 	float CheckTimer;
+	float ShieldOffCheckTime;
 public:
 	UBTTasKB_Check();
 private:
