@@ -6,6 +6,7 @@
 #include "../Bellarus.h"
 #include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include"../BTService/BTServiceAttackJudge.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTasKB_Check::UBTTasKB_Check()
@@ -46,6 +47,19 @@ void UBTTasKB_Check::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	CheckTimer += DeltaSeconds;
+
+	if (CheckTimer >= 3.0f&& !Cast<ABellarusAIController>(Monster->GetAIController())->GetIsShieldOn()&&
+		Cast<ABellarusAIController>(Monster->GetAIController())->GetSecondPhaseKey())
+	{
+		
+		FVector Center = Monster->GetLocation();
+		Center -= FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
+		MeleeAttck(Monster, Center, OwnerComp);
+	}
+
+
+
+
 	if (CheckTimer >= Monster->GetCheckTime())
 	{
 		Monster->GetAIController()->StopMovement();
@@ -79,5 +93,63 @@ void UBTTasKB_Check::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemo
 	}
 
 
+
+}
+
+void UBTTasKB_Check::MeleeAttck(ABellarus* Bellarus, FVector Center, UBehaviorTreeComponent& OwnerComp)
+{
+	
+bool	InTail = UBTServiceAttackJudge::AttackCheck(Bellarus, Center, Bellarus->GetTailData()->M_Atk_Radius, Bellarus->GetTailData()->M_Atk_Height, Bellarus->GetTailData()->M_Atk_Angle, 180.0f, FColor::Yellow);
+bool	InWing_L = UBTServiceAttackJudge::AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, -(Bellarus->GetWingData()->M_Atk_Angle / 2.0f), FColor::Yellow);
+bool	InWing_R = UBTServiceAttackJudge::AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, Bellarus->GetWingData()->M_Atk_Angle / 2.0f, FColor::Yellow);
+
+
+	if (InTail)
+	{
+		Bellarus->SetBattleState();
+
+		if (InWing_L) {
+
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 30)
+			{
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+			}
+			else {
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			}
+
+		}
+		else if (InWing_R) {
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 30)
+			{
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			}
+			else {
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			}
+		}
+		else {
+			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
+	}
+	else if (InWing_L) {
+		Bellarus->SetBattleState();
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingLKey(true);
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+	}
+	else if (InWing_R) {
+		Bellarus->SetBattleState();
+		Cast<ABellarusAIController>(Bellarus->GetAIController())->SetWingRKey(true);
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	}
 
 }
