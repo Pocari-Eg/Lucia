@@ -8,10 +8,14 @@
 #include "Particles/ParticleSystemComponent.h"
 #include "Swirl.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FSwirlDestroyDelegate);
 UCLASS()
 class STARRYTAIL_API ASwirl : public AActor
 {
 	GENERATED_BODY()
+	
+public:
+	FSwirlDestroyDelegate OnSwirlDestroy;
 protected:
 	//var
 	UPROPERTY(EditAnywhere, Category = Root, meta = (AllowPrivateAccess = "ture"))

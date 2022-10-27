@@ -739,60 +739,72 @@ void AMonster::CalcHp(float Damage)
 		MonsterWidget->SetHiddenInGame(false);*/
 
 		OnHpChanged.Broadcast();
-
 		if (MonsterInfo.M_HP <= 0.0f)
 		{
-
-			GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
-
-
-			if (MonsterControl != nullptr)
-				MonsterControl->DeleteMonster(this);
-
-			if (CurState == EMontserState::Battle)
+			OnHpChanged.Broadcast();
+			if (Cast<ABellarus>(this)&& Cast<ABellarusAIController>(GetAIController())->GetSecondPhaseKey()==false)
 			{
-				
+				auto Bellarus = Cast<ABellarus>(this);
+				STARRYLOG(Log, TEXT("!!BellarusSecondPhase!!"));
+				Cast<ABellarusAIController>(GetAIController())->SetSecondPhase(true);
+				Bellarus->SetSecondPhase();
+				InitStackCount();
+				OnHpChanged.Broadcast();
+				return;
+			}
+			else {
+
+				GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+
+
 				if (MonsterControl != nullptr)
-					MonsterControl->InitSupportGroup();
+					MonsterControl->DeleteMonster(this);
+
+				if (CurState == EMontserState::Battle)
+				{
+
+					if (MonsterControl != nullptr)
+						MonsterControl->InitSupportGroup();
+				}
+
+
+				//DropWeaponSoul();
+
+				if (bIsSpawnEnemy) {
+					auto instnace = Cast<USTGameInstance>(GetGameInstance());
+					if (instnace != nullptr)
+						instnace->SubEnemyCount(GetRank());
+				}
+				if (bIsBattleState)
+				{
+					auto instnace = Cast<USTGameInstance>(GetGameInstance());
+					if (instnace != nullptr)
+						instnace->SubDetectedMonster();
+				}
+
+				if (bIsGroupTriggerEnemy)
+				{
+					auto instnace = Cast<USTGameInstance>(GetGameInstance());
+					if (instnace != nullptr)
+						instnace->SubEnemyCount(GetRank());
+				}
+
+
+				if (bIsDodgeOn)
+				{
+					PerfectDodgeOff();
+				}
+				InitStackCount();
+				MonsterDeadEvent();
+				bIsDead = true;
+				SetActive();
+				MonsterAIController->Death();
+				PlayDeathAnim();
+
+
+
+				return;
 			}
-
-
-			//DropWeaponSoul();
-			
-			if (bIsSpawnEnemy) {
-				auto instnace = Cast<USTGameInstance>(GetGameInstance());
-				if (instnace != nullptr)
-					instnace->SubEnemyCount(GetRank());
-			}
-			if (bIsBattleState)
-			{
-				auto instnace = Cast<USTGameInstance>(GetGameInstance());
-				if (instnace != nullptr)
-					instnace->SubDetectedMonster();
-			}
-
-			if (bIsGroupTriggerEnemy)
-			{
-				auto instnace = Cast<USTGameInstance>(GetGameInstance());
-				if (instnace != nullptr)
-					instnace->SubEnemyCount(GetRank());
-			}
-
-			
-			if (bIsDodgeOn)
-			{
-				PerfectDodgeOff();
-			}
-			InitStackCount();
-			MonsterDeadEvent();
-			bIsDead = true;
-			SetActive();
-			MonsterAIController->Death();
-			PlayDeathAnim();
-
-
-		
-			return;
 		}
 }
 #pragma endregion

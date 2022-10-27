@@ -55,7 +55,8 @@ public:
 	int M_Skill_Type_08;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int Spirit_Soul;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int M_Shield_Def;
 
 
 
@@ -232,5 +233,8 @@ public:
 	int Spirit_Soul;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int M_Shield_Def;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Battle_Radius;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Support_Radius;
 };

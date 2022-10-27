@@ -21,9 +21,13 @@ public:
 	static const FName FeatherKey;
 	static const FName SwirlKey;
 
+	static const FName TornadoKey;
+	static const FName GuidedSwirlKey;
 
 	static const FName CheckKey;
 	static const FName TelePortKey;
+
+	static const FName SecondPhaseKey;
 public:
 	ABellarusAIController();
 	void Attack() override;
@@ -38,10 +42,14 @@ public:
 	void SetTailKey(bool State);
 	void SetFeatherKey(bool State);
 	void SetSwirlKey(bool State);
+	void SetTornadoKey(bool State);
+	void SetGuidedSwirlKey(bool State);
+
 	void SetTelePortKey(bool State);
-	void SetCheckKey(bool State);
 
 	void SetTraceTime(float Time);
+	void SetCheckKey(bool State);
+	void SetSecondPhase(bool State);
 #pragma endregion SET
 
 
@@ -51,9 +59,12 @@ public:
 	bool GetTailKey();
 	bool GetFeatherKey();
 	bool GetSwirlKey();
+	bool GetTornadoKey();
+	bool GetGuidedSwirlKey();
+
 	bool GetTelePortKey();
 	bool GetCheckKey();
-
+	bool GetSecondPhaseKey();
 
 	float GetTraceTime();
 #pragma endregion GET
