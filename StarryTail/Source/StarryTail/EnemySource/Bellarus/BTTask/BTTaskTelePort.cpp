@@ -62,19 +62,46 @@ void UBTTaskTelePort::SecondPhaseAction(ABellarus* Monster, UBehaviorTreeCompone
 	bool FirstJudge = UBTServiceAttackJudge::AttackJudge(Monster, Center, Monster->GetFirstJugdeRadius(), FColor::Green);
 	if (FirstJudge)
 	{
-		auto Ran = FMath::RandRange(1, 100);
-		if (Ran <= 70)
+		if (Cast<ABellarusAIController>(Monster->GetAIController())->GetIsShieldOn())
 		{
-			Ran = FMath::RandRange(1, 100);
+			auto Ran = FMath::RandRange(1, 100);
+			if (Ran <= 70)
+			{
+				Ran = FMath::RandRange(1, 100);
 
-			if (Ran <= 50)
-			{
-			Cast<ABellarusAIController>(Monster->GetAIController())->SetWingRKey(true);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				if (Ran <= 50)
+				{
+					Cast<ABellarusAIController>(Monster->GetAIController())->SetWingRKey(true);
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+				else
+				{
+					Cast<ABellarusAIController>(Monster->GetAIController())->SetWingLKey(true);
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+
 			}
-			else
+		}
+		else {
+			auto Ran = FMath::RandRange(1, 100);
+			if (Ran <= 70)
 			{
-				Cast<ABellarusAIController>(Monster->GetAIController())->SetWingLKey(true);
+				Ran = FMath::RandRange(1, 100);
+
+				if (Ran <= 50)
+				{
+					Cast<ABellarusAIController>(Monster->GetAIController())->SetWingRKey(true);
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+				else
+				{
+					Cast<ABellarusAIController>(Monster->GetAIController())->SetWingLKey(true);
+					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				}
+
+			}
+			else {
+				Cast<ABellarusAIController>(Monster->GetAIController())->SetTailKey(true);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			}
 

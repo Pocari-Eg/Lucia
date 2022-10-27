@@ -82,8 +82,6 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 				}
 				else {
 					//쉴드 없을때
-
-
 					//체크가 true일떄
 					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
 					{
@@ -181,38 +179,29 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					}
 				}
 				else {
-					//쉴드 없을때
 
-
-					//체크가 true일떄
 					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
 					{
-						if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-							OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
-							!Bellarus->GetSwirlWaitState()) {
-							if (InFirstJudge)
-							{
-								MeleeAttck(Bellarus, Center);
-							}
-						}
+				
 					}
 					else {
 						//기본
 						if (InFirstJudge)
 						{
-
 							auto ran = FMath::RandRange(1, 100);
+						
 							if (ran <= 70)
 							{
+
 								Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(true);
 								return;
 							}
 
 							ran = FMath::RandRange(1, 100);
-							if (ran <= 40)
+							if (ran <= 50)
 							{
 								if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+									OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false &&
 									!Bellarus->GetSwirlWaitState()) {
 									MeleeAttck(Bellarus, Center);
 								}
@@ -220,7 +209,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 						}
 						else {
 							if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
-								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
+								OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false &&
 								!Bellarus->GetSwirlWaitState()) {
 
 								if (InCalibration)
@@ -237,7 +226,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 									if (InSecondJudge)
 									{
 
-										ShieldFristRangeAttackCheck(Bellarus, Center);
+										RangeAttck(Bellarus, Center);
 
 									}
 
@@ -396,8 +385,8 @@ bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
 
-		Monster->GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
-		Monster->GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), BottomDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
+		Monster->GetAIController()->DrawRadial(Monster->GetWorld(), TopDebugMatrix, Radius, Angle, Color, 10, 0.5f, false, 0, 2);
 	
 	}
 
@@ -413,7 +402,7 @@ bool UBTServiceAttackJudge::AttackCheck(AMonster* Monster, FVector Center, float
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, Monster);
 
-	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
+	bool bResult = Monster->GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
 		OverlapResults,
 		Center,
 		FQuat::Identity,
@@ -639,8 +628,28 @@ void UBTServiceAttackJudge::RangeAttck(ABellarus* Bellarus, FVector Center)
 		if (InSwirlAttack)
 		{
 
-			Bellarus->SetBattleState();
-			Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+			auto ran = FMath::RandRange(1, 100);
+			if (ran <= 70)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+				return;
+			}
+			 ran = FMath::RandRange(1, 100);
+			if (ran <= 40)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTornadoKey(true);
+				return;
+			}
+			 ran = FMath::RandRange(1, 100);
+			if (ran <= 30)
+			{
+				Bellarus->SetBattleState();
+				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetGuidedSwirlKey(true);
+				return;
+			}
+			
 		
 
 		}
@@ -654,8 +663,21 @@ void UBTServiceAttackJudge::RangeAttck(ABellarus* Bellarus, FVector Center)
 			else {
 				if (InTornadoAttack)
 				{
-					Bellarus->SetBattleState();
-					Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTornadoKey(true);
+					auto ran = FMath::RandRange(1, 100);
+					if (ran <=80)
+					{
+						Bellarus->SetBattleState();
+						Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTornadoKey(true);
+						return;
+					}
+					ran = FMath::RandRange(1, 100);
+					if (ran <= 60)
+					{
+						Bellarus->SetBattleState();
+						Cast<ABellarusAIController>(Bellarus->GetAIController())->SetGuidedSwirlKey(true);
+						return;
+					}
+				
 			    }
 				else {
 

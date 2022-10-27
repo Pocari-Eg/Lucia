@@ -276,6 +276,13 @@ void ABellyfish::RushEndFunc()
 	BellyfishAnimInstance->JumeToRushEnd();
 }
 
+void ABellyfish::DestroyMagicAttack()
+{
+	if (MagicAttack != nullptr) {
+		MagicAttack->Destroy();
+	}
+}
+
 
 
 void ABellyfish::BeginPlay()
@@ -447,6 +454,8 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.M_AttackPercent = 80.0f;
 
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+
+	MonsterInfo.RotationRate = 0.025f;
 }
 
 void ABellyfish::InitCollision()
@@ -562,12 +571,6 @@ void ABellyfish::Tick(float DeltaTime)
 		}
 		SetActorLocation(FVector(GetActorLocation().X, GetActorLocation().Y, GetActorLocation().Z + Info.M_Fly_Distance));
 	}
-	else {
-		if (MagicAttack != nullptr) {
-			MagicAttack->Destroy();
-		}
-	}
-
 
 }
 void ABellyfish::InitAnime()

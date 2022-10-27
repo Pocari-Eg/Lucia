@@ -64,14 +64,29 @@ void UBTTaskWait::SecondPhaseAction(ABellarus* Monster, UBehaviorTreeComponent& 
 
 	auto Ran = FMath::RandRange(1, 100);
 	STARRYLOG(Warning, TEXT("%d"), Ran);
-	if (Ran <= 40)
+	if (Cast<ABellarusAIController>(Monster->GetAIController())->GetIsShieldOn())
 	{
-	
-		Cast<ABellarusAIController>(Monster->GetAIController())->SetFeatherKey(true);
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		
+		if (Ran <= 40)
+		{
 
-	
+			Cast<ABellarusAIController>(Monster->GetAIController())->SetFeatherKey(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+
+
+		}
+	}
+	else {
+
+		if (Ran <= 50)
+		{
+
+			Cast<ABellarusAIController>(Monster->GetAIController())->SetFeatherKey(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+
+
+
+		}
 	}
 	 Ran = FMath::RandRange(1, 100);
 	if (Ran<=30)

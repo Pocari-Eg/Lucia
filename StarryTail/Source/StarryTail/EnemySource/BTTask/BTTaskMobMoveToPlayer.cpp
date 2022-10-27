@@ -34,7 +34,6 @@ auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
 	Monster->GetAIController()->StopMovement();
 
-	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
 
 	return EBTNodeResult::InProgress;
 }
@@ -65,11 +64,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		PlayerFollowTimer = 0.0f;
 	}
 
-	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
-	{
-		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
-	}
-
+	Monster->MoveToPlayer(DeltaSeconds);
 
 	if (Monster->GetMonsterAtkType() == 2) {
 		if (AttackTimer += DeltaSeconds)

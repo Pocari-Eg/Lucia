@@ -6,6 +6,7 @@
 #include "../BellarusAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "../../../STGameInstance.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTaskBellTrace::UBTTaskBellTrace()
@@ -16,8 +17,6 @@ UBTTaskBellTrace::UBTTaskBellTrace()
 	PlayerFollowTime = 5.0f;
 	PlayerFollowTimer = 0.0f;
 	NormalChangeTime = 10.0f;
-
-
 }
 EBTNodeResult::Type UBTTaskBellTrace::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -32,7 +31,7 @@ EBTNodeResult::Type UBTTaskBellTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 	Monster->GetAIController()->StopMovement();
 
-	Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
+
 
 	return EBTNodeResult::InProgress;
 }
@@ -73,13 +72,6 @@ void UBTTaskBellTrace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 		Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(0.0f);
 	}
 
-	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Moving)
-	{
-		Monster->GetAIController()->MoveToLocation(Player->GetActorLocation());
-	}
-
-
-
-
+	Monster->MoveToPlayer(DeltaSeconds);
 
 }

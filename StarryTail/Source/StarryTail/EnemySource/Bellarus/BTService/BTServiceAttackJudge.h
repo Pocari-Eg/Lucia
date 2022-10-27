@@ -31,7 +31,7 @@ public:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	static bool AttackJudge(class AMonster* Monster, FVector Center,float Radius, FColor Color);
-	bool AttackCheck(class AMonster* Monster, FVector Center, float Radius,float Height,float Angle, float AttackAxis, FColor Color);
+	static bool AttackCheck(class AMonster* Monster, FVector Center, float Radius,float Height,float Angle, float AttackAxis, FColor Color);
 
 
 	void MeleeAttck(class ABellarus* Bellarus,FVector Center);

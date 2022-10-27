@@ -31,7 +31,6 @@ ABouldelith::ABouldelith()
 
 	FindRimitTime = 5.0f;
 	FindRimitTimer = 0.0f;
-	RotateSpeed = 1.0f;
 
 	StateChangeParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("StateChangeParticle"));
 	StateChangeParticle->SetupAttachment(GetMesh());
@@ -109,6 +108,8 @@ void ABouldelith::InitMonsterInfo()
 
 
 	MonsterInfo.M_FSM_DPS = 40.0f;
+
+	MonsterInfo.RotationRate = 0.025f;
 
 }
 void ABouldelith::InitBouldelithInfo()
@@ -797,10 +798,7 @@ float ABouldelith::GetAttack3Distance() const
 	return	BouldelithInfo.Attack3_Distance;
 }
 
-float ABouldelith::GetRotateSpeed() const
-{
-	return RotateSpeed;
-}
+
 
 #pragma endregion
 
