@@ -185,6 +185,8 @@ struct FMonsterSkillDataTable :public FTableRowBase
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	int M_Skill_Type;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		int M_Skill_Range;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 		float M_Skill_Radius;

@@ -71,6 +71,8 @@ ABellarus::ABellarus()
 	SwirlWaitTime = 0.0f;
 	SwirlWaitTimer = 0.0f;
 
+	MeleeAttackCount = 0;
+
 }
 UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 {
@@ -88,7 +90,7 @@ void ABellarus::PlayWingLAnim()
 void ABellarus::Wing_L()
 {
 
-	FMonsterSkillDataTable* NewSkillData = GetWingData();
+	 NewSkillData = GetWingData();
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, -(160.0f / 2.0f)))
 	{
@@ -126,7 +128,7 @@ void ABellarus::PlayWingRAnim()
 
 void ABellarus::Wing_R()
 {
-	FMonsterSkillDataTable* NewSkillData = GetWingData();
+	 NewSkillData = GetWingData();
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, 160.0f /2.0f))
 	{
@@ -163,7 +165,7 @@ void ABellarus::PlayTailAnim()
 
 void ABellarus::Tail()
 {
-	FMonsterSkillDataTable* NewSkillData = GetTailData();
+	 NewSkillData = GetTailData();
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 80.0f, 180.0f))
 	{
@@ -197,7 +199,7 @@ void ABellarus::Tail()
 void ABellarus::BasicSwirlAttack()
 {
 
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
+	 NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
@@ -258,7 +260,7 @@ void ABellarus::BasicSwirlAttack()
 
 void ABellarus::GuidedSwirlAttack()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
+	 NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
@@ -311,7 +313,7 @@ void ABellarus::GuidedSwirlAttack()
 
 void ABellarus::TornadoSwirlAttack()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
+	 NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
 	FMonsterSkillDataTable* TornadoData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
 	MonsterInfo.M_Skill_Cool = TornadoData->M_Skill_Cool;
 	FActorSpawnParameters SpawnParams;
@@ -373,8 +375,15 @@ void ABellarus::PlayFeatherAnim()
 
 void ABellarus::ProjectileAttack()
 {
-
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(14);
+	 NewSkillData = GetMontserSkillData(14);
+	if (MonsterInfo.Monster_Code == 3)
+	{
+		NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
+	}
+	else if (MonsterInfo.Monster_Code == 4)
+	{
+		NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_07);
+	}
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 
 	FActorSpawnParameters SpawnParams;
@@ -432,7 +441,17 @@ void ABellarus::PlayTelePortAnim()
 void ABellarus::TelePortStart()
 {
 	bIsTeleporting = true;
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(15);
+	 NewSkillData= GetMontserSkillData(15);
+	if (MonsterInfo.Monster_Code == 3)
+	{
+		 NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+	}
+	else if (MonsterInfo.Monster_Code == 4)
+	{
+		NewSkillData= GetMontserSkillData(MonsterInfo.M_Skill_Type_08);
+	}
+
+
 	TelePortTime = NewSkillData->M_Skill_Set_Time;
 	TelePortTimer = 0.0f;
 	GetMesh()->SetVisibility(false);
@@ -445,7 +464,15 @@ void ABellarus::TelePortStart()
 
 void ABellarus::TelePortEnd()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(15);
+	 NewSkillData = GetMontserSkillData(15);
+	if (MonsterInfo.Monster_Code == 3)
+	{
+		NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+	}
+	else if (MonsterInfo.Monster_Code == 4)
+	{
+		NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_08);
+	}
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
@@ -558,6 +585,14 @@ void ABellarus::BeginPlay()
 	//애니메이션 몽타주 종료시 호출
 	BellarusAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		bIsAttacking = false;
+		if (NewSkillData != nullptr && NewSkillData->M_Skill_Type == 1)
+		{
+			AddMeleeAttackCount();
+		}
+		else {
+			InitMeleeAttackCount();
+		}
+
 		AttackEnd.Broadcast();
 		Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
 		});
@@ -644,34 +679,34 @@ float ABellarus::GetCheckTime()
 }
 FMonsterSkillDataTable* ABellarus::GetWingData()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
-	return NewSkillData;
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
+	return SkillData;
 }
 FMonsterSkillDataTable* ABellarus::GetTailData()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
-	return NewSkillData;
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
+	return SkillData;
 }
 FMonsterSkillDataTable* ABellarus::GetSwirlData()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
 
-	return NewSkillData;
+	return SkillData;
 }
 FMonsterSkillDataTable* ABellarus::GetFeatherData()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(14);
-	return NewSkillData;
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(14);
+	return SkillData;
 }
 FMonsterSkillDataTable* ABellarus::GetTornado()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
-	return NewSkillData;
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_06);
+	return SkillData;
 }
 FMonsterSkillDataTable* ABellarus::GetGuidedSwirlData()
 {
-	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
-	return NewSkillData;
+	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
+	return SkillData;
 }
 void ABellarus::InitMonsterInfo()
 {
@@ -1012,6 +1047,21 @@ void ABellarus::TornadoSwirlDestroy()
 	SwirlWaitTime = TornadoData->M_Skill_Time;
 	SwirlWaitTimer = 0.0f;
 	TornadoWait = true;
+}
+
+void ABellarus::AddMeleeAttackCount()
+{
+	MeleeAttackCount++;
+}
+
+int ABellarus::GetMeleeAttackCount()
+{
+	return MeleeAttackCount;
+}
+
+void ABellarus::InitMeleeAttackCount()
+{
+	MeleeAttackCount = 0;
 }
 
 void ABellarus::SetSecondPhase()

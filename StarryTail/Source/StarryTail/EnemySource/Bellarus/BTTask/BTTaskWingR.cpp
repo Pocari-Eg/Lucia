@@ -45,8 +45,15 @@ void UBTTaskWingR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		Cast<ABellarusAIController>(Monster->GetAIController())->AllAttackOff();
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABellarusAIController::CheckKey, false);
 		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-		if (Cast<ABellarusAIController>(Monster->GetAIController())->GetSecondPhaseKey() == true) {
-			SecondPhaseAction(Monster, OwnerComp);
+		if (Monster->GetMeleeAttackCount() >= 3)
+		{
+			Monster->InitMeleeAttackCount();
+		}
+		else {
+
+			if (Cast<ABellarusAIController>(Monster->GetAIController())->GetSecondPhaseKey() == true) {
+				SecondPhaseAction(Monster, OwnerComp);
+			}
 		}
 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
