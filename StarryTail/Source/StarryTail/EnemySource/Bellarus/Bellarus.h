@@ -108,6 +108,8 @@ public:
 	FMonsterSkillDataTable* GetTornado();
 	FMonsterSkillDataTable* GetGuidedSwirlData();
 
+	int GetMeleeAttackCount();
+	void InitMeleeAttackCount();
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
@@ -121,6 +123,10 @@ private:
 	void SwirlDestroy();
 	void GuidedSwirlDestory();
 	void TornadoSwirlDestroy();
+
+
+	void AddMeleeAttackCount();
+
 
 //Variable
 	//Variable
@@ -155,6 +161,10 @@ private:
 	ASwirl* m_CenterSwirl;
 	ASwirl* m_RightSwirl;
 	ASwirl* m_LeftSwirl;
+
+	int MeleeAttackCount;
+
+	FMonsterSkillDataTable* NewSkillData;
 public:
 
 
