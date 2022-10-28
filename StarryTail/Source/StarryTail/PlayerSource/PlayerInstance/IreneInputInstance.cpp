@@ -62,7 +62,8 @@ void UIreneInputInstance::InitMemberVariable()
 	MaxDodgeCount = 2;
 	DodgeCount = MaxDodgeCount;	
 	bIsDodgeToDodge = false;
-
+	bPerfectDodgeToAttack = false;
+	
 	SpiritChainAttackCount = 0;
 	
 	CurSoulValue = 0.0f;
@@ -295,38 +296,40 @@ void UIreneInputInstance::LeftButton(float Rate)
 			// 		Irene->IreneSpirit->DestroySpirit();
 			// 	}
 			// }
-			
-			if(AttackUseSkillNextCount==0)
-				Irene->IreneAttack->SetAttackState();
-			else
+			if(Irene->IreneAnim->GetDodgeDir() != 10)
 			{
-				switch (AttackUseSkillNextCount)
+				if(AttackUseSkillNextCount==0)
+					Irene->IreneAttack->SetAttackState();
+				else
 				{
-				case 1:
-					Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
-					break;
-				case 2:
-					Irene->ChangeStateAndLog(UBasicAttack2State::GetInstance());
-					break;
-				case 3:
-					Irene->ChangeStateAndLog(UBasicAttack3State::GetInstance());
-					break;
-				default:
-					break;
+					switch (AttackUseSkillNextCount)
+					{
+					case 1:
+						Irene->ChangeStateAndLog(UBasicAttack1State::GetInstance());
+						break;
+					case 2:
+						Irene->ChangeStateAndLog(UBasicAttack2State::GetInstance());
+						break;
+					case 3:
+						Irene->ChangeStateAndLog(UBasicAttack3State::GetInstance());
+						break;
+					default:
+						break;
+					}
 				}
+				const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+			
+				// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
+				if(AttackTable != nullptr)
+					Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
 			}
-			const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-			
-			// 공격력 계산으로 기본적으로 ATTACK_DAMAGE_1만 사용함
-			if(AttackTable != nullptr)
-				Irene->IreneData.Strength = AttackTable->ATTACK_DAMAGE_1;				
-			
+
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
-			 constexpr float WaitTime = 0.05f;
-			 GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-			 	{
-			 			GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
-			 	}), WaitTime, false);
+			constexpr float WaitTime = 0.05f;
+			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
+				{
+						GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+				}), WaitTime, false);
 
 			if(AttackUseSkillNextCount>0)
 			{
@@ -372,15 +375,17 @@ void UIreneInputInstance::LeftButton(float Rate)
 			}
 			else
 			{
-				Irene->IreneAttack->AttackStartComboState();
-				Irene->IreneAnim->PlayAttackMontage();
-				Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
-				Irene->IreneData.IsAttacking = true;
-				if(PerfectDodgeTimerHandle.IsValid())
+				if(Irene->IreneAnim->GetDodgeDir() == 10)
 				{
-					Irene->IreneAnim->SetDodgeDir(0);
-					Irene->FollowTargetPosition();
-					PerfectDodgeAttackEnd();
+					Irene->CustomTimeDilation = 3.0f;
+					bPerfectDodgeToAttack = true;
+				}
+				else
+				{
+					Irene->IreneAttack->AttackStartComboState();
+					Irene->IreneAnim->PlayAttackMontage();
+					Irene->IreneAnim->NextToAttackMontageSection(Irene->IreneData.CurrentCombo);
+					Irene->IreneData.IsAttacking = true;					
 				}
 			}
 		}
@@ -721,16 +726,14 @@ void UIreneInputInstance::PerfectDodge()
 		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->PerfectDodgeMonster->GetActorLocation()).Yaw;
 		Irene->SetActorRotation(FRotator(0.0f, Z+180, 0.0f));
 	}
+
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-			Irene->IreneAttack->SetIsPerfectDodge(false);
 			Irene->CustomTimeDilation = 1;
-			Irene->IreneAnim->SetDodgeDir(0);
 			SetStopMoveAutoTarget();
-			PerfectDodgeTimeEnd();
 			GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
 		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
@@ -758,6 +761,28 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 {
 	Irene->PerfectDodgeAttackEnd();
 }
+void UIreneInputInstance::PerfectDodgePlayOver()
+{
+	if(bPerfectDodgeToAttack)
+	{
+		bPerfectDodgeToAttack = false;
+		Irene->IreneAnim->SetDodgeDir(0);
+		Irene->FollowTargetPosition();
+		PerfectDodgeAttackEnd();
+		GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+		LeftButton(1.0f);
+	}
+	else
+	{
+		Irene->CustomTimeDilation = 1;
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+		Irene->IreneAttack->SetIsPerfectDodge(false);
+		Irene->IreneAnim->SetDodgeDir(0);
+		SetStopMoveAutoTarget();
+		PerfectDodgeTimeEnd();
+	}	
+}
+
 void UIreneInputInstance::RecoveryDodge()
 {
 	// UI작성 시 주석 모두 제거

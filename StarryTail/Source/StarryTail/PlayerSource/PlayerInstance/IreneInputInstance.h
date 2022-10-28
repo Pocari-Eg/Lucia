@@ -63,7 +63,9 @@ private:
 	int DodgeCount;
 	// 회피 중 회피 사용 가능
 	bool bIsDodgeToDodge;
-
+	// 회피 중 공격
+	bool bPerfectDodgeToAttack;
+	
 	// 정령 체인지 가능한지
 	bool bIsSpiritChangeEnable;
 	// 잔상 공격 단계
@@ -201,6 +203,7 @@ public:
 	void PerfectDodgeStart();
 	void PerfectDodgeTimeEnd();
 	void PerfectDodgeAttackEnd();
+	void PerfectDodgePlayOver();
 	void RecoveryDodge();
 	void RecoveryDodgeWait();
 
