@@ -162,6 +162,11 @@ void UIreneAnimInstance::AnimNotify_DodgeJumpSkipCheck() const
 	Irene->IreneAttack->SetCanDodgeJumpSkip(true);
 }
 
+void UIreneAnimInstance::AnimNotify_PerfectDodgeToAttack() const
+{
+	Irene->IreneInput->PerfectDodgePlayOver();
+}
+
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
