@@ -128,7 +128,10 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 		const float TargetAlpha = Irene->IreneAttack->GetFollowTargetAlpha()/EndTimer;
 		Irene->IreneAttack->SetFollowTargetAlpha((TargetAlpha + GetWorld()->GetDeltaSeconds() * 2 * Irene->IreneData.TargetFollowSpeed)/EndTimer);
 		if (TargetAlpha >= 1)
+		{
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
+			SetStopMoveAutoTarget();
+		}
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
 		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
 	}
@@ -729,13 +732,6 @@ void UIreneInputInstance::PerfectDodge()
 
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
-	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
-		 {
-			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-			Irene->CustomTimeDilation = 1;
-			SetStopMoveAutoTarget();
-			GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
-		 }), SlowScale * Time * UGameplayStatics::GetGlobalTimeDilation(this), false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
@@ -765,6 +761,10 @@ void UIreneInputInstance::PerfectDodgePlayOver()
 {
 	if(bPerfectDodgeToAttack)
 	{
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+		Irene->CustomTimeDilation = 1;
+		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
+		
 		Irene->FollowTargetPosition();
 		bPerfectDodgeToAttack = false;
 		Irene->IreneAnim->SetDodgeDir(0);
