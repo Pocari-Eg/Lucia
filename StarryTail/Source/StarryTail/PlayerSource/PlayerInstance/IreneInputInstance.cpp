@@ -765,9 +765,9 @@ void UIreneInputInstance::PerfectDodgePlayOver()
 {
 	if(bPerfectDodgeToAttack)
 	{
+		Irene->FollowTargetPosition();
 		bPerfectDodgeToAttack = false;
 		Irene->IreneAnim->SetDodgeDir(0);
-		Irene->FollowTargetPosition();
 		PerfectDodgeAttackEnd();
 		GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
 		LeftButton(1.0f);
