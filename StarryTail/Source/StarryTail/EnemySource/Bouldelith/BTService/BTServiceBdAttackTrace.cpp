@@ -29,13 +29,11 @@ void UBTServiceBdAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 
 
 		FVector Center = Monster->GetLocation();
-			if (Monster->GetState() == EMontserState::Battle) {
+			if (Monster->GetState() == EMonsterState::Battle) {
 
 			
 				if (Attack2Trace(Monster, OwnerComp, Center))
 					{
-
-				
 
 							auto ran = FMath::RandRange(1, 100);
 							if (ran <= 50)
@@ -86,26 +84,6 @@ void UBTServiceBdAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8*
 		}*/
 	}
 
-
-
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::IsStatueStateKey) == true||
-		OwnerComp.GetBlackboardComponent()->GetValueAsBool(ABdAIController::TraceStateKey) == true
-		)
-	{
-		auto Monster = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-		if (nullptr == Monster)
-			return;
-
-
-
-		FVector Center = Monster->GetLocation();
-		if (StatueTrace(Monster, OwnerComp, Center))
-		{
-			Monster->SetBattleState();
-			Monster->SetStatueState(false);
-		}
-
-	}
 }
 
 bool UBTServiceBdAttackTrace::Attack1Trace(AMonster* Monster, UBehaviorTreeComponent& OwnerComp, FVector Center)

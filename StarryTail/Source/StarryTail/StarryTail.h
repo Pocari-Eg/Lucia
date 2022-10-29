@@ -112,7 +112,7 @@ enum class  EShieldType :uint8
 };
 
 UENUM(BluePrintType)
-enum class  EMontserState :uint8
+enum class  EMonsterState :uint8
 {
 	Normal = 0 UMETA(DisplayName = "Normal"),
 	Battle UMETA(DisplayName = "Battle"),

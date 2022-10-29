@@ -337,6 +337,7 @@ void ABellyfish::BeginPlay()
 	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
 
 	ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
+
 }
 
 void ABellyfish::PossessedBy(AController* NewController)
@@ -413,7 +414,8 @@ void ABellyfish::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_02 = NewData->M_Skill_Type_02;
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
 	MonsterInfo.Spirit_Soul = NewData->Spirit_Soul;
-
+	MonsterInfo.Battle_Radius = NewData->Battle_Radius;
+	MonsterInfo.Support_Radius = NewData->Support_Radius;
 
 	MonsterInfo.M_Attacked_Time = 0.5f;
 	MonsterInfo.PatrolArea = 600.0f;

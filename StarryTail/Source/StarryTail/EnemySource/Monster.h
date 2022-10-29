@@ -207,8 +207,6 @@ protected:
 	bool bIsDead;
 	bool bDeadWait;
 
-	bool bIsSpark;
-	bool bIsObject;
 
 	bool bIsDodgeTime;
 
@@ -220,9 +218,9 @@ protected:
 	bool bIsStatueStart;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-	class AEnemySpawnPoint* MonsterControl;
+	class AMonsterController* MonsterControllr;
 
-	EMontserState CurState;
+	EMonsterState CurState;
 
 	TSubclassOf<AWeapon_Soul> Weapon_SoulClass;
 
@@ -297,7 +295,7 @@ public:
 	bool GetIsAttackCool()const;
 	float GetAttackPercent() const;
 	int GetPlayerEnergy() const;
-	EMontserState GetState()const;
+	EMonsterState GetState()const;
 	float GetSupportPatrolRadius() const;
 	float GetAttackedTime() const;
 	EAttributeKeyword GetAttribute() const;
@@ -312,6 +310,9 @@ public:
 	float GetToPlayerDistance();
 	float GetMoveSpeed()const;
 
+	float GetBattleRange()const;
+	float GetSupportRange()const;
+
 
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
@@ -319,7 +320,7 @@ public:
 	FAttackRange GetAttack4Range()const;
 	//set========================================================
 	void SetIsAttackCool(bool Cool);
-	void SetMonsterContorl(class AEnemySpawnPoint* Object);
+	void SetMonsterContorller(class AMonsterController* Object);
 	void SetDpsCheck(bool state);
 	void InitWalkSpeed();
 

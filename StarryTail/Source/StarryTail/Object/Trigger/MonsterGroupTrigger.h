@@ -9,6 +9,7 @@
 #include <LevelSequence/Public/LevelSequenceActor.h>
 #include"../BattleWall.h"
 #include "../LabMagic.h"
+#include "MonsterController.h"
 #include "MonsterGroupTrigger.generated.h"
 
 
@@ -22,7 +23,7 @@ public:
 	TArray<AMonster*> Monster;
 };
 UCLASS()
-class STARRYTAIL_API AMonsterGroupTrigger : public AActor
+class STARRYTAIL_API AMonsterGroupTrigger : public AMonsterController
 {
 	GENERATED_BODY()
 
@@ -58,7 +59,6 @@ public:
 	UPROPERTY(EditAnywhere, Category = WAll)
 	ALabMagic* LabMagic;
 	
-
 	bool bIsOn;
 	//Function
 public:
