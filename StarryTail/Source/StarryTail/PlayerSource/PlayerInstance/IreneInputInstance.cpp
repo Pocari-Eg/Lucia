@@ -381,7 +381,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if(Irene->IreneAnim->GetDodgeDir() == 10)
 				{
-					Irene->CustomTimeDilation = 3.0f;
+					Irene->CustomTimeDilation = 4.0f;
 					bPerfectDodgeToAttack = true;
 				}
 				else
@@ -1046,13 +1046,13 @@ void UIreneInputInstance::BreakAttackSendAttack()
 	const auto Mon = Cast<AMonster>(Irene->IreneAttack->SwordTargetMonster);
 	if(Mon->GetCurStackCount() == 6)
 	{
-		BreakAttackWaitTime = 0.66f;
+		BreakAttackWaitTime = 0.4f;
 		Irene->IreneAnim->SetIsDoAttackBreakAttack(true);
 		Mon->StackExplode();
 	}
 	else
 	{
-		BreakAttackWaitTime = 0.83f;
+		BreakAttackWaitTime = 0.3f;
 		Irene->IreneAnim->SetIsMoveStopBreakAttack(true);
 	}
 }
