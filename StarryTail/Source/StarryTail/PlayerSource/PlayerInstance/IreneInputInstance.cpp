@@ -124,13 +124,14 @@ void UIreneInputInstance::MoveAuto(const float EndTimer)const
 {
 	// 자동으로 이동시키는 함수
 	if (Irene->IreneAttack->GetFollowTarget())
-	{
+	{		
 		const float TargetAlpha = Irene->IreneAttack->GetFollowTargetAlpha()/EndTimer;
 		Irene->IreneAttack->SetFollowTargetAlpha((TargetAlpha + GetWorld()->GetDeltaSeconds() * 2 * Irene->IreneData.TargetFollowSpeed)/EndTimer);
-		if (TargetAlpha >= 1)
+		if (TargetAlpha >= EndTimer)
 		{
 			Irene->IreneAttack->SetFollowTargetAlpha(1);
 			SetStopMoveAutoTarget();
+			return;
 		}
 		const FVector Target = FMath::Lerp(Irene->IreneAttack->GetPlayerPosVec(), Irene->IreneAttack->GetTargetPosVec(), Irene->IreneAttack->GetFollowTargetAlpha());
 		Irene->GetCapsuleComponent()->SetRelativeLocation(Target, true);
