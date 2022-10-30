@@ -932,27 +932,27 @@ void ABouldelith::Tick(float DeltaTime)
 		DodgeCheck();
 	}
 
-	if (CurState == EMonsterState::Support || MonsterAIController->GetIsTraceState() == true)
-	{
-		if (MonsterAIController->GetIsFindPlayer() == false)
-		{
-			FindRimitTimer += DeltaTime;
-			if (FindRimitTimer >= FindRimitTime)
-			{
-				MonsterAIController->SetBattleState(false);
-				MonsterAIController->SetNormalState(true);
-				MonsterAIController->SetSupportState(false);
-				MonsterAIController->SetTraceKey(false);
+	//if (CurState == EMonsterState::Support || MonsterAIController->GetIsTraceState() == true)
+	//{
+	//	if (MonsterAIController->GetIsFindPlayer() == false)
+	//	{
+	//		FindRimitTimer += DeltaTime;
+	//		if (FindRimitTimer >= FindRimitTime)
+	//		{
+	//			MonsterAIController->SetBattleState(false);
+	//			MonsterAIController->SetNormalState(true);
+	//			MonsterAIController->SetSupportState(false);
+	//			MonsterAIController->SetTraceKey(false);
 
-				CurState = EMonsterState::Normal;
-				FindRimitTimer = 0.0f;
-			}
-		}
-		else {
+	//			CurState = EMonsterState::Normal;
+	//			FindRimitTimer = 0.0f;
+	//		}
+	//	}
+	//	else {
 
-			FindRimitTimer = 0.0f;
-		}
-	}
+	//		FindRimitTimer = 0.0f;
+	//	}
+	//}
 
 
 

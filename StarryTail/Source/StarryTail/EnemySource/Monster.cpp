@@ -328,6 +328,10 @@ float AMonster::GetSupportRange() const
 {
 	return MonsterInfo.Support_Radius;
 }
+float AMonster::GetRotateRate()
+{
+	return MonsterInfo.RotationRate;
+}
 FAttackRange AMonster::GetAttack1Range() const
 {
 	return MonsterInfo.Attack1Range;
@@ -1246,11 +1250,7 @@ void AMonster::Tick(float DeltaTime)
 		{
 			SetActorTickEnabled(false);
 			SetActorHiddenInGame(true);
-
-		
 			Destroy();
-
-			
 		}
 		return;
 	}
@@ -1360,6 +1360,15 @@ void AMonster::Tick(float DeltaTime)
 		}
    }
 
+	if (CurState == EMonsterState::Support)
+	{
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
+			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())
+		{
+			GetAIController()->SetIsInSupportRange(false);
+		}
+	}
 		
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -1464,7 +1473,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			//몬스터인지 아닌지
 
 				AttacekdTeleportTimer = 0.0f;
-				if (MonsterControllr != nullptr) {
+				if (MonsterControllr != nullptr&&CurState!=EMonsterState::Support) {
 					MonsterControllr->SetBattleMonster(this);
 				}
 				else {

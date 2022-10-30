@@ -8,7 +8,7 @@
 UBTTaskNothing::UBTTaskNothing()
 {
 	NodeName = TEXT("Nothing");
-
+	bNotifyTick = true;
 }
 
 EBTNodeResult::Type UBTTaskNothing::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -17,6 +17,19 @@ EBTNodeResult::Type UBTTaskNothing::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
+	Monster->PlayIdleAnim();
+
 	Monster->GetAIController()->StopMovement();
 	return EBTNodeResult::InProgress;
+}
+
+void UBTTaskNothing::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+
+
+	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::SupportStateKey)==true)
+	{
+		Monster->RotationPlayer(DeltaSeconds);
+	}
 }

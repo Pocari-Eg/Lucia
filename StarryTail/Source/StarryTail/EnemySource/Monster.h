@@ -313,6 +313,8 @@ public:
 	float GetBattleRange()const;
 	float GetSupportRange()const;
 
+	float GetRotateRate();
+
 
 	FAttackRange GetAttack1Range()const;
 	FAttackRange GetAttack2Range()const;
