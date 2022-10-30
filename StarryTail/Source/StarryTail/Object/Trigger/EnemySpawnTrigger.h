@@ -8,10 +8,11 @@
 #include <LevelSequence/Public/LevelSequenceActor.h>
 #include"../EnemySpawnPoint.h"
 #include"../BattleWall.h"
+#include "MonsterController.h"
 #include "EnemySpawnTrigger.generated.h"
 
 UCLASS()
-class STARRYTAIL_API AEnemySpawnTrigger : public AActor
+class STARRYTAIL_API AEnemySpawnTrigger : public AMonsterController
 {
 	GENERATED_BODY()
 	

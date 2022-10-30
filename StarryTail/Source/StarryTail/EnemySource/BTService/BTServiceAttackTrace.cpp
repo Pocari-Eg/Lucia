@@ -34,7 +34,7 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 			Center -= FVector(0.0f, 0.0f, Monster->GetCapsuleComponent()->GetScaledCapsuleHalfHeight());
 		}
 
-			if (Monster->GetState() == EMontserState::Battle) {
+			if (Monster->GetState() == EMonsterState::Battle) {
 
 				if (Attack3Trace(Monster, OwnerComp, Center))
 				{
@@ -91,7 +91,7 @@ void UBTServiceAttackTrace::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					}
 				}
 			}
-			else if (Monster->GetState() == EMontserState::Support) {
+			else if (Monster->GetState() == EMonsterState::Support) {
 				if (Attack2Trace(Monster, OwnerComp, Center)) {
 
 					if (bIsAttack2In)
@@ -386,7 +386,7 @@ bool UBTServiceAttackTrace::Attack2Trace(AMonster* Monster, UBehaviorTreeCompone
 
 					if (TargetAngle <= (Monster->GetAttack2Range().M_Atk_Angle * 0.5f))
 					{
-						if (Monster->GetState() == EMontserState::Support && Monster->GetMonsterAtkType() == 2) {
+						if (Monster->GetState() == EMonsterState::Support && Monster->GetMonsterAtkType() == 2) {
 							bIsAttack2In = true;
 							return true;
 						}

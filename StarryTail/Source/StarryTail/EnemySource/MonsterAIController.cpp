@@ -41,6 +41,9 @@ const FName AMonsterAIController::IsShieldOnKey = (TEXT("bIsShieldOn"));
 const FName AMonsterAIController::TraceStateKey = (TEXT("TraceState"));
 const FName AMonsterAIController::IsBackStepOnKey = (TEXT("bIsBackStepOn"));
 
+const FName AMonsterAIController::IsInBattleRangeKey = (TEXT("bIsInBattleRange"));
+const FName AMonsterAIController::IsInSupportRangeKey = (TEXT("bIsInSupportRange"));
+
 AMonsterAIController::AMonsterAIController()
 {
 
@@ -53,7 +56,6 @@ void AMonsterAIController::OnPossess(APawn* InPawn)
 }
 void AMonsterAIController::Groggy()
 {
-	SetPlayer();
 	StopMovement();
 	Blackboard->SetValueAsBool(IsGroggyKey, true);
 }
@@ -72,8 +74,7 @@ void AMonsterAIController::SetPlayer()
 	{
 		STARRYLOG(Error, TEXT("Not Found STGameInstance"));
 	}
-	auto Monster = Cast<AMonster>(GetPawn());
-	Monster->SetIsBattleState(true);
+
 	Blackboard->SetValueAsObject(PlayerKey, GameInstance->GetPlayer());
 }
 void AMonsterAIController::SetFind()
@@ -204,6 +205,16 @@ void AMonsterAIController::InitBattleMonster()
 {
 	Blackboard->SetValueAsObject(BattleMonsterKey, nullptr);
 
+}
+
+void AMonsterAIController::SetIsInBattleRange(bool State)
+{
+	Blackboard->SetValueAsBool(IsInBattleRangeKey, State);
+}
+
+void AMonsterAIController::SetIsInSupportRange(bool State)
+{
+	Blackboard->SetValueAsBool(IsInSupportRangeKey, State);
 }
 
 

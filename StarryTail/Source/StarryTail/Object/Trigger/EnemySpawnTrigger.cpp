@@ -89,6 +89,7 @@ void AEnemySpawnTrigger::WaveStart()
 				if (SpawnPoint[i] != nullptr) {
 					WaveMonsterCount += SpawnPoint[i]->getWaveMonsterCount();
 					SpawnPoint[i]->RandomSpawn();
+					SetCurWaveMonsters(SpawnPoint[i]->GetCurWaveMonster());
 				}
 			}
 		}

@@ -44,12 +44,14 @@ void UBTTaskBdBattleIdle::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Nod
 		}
 		
 
-		else if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) > 600.0f)
+		else if (Bouldelith->GetDistanceTo(Instance->GetPlayer()) > 400.0f)
 		{
 			Bouldelith->PlayWalkAnim();
 			
 
-			Bouldelith->GetAIController()->MoveToLocation(Instance->GetPlayer()->GetActorLocation());
+			auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+			Monster->MoveToPlayer(DeltaSeconds);
+			
 		}
 		else {
 			Bouldelith->GetAIController()->StopMovement();

@@ -56,7 +56,8 @@ void ABouldelith::InitMonsterInfo()
 	MonsterInfo.M_Skill_Type_03 = NewData->M_Skill_Type_03;
 	MonsterInfo.M_Skill_Type_04 = NewData->M_Skill_Type_04;
 	MonsterInfo.Spirit_Soul = NewData->Spirit_Soul;
-
+	MonsterInfo.Battle_Radius = NewData->Battle_Radius;
+	MonsterInfo.Support_Radius = NewData->Support_Radius;
 
 	MonsterInfo.M_Attacked_Time = 0.5f;
 	MonsterInfo.PatrolArea = 600.0f;
@@ -931,27 +932,27 @@ void ABouldelith::Tick(float DeltaTime)
 		DodgeCheck();
 	}
 
-	if (CurState == EMontserState::Support || MonsterAIController->GetIsTraceState() == true)
-	{
-		if (MonsterAIController->GetIsFindPlayer() == false)
-		{
-			FindRimitTimer += DeltaTime;
-			if (FindRimitTimer >= FindRimitTime)
-			{
-				MonsterAIController->SetBattleState(false);
-				MonsterAIController->SetNormalState(true);
-				MonsterAIController->SetSupportState(false);
-				MonsterAIController->SetTraceKey(false);
+	//if (CurState == EMonsterState::Support || MonsterAIController->GetIsTraceState() == true)
+	//{
+	//	if (MonsterAIController->GetIsFindPlayer() == false)
+	//	{
+	//		FindRimitTimer += DeltaTime;
+	//		if (FindRimitTimer >= FindRimitTime)
+	//		{
+	//			MonsterAIController->SetBattleState(false);
+	//			MonsterAIController->SetNormalState(true);
+	//			MonsterAIController->SetSupportState(false);
+	//			MonsterAIController->SetTraceKey(false);
 
-				CurState = EMontserState::Normal;
-				FindRimitTimer = 0.0f;
-			}
-		}
-		else {
+	//			CurState = EMonsterState::Normal;
+	//			FindRimitTimer = 0.0f;
+	//		}
+	//	}
+	//	else {
 
-			FindRimitTimer = 0.0f;
-		}
-	}
+	//		FindRimitTimer = 0.0f;
+	//	}
+	//}
 
 
 
@@ -1031,7 +1032,7 @@ void ABouldelith::BeginPlay()
 	}
 
 	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
-	
+
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {
