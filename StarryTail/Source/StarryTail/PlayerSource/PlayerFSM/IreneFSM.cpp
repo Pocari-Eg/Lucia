@@ -505,10 +505,8 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->FInGameBattle.Broadcast(5, 5.0f);
 		
 		// 퍼펙트 닷지
-		// 왼클릭으로 도중 끊기
 		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.0f && CurState->Irene->IreneInput->bLeftButtonPressed)
 		{
-			//CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
 		}
 		// 이동으로 도중 끊기

@@ -309,6 +309,13 @@ void AIreneCharacter::Tick(float DeltaTime)
 		SpringArmComp->CameraLagSpeed = 0.0001f;
 	}
 
+	if(bIsSpiritStance)
+	{
+		IreneData.CurrentGauge -= DeltaTime*(1/0.8f);
+		if(IreneData.CurrentGauge <= 0)
+			IreneData.CurrentGauge = 0;
+	}
+	
 	if (bIsKnockBack)
 	{
 		KnockBackTimer += DeltaTime;
