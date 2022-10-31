@@ -73,6 +73,7 @@ void AMonsterGroupTrigger::BeginPlay()
 				for (int j = 0; j < WAVE[i].Monster.Num(); j++)
 				{
 					WAVE[i].Monster[j]->GetCapsuleComponent()->SetCollisionProfileName("Wall");
+					WAVE[i].Monster[j]->SetStatue(true);
 				}
 
 			}
@@ -114,6 +115,8 @@ void AMonsterGroupTrigger::WaveStart()
 	if (CurrentWave<WAVE.Num()) {
 		WaveMonsterCount = 0;
 		OnBattleWall();
+
+		SetCurWaveMonsters(WAVE[CurrentWave].Monster);
 		if (WAVE.Num() != 0) {
 
 				if (WAVE[CurrentWave].Monster.Num() != 0) {

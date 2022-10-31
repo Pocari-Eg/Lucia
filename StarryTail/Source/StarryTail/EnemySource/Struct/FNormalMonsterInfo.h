@@ -57,7 +57,10 @@ public:
 	int Spirit_Soul;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int M_Shield_Def;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Battle_Radius;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Support_Radius;
 
 
 	//Attacked Time
