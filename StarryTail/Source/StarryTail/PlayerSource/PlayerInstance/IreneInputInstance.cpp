@@ -720,7 +720,7 @@ void UIreneInputInstance::DodgeKeyword()
 		GetWorld()->GetTimerManager().SetTimer(DodgeInputWaitHandle, FTimerDelegate::CreateLambda([&]()
 		 {
 			GetWorld()->GetTimerManager().ClearTimer(DodgeInputWaitHandle);
-		 }), AttackTable->C_Time*UGameplayStatics::GetGlobalTimeDilation(this), false);
+		 }), AttackTable->C_Time*Irene->CustomTimeDilation, false);
 	}
 }
 void UIreneInputInstance::PerfectDodge()
@@ -730,20 +730,20 @@ void UIreneInputInstance::PerfectDodge()
 		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->PerfectDodgeMonster->GetActorLocation()).Yaw;
 		Irene->SetActorRotation(FRotator(0.0f, Z+180, 0.0f));
 	}
-
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
 		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeInvincibilityTimerHandle);
-	 }), InvincibilityTime * UGameplayStatics::GetGlobalTimeDilation(this), false);
+	 }), InvincibilityTime * Irene->CustomTimeDilation, false);
 	
 	const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(FName("Perfect_Dodge")));
 	Irene->IreneAttack->SetGauge(DataTable->Get_W_Gauge);
 	PerfectDodgeStart();
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
+	Irene->CustomTimeDilation = 1/SlowScale;
 }
 
 void UIreneInputInstance::PerfectDodgeStart()
