@@ -504,7 +504,11 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		if (CurState->Irene->makeIngameWidget != nullptr)
 			CurState->Irene->FInGameBattle.Broadcast(5, 5.0f);
 		
-		// ÆÛÆåÆ® ´åÁö}
+		// ÆÛÆåÆ® ´åÁö
+		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.0f && CurState->Irene->IreneInput->bLeftButtonPressed)
+		{
+			CurState->Irene->ActionEndChangeMoveState(true);
+		}
 		// ÀÌµ¿À¸·Î µµÁß ²÷±â
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.8f && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
