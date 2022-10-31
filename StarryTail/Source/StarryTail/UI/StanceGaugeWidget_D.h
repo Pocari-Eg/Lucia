@@ -24,6 +24,8 @@ public:
 
 	float Timer, maxTimer;
 
+	class AIreneCharacter* Irene;
+
 public:
 	UFUNCTION(BlueprintCallable)
 	void eCtime(float Ctime);
@@ -34,4 +36,9 @@ public:
 	void SetCoolTime(float Time);
 
 	void eCtimeflow();
+
+	virtual void NativeConstruct() override;
+
+protected:
+	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 };
