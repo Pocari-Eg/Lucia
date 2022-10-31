@@ -38,7 +38,7 @@ private:
 	// 정령 상태 지속 시간 넘김
 	FTimerHandle SpiritTimeDamageOverTimer;
 	FTimerHandle SpiritTimeStunOverTimer;
-
+	
 	// 브레이킹어택 선딜애니 시간
 	FTimerHandle BreakAttackFirstAnimTimer;
 	// 브레이킹어택 카메라 정지 시간

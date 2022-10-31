@@ -732,6 +732,12 @@ void UIreneInputInstance::PerfectDodge()
 	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
+	 {
+		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
+		Irene->CustomTimeDilation = 1;
+		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
+	}), 1, false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
@@ -760,6 +766,8 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 }
 void UIreneInputInstance::PerfectDodgePlayOver()
 {
+	Irene->ActionEndChangeMoveState(true);
+
 	if(bPerfectDodgeToAttack)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
@@ -856,9 +864,9 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
 					INGAME->STANCEGAUGEeCtime(-2.0f);
 
-				Irene->IreneData.CurrentGauge = 0;
+				//Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
-				GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
+				//GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
 				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,this, &UIreneInputInstance::SpiritChangeMaxTime, 80, false);				
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
@@ -1290,7 +1298,7 @@ bool UIreneInputInstance::CanAttackState() const
 {
 	if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_End"))==0)
 		return true;
-	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsFormChangeState() && !Irene->IreneState->IsDodgeState() && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
+	if (!Irene->IreneState->IsJumpState() && !Irene->IreneState->IsFormChangeState() && (!Irene->IreneState->IsDodgeState() || Irene->IreneAnim->GetDodgeDir() == 10) && !Irene->IreneState->IsSkillState() && !Irene->IreneState->IsDeathState())
 		return true;
 	return false;
 }
