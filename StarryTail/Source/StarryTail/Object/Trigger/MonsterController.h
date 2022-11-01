@@ -16,12 +16,20 @@ private:
 	int CurBattleMonsterIndex;
 	
 	class AMonster* CurBattleMonster;
+
+
+	bool bIsChange;
+	float BattleChangeTimer;
+	float BattleChangeTime;
 public:	
 	// Sets default values for this actor's properties
 	AMonsterController();
 
 	void SetBattleMonster(class AMonster* Monster);
 	void SetCurWaveMonsters(TArray<class AMonster*> WaveMonster);
+
+	void ChangeBattleMonster();
+	void SupportMonsterAttack();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -7,7 +7,7 @@
 AEnemySpawnTrigger::AEnemySpawnTrigger()
 {
 	//초기 설정
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
 
 	RootComponent = Trigger;
@@ -59,7 +59,10 @@ void AEnemySpawnTrigger::BeginPlay()
 	}
 	
 }
-
+void AEnemySpawnTrigger::Tick(float DeltaTime)
+{
+	AMonsterController::Tick(DeltaTime);
+}
 void AEnemySpawnTrigger::WaveManager()
 {
 

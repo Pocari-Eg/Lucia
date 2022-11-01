@@ -1090,7 +1090,7 @@ void AMonster::InitPerfectDodgeNotify()
 void AMonster::SetBattleState()
 {
 	MonsterAIController->SetPlayer();
-
+	MonsterAIController->SetIsInSupportRange(false);
 	SetStatue(false);
 	MonsterAIController->SetBattleState(true);
 	MonsterAIController->SetNormalState(false);
@@ -1121,11 +1121,14 @@ void AMonster::SetNormalState()
 }
 void AMonster::SetSupportState()
 {
+	MonsterAIController->SetIsInBattleRange(false);
+
 	MonsterAIController->SetPlayer();
 	SetStatue(false);
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(false);
 	MonsterAIController->SetSupportState(true);
+	
 
 
 	CurState = EMonsterState::Support;
