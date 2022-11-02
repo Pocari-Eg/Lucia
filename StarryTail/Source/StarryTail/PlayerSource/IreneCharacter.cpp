@@ -625,6 +625,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			
 			if (IreneData.CurrentHP <= 0)
 			{
+				IreneAnim->StopAllMontages(0);
 				ChangeStateAndLog(UDeathState::GetInstance());
 				LevelRestartEvent();
 			}
@@ -634,8 +635,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				if(Cast<ASwirl>(DamageCauser) != nullptr)
 					DotDamage = Cast<ASwirl>(DamageCauser)->GetbIsOnDotDamage();
 
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage)
+				if(!IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage && !IreneState->IsUltimateAttackState())
 				{
+					IreneAnim->StopAllMontages(0);
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
 			}
