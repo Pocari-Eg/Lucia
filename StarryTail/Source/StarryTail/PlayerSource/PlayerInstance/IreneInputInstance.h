@@ -277,6 +277,7 @@ public:
 	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
 	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
 	void SetIsDodgeToDodge(const bool Value) {bIsDodgeToDodge = Value;}
+	void SetIsStun(const bool Value) { bIsStun = Value; }
 #pragma endregion GetSet
 
 };

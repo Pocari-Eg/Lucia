@@ -505,10 +505,6 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 			CurState->Irene->FInGameBattle.Broadcast(5, 5.0f);
 		
 		// ÆÛÆåÆ® ´åÁö
-		if(CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.0f && CurState->Irene->IreneInput->bLeftButtonPressed)
-		{
-			CurState->Irene->ActionEndChangeMoveState(true);
-		}
 		// ÀÌµ¿À¸·Î µµÁß ²÷±â
 		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
 		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.8f && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
@@ -1401,7 +1397,7 @@ void UFormChangeState::Execute(IBaseGameEntity* CurState)
 {
 	if(CurState->PlayTime >= 1.07f)
 	{
-		CurState->Irene->ActionEndChangeMoveState();
+		CurState->Irene->ChangeStateAndLog(UBattleIdleState::GetInstance());
 	}
 }
 
@@ -1427,16 +1423,17 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Hit_1);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	CurState->Irene->IreneInput->SetIsStun(true);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
     CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
-{	
+{
+	if(CurState->PlayTime >= 0.56f * (2/3.0f))
+		CurState->Irene->IreneInput->SetIsStun(false);
 	if (CurState->PlayTime >= 0.56f)
-	{
 		CurState->Irene->ActionEndChangeMoveState();
-	}
 }
 
 void UHit1State::Exit(IBaseGameEntity* CurState)
