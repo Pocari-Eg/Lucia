@@ -145,7 +145,11 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void WeaponVisible(bool Value);
-
+	UFUNCTION(BlueprintImplementableEvent)
+	void NormalStance();
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpiritStance();
+	
 	UFUNCTION(BlueprintImplementableEvent)
 	void LevelRestartEvent();
 
