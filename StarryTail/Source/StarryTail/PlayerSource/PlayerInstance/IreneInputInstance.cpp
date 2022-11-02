@@ -8,7 +8,8 @@
 #include "IreneAnimInstance.h"
 #include "IreneAttackInstance.h"
 #include "IreneUIManager.h"
-#include "MovieSceneTracksComponentTypes.h"
+#include "LevelSequenceActor.h"
+#include "LevelSequencePlayer.h"
 #include "../../STGameInstance.h"
 #include "Curves/CurveVector.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -26,6 +27,13 @@ UIreneInputInstance::UIreneInputInstance()
 		BreakAttackStartEffect = BreakAttackStartEffectObject.Object;
 		BreakAttackEndEffect = BreakAttackEndEffectObject.Object;
 	}
+	
+	const ConstructorHelpers::FObjectFinder<ULevelSequence> UltimateAttackSequenceObject(TEXT("/Game/Movies/NewLevelSequence.NewLevelSequence"));
+	if(UltimateAttackSequenceObject.Succeeded())
+	{
+		UltimateAttackSequence = UltimateAttackSequenceObject.Object;
+	}
+	
 	bIsSpiritChangeEnable = true;
 }
 
@@ -94,6 +102,26 @@ void UIreneInputInstance::Begin()
 	const TUniquePtr<FElementDataTable> ThunderFormTimeDataTable = MakeUnique<FElementDataTable>(*Irene->IreneAttack->GetNameAtElementDataTable(FName("Thunder_Ele")));
 	if(ThunderFormTimeDataTable != nullptr)
 		MaxSoulValue = ThunderFormTimeDataTable->Ele_C_Time;
+
+	LevelSequenceActor = GetWorld()->SpawnActor<ALevelSequenceActor>(ALevelSequenceActor::StaticClass());
+	PlaybackSettings.bAutoPlay = false;
+	PlaybackSettings.bRandomStartTime = false;
+	PlaybackSettings.bRestoreState = false;
+	PlaybackSettings.bDisableMovementInput = false;
+	PlaybackSettings.bDisableLookAtInput = false;
+	PlaybackSettings.bHidePlayer = false;
+	PlaybackSettings.bHideHud = false;
+	PlaybackSettings.bDisableCameraCuts = false;
+	PlaybackSettings.bPauseAtEnd = false;
+	PlaybackSettings.PlayRate = 10.0f;
+	PlaybackSettings.StartTime = 0.0f;	
+	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
+		GetWorld(), 
+		UltimateAttackSequence,
+		PlaybackSettings, 
+		LevelSequenceActor
+	);
+	LevelSequencePlayer->OnFinished.AddDynamic(this, &UIreneInputInstance::SkillCameraMoveEnd);
 }
 
 #pragma region Move
@@ -732,12 +760,6 @@ void UIreneInputInstance::PerfectDodge()
 	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
-	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
-	 {
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-		Irene->CustomTimeDilation = 1;
-		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
-	}), 1, false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
@@ -766,8 +788,6 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 }
 void UIreneInputInstance::PerfectDodgePlayOver()
 {
-	Irene->ActionEndChangeMoveState(true);
-
 	if(bPerfectDodgeToAttack)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
@@ -779,6 +799,7 @@ void UIreneInputInstance::PerfectDodgePlayOver()
 		Irene->IreneAnim->SetDodgeDir(0);
 		PerfectDodgeAttackEnd();
 		GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+		Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		LeftButton(1.0f);
 	}
 	else
@@ -858,6 +879,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			if(!Irene->bIsSpiritStance)
 			{
 				// 정령 스탠스 적용
+				Irene->SpiritStance();
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChange);
 
@@ -882,6 +904,8 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			else
 			{
 				// 정령 스탠스 해제
+				Irene->NormalStance();
+
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
@@ -1116,7 +1140,9 @@ void UIreneInputInstance::UltimateAttackKeyword()
 			Irene->IreneData.IsInvincibility = true;
 			Irene->CameraComp->PostProcessSettings.bOverride_MotionBlurMax = true;
 			Irene->CameraComp->PostProcessSettings.MotionBlurMax = 0;
+			
 			SkillCameraMoveStart();
+			LevelSequencePlayer->Play();			
 		}
 	}
 }
@@ -1150,43 +1176,17 @@ void UIreneInputInstance::SkillCameraMoveStart()
 {
 	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 	{
-		// 카메라
-		const float Z = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation()).Yaw;
-		Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
-		const float Y = Irene->WorldController->GetControlRotation().Pitch;
-		// 카메라 원점 조정
-		FRotator Rotator = FRotator::ZeroRotator;
-		Rotator.Pitch = Y;
-		Rotator.Yaw = Z;
-		Irene->WorldController->SetControlRotation(Rotator);
-
+		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());
+		Irene->SetActorRotation(FRotator(0.0f, Rotator.Yaw, 0.0f));
+		
 		bSkillCameraMove = true;
 		SkillCameraPlayTime = 0;
 		SkillCameraEndPlayTime = 0;
 		Irene->bInputStop = true;
 	}	
 }
-void UIreneInputInstance::SkillCameraMoveLoop(float DeltaTime)
+void UIreneInputInstance::SkillCameraMoveEnd()
 {
-	if(bSkillCameraMove)
-	{
-		SkillCameraPlayTime += DeltaTime;
-		const FVector Value = Irene->SkillCamera->GetVectorValue(SkillCameraPlayTime);
-		Irene->SpringArmComp->TargetArmLength = Value.X;
-		Irene->AddControllerPitchInput(Value.Y);
-		Irene->AddControllerYawInput(Value.Z);
-		SkillCameraEndPlayTime = SkillCameraPlayTime;
-		if(SkillCameraPlayTime >= MaxSkillCameraPlayTime)
-		{
-			SkillCameraMoveEnd(DeltaTime);
-			return;
-		}
-	}
-}
-void UIreneInputInstance::SkillCameraMoveEnd(float DeltaTime)
-{
-	Irene->SpringArmComp->TargetArmLength = 450;
-
 	bSkillCameraMove = false;
 	SkillCameraPlayTime = 0;
 	SkillCameraEndPlayTime = 0;
