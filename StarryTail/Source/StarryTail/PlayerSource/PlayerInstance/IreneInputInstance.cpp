@@ -732,12 +732,6 @@ void UIreneInputInstance::PerfectDodge()
 	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
-	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
-	 {
-		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
-		Irene->CustomTimeDilation = 1;
-		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
-	}), 1, false);
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
@@ -766,8 +760,6 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 }
 void UIreneInputInstance::PerfectDodgePlayOver()
 {
-	Irene->ActionEndChangeMoveState(true);
-
 	if(bPerfectDodgeToAttack)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
@@ -779,6 +771,7 @@ void UIreneInputInstance::PerfectDodgePlayOver()
 		Irene->IreneAnim->SetDodgeDir(0);
 		PerfectDodgeAttackEnd();
 		GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+		Irene->ChangeStateAndLog(UIdleState::GetInstance());
 		LeftButton(1.0f);
 	}
 	else
@@ -858,6 +851,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			if(!Irene->bIsSpiritStance)
 			{
 				// 정령 스탠스 적용
+				Irene->SpiritStance();
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChange);
 
@@ -882,6 +876,8 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			else
 			{
 				// 정령 스탠스 해제
+				Irene->NormalStance();
+
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
 
 				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
