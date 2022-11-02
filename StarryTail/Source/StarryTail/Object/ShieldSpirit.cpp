@@ -55,8 +55,7 @@ void AShieldSpirit::MoveToPlate(float DeltaTime)
 
 
 
-	FVector TargetVec = TargetPlate->GetActorLocation() - GetActorLocation();
-
+	FVector TargetVec = TargetPlate->GetActorLocation() + FVector(0,0,100) - GetActorLocation();
 	TargetVec.Normalize();
 
 
@@ -66,7 +65,7 @@ void AShieldSpirit::MoveToPlate(float DeltaTime)
 	
 
 
-	if (GetDistanceTo(TargetPlate) <= 10.0f)
+	if (FVector::Dist(TargetPlate->GetActorLocation()+FVector(0,0,100), GetActorLocation()) <= 10.0f)
 	{
 		bIsPetMove = false;
 		TargetPlate->SpiritPlateOn();
