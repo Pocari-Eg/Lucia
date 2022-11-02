@@ -300,7 +300,6 @@ void AIreneCharacter::Tick(float DeltaTime)
 	
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
-	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
 
