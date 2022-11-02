@@ -477,6 +477,7 @@ void ABellarus::TelePortEnd()
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
 
+	OutSpawnRadiusTimer = 0.0f;
 	AttacekdTeleportTimer = 0.0f;
 
 	BellarusAnimInstance->PlayEndTelePortMontage();

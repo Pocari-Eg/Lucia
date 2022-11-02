@@ -22,7 +22,6 @@ void AMonsterController::SetBattleMonster(AMonster* Monster)
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
 		if (CurWaveMonster[i] == CurBattleMonster) {
-			CurBattleMonsterIndex = i;
 			CurBattleMonster->SetBattleState();
 		}
 		else {
@@ -51,16 +50,16 @@ void AMonsterController::ChangeBattleMonster()
 {
 	STARRYLOG(Error, TEXT("Change BattleMonster"));
 	bIsChange = false;
-	int NewBattleNum;
+	int NewBattleMonsterIndex;
 	do {
-		NewBattleNum = FMath::RandRange(0, CurWaveMonster.Num() - 1);
-	} while (NewBattleNum == CurBattleMonsterIndex);
+		NewBattleMonsterIndex = FMath::RandRange(0, CurWaveMonster.Num() - 1);
+	} while (CurWaveMonster[NewBattleMonsterIndex] ==CurBattleMonster);
 
-	CurBattleMonsterIndex = NewBattleNum;
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
-		if (i == CurBattleMonsterIndex) {
+		if (i == NewBattleMonsterIndex) {
 			CurWaveMonster[i]->SetBattleState();
+			CurBattleMonster = CurWaveMonster[i];
 		}
 		else {
 			CurWaveMonster[i]->SetSupportState();
@@ -71,6 +70,38 @@ void AMonsterController::ChangeBattleMonster()
 
 void AMonsterController::SupportMonsterAttack()
 {
+	TArray<AMonster*> IsRenderMonster;
+	for (int i = 0; i < CurWaveMonster.Num(); i++)
+	{
+		if (CurWaveMonster[i] != CurBattleMonster&& CurWaveMonster[i]->WasRecentlyRendered()&&
+			CurWaveMonster[i]->GetAIController()->GetIsInSupportRange()&& !CurWaveMonster[i]->GetIsAttacking())
+		{
+		   IsRenderMonster.Add(CurWaveMonster[i]);
+		}
+	}
+	if (IsRenderMonster.Num() != 0) {
+		auto RandomIndex = FMath::RandRange(0, IsRenderMonster.Num()-1);
+		IsRenderMonster[RandomIndex]->SupportAttack();
+	}
+}
+
+void AMonsterController::BattleMonsterDelete()
+{
+	CurWaveMonster.Remove(CurBattleMonster);
+	CurBattleMonster = nullptr;
+
+	for (int i = 0; i < CurWaveMonster.Num(); i++)
+	{
+		if (CurWaveMonster[i] != nullptr)
+			CurWaveMonster[i]->SetNormalState();
+	}
+	bIsChange = false;
+	BattleChangeTimer = 0.0f;
+}
+
+void AMonsterController::SupportMonsterDelete(AMonster* DeleteMonster)
+{
+	CurWaveMonster.Remove(DeleteMonster);
 }
 
 // Called when the game starts or when spawned
@@ -83,7 +114,7 @@ void AMonsterController::BeginPlay()
 void AMonsterController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	if (bIsChange) {
+	if (bIsChange&&CurBattleMonster!=nullptr) {
 		BattleChangeTimer += DeltaTime;
 		if (BattleChangeTimer >= BattleChangeTime)
 		{

@@ -13,7 +13,6 @@ class STARRYTAIL_API AMonsterController : public AActor
 
 private:
 	TArray<class AMonster*> CurWaveMonster;
-	int CurBattleMonsterIndex;
 	
 	class AMonster* CurBattleMonster;
 
@@ -30,6 +29,9 @@ public:
 
 	void ChangeBattleMonster();
 	void SupportMonsterAttack();
+
+	void BattleMonsterDelete();
+	void SupportMonsterDelete(class AMonster* DeleteMonster);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -139,7 +139,7 @@ AMonster::AMonster()
 	MonsterInfo.M_AttackTraceInterver = 0.5f;
 
 	bIsStatueStart = false;
-
+	bIsAttacking = false;
 	
 }
 #pragma region Init
@@ -290,6 +290,11 @@ FNormalMonsterInfo AMonster::GetMonsterInfo() const
 	return MonsterInfo;
 }
 
+bool AMonster::GetIsAttacking() const
+{
+	return bIsAttacking;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -371,8 +376,8 @@ void AMonster::SetIsAttackCool(bool Cool)
 
 void AMonster::SetMonsterContorller(AMonsterController* Object)
 {
-	if (MonsterControllr == nullptr)
-		MonsterControllr = Object;
+	if (MonsterController == nullptr)
+		MonsterController = Object;
 }
 
 void AMonster::SetDpsCheck(bool state)
@@ -609,8 +614,12 @@ void AMonster::RotationPlayer(float DeltaSeconds)
 void AMonster::Attack()
 {
 	MonsterAIController->Attack();
-//	bIsAttacking = true;
 }
+
+void AMonster::SupportAttack()
+{
+}
+
 
 AMonsterAIController* AMonster::GetAIController() const
 {
@@ -850,6 +859,18 @@ void AMonster::CalcHp(float Damage)
 					auto Bellyfish = Cast<ABellyfish>(this);
 					Bellyfish->DestroyMagicAttack();
 				}
+				if (MonsterController != nullptr)
+				{
+					if (CurState == EMonsterState::Support)
+					{
+						MonsterController->SupportMonsterDelete(this);
+					}
+					else if (CurState == EMonsterState::Battle)
+					{
+						MonsterController->BattleMonsterDelete();
+					}
+				}
+
 				InitStackCount();
 				MonsterDeadEvent();
 				bIsDead = true;
@@ -1077,10 +1098,6 @@ void AMonster::SetStatue(bool state)
 	}
 }
 
-void AMonster::SetStatueStart()
-{
-	bIsStatueStart = true;
-}
 
 void AMonster::InitPerfectDodgeNotify()
 {
@@ -1357,7 +1374,8 @@ void AMonster::Tick(float DeltaTime)
 	if (CurState == EMonsterState::Battle)
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		if (GetDistanceTo(Instance->GetPlayer()) > GetBattleRange())
+		if (GetDistanceTo(Instance->GetPlayer()) > GetBattleRange()&&
+			!bIsAttacking)
 		{
 			GetAIController()->SetIsInBattleRange(false);
 		}
@@ -1367,7 +1385,8 @@ void AMonster::Tick(float DeltaTime)
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 		if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
-			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())
+			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange()&&
+			!bIsAttacking)
 		{
 			GetAIController()->SetIsInSupportRange(false);
 		}
@@ -1473,42 +1492,41 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				SoundInstance->PlayHitSound(SoundTransform);
 			}
 
+
 			//몬스터인지 아닌지
+			if (MonsterController != nullptr && CurState == EMonsterState::Battle) {
+				MonsterController->SupportMonsterAttack();
+			}
 
 				AttacekdTeleportTimer = 0.0f;
-				if (MonsterControllr != nullptr&&CurState!=EMonsterState::Support) {
-					MonsterControllr->SetBattleMonster(this);
+				if (MonsterController != nullptr) {
+					if (CurState == EMonsterState::Normal) {
+						MonsterController->SetBattleMonster(this);
+					}
 				}
 				else {
 					SetBattleState();
 				}
+
 
 								
 				if (GetIsMonsterShieldActive()){
 
 					MonsterShield->CalcDurability(DamageAmount);
 				    OnBarrierChanged.Broadcast();
-					CalcHp(CalcNormalAttackDamage(DamageAmount));
-					
-					
+					CalcHp(CalcNormalAttackDamage(DamageAmount));	
 					if (MonsterShield->GetShieldAcitve())
 					{
 						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
 						Player->PlayerKnockBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
-
 					}
 					else {
 						ShieldDestroyed();
 						SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
 					}
-
-
 				}
 				else {
-					CalcHp(CalcNormalAttackDamage(DamageAmount));
-				    
-				
-			
+					CalcHp(CalcNormalAttackDamage(DamageAmount));		
 			}
 			//몬스터가 아니면
 			

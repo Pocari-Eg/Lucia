@@ -77,6 +77,7 @@ void ABellyfish::Attack()
 	//어택 준비 애니메이션 출력
 
 	InitAttack1Data();
+	bIsAttacking = true;
 	BellyfishAnimInstance->PlayAttackMontage();
 	auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	Info.AttackPosition = STGameInstance->GetPlayer()->GetActorLocation();
@@ -93,6 +94,7 @@ void ABellyfish::Attack()
 
 void ABellyfish::RushAttack()
 {
+	bIsAttacking = true;
 	InitAttack3Data();
 	if (RushRouteCheck())
 	{
@@ -110,13 +112,14 @@ void ABellyfish::RushAttack()
 void ABellyfish::PlayFireAnim()
 {
 	InitAttack2Data();
+	bIsAttacking = true;
 	BellyfishAnimInstance->PlayFireMontage();
 }
 
 void ABellyfish::ProjectileAttack()
 {
 	STARRYLOG(Error, TEXT("Bellyfish Projectile Fire"));
-
+	
 	// 프로젝타일 발사를 시도합니다.
 	if (ProjectileClass)
 	{
@@ -299,7 +302,6 @@ void ABellyfish::BeginPlay()
 		return;
 	//애니메이션 몽타주 종료시 호출
 	BellyfishAnimInstance->AttackEnd.AddLambda([this]() -> void {
-		bIsAttacking = false;
 		AttackEnd.Broadcast();
 		});
 	BellyfishAnimInstance->AttackedEnd.AddLambda([this]() -> void {

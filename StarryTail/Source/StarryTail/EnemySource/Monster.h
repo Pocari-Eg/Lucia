@@ -41,7 +41,7 @@ public:
 
 	
 	 void Attack();
-
+	 virtual void SupportAttack();
 
 
 	AMonsterAIController* GetAIController() const;
@@ -96,7 +96,6 @@ public:
 	void SetGroup();
 	void SetStatue(bool state);
 
-	void SetStatueStart();
 	void InitPerfectDodgeNotify();
 
 	//FSM
@@ -200,7 +199,7 @@ protected:
 		bool bTestMode;
 
 	float MaxBarrier;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TestMode, Meta = (AllowPrivateAccess = true))
 	bool bIsAttacking;
 	bool bIsAttacked;
 	bool bIsGroggy;
@@ -218,7 +217,7 @@ protected:
 	bool bIsStatueStart;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
-	class AMonsterController* MonsterControllr;
+	class AMonsterController* MonsterController;
 
 	EMonsterState CurState;
 
@@ -301,6 +300,7 @@ public:
 	EAttributeKeyword GetAttribute() const;
 	float GetAttackTraceInterver() const;
 	FNormalMonsterInfo GetMonsterInfo() const;
+	bool GetIsAttacking()const;
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -324,6 +324,7 @@ public:
 	void SetIsAttackCool(bool Cool);
 	void SetMonsterContorller(class AMonsterController* Object);
 	void SetDpsCheck(bool state);
+	void SetIsAttacking(bool State) { bIsAttacking = State; }
 	void InitWalkSpeed();
 
 	//Stack

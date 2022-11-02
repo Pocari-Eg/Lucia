@@ -33,7 +33,8 @@ void UBTTaskBdAttack4::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	if (!bIsAttacking)
 	{
 		
-		if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsShieldOnKey)==false)
+		if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsShieldOnKey)==false&&
+			OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::BattleStateKey) ==true)
 		{
 			Attack4Trace(Monster, OwnerComp, Monster->GetActorLocation());
 		}
@@ -43,7 +44,6 @@ void UBTTaskBdAttack4::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			Monster->GetAIController()->OffAttack(4);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
