@@ -29,10 +29,12 @@ void AMonsterController::SetBattleMonster(AMonster* Monster)
 		}
 	}
 
-	bIsChange = true;
-	BattleChangeTimer = 0.0f;
-	BattleChangeTime =FMath::RandRange(8, 15);
+	if (CurWaveMonster.Num() > 1) {
+		bIsChange = true;
+		BattleChangeTimer = 0.0f;
+		BattleChangeTime = FMath::RandRange(8, 15);
 
+	}
 	STARRYLOG(Error, TEXT("BattleMonster Time : %f"), BattleChangeTime);
 }
 
@@ -48,24 +50,27 @@ void AMonsterController::SetCurWaveMonsters(TArray<class AMonster*> WaveMonster)
 
 void AMonsterController::ChangeBattleMonster()
 {
-	STARRYLOG(Error, TEXT("Change BattleMonster"));
-	bIsChange = false;
-	int NewBattleMonsterIndex;
-	do {
-		NewBattleMonsterIndex = FMath::RandRange(0, CurWaveMonster.Num() - 1);
-	} while (CurWaveMonster[NewBattleMonsterIndex] ==CurBattleMonster);
 
-	for (int i = 0; i < CurWaveMonster.Num(); i++)
-	{
-		if (i == NewBattleMonsterIndex) {
-			CurWaveMonster[i]->SetBattleState();
-			CurBattleMonster = CurWaveMonster[i];
-		}
-		else {
-			CurWaveMonster[i]->SetSupportState();
+	if (CurWaveMonster.Num() > 1) {
+
+		STARRYLOG(Error, TEXT("Change BattleMonster"));
+		bIsChange = false;
+		int NewBattleMonsterIndex;
+		do {
+			NewBattleMonsterIndex = FMath::RandRange(0, CurWaveMonster.Num() - 1);
+		} while (CurWaveMonster[NewBattleMonsterIndex] == CurBattleMonster);
+
+		for (int i = 0; i < CurWaveMonster.Num(); i++)
+		{
+			if (i == NewBattleMonsterIndex) {
+				CurWaveMonster[i]->SetBattleState();
+				CurBattleMonster = CurWaveMonster[i];
+			}
+			else {
+				CurWaveMonster[i]->SetSupportState();
+			}
 		}
 	}
-
 }
 
 void AMonsterController::SupportMonsterAttack()
