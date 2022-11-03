@@ -1106,6 +1106,7 @@ void AMonster::InitPerfectDodgeNotify()
 }
 void AMonster::SetBattleState()
 {
+	PointOn();
 	MonsterAIController->SetPlayer();
 	MonsterAIController->SetIsInSupportRange(false);
 	SetStatue(false);
@@ -1126,6 +1127,7 @@ void AMonster::SetBattleState()
 void AMonster::SetNormalState()
 {
 	SetStatue(false);
+	PointOff();
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(true);
 	MonsterAIController->SetSupportState(false);
@@ -1139,7 +1141,7 @@ void AMonster::SetNormalState()
 void AMonster::SetSupportState()
 {
 	MonsterAIController->SetIsInBattleRange(false);
-
+	PointOff();
 	MonsterAIController->SetPlayer();
 	SetStatue(false);
 	MonsterAIController->SetBattleState(false);
@@ -1391,7 +1393,16 @@ void AMonster::Tick(float DeltaTime)
 			GetAIController()->SetIsInSupportRange(false);
 		}
 	}
-		
+	if (bTestMode&& CurState == EMonsterState::Battle)
+	{
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		FTransform BottomLine = Instance->GetPlayer()->GetTransform();
+		//BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, Instance->GetPlayer()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
+		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
+		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, GetBattleRange(), 360.0f, FColor::Green, 10, DeltaTime, false, 0, 2);
+		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, GetSupportRange(), 360.0f, FColor::Red, 10, DeltaTime, false, 0, 2);
+
+	}
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
