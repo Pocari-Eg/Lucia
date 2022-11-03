@@ -37,7 +37,7 @@ public:
 	void Attack4();
 	void Attack5();
 
-	
+	void SupportAttack() override;
 
 	void LeftAttackCheck();
 	void RightAttackCheck();

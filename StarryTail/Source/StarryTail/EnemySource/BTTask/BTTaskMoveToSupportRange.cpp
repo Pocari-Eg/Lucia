@@ -12,7 +12,8 @@ UBTTaskMoveToSupportRange::UBTTaskMoveToSupportRange()
 	NodeName = TEXT("MoveToSupportRange");
 	bNotifyTick = true;
 
-
+	bIsOutSupportRange = false;
+	bIsInBattleRange = false;
 }
 
 EBTNodeResult::Type UBTTaskMoveToSupportRange::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -24,8 +25,23 @@ EBTNodeResult::Type UBTTaskMoveToSupportRange::ExecuteTask(UBehaviorTreeComponen
 		return EBTNodeResult::Failed;
 
 
-
+	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 	Monster->PlayWalkAnim();
+
+	MoveDistance = FMath::FRandRange(Monster->GetBattleRange(), Monster->GetSupportRange());
+
+	float CurDistance = Monster->GetDistanceTo(Player);
+	if (CurDistance > MoveDistance)
+	{
+		bIsOutSupportRange = true;
+	}
+  if(CurDistance < MoveDistance){
+	  bIsInBattleRange = true;
+	}
+	
+	
+
+
 
 
 	return EBTNodeResult::InProgress;
@@ -38,21 +54,26 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
 
-	if (Monster->GetDistanceTo(Player) > Monster->GetSupportRange())
+	if (bIsOutSupportRange)
 	{
 		Monster->MoveToPlayer(DeltaSeconds);
+		if (Monster->GetDistanceTo(Player) <= MoveDistance)
+		{
+			Monster->GetAIController()->SetIsInSupportRange(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
 	}
-	else if (Monster->GetDistanceTo(Player) <= Monster->GetBattleRange())
+	if(bIsInBattleRange)
 	{
 		MoveToPlayerReverse(Monster, Player, DeltaSeconds);
+		if (Monster->GetDistanceTo(Player) >= MoveDistance)
+		{
+			Monster->GetAIController()->SetIsInSupportRange(true);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+		}
     }
 
-	if (Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
-		Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
-	{
-		Monster->GetAIController()->SetIsInSupportRange(true);
-		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	}
+	
 }
 
 void UBTTaskMoveToSupportRange::MoveToPlayerReverse(AMonster* Monster, AIreneCharacter* Player,float DeltaSeconds)

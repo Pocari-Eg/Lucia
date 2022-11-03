@@ -506,12 +506,12 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		
 		// 퍼펙트 닷지
 		// 이동으로 도중 끊기
-		const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.8f && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
-		{
-			CurState->Irene->IreneAnim->SetDodgeDir(0);
-			CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
-		}
+		// const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		// if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale() * 0.8f && (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0))
+		// {
+		// 	CurState->Irene->IreneAnim->SetDodgeDir(0);
+		// 	CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		// }
 		// 끝까지 재생
 		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale())
 		{
