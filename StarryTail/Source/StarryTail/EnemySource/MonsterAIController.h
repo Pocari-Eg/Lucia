@@ -62,6 +62,8 @@ public:
 	bool GetIsShieldOn();
 	bool GetIsBattleState();
 
+	bool GetIsInBattleRange();
+	bool GetIsInSupportRange();
 	FVector GetSpawnPos();
 
 	//debug

@@ -4,6 +4,7 @@
 #include "BTTaskBdAttack4.h"
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
+#include "../../../STGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTaskBdAttack4::UBTTaskBdAttack4()
@@ -16,6 +17,16 @@ EBTNodeResult::Type UBTTaskBdAttack4::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	auto Bouldelith = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
+
+	auto GameInstance = Cast<USTGameInstance>(Bouldelith->GetGameInstance());
+	if (nullptr == GameInstance)
+		return EBTNodeResult::Failed;
+
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bouldelith->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+
+	Bouldelith->SetActorRotation(FMath::RInterpTo(Bouldelith->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 10.0f));
 
 	Bouldelith->Attack4();
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, true);
@@ -33,7 +44,8 @@ void UBTTaskBdAttack4::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 	if (!bIsAttacking)
 	{
 		
-		if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsShieldOnKey)==false)
+		if(OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsShieldOnKey)==false&&
+			OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::BattleStateKey) ==true)
 		{
 			Attack4Trace(Monster, OwnerComp, Monster->GetActorLocation());
 		}
@@ -43,7 +55,6 @@ void UBTTaskBdAttack4::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMe
 			Monster->GetAIController()->OffAttack(4);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(ABdAIController::IsBattleIdleKey, true);
 			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackingKey, false);
-
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}

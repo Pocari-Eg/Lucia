@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "LevelSequence.h"
+#include "MovieSceneSequencePlayer.h"
 #include "UObject/Object.h"
+
 #include "IreneInputInstance.generated.h"
 
 enum class  EAttributeKeyword :uint8;
@@ -30,6 +33,13 @@ private:
 	UParticleSystem* BreakAttackStartEffect;
 	UPROPERTY()
 	UParticleSystem* BreakAttackEndEffect;
+	UPROPERTY()
+	ULevelSequence* UltimateAttackSequence;
+	UPROPERTY()
+	class ALevelSequenceActor* LevelSequenceActor;
+	FMovieSceneSequencePlaybackSettings PlaybackSettings;
+	UPROPERTY()
+	class ULevelSequencePlayer* LevelSequencePlayer;
 	
 	bool bNextAttack;
 	bool bJumpAttack;
@@ -230,12 +240,13 @@ public:
 	void UltimateAttackKeyword();
 	void UltimateAttack();
 	void SkillCameraMoveStart();
-	void SkillCameraMoveLoop(float DeltaTime);
-	void SkillCameraMoveEnd(float DeltaTime);
+	UFUNCTION()
+	void SkillCameraMoveEnd();
 	void UltimateAttackSetCamera();
 
 	// 액션 
 	void DialogAction();
+	void DialogPlaying();
 	void DialogSkip();
 #pragma endregion OtherInput
 
@@ -277,6 +288,7 @@ public:
 	void SetAttackUseSkill(const bool Value) { bAttackUseSkill = Value; }
 	void SetCanUseSecondSwordSkill(const bool Value) { CanUseSecondSwordSkill = Value; }
 	void SetIsDodgeToDodge(const bool Value) {bIsDodgeToDodge = Value;}
+	void SetIsStun(const bool Value) { bIsStun = Value; }
 #pragma endregion GetSet
 
 };

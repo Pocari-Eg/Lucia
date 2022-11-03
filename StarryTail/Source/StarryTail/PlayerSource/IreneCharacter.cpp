@@ -300,7 +300,6 @@ void AIreneCharacter::Tick(float DeltaTime)
 	
 	LastAttackCameraShake(DeltaTime);
 	//DoCameraLagCurve(DeltaTime);
-	IreneInput->SkillCameraMoveLoop(DeltaTime);
 	TargetReset();
 	IreneState->Update(DeltaTime);
 
@@ -356,6 +355,8 @@ void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComp
 	// ±× ¿Ü
 	PlayerInputComponent->BindAction("Pause", IE_Pressed, IreneInput, &UIreneInputInstance::PauseWidgetOn).bExecuteWhenPaused = true;
 	PlayerInputComponent->BindAction("Action", IE_Pressed, IreneInput, &UIreneInputInstance::DialogAction);
+	PlayerInputComponent->BindAction("DialogAction", IE_Pressed, IreneInput, &UIreneInputInstance::DialogPlaying);
+
 	PlayerInputComponent->BindAction("DialogSkip", IE_Pressed, IreneInput, &UIreneInputInstance::DialogSkip);
 
 	PlayerInputComponent->BindAction("TestSkillCamera", IE_Pressed, IreneInput, &UIreneInputInstance::SkillCameraMoveStart);
@@ -625,6 +626,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 			
 			if (IreneData.CurrentHP <= 0)
 			{
+				IreneAnim->StopAllMontages(0);
 				ChangeStateAndLog(UDeathState::GetInstance());
 				LevelRestartEvent();
 			}
@@ -634,8 +636,9 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 				if(Cast<ASwirl>(DamageCauser) != nullptr)
 					DotDamage = Cast<ASwirl>(DamageCauser)->GetbIsOnDotDamage();
 
-				if(!IreneState->IsAttackState() && !IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage)
+				if(!IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage && !IreneState->IsUltimateAttackState())
 				{
+					IreneAnim->StopAllMontages(0);
 					ChangeStateAndLog(UHit2State::GetInstance());
 				}
 			}

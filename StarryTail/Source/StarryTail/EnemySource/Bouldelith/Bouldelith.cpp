@@ -187,7 +187,7 @@ void ABouldelith::BattleWalk()
 void ABouldelith::Attack1()
 {
 	InitAttack1Data();
-
+	bIsAttacking = true;
 	BdAnimInstance->PlayAttack1Montage();
 	IsAttackNum = 1;
 	
@@ -197,7 +197,7 @@ void ABouldelith::Attack2()
 {
 	InitAttack2Data();
 
-	
+	bIsAttacking = true;
 	BdAnimInstance->PlayAttack2Montage();
 	IsAttackNum = 2;
 	MonsterAIController->StopMovement();
@@ -206,6 +206,7 @@ void ABouldelith::Attack2()
 void ABouldelith::Attack3()
 {
 	InitAttack3Data();
+	bIsAttacking = true;
 	IsAttackNum = 3;
 	BdAnimInstance->PlayAttack3Montage();
 	MonsterAIController->StopMovement();
@@ -215,6 +216,7 @@ void ABouldelith::Attack3()
 void ABouldelith::Attack4()
 {
 	InitAttack4Data();
+	bIsAttacking = true;
 	IsAttackNum = 4;
 	BdAnimInstance->PlayAttack4Montage();
 	MonsterAIController->StopMovement();
@@ -222,8 +224,28 @@ void ABouldelith::Attack4()
 void ABouldelith::Attack5()
 {
 	BdAnimInstance->PlayAttack1ComboMontage();
+	bIsAttacking = true;
 	IsAttackNum = 5;
 	MonsterAIController->StopMovement();
+}
+
+void ABouldelith::SupportAttack()
+{
+	STARRYLOG(Error, TEXT("Support Attack"));
+
+	auto Ran = FMath::RandRange(1, 100);
+	if (Ran <= 50)
+	{
+		Cast<ABdAIController>(GetAIController())->OnAttack(3);
+	}
+	else {
+		Cast<ABdAIController>(GetAIController())->OnAttack(4);
+	}
+
+	
+	
+
+
 }
 
 void ABouldelith::LeftAttackCheck()
@@ -782,9 +804,14 @@ void ABouldelith::SetBattleRunState(bool State)
 void ABouldelith::SetStatueState(bool State)
 {
 	
+
 	if (!State)
-	{
+	{ 
+		BdAnimInstance->SetbIsState(State);
 		StateChangeParticle->SetActive(true, true);
+	}
+	else {
+		BdAnimInstance->SetbIsState(true);
 	}
 
 }
