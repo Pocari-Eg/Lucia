@@ -1221,20 +1221,18 @@ void UIreneInputInstance::DialogAction()
 {
 	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
 
+	if (PlayerHud->GetDialogState() == EDialogState::e_Set)
+	{
+		PlayerHud->PlayDialog();
+	}
+}
+
+void UIreneInputInstance::DialogPlaying()
+{
+	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+
 	switch (PlayerHud->GetDialogState())
 	{
-	case EDialogState::e_Set:
-		PlayerHud->PlayDialog();
-		// 노말다이얼로그 추가되면 주석 해제하면 되는데 불 차징 많이 하고 다이얼로그 띄우면 에러 발생함
-		// Irene->IreneAnim->StopAllMontages(0);
-		// Irene->IreneAttack->SetUseSkillSkip(true);
-		// Irene->SetIreneDialog();
-		// if(Irene->IreneState->IsChargeState())
-		// {
-		// 	Irene->IreneInput->bUseLeftButton = false;
-		// 	Irene->IreneInput->bUseRightButton = false;
-		// }
-		break;
 	case EDialogState::e_Playing:
 		PlayerHud->PassDialog();
 		break;

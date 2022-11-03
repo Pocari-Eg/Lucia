@@ -246,6 +246,7 @@ public:
 
 	// 액션 
 	void DialogAction();
+	void DialogPlaying();
 	void DialogSkip();
 #pragma endregion OtherInput
 

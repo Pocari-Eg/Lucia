@@ -7,7 +7,7 @@
 AMonsterGroupTrigger::AMonsterGroupTrigger()
 {
 	//초기 설정
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	Trigger = CreateDefaultSubobject<UBoxComponent>(TEXT("TRIGGER"));
 
 	RootComponent = Trigger;
@@ -22,13 +22,9 @@ AMonsterGroupTrigger::AMonsterGroupTrigger()
 	{
 		Mesh->SetStaticMesh(ST_MESH.Object);
 	}
-
-
 	Mesh->SetupAttachment(RootComponent);
 	Mesh->SetRelativeLocationAndRotation(FVector::ZeroVector, FRotator::ZeroRotator);
-
 	CurrentWave = 0;
-
 	bIsOn = false;
 }
 
@@ -80,7 +76,6 @@ void AMonsterGroupTrigger::BeginPlay()
 		}
 	}
 
-
 	
 	
 }
@@ -88,7 +83,11 @@ void AMonsterGroupTrigger::BeginPlay()
 void AMonsterGroupTrigger::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
+}
 
+void AMonsterGroupTrigger::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
 }
 
 void AMonsterGroupTrigger::WaveManager()

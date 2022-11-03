@@ -140,6 +140,7 @@ void AMonsterAIController::SetShieldKey(bool State)
 
 void AMonsterAIController::OnAttack(int i)
 {
+
 	switch (i)
 	{
 	case 1:
@@ -168,10 +169,15 @@ void AMonsterAIController::OnAttack(int i)
 	default:
 		break;
 	}
+
 }
 
 void AMonsterAIController::OffAttack(int i)
 {
+	auto Monster = Cast<AMonster>(GetPawn());
+	Monster->SetIsAttacking(false);
+
+
 	switch (i)
 	{
 	case 1:
@@ -189,6 +195,8 @@ void AMonsterAIController::OffAttack(int i)
 	default:
 		break;
 	}
+
+
 }
 
 void AMonsterAIController::SetBackStepKey(bool State)
@@ -246,6 +254,16 @@ bool AMonsterAIController::GetIsShieldOn()
 bool AMonsterAIController::GetIsBattleState()
 {
 	return  Blackboard->GetValueAsBool(BattleStateKey);
+}
+
+bool AMonsterAIController::GetIsInBattleRange()
+{
+	return Blackboard->GetValueAsBool(IsInBattleRangeKey);
+}
+
+bool AMonsterAIController::GetIsInSupportRange()
+{
+	return Blackboard->GetValueAsBool(IsInSupportRangeKey);
 }
 
 FVector AMonsterAIController::GetSpawnPos()

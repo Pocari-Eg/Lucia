@@ -22,4 +22,10 @@ private:
 	void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
 	void MoveToPlayerReverse(class AMonster* Monster, class AIreneCharacter* Player, float DeltaSeconds);
+
+	float MoveDistance;
+	float CurMoveDistance;
+
+	bool bIsOutSupportRange;
+	bool bIsInBattleRange;
 };
