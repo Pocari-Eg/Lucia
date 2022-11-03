@@ -1457,6 +1457,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 						PrintHitEffect(Component->GetComponentLocation(), DamageCauser);
 						HitStopEvent();
+						Player->HitStopEvent();
 					}
 				}
 			}
