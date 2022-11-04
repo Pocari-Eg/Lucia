@@ -13,6 +13,9 @@ AMonsterController::AMonsterController()
 
 	BattleChangeTimer = 0.0f;
 	BattleChangeTime = 0.0f;
+
+	MinBattleChangeTime = 8.0f;
+	MaxBattleChangeTime = 15.0f;
 	bIsChange = false;
 }
 
@@ -32,7 +35,7 @@ void AMonsterController::SetBattleMonster(AMonster* Monster)
 	if (CurWaveMonster.Num() > 1) {
 		bIsChange = true;
 		BattleChangeTimer = 0.0f;
-		BattleChangeTime = FMath::RandRange(8, 15);
+		BattleChangeTime = FMath::RandRange(MinBattleChangeTime, MaxBattleChangeTime);
 
 	}
 	STARRYLOG(Error, TEXT("BattleMonster Time : %f"), BattleChangeTime);
