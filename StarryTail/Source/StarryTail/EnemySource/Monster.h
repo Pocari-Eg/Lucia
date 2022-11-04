@@ -79,7 +79,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void  MonsterDeadEvent();
 	UFUNCTION(BlueprintImplementableEvent)
-		void  ShieldDestroyEvent();
+	void  ShieldDestroyEvent();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  PointOff();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  PointOn();
 	//UI
 	void MarkerOn();
     void MarkerOff();

@@ -251,7 +251,7 @@ void ABouldelith::SupportAttack()
 void ABouldelith::LeftAttackCheck()
 {
 	// hitcheck======================================
-
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_01);
 	if (bTestMode)
 	{
 		FTransform BottomLine = GetTransform();
@@ -272,12 +272,12 @@ void ABouldelith::LeftAttackCheck()
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 		if (bIsDodgeTime) {
-			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
-			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
 		}
 		else {
-			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
-			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
 		}
 	}
 
@@ -290,7 +290,7 @@ void ABouldelith::LeftAttackCheck()
 	FVector Center = GetLocation();
 
 
-	FVector Box = FVector(500.0f, 500.0f, 300.0f);
+	FVector Box = FVector(NewSkillData->M_Skill_Radius, NewSkillData->M_Skill_Radius, 300.0f);
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
@@ -407,7 +407,7 @@ void ABouldelith::RightAttackCheck()
 {
 
 	// hitcheck======================================
-
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_02);
 	if (bTestMode)
 	{
 		FTransform BottomLine = GetTransform();
@@ -428,8 +428,8 @@ void ABouldelith::RightAttackCheck()
 		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 		if (bIsDodgeTime) {
-			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
-			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, NewSkillData->M_Skill_Radius, 200.0f, FColor::Green, 10, 0.1f, false, 0, 2);
 		}
 		else {
 			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 200.0f, FColor::Red, 10, 0.5f, false, 0, 2);
@@ -446,7 +446,7 @@ void ABouldelith::RightAttackCheck()
 	FVector Center = GetLocation();
 
 
-	FVector Box = FVector(500.0f, 500.0f, 300.0f);
+	FVector Box = FVector(NewSkillData->M_Skill_Radius, NewSkillData->M_Skill_Radius, 300.0f);
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 
@@ -560,7 +560,7 @@ void ABouldelith::RightAttackCheck()
 
 void ABouldelith::AttackCheck3()
 {
-
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_03);
 	FHitResult Hit;
 
 	//By 성열현
@@ -612,11 +612,14 @@ void ABouldelith::AttackCheck4()
 {
 
 	// hitcheck======================================
-
+	FMonsterSkillDataTable* NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_04);
 	if (bTestMode)
 	{
 		FTransform BottomLine = GetTransform();
 		BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, 120.0f));
+
+		BottomLine.SetLocation(BottomLine.GetLocation() + GetActorForwardVector() * 270.0f);
+
 		FTransform TopLine = BottomLine;
 		TopLine.SetLocation(TopLine.GetLocation() + FVector(0.0f, 0.0f, 250.0f));
 
@@ -626,12 +629,12 @@ void ABouldelith::AttackCheck4()
 		FMatrix TopDebugMatrix = TopLine.ToMatrixNoScale();
 
 		if (bIsDodgeTime) {
-			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
-			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, NewSkillData->M_Skill_Radius, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, NewSkillData->M_Skill_Radius, 360.0f, FColor::Green, 10, 0.1f, false, 0, 2);
 		}
 		else {
-			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, 500.0f, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
-			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, 500.0f, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, NewSkillData->M_Skill_Radius, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
+			GetAIController()->DrawRadial(GetWorld(), TopDebugMatrix, NewSkillData->M_Skill_Radius, 360.0f, FColor::Red, 10, 0.5f, false, 0, 2);
 		}
 	}
 
@@ -639,9 +642,9 @@ void ABouldelith::AttackCheck4()
 	ForwardVector.Normalize();
 	
 	FVector Center = GetLocation();
-	
+	Center += GetActorForwardVector() * 270.0f;
 
-	FVector Box = FVector(500.0f, 500.0f, 300.0f);
+	FVector Box = FVector(NewSkillData->M_Skill_Radius, NewSkillData->M_Skill_Radius, 300.0f);
 	TArray<FOverlapResult> OverlapResults;
 	FCollisionQueryParams CollisionQueryParam(NAME_None, false, this);
 	bool bResult = GetWorld()->OverlapMultiByChannel( // 지정된 Collision FCollisionShape와 충돌한 액터 감지 

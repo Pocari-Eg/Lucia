@@ -32,6 +32,7 @@ public:
 
 	void MarkerOff();
 
+	void SetAttributeUI(bool State);
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnBarrierUI();
@@ -58,6 +59,9 @@ private:
 	UPROPERTY()
 	class UImage* MarkerImage;
 
-
+	UPROPERTY()
+	class UImage* AttributeImage;
+	UPROPERTY()
+	class UImage* AttributeLineImage;
 
 };
