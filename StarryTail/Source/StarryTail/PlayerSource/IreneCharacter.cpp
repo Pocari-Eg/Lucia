@@ -312,7 +312,10 @@ void AIreneCharacter::Tick(float DeltaTime)
 	{
 		IreneData.CurrentGauge -= DeltaTime*(1/0.8f);
 		if(IreneData.CurrentGauge <= 0)
+		{
 			IreneData.CurrentGauge = 0;
+			IreneInput->SpiritChangeMaxTime();
+		}
 	}
 	
 	if (bIsKnockBack)

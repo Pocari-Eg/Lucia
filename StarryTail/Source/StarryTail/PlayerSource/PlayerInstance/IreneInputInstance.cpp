@@ -874,9 +874,9 @@ void UIreneInputInstance::SpiritChangeKeyword()
 {
 	if(!Irene->bInputStop)
 	{
-		if((Irene->IreneData.CurrentGauge == Irene->IreneData.MaxGauge || Irene->bIsSpiritStance)&& bIsSpiritChangeEnable)
+		if(Irene->IreneData.CurrentGauge >= 0 && bIsSpiritChangeEnable)
 		{
-			if(!Irene->bIsSpiritStance)
+			if(!Irene->bIsSpiritStance && Irene->IreneData.CurrentGauge > 0)
 			{
 				// 정령 스탠스 적용
 				Irene->SpiritStance();
@@ -889,7 +889,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				//Irene->IreneData.CurrentGauge = 0;
 				Irene->IreneUIManager->UpdateSoul(Irene->IreneData.CurrentGauge, Irene->IreneData.MaxGauge);
 				//GetWorld()->GetTimerManager().SetTimer(WeaponChangeWaitHandle,this, &UIreneInputInstance::SpiritChangeTimeOver, 60, false);
-				GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,this, &UIreneInputInstance::SpiritChangeMaxTime, 80, false);				
+				//GetWorld()->GetTimerManager().SetTimer(WeaponChangeMaxWaitHandle,this, &UIreneInputInstance::SpiritChangeMaxTime, 80, false);				
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
 				Irene->ChangeStateAndLog(UFormChangeState::GetInstance());
@@ -899,9 +899,14 @@ void UIreneInputInstance::SpiritChangeKeyword()
 					Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
 				}));
 				Irene->bIsSpiritStance = true;
-				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]{Irene->PetMesh->SetVisibility(false);} , 1.0f, false);				
+				bIsSpiritChangeEnable = false;
+				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
+				{
+					Irene->PetMesh->SetVisibility(false,true);
+					bIsSpiritChangeEnable = true;
+				} , 1.5f, false);
 			}
-			else
+			else if(Irene->bIsSpiritStance)
 			{
 				// 정령 스탠스 해제
 				Irene->NormalStance();
@@ -919,9 +924,15 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->ActionEndChangeMoveState();
 				Irene->bIsSpiritStance = false;
-				Irene->PetMesh->SetVisibility(true); 
+				Irene->PetMesh->SetVisibility(true,true); 
 				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChangeNormal);
 
+				bIsSpiritChangeEnable = false;
+				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
+				{
+					bIsSpiritChangeEnable = true;
+				} , 1.33f, false);
+				
 				const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 				if (Instance != nullptr)
 				{
@@ -947,11 +958,18 @@ void UIreneInputInstance::SpiritChangeMaxTime()
 		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeDamageOverTimer);
 		bIsStun = true;
+
+		MoveKey[0] = 0;
+		MoveKey[1] = 0;
+		MoveKey[2] = 0;
+		MoveKey[3] = 0;
+
 		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]
 		{
 			bIsStun = false;
 			Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
-		}), 10, false);
+		}), 3, false);
+		bIsSpiritChangeEnable = true;
 		SpiritChangeKeyword();
 		Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Stun);
 	}
@@ -976,7 +994,7 @@ void UIreneInputInstance::SpiritChangeBlock()
 	Irene->IreneAnim->StopAllMontages(0);
 	Irene->IreneAttack->AttackTimeEndState();
 	Irene->bIsSpiritStance = false;
-	Irene->PetMesh->SetVisibility(true);
+	Irene->PetMesh->SetVisibility(true,true);
 
 	const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	if (Instance != nullptr)
