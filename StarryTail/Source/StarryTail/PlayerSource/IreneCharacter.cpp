@@ -310,7 +310,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 
 	if(bIsSpiritStance)
 	{
-		IreneData.CurrentGauge -= DeltaTime*(1/0.8f);
+		IreneData.CurrentGauge -= DeltaTime*(1/0.5f);
 		if(IreneData.CurrentGauge <= 0)
 		{
 			IreneData.CurrentGauge = 0;

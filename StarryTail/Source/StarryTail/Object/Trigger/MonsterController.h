@@ -20,6 +20,11 @@ private:
 	bool bIsChange;
 	float BattleChangeTimer;
 	float BattleChangeTime;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	float MinBattleChangeTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	float MaxBattleChangeTime;
 public:	
 	// Sets default values for this actor's properties
 	AMonsterController();
