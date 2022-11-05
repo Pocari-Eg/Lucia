@@ -105,11 +105,7 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = AttackComboAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* AttackComboMontage2;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleRunAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* BattleRunMontage1;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleRunAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* BattleRunMontage2;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleRunAnimation, Meta = (AllowPrivateAccess = true))
-		UAnimMontage* BattleRunMontage3;
+		UAnimMontage* BattleRunMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleWalkAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* BattleLeftWalkMontage;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = BattleWalkAnimation, Meta = (AllowPrivateAccess = true))

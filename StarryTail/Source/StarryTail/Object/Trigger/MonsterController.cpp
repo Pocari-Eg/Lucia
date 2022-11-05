@@ -47,7 +47,7 @@ void AMonsterController::SetCurWaveMonsters(TArray<class AMonster*> WaveMonster)
 	CurWaveMonster = WaveMonster;
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
-		CurWaveMonster[i]->SetMonsterContorller (this);
+		CurWaveMonster[i]->SetMonsterContorller(this);
 	}
 }
 
@@ -71,6 +71,9 @@ void AMonsterController::ChangeBattleMonster()
 			}
 			else {
 				CurWaveMonster[i]->SetSupportState();
+				CurWaveMonster[i]->GetAIController()->SetIsInSupportRange(true);
+
+					
 			}
 		}
 	}
@@ -82,7 +85,7 @@ void AMonsterController::SupportMonsterAttack()
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
 		if (CurWaveMonster[i] != CurBattleMonster&& CurWaveMonster[i]->WasRecentlyRendered()&&
-			CurWaveMonster[i]->GetAIController()->GetIsInSupportRange()&& !CurWaveMonster[i]->GetIsAttacking())
+			CurWaveMonster[i]->GetAIController()->GetIsInSupportRange()&& !CurWaveMonster[i]->GetIsAttacking()&&!CurWaveMonster[i]->GetIsAttackCool())
 		{
 		   IsRenderMonster.Add(CurWaveMonster[i]);
 		}

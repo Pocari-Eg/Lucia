@@ -56,6 +56,7 @@ public:
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
+	void PlayBattleWalkAnim();
 	void PlayGroggyAnim();
 	void PlayDeathAnim();
 

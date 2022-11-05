@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTaskMoveToBattleRange::ExecuteTask(UBehaviorTreeComponent
 
 
 
-	Monster->PlayWalkAnim();
+	Monster->PlayBattleWalkAnim();
 
 
 	return EBTNodeResult::InProgress;
