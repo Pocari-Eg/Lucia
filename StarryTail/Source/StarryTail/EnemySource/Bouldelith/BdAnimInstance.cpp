@@ -13,10 +13,10 @@ void UBdAnimInstance::PlayDeathMontage()
 }
 void UBdAnimInstance::PlayBattleRunMontage()
 {
-	if (Montage_IsPlaying(BattleRunMontage1))
+	if (Montage_IsPlaying(BattleRunMontage))
 		return;
 
-	Montage_Play(BattleRunMontage1, PlayRate);
+	Montage_Play(BattleRunMontage, PlayRate);
 }
 void UBdAnimInstance::PlayBackstepMontage()
 {
@@ -94,13 +94,10 @@ void UBdAnimInstance::PlayBrokenMontage()
 
 void UBdAnimInstance::UpgradeBattleRun()
 {
-	if (Montage_IsPlaying(BattleRunMontage3))
-		return;
 
-	if (Montage_IsPlaying(BattleRunMontage1))
-		Montage_Play(BattleRunMontage2, PlayRate);
-	else if (Montage_IsPlaying(BattleRunMontage2))
-		Montage_Play(BattleRunMontage3, PlayRate);
+	if (Montage_IsPlaying(BattleRunMontage))
+		Montage_Play(BattleRunMontage, PlayRate);
+
 }
 bool UBdAnimInstance::CheckAttackedMontagePlaying()
 {
@@ -136,12 +133,9 @@ bool UBdAnimInstance::GetBackstepIsPlaying()
 }
 bool UBdAnimInstance::GetBattleRunIsPlaying()
 {
-	if (Montage_IsPlaying(BattleRunMontage1))
+	if (Montage_IsPlaying(BattleRunMontage))
 		return true;
-	if (Montage_IsPlaying(BattleRunMontage2))
-		return true;
-	if (Montage_IsPlaying(BattleRunMontage3))
-		return true;
+
 
 	return false;
 }

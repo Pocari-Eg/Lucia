@@ -43,8 +43,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float CalibrationRadius;
 
-
-	;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ProjectileOffest;
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float SpawnRadius;
 

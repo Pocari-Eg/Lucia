@@ -56,6 +56,7 @@ public:
 	void PlayIdleAnim();
 	void PlayDetectAnim();
 	void PlayWalkAnim();
+	void PlayBattleWalkAnim();
 	void PlayGroggyAnim();
 	void PlayDeathAnim();
 
@@ -307,6 +308,10 @@ public:
 	float GetAttackTraceInterver() const;
 	FNormalMonsterInfo GetMonsterInfo() const;
 	bool GetIsAttacking()const;
+
+	float GetMinSupportWalkTime()const;
+	float GetMaxSupportWalkTime()const;
+
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
 	float GetAtkRange() const;
@@ -315,10 +320,8 @@ public:
 	float GetSkillRadius() const;
 	float GetToPlayerDistance();
 	float GetMoveSpeed()const;
-
 	float GetBattleRange()const;
 	float GetSupportRange()const;
-
 	float GetRotateRate();
 
 

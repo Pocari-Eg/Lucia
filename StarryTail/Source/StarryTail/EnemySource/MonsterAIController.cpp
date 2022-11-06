@@ -141,34 +141,34 @@ void AMonsterAIController::SetShieldKey(bool State)
 void AMonsterAIController::OnAttack(int i)
 {
 
-	switch (i)
-	{
-	case 1:
-		Blackboard->SetValueAsBool(Attack1Key, true);
-		Blackboard->SetValueAsBool(Attack2Key, false);
-		Blackboard->SetValueAsBool(Attack3Key, false);
-		Blackboard->SetValueAsBool(Attack4Key, false);
-		break;
-	case 2:
-		Blackboard->SetValueAsBool(Attack1Key, false);
-		Blackboard->SetValueAsBool(Attack2Key, true);
-		Blackboard->SetValueAsBool(Attack3Key, false);
-		Blackboard->SetValueAsBool(Attack4Key, false);
-		break;
-	case 3:
-		Blackboard->SetValueAsBool(Attack1Key, false);
-		Blackboard->SetValueAsBool(Attack2Key, false);
-		Blackboard->SetValueAsBool(Attack3Key, true);
-		Blackboard->SetValueAsBool(Attack4Key, false);
-		break;
-	case 4:
-		Blackboard->SetValueAsBool(Attack1Key, false);
-		Blackboard->SetValueAsBool(Attack2Key, false);
-		Blackboard->SetValueAsBool(Attack3Key, false);
-		Blackboard->SetValueAsBool(Attack4Key, true);
-	default:
-		break;
-	}
+		switch (i)
+		{
+		case 1:
+			Blackboard->SetValueAsBool(Attack1Key, true);
+			Blackboard->SetValueAsBool(Attack2Key, false);
+			Blackboard->SetValueAsBool(Attack3Key, false);
+			Blackboard->SetValueAsBool(Attack4Key, false);
+			break;
+		case 2:
+			Blackboard->SetValueAsBool(Attack1Key, false);
+			Blackboard->SetValueAsBool(Attack2Key, true);
+			Blackboard->SetValueAsBool(Attack3Key, false);
+			Blackboard->SetValueAsBool(Attack4Key, false);
+			break;
+		case 3:
+			Blackboard->SetValueAsBool(Attack1Key, false);
+			Blackboard->SetValueAsBool(Attack2Key, false);
+			Blackboard->SetValueAsBool(Attack3Key, true);
+			Blackboard->SetValueAsBool(Attack4Key, false);
+			break;
+		case 4:
+			Blackboard->SetValueAsBool(Attack1Key, false);
+			Blackboard->SetValueAsBool(Attack2Key, false);
+			Blackboard->SetValueAsBool(Attack3Key, false);
+			Blackboard->SetValueAsBool(Attack4Key, true);
+		default:
+			break;
+		}
 
 }
 

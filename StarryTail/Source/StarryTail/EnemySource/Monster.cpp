@@ -295,6 +295,16 @@ bool AMonster::GetIsAttacking() const
 	return bIsAttacking;
 }
 
+float AMonster::GetMinSupportWalkTime() const
+{
+	return MonsterInfo.MinSupportWalkTime;
+}
+
+float AMonster::GetMaxSupportWalkTime() const
+{
+	return MonsterInfo.MaxSupportWalkTime;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;
@@ -323,7 +333,7 @@ float AMonster::GetToPlayerDistance()
 }
 float AMonster::GetMoveSpeed() const
 {
-	return MonsterInfo.M_MoveSpeed;
+	return GetCharacterMovement()->MaxWalkSpeed;
 }
 float AMonster::GetBattleRange() const
 {
@@ -1066,6 +1076,13 @@ void AMonster::PlayDetectAnim()
 void AMonster::PlayWalkAnim()
 {
 	MonsterAnimInstance->PlayWalkMontage();
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
+	
+}
+void AMonster::PlayBattleWalkAnim()
+{
+	MonsterAnimInstance->PlayBattleWalkMontage();
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.BattleWalkMoveSpeed;
 }
 void AMonster::PlayGroggyAnim()
 {
@@ -1386,10 +1403,11 @@ void AMonster::Tick(float DeltaTime)
 	if (CurState == EMonsterState::Support)
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
-			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange()&&
+		if ((GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
+			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())&&
 			!bIsAttacking)
 		{
+			STARRYLOG_S(Error);
 			GetAIController()->SetIsInSupportRange(false);
 		}
 	}

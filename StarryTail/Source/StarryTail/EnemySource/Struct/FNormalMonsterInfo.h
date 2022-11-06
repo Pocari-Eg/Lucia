@@ -165,8 +165,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RotationRate; //최대 
 
-
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MinSupportWalkTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float MaxSupportWalkTime;
 
 public:
 	//메인 속성 방어력들을 저장 20220414 수정
