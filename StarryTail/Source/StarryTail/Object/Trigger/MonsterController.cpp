@@ -68,6 +68,15 @@ void AMonsterController::ChangeBattleMonster()
 			if (i == NewBattleMonsterIndex) {
 				CurWaveMonster[i]->SetBattleState();
 				CurBattleMonster = CurWaveMonster[i];
+				if (CurWaveMonster.Num() > 1) {
+
+					bIsChange = true;
+					BattleChangeTimer = 0.0f;
+					BattleChangeTime = FMath::RandRange(MinBattleChangeTime, MaxBattleChangeTime);
+
+				}
+				STARRYLOG(Error, TEXT("BattleMonster Time : %f"), BattleChangeTime);
+
 			}
 			else {
 				CurWaveMonster[i]->SetSupportState();
