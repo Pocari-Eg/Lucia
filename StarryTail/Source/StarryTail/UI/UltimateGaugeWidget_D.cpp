@@ -3,11 +3,32 @@
 
 #include "UltimateGaugeWidget_D.h"
 #include "Components/ProgressBar.h"
-
+#include "Components/Image.h"
 
 void UUltimateGaugeWidget_D::SetUltimate(float pErcent)
 {
-	//auto _pErcent = ultimate_fillBar->Percent + (pErcent / 100.0f);
-	//ultimate_fillBar->SetPercent(_pErcent);
-	GEngine->AddOnScreenDebugMessage(-1, 6.0f, FColor::Red, FString::Printf(TEXT("%f"), pErcent));
+	
+}
+
+void UUltimateGaugeWidget_D::SetUltimateBlueprint(float pErcent)
+{
+	ultimate_fillBar->SetPercent(pErcent / 100.0f);
+
+	SetColors(pErcent);
+}
+
+void UUltimateGaugeWidget_D::SetColors(float _current)
+{
+	if (_current > 0.0f && _current < 100.0f)
+	{
+		if (ultimate_fillBar->WidgetStyle.FillImage.TintColor == Fill) return;
+
+		ultimate_fillBar->SetFillColorAndOpacity(Fill);
+	}
+	else if (_current >= 100.0f)
+	{
+		if (ultimate_fillBar->WidgetStyle.FillImage.TintColor == full) return;
+
+		ultimate_fillBar->SetFillColorAndOpacity(full);
+	}
 }

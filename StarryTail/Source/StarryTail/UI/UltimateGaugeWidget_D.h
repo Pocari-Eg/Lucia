@@ -17,10 +17,23 @@ class STARRYTAIL_API UUltimateGaugeWidget_D : public UUserWidget
 public:
 	UPROPERTY()
 	class UProgressBar* ultimate_fillBar;
+	UPROPERTY()
+	class UImage* ultimate_fill;
+
+	UPROPERTY(EditAnyWhere)
+	FLinearColor normal;
+	UPROPERTY(EditAnyWhere)
+	FLinearColor Fill;
+	UPROPERTY(EditAnyWhere)
+	FLinearColor full;
 
 public:
 	UFUNCTION(BlueprintCallable)
 	void SetUltimate(float pErcent);
+	UFUNCTION(BlueprintCallable)
+	void SetUltimateBlueprint(float pErcent);
+
+	void SetColors(float _current);
 
 	
 };

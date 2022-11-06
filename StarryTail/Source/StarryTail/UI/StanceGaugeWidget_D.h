@@ -17,10 +17,22 @@ class STARRYTAIL_API UStanceGaugeWidget_D : public UUserWidget
 public:
 	UPROPERTY()
 	class UImage* gauge_full;
+	UPROPERTY()
+	class UImage* gauge_fill;
 
 	UMaterialInstanceDynamic* mat_Progress;
-	FTimerHandle AttackCtimeHandle;
+	FTimerHandle AttackCtimeHandle, stopshine;
 	float PLUS = 0.0f;
+
+	float targetR, targetG, targetB;
+	bool SHINE;
+
+	UPROPERTY(EditAnyWhere)
+	FLinearColor idlecolor;
+	UPROPERTY(EditAnyWhere)
+	FLinearColor fillcolor;
+	UPROPERTY(EditAnyWhere)
+	FLinearColor fullcolor;
 
 	float Timer, maxTimer;
 
@@ -36,6 +48,10 @@ public:
 	void SetCoolTime(float Time);
 
 	void eCtimeflow();
+
+	void BrushSetColor(float _current);
+
+	void SetShine();
 
 	virtual void NativeConstruct() override;
 
