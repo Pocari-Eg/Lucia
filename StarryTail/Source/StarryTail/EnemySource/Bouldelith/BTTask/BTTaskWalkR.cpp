@@ -25,7 +25,7 @@ EBTNodeResult::Type UBTTaskWalkR::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 	Bouldelith->GetBouldelithAnimInstance()->PlayRightBattleWalkMontage();
 
 
-	WalkTime = FMath::FRandRange(2.0f,4.0f);
+	WalkTime = FMath::FRandRange(Bouldelith->GetMinSupportWalkTime(), Bouldelith->GetMaxSupportWalkTime());
 
 	return EBTNodeResult::InProgress;
 }
@@ -36,7 +36,7 @@ void UBTTaskWalkR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 
 	auto Monster = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
 
-	////회전
+	//회전
 	Monster->RotationPlayer(DeltaSeconds);
 	WalkTimer += DeltaSeconds;
 	if (WalkTimer >= WalkTime)

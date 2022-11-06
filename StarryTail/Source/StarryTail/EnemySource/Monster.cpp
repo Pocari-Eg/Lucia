@@ -295,6 +295,16 @@ bool AMonster::GetIsAttacking() const
 	return bIsAttacking;
 }
 
+float AMonster::GetMinSupportWalkTime() const
+{
+	return MonsterInfo.MinSupportWalkTime;
+}
+
+float AMonster::GetMaxSupportWalkTime() const
+{
+	return MonsterInfo.MaxSupportWalkTime;
+}
+
 float AMonster::GetAtkAngle() const
 {
 	return MonsterInfo.Attack1Range.M_Atk_Angle;

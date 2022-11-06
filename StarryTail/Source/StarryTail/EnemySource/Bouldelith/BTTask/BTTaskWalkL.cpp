@@ -23,7 +23,7 @@ EBTNodeResult::Type UBTTaskWalkL::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 
 	Bouldelith->GetBouldelithAnimInstance()->PlayLeftBattleWalkMontage();
 
-	WalkTime = FMath::FRandRange(2.0f, 4.0f);
+	WalkTime = FMath::FRandRange(Bouldelith->GetMinSupportWalkTime(), Bouldelith->GetMaxSupportWalkTime());
 	return EBTNodeResult::InProgress;
 }
 

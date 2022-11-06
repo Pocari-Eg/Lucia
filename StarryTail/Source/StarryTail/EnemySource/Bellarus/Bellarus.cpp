@@ -406,27 +406,27 @@ void ABellarus::ProjectileAttack()
 
 
 	// 총구 위치에 발사체를 스폰시킵니다.
-	ABF_Projectile* FowardProjectile = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (ForwardVector * 100.0f), GetActorRotation(), SpawnParams);
+	ABF_Projectile* FowardProjectile = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation()+FVector(0.0f,BellarusInfo.ProjectileOffest,0.0f) + (ForwardVector * 100.0f), GetActorRotation(), SpawnParams);
 	if (FowardProjectile)
 	{
 		FowardProjectile->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation()+(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) +(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
 	if (RightProjectile_1)
 	{
 		RightProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
 	if (RightProjectile_2)
 	{
 		RightProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
 	if (LeftProjectile_1)
 	{
 		LeftProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
 	if (LeftProjectile_2)
 	{
 		LeftProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
