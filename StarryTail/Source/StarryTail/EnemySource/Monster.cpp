@@ -412,6 +412,7 @@ void AMonster::SetDpsCheck(bool state)
 void AMonster::InitWalkSpeed()
 {
 	MonsterInfo.DefaultMoveSpeed = MonsterInfo.M_MoveSpeed;
+	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 }
 
 int AMonster::GetCurStackCount()

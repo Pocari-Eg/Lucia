@@ -1,19 +1,20 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTaskWalkL.h"
+#include "BTTaskBdWalkR.h"
 #include "../Bouldelith.h"
 #include "../BdAIController.h"
 #include "../../../STGameInstance.h"
-UBTTaskWalkL::UBTTaskWalkL()
+UBTTaskBdWalkR::UBTTaskBdWalkR()
 {
-	NodeName = TEXT("Battle_Walk_L");
+	NodeName = TEXT("Battle_Walk_R");
 	bNotifyTick = true;
 
-	 WalkTimer=0.0f;
+	
+	WalkTimer = 0.0f;
 }
 
-EBTNodeResult::Type UBTTaskWalkL::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
+EBTNodeResult::Type UBTTaskBdWalkR::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
@@ -21,19 +22,26 @@ EBTNodeResult::Type UBTTaskWalkL::ExecuteTask(UBehaviorTreeComponent& OwnerComp,
 	if (nullptr == Bouldelith)
 		return EBTNodeResult::Failed;
 
-	Bouldelith->GetBouldelithAnimInstance()->PlayLeftBattleWalkMontage();
+
+	Bouldelith->InitWalkSpeed();
+	Bouldelith->GetBouldelithAnimInstance()->PlayRightBattleWalkMontage();
+
 
 	WalkTime = FMath::FRandRange(Bouldelith->GetMinSupportWalkTime(), Bouldelith->GetMaxSupportWalkTime());
+
 	return EBTNodeResult::InProgress;
 }
 
-void UBTTaskWalkL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+void UBTTaskBdWalkR::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
 	auto Monster = Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn());
-
-	////회전
+	FVector Forward = Monster->GetActorForwardVector();
+	Forward.Normalize();
+	FVector RightDirection = Forward.RotateAngleAxis(90.0f, FVector::UpVector);
+	Monster->SetActorLocation(Monster->GetActorLocation() + (RightDirection * Monster->GetMoveSpeed() * DeltaSeconds));
+	//회전
 	Monster->RotationPlayer(DeltaSeconds);
 	WalkTimer += DeltaSeconds;
 	if (WalkTimer >= WalkTime)
@@ -42,6 +50,6 @@ void UBTTaskWalkL::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-}
+	}
 
 

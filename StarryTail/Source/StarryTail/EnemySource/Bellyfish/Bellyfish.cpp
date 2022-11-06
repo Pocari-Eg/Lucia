@@ -140,6 +140,24 @@ void ABellyfish::ProjectileAttack()
 	}
 }
 
+void ABellyfish::SupportAttack()
+{
+	STARRYLOG(Error, TEXT("Support Attack"));
+
+	auto Ran = FMath::RandRange(1, 100);
+	if (Ran <= 33)
+	{
+		Cast<ABellyfishAIController>(GetAIController())->OnAttack(1);
+	}
+	else if(Ran<=66){
+		Cast<ABellyfishAIController>(GetAIController())->OnAttack(2);
+	}
+   else {
+     Cast<ABellyfishAIController>(GetAIController())->OnAttack(3);
+   }
+
+  }
+
 void ABellyfish::Skill_Setting()
 {
 	Info.DodgeTime = MonsterInfo.M_Skill_Set_Time - (MonsterInfo.M_Skill_Set_Time / 100.0f) * DodgeTimePercent;
