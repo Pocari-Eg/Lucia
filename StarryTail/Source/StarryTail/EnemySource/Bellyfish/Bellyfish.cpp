@@ -75,7 +75,7 @@ UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 void ABellyfish::Attack()
 {
 	//어택 준비 애니메이션 출력
-
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 	InitAttack1Data();
 	bIsAttacking = true;
 	BellyfishAnimInstance->PlayAttackMontage();
@@ -139,6 +139,24 @@ void ABellyfish::ProjectileAttack()
 		}
 	}
 }
+
+void ABellyfish::SupportAttack()
+{
+	STARRYLOG(Error, TEXT("Support Attack"));
+
+	auto Ran = FMath::RandRange(1, 100);
+	if (Ran <= 33)
+	{
+		Cast<ABellyfishAIController>(GetAIController())->OnAttack(1);
+	}
+	else if(Ran<=66){
+		Cast<ABellyfishAIController>(GetAIController())->OnAttack(2);
+	}
+   else {
+     Cast<ABellyfishAIController>(GetAIController())->OnAttack(3);
+   }
+
+  }
 
 void ABellyfish::Skill_Setting()
 {

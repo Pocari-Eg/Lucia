@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskWalkR.generated.h"
+#include "BTTaskBdWalkR.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class STARRYTAIL_API UBTTaskWalkR : public UBTTaskNode
+class STARRYTAIL_API UBTTaskBdWalkR : public UBTTaskNode
 {
 	GENERATED_BODY()
 	public:
-		UBTTaskWalkR();
+		UBTTaskBdWalkR();
 
 
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

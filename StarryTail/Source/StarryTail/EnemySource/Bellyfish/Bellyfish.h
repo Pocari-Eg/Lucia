@@ -34,7 +34,7 @@ public:
 
 	void PlayFireAnim();
 	void ProjectileAttack();
-
+	void SupportAttack() override;
 	void Skill_Setting();
 	void Skill_Set();
 	void PlayRunAnim();
