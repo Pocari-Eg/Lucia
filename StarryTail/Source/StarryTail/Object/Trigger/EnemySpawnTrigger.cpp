@@ -83,6 +83,9 @@ void AEnemySpawnTrigger::WaveManager()
 
 void AEnemySpawnTrigger::WaveStart()
 {
+
+	TArray<AMonster*> SpawnMonsters;
+
 	if (SpawnPoint[0]->getCurrentWave() < SpawnPoint[0]->SpawnWave.Num()) {
 		WaveMonsterCount = 0;
 		OnBattleWall();
@@ -92,12 +95,12 @@ void AEnemySpawnTrigger::WaveStart()
 				if (SpawnPoint[i] != nullptr) {
 					WaveMonsterCount += SpawnPoint[i]->getWaveMonsterCount();
 					SpawnPoint[i]->RandomSpawn();
-					SetCurWaveMonsters(SpawnPoint[i]->GetCurWaveMonster());
-
+					
+					SpawnMonsters += SpawnPoint[i]->GetCurWaveMonster();
 				}
 			}
 		}
-
+		SetCurWaveMonsters(SpawnMonsters);
 
 		SetCloseMonster();
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
