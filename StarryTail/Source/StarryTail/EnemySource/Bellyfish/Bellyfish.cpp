@@ -321,6 +321,7 @@ void ABellyfish::BeginPlay()
 	//애니메이션 몽타주 종료시 호출
 	BellyfishAnimInstance->AttackEnd.AddLambda([this]() -> void {
 		AttackEnd.Broadcast();
+		bIsAttacking = false;
 		});
 	BellyfishAnimInstance->AttackedEnd.AddLambda([this]() -> void {
 		bIsAttacked = false;
@@ -339,10 +340,12 @@ void ABellyfish::BeginPlay()
 
 	BellyfishAnimInstance->RushEnd.AddLambda([this]() -> void {
 
+		bIsAttacking = false;
 		bIsRush = false;
 		bIsPlayerRushHit = false;
 		bIsWallRushHit = false;
 		GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+		RushEnd.Broadcast();
 	});
 
 	BellyfishAnimInstance->RushStart.AddLambda([this]() -> void {
@@ -527,11 +530,18 @@ void ABellyfish::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 
 				UGameplayStatics::ApplyDamage(Player, MonsterInfo.M_Skill_Atk, NULL, this, NULL);
 				bIsPlayerRushHit = true;
+				bIsAttacking = false;
+				bIsRush = false;
+				bIsWallRushHit = false;
+				GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 				RushEnd.Broadcast();
 			}
 			else {
-				STARRYLOG_S(Warning);
 				bIsPlayerRushHit = false;
+				bIsAttacking = false;
+				bIsRush = false;
+				bIsWallRushHit = false;
+				GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 				RushEnd.Broadcast();
 			}
 		}
