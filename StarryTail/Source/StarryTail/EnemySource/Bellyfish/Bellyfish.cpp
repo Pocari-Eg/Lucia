@@ -75,7 +75,7 @@ UBellyfishAnimInstance* ABellyfish::GetBellyfishAnimInstance() const
 void ABellyfish::Attack()
 {
 	//어택 준비 애니메이션 출력
-
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 	InitAttack1Data();
 	bIsAttacking = true;
 	BellyfishAnimInstance->PlayAttackMontage();

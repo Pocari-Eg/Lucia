@@ -836,7 +836,17 @@ void AMonster::CalcHp(float Damage)
 				GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 
 
-			
+				if (MonsterController != nullptr)
+				{
+					if (CurState == EMonsterState::Support)
+					{
+						MonsterController->SupportMonsterDelete(this);
+					}
+					else if (CurState == EMonsterState::Battle)
+					{
+						MonsterController->BattleMonsterDelete();
+					}
+				}
 
 
 				//DropWeaponSoul();
@@ -870,17 +880,7 @@ void AMonster::CalcHp(float Damage)
 					auto Bellyfish = Cast<ABellyfish>(this);
 					Bellyfish->DestroyMagicAttack();
 				}
-				if (MonsterController != nullptr)
-				{
-					if (CurState == EMonsterState::Support)
-					{
-						MonsterController->SupportMonsterDelete(this);
-					}
-					else if (CurState == EMonsterState::Battle)
-					{
-						MonsterController->BattleMonsterDelete();
-					}
-				}
+	
 
 				InitStackCount();
 				MonsterDeadEvent();
@@ -1098,7 +1098,7 @@ void AMonster::PlayDeathAnim()
 void AMonster::SetGroup()
 {
 	bIsGroupTriggerEnemy = true;
-	SetNormalState();
+	//SetNormalState();
 	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 }
 

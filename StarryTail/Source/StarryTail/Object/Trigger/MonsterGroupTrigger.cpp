@@ -129,8 +129,10 @@ void AMonsterGroupTrigger::WaveStart()
 					}
 
 				}
-		
+				SetCloseMonster();
 		}
+
+		
 		CurrentWave++;
 		CurrentWave >= WAVE.Num() ? Instance->SetLastWave(true) : Instance->SetLastWave(false);
 	}

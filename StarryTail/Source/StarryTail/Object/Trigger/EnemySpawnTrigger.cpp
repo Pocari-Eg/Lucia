@@ -93,18 +93,22 @@ void AEnemySpawnTrigger::WaveStart()
 					WaveMonsterCount += SpawnPoint[i]->getWaveMonsterCount();
 					SpawnPoint[i]->RandomSpawn();
 					SetCurWaveMonsters(SpawnPoint[i]->GetCurWaveMonster());
+
 				}
 			}
 		}
 
 
-
+		SetCloseMonster();
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 		if (Instance != nullptr)
 		{
 			Instance->SetNextWaveCount(WaveMonsterCount * NextWavePercent / 100);
 		}
+		
 	}
+
+
 }
 
 void AEnemySpawnTrigger::WaveClear()

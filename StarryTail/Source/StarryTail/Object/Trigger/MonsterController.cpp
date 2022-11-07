@@ -2,6 +2,7 @@
 
 
 #include "MonsterController.h"
+#include"../../STGameInstance.h"
 #include "../../EnemySource/Monster.h"
 
 // Sets default values
@@ -17,6 +18,35 @@ AMonsterController::AMonsterController()
 	MinBattleChangeTime = 8.0f;
 	MaxBattleChangeTime = 15.0f;
 	bIsChange = false;
+}
+
+
+
+void AMonsterController::SetCloseMonster()
+{
+	float MostCloseDistance = 99999;
+	int CloseIndex;
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+	if (CurWaveMonster.Num() != 0) {
+		if (CurWaveMonster.Num() > 1) {
+			for (int i = 0; i < CurWaveMonster.Num(); i++)
+			{
+			
+				float Distance = CurWaveMonster[i]->GetDistanceTo(instance->GetPlayer());
+				if (Distance <= MostCloseDistance)
+				{
+					CloseIndex = i;
+					MostCloseDistance = Distance;
+				}
+			}
+
+			SetBattleMonster(CurWaveMonster[CloseIndex]);
+		}
+		else {
+			SetBattleMonster(CurWaveMonster[0]);
+		}
+	}
+	
 }
 
 void AMonsterController::SetBattleMonster(AMonster* Monster)
@@ -112,8 +142,9 @@ void AMonsterController::BattleMonsterDelete()
 
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
-		if (CurWaveMonster[i] != nullptr)
+		if (CurWaveMonster[i] != nullptr) {
 			CurWaveMonster[i]->SetNormalState();
+		}
 	}
 	bIsChange = false;
 	BattleChangeTimer = 0.0f;

@@ -29,6 +29,7 @@ public:
 	// Sets default values for this actor's properties
 	AMonsterController();
 
+	void SetCloseMonster();
 	void SetBattleMonster(class AMonster* Monster);
 	void SetCurWaveMonsters(TArray<class AMonster*> WaveMonster);
 
