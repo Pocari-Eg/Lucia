@@ -385,6 +385,8 @@ void UIreneAttackInstance::SetUltimateGauge(float Value)
 {
 	if(Irene->IreneData.CurrentHP > 0)
 	{
+		STARRYLOG(Warning, TEXT("%f"), Value);
+		STARRYLOG_S(Error);
 		Irene->IreneData.CurrentUltimateAttackGauge += Value;
 		if(Irene->IreneData.CurrentUltimateAttackGauge > Irene->IreneData.MaxUltimateAttackGauge)
 			Irene->IreneData.CurrentUltimateAttackGauge = Irene->IreneData.MaxUltimateAttackGauge;
