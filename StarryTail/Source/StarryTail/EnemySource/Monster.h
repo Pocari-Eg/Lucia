@@ -15,7 +15,7 @@
 #include"Common/MonsterShield.h"
 
 
-#include "Common/Weapon_Soul.h"
+#include "Common/ShieldPoint.h"
 
 #include "Monster.generated.h"
 
@@ -110,7 +110,7 @@ public:
 	void SetNormalState();
 	void SetSupportState();
 
-	void DropWeaponSoul();
+	void DropShieldPoint();
 
 
 	void DeathCheck();
@@ -228,7 +228,7 @@ protected:
 
 	EMonsterState CurState;
 
-	TSubclassOf<AWeapon_Soul> Weapon_SoulClass;
+	TSubclassOf<AShieldPoint> ShieldPointClass;
 
 	float AttacekdTeleportTimer;
 

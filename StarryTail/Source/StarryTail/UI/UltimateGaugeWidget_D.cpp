@@ -12,7 +12,7 @@ void UUltimateGaugeWidget_D::SetUltimate(float pErcent)
 
 void UUltimateGaugeWidget_D::SetUltimateBlueprint(float pErcent)
 {
-	ultimate_fillBar->SetPercent(pErcent / 100.0f);
+	ultimate_fillBar->SetPercent(pErcent);
 
 	SetColors(pErcent);
 }

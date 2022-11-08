@@ -186,17 +186,17 @@ struct FWeaponSoul : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Get_Weapon_Gauge;
+	float Move_Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int W_Soul_Distance;
+	float Get_Distance_Gauge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float W_Soul_Speed;
+	float Get_Ultimate_Guage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Spawn_Distance;
+	float Get_MaxUltimate_Guage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Drop_Distance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Drop_Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Soul_Radius_Curve;
 };
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct
@@ -204,13 +204,13 @@ struct FPlayerRecoveryDataStruct
   GENERATED_BODY()  
 public:
 	UPROPERTY(EditAnywhere,Category="HP_Recovery")
-	int Amount;
+	float Amount;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int Speed;
+	float Speed;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int Time;
+	float Time;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int HP_Re_Time;
+	float HP_Re_Time;
 	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
 	bool bIsRecovering;			
 };

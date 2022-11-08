@@ -25,7 +25,7 @@ AMonsterController::AMonsterController()
 void AMonsterController::SetCloseMonster()
 {
 	float MostCloseDistance = 99999;
-	int CloseIndex;
+	int CloseIndex = 0;
 	auto instance = Cast<USTGameInstance>(GetGameInstance());
 	if (CurWaveMonster.Num() != 0) {
 		if (CurWaveMonster.Num() > 1) {

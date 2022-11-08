@@ -21,11 +21,11 @@ private:
 	AIreneCharacter* Irene;
 
 	//현재 회복 대기 시간
-	int CurRecoverWaitTime;
+	float CurRecoverWaitTime;
 	//현재 회복 시간
-	int CurRecoverTime;
+	float CurRecoverTime;
 	//남은 회복량
-	int RemainingRecovery;
+	float RemainingRecovery;
 	//타이머 핸들
 	FTimerHandle HpRecoveryTimerHandle;
 	FTimerHandle HpRecoveryWaitTimerHandle;
