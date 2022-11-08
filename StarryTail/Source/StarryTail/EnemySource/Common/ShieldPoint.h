@@ -8,10 +8,10 @@
 #include "../MonsterProjectile.h"
 #include "../../PlayerSource/PlayerCharacterDataStruct.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-#include "Weapon_Soul.generated.h"
+#include "ShieldPoint.generated.h"
 
 UCLASS()
-class STARRYTAIL_API AWeapon_Soul : public  AMonsterProjectile
+class STARRYTAIL_API AShieldPoint : public  AMonsterProjectile
 {
 	GENERATED_BODY()
 
@@ -20,7 +20,7 @@ public:
 	UPROPERTY(EditAnywhere)
 		UCapsuleComponent* CapsuleComponent;
 	UPROPERTY(EditAnywhere)
-		UStaticMeshComponent* Mesh;
+		UParticleSystemComponent* Particle;
 
 
 	UPROPERTY(VisibleAnywhere, Category = Movement)
@@ -30,17 +30,24 @@ public:
 	FQuat RotationQuat;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FRotator RealRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite,Category=Info)
+	float WaitTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info)
+	float Accelation;
 private:
 	bool IsMoveOn;
 	bool IsHitGround;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
 	FWeaponSoul Info;
 
+
+	float Timer;
 public:	
 	// Sets default values for this actor's properties
-	AWeapon_Soul();
+	AShieldPoint();
 
-	void SetValue(FWeaponSoul* SetValue);
+	void SetValue(FWeaponSoul* SetValue, FVector ShootDirection);
 
 protected:
 	// Called when the game starts or when spawned
@@ -54,6 +61,5 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	void FireInDirection(const FVector& ShootDirection);
 
 };
