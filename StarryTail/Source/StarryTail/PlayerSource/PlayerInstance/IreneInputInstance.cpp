@@ -760,6 +760,11 @@ void UIreneInputInstance::PerfectDodge()
 	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
+		 {
+			Irene->CustomTimeDilation = 1/SlowScale;
+			GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
+		 }), 0.2f * Irene->CustomTimeDilation, false);	
 	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
 	 {
 		Irene->IreneData.IsInvincibility = false;
@@ -771,7 +776,7 @@ void UIreneInputInstance::PerfectDodge()
 	PerfectDodgeStart();
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
-	Irene->CustomTimeDilation = 1/SlowScale;
+	Irene->CustomTimeDilation = 0.2f/SlowScale;
 }
 
 void UIreneInputInstance::PerfectDodgeStart()
@@ -1227,7 +1232,7 @@ void UIreneInputInstance::UltimateAttackSetCamera()
 		Irene->SetActorRotation(FRotator(0.0f, Rotator.Yaw, 0.0f));
 		// 카메라 원점 조정
 		FRotator CameraRotator = FRotator::ZeroRotator;
-		CameraRotator.Pitch = Rotator.Pitch;
+		//CameraRotator.Pitch = Rotator.Pitch;
 		CameraRotator.Yaw = Rotator.Yaw;
 		Irene->WorldController->SetControlRotation(CameraRotator);
 		

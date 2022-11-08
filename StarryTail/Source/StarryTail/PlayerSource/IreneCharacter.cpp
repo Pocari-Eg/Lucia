@@ -202,10 +202,10 @@ AIreneCharacter::AIreneCharacter()
 	
 	// IreneCharacter.h의 변수 초기화
 	HpRecoveryData.bIsRecovering = false;
-	HpRecoveryData.Amount = 300;
-	HpRecoveryData.HP_Re_Time = 4;
-	HpRecoveryData.Speed = 5;
-	HpRecoveryData.Time = 10;
+	HpRecoveryData.Amount = 50;
+	HpRecoveryData.HP_Re_Time = 0.1f;
+	HpRecoveryData.Speed = 0.5f;
+	HpRecoveryData.Time = 3;
 	WorldController = nullptr;
 	CameraShakeOn = false;
 	bIsRadialBlurOn = false;
@@ -427,7 +427,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
 	const FColor DrawColor = bResult ? FColor::Magenta : FColor::Blue;
 	const float DebugLifeTime = LifeTime;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 5.1f);
+	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, 0.5f);
 #endif
 	
 	return MakeTuple(MonsterList, Params, bResult);
