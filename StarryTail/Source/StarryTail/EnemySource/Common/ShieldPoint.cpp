@@ -12,7 +12,7 @@ AShieldPoint::AShieldPoint()
 	PrimaryActorTick.bCanEverTick = true;
 
 	CapsuleComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CapsuleComponent"));
-	Particle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
+	Particle  = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("Particle"));
 
 	RootComponent = CapsuleComponent;
 	Particle->SetupAttachment(RootComponent);

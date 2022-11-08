@@ -38,6 +38,9 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* ExplosionEffectComponent;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Effect, Meta = (AllowPrivateAccess = true))
+	UParticleSystemComponent* ShockEffectComponent;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	float Explosion_SignWait_Time;
 

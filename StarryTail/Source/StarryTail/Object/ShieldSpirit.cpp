@@ -13,7 +13,7 @@ AShieldSpirit::AShieldSpirit()
 	RootComponent = Mesh;
 	Mesh->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
 	Mesh->SetWorldScale3D(FVector(2.5f, 2.5f, 2.5f));
-	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Fairy/Fairy_Fly2.Fairy_Fly2"));
+	const ConstructorHelpers::FObjectFinder<USkeletalMesh>PetStatic(TEXT("/Game/Animation/Irene/Helios/PC_s_idle.PC_s_idle"));
 	if (PetStatic.Succeeded())
 		Mesh->SetSkeletalMesh(PetStatic.Object);
 }
