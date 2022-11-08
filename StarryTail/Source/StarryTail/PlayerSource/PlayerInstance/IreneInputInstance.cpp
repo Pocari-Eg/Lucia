@@ -776,7 +776,7 @@ void UIreneInputInstance::PerfectDodge()
 	PerfectDodgeStart();
 	Irene->IreneAnim->SetDodgeDir(10);
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),SlowScale);
-	Irene->CustomTimeDilation = 0.2f/SlowScale;
+	Irene->CustomTimeDilation = 0.3f/SlowScale;
 }
 
 void UIreneInputInstance::PerfectDodgeStart()
