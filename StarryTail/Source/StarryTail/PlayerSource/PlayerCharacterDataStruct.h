@@ -204,13 +204,13 @@ struct FPlayerRecoveryDataStruct
   GENERATED_BODY()  
 public:
 	UPROPERTY(EditAnywhere,Category="HP_Recovery")
-	int Amount;
+	float Amount;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int Speed;
+	float Speed;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int Time;
+	float Time;
 	UPROPERTY(EditAnywhere, Category = "HP_Recovery")
-	int HP_Re_Time;
+	float HP_Re_Time;
 	UPROPERTY(VisibleAnywhere, Category = "HP_Recovery")
 	bool bIsRecovering;			
 };

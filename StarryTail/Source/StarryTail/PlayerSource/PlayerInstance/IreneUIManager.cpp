@@ -100,13 +100,13 @@ void UIreneUIManager::HPRecoveringStart()
 	CurRecoverTime = Irene->HpRecoveryData.Speed;
 	RemainingRecovery = Irene->HpRecoveryData.Amount;
 	OnHpChanged.Broadcast();
-	GetWorld()->GetTimerManager().SetTimer(HpRecoveryTimerHandle, this, &UIreneUIManager::HPRecovering,1.0f , true, 0.0f);
+	GetWorld()->GetTimerManager().SetTimer(HpRecoveryTimerHandle, this, &UIreneUIManager::HPRecovering,0.8f , true, 0.0f);
 }
 void UIreneUIManager::HPRecovering()
 {
 	if (Irene->HpRecoveryData.bIsRecovering)
 	{
-		const int CurRecoveryAmount = RemainingRecovery / CurRecoverTime;
+		const float CurRecoveryAmount = RemainingRecovery / CurRecoverTime;
 		RemainingRecovery -= CurRecoveryAmount;
 		if (!IsHpFull())
 		{
