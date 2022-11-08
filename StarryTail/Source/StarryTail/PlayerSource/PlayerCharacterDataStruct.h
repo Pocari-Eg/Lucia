@@ -186,17 +186,17 @@ struct FWeaponSoul : public FTableRowBase
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FName Name;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Get_Weapon_Gauge;
+	float Move_Speed;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int W_Soul_Distance;
+	float Get_Distance_Gauge;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float W_Soul_Speed;
+	float Get_Ultimate_Guage;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Spawn_Distance;
+	float Get_MaxUltimate_Guage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float Drop_Distance;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Drop_Speed;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Soul_Radius_Curve;
 };
 USTRUCT(Atomic, BlueprintType)
 struct FPlayerRecoveryDataStruct

@@ -105,11 +105,11 @@ AMonster::AMonster()
 
 
 
-	static ConstructorHelpers::FClassFinder<AWeapon_Soul> BP_WEAPONSOUL (TEXT("/Game/BluePrint/Monster/BP_Weapon_Soul.BP_Weapon_Soul_C"));
+	static ConstructorHelpers::FClassFinder<AShieldPoint> BP_WEAPONSOUL (TEXT("/Game/BluePrint/Monster/BP_ShieldPoint.BP_ShieldPoint_C"));
 
 	if (BP_WEAPONSOUL.Succeeded()) {
 
-		Weapon_SoulClass= BP_WEAPONSOUL.Class;
+		ShieldPointClass= BP_WEAPONSOUL.Class;
 	}
 	bIsDodgeOn = false;
 
@@ -849,8 +849,6 @@ void AMonster::CalcHp(float Damage)
 				}
 
 
-				//DropWeaponSoul();
-
 				if (bIsSpawnEnemy) {
 					auto instnace = Cast<USTGameInstance>(GetGameInstance());
 					if (instnace != nullptr)
@@ -908,6 +906,7 @@ FMonsterSkillDataTable* AMonster::GetMontserSkillData(int32 num)
 void AMonster::ShieldDestroyed()
 {
 	ShieldDestroyEvent();
+	DropShieldPoint();
 	OnBarrierChanged.Broadcast();
 	MonsterAIController->SetShieldKey(false);
 
@@ -1171,7 +1170,7 @@ void AMonster::SetSupportState()
 	CurState = EMonsterState::Support;
 }
 
-void AMonster::DropWeaponSoul()
+void AMonster::DropShieldPoint()
 {
 	USTGameInstance* Instance;
 	do 
@@ -1180,18 +1179,18 @@ void AMonster::DropWeaponSoul()
 	} while (Instance==nullptr);
 
 
-	TArray<AWeapon_Soul*> Souls;
+	TArray<AShieldPoint*> Souls;
 	for (int i = 0; i < MonsterInfo.Spirit_Soul; i++)
 	{
-		Souls.Add(GetWorld()->SpawnActor<AWeapon_Soul>(Weapon_SoulClass, GetActorLocation(), FRotator::ZeroRotator));
+		Souls.Add(GetWorld()->SpawnActor<AShieldPoint>(ShieldPointClass, GetActorLocation(), FRotator::ZeroRotator));
 	}
 	for (int i = 0; i < MonsterInfo.Spirit_Soul; i++)
 	{
+		auto RanX = FMath::FRandRange(-1.0f, 1.0f);
+		auto RanY = FMath::FRandRange(-1.0f, 1.0f);
 
-		auto Y = FMath::RandRange(1, 3);
-		auto Z = FMath::RandRange(1, 3);
-		Souls[i]->SetValue(Instance->GetPlayer()->IreneAttack->GetNameAtWeaponSoulDataTable());
-		Souls[i]->FireInDirection(FVector(0.0f,Y,Z));
+		Souls[i]->SetValue(Instance->GetPlayer()->IreneAttack->GetNameAtWeaponSoulDataTable(),FVector(RanX, RanY,0.3f));
+		
 	}
 }
 

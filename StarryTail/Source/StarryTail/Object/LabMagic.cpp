@@ -14,6 +14,8 @@ ALabMagic::ALabMagic()
 	MagicAOECollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("AREACEHCK"));
 	ExplosionSignEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionSign_Particle"));
 	ExplosionEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ExplosionParticle"));
+	ShockEffectComponent = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("ShockParticle"));
+
 	ActiveTrigger= CreateDefaultSubobject<UBoxComponent>(TEXT("ACTVIETRIGGER"));
 
 	RootComponent = RootPoint;
@@ -23,11 +25,14 @@ ALabMagic::ALabMagic()
 	ExplosionSignEffectComponent->SetupAttachment(RootComponent);
 	MagicAOECollision->SetupAttachment(RootComponent);
 	ExplosionEffectComponent->SetupAttachment(MagicAOECollision);
+	ShockEffectComponent->SetupAttachment(RootComponent);
 
 	ActiveTrigger->SetupAttachment(RootComponent);
 
 	ExplosionSignEffectComponent->SetAutoActivate(false);
 	ExplosionEffectComponent->SetAutoActivate(false);
+	ShockEffectComponent->SetAutoActivate(false);
+
 
 	MagicAOECollision->SetCollisionProfileName("AOE");
 	MagicAOECollision->SetGenerateOverlapEvents(false);
@@ -109,6 +114,7 @@ void ALabMagic::StartExplosion()
 	MagicAOECollision->SetGenerateOverlapEvents(true);
 	bIsExplosion_Timer = true;
 	ExplosionEffectComponent->SetActive(true, true);
+	ShockEffectComponent->SetActive(true, true);
 }
 
 void ALabMagic::EndExplosion()
@@ -137,7 +143,7 @@ void ALabMagic::EndExplosion()
 	}
 
 	ExplosionEffectComponent->Deactivate();
-
+	ShockEffectComponent->Deactivate();
 	StartExplosionSignWait();
 }
 
@@ -170,7 +176,7 @@ void ALabMagic::EndLabMagic()
 
 	ExplosionSignEffectComponent->Deactivate();
 	ExplosionEffectComponent->Deactivate();
-
+	ShockEffectComponent->Deactivate();
 	MagicAOECollision->SetCollisionProfileName("AOE");
 	MagicAOECollision->SetGenerateOverlapEvents(false);
 
