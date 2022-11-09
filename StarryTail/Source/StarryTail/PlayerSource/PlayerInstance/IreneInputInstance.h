@@ -239,6 +239,9 @@ public:
 	// 궁극기
 	void UltimateAttackKeyword();
 	void UltimateAttack();
+	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool, FVector> UltimateAttackSettingStackCamera();
+	void UltimateAttackSetStack();
+	void UltimateAttackStackExplode();	
 	void SkillCameraMoveStart();
 	UFUNCTION()
 	void SkillCameraMoveEnd();
