@@ -432,7 +432,7 @@ TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> AIreneCharacter::StartPo
 	
 	return MakeTuple(MonsterList, Params, bResult);
 }
-void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far,const bool UltimateAttack)const
+void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, const FCollisionQueryParams Params, const bool bResult, const float Far,const bool UltimateAttack,const bool StackExplode)const
 {
 	// 여러 충돌체 중 가장 가까운 충돌체 하나를 리턴하는 함수
 	// 최대거리
@@ -495,15 +495,10 @@ void AIreneCharacter::NearMonsterAnalysis(const TArray<FHitResult> MonsterList, 
 						auto Mon=Cast<AMonster>(Monster.Actor);
 						if(Mon != nullptr)
 						{
-							if(Mon->GetCurStackCount() == 6)
-							{
-								if(Mon->GetIsMonsterShieldActive())
-									Mon->StackExplode();
-								else
-									UGameplayStatics::ApplyDamage(Monster.Actor.Get(),
-										Mon->GetMonsterInfo().StackDamage + Mon->GetMonsterInfo().StackDamage * 0.2f,nullptr, STGameInstance->GetPlayer(), nullptr);
-							}
-							Mon->AddStackCount(6);
+							if(!StackExplode)
+								Mon->AddStackCount(6);
+							else
+								Mon->StackExplode();
 						}
 					}
 					

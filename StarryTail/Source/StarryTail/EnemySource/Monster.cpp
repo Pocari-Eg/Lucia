@@ -528,8 +528,10 @@ void AMonster::MaxStackExplode()
 	}
 	else {
 
-	
-			CalcHp(MonsterInfo.StackDamage);
+			if(GetIsMonsterShieldActive())
+				CalcHp(MonsterInfo.StackDamage);
+			else
+				CalcHp(GetMonsterInfo().StackDamage + GetMonsterInfo().StackDamage * 0.2f);
 
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
 			MonsterInfo.OverStackCount = 0;
