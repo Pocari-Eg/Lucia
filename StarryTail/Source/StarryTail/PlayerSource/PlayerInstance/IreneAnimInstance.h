@@ -128,6 +128,10 @@ private:
 	UFUNCTION()
 	void AnimNotify_PerfectDodgeToAttack() const;
 	UFUNCTION()
+	void AnimNotify_UltimateAttackSetStack() const;
+	UFUNCTION()
+	void AnimNotify_UltimateAttackStackExplode() const;
+	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
 	void AnimNotify_RadialBlur() const;

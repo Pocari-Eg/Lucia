@@ -167,6 +167,16 @@ void UIreneAnimInstance::AnimNotify_PerfectDodgeToAttack() const
 	Irene->IreneInput->PerfectDodgePlayOver();
 }
 
+void UIreneAnimInstance::AnimNotify_UltimateAttackSetStack() const
+{
+	Irene->IreneInput->UltimateAttackSetStack();
+}
+
+void UIreneAnimInstance::AnimNotify_UltimateAttackStackExplode() const
+{
+	Irene->IreneInput->UltimateAttackStackExplode();
+}
+
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();
