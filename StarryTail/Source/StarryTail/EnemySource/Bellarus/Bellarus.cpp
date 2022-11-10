@@ -84,13 +84,15 @@ UBellarusAnimInstance* ABellarus::GetBellarusAnimInstance() const
 
 void ABellarus::PlayWingLAnim()
 {
+	IsAttackNum = 1;
+	NewSkillData = GetWingData();
 	BellarusAnimInstance->PlayWingLMontage();
 }
 
 void ABellarus::Wing_L()
 {
 
-	 NewSkillData = GetWingData();
+
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, -(160.0f / 2.0f)))
 	{
@@ -123,12 +125,13 @@ void ABellarus::Wing_L()
 
 void ABellarus::PlayWingRAnim()
 {
+	IsAttackNum = 2;
+	NewSkillData = GetWingData();
 	BellarusAnimInstance->PlayWingRMontage();
 }
 
 void ABellarus::Wing_R()
 {
-	 NewSkillData = GetWingData();
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, 160.0f /2.0f))
 	{
@@ -160,12 +163,13 @@ void ABellarus::Wing_R()
 
 void ABellarus::PlayTailAnim()
 {
+	IsAttackNum = 3;
+	NewSkillData = GetTailData();
 	BellarusAnimInstance->PlayTailMontage();
 }
 
 void ABellarus::Tail()
 {
-	 NewSkillData = GetTailData();
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 80.0f, 180.0f))
 	{
@@ -406,27 +410,27 @@ void ABellarus::ProjectileAttack()
 
 
 	// 총구 위치에 발사체를 스폰시킵니다.
-	ABF_Projectile* FowardProjectile = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation()+FVector(0.0f,BellarusInfo.ProjectileOffest,0.0f) + (ForwardVector * 100.0f), GetActorRotation(), SpawnParams);
+	ABF_Projectile* FowardProjectile = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation()+FVector(0.0f,0.0f, BellarusInfo.ProjectileOffest) + (ForwardVector * 100.0f), GetActorRotation(), SpawnParams);
 	if (FowardProjectile)
 	{
 		FowardProjectile->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) +(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) +(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
 	if (RightProjectile_1)
 	{
 		RightProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
 	if (RightProjectile_2)
 	{
 		RightProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
 	if (LeftProjectile_1)
 	{
 		LeftProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, BellarusInfo.ProjectileOffest, 0.0f) + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
 	if (LeftProjectile_2)
 	{
 		LeftProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
@@ -619,8 +623,18 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	TeleportLocation = GetActorLocation();
 
+
+	//Perfect Dodge
+	BellarusAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
+		DodgeTimeOn.Broadcast();
+		});
+	BellarusAnimInstance->DodgeTimeOff.AddLambda([this]() -> void {
+		DodgeTimeOff.Broadcast();
+		PerfectDodgeOff();
+		});
+
 	SetSpawnPos();
-	SetNormalState();
+	SetBattleState();
 	Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
 
 }
@@ -849,7 +863,10 @@ void ABellarus::Tick(float DeltaTime)
 				SwirlWait = false;
 			}
 		}
-
+		if (bIsDodgeTime)
+		{
+			DodgeCheck();
+		}
 }
 void ABellarus::InitAnime()
 {
@@ -1016,6 +1033,17 @@ bool ABellarus::AttackCheck(float Radius, float Height, float Angle, float Attac
 	return false;
 }
 
+void ABellarus::IsDodgeTimeOn()
+{
+	bIsDodgeTime = true;
+}
+
+void ABellarus::IsDodgeTimeOff()
+{
+	bIsDodgeTime = false;
+	IsAttackNum = -1;
+}
+
 void ABellarus::SwirlDestroy()
 {
 	STARRYLOG(Error, TEXT("SwirlDestroy"));
@@ -1075,6 +1103,63 @@ void ABellarus::SetSecondPhase()
 	MonsterShield->ShieldRegen();
 	GetAIController()->SetShieldKey(true);
 	OnBarrierChanged.Broadcast();
+}
+
+void ABellarus::DodgeCheck()
+ {
+	switch (IsAttackNum)
+	{
+	case 1:
+		if (AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, -(160.0f / 2.0f)))
+		{
+			
+			if (bIsDodgeTime)
+			{
+				//STARRYLOG(Error, TEXT("Dodge On"));
+				PerfectDodgeOn();
+				return;
+			}
+			
+		}
+		else {
+			PerfectDodgeOff();
+		}
+		break;
+	case 2:
+		if(AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 160.0f, 160.0f / 2.0f))
+		{
+
+			if (bIsDodgeTime)
+			{
+				//STARRYLOG(Error, TEXT("Dodge On"));
+				PerfectDodgeOn();
+				return;
+			}
+
+		}
+		else {
+			PerfectDodgeOff();
+		}
+		break;
+	case 3:
+		if(AttackCheck(NewSkillData->M_Skill_Radius, NewSkillData->M_Atk_Height, 80.0f, 180.0f))
+		{
+
+			if (bIsDodgeTime)
+			{
+				//STARRYLOG(Error, TEXT("Dodge On"));
+				PerfectDodgeOn();
+				return;
+			}
+
+		}
+		else {
+			PerfectDodgeOff();
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 #pragma endregion Init

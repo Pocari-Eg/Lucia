@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "../../Monster.h"
+#include "../Bellarus.h"
 #include "BTTaskBellTrace.generated.h"
 
 /**
@@ -14,14 +14,9 @@ UCLASS()
 class STARRYTAIL_API UBTTaskBellTrace : public UBTTaskNode
 {
 	GENERATED_BODY()
-	private:
-	AIreneCharacter* Player;
+private:
 
-
-	float PlayerFollowTime;
-	float PlayerFollowTimer;
-	float NormalChangeTime;
-
+	bool bIsMove;
 public:
 	UBTTaskBellTrace();
 private:

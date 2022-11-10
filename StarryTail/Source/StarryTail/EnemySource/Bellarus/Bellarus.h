@@ -97,6 +97,7 @@ public:
 
 	void SetSecondPhase();
 
+	void DodgeCheck();
 
 	bool GetSwirlWaitState() { return SwirlWait; }
 	void SetSwirlWaiteState(bool State) { SwirlWait = State; }
@@ -117,7 +118,8 @@ private:
 	void InitAnime() override;
 	void InitBellarusInfo();
 	bool AttackCheck(float Radius, float Height, float Angle,float AttackAxis);
-
+	void IsDodgeTimeOn() override;
+	void IsDodgeTimeOff()override;
 
 
 	void SwirlDestroy();
@@ -147,6 +149,7 @@ private:
 	float RegenTime;
 	float RegenTimer;
 
+	int IsAttackNum;
 
 	bool SwirlWait;
 
