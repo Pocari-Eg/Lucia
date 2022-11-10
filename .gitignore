@@ -6,9 +6,12 @@ StarryTail/Intermediate/
 StarryTail/Saved/
 StarryTail/StarryTail.sln
 StarryTail/StarryTail.sln.DotSettings.user
-StarryTail/Plugins/
+StarryTail/Plugins/SpinePlugin/Intermediate/
+StarryTail/Plugins/SpinePlugin/Binaries/
 !Config/
 !Content/
 !Source/
+!Plugins/
+!SpinePlugin.uplugin
 !StarryTail.uproject
 *_BuiltData.uasset
