@@ -213,8 +213,8 @@ void ABellarus::BasicSwirlAttack()
 	FVector ForwardVector = GetActorForwardVector();
 	ForwardVector.Normalize();
 
-	FVector RightVector = ForwardVector.RotateAngleAxis(75.0f, FVector::UpVector);
-	FVector LetfVector = ForwardVector.RotateAngleAxis(-75.0f, FVector::UpVector);
+	FVector RightVector = ForwardVector.RotateAngleAxis(25.0f, FVector::UpVector);
+	FVector LetfVector = ForwardVector.RotateAngleAxis(-25.0f, FVector::UpVector);
 
 	ForwardVector.Z = 0.0f;
 	RightVector.Z = 0.0f;
@@ -397,10 +397,10 @@ void ABellarus::ProjectileAttack()
 	FVector ForwardVector = GetActorForwardVector();
 	ForwardVector.Normalize();
 
-	FVector RightVector_1 = ForwardVector.RotateAngleAxis(80, FVector::UpVector);
-	FVector RightVector_2 = ForwardVector.RotateAngleAxis(40, FVector::UpVector);
-	FVector LetfVector_1 = ForwardVector.RotateAngleAxis(-80, FVector::UpVector);
-	FVector LetfVector_2 = ForwardVector.RotateAngleAxis(-40, FVector::UpVector);
+	FVector RightVector_1 = ForwardVector.RotateAngleAxis(20, FVector::UpVector);
+	FVector RightVector_2 = ForwardVector.RotateAngleAxis(10, FVector::UpVector);
+	FVector LetfVector_1 = ForwardVector.RotateAngleAxis(-20, FVector::UpVector);
+	FVector LetfVector_2 = ForwardVector.RotateAngleAxis(-10, FVector::UpVector);
 
 
 	RightVector_1.Normalize();
@@ -415,22 +415,22 @@ void ABellarus::ProjectileAttack()
 	{
 		FowardProjectile->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) +(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,80.0f,0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_1 =GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) +(RightVector_1*100.0f), GetActorRotation()+FRotator(0.0f,20,0.0f), SpawnParams);
 	if (RightProjectile_1)
 	{
 		RightProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* RightProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (RightVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, 10, 0.0f), SpawnParams);
 	if (RightProjectile_2)
 	{
 		RightProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -80.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_1 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_1 * 100.0f), GetActorRotation() + FRotator(0.0f, -20, 0.0f), SpawnParams);
 	if (LeftProjectile_1)
 	{
 		LeftProjectile_1->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);
 	}
-	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -40.0f, 0.0f), SpawnParams);
+	ABF_Projectile* LeftProjectile_2 = GetWorld()->SpawnActor<ABF_Projectile>(AProjectileClass, GetActorLocation() + FVector(0.0f, 0.0f, BellarusInfo.ProjectileOffest) + (LetfVector_2 * 100.0f), GetActorRotation() + FRotator(0.0f, -10, 0.0f), SpawnParams);
 	if (LeftProjectile_2)
 	{
 		LeftProjectile_2->SetProjectile(NewSkillData->M_Skill_Atk, NewSkillData->M_Skill_Time, NewSkillData->M_Skill_Radius);

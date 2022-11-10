@@ -40,7 +40,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 		}
 
 		AttackCheckTimer += Interval;
-		if (AttackCheckTimer >= 1.0f)
+		if (AttackCheckTimer >= 0.5)
 		{
 			AttackCheckTimer = 0.0f;
 
@@ -72,7 +72,18 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InSecondJudge)
 								{
 
-									ShieldFristRangeAttackCheck(Bellarus, Center);
+									//ShieldFristRangeAttackCheck(Bellarus, Center);
+
+									auto ran = FMath::RandRange(1, 100);
+									if (ran <= 50)
+									{
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+									}
+									else {
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+									}
 
 								}
 
@@ -135,7 +146,16 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 									if (InSecondJudge)
 									{
 
-										ShieldFristRangeAttackCheck(Bellarus, Center);
+										auto ran = FMath::RandRange(1, 100);
+										if (ran <= 50)
+										{
+											Bellarus->SetBattleState();
+											Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
+										}
+										else {
+											Bellarus->SetBattleState();
+											Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+										}
 
 									}
 
@@ -170,7 +190,25 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InSecondJudge)
 								{
 
-									RangeAttck(Bellarus, Center);
+									auto ran = FMath::RandRange(1, 100);
+									if (ran <= 25)
+									{
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+									}
+									else if (ran <=50) {
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetFeatherKey(true);
+									}
+									else if (ran <= 75) {
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTornadoKey(true);
+									}
+									else{
+										Bellarus->SetBattleState();
+										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetGuidedSwirlKey(true);
+									}
+									
 
 								}
 

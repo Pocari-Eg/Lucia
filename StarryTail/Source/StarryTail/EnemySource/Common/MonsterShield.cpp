@@ -53,6 +53,7 @@ void UMonsterShield::DestroyedShield()
 
 	ShiledCrackEffectComponent->SetActive(true, true);
 	SetEffectVisible(false);
+	Collision->SetCollisionProfileName("NoCollision");
 	bIsShieldActive = false;
 }
 
@@ -266,7 +267,7 @@ void UMonsterShield::ShieldRegen()
 	SetEffectVisible(true);
 	bIsShieldActive = true;
 	CurDurability = Durability;
-
+	Collision->SetCollisionProfileName("Shield");
 
 	ShiledEffectComponent->InstanceParameters[1].Scalar = 0.0f;
 	ShiledEffectComponent->InstanceParameters[2].Scalar = 0.0f;
@@ -278,12 +279,15 @@ void UMonsterShield::BeginPlay()
 {
 	Super::BeginPlay();
 
-	if (Durability == 0)
+	if (Durability == 0||bIsShieldActive==false)
 	{
 		bIsShieldActive = false;
+		Collision->SetCollisionProfileName("NoCollision");
+
 	}
 	else {
 		CurDurability = Durability;
+		Collision->SetCollisionProfileName("Shield");
 	}
 	
 
