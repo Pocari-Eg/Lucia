@@ -49,10 +49,15 @@ public:
 
 
 	FSoundSetting* GetSoundSetting();
-
+	FTransform GetSpawnTransform()const{return SpawnTransform;}
+	FVector FirstPosition()const{return FVector(-640,-29532,121);}
+	FVector SecondPosition()const{return FVector(-6800,-36560,-170.7);}
+	FVector ThirdPosition()const{return FVector(-11200,-33760,60);}
+	FVector FourthPosition()const{return FVector(-20050,-42480,70);}
 
 	void SetLocation(FVector Location) {CurrnetLoaction = Location;}
-
+	void SetSpawnTransform(const FTransform Location) {SpawnTransform = Location;}
+	
 	UFUNCTION(BluePrintCallable)
 	FVector GetCurrnetLocation() { return CurrnetLoaction; }
 
@@ -77,7 +82,8 @@ private:
 	FSoundSetting SoundSettingData;
 
 	FVector CurrnetLoaction;
-
+	FTransform SpawnTransform;
+	
 	bool bIsFirstTime;
 #pragma region MonsterSpawn
 
