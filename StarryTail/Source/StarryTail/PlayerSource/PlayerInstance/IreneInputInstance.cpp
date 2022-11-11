@@ -1156,7 +1156,6 @@ void UIreneInputInstance::UltimateAttackKeyword()
 		
 		if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 		{
-			STARRYLOG(Warning,TEXT("%s"),*Irene->IreneAttack->SwordTargetMonster->GetName());
 			Irene->IreneData.CurrentUltimateAttackGauge = 0;
 			Irene->ChangeStateAndLog(UUltimateAttack::GetInstance());
 			UGameplayStatics::SetGlobalTimeDilation(GetWorld(),0.1f);
@@ -1220,8 +1219,6 @@ void UIreneInputInstance::SkillCameraMoveStart()
 {
 	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 	{
-		STARRYLOG(Warning,TEXT("%s"),*Irene->IreneAttack->SwordTargetMonster->GetName());
-
 		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());
 		Irene->SetActorRotation(FRotator(0.0f, Rotator.Yaw, 0.0f));
 		
@@ -1250,8 +1247,6 @@ void UIreneInputInstance::UltimateAttackSetCamera()
 	// 카메라
 	if(Irene->IreneAttack->SwordTargetMonster != nullptr)
 	{
-		STARRYLOG(Warning,TEXT("%s"),*Irene->IreneAttack->SwordTargetMonster->GetName());
-
 		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(Irene->GetActorLocation(), Irene->IreneAttack->SwordTargetMonster->GetActorLocation());
 		Irene->SetActorRotation(FRotator(0.0f, Rotator.Yaw, 0.0f));
 		// 카메라 원점 조정

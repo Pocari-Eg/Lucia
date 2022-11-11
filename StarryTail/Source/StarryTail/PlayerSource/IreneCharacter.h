@@ -152,8 +152,11 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void LevelRestartEvent();
-
-
+	
+	UFUNCTION(BlueprintCallable)
+	void LevelSequencePlay();
+	UFUNCTION(BlueprintCallable)
+	void LevelSequenceEnd();
 #pragma endregion Setting
 	
 	// Called every frame

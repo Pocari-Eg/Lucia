@@ -33,6 +33,14 @@ AEnemySpawnTrigger::AEnemySpawnTrigger()
 void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	STARRYLOG(Warning, TEXT("Monster Trigger Overlap"));
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
+	{
+		if(GetName() == FString("EnemySpawnTrigger_1"))
+		{
+			Instance->SetSpawnTransform(FTransform(FRotator(0,220,0), Instance->FourthPosition()));
+		}
+	}
 	TriggerOff();
 	if (SpawnPoint.Num() != 0) {
 		WaveStart();
