@@ -234,6 +234,18 @@ void AIreneCharacter::BeginPlay()
 	if (STGameInstance != nullptr)
 		STGameInstance->SetPlayer(this);
 
+	if(STGameInstance->GetSpawnTransform().GetTranslation() != STGameInstance->FirstPosition())
+	{
+		SetActorTransform(STGameInstance->GetSpawnTransform());
+		PetSpringArmComp->CameraLagSpeed = 0;
+		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{PetSpringArmComp->CameraLagSpeed = 3.0f;}));
+		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetActorLocation()+GetActorForwardVector());
+		// 카메라 원점 조정
+		FRotator CameraRotator = FRotator::ZeroRotator;
+		CameraRotator.Yaw = Rotator.Yaw;
+		WorldController->SetControlRotation(CameraRotator);
+	}
+
 	// 스탑워치 생성 
 	//StopWatch = GetWorld()->SpawnActor<AStopWatch>(FVector::ZeroVector, FRotator::ZeroRotator);
 	//StopWatch->InitStopWatch();
@@ -291,6 +303,18 @@ void AIreneCharacter::TargetReset()const
 			}			
 		}
 	}
+}
+void AIreneCharacter::LevelSequencePlay()
+{
+	IreneInput->MoveKey[0] = 0;
+	IreneInput->MoveKey[1] = 0;
+	IreneInput->MoveKey[2] = 0;
+	IreneInput->MoveKey[3] = 0;
+	bInputStop = true;
+}
+void AIreneCharacter::LevelSequenceEnd()
+{
+	bInputStop = false;
 }
 #pragma endregion Setting
 
