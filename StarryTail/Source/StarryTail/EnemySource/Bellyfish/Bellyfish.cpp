@@ -357,7 +357,7 @@ void ABellyfish::BeginPlay()
 	BellyfishAnimInstance->Fire.AddUObject(this, &ABellyfish::ProjectileAttack);
 	BellyfishAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	Magic_CircleComponent->SetTemplate(Magic_Circle);
-	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+	SoundInstance->SetHitSound("event:/Lucia/Enemy/SFX_Hit");
 
 	ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
 

@@ -7,9 +7,9 @@ UMonsterSoundInstance::UMonsterSoundInstance()
 {
 
 	//hit Sound
-	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_Hit");
-	ShieldCrash = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_ShieldDestroy");
-	ShieldHit = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Enemy/SFX_ShieldHit");
+	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_Hit");
+	ShieldCrash = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_ShieldDestroy");
+	ShieldHit = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_ShieldHit");
 }
 
 void UMonsterSoundInstance::Init()

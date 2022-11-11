@@ -7,10 +7,10 @@ UIreneSoundInstance::UIreneSoundInstance()
 {
 
 	//hit Sound
-	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_FootStep");
-	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/SFX_Attack");
-	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_AttackVoice");
-	TakeDamageVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/StarryTail/Irene/Voice/SFX_TakeDamageVoice");
+	WalkEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_FootStep");
+	AttackEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_Attack");
+	AttackVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/Voice/SFX_AttackVoice");
+	TakeDamageVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/Voice/SFX_TakeDamageVoice");
 }
 
 void UIreneSoundInstance::Init(AIreneCharacter* Value)
