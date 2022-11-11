@@ -197,7 +197,7 @@ void AMorbit::BeginPlay()
 		});
 	MorbitAnimInstance->Attack.AddUObject(this, &AMorbit::AttackCheck);
 
-	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+	SoundInstance->SetHitSound("event:/Lucia/Enemy/SFX_Hit");
 }
 
 // Called every frame
