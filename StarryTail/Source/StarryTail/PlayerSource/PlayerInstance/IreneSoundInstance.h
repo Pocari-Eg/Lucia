@@ -20,13 +20,31 @@ private:
 	//사운드 이벤트
 	class UFMODEvent* AttackEvent;
 	class UFMODEvent* WalkEvent;
+
+
+	class UFMODEvent* DodgeEvent;
+	class UFMODEvent* StanceChangeEvent;
+	class UFMODEvent* UltimateEvent;
+
+
+	//voice
 	class UFMODEvent* AttackVoiceEvent;
 	class UFMODEvent* TakeDamageVoiceEvent;
+	class UFMODEvent* SkillVocieEvent;
+
+
 	//사운드 
-	SoundManager* WalkSound;
 	SoundManager* AttackSound;
 	SoundManager* AttackVoiceSound;
+	//
+	SoundManager* WalkSound;
+	SoundManager* DodgeSound;
+	SoundManager* StanceChangeSound;
+	SoundManager* UltimateSound;
+	//voice 
+
 	SoundManager* TakeDamageVoiceSound;
+	SoundManager* SkillVocieSound;
 
 	UPROPERTY()
 		class AIreneCharacter* Irene;
@@ -38,8 +56,13 @@ public:
 	void Init(AIreneCharacter* Value);
 
 	void PlayWalkSound();
-	void PlayAttackSound();
+	void PlayAttackSound(float Param);
 	void PlayTakeDamageVoiceSound();
+
+	void PlayDodgeSound(float Param);
+	void PlayStanceChangeSound(float Param);
+	void PlayUltimateSound();
+	void PlaySkillVoiceSound();
 
 private:
 	void SetIreneCharacter(AIreneCharacter* Value);

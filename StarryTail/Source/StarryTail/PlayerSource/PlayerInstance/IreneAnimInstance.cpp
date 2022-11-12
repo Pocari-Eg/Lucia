@@ -192,6 +192,26 @@ void UIreneAnimInstance::AnimNotify_TakeDamageSound() const
 	Irene->IreneSound->PlayTakeDamageVoiceSound();
 }
 
+void UIreneAnimInstance::AnimNotify_DodgeSound() const
+{
+		Irene->IreneSound->PlayDodgeSound(0.0f);
+}
+void UIreneAnimInstance::AnimNotify_PerfectDodgeSound() const
+{
+  Irene->IreneSound->PlayDodgeSound(1.0f);
+}
+void UIreneAnimInstance::AnimNotify_StanceChangeSound() const
+{
+
+	if (Irene->bIsSpiritStance)
+		Irene->IreneSound->PlayStanceChangeSound(0.0f);
+}
+
+void UIreneAnimInstance::AnimNotify_SkillSound() const
+{
+	Irene->IreneSound->PlaySkillVoiceSound();
+}
+
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));

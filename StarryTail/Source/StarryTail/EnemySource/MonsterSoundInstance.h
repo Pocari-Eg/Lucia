@@ -28,7 +28,7 @@ public:
 	UMonsterSoundInstance();
 
 	void Init();
-	void PlayHitSound(FTransform Transform);
+	void PlayHitSound(FTransform Transform, float Param);
 	void SetHitSound(FString Path);
 
 	void PlayShieldDestroySound(FTransform Transform);
