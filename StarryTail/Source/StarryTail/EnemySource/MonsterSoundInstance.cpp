@@ -24,8 +24,9 @@ void UMonsterSoundInstance::Init()
 	ShieldHitSound->SetVolume(1.0f);
 }
 
-void UMonsterSoundInstance::PlayHitSound(FTransform Transform)
+void UMonsterSoundInstance::PlayHitSound(FTransform Transform,float Param)
 {
+	HitSound->SetParameter("Monster", Param);
 	HitSound->SoundPlay3D(Transform);
 }
 

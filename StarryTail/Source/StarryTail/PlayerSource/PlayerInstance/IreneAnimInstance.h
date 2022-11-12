@@ -135,7 +135,18 @@ private:
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
 	void AnimNotify_RadialBlur() const;
+
+	//sound
 	UFUNCTION()
 	void AnimNotify_TakeDamageSound() const;
+	UFUNCTION()
+	void AnimNotify_DodgeSound() const;
+	UFUNCTION()
+	void AnimNotify_PerfectDodgeSound() const;
+	UFUNCTION()
+	void AnimNotify_StanceChangeSound() const;
+	UFUNCTION()
+	void AnimNotify_SkillSound() const;
+
 	FName GetAttackMontageSectionName(const int32 Section);
 };

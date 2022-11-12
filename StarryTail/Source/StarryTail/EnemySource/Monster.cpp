@@ -1409,7 +1409,6 @@ void AMonster::Tick(float DeltaTime)
 			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())&&
 			!bIsAttacking&& !GetAIController()->GetIsGorggy())
 		{
-			STARRYLOG_S(Error);
 			GetAIController()->SetIsInSupportRange(false);
 		}
 	}
@@ -1521,7 +1520,14 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			if (STGameInstance->GetAttributeEffectMonster() == nullptr)
 			{
 				STGameInstance->SetAttributeEffectMonster(this);
-				SoundInstance->PlayHitSound(SoundTransform);
+
+				if(Cast<ABellyfish>(this))
+				SoundInstance->PlayHitSound(SoundTransform, 0.0f);
+				else if (Cast<ABouldelith>(this))
+				SoundInstance->PlayHitSound(SoundTransform, 1.0f);
+				else if(Cast<ABellarus>(this))
+				SoundInstance->PlayHitSound(SoundTransform, 2.0f);
+				else SoundInstance->PlayHitSound(SoundTransform, 0.0f);
 			}
 
 

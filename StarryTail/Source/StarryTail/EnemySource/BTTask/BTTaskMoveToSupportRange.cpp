@@ -60,8 +60,6 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	{
 		Monster->MoveToPlayer(DeltaSeconds);
 
-		STARRYLOG(Warning, TEXT("distance : %f"), Monster->GetDistanceTo(Player));
-
 		if (Monster->GetDistanceTo(Player) <= MoveDistance&& 
 			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
 			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
@@ -74,7 +72,6 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	if(bIsInBattleRange)
 	{
 		MoveToPlayerReverse(Monster, Player, DeltaSeconds);
-		STARRYLOG(Warning, TEXT("distance : %f"), Monster->GetDistanceTo(Player));
 		if (Monster->GetDistanceTo(Player) >= MoveDistance&& 
 			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
 			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
