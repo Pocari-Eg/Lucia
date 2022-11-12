@@ -484,17 +484,17 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 	// 일반 대쉬
 	if(CurState->Irene->IreneAnim->GetDodgeDir() != 10)
 	{
-		if (CurState->PlayTime >= 0.24f)
-		{
-			const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
-			if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
-			{
-				CurState->ThrowState(UDodgeEndState::GetInstance());
-				CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
-			}
-			CurState->Irene->IreneInput->SetIsDodgeToDodge(true);
-		}
-		if (CurState->PlayTime >= 0.76f)
+		// if (CurState->PlayTime >= 0.41f)
+		// {
+		// 	const TArray<uint8> MoveKey = CurState->Irene->IreneInput->MoveKey;
+		// 	if (MoveKey[0] != 0 || MoveKey[1] != 0 || MoveKey[2] != 0 || MoveKey[3] != 0)
+		// 	{
+		// 		CurState->ThrowState(UDodgeEndState::GetInstance());
+		// 		CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
+		// 	}
+		// 	CurState->Irene->IreneInput->SetIsDodgeToDodge(true);
+		// }
+		if (CurState->PlayTime >= 0.41f)
 		{
 			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
 		}

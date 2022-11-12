@@ -1037,7 +1037,7 @@ void ABouldelith::BeginPlay()
 		IsAttackNum = 2;
 		});
 
-	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+	SoundInstance->SetHitSound("event:/Lucia/Enemy/SFX_Hit");
 	BdAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 
 	//Perfect Dodge

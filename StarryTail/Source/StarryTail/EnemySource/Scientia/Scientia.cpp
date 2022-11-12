@@ -698,7 +698,7 @@ void AScientia::BeginPlay()
 	if (Irene != nullptr) {
 		Irene->IreneUIManager->PlayerHud->Scientiabind(this);
 	}*/
-	SoundInstance->SetHitSound("event:/StarryTail/Enemy/SFX_Hit");
+	SoundInstance->SetHitSound("event:/Lucia/Enemy/SFX_Hit");
 }
 
 void AScientia::PossessedBy(AController* NewController)
