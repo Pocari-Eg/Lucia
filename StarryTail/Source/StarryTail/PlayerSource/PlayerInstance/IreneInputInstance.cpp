@@ -931,7 +931,7 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->bIsSpiritStance = false;
 				Irene->PetMesh->SetVisibility(true,true); 
 				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChangeNormal);
-
+				Irene->IreneSound->PlayStanceChangeSound(1.0f);
 				bIsSpiritChangeEnable = false;
 				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
 				{
