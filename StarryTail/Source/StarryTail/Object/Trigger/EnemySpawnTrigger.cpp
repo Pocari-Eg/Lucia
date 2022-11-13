@@ -44,6 +44,8 @@ void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 	TriggerOff();
 	if (SpawnPoint.Num() != 0) {
 		WaveStart();
+
+		PlayBattleBgm();
 		if (StartSequenceActor.Num()!=0)
 		{
 			for (int i = 0; i < StartSequenceActor.Num(); i++) {
@@ -133,6 +135,8 @@ void AEnemySpawnTrigger::WaveClear()
 			SequenceActor[i]->SequencePlayer->Play();
 		}
 	}
+
+	PlayNormalBgm();
 }
 
 void AEnemySpawnTrigger::OnBattleWall()

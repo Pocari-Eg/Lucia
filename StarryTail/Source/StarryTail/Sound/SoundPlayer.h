@@ -2,10 +2,11 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../StarryTail.h"
 #include "GameFramework/Actor.h"
 #include "SoundManager.h"
 #include "SoundPlayer.generated.h"
+
 
 UCLASS()
 class STARRYTAIL_API ASoundPlayer : public AActor
@@ -19,8 +20,10 @@ public:
 #pragma region Sound
 	//사운드 이벤트
 public:
+	UPROPERTY(EditAnyWhere, Category = "SOUND")
+	ESoundStyle Type;
 	UPROPERTY(EditAnyWhere, Category = "SOUND", meta = (ClampMin = "0", ClampMax = "1"))
-		float Volume;
+	float Volume;
 	UPROPERTY(EditAnyWhere, Category = "SOUND")
 	class UFMODEvent* Event;
 
@@ -34,5 +37,11 @@ protected:
 public:
 	UFUNCTION(Blueprintcallable,Category="SOUND")
 	void PlayBGM();
+	UFUNCTION(Blueprintcallable, Category = "SOUND")
+	void PlayAMB();
 
+	UFUNCTION(Blueprintcallable, Category = "SOUND")
+	ESoundStyle GetSoundType();
+
+	void ChangeBgm(float Param);
 };

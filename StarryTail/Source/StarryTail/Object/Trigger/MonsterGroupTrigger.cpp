@@ -50,6 +50,7 @@ void AMonsterGroupTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, A
 	TriggerOff();
 	if (WAVE.Num() != 0) {
 		WaveStart();
+		PlayBattleBgm();
 		if (StartSequenceActor.Num() != 0)
 		{
 			for (int i = 0; i < StartSequenceActor.Num(); i++) {
@@ -166,6 +167,8 @@ void AMonsterGroupTrigger::WaveClear()
 		LabMagic->EndLabMagic();
 	}
 	bIsOn = false;
+
+	PlayNormalBgm();
 }
 
 void AMonsterGroupTrigger::OnBattleWall()

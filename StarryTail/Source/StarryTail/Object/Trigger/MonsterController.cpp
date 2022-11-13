@@ -155,6 +155,32 @@ void AMonsterController::SupportMonsterDelete(AMonster* DeleteMonster)
 	CurWaveMonster.Remove(DeleteMonster);
 }
 
+void AMonsterController::PlayBattleBgm()
+{
+	if(BgmPlayer!=nullptr)
+	BgmPlayer->ChangeBgm(4.0f);
+}
+
+void AMonsterController::PlayNormalBgm()
+{
+	if (BgmPlayer != nullptr) {
+		switch (CurStage)
+		{
+		case EState::e_MainHall:
+			BgmPlayer->ChangeBgm(0.0f);
+			break;
+		case EState::e_Library:
+			BgmPlayer->ChangeBgm(1.0f);
+			break;
+		case EState::e_Orgranism:
+			BgmPlayer->ChangeBgm(2.0f);
+			break;
+		default:
+			break;
+		}
+	}
+}
+
 // Called when the game starts or when spawned
 void AMonsterController::BeginPlay()
 {

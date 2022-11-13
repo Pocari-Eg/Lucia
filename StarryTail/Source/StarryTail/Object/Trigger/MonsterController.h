@@ -2,8 +2,9 @@
 
 #pragma once
 
-#include "CoreMinimal.h"
+#include "../../StarryTail.h"
 #include "GameFramework/Actor.h"
+#include "../../Sound/SoundPlayer.h"
 #include "MonsterController.generated.h"
 
 UCLASS()
@@ -25,6 +26,12 @@ private:
 	float MinBattleChangeTime;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
 	float MaxBattleChangeTime;
+
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	EState CurStage;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
+	ASoundPlayer* BgmPlayer;
 public:	
 	// Sets default values for this actor's properties
 	AMonsterController();
@@ -38,6 +45,9 @@ public:
 
 	void BattleMonsterDelete();
 	void SupportMonsterDelete(class AMonster* DeleteMonster);
+
+	void PlayBattleBgm();
+	void PlayNormalBgm();
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
