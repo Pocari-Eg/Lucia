@@ -6,6 +6,9 @@
 #include "../../PlayerSource/IreneCharacter.h"
 #include"../../PlayerSource/PlayerInstance/IreneInputInstance.h"
 
+#include "../../UI/TutorialWidget.h"
+#include "Blueprint/WidgetBlueprintLibrary.h"
+
 ADialogTrigger::ADialogTrigger()
 {
 
@@ -102,6 +105,17 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 				}
 
 				Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+
+				TArray<UUserWidget*> outWidget;
+				UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), outWidget, UTutorialWidget::StaticClass());
+				for (auto FOR : outWidget)
+				{
+					auto castWidget = Cast<UTutorialWidget>(FOR);
+					if (castWidget == nullptr) continue;
+
+					castWidget->trystopPlay(EPlayTutorial::Action);
+					castWidget->tryPlay(EPlayTutorial::Action);
+				}
 			}
 
 
@@ -122,6 +136,16 @@ void ADialogTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 			Irene->IreneUIManager->PlayerHud->SetDialogState(EDialogState::e_Disable);
 		}
 		Irene->IreneUIManager->PlayerHud->ActionWidgetOff();
+
+		TArray<UUserWidget*> outWidget;
+		UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), outWidget, UTutorialWidget::StaticClass());
+		for (auto FOR : outWidget)
+		{
+			auto castWidget = Cast<UTutorialWidget>(FOR);
+			if (castWidget == nullptr) continue;
+
+			castWidget->trystopPlay(EPlayTutorial::Action);
+		}
 	}
 
 }
