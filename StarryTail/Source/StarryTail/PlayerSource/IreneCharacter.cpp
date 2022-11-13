@@ -601,10 +601,6 @@ void AIreneCharacter::FollowTargetPosition()
 			// 추적 세팅
 			IreneInput->SetStartMoveAutoTarget(GetActorLocation(), GetActorLocation() + GetActorForwardVector() * TargetPos);
 		}
-		else
-		{
-			IreneAttack->DoAttack();
-		}
 	}
 }
 

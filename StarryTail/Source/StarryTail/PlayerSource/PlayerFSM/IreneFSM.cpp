@@ -513,7 +513,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		// 	CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 		// }
 		// 끝까지 재생
-		if (CurState->PlayTime >= 2.5f * CurState->Irene->IreneInput->GetSlowScale())
+		if (CurState->PlayTime >= 1.0f)
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
