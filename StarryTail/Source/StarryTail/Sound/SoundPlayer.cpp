@@ -25,6 +25,24 @@ void ASoundPlayer::PlayBGM()
 	Sound->SoundPlay2D();
 }
 
+void ASoundPlayer::PlayAMB()
+{
+
+	Sound = new SoundManager(Event, GetWorld());
+	Sound->SetVolume(Volume);
+	Sound->SoundPlay3D(this->GetTransform());
+}
+
+ESoundStyle ASoundPlayer::GetSoundType()
+{
+	return Type;
+}
+
+void ASoundPlayer::ChangeBgm(float Param)
+{
+	Sound->PlayingChangeParamter("Stage", Param);
+}
+
 
 
 

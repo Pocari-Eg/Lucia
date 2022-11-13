@@ -5,6 +5,7 @@
 #include "../Bellarus.h"
 #include "../BellarusAIController.h"
 #include "../../../PlayerSource/IreneCharacter.h"
+#include "../../../STGameInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
@@ -18,6 +19,17 @@ EBTNodeResult::Type UBTTaskFeather::ExecuteTask(UBehaviorTreeComponent& OwnerCom
 	EBTNodeResult::Type Result = Super::ExecuteTask(OwnerComp, NodeMemory);
 
 	auto Bellarus = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
+
+	auto GameInstance = Cast<USTGameInstance>(Bellarus->GetGameInstance());
+	if (nullptr == GameInstance)
+		return EBTNodeResult::Failed;
+
+
+	FVector LookVector = GameInstance->GetPlayer()->GetActorLocation() - Bellarus->GetLocation();
+	LookVector.Z = 0.0f;
+	FRotator TargetRot = FRotationMatrix::MakeFromX(LookVector).Rotator();
+	Bellarus->SetActorRotation(FMath::RInterpTo(Bellarus->GetActorRotation(), TargetRot, GetWorld()->GetDeltaSeconds(), 10.0f));
+
 
 	Bellarus->PlayFeatherAnim();
 	Bellarus->GetAIController()->StopMovement();

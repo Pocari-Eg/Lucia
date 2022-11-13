@@ -62,8 +62,8 @@ void ASwirl::InitSwirl(float DamageVal, float SwirlDotDamageVal,float PullForceV
 	Swirl_Core->SetCapsuleRadius(SwirlRadius);
 	Swirl_Core->SetCapsuleHalfHeight(SwirlRadius);
 
-	Swirl_Pull_Range->SetCapsuleRadius(SwirlRadius* 4.0f);
-	Swirl_Pull_Range->SetCapsuleHalfHeight(SwirlRadius * 4.0f);
+	Swirl_Pull_Range->SetCapsuleRadius(SwirlRadius* 5.0f);
+	Swirl_Pull_Range->SetCapsuleHalfHeight(SwirlRadius * 5.0f);
 
 
 	MinDistance = SwirlRadius;

@@ -14,9 +14,6 @@ UBTTaskBellTrace::UBTTaskBellTrace()
 	NodeName = TEXT("B_Trace");
 	bNotifyTick = true;
 
-	PlayerFollowTime = 5.0f;
-	PlayerFollowTimer = 0.0f;
-	NormalChangeTime = 10.0f;
 }
 EBTNodeResult::Type UBTTaskBellTrace::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -27,51 +24,65 @@ EBTNodeResult::Type UBTTaskBellTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 	if (nullptr == Monster)
 		return EBTNodeResult::Failed;
 
-	Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
+	Monster->GetAIController()->SetPlayer();
 
 	Monster->GetAIController()->StopMovement();
 
 
-
+	bIsMove = true;
 	return EBTNodeResult::InProgress;
 }
 void UBTTaskBellTrace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
-	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
+	auto Monster = Cast<ABellarus>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Monster) {
 		Monster->GetAIController()->StopMovement();
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
+	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
+	//if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == false)
+	//{
+	//	Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(Cast<ABellarusAIController>(Monster->GetAIController())->GetTraceTime()+ DeltaSeconds);
+	//	PlayerFollowTimer += DeltaSeconds;
 
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == false)
-	{
-		Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(Cast<ABellarusAIController>(Monster->GetAIController())->GetTraceTime()+ DeltaSeconds);
-		PlayerFollowTimer += DeltaSeconds;
+	//	if (PlayerFollowTimer >= PlayerFollowTime)
+	//	{
+	//		PlayerFollowTimer = 0.0f;
+	//		Monster->GetAIController()->StopMovement();
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
 
-		if (PlayerFollowTimer >= PlayerFollowTime)
-		{
-			PlayerFollowTimer = 0.0f;
+	//	if (Cast<ABellarusAIController>(Monster->GetAIController())->GetTraceTime() >= NormalChangeTime)
+	//	{
+	//		PlayerFollowTimer = 0.0f;
+	//		Monster->GetAIController()->StopMovement();
+	//		Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(0.0f);
+	//		Monster->SetNormalState();
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
+	//}
+	//else {
+	//	PlayerFollowTimer = 0.0f;
+	//	Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(0.0f);
+	//}
+	if (bIsMove) {
+		Monster->MoveToPlayer(DeltaSeconds);
+		if(Monster->GetDistanceTo(Player) < Monster->GetWingData()->M_Atk_Radius)
+		{ 
+			bIsMove = false;
 			Monster->GetAIController()->StopMovement();
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
-
-		if (Cast<ABellarusAIController>(Monster->GetAIController())->GetTraceTime() >= NormalChangeTime)
-		{
-			PlayerFollowTimer = 0.0f;
-			Monster->GetAIController()->StopMovement();
-			Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(0.0f);
-			Monster->SetNormalState();
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			Monster->PlayIdleAnim();
 		}
 	}
 	else {
-		PlayerFollowTimer = 0.0f;
-		Cast<ABellarusAIController>(Monster->GetAIController())->SetTraceTime(0.0f);
+		Monster->RotationPlayer(DeltaSeconds);
+		if (Monster->GetDistanceTo(Player) > Monster->GetWingData()->M_Atk_Radius)
+		{
+			bIsMove = true;
+			Monster->PlayWalkAnim();
+		}
 	}
-
-	Monster->MoveToPlayer(DeltaSeconds);
-
 }

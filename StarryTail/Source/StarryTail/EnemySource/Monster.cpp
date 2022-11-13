@@ -1396,7 +1396,7 @@ void AMonster::Tick(float DeltaTime)
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 		if (GetDistanceTo(Instance->GetPlayer()) > GetBattleRange()&&
-			!bIsAttacking)
+			!bIsAttacking&&!GetAIController()->GetIsGorggy())
 		{
 			GetAIController()->SetIsInBattleRange(false);
 		}
@@ -1407,7 +1407,7 @@ void AMonster::Tick(float DeltaTime)
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 		if ((GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
 			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())&&
-			!bIsAttacking)
+			!bIsAttacking&& !GetAIController()->GetIsGorggy())
 		{
 			GetAIController()->SetIsInSupportRange(false);
 		}

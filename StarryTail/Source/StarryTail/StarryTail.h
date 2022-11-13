@@ -118,3 +118,19 @@ enum class  EMonsterState :uint8
 	Battle UMETA(DisplayName = "Battle"),
 	Support  UMETA(DisplayName = "Support"),
 };
+
+UENUM(BluePrintType)
+enum class  ESoundStyle :uint8
+{
+	e_Bgm = 0 UMETA(DisplayName = "BGM"),
+	e_Amb UMETA(DisplayName = "AMB"),
+	e_Sfx  UMETA(DisplayName = "SFX")
+};
+
+UENUM(BluePrintType)
+enum class  EState :uint8
+{
+	e_MainHall,
+	e_Library,
+	e_Orgranism
+};
