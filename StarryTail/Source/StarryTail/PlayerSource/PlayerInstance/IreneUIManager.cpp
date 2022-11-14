@@ -198,4 +198,9 @@ bool UIreneUIManager::GetIsPauseOnScreen()
 {
 	return bIsOnPauseWidget;
 }
+void UIreneUIManager::HpFullRecovery()
+{
+	Irene->IreneData.CurrentHP = Irene->IreneData.MaxHP;
+	HpRecoveringCancel();
+}
 

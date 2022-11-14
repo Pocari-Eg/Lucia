@@ -887,7 +887,10 @@ void AIreneCharacter::VisiblePet()
 	PetMesh->SetVisibility(true);
 
 }
-
+void AIreneCharacter::HPFullRecovery()
+{
+	IreneUIManager->HpFullRecovery();
+}
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();
