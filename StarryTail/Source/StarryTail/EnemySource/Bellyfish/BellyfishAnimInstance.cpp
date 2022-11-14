@@ -2,7 +2,7 @@
 
 
 #include "BellyfishAnimInstance.h"
-
+#include "Bellyfish.h"
 
 void UBellyfishAnimInstance::PlayIdleMontage()
 {
@@ -103,7 +103,22 @@ void UBellyfishAnimInstance::AnimNotify_Fire()
       Fire.Broadcast();
 }
 
+void UBellyfishAnimInstance::AnimNotify_BfProjectileSound()
+{
+	Bellyfish->GetBfSound()->PlayBfProjectile(Bellyfish->GetTransform());
+}
 
+void UBellyfishAnimInstance::AnimNotify_BfRushSound()
+{
+	Bellyfish->GetBfSound()->PlayBfRushAttack(Bellyfish->GetTransform());
+}
+
+
+
+void UBellyfishAnimInstance::Init(ABellyfish* Value)
+{
+	Bellyfish = Value;
+}
 
 bool UBellyfishAnimInstance::CheckAttackedMontagePlaying()
 {

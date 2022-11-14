@@ -382,8 +382,10 @@ void ABellyfish::PostInitializeComponents()
 	Super::PostInitializeComponents();
 
 	
-
+	BfSoundInstance = NewObject<UBfSoundInstance>(this);
+	BfSoundInstance->Init();
 	BellyfishAnimInstance = Cast<UBellyfishAnimInstance>(GetMesh()->GetAnimInstance());
+	BellyfishAnimInstance->Init(this);
 }
 
 #pragma region Init
@@ -420,6 +422,10 @@ float ABellyfish::GetSkillSetTime()
 void ABellyfish::SetFlyDistance(float Distance)
 {
 	Info.M_Fly_Distance = Distance;
+}
+UBfSoundInstance* ABellyfish::GetBfSound()
+{
+	return BfSoundInstance;
 }
 void ABellyfish::InitMonsterInfo()
 {

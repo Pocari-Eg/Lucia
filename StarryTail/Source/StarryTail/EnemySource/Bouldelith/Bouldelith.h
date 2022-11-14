@@ -7,6 +7,7 @@
 #include "BdAnimInstance.h"
 #include "BouldelithPatrolTarget.h"
 #include"../../Object/WalkPoint.h"
+#include "BdSoundInstance.h"
 #include "Bouldelith.generated.h"
 
 
@@ -78,6 +79,7 @@ public:
 	float GetPlayerMaxDistance()const;
 	float GetAttack3Distance()const;
 
+	UBdSoundInstance* GetBdSound();
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void  BrokenEvent();
@@ -87,6 +89,9 @@ public:
 	FAttackEndDelegate Attack2End;
 	FAttackEndDelegate Attack3End;
 	FAttackEndDelegate Attack4End;
+
+	UPROPERTY(BluePrintReadOnly)
+	class UBdSoundInstance* BdSoundInstance;
 private:
 	//Function
 	UFUNCTION()
@@ -101,6 +106,8 @@ private:
 
 	ABouldelithPatrolTarget* UsePatrol;
 	UBdAnimInstance* BdAnimInstance;
+
+
 
 	float BackstepCoolTimer;
 

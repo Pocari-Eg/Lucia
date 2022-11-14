@@ -17,10 +17,8 @@ class STARRYTAIL_API UMonsterSoundInstance : public UObject
 private:
 	class UFMODEvent* HitEvent;
 	SoundManager* HitSound;
-
 	class UFMODEvent* ShieldCrash;
 	SoundManager* ShieldCrashSound;
-
 	class UFMODEvent* ShieldHit;
 	SoundManager* ShieldHitSound;
 public:
