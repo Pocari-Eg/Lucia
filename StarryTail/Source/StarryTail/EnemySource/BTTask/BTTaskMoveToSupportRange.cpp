@@ -65,19 +65,20 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
 		{
 			Monster->GetAIController()->SetIsInSupportRange(true);
-			STARRYLOG_S(Error);
+
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}
 	if(bIsInBattleRange)
 	{
-		MoveToPlayerReverse(Monster, Player, DeltaSeconds);
+		bool bIsClose  = MoveToPlayerReverse(Monster, Player, DeltaSeconds);
 		if (Monster->GetDistanceTo(Player) >= MoveDistance&& 
 			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
-			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
+			Monster->GetDistanceTo(Player) > Monster->GetBattleRange()|| bIsClose)
 		{
+		
+
 			Monster->GetAIController()->SetIsInSupportRange(true);
-			STARRYLOG_S(Error);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
     }
@@ -85,10 +86,12 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 	
 }
 
-void UBTTaskMoveToSupportRange::MoveToPlayerReverse(AMonster* Monster, AIreneCharacter* Player,float DeltaSeconds)
+bool UBTTaskMoveToSupportRange::MoveToPlayerReverse(AMonster* Monster, AIreneCharacter* Player,float DeltaSeconds)
 {
-
-	Monster->SetActorLocation(Monster->GetActorLocation() + (Monster->GetActorForwardVector() * Monster->GetMoveSpeed() * DeltaSeconds));
+bool IsMove =	Monster->SetActorLocation(Monster->GetActorLocation() + (Monster->GetActorForwardVector() * Monster->GetMoveSpeed() * DeltaSeconds),true);
+if (IsMove == false) {
+	return true;
+}
 
 
 	//2개의 벡터를 a to b 로 회전 하는 행렬 구하기
@@ -116,4 +119,8 @@ void UBTTaskMoveToSupportRange::MoveToPlayerReverse(AMonster* Monster, AIreneCha
 	UKismetSystemLibrary::DrawDebugArrow(this, Monster->GetActorLocation(), Monster->GetActorLocation() + (PlayerVec * 200), 300.0f, FLinearColor::Red, 0.1f, 3.0f);
 	UKismetSystemLibrary::DrawDebugArrow(this, Monster->GetActorLocation(), Monster->GetActorLocation() + (ForwardVec * 200), 300.0f, FLinearColor::Blue, 0.1f, 3.0f);
 	UKismetSystemLibrary::DrawDebugArrow(this, Monster->GetActorLocation(), Monster->GetActorLocation() + (RotateVec * 200), 300.0f, FLinearColor::Green, 0.1f, 3.0f);
+
+
+
+	return false;
 }
