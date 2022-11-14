@@ -45,7 +45,7 @@ public:
 	void WidgetOff();
 protected:
 	// 위젯을 초기화
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 private:
 	void SoundWidgetSet();
 	void SoundSettingSave();

@@ -76,9 +76,9 @@ void UPauseWidget::EnableButton()
     QuitButton->SetIsEnabled(true);
 }
 
-void UPauseWidget::NativeOnInitialized()
+void UPauseWidget::NativeConstruct()
 {
-    Super::NativeOnInitialized();
+    Super::NativeConstruct();
 
     KeySetWidget = Cast<UKeySetWidget>(GetWidgetFromName(TEXT("BP_KeysettingWidget")));
     SoundSetWidget = Cast<USoundSettingWidget>(GetWidgetFromName(TEXT("BP_SoundSettingWidget")));
