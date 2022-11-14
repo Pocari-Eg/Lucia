@@ -111,6 +111,9 @@ public:
 	void SetDialogState(const bool State);
 
 	void HpRecovery(float Hp);
+
+
+	void HpFullRecovery();
 #pragma endregion HUDPublic
 
 

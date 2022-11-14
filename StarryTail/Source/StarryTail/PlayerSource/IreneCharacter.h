@@ -274,6 +274,9 @@ public:
 
 	void SpawnPet(ASpiritPlate* Target);
 	void VisiblePet();
+
+	UFUNCTION(BluePrintCallable)
+	void HPFullRecovery();
 #pragma endregion UIManager
 
 
