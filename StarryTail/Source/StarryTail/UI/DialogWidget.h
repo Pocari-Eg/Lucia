@@ -73,7 +73,7 @@ public:
 
 	void DialogTimerClear();
 protected:
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 private:
 	//메시지 재생
 	void PlayDialog();

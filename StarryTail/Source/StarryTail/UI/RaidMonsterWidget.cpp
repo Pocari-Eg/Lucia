@@ -140,7 +140,7 @@ bool URaidMonsterWidget::CheckDefWidget()
 }
 
 
-void URaidMonsterWidget::NativeOnInitialized()
+void URaidMonsterWidget::NativeConstruct()
 {
 	
 	 HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("RM_HPBar")));

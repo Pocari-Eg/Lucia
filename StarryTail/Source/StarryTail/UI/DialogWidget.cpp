@@ -92,9 +92,9 @@ void UDialogWidget::DialogTimerClear()
 	}
 }
 
-void UDialogWidget::NativeOnInitialized()
+void UDialogWidget::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 	
 	TextBox = Cast<UTextBlock>(GetWidgetFromName(TEXT("TextBox")));
 

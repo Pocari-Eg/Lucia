@@ -40,7 +40,7 @@ public:
 	void SetQuillStackCount(const int Num);
 protected:
 	// 위젯을 초기화
-	virtual void NativeOnInitialized() override;
+	virtual void NativeConstruct() override;
 	//위젯 업데이트
 private:
 

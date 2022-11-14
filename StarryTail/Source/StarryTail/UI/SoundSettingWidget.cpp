@@ -14,9 +14,9 @@ void USoundSettingWidget::WidgetOff()
 {
 	SetVisibility(ESlateVisibility::Hidden);
 }
-void USoundSettingWidget::NativeOnInitialized()
+void USoundSettingWidget::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	BGMWidget.CheckBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("BGMCheckBox")));
 	BGMWidget.Slider = Cast<USlider>(GetWidgetFromName(TEXT("BGMSlider")));

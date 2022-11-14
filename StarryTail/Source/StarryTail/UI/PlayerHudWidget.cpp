@@ -244,9 +244,9 @@ void UPlayerHudWidget::ActionWidgetOff()
 	ActionWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
-//void UPlayerHudWidget::NativeOnInitialized()
+//void UPlayerHudWidget::NativeConstruct()
 //{
-//	Super::NativeOnInitialized();
+//	Super::NativeConstruct();
 //
 //	UE_LOG(LogTemp, Warning, TEXT("Init"));
 //	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));

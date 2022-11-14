@@ -46,9 +46,9 @@ void UMonsterWidget::SetQuillStackCount(const int Num)
 	QuillStackCount = Num;
 }
 
-void UMonsterWidget::NativeOnInitialized()
+void UMonsterWidget::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 	DefProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("DefBar")));

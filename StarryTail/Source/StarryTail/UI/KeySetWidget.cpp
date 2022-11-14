@@ -218,9 +218,9 @@ void UKeySetWidget::BindPauseWidget(UPauseWidget* CurrentWidget)
 	PauseWidget = CurrentWidget;
 }
 
-void UKeySetWidget::NativeOnInitialized()
+void UKeySetWidget::NativeConstruct()
 {
-	Super::NativeOnInitialized();
+	Super::NativeConstruct();
 
 	BackButton=Cast<UButton>(GetWidgetFromName(TEXT("KeyBackButton")));
 }
