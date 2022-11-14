@@ -1448,9 +1448,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 	float FinalDamage = Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
 
-	if (bIsAttacking)
-		bIsAttacking = false;
-
 	if (bIsDead)
 		return FinalDamage;
 	
