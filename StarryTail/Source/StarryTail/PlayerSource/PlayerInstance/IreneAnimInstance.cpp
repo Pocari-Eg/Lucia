@@ -177,6 +177,15 @@ void UIreneAnimInstance::AnimNotify_UltimateAttackStackExplode() const
 	Irene->IreneInput->UltimateAttackStackExplode();
 }
 
+void UIreneAnimInstance::AnimNotify_DashReuseStart() const
+{
+	//Irene->IreneInput->SetIsDodgeToDodge(true);
+}
+void UIreneAnimInstance::AnimNotify_DashReuseStop() const
+{
+	//Irene->IreneInput->SetIsDodgeToDodge(false);
+}
+
 void UIreneAnimInstance::AnimNotify_FootStep() const
 {
 	OnFootStep.Broadcast();

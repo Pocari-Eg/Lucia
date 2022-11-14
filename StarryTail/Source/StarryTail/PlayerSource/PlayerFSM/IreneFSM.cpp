@@ -574,8 +574,6 @@ void UDodgeEndState::Exit(IBaseGameEntity* CurState)
 		CurState->Irene->IreneInput->SetStopMoveAutoTarget();
 		CurState->Irene->IreneInput->PerfectDodgeTimeEnd();
 	}
-	
-	CurState->Irene->IreneInput->SetIsDodgeToDodge(false);
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeEndState

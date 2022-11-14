@@ -692,9 +692,9 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->bInputStop = false;
 	}
 	
-	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
-		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
-		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
+	if ((!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
+		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
+		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) || bIsDodgeToDodge) &&
 		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun && Irene->IreneAnim->GetDodgeDir() != 10)
 	{
 		// 잔상 공격 중 회피
@@ -707,13 +707,13 @@ void UIreneInputInstance::DodgeKeyword()
 		}
 		
 		// 회피 중 회피
-		if(Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))==0 && bIsDodgeToDodge)
-		{
-			Irene->ChangeStateAndLog(UIdleState::GetInstance());
-			GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{DodgeKeyword();}));
-			bIsDodgeToDodge = false;
-			return;
-		}
+		// if(bIsDodgeToDodge)
+		// {
+		// 	Irene->ChangeStateAndLog(UIdleState::GetInstance());
+		// 	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{DodgeKeyword();}));
+		// 	bIsDodgeToDodge = false;
+		// 	return;
+		// }
 		
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 		
