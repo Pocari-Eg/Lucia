@@ -16,6 +16,9 @@ UCLASS()
 class STARRYTAIL_API UBellyfishAnimInstance : public UMonsterAnimInstance
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY()
+	class ABellyfish* Bellyfish;
 public:
 	void PlayIdleMontage() override;
 	void PlayDeathMontage() override;
@@ -40,10 +43,19 @@ private:
 		void AnimNotify_RushStart();
 	UFUNCTION()
 		void AnimNotify_Fire();
+
+	UFUNCTION()
+	void AnimNotify_BfProjectileSound();
+	UFUNCTION()
+	void AnimNotify_BfRushSound();
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;
 	FProjectileFireDelegate Fire;
+
+public:
+	void Init(class ABellyfish* Value);
+
 private:
 	bool CheckAttackedMontagePlaying() override;
 

@@ -2,7 +2,7 @@
 
 
 #include "BdAnimInstance.h"
-
+#include "Bouldelith.h"
 void UBdAnimInstance::PlayDetectMontage()
 {
 	Montage_Play(DetectMontage, 1.0f);
@@ -183,11 +183,26 @@ void UBdAnimInstance::AnimNotify_Attack4End()
 	Attack4End.Broadcast();
 }
 
+void UBdAnimInstance::AnimNotify_BdAttackSound()
+{
+	Bouldelith->GetBdSound()->PlayBDAttackSound(Bouldelith->GetTransform());
+}
+
+void UBdAnimInstance::AnimNotify_BdQuakeSound()
+{
+	Bouldelith->GetBdSound()->PlayBDQuakeSound(Bouldelith->GetTransform());
+}
+
 
 
 void UBdAnimInstance::SetbIsState(bool state)
 {
 	bIsStatue = state;
+}
+
+void UBdAnimInstance::Init(ABouldelith* Value)
+{
+	Bouldelith = Value;
 }
 
 bool UBdAnimInstance::GetbIsStatue() const

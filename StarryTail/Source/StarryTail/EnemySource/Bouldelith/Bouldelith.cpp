@@ -829,6 +829,11 @@ float ABouldelith::GetAttack3Distance() const
 	return	BouldelithInfo.Attack3_Distance;
 }
 
+UBdSoundInstance* ABouldelith::GetBdSound()
+{
+	return BdSoundInstance;
+}
+
 
 
 #pragma endregion
@@ -1081,7 +1086,8 @@ void ABouldelith::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	
-
+	BdSoundInstance = NewObject<UBdSoundInstance>(this);
+	BdSoundInstance->Init();
 	BdAnimInstance = Cast<UBdAnimInstance>(GetMesh()->GetAnimInstance());
+	BdAnimInstance->Init(this);
 }

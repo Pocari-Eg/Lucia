@@ -6,6 +6,7 @@
 #include "../Monster.h"
 #include "BellyfishAIController.h"
 #include"BellyfishAnimInstance.h"
+#include "BfSoundInstance.h"
 #include"BF_MagicAttack.h"
 #include"BellyfishInfo.h"
 #include"BF_Projectile.h"
@@ -79,6 +80,8 @@ public:
 	//set
 	UFUNCTION(BlueprintCallable)
 	void SetFlyDistance(float Distance);
+
+	UBfSoundInstance* GetBfSound();
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
@@ -135,4 +138,7 @@ public:
 	// 스폰시킬 프로젝타일 클래스
 	UPROPERTY(EditDefaultsOnly, Category = Meteor)
 		TSubclassOf<class ABF_Projectile> ProjectileClass;
+
+	UPROPERTY(BluePrintReadOnly)
+	class UBfSoundInstance* BfSoundInstance;
 };

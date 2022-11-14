@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "../MonsterAnimInstance.h"
+#include "BdSoundInstance.h"
 #include "BdAnimInstance.generated.h"
 
 /**
@@ -18,6 +19,9 @@ UCLASS()
 class STARRYTAIL_API UBdAnimInstance : public UMonsterAnimInstance
 {
 	GENERATED_BODY()
+private:
+	UPROPERTY()
+	class ABouldelith* Bouldelith;
 public:
 	void PlayBattleRunMontage();
 	void PlayBackstepMontage();
@@ -87,6 +91,10 @@ private:
 	UFUNCTION()
 		void AnimNotify_Attack4End();
 
+	UFUNCTION()
+	void AnimNotify_BdAttackSound();
+	UFUNCTION()
+	void AnimNotify_BdQuakeSound();
 	//Var
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* IdleMontage1;
@@ -120,7 +128,7 @@ public:
 
 	void SetbIsState(bool state);
 
-
+	void Init(class ABouldelith* Value);
 	UFUNCTION(BlueprintCallable)
 	bool GetbIsStatue() const;
 
