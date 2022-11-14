@@ -273,8 +273,6 @@ private:
 
 	bool bIsStackOn;
 
-
-	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -352,6 +350,7 @@ public:
 
 	void MoveToPlayer(float DeltaSeconds);
 	void RotationPlayer(float DeltaSeconds);
+
 protected:
 	virtual void InitMonsterInfo() {};
 	virtual void InitCollision() {};

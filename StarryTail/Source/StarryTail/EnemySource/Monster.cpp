@@ -1405,9 +1405,19 @@ void AMonster::Tick(float DeltaTime)
 	if (CurState == EMonsterState::Support)
 	{
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		if ((GetDistanceTo(Instance->GetPlayer()) > GetSupportRange()||
-			GetDistanceTo(Instance->GetPlayer()) < GetBattleRange())&&
-			!bIsAttacking&& !GetAIController()->GetIsGorggy())
+		if (GetDistanceTo(Instance->GetPlayer()) < GetBattleRange() &&
+			!bIsAttacking && !GetAIController()->GetIsGorggy()
+			&&GetAIController()->GetIsInSupportRange()==true)
+		{
+
+			bool IsMove = SetActorLocation(GetActorLocation() + (GetActorForwardVector().RotateAngleAxis(180.0f, FVector::UpVector) * GetMoveSpeed() * DeltaTime), true);
+			if (IsMove) {
+			GetAIController()->SetIsInSupportRange(false);
+	     	}
+		}
+		else if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange() &&
+			!bIsAttacking && !GetAIController()->GetIsGorggy()
+			&& GetAIController()->GetIsInSupportRange() == true)
 		{
 			GetAIController()->SetIsInSupportRange(false);
 		}
