@@ -565,6 +565,16 @@ void UDodgeEndState::Execute(IBaseGameEntity* CurState)
 
 void UDodgeEndState::Exit(IBaseGameEntity* CurState)
 {
+	if(UGameplayStatics::GetGlobalTimeDilation(CurState->Irene->GetWorld()) != 1.0f)
+	{
+		CurState->Irene->CustomTimeDilation = 1;
+		UGameplayStatics::SetGlobalTimeDilation(CurState->Irene->GetWorld(),1);
+		CurState->Irene->IreneAttack->SetIsPerfectDodge(false);
+		CurState->Irene->IreneAnim->SetDodgeDir(0);
+		CurState->Irene->IreneInput->SetStopMoveAutoTarget();
+		CurState->Irene->IreneInput->PerfectDodgeTimeEnd();
+	}
+	
 	CurState->Irene->IreneInput->SetIsDodgeToDodge(false);
 	CurState->bIsEnd = true;
 }

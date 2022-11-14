@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 
-// 추가하는 부분
+// ?????? ?κ?
 #include "PlayerInstance/IreneAttackInstance.h"
 #include "PlayerInstance/IreneSoundInstance.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -15,13 +15,13 @@
 #include "PlayerCharacterDataStruct.h"
 #include "Chaos/Vector.h"
 
-//박찬영
+//??????
 //#include "StopWatch.h"
 //#include "Components/WidgetComponent.h"
 
 #include "IreneCharacter.generated.h"
 
-//Ingame 위젯 델리게이트
+//Ingame ???? ?????????
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FInGameBattleDelegate, int32, _FUNC, float, _CTIME);
 
@@ -36,11 +36,11 @@ protected:
 
 #pragma region GetClassOrObject
 public:
-	// 플레이어 컨트롤러
+	// ?÷???? ??????
 	UPROPERTY()
 	APlayerController* WorldController;
 
-	// 카메라 암과 카메라
+	// ???? ??? ????
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
 	USpringArmComponent* SpringArmComp;
 	UPROPERTY(VisibleAnywhere, BluePrintReadOnly, Category = Camera)
@@ -62,7 +62,7 @@ public:
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneSoundInstance* IreneSound;
 
-	// InGame 위젯 블루프린트
+	// InGame ???? ?????????
 	UPROPERTY(EditAnyWhere)
 	TSubclassOf<class UUserWidget> InGame_C;
 	UPROPERTY(BlueprintReadWrite)
@@ -71,7 +71,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FInGameBattleDelegate FInGameBattle;
 
-	// 정령 블루프린트
+	// ???? ?????????
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<class AActor> IreneSpiritOrigin;
 	UPROPERTY(EditAnywhere)
@@ -83,7 +83,7 @@ public:
 	UPROPERTY()
 	class USTGameInstance* STGameInstance;
 
-	// 캐릭터가 사용하는 변수, 상수 값들 있는 구조체
+	// ĳ????? ?????? ????, ??? ???? ??? ?????
 	UPROPERTY(EditAnywhere, BluePrintReadOnly)
 	FPlayerCharacterDataStruct IreneData;
 	UPROPERTY(BluePrintReadOnly)
@@ -91,11 +91,11 @@ public:
 	UPROPERTY()
 	class UIreneFSM* IreneState;
 
-	//회복 구조체
+	//??? ?????
 	UPROPERTY(EditAnywhere,Category=HpRecorvery)
 	FPlayerRecoveryDataStruct HpRecoveryData;
 	
-	// 무기 매쉬
+	// ???? ???
 	UPROPERTY(BlueprintReadWrite)
 	USkeletalMeshComponent* Weapon;
 	UPROPERTY()
@@ -117,10 +117,10 @@ private:
 	FTimerHandle FixedUpdateCameraShakeTimer;
 	FTimerHandle FixedUpdateCameraLagTimer;
 
-	// 카메라 쉐이크에 사용할 커브
+	// ???? ??????? ????? Ŀ??
 	UPROPERTY()
 	UCurveVector* UseShakeCurve;
-	// 카메라 렉에 사용할 커브
+	// ???? ???? ????? Ŀ??
 	UPROPERTY()
 	UCurveFloat* UseLagCurve;
 	
@@ -128,7 +128,7 @@ private:
 	//float LastLagTime;
 #pragma endregion GetClassOrObject
 
-	//스탑워치
+	//??????
 	//AStopWatch* StopWatch;
 	
 #pragma region Setting
@@ -168,7 +168,7 @@ protected:
 
 #pragma region State
 public:
-	// 상태 변화 후 로그 출력
+	// ???? ??? ?? ?α? ???
 	void ChangeStateAndLog(class IState* NewState)const;
 	UFUNCTION(BlueprintCallable)
 	void ActionEndChangeMoveState(bool RunToSprint = false)const;	
@@ -176,7 +176,7 @@ public:
 	
 #pragma region Collision
 public:
-	// 가까운 몬스터 찾기
+	// ????? ???? ???
 	void FindNearMonster()const;
 	TTuple<FVector, FVector, FVector> SetCameraStartTargetPosition(const FVector BoxSize, const FVector StartPosition)const;
 	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool> StartPositionFindNearMonster(const FVector BoxSize, const FVector StartPosition, const FVector TargetPosition, const float LifeTime = 0.0f)const;
@@ -189,12 +189,12 @@ public:
 	UFUNCTION(BluePrintCallable)
 	AActor* TargetMonster(){return IreneAttack->SwordTargetMonster;}
 	
-	// 겹침 충돌 처리
+	// ??ħ ?浹 ???
 	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 	virtual void NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit) override;
 
-	// 피격
+	// ???
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 	void SetHP(float DamageAmount);
 #pragma endregion Collision
@@ -280,7 +280,7 @@ public:
 #pragma endregion UIManager
 
 
-//스탑워치 
+//?????? 
 	FPlayerCharacterDataStruct* GetDataStruct(){return &IreneData;}
 	//void SetCameraLagTime(const float Value){CameraLagTime = Value;}
 	//void SetLastLagTime(const float Value){LastLagTime = Value;}
