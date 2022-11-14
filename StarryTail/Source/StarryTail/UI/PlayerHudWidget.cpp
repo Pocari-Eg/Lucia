@@ -244,10 +244,35 @@ void UPlayerHudWidget::ActionWidgetOff()
 	ActionWidget->SetVisibility(ESlateVisibility::Hidden);
 }
 
-void UPlayerHudWidget::NativeOnInitialized()
-{
-	Super::NativeOnInitialized();
+//void UPlayerHudWidget::NativeOnInitialized()
+//{
+//	Super::NativeOnInitialized();
+//
+//	UE_LOG(LogTemp, Warning, TEXT("Init"));
+//	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
+//	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
+//	HPRecoveryProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_RecoverBar")));
+//
+//	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
+//	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
+//	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
+//	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
+//	TutorialWidget = Cast<UTutorialWidget>(GetWidgetFromName(TEXT("BP_TutorialWidget")));
+//
+//	Spear.Off = Cast<UImage>(GetWidgetFromName(TEXT("SpearOff")));
+//	Spear.Active = Cast<UImage>(GetWidgetFromName(TEXT("SpearOn")));
+//	Spear.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SpearUpdate")));
+//
+//	isFirst = true;
+//
+//
+//	SetDialogState(EDialogState::e_Disable);
+//	ActionWidgetOff();
+//}
 
+void UPlayerHudWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
 	UE_LOG(LogTemp, Warning, TEXT("Init"));
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HP_Bar")));
 	MPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("MP_Bar")));
@@ -256,7 +281,7 @@ void UPlayerHudWidget::NativeOnInitialized()
 	DialogWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_DialogWidget")));
 	RMWidget = Cast<URaidMonsterWidget>(GetWidgetFromName(TEXT("BP_RaidMonsterWidget")));
 	ActionWidget = Cast<UUserWidget>(GetWidgetFromName(TEXT("BP_ActionWidget")));
-	PopUpWidget= Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
+	PopUpWidget = Cast<UDialogWidget>(GetWidgetFromName(TEXT("BP_PopUpWidget")));
 	TutorialWidget = Cast<UTutorialWidget>(GetWidgetFromName(TEXT("BP_TutorialWidget")));
 
 	Spear.Off = Cast<UImage>(GetWidgetFromName(TEXT("SpearOff")));
@@ -264,5 +289,8 @@ void UPlayerHudWidget::NativeOnInitialized()
 	Spear.CoolTimeBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SpearUpdate")));
 
 	isFirst = true;
+
+
+	SetDialogState(EDialogState::e_Disable);
 	ActionWidgetOff();
 }
