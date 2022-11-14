@@ -132,6 +132,10 @@ private:
 	UFUNCTION()
 	void AnimNotify_UltimateAttackStackExplode() const;
 	UFUNCTION()
+	void AnimNotify_DashReuseStart()const;
+	UFUNCTION()
+	void AnimNotify_DashReuseStop()const;
+	UFUNCTION()
 	void AnimNotify_FootStep() const;
 	UFUNCTION()
 	void AnimNotify_RadialBlur() const;
