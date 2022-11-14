@@ -695,7 +695,7 @@ void UIreneInputInstance::DodgeKeyword()
 	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
 		//Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
-		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
+		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun && Irene->IreneAnim->GetDodgeDir() != 10)
 	{
 		// 잔상 공격 중 회피
 		if(Irene->IreneSpirit != nullptr)
@@ -793,6 +793,7 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 }
 void UIreneInputInstance::PerfectDodgePlayOver()
 {
+	STARRYLOG_S(Warning);
 	if(bPerfectDodgeToAttack)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
