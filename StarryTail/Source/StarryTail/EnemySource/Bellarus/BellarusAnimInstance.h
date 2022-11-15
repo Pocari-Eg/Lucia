@@ -59,10 +59,15 @@ public:
 	void AnimNotify_Feather();
 	UFUNCTION()
 	void AnimNotify_TelePort();
+
+
+	UFUNCTION()
+	void AnimNotify_WingSound	();
+	void Init(class ABellarus* Value);
 private:
 	bool CheckAttackedMontagePlaying() override;
 
-
+	class ABellarus* Bellarus;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* IdleMontage;

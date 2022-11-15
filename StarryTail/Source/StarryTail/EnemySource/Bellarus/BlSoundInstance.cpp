@@ -5,16 +5,21 @@
 
 UBlSoundInstance::UBlSoundInstance()
 {
+	WingEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/BL/SFX_BLAttack");
 }
 
 void UBlSoundInstance::Init()
 {
+	WingSound = new SoundManager(WingEvent, GetWorld());
+	WingSound->SetVolume(1.0f);
 }
 
-void UBlSoundInstance::PlayBDAttackSound(FTransform Transform)
+void UBlSoundInstance::PlayWingSound(FTransform Transform)
 {
+
+	WingSound->SoundPlay3D(Transform);
 }
 
-void UBlSoundInstance::PlayBDQuakeSound(FTransform Transform)
-{
-}
+
+
+

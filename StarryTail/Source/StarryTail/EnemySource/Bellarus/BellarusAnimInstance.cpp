@@ -2,6 +2,8 @@
 
 
 #include "BellarusAnimInstance.h"
+#include "Bellarus.h"
+#include "BlSoundInstance.h"
 
 
 void UBellarusAnimInstance::PlayIdleMontage()
@@ -116,6 +118,16 @@ void UBellarusAnimInstance::AnimNotify_Feather()
 void UBellarusAnimInstance::AnimNotify_TelePort()
 {
 	TelePortAttack.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_WingSound()
+{
+	Bellarus->GetBlSound()->PlayWingSound(Bellarus->GetTransform());
+}
+
+void UBellarusAnimInstance::Init(ABellarus* Value)
+{
+	Bellarus = Value;
 }
 
 bool UBellarusAnimInstance::CheckAttackedMontagePlaying()

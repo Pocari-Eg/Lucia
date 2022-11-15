@@ -655,9 +655,13 @@ void ABellarus::PostInitializeComponents()
 {
 	Super::PostInitializeComponents();
 
-	
 
+	BlSoundInstance = NewObject<UBlSoundInstance>(this);
+	BlSoundInstance->Init();
 	BellarusAnimInstance = Cast<UBellarusAnimInstance>(GetMesh()->GetAnimInstance());
+	BellarusAnimInstance->Init(this);
+
+
 }
 
 #pragma region Init
@@ -722,6 +726,10 @@ FMonsterSkillDataTable* ABellarus::GetGuidedSwirlData()
 {
 	FMonsterSkillDataTable* SkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_05);
 	return SkillData;
+}
+UBlSoundInstance* ABellarus::GetBlSound()
+{
+	return BlSoundInstance;
 }
 void ABellarus::InitMonsterInfo()
 {

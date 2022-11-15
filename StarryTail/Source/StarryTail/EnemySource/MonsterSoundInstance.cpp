@@ -10,8 +10,12 @@ UMonsterSoundInstance::UMonsterSoundInstance()
 	HitEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_Hit");
 	ShieldCrash = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_ShieldDestroy");
 	ShieldHit = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/SFX_ShieldHit");
+	StackExplosion = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackExplosion");
 }
 
+
+class UFMODEvent* StackExplosion;
+SoundManager* StackExplosionSound;
 void UMonsterSoundInstance::Init()
 {
 	HitSound = new SoundManager(HitEvent, GetWorld());
@@ -22,6 +26,9 @@ void UMonsterSoundInstance::Init()
 
 	ShieldHitSound = new SoundManager(ShieldHit, GetWorld());
 	ShieldHitSound->SetVolume(1.0f);
+
+	StackExplosionSound = new SoundManager(StackExplosion, GetWorld());
+	StackExplosionSound->SetVolume(1.0f);
 }
 
 void UMonsterSoundInstance::PlayHitSound(FTransform Transform,float Param)
@@ -44,6 +51,11 @@ void UMonsterSoundInstance::PlayShieldDestroySound(FTransform Transform)
 void UMonsterSoundInstance::PlayShieldHitSound(FTransform Transform)
 {
 	ShieldHitSound->SoundPlay3D(Transform);
+}
+
+void UMonsterSoundInstance::PlayStackExplosionSound(FTransform Transform)
+{
+	StackExplosionSound->SoundPlay3D(Transform);
 }
 
 SoundManager* UMonsterSoundInstance::GetHitSound()
