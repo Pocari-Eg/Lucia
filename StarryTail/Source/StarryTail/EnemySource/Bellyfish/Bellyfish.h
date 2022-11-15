@@ -104,6 +104,8 @@ private:
 		UParticleSystem* Magic_Circle;
 
 	TSubclassOf<ABF_MagicAttack> MagicAttackClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Attack, Meta = (AllowPrivateAccess = true))
 	ABF_MagicAttack* MagicAttack;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	FName FireSocketName;

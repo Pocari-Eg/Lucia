@@ -204,6 +204,7 @@ void ABellyfish::Skill_AttackEnd()
 	IsSkillAttack = false;
 	SkillAttackTimer = 0.0f;
 	MagicAttack->Destroy();
+	MagicAttack = nullptr;
 	AttackEnd.Broadcast();
 }
 
@@ -301,6 +302,7 @@ void ABellyfish::DestroyMagicAttack()
 {
 	if (MagicAttack != nullptr) {
 		MagicAttack->Destroy();
+		MagicAttack = nullptr;
 	}
 }
 
