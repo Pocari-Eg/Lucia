@@ -316,6 +316,12 @@ void AIreneCharacter::LevelSequenceEnd()
 {
 	bInputStop = false;
 }
+void AIreneCharacter::AllTimerClear()
+{
+	ChangeStateAndLog(UIdleState::GetInstance());
+	GetWorld()->GetTimerManager().ClearAllTimersForObject(this);
+}
+
 #pragma endregion Setting
 
 void AIreneCharacter::Tick(float DeltaTime)

@@ -115,6 +115,12 @@ private:
 	
 	bool bIsDialogOn;
 
+	// 다음프레임타이머
+	FTimerDelegate SetHeliosIdleStateAnimDelegate;
+	FTimerDelegate SetHeliosIdleStateAndSpiritStateAnimDelegate;
+	FTimerDelegate ActionEndChangeMoveStateDelegate;
+	FTimerDelegate UltimateAttackSetCameraDelegate;
+	FTimerDelegate UltimateAttackDelegate;
 #pragma region CoolTimeValue
 private:
 	float MaxSoulValue;
@@ -238,6 +244,7 @@ public:
 
 	// 궁극기
 	void UltimateAttackKeyword();
+	UFUNCTION()
 	void UltimateAttack();
 	TTuple<TArray<FHitResult>, FCollisionQueryParams, bool, FVector> UltimateAttackSettingStackCamera();
 	void UltimateAttackSetStack();
@@ -245,6 +252,7 @@ public:
 	void SkillCameraMoveStart();
 	UFUNCTION()
 	void SkillCameraMoveEnd();
+	UFUNCTION()
 	void UltimateAttackSetCamera();
 
 	// 액션 
@@ -252,6 +260,28 @@ public:
 	void DialogPlaying();
 	void DialogSkip();
 #pragma endregion OtherInput
+
+#pragma region Timer
+	void AttackWaitHandleClear();
+	void SwordSkillWaitHandleClear();
+	void AttackUseSkillNextCountWaitHandleClear();
+	void SpiritAnimJumpWaitHandleClear();
+	void SwordSkill2WaitHandleClear();
+	void DodgeInputWaitHandleClear();
+	void DodgeInvincibilityTimerHandleClear();
+	void PerfectDodgeTimerHandleClear();
+	void PerfectDodgeInvincibilityTimerHandleClear();
+	void NormalToSpiritWaitHandleClear();
+	void NormalToSpiritWaitHandleClear2();
+	void BreakAttackWaitHandleClear();
+
+	UFUNCTION()
+	void SetHeliosIdleStateAnim();
+	UFUNCTION()
+	void SetHeliosIdleStateAndSpiritStateAnim();
+	UFUNCTION()
+	void SetActionEndChangeMoveState();	
+#pragma region Timer
 
 #pragma region UIandStamina
 	// 마우스 커서 활성화

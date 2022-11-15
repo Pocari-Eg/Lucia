@@ -122,6 +122,12 @@ void UIreneInputInstance::Begin()
 		LevelSequenceActor
 	);
 	LevelSequencePlayer->OnFinished.AddDynamic(this, &UIreneInputInstance::SkillCameraMoveEnd);
+
+	SetHeliosIdleStateAnimDelegate.BindUFunction(this, FName("SetHeliosIdleStateAnim"));
+	SetHeliosIdleStateAndSpiritStateAnimDelegate.BindUFunction(this, FName("SetHeliosIdleStateAndSpiritStateAnim"));
+	ActionEndChangeMoveStateDelegate.BindUFunction(this, FName("SetActionEndChangeMoveState"));
+	UltimateAttackSetCameraDelegate.BindUFunction(this, FName("UltimateAttackSetCamera"));
+	UltimateAttackDelegate.BindUFunction(this,FName("UltimateAttack"));
 }
 
 #pragma region Move
@@ -359,10 +365,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 
 			// 마우스 왼쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.05f;
-			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-						GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
-				}), WaitTime, false);
+			GetWorld()->GetTimerManager().SetTimer(AttackWaitHandle, this, &UIreneInputInstance::AttackWaitHandleClear, WaitTime, false);
 
 			if(AttackUseSkillNextCount>0)
 			{
@@ -439,10 +442,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		{
 			// 마우스 오른쪽 누르고 있을 때 연속공격 지연 시간(짧은 시간에 여러번 공격 인식 안하도록 함)
 			constexpr float WaitTime = 0.05f;
-			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, FTimerDelegate::CreateLambda([&]()
-			{
-					GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
-				}), WaitTime, false);
+			GetWorld()->GetTimerManager().SetTimer(SwordSkillWaitHandle, this, &UIreneInputInstance::SwordSkillWaitHandleClear, WaitTime, false);
 
 			// X번째 일반 공격 중 스킬 사용 후 다시 일반 공격하면 X+1번째 공격 하도록 지정
 			if(Irene->IreneAttack->GetCanSkillSkip())
@@ -451,11 +451,7 @@ void UIreneInputInstance::RightButton(float Rate)
 				AttackUseSkillNextCount = Irene->IreneData.CurrentCombo+1;
 				if(AttackUseSkillNextCount>Irene->IreneData.MaxCombo)
 					AttackUseSkillNextCount = 1;
-				GetWorld()->GetTimerManager().SetTimer(AttackUseSkillNextCountWaitHandle, FTimerDelegate::CreateLambda([&]()
-				{
-					AttackUseSkillNextCount = 0;
-					GetWorld()->GetTimerManager().ClearTimer(AttackUseSkillNextCountWaitHandle);
-				}), 2, false);
+				GetWorld()->GetTimerManager().SetTimer(AttackUseSkillNextCountWaitHandle, this, &UIreneInputInstance::AttackUseSkillNextCountWaitHandleClear, 2, false);
 			}
 
 			if(!Irene->bIsSpiritStance)
@@ -547,11 +543,7 @@ void UIreneInputInstance::NonSpiritSkill()
 	{
 		CanUseSecondSwordSkill = true;
 		// 특정 시간안에 다시 우클릭하면 스킬2로 넘길 수 있다.
-		GetWorld()->GetTimerManager().SetTimer(SwordSkill2WaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			CanUseSecondSwordSkill = false;
-			GetWorld()->GetTimerManager().ClearTimer(SwordSkill2WaitHandle);
-		}), CanSwordSkill2Time, false);
+		GetWorld()->GetTimerManager().SetTimer(SwordSkill2WaitHandle, this, &UIreneInputInstance::SwordSkill2WaitHandleClear, CanSwordSkill2Time, false);
 	}
 			
 	if(Irene->IreneState->GetStateToString().Compare(FString("Sword_Skill_1")) == 0)
@@ -583,12 +575,7 @@ void UIreneInputInstance::SpiritSkill()
 	{
 		CanUseSpiritAnimJump = true;
 		// 특정 시간안에 다시 우클릭하면 다음 공격 애니로 넘길 수 있다.
-		GetWorld()->GetTimerManager().SetTimer(SpiritAnimJumpWaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			CanUseSpiritAnimJump = false;
-			SpiritChainAttackCount = 0;
-			GetWorld()->GetTimerManager().ClearTimer(SpiritAnimJumpWaitHandle);
-		}), SpiritAnimJumpCoolTime, false);
+		GetWorld()->GetTimerManager().SetTimer(SpiritAnimJumpWaitHandle, this, &UIreneInputInstance::SpiritAnimJumpWaitHandleClear, SpiritAnimJumpCoolTime, false);
 	}
 	
 	if(Irene->IreneSpirit != nullptr && CanUseSpiritAnimJump == true)
@@ -720,7 +707,7 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->ChangeStateAndLog(UDodgeStartState::GetInstance());
 		
 		Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::DodgeStart);
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);}));
+		GetWorld()->GetTimerManager().SetTimerForNextTick(SetHeliosIdleStateAnimDelegate);
 
 		RecoveryDodge();
 		
@@ -738,19 +725,9 @@ void UIreneInputInstance::DodgeKeyword()
 		const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
 
 		constexpr float InvincibilityTime = 0.3f;
-		GetWorld()->GetTimerManager().SetTimer(DodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
-		 {
-			if(!PerfectDodgeInvincibilityTimerHandle.IsValid())
-			{
-				Irene->IreneData.IsInvincibility = false;
-			}
-			GetWorld()->GetTimerManager().ClearTimer(DodgeInvincibilityTimerHandle);
-		 }), InvincibilityTime, false);
+		GetWorld()->GetTimerManager().SetTimer(DodgeInvincibilityTimerHandle, this, &UIreneInputInstance::DodgeInvincibilityTimerHandleClear, InvincibilityTime, false);
 		
-		GetWorld()->GetTimerManager().SetTimer(DodgeInputWaitHandle, FTimerDelegate::CreateLambda([&]()
-		 {
-			GetWorld()->GetTimerManager().ClearTimer(DodgeInputWaitHandle);
-		 }), AttackTable->C_Time*Irene->CustomTimeDilation, false);
+		GetWorld()->GetTimerManager().SetTimer(DodgeInputWaitHandle, this, &UIreneInputInstance::DodgeInputWaitHandleClear, AttackTable->C_Time*Irene->CustomTimeDilation, false);
 	}
 }
 void UIreneInputInstance::PerfectDodge()
@@ -762,16 +739,8 @@ void UIreneInputInstance::PerfectDodge()
 	}
 	constexpr float Time = 2.5f;
 	constexpr float InvincibilityTime = 1.0f;
-	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, FTimerDelegate::CreateLambda([&]()
-		 {
-			Irene->CustomTimeDilation = 1/SlowScale;
-			GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
-		 }), 0.2f * Irene->CustomTimeDilation, false);	
-	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, FTimerDelegate::CreateLambda([&]()
-	 {
-		Irene->IreneData.IsInvincibility = false;
-		GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeInvincibilityTimerHandle);
-	 }), InvincibilityTime * Irene->CustomTimeDilation, false);
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeTimerHandle, this, &UIreneInputInstance::PerfectDodgeTimerHandleClear, 0.2f * Irene->CustomTimeDilation, false);	
+	GetWorld()->GetTimerManager().SetTimer(PerfectDodgeInvincibilityTimerHandle, this, &UIreneInputInstance::PerfectDodgeInvincibilityTimerHandleClear, InvincibilityTime * Irene->CustomTimeDilation, false);
 	
 	const TUniquePtr<FWeaponGauge> DataTable = MakeUnique<FWeaponGauge>(*Irene->IreneAttack->GetNameAtWeaponGaugeDataTable(FName("Perfect_Dodge")));
 	Irene->IreneAttack->SetGauge(DataTable->Get_W_Gauge);
@@ -902,27 +871,16 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				Irene->IreneAnim->StopAllMontages(0);
 				Irene->IreneAnim->SetSpiritStart(true);
 				Irene->ChangeStateAndLog(UFormChangeState::GetInstance());
-				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]
-				{
-					Irene->IreneAnim->SetSpiritStart(false);
-					Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
-				}));
+				GetWorld()->GetTimerManager().SetTimerForNextTick(SetHeliosIdleStateAndSpiritStateAnimDelegate);
 				Irene->bIsSpiritStance = true;
 				bIsSpiritChangeEnable = false;
-				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
-				{
-					Irene->PetMesh->SetVisibility(false,true);
-					bIsSpiritChangeEnable = true;
-				} , 1.5f, false);
+				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,this, &UIreneInputInstance::NormalToSpiritWaitHandleClear , 1.5f, false);
 			}
 			else if(Irene->bIsSpiritStance)
 			{
 				SpiritEnd();
 				
-				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
-				{
-					bIsSpiritChangeEnable = true;
-				} , 1.33f, false);
+				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,this, &UIreneInputInstance::NormalToSpiritWaitHandleClear2 , 1.33f, false);
 				
 				// const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 				// if (Instance != nullptr)
@@ -985,7 +943,7 @@ void UIreneInputInstance::SpiritEnd()
 	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
 				
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->ActionEndChangeMoveState();}));
+	GetWorld()->GetTimerManager().SetTimerForNextTick(ActionEndChangeMoveStateDelegate);
 				
 	if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
 		INGAME->STANCEGAUGEeCtime(-1.0f);
@@ -1051,10 +1009,7 @@ void UIreneInputInstance::BreakAttackKeyword()
 		
 		Irene->NearMonsterAnalysis(HitMonsterList.Get<0>(), HitMonsterList.Get<1>(), HitMonsterList.Get<2>(), AllPosition.Get<0>().Z);
 		
-		GetWorld()->GetTimerManager().SetTimer(BreakAttackWaitHandle, FTimerDelegate::CreateLambda([&]()
-		{
-			GetWorld()->GetTimerManager().ClearTimer(BreakAttackWaitHandle);
-		}), AttackTable->C_Time, false);
+		GetWorld()->GetTimerManager().SetTimer(BreakAttackWaitHandle, this, &UIreneInputInstance::BreakAttackWaitHandleClear, AttackTable->C_Time, false);
 		
 		if(Irene->IreneAttack->SwordTargetMonster == nullptr)
 			return;
@@ -1254,7 +1209,7 @@ void UIreneInputInstance::SkillCameraMoveEnd()
 	Irene->CameraComp->PostProcessSettings.bOverride_MotionBlurMax = false;
 	Irene->CameraComp->PostProcessSettings.MotionBlurMax = 5.0f;
 
-	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttackSetCamera();}));
+	GetWorld()->GetTimerManager().SetTimerForNextTick(UltimateAttackSetCameraDelegate);
 }
 void UIreneInputInstance::UltimateAttackSetCamera()
 {
@@ -1269,7 +1224,7 @@ void UIreneInputInstance::UltimateAttackSetCamera()
 		CameraRotator.Yaw = Rotator.Yaw;
 		Irene->WorldController->SetControlRotation(CameraRotator);
 		
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttack();}));
+		GetWorld()->GetTimerManager().SetTimerForNextTick(UltimateAttackDelegate);
 	}
 	else
 	{
@@ -1281,7 +1236,7 @@ void UIreneInputInstance::UltimateAttackSetCamera()
 		CameraRotator.Yaw = Rotator.Yaw;
 		Irene->WorldController->SetControlRotation(CameraRotator);
 
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{UltimateAttack();}));
+		GetWorld()->GetTimerManager().SetTimerForNextTick(UltimateAttackDelegate);
 	}
 }
 #pragma endregion UltimateAttack
@@ -1326,6 +1281,85 @@ void UIreneInputInstance::DialogSkip()
 		PlayerHud->SkipDialog();
 	}
 }
+
+void UIreneInputInstance::AttackWaitHandleClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(AttackWaitHandle);
+}
+void UIreneInputInstance::SwordSkillWaitHandleClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+}
+void UIreneInputInstance::AttackUseSkillNextCountWaitHandleClear()
+{
+	AttackUseSkillNextCount = 0;
+	GetWorld()->GetTimerManager().ClearTimer(AttackUseSkillNextCountWaitHandle);
+}
+void UIreneInputInstance::SpiritAnimJumpWaitHandleClear()
+{
+	CanUseSpiritAnimJump = false;
+	SpiritChainAttackCount = 0;
+	GetWorld()->GetTimerManager().ClearTimer(SpiritAnimJumpWaitHandle);
+}
+
+void UIreneInputInstance::SwordSkill2WaitHandleClear()
+{
+	CanUseSecondSwordSkill = false;
+	GetWorld()->GetTimerManager().ClearTimer(SwordSkill2WaitHandle);
+}
+
+void UIreneInputInstance::DodgeInputWaitHandleClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(DodgeInputWaitHandle);
+}
+void UIreneInputInstance::DodgeInvincibilityTimerHandleClear()
+{
+	if(!PerfectDodgeInvincibilityTimerHandle.IsValid())
+	{
+		Irene->IreneData.IsInvincibility = false;
+	}
+	GetWorld()->GetTimerManager().ClearTimer(DodgeInvincibilityTimerHandle);
+}
+void UIreneInputInstance::PerfectDodgeTimerHandleClear()
+{
+	Irene->CustomTimeDilation = 1/SlowScale;
+	GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeTimerHandle);
+}
+void UIreneInputInstance::PerfectDodgeInvincibilityTimerHandleClear()
+{
+	Irene->IreneData.IsInvincibility = false;
+	GetWorld()->GetTimerManager().ClearTimer(PerfectDodgeInvincibilityTimerHandle);
+}
+void UIreneInputInstance::NormalToSpiritWaitHandleClear()
+{
+	Irene->PetMesh->SetVisibility(false,true);
+	bIsSpiritChangeEnable = true;
+}
+void UIreneInputInstance::NormalToSpiritWaitHandleClear2()
+{
+	bIsSpiritChangeEnable = true;
+}
+void UIreneInputInstance::BreakAttackWaitHandleClear()
+{
+	GetWorld()->GetTimerManager().ClearTimer(BreakAttackWaitHandle);
+}
+
+
+
+void UIreneInputInstance::SetHeliosIdleStateAnim()
+{
+	Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
+}
+void UIreneInputInstance::SetHeliosIdleStateAndSpiritStateAnim()
+{
+	Irene->IreneAnim->SetSpiritStart(false);
+	Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
+}
+void UIreneInputInstance::SetActionEndChangeMoveState()
+{
+	Irene->ActionEndChangeMoveState();
+}
+
 
 void UIreneInputInstance::MouseCursorKeyword()
 {
