@@ -157,6 +157,9 @@ public:
 	void LevelSequencePlay();
 	UFUNCTION(BlueprintCallable)
 	void LevelSequenceEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void AllTimerClear();
 #pragma endregion Setting
 	
 	// Called every frame
