@@ -14,18 +14,16 @@ class STARRYTAIL_API UBlSoundInstance : public UMonsterSoundInstance
 {
 	GENERATED_BODY()
 	private:
-	class UFMODEvent* HitEvent;
-	SoundManager* BDAttack;
-	class UFMODEvent* ShieldCrash;
-	SoundManager* BDQuake;
+	class UFMODEvent* WingEvent;
+	SoundManager* WingSound;
+
 
 public:
 
 	UBlSoundInstance();
 
 	void Init();
-	void PlayBDAttackSound(FTransform Transform);
-	void PlayBDQuakeSound(FTransform Transform);
+	void PlayWingSound(FTransform Transform);
 
 
 	

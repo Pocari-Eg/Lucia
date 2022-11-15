@@ -11,6 +11,7 @@
 #include "Swirls/TornadoSwirl.h"
 #include"../Bellyfish/BF_Projectile.h"
 #include "FBellarusDataStruct.h"
+#include "BlSoundInstance.h"
 #include "Bellarus.generated.h"
 
 /**
@@ -111,6 +112,9 @@ public:
 
 	int GetMeleeAttackCount();
 	void InitMeleeAttackCount();
+
+
+	UBlSoundInstance* GetBlSound();
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
@@ -169,6 +173,7 @@ private:
 
 	FMonsterSkillDataTable* NewSkillData;
 public:
-
+	UPROPERTY(BluePrintReadOnly)
+	class UBlSoundInstance* BlSoundInstance;
 
 };

@@ -494,6 +494,7 @@ void AMonster::StackExplode()
 	{
 
 		ExplodeStackEvent();
+		SoundInstance->PlayStackExplosionSound(this->GetTransform());
 
 	}
 	else {

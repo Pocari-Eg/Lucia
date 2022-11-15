@@ -21,6 +21,9 @@ private:
 	SoundManager* ShieldCrashSound;
 	class UFMODEvent* ShieldHit;
 	SoundManager* ShieldHitSound;
+
+	class UFMODEvent* StackExplosion;
+	SoundManager* StackExplosionSound;
 public:
 
 	UMonsterSoundInstance();
@@ -31,6 +34,8 @@ public:
 
 	void PlayShieldDestroySound(FTransform Transform);
 	void PlayShieldHitSound(FTransform Transform);
+
+	void PlayStackExplosionSound(FTransform Transform);
 
 	SoundManager* GetHitSound();
 	SoundManager* GetShieldCrashSound();
