@@ -315,6 +315,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 		bLeftButtonPressed = true;
 	else
 		bLeftButtonPressed = false;
+
 	if ((CanAttackState() || (Irene->IreneState->IsSkillState() && bReAttack) || (Irene->IreneState->IsSkillState() && Irene->IreneAttack->GetCanSkillToAttack())) &&
 		!AttackWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
 	{
@@ -431,6 +432,7 @@ void UIreneInputInstance::RightButton(float Rate)
 		bRightButtonPressed = true;
 	else
 		bRightButtonPressed = false;
+
 	if ((CanSkillState()||Irene->IreneAttack->GetCanSkillSkip()) && !SwordSkillWaitHandle.IsValid() && !bIsDialogOn && !Irene->bInputStop && !bIsStun)
 	{
 		if (Rate >= 1.0)
@@ -793,7 +795,6 @@ void UIreneInputInstance::PerfectDodgeAttackEnd()
 }
 void UIreneInputInstance::PerfectDodgePlayOver()
 {
-	STARRYLOG_S(Warning);
 	if(bPerfectDodgeToAttack)
 	{
 		UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
@@ -887,6 +888,8 @@ void UIreneInputInstance::SpiritChangeKeyword()
 				// 정령 스탠스 적용
 				Irene->SpiritStance();
 				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+				GetWorld()->GetTimerManager().ClearTimer(SwordSkillEndWaitHandle);
+
 				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChange);
 
 				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
@@ -914,36 +917,18 @@ void UIreneInputInstance::SpiritChangeKeyword()
 			}
 			else if(Irene->bIsSpiritStance)
 			{
-				// 정령 스탠스 해제
-				Irene->NormalStance();
-
-				GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
-
-				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
-				GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
+				SpiritEnd();
 				
-				GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->ActionEndChangeMoveState();}));
-				
-				if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
-					INGAME->STANCEGAUGEeCtime(-1.0f);
-
-				Irene->IreneAnim->StopAllMontages(0);
-				Irene->ActionEndChangeMoveState();
-				Irene->bIsSpiritStance = false;
-				Irene->PetMesh->SetVisibility(true,true); 
-				Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChangeNormal);
-				Irene->IreneSound->PlayStanceChangeSound(1.0f);
-				bIsSpiritChangeEnable = false;
 				GetWorld()->GetTimerManager().SetTimer(NormalToSpiritWaitHandle,[&]
 				{
 					bIsSpiritChangeEnable = true;
 				} , 1.33f, false);
 				
-				const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
-				if (Instance != nullptr)
-				{
-					Instance->ExplodeCurStackMonster();
-				}
+				// const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+				// if (Instance != nullptr)
+				// {
+				// 	Instance->ExplodeCurStackMonster();
+				// }
 			}
 		}
 	}
@@ -963,21 +948,21 @@ void UIreneInputInstance::SpiritChangeMaxTime()
 	{
 		GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 		GetWorld()->GetTimerManager().ClearTimer(SpiritTimeDamageOverTimer);
-		bIsStun = true;
-
-		MoveKey[0] = 0;
-		MoveKey[1] = 0;
-		MoveKey[2] = 0;
-		MoveKey[3] = 0;
-
-		GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]
-		{
-			bIsStun = false;
-			Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
-		}), 3, false);
+		// bIsStun = true;
+		//
+		// MoveKey[0] = 0;
+		// MoveKey[1] = 0;
+		// MoveKey[2] = 0;
+		// MoveKey[3] = 0;
+		//
+		// GetWorld()->GetTimerManager().SetTimer(SpiritTimeStunOverTimer,FTimerDelegate::CreateLambda([&]
+		// {
+		// 	bIsStun = false;
+		// 	Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
+		// }), 3, false);
 		bIsSpiritChangeEnable = true;
 		SpiritChangeKeyword();
-		Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Stun);
+		//Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Stun);
 	}
 }
 void UIreneInputInstance::SpiritTimeOverDeBuff()
@@ -989,6 +974,31 @@ void UIreneInputInstance::SpiritTimeOverDeBuff()
 	}
 	Irene->SetHP(100);
 }
+void UIreneInputInstance::SpiritEnd()
+{
+	// 정령 스탠스 해제
+	Irene->NormalStance();
+
+	GetWorld()->GetTimerManager().ClearTimer(SwordSkillWaitHandle);
+	GetWorld()->GetTimerManager().ClearTimer(SwordSkillEndWaitHandle);
+
+	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
+	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
+				
+	GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{Irene->ActionEndChangeMoveState();}));
+				
+	if (auto INGAME = Cast<UIngameWidget_D>(Irene->makeIngameWidget))
+		INGAME->STANCEGAUGEeCtime(-1.0f);
+
+	Irene->IreneAnim->StopAllMontages(0);
+	Irene->ActionEndChangeMoveState();
+	Irene->bIsSpiritStance = false;
+	Irene->PetMesh->SetVisibility(true,true); 
+	Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::FormChangeNormal);
+	Irene->IreneSound->PlayStanceChangeSound(1.0f);
+	bIsSpiritChangeEnable = false;
+}
+
 void UIreneInputInstance::SpiritChangeBlock()
 {
 	// 정령 스탠스 해제
@@ -997,10 +1007,12 @@ void UIreneInputInstance::SpiritChangeBlock()
 	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeWaitHandle);
 	GetWorld()->GetTimerManager().ClearTimer(WeaponChangeMaxWaitHandle);
 
+	SpiritEnd();
+	
 	Irene->IreneAnim->StopAllMontages(0);
 	Irene->IreneAttack->AttackTimeEndState();
-	Irene->bIsSpiritStance = false;
-	Irene->PetMesh->SetVisibility(true,true);
+	//Irene->bIsSpiritStance = false;
+	//Irene->PetMesh->SetVisibility(true,true);
 
 	const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
 	if (Instance != nullptr)
