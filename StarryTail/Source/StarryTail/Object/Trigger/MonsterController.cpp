@@ -123,10 +123,12 @@ void AMonsterController::SupportMonsterAttack()
 	TArray<AMonster*> IsRenderMonster;
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
-		if (CurWaveMonster[i] != CurBattleMonster&& CurWaveMonster[i]->WasRecentlyRendered()&&
-			CurWaveMonster[i]->GetAIController()->GetIsInSupportRange()&& !CurWaveMonster[i]->GetIsAttacking()&&!CurWaveMonster[i]->GetIsAttackCool())
-		{
-		   IsRenderMonster.Add(CurWaveMonster[i]);
+		if (CurWaveMonster[i] != nullptr) {
+			if (CurWaveMonster[i] != CurBattleMonster && CurWaveMonster[i]->WasRecentlyRendered() &&
+				CurWaveMonster[i]->GetAIController()->GetIsInSupportRange() && !CurWaveMonster[i]->GetIsAttacking() && !CurWaveMonster[i]->GetIsAttackCool())
+			{
+				IsRenderMonster.Add(CurWaveMonster[i]);
+			}
 		}
 	}
 	if (IsRenderMonster.Num() != 0) {
@@ -142,9 +144,7 @@ void AMonsterController::BattleMonsterDelete()
 
 	for (int i = 0; i < CurWaveMonster.Num(); i++)
 	{
-		if (CurWaveMonster[i] != nullptr) {
-			CurWaveMonster[i]->SetNormalState();
-		}
+		SetCloseMonster();
 	}
 	bIsChange = false;
 	BattleChangeTimer = 0.0f;
