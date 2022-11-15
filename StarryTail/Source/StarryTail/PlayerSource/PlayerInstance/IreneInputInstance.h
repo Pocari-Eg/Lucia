@@ -222,7 +222,7 @@ public:
 	void SpiritChangeTimeOver();
 	void SpiritChangeMaxTime();
 	void SpiritTimeOverDeBuff();
-
+	void SpiritEnd();
 
 	void SpiritChangeBlock();
 	void SetSpiritChangeEnable(bool Set) { bIsSpiritChangeEnable = Set; }
