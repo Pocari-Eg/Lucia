@@ -17,7 +17,7 @@ EBTNodeResult::Type UBTTaskBellyfishProjectile::ExecuteTask(UBehaviorTreeCompone
 	auto Bellyfish = Cast<ABellyfish>(OwnerComp.GetAIOwner()->GetPawn());
 	if (nullptr == Bellyfish)
 		return EBTNodeResult::Failed;
-
+	SkillSetTimer = 0.0f;
 	Bellyfish->GetAIController()->StopMovement();
 
 	bIsAttacking = true;

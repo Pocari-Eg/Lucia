@@ -580,7 +580,7 @@ float AMonster::CalcStackDamage(int StackCount)
 void AMonster::MoveToPlayer(float DeltaSeconds)
 {
 
-		SetActorLocation(GetActorLocation() + (GetActorForwardVector() * GetMoveSpeed() * DeltaSeconds));
+		SetActorLocation(GetActorLocation() + (GetActorForwardVector() * GetMoveSpeed() * DeltaSeconds),true);
 
 		auto Instance = Cast<USTGameInstance>(GetGameInstance());
 
@@ -1060,6 +1060,7 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 void AMonster::Attacked()
 {
 	MonsterAIController->Attacked();
+	MonsterAIController->OffAttack(-1);
 
 }
 
@@ -1128,6 +1129,7 @@ void AMonster::SetBattleState()
 	PointOn();
 	MonsterAIController->SetPlayer();
 	MonsterAIController->SetIsInSupportRange(false);
+	PlayIdleAnim();
 	SetStatue(false);
 	MonsterAIController->SetBattleState(true);
 	MonsterAIController->SetNormalState(false);
@@ -1160,6 +1162,7 @@ void AMonster::SetNormalState()
 void AMonster::SetSupportState()
 {
 	MonsterAIController->SetIsInBattleRange(false);
+	PlayIdleAnim();
 	PointOff();
 	MonsterAIController->SetPlayer();
 	SetStatue(false);
@@ -1317,7 +1320,7 @@ void AMonster::Tick(float DeltaTime)
 	{
 		KnockBackTime += DeltaTime;
 	    KnocbackLocation = GetActorLocation() + (KnockBackDir * (MonsterInfo.KnockBackPower * (0.15f - KnockBackTime)));
-		SetActorLocation(KnocbackLocation);
+		SetActorLocation(KnocbackLocation,true);
 
 		if (KnockBackTime > 0.15f)
 		{

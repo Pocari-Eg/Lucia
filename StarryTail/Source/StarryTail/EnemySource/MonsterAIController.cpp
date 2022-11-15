@@ -192,6 +192,12 @@ void AMonsterAIController::OffAttack(int i)
 	case 4:
 		Blackboard->SetValueAsBool(Attack4Key, false);
 		break;
+	case -1:
+		Blackboard->SetValueAsBool(Attack1Key, false);
+		Blackboard->SetValueAsBool(Attack2Key, false);
+		Blackboard->SetValueAsBool(Attack3Key, false);
+		Blackboard->SetValueAsBool(Attack4Key, false);
+		break;
 	default:
 		break;
 	}
