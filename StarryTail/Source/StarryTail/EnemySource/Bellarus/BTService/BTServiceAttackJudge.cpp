@@ -57,7 +57,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							MeleeAttck(Bellarus, Center);
 						}
 						else {
-
+							//쉴드가 있고 캘리브레엿ㄴ 영역에 있ㅇㄹ때 
 							if (InCalibration)
 							{
 								auto ran = FMath::RandRange(1, 100);
@@ -69,14 +69,15 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							}
 							else {
 
+							   //쉴드 있고  
 								if (InSecondJudge)
 								{
 
 									//ShieldFristRangeAttackCheck(Bellarus, Center);
 
 									auto ran = FMath::RandRange(1, 100);
-									if (ran <= 50)
-									{
+									if (ran <= 70)
+									{//50프로 
 										Bellarus->SetBattleState();
 										Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
 									}
@@ -135,7 +136,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InCalibration)
 								{
 									auto ran = FMath::RandRange(1, 100);
-									if (ran <= 80)
+									if (ran <= 60)
 									{
 										MeleeAttck(Bellarus, Center);
 									}
@@ -147,7 +148,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 									{
 
 										auto ran = FMath::RandRange(1, 100);
-										if (ran <= 50)
+										if (ran <= 80)
 										{
 											Bellarus->SetBattleState();
 											Cast<ABellarusAIController>(Bellarus->GetAIController())->SetSwirlKey(true);
@@ -167,6 +168,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 				}
 			}
 			else {
+			//두번째 페이즈 인데 쉴드 있을때
 				if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetIsShieldOn()) {
 					if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackCoolKey) == false &&
 						OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsAttackingKey) == false&&
@@ -180,7 +182,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							if (InCalibration)
 							{
 								auto ran = FMath::RandRange(1, 100);
-								if (ran <= 80)
+								if (ran <= 60)
 								{
 									MeleeAttck(Bellarus, Center);
 								}
@@ -217,7 +219,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 					}
 				}
 				else {
-
+					//쉴드 없을때
 					if (Cast<ABellarusAIController>(Bellarus->GetAIController())->GetCheckKey())
 					{
 				
@@ -253,7 +255,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InCalibration)
 								{
 									auto ran = FMath::RandRange(1, 100);
-									if (ran <= 80)
+									if (ran <= 60)
 									{
 										MeleeAttck(Bellarus, Center);
 									}
@@ -541,7 +543,7 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 	InWing_L = AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, -(Bellarus->GetWingData()->M_Atk_Angle / 2.0f), FColor::Yellow);
 	InWing_R = AttackCheck(Bellarus, Center, Bellarus->GetWingData()->M_Atk_Radius, Bellarus->GetWingData()->M_Atk_Height, Bellarus->GetWingData()->M_Atk_Angle, Bellarus->GetWingData()->M_Atk_Angle / 2.0f, FColor::Yellow);
 
-
+	//근접공격 확률 
 	if (InTail)
 	{
 		Bellarus->SetBattleState();
@@ -606,7 +608,7 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 				Cast<ABellarusAIController>(Bellarus->GetAIController())->SetTailKey(true);
 				return;
 			}
-
+			//뒤에 있을떄?
 			ran = FMath::RandRange(1, 100);
 			if (ran <= 50)
 			{
@@ -629,6 +631,7 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 
 
 		}
+		//플레이어가앞에 있을때
 		else {
 			auto ran = FMath::RandRange(1, 100);
 			if (ran <= 50)
@@ -655,6 +658,8 @@ void UBTServiceAttackJudge::MeleeAttck(class ABellarus* Bellarus, FVector Center
 
 void UBTServiceAttackJudge::RangeAttck(ABellarus* Bellarus, FVector Center)
 {
+
+	//원거리 공격 
 	
 	if (Bellarus->ProjectileCheck()) {
 
