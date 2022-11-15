@@ -135,7 +135,7 @@ bool USTGameInstance::IsLastWave()
 
 void USTGameInstance::InitData()
 {
-	SpawnTransform = FTransform(FRotator(0,270,0), ThirdPosition(), FVector::OneVector);
+	SpawnTransform = FTransform(FRotator(0,270,0), FirstPosition(), FVector::OneVector);
 	
 	EnemyCount = 0;
 	UniqueCount = 0;
