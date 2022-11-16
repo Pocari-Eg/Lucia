@@ -38,10 +38,12 @@ void UBTTaskMoveToBattleRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint8
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 	if (Monster->GetDistanceTo(Player) < Monster->GetBattleRange())
 	{
+		Monster->GetAIController()->StopMovement();
 		Monster->GetAIController()->SetIsInBattleRange(true);
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 	else {
-		Monster->MoveToPlayer(DeltaSeconds);
+		Monster->GetAIController()->MoveTo(Player);
+		//Monster->MoveToPlayer(DeltaSeconds);
 	}
 }

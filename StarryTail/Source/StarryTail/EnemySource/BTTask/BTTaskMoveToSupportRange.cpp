@@ -58,14 +58,14 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 
 	if (bIsOutSupportRange)
 	{
-		Monster->MoveToPlayer(DeltaSeconds);
-
+		//Monster->MoveToPlayer(DeltaSeconds);
+		Monster->GetAIController()->MoveTo(Player);
 		if (Monster->GetDistanceTo(Player) <= MoveDistance&& 
 			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
 			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
 		{
+			Monster->GetAIController()->StopMovement();
 			Monster->GetAIController()->SetIsInSupportRange(true);
-
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 		}
 	}

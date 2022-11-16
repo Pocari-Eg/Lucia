@@ -141,6 +141,12 @@ AMonster::AMonster()
 	bIsStatueStart = false;
 	bIsAttacking = false;
 	
+
+	bIsMoveToFront = true;
+	FrontMoveTime = 1.0f;
+	FrontMoveTimer = 0.0f;
+
+	bIsCaptin = false;
 }
 #pragma region Init
 
@@ -293,6 +299,11 @@ FNormalMonsterInfo AMonster::GetMonsterInfo() const
 bool AMonster::GetIsAttacking() const
 {
 	return bIsAttacking;
+}
+
+void AMonster::SetCaptin()
+{
+	bIsCaptin = true;
 }
 
 float AMonster::GetMinSupportWalkTime() const
@@ -1101,8 +1112,9 @@ void AMonster::PlayDeathAnim()
 void AMonster::SetGroup()
 {
 	bIsGroupTriggerEnemy = true;
-	//SetNormalState();
-	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+
+	//GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+	SetStatue(false);
 }
 
 void AMonster::SetStatue(bool state)
@@ -1113,9 +1125,23 @@ void AMonster::SetStatue(bool state)
 		GetAIController()->SetStatueKey(state);
 		auto bouldelith = Cast<ABouldelith>(this);
 		bouldelith->SetStatueState(state);
+		
 	}
 	else {
 		GetAIController()->SetStatueKey(state);
+	}
+
+	if (state)
+	{
+		bIsMoveToFront = true;
+		GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+		ShieldCollision->SetCollisionProfileName("NoCollision");
+	}
+	else {
+		GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+		ShieldCollision->SetCollisionProfileName("Shield");
+		bIsMoveToFront = false;
+		PlayBattleWalkAnim();
 	}
 }
 
@@ -1131,7 +1157,6 @@ void AMonster::SetBattleState()
 	MonsterAIController->SetPlayer();
 	MonsterAIController->SetIsInSupportRange(false);
 	PlayIdleAnim();
-	SetStatue(false);
 	MonsterAIController->SetBattleState(true);
 	MonsterAIController->SetNormalState(false);
 	MonsterAIController->SetSupportState(false);
@@ -1148,7 +1173,6 @@ void AMonster::SetBattleState()
 }
 void AMonster::SetNormalState()
 {
-	SetStatue(false);
 	PointOff();
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(true);
@@ -1166,7 +1190,6 @@ void AMonster::SetSupportState()
 	PlayIdleAnim();
 	PointOff();
 	MonsterAIController->SetPlayer();
-	SetStatue(false);
 	MonsterAIController->SetBattleState(false);
 	MonsterAIController->SetNormalState(false);
 	MonsterAIController->SetSupportState(true);
@@ -1396,45 +1419,51 @@ void AMonster::Tick(float DeltaTime)
 		MonsterShield->SetOpacity(Distance);
 	}
 
-	if (CurState == EMonsterState::Battle)
-	{
-		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		if (GetDistanceTo(Instance->GetPlayer()) > GetBattleRange()&&
-			!bIsAttacking&&!GetAIController()->GetIsGorggy())
+	if (bIsMoveToFront) {
+		if (CurState == EMonsterState::Battle)
 		{
-			GetAIController()->SetIsInBattleRange(false);
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (GetDistanceTo(Instance->GetPlayer()) > GetBattleRange() &&
+				!bIsAttacking && !GetAIController()->GetIsGorggy())
+			{
+				GetAIController()->SetIsInBattleRange(false);
+			}
 		}
-   }
 
-	if (CurState == EMonsterState::Support)
-	{
-		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		if (GetDistanceTo(Instance->GetPlayer()) < GetBattleRange() &&
-			!bIsAttacking && !GetAIController()->GetIsGorggy()
-			&&GetAIController()->GetIsInSupportRange()==true)
+		if (CurState == EMonsterState::Support)
 		{
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (GetDistanceTo(Instance->GetPlayer()) < GetBattleRange() &&
+				!bIsAttacking && !GetAIController()->GetIsGorggy()
+				&& GetAIController()->GetIsInSupportRange() == true)
+			{
 
-			bool IsMove = SetActorLocation(GetActorLocation() + (GetActorForwardVector().RotateAngleAxis(180.0f, FVector::UpVector) * GetMoveSpeed() * DeltaTime), true);
-			if (IsMove) {
-			GetAIController()->SetIsInSupportRange(false);
-	     	}
+				bool IsMove = SetActorLocation(GetActorLocation() + (GetActorForwardVector().RotateAngleAxis(180.0f, FVector::UpVector) * GetMoveSpeed() * DeltaTime), true);
+				if (IsMove) {
+					GetAIController()->SetIsInSupportRange(false);
+				}
+			}
+			else if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange() &&
+				!bIsAttacking && !GetAIController()->GetIsGorggy()
+				&& GetAIController()->GetIsInSupportRange() == true)
+			{
+				GetAIController()->SetIsInSupportRange(false);
+			}
 		}
-		else if (GetDistanceTo(Instance->GetPlayer()) > GetSupportRange() &&
-			!bIsAttacking && !GetAIController()->GetIsGorggy()
-			&& GetAIController()->GetIsInSupportRange() == true)
-		{
-			GetAIController()->SetIsInSupportRange(false);
-		}
+
 	}
-	if (bTestMode&& CurState == EMonsterState::Battle)
-	{
-		auto Instance = Cast<USTGameInstance>(GetGameInstance());
-		FTransform BottomLine = Instance->GetPlayer()->GetTransform();
-		//BottomLine.SetLocation(BottomLine.GetLocation() - FVector(0.0f, 0.0f, Instance->GetPlayer()->GetCapsuleComponent()->GetScaledCapsuleHalfHeight()));
-		FMatrix BottomDebugMatrix = BottomLine.ToMatrixNoScale();
-		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, GetBattleRange(), 360.0f, FColor::Green, 10, DeltaTime, false, 0, 2);
-		GetAIController()->DrawRadial(GetWorld(), BottomDebugMatrix, GetSupportRange(), 360.0f, FColor::Red, 10, DeltaTime, false, 0, 2);
+	else{
+		FrontMoveTimer += DeltaTime;
+		if (FrontMoveTimer < FrontMoveTime) {
+			SetActorLocation(GetActorLocation() + (GetActorForwardVector() * GetMoveSpeed() * DeltaTime), true);
+		}
+		else {
+			bIsMoveToFront = true;
+			if (bIsCaptin&&MonsterController!=nullptr) {
+				MonsterController->SetCloseMonster();
+			}
 
+		}
 	}
 }
 void AMonster::OnOverlapBegin(class UPrimitiveComponent* OverlappedComp, class AActor* OtherActor, class UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
