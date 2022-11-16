@@ -232,6 +232,11 @@ protected:
 
 	float AttacekdTeleportTimer;
 
+
+	bool bIsMoveToFront;
+	bool bIsCaptin;
+	float FrontMoveTime;
+	float FrontMoveTimer;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
@@ -307,8 +312,11 @@ public:
 	FNormalMonsterInfo GetMonsterInfo() const;
 	bool GetIsAttacking()const;
 
+	void SetCaptin();
+
 	float GetMinSupportWalkTime()const;
 	float GetMaxSupportWalkTime()const;
+
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;
