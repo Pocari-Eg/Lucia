@@ -303,10 +303,15 @@ void USprintLoopState::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneAnim->SetSprintStateAnim(true);
 	ChangeMoveKey = CurState->Irene->IreneInput->MoveKey;
 	//CurState->Irene->SetCameraLagTime(0);
-	if (CurState->Irene->Weapon->IsVisible())
+	if (CurState->Irene->Weapon->IsVisible() && !CurState->Irene->bIsSpiritStance)
 	{
 		CurState->Irene->Weapon->SetVisibility(false);
 		CurState->Irene->WeaponVisible(false);
+	}
+	if(CurState->Irene->bIsSpiritStance)
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
 	}
 	CurState->Irene->IreneData.CanNextCombo = false;
 	CurState->Irene->IreneData.IsComboInputOn = false;
