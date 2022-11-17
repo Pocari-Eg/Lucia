@@ -1434,10 +1434,20 @@ void UHit1State::Enter(IBaseGameEntity* CurState)
 	CurState->Irene->IreneInput->SetIsStun(true);
 	CurState->Irene->IreneAttack->SetCanMoveSkip(false);
     CurState->Irene->IreneAttack->SetCanDodgeJumpSkip(false);
+
+	CurState->Irene->IreneAttack->SetCameraShakeTime(0);
+	if(CurState->Irene->CameraLagCurve.Num()>0)
+		CurState->Irene->SetUseShakeCurve(CurState->Irene->CameraShakeCurve[9]);
+	StartShakeTime = 0.0f;
 }
 
 void UHit1State::Execute(IBaseGameEntity* CurState)
 {
+	if (CurState->Irene->CameraShakeOn == true && StartShakeTime == 0)
+		StartShakeTime = CurState->PlayTime;
+	if (StartShakeTime != 0 && CurState->PlayTime >= StartShakeTime + 0.2f)
+		CurState->Irene->CameraShakeOn = false;
+	
 	if(CurState->PlayTime >= 0.56f * (2/3.0f))
 		CurState->Irene->IreneInput->SetIsStun(false);
 	if (CurState->PlayTime >= 0.56f)

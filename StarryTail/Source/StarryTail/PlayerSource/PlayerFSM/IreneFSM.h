@@ -256,6 +256,7 @@ UCLASS()
 class STARRYTAIL_API UHit1State final : public UObject, public IState
 {
 	GENERATED_BODY()
+	float StartShakeTime;
 public:
 	static UHit1State* GetInstance();
 	virtual void Enter(IBaseGameEntity* CurState) override;
