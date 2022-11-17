@@ -61,7 +61,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							if (InCalibration)
 							{
 								auto ran = FMath::RandRange(1, 100);
-								if (ran <= 80)
+								if (ran <= 50)
 								{
 									MeleeAttck(Bellarus, Center);
 								}
@@ -112,7 +112,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 						{
 
 							auto ran = FMath::RandRange(1, 100);
-							if (ran <= 70)
+							if (ran <= 50)
 							{
 								Cast<ABellarusAIController>(Bellarus->GetAIController())->SetCheckKey(true);
 								return;
@@ -136,7 +136,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InCalibration)
 								{
 									auto ran = FMath::RandRange(1, 100);
-									if (ran <= 60)
+									if (ran <= 40)
 									{
 										MeleeAttck(Bellarus, Center);
 									}
@@ -182,7 +182,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 							if (InCalibration)
 							{
 								auto ran = FMath::RandRange(1, 100);
-								if (ran <= 60)
+								if (ran <= 50)
 								{
 									MeleeAttck(Bellarus, Center);
 								}
@@ -255,7 +255,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 								if (InCalibration)
 								{
 									auto ran = FMath::RandRange(1, 100);
-									if (ran <= 60)
+									if (ran <= 40)
 									{
 										MeleeAttck(Bellarus, Center);
 									}
