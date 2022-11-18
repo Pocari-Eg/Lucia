@@ -175,7 +175,7 @@ void UMonsterShield::SetEffectVisible(bool State)
 void UMonsterShield::InitShieldEffect(int M_MaxStackCount)
 {
 
-	if (bIsShieldActive) {
+	if (bIsShieldActive&&!IsNonShield) {
 		
 		MaxStackCount = M_MaxStackCount;
 		ShiledEffectComponent->SetVisibility(true);
@@ -211,7 +211,7 @@ void UMonsterShield::InitShieldEffect(int M_MaxStackCount)
 
 
 
-void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
+void UMonsterShield::InitShield(bool bIsNonShield, UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
 	UParticleSystemComponent* ShiledCrackEffect, UParticleSystemComponent* ShiledHitEffect)
 {
 	this->Collision = ShieldCollision;
@@ -222,7 +222,7 @@ void UMonsterShield::InitShield(UCapsuleComponent* ShieldCollision, UParticleSys
 
 	this->ShiledEffectComponent->SetVisibility(false);
 	
-
+	IsNonShield = bIsNonShield;
 }
 
 void UMonsterShield::CalcStackDamageToShield(int Count)

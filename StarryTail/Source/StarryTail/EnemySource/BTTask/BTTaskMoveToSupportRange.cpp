@@ -28,20 +28,44 @@ EBTNodeResult::Type UBTTaskMoveToSupportRange::ExecuteTask(UBehaviorTreeComponen
 	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 	Monster->PlayBattleWalkAnim();
 
-	MoveDistance = FMath::FRandRange(Monster->GetBattleRange(), Monster->GetSupportRange());
+	float CurDistance = GetDistance(Monster, Player);
 
-	float CurDistance = Monster->GetDistanceTo(Player);
-	if (CurDistance > MoveDistance)
-	{
-		bIsOutSupportRange = true;
-		bIsInBattleRange = false;
-	}
-  if(CurDistance < MoveDistance){
-	  bIsInBattleRange = true;
-	  bIsOutSupportRange = false;
-	}
+
+	//
+	//if (CurDistance > Monster->GetSupportRange())
+	//{
+	//	bIsOutSupportRange = true;
+	//	bIsInBattleRange = false;
+	//}
+ // if(CurDistance < CurDistance > Monster->GetBattleRange()){
+	//  bIsInBattleRange = true;
+	//  bIsOutSupportRange = false;
+	//}
 	
 	
+	float MinRange = Monster->GetSupportRange();
+	float MaxRange = Monster->GetBattleRange();
+
+	MinRange = MinRange+(MinRange * 0.15f);
+	MaxRange = MaxRange - (MaxRange * 0.2f);
+	  float MoveDistance = FMath::FRandRange(MinRange, MaxRange);
+
+	  //2개의 벡터를 a to b 로 회전 하는 행렬 구하기
+	  FVector ForwardVec = Monster->GetActorForwardVector();
+	  ForwardVec.Normalize();
+
+	  FVector MoveVector = Monster->GetActorLocation()-Player->GetActorLocation();
+
+	  MoveVector.Normalize();
+
+
+	  MoveVector.Z = 0.0f;
+
+	  FVector MoveLocation = Player->GetActorLocation() + (MoveVector * MoveDistance);
+	  MoveLocation.Z = Monster->GetActorLocation().Z;
+
+
+	  Monster->GetAIController()->MoveToLocation(MoveLocation);
 
 
 
@@ -53,35 +77,57 @@ void UBTTaskMoveToSupportRange::TickTask(UBehaviorTreeComponent& OwnerComp, uint
 {
 
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
-	auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
+	//auto Player = Cast<AIreneCharacter>(OwnerComp.GetBlackboardComponent()->GetValueAsObject(AMonsterAIController::PlayerKey));
 
 
-	if (bIsOutSupportRange)
+	if (Monster->GetAIController()->GetMoveStatus() == EPathFollowingStatus::Idle)
 	{
-		//Monster->MoveToPlayer(DeltaSeconds);
-		Monster->GetAIController()->MoveTo(Player);
-		if (Monster->GetDistanceTo(Player) <= MoveDistance&& 
-			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
-			Monster->GetDistanceTo(Player) > Monster->GetBattleRange())
-		{
-			Monster->GetAIController()->StopMovement();
-			Monster->GetAIController()->SetIsInSupportRange(true);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
+		Monster->GetAIController()->StopMovement();
+		Monster->GetAIController()->SetIsInSupportRange(true);
+		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
-	if(bIsInBattleRange)
-	{
-		bool bIsClose  = MoveToPlayerReverse(Monster, Player, DeltaSeconds);
-		if (Monster->GetDistanceTo(Player) >= MoveDistance&& 
-			Monster->GetDistanceTo(Player) < Monster->GetSupportRange() &&
-			Monster->GetDistanceTo(Player) > Monster->GetBattleRange()|| bIsClose)
-		{
-		
 
-			Monster->GetAIController()->SetIsInSupportRange(true);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
-    }
+	//if (bIsOutSupportRange)
+	//{
+	//	
+
+	//	//Monster->MoveToPlayer(DeltaSeconds);
+	//
+	//	float Distance = GetDistance(Monster, Player);
+
+	//	if (Distance <= Monster->GetBattleRange())
+	//	{
+	//		Monster->GetAIController()->StopMovement();
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
+	//	else {
+	//		Monster->GetAIController()->MoveTo(Player);
+	//	}
+
+	//	if (Distance <= MoveDistance&&
+	//		Distance < Monster->GetSupportRange() &&
+	//		Distance > Monster->GetBattleRange())
+	//	{
+	//		
+	//		Monster->GetAIController()->StopMovement();
+	//		Monster->GetAIController()->SetIsInSupportRange(true);
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
+	//}
+	//if(bIsInBattleRange)
+	//{
+	//	float Distance = GetDistance(Monster, Player);
+	//	bool bIsClose  = MoveToPlayerReverse(Monster, Player, DeltaSeconds);
+	//	if (Distance >= MoveDistance&&
+	//		Distance < Monster->GetSupportRange() &&
+	//		Distance > Monster->GetBattleRange()|| bIsClose)
+	//	{
+	//	
+
+	//		Monster->GetAIController()->SetIsInSupportRange(true);
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
+ //   }
 
 	
 }
@@ -123,4 +169,14 @@ if (IsMove == false) {
 
 
 	return false;
+}
+
+float UBTTaskMoveToSupportRange::GetDistance(AMonster* Monster, AIreneCharacter* player)
+{
+	FVector PlayerLocation = player->GetActorLocation();
+	FVector MonsterLocation = Monster->GetActorLocation();
+	MonsterLocation.Z = PlayerLocation.Z;
+	float CurDistance = (MonsterLocation - PlayerLocation).Size();
+
+	return CurDistance;
 }

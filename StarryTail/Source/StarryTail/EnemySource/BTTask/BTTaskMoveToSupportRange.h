@@ -23,9 +23,11 @@ private:
 
 	bool MoveToPlayerReverse(class AMonster* Monster, class AIreneCharacter* Player, float DeltaSeconds);
 
-	float MoveDistance;
+//	float MoveDistance;
 	float CurMoveDistance;
 
 	bool bIsOutSupportRange;
 	bool bIsInBattleRange;
+
+	float GetDistance(class AMonster* Monster, class AIreneCharacter* player);
 };

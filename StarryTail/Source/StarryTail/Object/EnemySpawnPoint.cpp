@@ -66,7 +66,7 @@ void AEnemySpawnPoint::RandomSpawn()
 				}
 			}
 		}
-
+	
 	CurrentWave++;
 	CurrentWave >= SpawnWave.Num()? Instance->SetLastWave(true): Instance->SetLastWave(false);
 	

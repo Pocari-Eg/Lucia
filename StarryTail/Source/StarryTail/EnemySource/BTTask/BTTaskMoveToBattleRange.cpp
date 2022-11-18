@@ -5,6 +5,7 @@
 #include "../MonsterAIController.h"
 #include "../../PlayerSource/IreneCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "../Bouldelith/Bouldelith.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 
 UBTTaskMoveToBattleRange::UBTTaskMoveToBattleRange()
@@ -26,6 +27,14 @@ EBTNodeResult::Type UBTTaskMoveToBattleRange::ExecuteTask(UBehaviorTreeComponent
 
 
 	Monster->PlayBattleWalkAnim();
+
+	if (Cast<ABouldelith>(OwnerComp.GetAIOwner()->GetPawn()))
+	{
+		auto Random = FMath::RandRange(0, 100);
+		if (Random < 40) {
+			Monster->GetAIController()->OnAttack(4);
+		}
+	}
 
 
 	return EBTNodeResult::InProgress;

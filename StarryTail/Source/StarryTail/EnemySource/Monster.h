@@ -178,6 +178,8 @@ protected:
 	UParticleSystemComponent* ShiledEffectComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	FName ShieldSocketName;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
+	bool IsNonShield;
 	//¹ÚÂù¿µ UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
@@ -382,4 +384,12 @@ protected:
 	void PerfectDodgeOn();
 	//object
 	virtual void HitCheck(AIreneCharacter* Irene) {};
+
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  SetBattleEvent();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void  SetSupportEvent();
+
 };

@@ -72,6 +72,7 @@ void ABF_MagicAttack::SetMagicAttack(float Radius, float DamageVal)
 
 void ABF_MagicAttack::PlayIndicator(float Val)
 {
+	if(AreaInstance!=nullptr)
 	AreaInstance->SetScalarParameterValue("AreaValue", Val);
 }
 

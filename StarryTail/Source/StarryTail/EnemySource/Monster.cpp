@@ -517,7 +517,7 @@ void AMonster::StackExplode()
 void AMonster::MaxStackExplode()
 {
 
-	if (GetIsMonsterShieldActive()) {
+	if (GetIsMonsterShieldActive() && !IsNonShield) {
 		MonsterShield->CalcDurability(-1.0f);
 		OnBarrierChanged.Broadcast();
 
@@ -531,7 +531,7 @@ void AMonster::MaxStackExplode()
 				InitStackCount();
 			}*/
 
-		if (!GetIsMonsterShieldActive())
+		if (!GetIsMonsterShieldActive() || !IsNonShield)
 		{
 			ShieldDestroyed();
 			SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
@@ -540,7 +540,7 @@ void AMonster::MaxStackExplode()
 	}
 	else {
 
-			if(GetIsMonsterShieldActive())
+			if(GetIsMonsterShieldActive() && !IsNonShield)
 				CalcHp(MonsterInfo.StackDamage);
 			else
 				CalcHp(GetMonsterInfo().StackDamage + GetMonsterInfo().StackDamage * 0.2f);
@@ -711,7 +711,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
+		if ((GetIsMonsterShieldActive() == false || IsNonShield) && !MonsterAIController->GetIsGorggy()) {
 			if (bIsDodgeOn)
 			{
 				PerfectDodgeOff();
@@ -728,7 +728,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 		auto Player = GameInstance->GetPlayer();
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
-		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+		if ((GetIsMonsterShieldActive() == false || IsNonShield) && !MonsterAIController->GetIsGorggy()) {
 			if (bIsDodgeOn)
 			{
 				PerfectDodgeOff();
@@ -744,7 +744,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 		bool IsKnockback = Player->IreneState->IsKnockBackState();
 
-		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+		if ((GetIsMonsterShieldActive() == false || IsNonShield) && !MonsterAIController->GetIsGorggy()) {
 			if (bIsDodgeOn)
 			{
 				PerfectDodgeOff();
@@ -766,7 +766,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			SetDpsCheck(true);
 		}
 
-		if (GetIsMonsterShieldActive() == false && !MonsterAIController->GetIsGorggy()) {
+		if ((GetIsMonsterShieldActive() == false || IsNonShield) && !MonsterAIController->GetIsGorggy()) {
 			if (bIsDodgeOn)
 			{
 				PerfectDodgeOff();
@@ -784,7 +784,7 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 
 	float TotalDamage = 0;
 
-	if (GetIsMonsterShieldActive())
+	if (GetIsMonsterShieldActive() && !IsNonShield)
 	{
 		switch (MonsterShield->GetCurShieldState())
 		{
@@ -1168,7 +1168,7 @@ void AMonster::SetBattleState()
 	else {
 		MonsterAIController->SetShieldKey(false);
 	}
-
+	SetBattleEvent();
 
 }
 void AMonster::SetNormalState()
@@ -1197,6 +1197,7 @@ void AMonster::SetSupportState()
 
 
 	CurState = EMonsterState::Support;
+	SetSupportEvent();
 }
 
 void AMonster::DropShieldPoint()
@@ -1291,7 +1292,7 @@ void AMonster::PostInitializeComponents()
 	//사운드 세팅
 	SoundInstance = NewObject<UMonsterSoundInstance>(this);
 	SoundInstance->Init();
-	MonsterShield->InitShield(ShieldCollision, ShiledEffectComponent, ShiledCrackEffectComponent, ShiledHitEffectComponent);
+	MonsterShield->InitShield(IsNonShield,ShieldCollision, ShiledEffectComponent, ShiledCrackEffectComponent, ShiledHitEffectComponent);
 	MonsterAIController = Cast<AMonsterAIController>(GetController());
 }
 
@@ -1412,7 +1413,7 @@ void AMonster::Tick(float DeltaTime)
 
 
 
-	if (GetIsMonsterShieldActive())
+	if (GetIsMonsterShieldActive() && !IsNonShield)
 	{
 		auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 		float Distance = GetDistanceTo(STGameInstance->GetPlayer());
@@ -1588,19 +1589,22 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 								
-				if (GetIsMonsterShieldActive()){
+				if (GetIsMonsterShieldActive()&& IsNonShield==false){
 
 					MonsterShield->CalcDurability(DamageAmount);
 				    OnBarrierChanged.Broadcast();
 					CalcHp(CalcNormalAttackDamage(DamageAmount));	
-					if (MonsterShield->GetShieldAcitve())
+					if (MonsterShield->GetShieldAcitve()&&IsNonShield==false)
 					{
 						SoundInstance->PlayShieldHitSound(GetCapsuleComponent()->GetComponentTransform());
 						Player->PlayerKnockBack(Player->GetActorLocation() - GetActorLocation(), MonsterShield->GetKnockBackDistance());
 					}
 					else {
-						ShieldDestroyed();
-						SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+
+						if (!IsNonShield) {
+							ShieldDestroyed();
+							SoundInstance->PlayShieldDestroySound(GetCapsuleComponent()->GetComponentTransform());
+						}
 					}
 				}
 				else {
@@ -1610,7 +1614,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 			
 			InitAttackedInfo();
 
-			if (MonsterAIController->GetIsAttacking() == false && GetIsMonsterShieldActive() == false&& !MonsterAIController->GetIsGorggy()) {
+			if (MonsterAIController->GetIsAttacking() == false && (GetIsMonsterShieldActive() == false||IsNonShield) && !MonsterAIController->GetIsGorggy()) {
 				if (bIsDodgeOn)
 				{
 					PerfectDodgeOff();

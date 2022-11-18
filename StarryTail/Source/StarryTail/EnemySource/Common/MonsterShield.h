@@ -57,6 +57,8 @@ private:
 	float CrackTime;
 	bool bIsCrackOn;
 	int MaxStackCount;
+
+	bool IsNonShield;
 public:
 	// Sets default values for this component's properties
 	UMonsterShield();
@@ -85,7 +87,7 @@ public:
 
 
 	
-	void InitShield(UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
+	void InitShield(bool bIsNonShield,UCapsuleComponent* ShieldCollision, UParticleSystemComponent* ShiledEffect,
 		UParticleSystemComponent* ShiledCrackEffect, UParticleSystemComponent* ShiledHitEffect);
 	
 	void CalcStackDamageToShield(int Count);

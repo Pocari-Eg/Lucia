@@ -47,26 +47,36 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	
-	if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == false)
-	{
-		PlayerFollowTimer += DeltaSeconds;
-		if (PlayerFollowTimer >= PlayerFollowTime)
-		{
-			PlayerFollowTimer = 0.0f;
+	//
+	//if (OwnerComp.GetBlackboardComponent()->GetValueAsBool(AMonsterAIController::IsFindKey) == false)
+	//{
+	//	PlayerFollowTimer += DeltaSeconds;
+	//	if (PlayerFollowTimer >= PlayerFollowTime)
+	//	{
+	//		PlayerFollowTimer = 0.0f;
 
-			Monster->GetAIController()->StopMovement();
-			OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-		}
+	//		Monster->GetAIController()->StopMovement();
+	//		OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::B_IdleKey, true);
+	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+	//	}
+	//}
+	//else {
+	//	PlayerFollowTimer = 0.0f;
+	//}
+	float distance = Monster->GetDistanceTo(Player);
+	if (distance > Monster->GetAttack3Range().M_Atk_Radius)
+	{
+		Monster->MoveToPlayer(DeltaSeconds);
 	}
 	else {
-		PlayerFollowTimer = 0.0f;
+
+		Monster->RotationPlayer(DeltaSeconds);
+		//FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 	}
 
-	Monster->MoveToPlayer(DeltaSeconds);
 
-	if (Monster->GetMonsterAtkType() == 2) {
+
+	/*if (Monster->GetMonsterAtkType() == 2) {
 		if (AttackTimer += DeltaSeconds)
 		{
 			if (AttackTimer >= AttackTime)
@@ -96,7 +106,7 @@ void UBTTaskMobMoveToPlayer::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* 
 			}
 		}
 	}
-	
+	*/
 
 
 

@@ -579,17 +579,19 @@ void ABellyfish::Tick(float DeltaTime)
 			SkillSetTimer += DeltaTime;
 			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 			Ratio = (Ratio * 0.5);
+			if(MagicAttack!=nullptr)
 			MagicAttack->PlayIndicator(Ratio);
 			if (SkillSetTimer >= Info.DodgeTime&& SkillSetTimer< MonsterInfo.M_Skill_Set_Time)
 			{
 				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-			
-				if(MagicAttack->GetInPlayer() == true)
-				{
-				PerfectDodgeOn();
-				}
-				else {
-					PerfectDodgeOff();
+				if (MagicAttack != nullptr) {
+					if (MagicAttack->GetInPlayer() == true)
+					{
+						PerfectDodgeOn();
+					}
+					else {
+						PerfectDodgeOff();
+					}
 				}
 				
 			}

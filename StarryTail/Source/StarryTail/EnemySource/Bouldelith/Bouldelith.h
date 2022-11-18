@@ -104,6 +104,8 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Particle, Meta = (AllowPrivateAccess = true))
 	UParticleSystemComponent* StateChangeParticle;
 
+
+
 	ABouldelithPatrolTarget* UsePatrol;
 	UBdAnimInstance* BdAnimInstance;
 
