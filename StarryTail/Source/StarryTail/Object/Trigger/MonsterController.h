@@ -13,6 +13,7 @@ class STARRYTAIL_API AMonsterController : public AActor
 	GENERATED_BODY()
 
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = INFO, Meta = (AllowPrivateAccess = true))
 	TArray<class AMonster*> CurWaveMonster;
 	
 	class AMonster* CurBattleMonster;
