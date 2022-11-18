@@ -1071,6 +1071,7 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 }
 void AMonster::Attacked()
 {
+
 	MonsterAIController->Attacked();
 	MonsterAIController->OffAttack(-1);
 
@@ -1584,6 +1585,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 					}
 				}
 				else {
+					if(CurState!= EMonsterState::Battle)
 					SetBattleState();
 				}
 
