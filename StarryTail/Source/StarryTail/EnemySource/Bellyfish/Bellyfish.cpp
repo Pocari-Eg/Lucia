@@ -166,8 +166,9 @@ void ABellyfish::Skill_Setting()
 	Magic_CircleComponent->SetActive(true);
 	Magic_CircleComponent->SetVisibility(true);
 	MagicAttack = GetWorld()->SpawnActor<ABF_MagicAttack>(MagicAttackClass, Info.AttackPosition, FRotator::ZeroRotator);
-	MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius,MonsterInfo.M_Skill_Atk);
-
+	if (MagicAttack != nullptr) {
+		MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius, MonsterInfo.M_Skill_Atk);
+	}
 
 }
 
@@ -193,18 +194,23 @@ void ABellyfish::Skill_Attack()
 {
 	
 	//BellyfishAnimInstance->PlayAttackLoopMontage();
-	IsSkillAttack = true;
-	MagicAttack->EndIndicator();
-	MagicAttack->SetActiveAttack();
 
+	IsSkillAttack = true;
+	if (MagicAttack != nullptr) {
+		MagicAttack->EndIndicator();
+		MagicAttack->SetActiveAttack();
+
+	}
+	else {
+		Skill_AttackEnd();
+	}
 }
 
 void ABellyfish::Skill_AttackEnd()
 {
 	IsSkillAttack = false;
 	SkillAttackTimer = 0.0f;
-	MagicAttack->Destroy();
-	MagicAttack = nullptr;
+	DestroyMagicAttack();
 	AttackEnd.Broadcast();
 }
 
@@ -301,8 +307,17 @@ void ABellyfish::RushEndFunc()
 void ABellyfish::DestroyMagicAttack()
 {
 	if (MagicAttack != nullptr) {
+		IsSkillSet = false;
+		IsSkillAttack = false;
+		SkillAttackTimer = 0.0f;
+		SkillSetTimer = 0.0;
+
+		Magic_CircleComponent->SetActive(false);
+		Magic_CircleComponent->SetVisibility(false);
 		MagicAttack->Destroy();
 		MagicAttack = nullptr;
+
+		AttackEnd.Broadcast();
 	}
 }
 
