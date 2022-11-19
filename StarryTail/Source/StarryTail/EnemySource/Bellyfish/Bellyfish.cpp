@@ -169,6 +169,9 @@ void ABellyfish::Skill_Setting()
 	if (MagicAttack != nullptr) {
 		MagicAttack->SetMagicAttack(MonsterInfo.M_Skill_Radius, MonsterInfo.M_Skill_Atk);
 	}
+	else {
+		DestroyMagicAttack();
+	}
 
 }
 
@@ -208,10 +211,8 @@ void ABellyfish::Skill_Attack()
 
 void ABellyfish::Skill_AttackEnd()
 {
-	IsSkillAttack = false;
-	SkillAttackTimer = 0.0f;
+
 	DestroyMagicAttack();
-	AttackEnd.Broadcast();
 }
 
 bool ABellyfish::IntersectionCheck()
@@ -594,26 +595,33 @@ void ABellyfish::Tick(float DeltaTime)
 			SkillSetTimer += DeltaTime;
 			float Ratio = SkillSetTimer < KINDA_SMALL_NUMBER ? 0.0f : SkillSetTimer / MonsterInfo.M_Skill_Set_Time;
 			Ratio = (Ratio * 0.5);
-			if(MagicAttack!=nullptr)
-			MagicAttack->PlayIndicator(Ratio);
-			if (SkillSetTimer >= Info.DodgeTime&& SkillSetTimer< MonsterInfo.M_Skill_Set_Time)
-			{
-				auto Instance = Cast<USTGameInstance>(GetGameInstance());
-				if (MagicAttack != nullptr) {
-					if (MagicAttack->GetInPlayer() == true)
-					{
-						PerfectDodgeOn();
+			if (MagicAttack != nullptr) {
+				MagicAttack->PlayIndicator(Ratio);
+				if (SkillSetTimer >= Info.DodgeTime && SkillSetTimer < MonsterInfo.M_Skill_Set_Time)
+				{
+					auto Instance = Cast<USTGameInstance>(GetGameInstance());
+					if (MagicAttack != nullptr) {
+						if (MagicAttack->GetInPlayer() == true)
+						{
+							PerfectDodgeOn();
+						}
+						else {
+							PerfectDodgeOff();
+						}
 					}
 					else {
-						PerfectDodgeOff();
+						DestroyMagicAttack();
 					}
+
 				}
-				
+				if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
+				{
+					PerfectDodgeOff();
+					Skill_Set();
+				}
 			}
-			if (SkillSetTimer >= MonsterInfo.M_Skill_Set_Time)
-			{
-				PerfectDodgeOff();
-				Skill_Set();
+			else {
+				DestroyMagicAttack();
 			}
 		}
 		if (IsSkillAttack)
