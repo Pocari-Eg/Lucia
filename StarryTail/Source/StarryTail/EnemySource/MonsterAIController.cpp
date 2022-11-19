@@ -215,6 +215,7 @@ void AMonsterAIController::SetBattleMonster(AActor* Monster)
 	Blackboard->SetValueAsObject(BattleMonsterKey, Monster);
 }
 
+
 void AMonsterAIController::InitBattleMonster()
 {
 	Blackboard->SetValueAsObject(BattleMonsterKey, nullptr);

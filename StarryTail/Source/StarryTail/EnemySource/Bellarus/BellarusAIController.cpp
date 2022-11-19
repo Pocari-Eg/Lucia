@@ -50,7 +50,8 @@ void ABellarusAIController::Attacked()
 {
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
-
+	Blackboard->SetValueAsBool(IsAttackingKey,false);
+	Blackboard->SetValueAsBool(IsAttackCoolKey, false);
 }
 
 void ABellarusAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)

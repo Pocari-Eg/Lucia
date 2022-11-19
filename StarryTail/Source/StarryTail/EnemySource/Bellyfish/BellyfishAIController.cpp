@@ -36,7 +36,10 @@ void ABellyfishAIController::Attacked()
 {
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
-
+	Blackboard->SetValueAsBool(IsAttackingKey, false);
+	Blackboard->SetValueAsBool(IsAttackCoolKey, false);
+	auto Bellyfish = Cast<ABellyfish>(GetPawn());
+	Bellyfish->DestroyMagicAttack();
 }
 
 void ABellyfishAIController::Attacked(EAttackedDirection AttackedDirection, EAttackedPower AttackedPower, bool bIsPlayerUseMana, bool bIsKnockback)

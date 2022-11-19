@@ -32,10 +32,10 @@ ABdAIController::ABdAIController()
 }
 void ABdAIController::Attacked()
 {
-	SetPlayer();
+	/*SetPlayer();
 
-	SetStatueKey(false);
-	
+	SetStatueKey(false);	Blackboard->SetValueAsBool(IsAttackingKey,false);
+	Blackboard->SetValueAsBool(IsAttackCoolKey, false);
 	auto Bouldelith = Cast<ABouldelith>(GetPawn());
 
 	Bouldelith->GetBouldelithAnimInstance()->SetbIsState(false);
@@ -46,11 +46,14 @@ void ABdAIController::Attacked()
 		return;
 
 	if (Bouldelith->GetBouldelithAnimInstance()->GetBattleRunIsPlaying())
-		Bouldelith->SetIsChangeBattleRunStateToAttackedState(true);
+		Bouldelith->SetIsChangeBattleRunStateToAttackedState(true);*/
 
 	Blackboard->SetValueAsBool(IsAttackedKey, true);
 
-	Bouldelith->GetBouldelithAnimInstance()->PlayAttackedMontage();
+	//Bouldelith->GetBouldelithAnimInstance()->PlayAttackedMontage();
+
+	Blackboard->SetValueAsBool(IsAttackingKey, false);
+	Blackboard->SetValueAsBool(IsAttackCoolKey, false);
 }
 void ABdAIController::Broken()
 {
