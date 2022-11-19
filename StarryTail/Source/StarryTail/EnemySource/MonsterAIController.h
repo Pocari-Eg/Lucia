@@ -47,7 +47,7 @@ public:
 	void OnAttack(int i);
 	void OffAttack(int i);
 	void SetBackStepKey(bool State);
-	void SetStatueKey(bool state);
+	void SetStatueKey(bool State);
     void SetBattleMonster(AActor* Monster);
 	void InitBattleMonster();
 

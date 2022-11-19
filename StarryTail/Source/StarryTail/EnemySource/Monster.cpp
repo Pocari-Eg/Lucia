@@ -1072,6 +1072,10 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 void AMonster::Attacked()
 {
 
+
+	AttackCoolTimer = 0.0f;
+	SetIsAttackCool(false);
+	bIsAttacking = false;
 	MonsterAIController->Attacked();
 	MonsterAIController->OffAttack(-1);
 
