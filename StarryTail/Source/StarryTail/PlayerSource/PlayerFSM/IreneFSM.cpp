@@ -499,7 +499,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		// 	}
 		// 	CurState->Irene->IreneInput->SetIsDodgeToDodge(true);
 		// }
-		if (CurState->PlayTime >= 0.41f)
+		if (CurState->PlayTime >= 0.43f)
 		{
 			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
 		}

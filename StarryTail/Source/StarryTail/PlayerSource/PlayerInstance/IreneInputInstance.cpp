@@ -681,8 +681,7 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->bInputStop = false;
 	}
 	
-	if ((!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() &&
-		Irene->IreneState->GetStateToString().Compare(FString("Dodge_Start"))!=0 &&
+	if ((!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() && !Irene->IreneState->IsDodgeState() &&
 		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) || bIsDodgeToDodge) &&
 		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun && Irene->IreneAnim->GetDodgeDir() != 10)
 	{
