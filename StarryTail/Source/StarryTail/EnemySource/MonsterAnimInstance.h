@@ -35,6 +35,7 @@ public:
 	virtual void PlayGroggyMontage();
 	virtual void PlayDeathMontage() {};
 	virtual void PlayWalktoTraceMontage();
+	virtual void PlayStatueMontage() {};
 
 	bool GetBattleIdleIsPlaying();
 	virtual bool GetAttackIsPlaying() { return true;  };

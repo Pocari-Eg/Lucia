@@ -61,7 +61,7 @@ public:
 	bool GetIsGorggy();
 	bool GetIsShieldOn();
 	bool GetIsBattleState();
-
+	bool GetIsStatueKey();
 	bool GetIsInBattleRange();
 	bool GetIsInSupportRange();
 	FVector GetSpawnPos();

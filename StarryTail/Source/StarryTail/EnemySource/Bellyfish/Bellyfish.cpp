@@ -378,7 +378,10 @@ void ABellyfish::BeginPlay()
 	SoundInstance->SetHitSound("event:/Lucia/Enemy/SFX_Hit");
 
 	ProjectileFirePos->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, FireSocketName);
-
+	if (GetAIController()->GetIsStatueKey())
+	{
+		BellyfishAnimInstance->PlayStatueMontage();
+	}
 }
 
 void ABellyfish::PossessedBy(AController* NewController)
