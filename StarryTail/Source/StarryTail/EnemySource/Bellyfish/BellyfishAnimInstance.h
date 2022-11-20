@@ -31,7 +31,7 @@ public:
 	void PlayRushMontage();
 	void PlayFireMontage();
 	bool GetAttackIsPlaying() override;
-
+	void PlayStatueMontage() override;
 
 //Montage
 public:
