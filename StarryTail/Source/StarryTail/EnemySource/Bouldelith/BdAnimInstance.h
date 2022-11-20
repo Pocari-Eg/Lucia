@@ -51,6 +51,7 @@ public:
 	void PlayIdleMontage() override;
 	void PlayDeathMontage() override;
 	void PlayDetectMontage() override;
+	void PlayStatueMontage() override;
 
 	FAttackDelegate Attack1;
 	FAttackDelegate Attack2;

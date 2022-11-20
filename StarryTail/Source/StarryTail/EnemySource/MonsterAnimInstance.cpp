@@ -46,6 +46,7 @@ void UMonsterAnimInstance::PlayWalktoTraceMontage()
 		Montage_Play(WalkToTraceMontage, PlayRate);
 	}
 }
+
 #pragma endregion
 bool UMonsterAnimInstance::GetBattleIdleIsPlaying()
 {

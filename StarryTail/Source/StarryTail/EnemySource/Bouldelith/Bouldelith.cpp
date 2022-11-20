@@ -1066,6 +1066,11 @@ void ABouldelith::BeginPlay()
 			BdAIController->SetWalkPoint(WalkPoint->GetActorLocation());
 	}
 
+	if (GetAIController()->GetIsStatueKey())
+	{
+		BdAnimInstance->PlayStatueMontage();
+	}
+
 	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
 
 }

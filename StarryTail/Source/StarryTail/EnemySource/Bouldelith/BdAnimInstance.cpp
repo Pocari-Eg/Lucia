@@ -7,6 +7,10 @@ void UBdAnimInstance::PlayDetectMontage()
 {
 	Montage_Play(DetectMontage, 1.0f);
 }
+void UBdAnimInstance::PlayStatueMontage()
+{
+	Montage_Play(IdleMontage2, 0.0f);
+}
 void UBdAnimInstance::PlayDeathMontage()
 {
 	Montage_Play(DeathMontage, 1.0f);

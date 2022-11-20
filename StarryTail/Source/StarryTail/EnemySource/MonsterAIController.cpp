@@ -263,6 +263,11 @@ bool AMonsterAIController::GetIsBattleState()
 	return  Blackboard->GetValueAsBool(BattleStateKey);
 }
 
+bool AMonsterAIController::GetIsStatueKey()
+{
+	return Blackboard->GetValueAsBool(IsStatueStateKey);
+}
+
 bool AMonsterAIController::GetIsInBattleRange()
 {
 	return Blackboard->GetValueAsBool(IsInBattleRangeKey);

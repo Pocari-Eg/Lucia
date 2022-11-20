@@ -82,6 +82,11 @@ bool UBellyfishAnimInstance::GetAttackIsPlaying()
 	return (Montage_IsPlaying(AttackMontage));
 }
 
+void UBellyfishAnimInstance::PlayStatueMontage()
+{
+	Montage_Play(IdleMontage,0.0f);
+}
+
 void UBellyfishAnimInstance::JumeToRushEnd()
 {
 		Montage_JumpToSection("End");
