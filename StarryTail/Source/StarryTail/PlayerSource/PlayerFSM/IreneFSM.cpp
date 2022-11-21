@@ -370,25 +370,27 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 	}
 	// w,a,s,d -> 0,1,2,3
 	//대각선이면
-	if ((ChangeMoveKey[0] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)) || (ChangeMoveKey[2] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)))
-	{
-		if ((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+	if(!CurState->Irene->bIsSpiritStance){
+		if ((ChangeMoveKey[0] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)) || (ChangeMoveKey[2] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)))
 		{
-			CurState->ThrowState(USprintEndState::GetInstance());
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			if ((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+			{
+				CurState->ThrowState(USprintEndState::GetInstance());
+				CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			}
 		}
-	}
-	else
-	{
-		if ((ChangeMoveKey[0] != 0 && MoveKey[2] != 0) || (ChangeMoveKey[2] != 0 && MoveKey[0] != 0))
+		else
 		{
-			CurState->ThrowState(USprintEndState::GetInstance());
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
-		}
-		if ((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
-		{
-			CurState->ThrowState(USprintEndState::GetInstance());
-			CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			if ((ChangeMoveKey[0] != 0 && MoveKey[2] != 0) || (ChangeMoveKey[2] != 0 && MoveKey[0] != 0))
+			{
+				CurState->ThrowState(USprintEndState::GetInstance());
+				CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			}
+			if ((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
+			{
+				CurState->ThrowState(USprintEndState::GetInstance());
+				CurState->Irene->ChangeStateAndLog(URunLoopState::GetInstance());
+			}
 		}
 	}
 }
@@ -499,7 +501,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		// 	}
 		// 	CurState->Irene->IreneInput->SetIsDodgeToDodge(true);
 		// }
-		if (CurState->PlayTime >= 0.43f)
+		if (CurState->PlayTime >= 0.42f)
 		{
 			CurState->Irene->ChangeStateAndLog(UDodgeEndState::GetInstance());
 		}
