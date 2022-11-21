@@ -61,10 +61,11 @@ public:
 	UFUNCTION(BluePrintCallable)
 	FVector GetCurrnetLocation() { return CurrnetLoaction; }
 
-	UFUNCTION(BluePrintCallable)
-		void SetFirstTime(const bool value) { bIsFirstTime = value; }
-	UFUNCTION(BluePrintCallable)
-		bool GetFirstTime() { return bIsFirstTime; }
+	bool GetIsPlaying() { return bIsPlaying; }
+	void SetIsPlaying(bool state) {
+		bIsPlaying = state
+			;
+	}
 protected:
 	virtual void Init()override;
 
@@ -84,7 +85,7 @@ private:
 	FVector CurrnetLoaction;
 	FTransform SpawnTransform;
 	
-	bool bIsFirstTime;
+	bool bIsPlaying;
 #pragma region MonsterSpawn
 
 public:

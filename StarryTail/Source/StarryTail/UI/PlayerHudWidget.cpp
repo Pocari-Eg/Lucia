@@ -160,6 +160,12 @@ void UPlayerHudWidget::SetTutorial(FString Num)
 	TutorialWidget->PlayTutorial(Num);
 }
 
+void UPlayerHudWidget::PlayTutorial()
+{
+	if(TutorialWidget!=nullptr)
+		TutorialWidget->tryPlay(EPlayTutorial::Move);
+}
+
 
 void UPlayerHudWidget::StageNamePlay(FText Text)
 {

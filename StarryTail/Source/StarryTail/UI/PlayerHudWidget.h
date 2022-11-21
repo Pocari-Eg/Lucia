@@ -85,6 +85,8 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	void SetTutorial(FString Num);
+
+	void PlayTutorial();
 private:
 
 	void UpdateHp();
