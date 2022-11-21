@@ -2,12 +2,21 @@
 
 
 #include "TutorialWidget.h"
+#include "../STGameInstance.h"
 
 void UTutorialWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	tryPlay(EPlayTutorial::Move);
+	auto Instnace = Cast<USTGameInstance>(GetGameInstance());
+	if (Instnace != nullptr)
+	{
+		if (!Instnace->GetIsPlaying())
+		{
+			tryPlay(EPlayTutorial::Move);
+		}
+	}
+
 }
 
 void UTutorialWidget::PlayTutorial(FString Num)
