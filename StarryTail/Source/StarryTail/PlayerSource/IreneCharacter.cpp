@@ -254,6 +254,14 @@ void AIreneCharacter::BeginPlay()
 	IreneInput->Begin();
 	
 	InitComplete();
+	auto Instnace = Cast<USTGameInstance>(GetGameInstance());
+	if (Instnace != nullptr)
+	{
+	   if(!Instnace->GetIsPlaying())
+	   {
+		   Instnace->SetIsPlaying(true);
+	   }
+	}
 }
 
 void AIreneCharacter::PostInitializeComponents()
