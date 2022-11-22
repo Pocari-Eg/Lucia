@@ -485,13 +485,12 @@ void UIreneInputInstance::RightButton(float Rate)
 						const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 						Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
 					}
-					const FVector SpawnLocation = Irene->GetActorLocation() + (Irene->GetActorForwardVector() * 100);
-					Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, SpawnLocation, Irene->GetActorRotation());
+					Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
 					if(Irene->IreneSpirit == nullptr)
 					{
-						Irene->IreneSpirit = GetWorld()->SpawnActor<AIreneSpirit>(Irene->IreneSpiritOrigin, Irene->GetActorLocation(), Irene->GetActorRotation());
-						if(Irene->IreneSpirit == nullptr)
-							return;
+						STARRYLOG_S(Warning);
+						STARRYLOG_S(Error);
+						return;
 					}
 				}
 			}

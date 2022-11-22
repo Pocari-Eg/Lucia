@@ -100,32 +100,32 @@ void AIreneSpirit::DestroySpirit()
 void AIreneSpirit::AttackCheck()
 {
 	// 노티파이 AttackHitCheck 도달 시 실행
-	TArray<FHitResult> MonsterList;
-	bool bResult = false;
-
-	const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
-	Irene->IreneAttack->SetStackCount(AttackTable->Stack_Count);
-	const FVector BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
-		
-	const FCollisionQueryParams Params(NAME_None, false, Irene);
-	bResult = GetWorld()->SweepMultiByChannel(
-	MonsterList,
-	GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
-	FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
-	ECollisionChannel::ECC_GameTraceChannel1,
-	FCollisionShape::MakeBox(BoxSize),
-	Params);
-	
-	// 그리기 시작
-	#if ENABLE_DRAW_DEBUG
-	const FVector TraceVec = GetActorForwardVector();
-	const FVector Center = GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
-	const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-	const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-	constexpr float DebugLifeTime = 5.0f;
-	DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
-	#endif
-	
-	Irene->IreneAttack->SendDamage(bResult, MonsterList);
+	// TArray<FHitResult> MonsterList;
+	// bool bResult = false;
+	//
+	// const TUniquePtr<FAttackDataTable> AttackTable = MakeUnique<FAttackDataTable>(*Irene->IreneAttack->GetNameAtAttackDataTable(Irene->IreneAttack->GetBasicAttackDataTableName()));
+	// Irene->IreneAttack->SetStackCount(AttackTable->Stack_Count);
+	// const FVector BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
+	// 	
+	// const FCollisionQueryParams Params(NAME_None, false, Irene);
+	// bResult = GetWorld()->SweepMultiByChannel(
+	// MonsterList,
+	// GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	// GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f)),
+	// FRotationMatrix::MakeFromZ(GetActorForwardVector()).ToQuat(),
+	// ECollisionChannel::ECC_GameTraceChannel1,
+	// FCollisionShape::MakeBox(BoxSize),
+	// Params);
+	//
+	// // 그리기 시작
+	// #if ENABLE_DRAW_DEBUG
+	// const FVector TraceVec = GetActorForwardVector();
+	// const FVector Center = GetActorLocation() + (GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
+	// const FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
+	// const FColor DrawColor = bResult ? FColor::Green : FColor::Red;
+	// constexpr float DebugLifeTime = 5.0f;
+	// DrawDebugBox(GetWorld(), Center, BoxSize, CapsuleRot, DrawColor, false, DebugLifeTime);
+	// #endif
+	//
+	// Irene->IreneAttack->SendDamage(bResult, MonsterList);
 }
