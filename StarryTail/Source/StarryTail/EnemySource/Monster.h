@@ -46,11 +46,11 @@ public:
 
 	AMonsterAIController* GetAIController() const;
 
-	//현재 체력 비율 전환
+	//???? ??? ???? ???
 	float GetHpRatio();
-	//현재 방어막 비율 전환
+	//???? ??? ???? ???
 	float GetDefRatio();
-	//속성변환 델리게이트
+	//?????? ?????????
 	void ChangeAttributeDelegate();
 
 	void PlayIdleAnim();
@@ -94,12 +94,12 @@ public:
 	void StackWidgetOn();
 	void StackWidgetOff();
 
-	//스폰 생성 몬스터 설정
+	//???? ???? ???? ????
 	void SetSpawnEnemy();
 	EEnemyRank GetRank();
 
 
-	//GroupTrigger 몬스터 설정
+	//GroupTrigger ???? ????
 	void SetGroup();
 	void SetStatue(bool state);
 
@@ -180,13 +180,13 @@ protected:
 	FName ShieldSocketName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Info, Meta = (AllowPrivateAccess = true))
 	bool IsNonShield;
-	//박찬영 UI
+	//?????? UI
 	UPROPERTY(VisibleAnywhere, Category = UI)
 		class UWidgetComponent* MonsterWidget;
-	//박찬영 UI
+	//?????? UI
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly, Category = UI)
 	class UWidgetComponent* StackWidget;
-	//사운드
+	//????
 	UPROPERTY(BluePrintReadOnly)
 	class UMonsterSoundInstance* SoundInstance;
 	UPROPERTY()
@@ -267,7 +267,7 @@ private:
 	bool bShowUI;
 	bool bIsBattleState;
 
-	//스폰 으로 생성된 몬스터인지;
+	//???? ???? ?????? ????????;
 	bool bIsSpawnEnemy;
 	bool bIsAttackCool;
 	//
@@ -351,6 +351,7 @@ public:
 	void  OnStackCountEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void  ExplodeStackEvent();
+	UFUNCTION(BlueprintCallable)
 	void AddStackCount(int Count);
 	void StackExplode();
 	UFUNCTION(BlueprintCallable)
