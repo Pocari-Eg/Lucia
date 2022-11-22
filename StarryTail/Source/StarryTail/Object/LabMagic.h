@@ -10,6 +10,7 @@
 #include "../PlayerSource/PlayerInstance/IreneInputInstance.h"
 #include "../STGameInstance.h"
 #include"SpiritPlate.h"
+#include "../Sound/SoundManager.h"
 #include "LabMagic.generated.h"
 
 UCLASS()
@@ -88,6 +89,18 @@ private:
 	ASpiritPlate* CurPlate;
 
 	FVector InitLocation;
+
+
+	//sound
+	class UFMODEvent* ShockWaveEvent;
+	class UFMODEvent* SignwaitEvent;
+	class UFMODEvent* WaitEvent;
+	class UFMODEvent* ExplosionEvent;
+
+	SoundManager* ShockWaveSound;
+	SoundManager* SignwaitSound;
+	SoundManager* WaitSound;
+	SoundManager* ExplosionSound;
 public:	
 	// Sets default values for this actor's properties
 	ALabMagic();
