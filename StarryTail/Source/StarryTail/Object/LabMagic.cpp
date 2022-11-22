@@ -68,10 +68,19 @@ ALabMagic::ALabMagic()
 	MagicAOECollision->SetCapsuleHalfHeight(1.0f);
 	MagicAOECollision->SetCapsuleRadius(1.0f);
 
+
+
+	ShockWaveEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Object/LabMagic/SFX_LabMagic_Shockwave");
+	SignwaitEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Object/LabMagic/SFX_LabMagic_Signwait");
+	WaitEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Object/LabMagic/SFX_LabMagic_Wait");
+	ExplosionEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Object/LabMagic/SFX_LabMagic_Explosion");
 }
 void ALabMagic::StartExplosionSignWait()
 {
+	SignwaitSound->SoundPlay3D(GetTransform());
 	bIsExplosion_SignWait_Timer = true;
+	STARRYLOG_S(Error);
+
 }
 
 void ALabMagic::ExplosionSign()
@@ -84,6 +93,9 @@ void ALabMagic::ExplosionSign()
 		ExplosionSignEffectComponent->SetActive(true, true);
 		bIsExplosion_Wait_Timer = true;
 
+
+		SignwaitSound->SoundStop();
+		WaitSound->SoundPlay3D(GetTransform());
 		//정령 발판 생성 및 정령 움직이기 
 
 		int Size = Use_SpiritPlates.Num();
@@ -109,12 +121,16 @@ void ALabMagic::StartExplosion()
 	bIsExplosion_Wait_Timer = false;
 	Explosion_Wait_Timer = 0.0f;
 
+	WaitSound->SoundStop();
+	ExplosionSound->SoundPlay3D(GetTransform());
+
 	ExplosionSignEffectComponent->Deactivate();
 
 	MagicAOECollision->SetGenerateOverlapEvents(true);
 	bIsExplosion_Timer = true;
 	ExplosionEffectComponent->SetActive(true, true);
 	ShockEffectComponent->SetActive(true, true);
+	ShockWaveSound->SoundPlay2D();
 }
 
 void ALabMagic::EndExplosion()
@@ -123,6 +139,8 @@ void ALabMagic::EndExplosion()
 	bIsExplosion_Timer = false;
 	AOEInActor.Empty();
 	Explosion_Timer = 0.0f;
+	ShockWaveSound->SoundStop();
+	ExplosionSound->SoundStop();
 	if (CurPlate != nullptr)
 	{
 		
@@ -230,6 +248,17 @@ void ALabMagic::BeginPlay()
 	}
 	InitLocation = MagicAOECollision->GetRelativeLocation();
 	Use_SpiritPlates = SpiritPlates;
+
+	ShockWaveSound = new SoundManager(ShockWaveEvent, GetWorld());
+	SignwaitSound = new SoundManager(SignwaitEvent, GetWorld());
+	WaitSound = new SoundManager(WaitEvent, GetWorld());
+	ExplosionSound = new SoundManager(ExplosionEvent, GetWorld());
+
+
+	ShockWaveSound->SetVolume(1.0f);
+	 SignwaitSound->SetVolume(1.0f);
+	 WaitSound->SetVolume(1.0f);
+	 ExplosionSound->SetVolume(1.0f);
 }
 
 void ALabMagic::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
