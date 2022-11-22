@@ -191,7 +191,7 @@ void ASwirl::Tick(float DeltaTime)
 	}
 	if (bIsOnCorePull)
 	{
-		if (Irene != nullptr)
+		if (Irene != nullptr&&!Irene->IreneState->IsDeathState())
 		{
 			float CurDistance = GetDistanceTo(Irene);
 			float CurPullPower = CalcCurPullPower(CurDistance);
