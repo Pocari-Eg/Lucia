@@ -221,6 +221,18 @@ void UIreneAnimInstance::AnimNotify_SkillSound() const
 	Irene->IreneSound->PlaySkillVoiceSound();
 }
 
+void UIreneAnimInstance::AnimNotify_StackBreakMove() const
+{
+
+	Irene->IreneSound->PlayStackBreakMove(Irene->GetTransform());
+}
+
+void UIreneAnimInstance::AnimNotify_StackBreakSlash() const
+{
+	STARRYLOG_S(Error);
+	Irene->IreneSound->PlayStackBreakSlash(Irene->GetTransform());
+}
+
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)
 {
 	return FName(*FString::Printf(TEXT("Attack%d"),Section));
