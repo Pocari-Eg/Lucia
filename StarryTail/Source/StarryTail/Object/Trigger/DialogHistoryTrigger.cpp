@@ -6,6 +6,7 @@
 #include "../../PlayerSource/IreneCharacter.h"
 #include "../../PlayerSource/PlayerInstance/IreneInputInstance.h"
 #include "../../UI/DialogHistoryWidget_D.h"
+#include "Components/CanvasPanel.h"
 #include "Components/BoxComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Engine/DataTable.h"
@@ -48,13 +49,21 @@ void ADialogHistoryTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 {
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene == nullptr) return;
-
-	Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 	
+	if (_condition == EConditions::PushInteraction)
+		Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
+
 	makeDialogue = CreateWidget<UDialogHistoryWidget_D>(GetWorld(), Dialogue_C);
 	makeDialogue->DialogueStart(ScriptData, FName(Start_), FName(End_));
 	makeDialogue->Owner = this;
 	makeDialogue->AddToViewport();
+
+	if (_condition == EConditions::RightAway)
+	{
+		makeDialogue->DialogueHistoryCanvas->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+		makeDialogue->CanNextTalk = true;
+		makeDialogue->nextTalk();
+	}
 }
 
 void ADialogHistoryTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)

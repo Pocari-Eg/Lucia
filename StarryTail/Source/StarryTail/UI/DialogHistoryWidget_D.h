@@ -6,9 +6,6 @@
 #include "Blueprint/UserWidget.h"
 #include "DialogHistoryWidget_D.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class STARRYTAIL_API UDialogHistoryWidget_D : public UUserWidget
 {
@@ -34,6 +31,9 @@ public:
 	class UImage* A_1;
 	UPROPERTY(EditAnyWhere)
 	class UImage* A_2;
+
+	UPROPERTY(EditAnyWhere, BlueprintReadWrite)
+	bool CanNextTalk;
 
 	class ADialogHistoryTrigger* Owner;
 

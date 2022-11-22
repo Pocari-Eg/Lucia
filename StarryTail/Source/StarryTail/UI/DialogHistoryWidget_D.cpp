@@ -58,6 +58,11 @@ void UDialogHistoryWidget_D::SettingWidgetAnimation()
 
 void UDialogHistoryWidget_D::nextTalk()
 {
+	if (!CanNextTalk) return;
+
+	auto Player = Cast<AIreneCharacter>(GetOwningPlayer()->GetPawn());
+	if (Player != nullptr) Player->bInputStop = true;
+
 	if (!dialogueArr.IsValidIndex(dialogueIndex))
 	{
 		if (Owner != nullptr)
@@ -65,6 +70,8 @@ void UDialogHistoryWidget_D::nextTalk()
 
 		RemoveFromParent();
 		RemoveFromViewport();
+
+		if (Player != nullptr) Player->bInputStop = false;
 
 		return;
 	}
