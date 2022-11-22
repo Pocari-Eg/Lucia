@@ -8,6 +8,12 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FEndPlaySequence);
 
+UENUM(BlueprintType)
+enum class EConditions : uint8
+{
+	RightAway, PushInteraction
+};
+
 UCLASS()
 class STARRYTAIL_API ADialogHistoryTrigger : public AActor
 {
@@ -26,6 +32,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FEndPlaySequence PlaySeq;
+
+	UPROPERTY(EditAnyWhere)
+	EConditions _condition;
 
 private:
 	UPROPERTY(EditAnyWhere)
