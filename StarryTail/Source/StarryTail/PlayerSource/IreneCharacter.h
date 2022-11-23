@@ -149,6 +149,8 @@ public:
 	void NormalStance();
 	UFUNCTION(BlueprintImplementableEvent)
 	void SpiritStance();
+	UFUNCTION(BlueprintImplementableEvent)
+	void SpiritStanceAttack();
 	
 	UFUNCTION(BlueprintImplementableEvent)
 	void LevelRestartEvent();

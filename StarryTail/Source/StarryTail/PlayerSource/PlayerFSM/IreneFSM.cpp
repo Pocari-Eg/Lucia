@@ -370,7 +370,8 @@ void USprintLoopState::Execute(IBaseGameEntity* CurState)
 	}
 	// w,a,s,d -> 0,1,2,3
 	//대각선이면
-	if(!CurState->Irene->bIsSpiritStance){
+	if(!CurState->Irene->bIsSpiritStance)
+	{
 		if ((ChangeMoveKey[0] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)) || (ChangeMoveKey[2] != 0 && (ChangeMoveKey[1] != 0 || ChangeMoveKey[3] != 0)))
 		{
 			if ((ChangeMoveKey[1] != 0 && MoveKey[3] != 0) || (ChangeMoveKey[3] != 0 && MoveKey[1] != 0))
@@ -771,6 +772,9 @@ void UBasicAttack1State::Enter(IBaseGameEntity* CurState)
 	{
 		CurState->Irene->IreneAnim->PlayAttackMontage();
 	}
+
+	if(CurState->Irene->bIsSpiritStance)
+		CurState->Irene->SpiritStanceAttack();
 	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
@@ -869,6 +873,9 @@ void UBasicAttack2State::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->WeaponVisible(true);
 	}
 	
+	if(CurState->Irene->bIsSpiritStance)
+		CurState->Irene->SpiritStanceAttack();
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -965,7 +972,10 @@ void UBasicAttack3State::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
-
+	
+	if(CurState->Irene->bIsSpiritStance)
+		CurState->Irene->SpiritStanceAttack();
+	
 	const FVector IrenePosition = CurState->Irene->GetActorLocation();
 	const float Z = UKismetMathLibrary::FindLookAtRotation(IrenePosition,IrenePosition + CurState->Irene->IreneInput->GetMoveKeyToDirVector()).Yaw;
 	CurState->Irene->SetActorRotation(FRotator(0.0f, Z, 0.0f));
@@ -1658,4 +1668,4 @@ bool UIreneFSM::IsKnockBackState() const
 		return true;
 	return false;
 }
-#pragma endregion  FindState
+#pragma endregion  FindSt
