@@ -141,6 +141,15 @@ public:
 private:
 	void CountStateTimer();
 	void ChangeState();
-	
 #pragma endregion DetectedMonster
+
+#pragma region BossMonster
+private:
+	AMonster* CurBossMonster;
+public:
+	void SetCurBossMonster(AMonster* Monster);
+	UFUNCTION(BlueprintCallAble)
+	void DeleteBossMonster() { CurBossMonster = nullptr;}
+	AMonster* GetBoss() { return CurBossMonster; }
+#pragma endregion RaidMonster
 };

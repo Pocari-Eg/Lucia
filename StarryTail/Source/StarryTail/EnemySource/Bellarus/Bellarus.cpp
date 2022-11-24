@@ -637,6 +637,12 @@ void ABellarus::BeginPlay()
 	SetBattleState();
 	Cast<ABellarusAIController>(GetAIController())->SetTraceTime(0.0f);
 
+
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+	if (instance != nullptr)
+	{
+		instance->SetCurBossMonster(this);
+	}
 }
 
 void ABellarus::PossessedBy(AController* NewController)
@@ -733,7 +739,7 @@ UBlSoundInstance* ABellarus::GetBlSound()
 }
 void ABellarus::InitMonsterInfo()
 {
-	MonsterInfo.Monster_Rank = EEnemyRank::e_Common;
+	MonsterInfo.Monster_Rank = EEnemyRank::e_Raid;
 
 
 	
@@ -779,6 +785,7 @@ void ABellarus::InitMonsterInfo()
 	GetCharacterMovement()->MaxWalkSpeed = MonsterInfo.M_MoveSpeed;
 
 	MonsterInfo.RotationRate = 0.025f;
+
 }
 
 void ABellarus::InitCollision()

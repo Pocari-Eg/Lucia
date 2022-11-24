@@ -282,6 +282,9 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	void HPFullRecovery();
+
+	UFUNCTION(BluePrintCallable)
+	void BossMonsterUIOn();
 #pragma endregion UIManager
 
 
