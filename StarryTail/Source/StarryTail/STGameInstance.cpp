@@ -213,6 +213,13 @@ void USTGameInstance::ChangeState()
 	CurStateTime = StateTime;
 }
 
+void USTGameInstance::SetCurBossMonster(AMonster* Monster)
+{
+	CurBossMonster = Monster;
+}
+
+
+
 FSoundSetting* USTGameInstance::GetSoundSetting()
 {
 	return &SoundSettingData;

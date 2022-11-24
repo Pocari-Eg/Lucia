@@ -11,18 +11,6 @@
  * 
  */
 
-USTRUCT()
-struct FAttributeIcon
-{
-	GENERATED_BODY()
-	//속성 관련 데이터
-	UPROPERTY()
-	class UImage* Standard;
-	UPROPERTY()
-	class UImage* Break;
-
-
-};
 UCLASS()
 class STARRYTAIL_API URaidMonsterWidget : public UUserWidget
 {
@@ -30,20 +18,12 @@ class STARRYTAIL_API URaidMonsterWidget : public UUserWidget
 public:
 
 	// Object 엑터를 바인드 할떄 사용 
-	void BindScientia(class AScientia* NewScientiaB);
+	void BindMonster(class AMonster* Monster);
 
 	void UpdateHp();
+	void UpdateShield();
 
 
-	void UpdateFireDef();
-	void UpdateWaterDef();
-	void UpdateThunderDef();
-	void UpdateAttribute();
-
-	void BreakAttributeBarrier();
-
-private:
-	bool CheckDefWidget();
 protected:
 	// 위젯을 초기화
 	virtual void NativeConstruct() override;
@@ -51,21 +31,14 @@ protected:
 private:
 
 	//현재 오브젝트
-	class AScientia* CurrentScientia;
+	class AMonster* CurrentBoss;
 
 	//위젯 안 HP Bar 데이터
 	UPROPERTY()
 		class UProgressBar* HPProgressBar;
 	UPROPERTY()
-		class UProgressBar* FireDefBar;
-	UPROPERTY()
-		class UProgressBar* WaterDefBar;
-	UPROPERTY()
-		class UProgressBar* ThunderDefBar;
+		class UProgressBar* ShieldBar;
 
-	FAttributeIcon Fire;
-	FAttributeIcon Water;
-	FAttributeIcon Thunder;
 
 
 
