@@ -906,6 +906,15 @@ void AIreneCharacter::HPFullRecovery()
 {
 	IreneUIManager->HpFullRecovery();
 }
+void AIreneCharacter::BossMonsterUIOn()
+{
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+	if (instance != nullptr)
+	{
+		IreneUIManager->PlayerHud->RaidMonsterBind(instance->GetBoss());
+	}
+
+}
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();

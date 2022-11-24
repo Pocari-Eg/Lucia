@@ -14,7 +14,6 @@ void UPlayerHudWidget::BindCharacter(class AIreneCharacter* NewIrene) {
 	//델리게이트를 통해 UpdateWidget함수가 호출될수 있도록 
 
 	NewIrene->IreneUIManager->OnHpChanged.AddUObject(this, &UPlayerHudWidget::UpdateHp);
-
 	NewIrene->IreneUIManager->OnSoulUpdate.AddUObject(this, &UPlayerHudWidget::UpdateSoulGauge);
 
 	/*NewIrene->IreneUIManager->OnFireSkillCoolChange.AddUObject(this, &UPlayerHudWidget::UpdateFireSkillCoolTime);
@@ -183,10 +182,12 @@ void UPlayerHudWidget::SetDialogState(EDialogState NewState)
 	DialogWidget->SetDialogState(NewState);
 }
 
-void UPlayerHudWidget::Scientiabind(AScientia* CurrentScientia)
+void UPlayerHudWidget::RaidMonsterBind(AMonster* RaidMonster)
 {
 	CurrentIrene->RaidBattleEvent();
-	RMWidget->BindScientia(CurrentScientia);
+	RMWidget->BindMonster(RaidMonster);
+	RMWidget->SetVisibility(ESlateVisibility::Visible);
+	STARRYLOG_S(Warning);
 }
 
 void UPlayerHudWidget::UpdateHp()

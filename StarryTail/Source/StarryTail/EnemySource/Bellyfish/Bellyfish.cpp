@@ -313,6 +313,7 @@ void ABellyfish::DestroyMagicAttack()
 		SkillAttackTimer = 0.0f;
 		SkillSetTimer = 0.0;
 
+		MagicAttack->EndIndicator();
 		Magic_CircleComponent->SetActive(false);
 		Magic_CircleComponent->SetVisibility(false);
 		MagicAttack->Destroy();

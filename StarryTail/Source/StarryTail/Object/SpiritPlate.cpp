@@ -70,8 +70,6 @@ void ASpiritPlate::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr) {
 
-		Irene->IreneData.IsInvincibility = true;
-		Irene->IreneData.IsSkipMonsterAttack = true;
 		bIsInPlayer = true;
 	}
 }
@@ -81,11 +79,8 @@ void ASpiritPlate::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* Oth
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene != nullptr) {
 
-		Irene->IreneData.IsInvincibility = false;
-		Irene->IreneData.IsSkipMonsterAttack = false;
 		bIsInPlayer = false;
 		RecoveryTimer = 0.0f;
-
 	}
 }
 

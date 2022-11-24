@@ -53,4 +53,6 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	bool GetIsInPlayer() { return bIsInPlayer; }
+
 };
