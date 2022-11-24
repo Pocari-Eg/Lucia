@@ -81,6 +81,10 @@ void ALabMagic::StartExplosionSignWait()
 	bIsExplosion_SignWait_Timer = true;
 	STARRYLOG_S(Error);
 
+	if (Use_SpiritPlates.Num() == 0)
+	{
+		Use_SpiritPlates = SpiritPlates;
+	}
 }
 
 void ALabMagic::ExplosionSign()
@@ -144,12 +148,11 @@ void ALabMagic::EndExplosion()
 	if (CurPlate != nullptr)
 	{
 		
-			CurPlate->SpiritPlateOff();
+		CurPlate->SpiritPlateOff();
 	
 	}
 	CurPlate = nullptr;
 	MagicAOECollision->SetRelativeLocation(InitLocation);
-
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
 	if (Instance != nullptr)
 	{
@@ -178,12 +181,20 @@ void ALabMagic::Explosion(float DeltaTime)
 
 void ALabMagic::AOEAttack()
 {
+
 	if (AOEInActor.Num() != 0)
 	{
 		for (int i = 0; i < AOEInActor.Num(); i++)
 		{
-			UGameplayStatics::ApplyDamage(AOEInActor[i], MagicAOE_Power, NULL, this, NULL);
-			STARRYLOG_S(Warning);
+			if (Cast<AIreneCharacter>(AOEInActor[i]))
+			{
+				if (CurPlate != nullptr && !CurPlate->GetIsInPlayer()) {
+					UGameplayStatics::ApplyDamage(AOEInActor[i], MagicAOE_Power, NULL, this, NULL);
+				}
+			}
+			else {
+				UGameplayStatics::ApplyDamage(AOEInActor[i], MagicAOE_Power, NULL, this, NULL);
+			}
 		}
 	}
 	MagicAOE_Timer = 0.0f;
