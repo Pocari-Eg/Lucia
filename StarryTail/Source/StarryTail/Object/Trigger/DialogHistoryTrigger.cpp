@@ -49,10 +49,13 @@ void ADialogHistoryTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, 
 {
 	auto Irene = Cast<AIreneCharacter>(OtherActor);
 	if (Irene == nullptr) return;
+
+	if (IsAlready) return;
 	
 	if (_condition == EConditions::PushInteraction)
 		Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 
+	IsAlready = true;
 	makeDialogue = CreateWidget<UDialogHistoryWidget_D>(GetWorld(), Dialogue_C);
 	makeDialogue->DialogueStart(ScriptData, FName(Start_), FName(End_));
 	makeDialogue->Owner = this;
@@ -77,5 +80,7 @@ void ADialogHistoryTrigger::OnEndOverlap(UPrimitiveComponent* OverlappedComp, AA
 	
 	makeDialogue->RemoveFromParent();
 	makeDialogue->RemoveFromViewport();
+
+	Irene->bInputStop = false;
 }
 

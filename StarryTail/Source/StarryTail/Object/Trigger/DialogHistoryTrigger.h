@@ -36,6 +36,8 @@ public:
 	UPROPERTY(EditAnyWhere)
 	EConditions _condition;
 
+	bool IsAlready;
+
 private:
 	UPROPERTY(EditAnyWhere)
 	TSubclassOf<class UUserWidget> Dialogue_C;
