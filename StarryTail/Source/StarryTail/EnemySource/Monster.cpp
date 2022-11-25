@@ -926,7 +926,8 @@ void AMonster::ShieldDestroyed()
 
 	PlayGroggyAnim();
 	MonsterAIController->Groggy();
-
+	bIsDodgeTime = false;
+	PerfectDodgeOff();
 	
 	if (Cast<ABellarus>(this))
 	{

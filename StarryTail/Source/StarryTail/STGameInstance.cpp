@@ -218,6 +218,26 @@ void USTGameInstance::SetCurBossMonster(AMonster* Monster)
 	CurBossMonster = Monster;
 }
 
+void USTGameInstance::SetTutorial(int num, bool State)
+{
+	Tutorial[num] = State;
+}
+
+bool USTGameInstance::GetTutorialState(int num)
+{
+	return Tutorial[num];
+}
+
+void USTGameInstance::TutorialInit()
+{
+	for (int i = 0; i < 10; i++)
+	{
+		Tutorial[i] = false;
+	}
+
+	bIsPlaying = false;
+}
+
 
 
 FSoundSetting* USTGameInstance::GetSoundSetting()
