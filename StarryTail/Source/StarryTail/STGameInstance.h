@@ -61,10 +61,10 @@ public:
 	UFUNCTION(BluePrintCallable)
 	FVector GetCurrnetLocation() { return CurrnetLoaction; }
 
+	UFUNCTION(blueprintcallable)
 	bool GetIsPlaying() { return bIsPlaying; }
 	void SetIsPlaying(bool state) {
-		bIsPlaying = state
-			;
+		bIsPlaying = state;
 	}
 protected:
 	virtual void Init()override;
@@ -152,4 +152,18 @@ public:
 	void DeleteBossMonster() { CurBossMonster = nullptr;}
 	AMonster* GetBoss() { return CurBossMonster; }
 #pragma endregion RaidMonster
+
+
+#pragma region Tutorial
+private:
+	bool Tutorial[10];
+public:
+	UFUNCTION(blueprintcallable)
+	void SetTutorial(int num, bool State);
+	UFUNCTION(blueprintcallable)
+	bool GetTutorialState(int num);
+	UFUNCTION(blueprintcallable)
+	void TutorialInit();
+
+#pragma endregion Tutorial
 };
