@@ -285,6 +285,8 @@ public:
 
 	UFUNCTION(BluePrintCallable)
 	void BossMonsterUIOn();
+
+
 #pragma endregion UIManager
 
 

@@ -218,6 +218,14 @@ void USTGameInstance::SetCurBossMonster(AMonster* Monster)
 	CurBossMonster = Monster;
 }
 
+void USTGameInstance::BossStart()
+{
+	if (GetBoss() != nullptr)
+	{
+		GetBoss()->SetBattleState();
+		GetBoss()->SetStatue(false);
+     }
+}
 void USTGameInstance::SetTutorial(int num, bool State)
 {
 	Tutorial[num] = State;
