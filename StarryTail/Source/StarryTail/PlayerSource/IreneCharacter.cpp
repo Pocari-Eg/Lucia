@@ -912,9 +912,12 @@ void AIreneCharacter::BossMonsterUIOn()
 	if (instance != nullptr)
 	{
 		IreneUIManager->PlayerHud->RaidMonsterBind(instance->GetBoss());
+		instance->GetBoss()->SetNormalState();
+		instance->GetBoss()->SetStatue(true);
 	}
 
 }
+
 void AIreneCharacter::PlayFadeOutAnimation()
 {
 	PlayFadeOutEvent();

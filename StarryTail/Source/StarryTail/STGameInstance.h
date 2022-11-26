@@ -146,11 +146,20 @@ private:
 #pragma region BossMonster
 private:
 	AMonster* CurBossMonster;
+
+	bool bIsVideoPlay;
 public:
 	void SetCurBossMonster(AMonster* Monster);
 	UFUNCTION(BlueprintCallAble)
 	void DeleteBossMonster() { CurBossMonster = nullptr;}
 	AMonster* GetBoss() { return CurBossMonster; }
+	UFUNCTION(BluePrintCallable)
+	void BossStart();
+
+	UFUNCTION(BlueprintCallAble)
+	void SetbIsVideoPlay(bool state){ bIsVideoPlay = state;}
+	UFUNCTION(BlueprintCallAble)
+	bool GetbIsVideoPlay(){return bIsVideoPlay;}
 #pragma endregion RaidMonster
 
 
