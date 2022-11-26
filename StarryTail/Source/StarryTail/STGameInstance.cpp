@@ -148,6 +148,7 @@ void USTGameInstance::InitData()
 	CurStateTime = StateTime;
 
 	NextWaveCount = 0;
+	StackMonster.Empty();
 }
 
 void USTGameInstance::AddDetectedMonster()
@@ -258,17 +259,19 @@ void USTGameInstance::ExplodeCurStackMonster()
 {
 	int size =StackMonster.Num();
 
-	for (int i = 0; i<size; i++)
-	{
-		if(StackMonster[i]!=nullptr)
-		StackMonster[i]->StackExplode();
-	}
-	StackMonster.Empty();
-	/*while (StackMonster.Num() != 0)
-	{
-		StackMonster[0]->StackExplode();
+	if (size != 0) {
+		for (int i = 0; i < size; i++)
+		{
+			if (StackMonster[i] != nullptr)
+				StackMonster[i]->StackExplode();
+		}
+		StackMonster.Empty();
+		/*while (StackMonster.Num() != 0)
+		{
+			StackMonster[0]->StackExplode();
 
-	}*/
+		}*/
+	}
 
 }
 
@@ -295,12 +298,14 @@ void USTGameInstance::DeleteStackMonster(AMonster* Monster)
 void USTGameInstance::InitCurStackMonster()
 {
 	int size = StackMonster.Num();
-	for (int i = 0; i < size; i++)
-	{
-		if (StackMonster[i] != nullptr)
-			StackMonster[i]->InitStackCount();
+	if (size != 0) {
+		for (int i = 0; i < size; i++)
+		{
+			if (StackMonster[i] != nullptr)
+				StackMonster[i]->InitStackCount();
+		}
+		StackMonster.Empty();
 	}
-	StackMonster.Empty();
 }
 #pragma endregion
 
