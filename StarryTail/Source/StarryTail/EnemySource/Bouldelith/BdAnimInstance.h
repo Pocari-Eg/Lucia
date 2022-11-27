@@ -96,6 +96,12 @@ private:
 	void AnimNotify_BdAttackSound();
 	UFUNCTION()
 	void AnimNotify_BdQuakeSound();
+	UFUNCTION()
+	void AnimNotify_DeathSound();
+	UFUNCTION()
+	void AnimNotify_GroggySound();
+	UFUNCTION()
+	void AnimNotify_RushSound();
 	//Var
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = IdleAnimation, Meta = (AllowPrivateAccess = true))
 		UAnimMontage* IdleMontage1;

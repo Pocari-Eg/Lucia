@@ -59,8 +59,10 @@ public:
 	void AnimNotify_Feather();
 	UFUNCTION()
 	void AnimNotify_TelePort();
-
-
+	UFUNCTION()
+	void AnimNotify_DeathSound();
+	UFUNCTION()
+	void AnimNotify_GroggySound();
 	UFUNCTION()
 	void AnimNotify_WingSound	();
 	void Init(class ABellarus* Value);

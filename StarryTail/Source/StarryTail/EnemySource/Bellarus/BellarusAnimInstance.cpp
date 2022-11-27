@@ -120,6 +120,16 @@ void UBellarusAnimInstance::AnimNotify_TelePort()
 	TelePortAttack.Broadcast();
 }
 
+void UBellarusAnimInstance::AnimNotify_DeathSound()
+{
+	Bellarus->GetBlSound()->PlayDeathSound(Bellarus->GetTransform());
+}
+
+void UBellarusAnimInstance::AnimNotify_GroggySound()
+{
+	Bellarus->GetBlSound()->PlayGroggySound(Bellarus->GetTransform());
+}
+
 void UBellarusAnimInstance::AnimNotify_WingSound()
 {
 	Bellarus->GetBlSound()->PlayWingSound(Bellarus->GetTransform());

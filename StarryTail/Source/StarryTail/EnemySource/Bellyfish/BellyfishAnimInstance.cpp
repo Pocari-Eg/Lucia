@@ -118,6 +118,21 @@ void UBellyfishAnimInstance::AnimNotify_BfRushSound()
 	Bellyfish->GetBfSound()->PlayBfRushAttack(Bellyfish->GetTransform());
 }
 
+void UBellyfishAnimInstance::AnimNotify_DeathSound()
+{
+	Bellyfish->GetBfSound()->PlayDeathSound(Bellyfish->GetTransform());
+}
+
+void UBellyfishAnimInstance::AnimNotify_GroggySound()
+{
+	Bellyfish->GetBfSound()->PlayGroggySound(Bellyfish->GetTransform());
+}
+
+void UBellyfishAnimInstance::AnimNotify_RangeAttackSound()
+{
+	Bellyfish->GetBfSound()->PlayRangeAttackSound(Bellyfish->GetTransform());
+}
+
 
 
 void UBellyfishAnimInstance::Init(ABellyfish* Value)
