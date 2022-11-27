@@ -48,6 +48,12 @@ private:
 	void AnimNotify_BfProjectileSound();
 	UFUNCTION()
 	void AnimNotify_BfRushSound();
+	UFUNCTION()
+	void AnimNotify_DeathSound();
+	UFUNCTION()
+	void AnimNotify_GroggySound();
+	UFUNCTION()
+	void AnimNotify_RangeAttackSound();
 public:
 	FRushEndDelegate RushEnd;
 	FRushStartDelegate RushStart;
