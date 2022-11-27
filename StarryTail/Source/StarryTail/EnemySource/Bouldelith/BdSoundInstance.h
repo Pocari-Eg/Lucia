@@ -19,6 +19,14 @@ class STARRYTAIL_API UBdSoundInstance : public UMonsterSoundInstance
 	class UFMODEvent* BDQuakeEvent;
 	SoundManager* BDQuake;
 
+	class UFMODEvent* BDDeathEvent;
+	SoundManager* BDDeath;
+	class UFMODEvent* BDGroggyEvent;
+	SoundManager* BDGroggy;
+	class UFMODEvent* BDRushEvent;
+	SoundManager* BDRush;
+
+
 public:
 
 	UBdSoundInstance();
@@ -26,7 +34,8 @@ public:
 	void Init();
 	void PlayBDAttackSound(FTransform Transform);
 	void PlayBDQuakeSound(FTransform Transform);
-
-
+	void PlayBDDeathSound(FTransform Transform);
+	void PlayBDGroggySound(FTransform Transform);
+	void PlayBDRushSound(FTransform Transform);
 	
 };

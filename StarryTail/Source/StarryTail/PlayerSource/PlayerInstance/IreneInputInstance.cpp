@@ -1381,6 +1381,7 @@ void UIreneInputInstance::PauseWidgetOn()
 	{
 		Irene->IreneState->SetState(UIdleState::GetInstance());
 		Irene->IreneUIManager->PauseWidgetOn();
+		Irene->IreneSound->PlayOptionSound();
 	}
 	Irene->ActionEndChangeMoveState();
 }

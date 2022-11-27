@@ -20,6 +20,8 @@ UIreneSoundInstance::UIreneSoundInstance()
 
 	StackBreakSlashEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakSlash");
 	StackBreakMoveEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakMove");
+
+	OptionEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/UI/SFX_Option");
 }
 
 void UIreneSoundInstance::Init(AIreneCharacter* Value)
@@ -41,6 +43,9 @@ void UIreneSoundInstance::Init(AIreneCharacter* Value)
 	StackBreakMoveSound = new SoundManager(StackBreakMoveEvent, GetWorld());
 	StackBreakSlashSound = new SoundManager(StackBreakSlashEvent, GetWorld());
 
+	OptionSound = new SoundManager(OptionEvent, GetWorld());
+
+
 	//사운드 세팅
 	WalkSound->SetVolume(0.7f);
 	WalkSound->SetParameter("Material", 0.0f);
@@ -54,6 +59,7 @@ void UIreneSoundInstance::Init(AIreneCharacter* Value)
 	SkillVocie1Sound->SetVolume(0.3f);
 	StackBreakMoveSound->SetVolume(1.0f);
 	StackBreakSlashSound->SetVolume(1.0f);
+	OptionSound->SetVolume(1.0f);
 }
 
 void UIreneSoundInstance::PlayWalkSound()
@@ -109,6 +115,11 @@ void UIreneSoundInstance::PlayStackBreakSlash(FTransform transform)
 void UIreneSoundInstance::PlayStackBreakMove(FTransform transform)
 {
 	StackBreakMoveSound->SoundPlay2D();
+}
+
+void UIreneSoundInstance::PlayOptionSound()
+{
+	OptionSound->SoundPlay2D();
 }
 
 void UIreneSoundInstance::SetIreneCharacter(AIreneCharacter* Value)

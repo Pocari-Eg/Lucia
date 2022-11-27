@@ -17,13 +17,19 @@ class STARRYTAIL_API UBlSoundInstance : public UMonsterSoundInstance
 	class UFMODEvent* WingEvent;
 	SoundManager* WingSound;
 
+	class UFMODEvent* DeathEvent;
+	SoundManager* Death;
 
+	class UFMODEvent* GroggyEvent;
+	SoundManager* Groggy;
 public:
 
 	UBlSoundInstance();
 
 	void Init();
 	void PlayWingSound(FTransform Transform);
+	void PlayDeathSound(FTransform Transform);
+	void PlayGroggySound(FTransform Transform);
 
 
 	

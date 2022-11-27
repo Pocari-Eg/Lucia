@@ -197,6 +197,21 @@ void UBdAnimInstance::AnimNotify_BdQuakeSound()
 	Bouldelith->GetBdSound()->PlayBDQuakeSound(Bouldelith->GetTransform());
 }
 
+void UBdAnimInstance::AnimNotify_DeathSound()
+{
+	Bouldelith->GetBdSound()->PlayBDDeathSound(Bouldelith->GetTransform());
+}
+
+void UBdAnimInstance::AnimNotify_GroggySound()
+{
+	Bouldelith->GetBdSound()->PlayBDGroggySound(Bouldelith->GetTransform());
+}
+
+void UBdAnimInstance::AnimNotify_RushSound()
+{
+	Bouldelith->GetBdSound()->PlayBDRushSound(Bouldelith->GetTransform());
+}
+
 
 
 void UBdAnimInstance::SetbIsState(bool state)

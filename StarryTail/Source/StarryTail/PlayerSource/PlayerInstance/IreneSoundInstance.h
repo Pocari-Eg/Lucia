@@ -33,10 +33,16 @@ private:
 	class UFMODEvent* SkillVocieEvent;
 	class UFMODEvent* SkillVocie1Event;
 
+	class UFMODEvent* DeathVoiceEvent;
 
 	//StackBreak
 	class UFMODEvent* StackBreakMoveEvent;
 	class UFMODEvent* StackBreakSlashEvent;
+
+
+	//ui
+	
+	class UFMODEvent* OptionEvent;
 
 	//»ç¿îµå 
 	SoundManager* AttackSound;
@@ -51,11 +57,16 @@ private:
 	SoundManager* TakeDamageVoiceSound;
 	SoundManager* SkillVocieSound;
 	SoundManager* SkillVocie1Sound;
+	SoundManager* DeathVoiceSound;
+
 
 	//stackbreakl
 	SoundManager* StackBreakMoveSound;
 	SoundManager* StackBreakSlashSound;
 
+
+	//ui
+	SoundManager* OptionSound;
 
 
 	UPROPERTY()
@@ -80,6 +91,8 @@ public:
 	void PlayStackBreakSlash(FTransform transform);
 	void PlayStackBreakMove(FTransform transform);
 
+
+	void PlayOptionSound();
 private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 };
