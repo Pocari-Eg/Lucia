@@ -177,12 +177,6 @@ void UIreneAttackInstance::AttackCheck()
 		}
 		Irene->Weapon->SetGenerateOverlapEvents(true);
 
-		if(Irene->bIsSpiritStance)
-		Irene->IreneSound->PlayAttackSound(0.0f);
-		else {
-			Irene->IreneSound->PlayAttackSound(1.0f);
-
-		}
 		if(Irene->IreneAnim->GetCurrentActiveMontage())
 			Irene->FindNearMonster();
 	}

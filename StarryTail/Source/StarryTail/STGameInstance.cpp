@@ -303,9 +303,10 @@ void USTGameInstance::InitCurStackMonster()
 		{
 			if (StackMonster[i] != nullptr)
 				StackMonster[i]->InitStackCount();
+
 		}
-		StackMonster.Empty();
 	}
+	StackMonster.Empty();
 }
 #pragma endregion
 

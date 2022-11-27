@@ -31,6 +31,8 @@ private:
 	class UFMODEvent* AttackVoiceEvent;
 	class UFMODEvent* TakeDamageVoiceEvent;
 	class UFMODEvent* SkillVocieEvent;
+	class UFMODEvent* SkillVocie1Event;
+
 
 	//StackBreak
 	class UFMODEvent* StackBreakMoveEvent;
@@ -48,10 +50,13 @@ private:
 
 	SoundManager* TakeDamageVoiceSound;
 	SoundManager* SkillVocieSound;
+	SoundManager* SkillVocie1Sound;
 
 	//stackbreakl
 	SoundManager* StackBreakMoveSound;
 	SoundManager* StackBreakSlashSound;
+
+
 
 	UPROPERTY()
 		class AIreneCharacter* Irene;
@@ -70,6 +75,7 @@ public:
 	void PlayStanceChangeSound(float Param);
 	void PlayUltimateSound();
 	void PlaySkillVoiceSound();
+	void PlaySkillVoice1Sound();
 
 	void PlayStackBreakSlash(FTransform transform);
 	void PlayStackBreakMove(FTransform transform);
