@@ -155,6 +155,9 @@ private:
 	void AnimNotify_StackBreakMove() const;
 	UFUNCTION()
 	void AnimNotify_StackBreakSlash() const;
-
+	UFUNCTION()
+	void AnimNotify_SkillVoice1() const;
+	UFUNCTION()
+	void AnimNotify_AttackSound() const;
 	FName GetAttackMontageSectionName(const int32 Section);
 };
