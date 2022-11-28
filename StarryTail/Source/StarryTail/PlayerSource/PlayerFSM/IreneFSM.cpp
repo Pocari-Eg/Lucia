@@ -582,6 +582,7 @@ void UDodgeEndState::Exit(IBaseGameEntity* CurState)
 		CurState->Irene->IreneInput->SetStopMoveAutoTarget();
 		CurState->Irene->IreneInput->PerfectDodgeTimeEnd();
 	}
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->bIsEnd = true;
 }
 #pragma endregion UDodgeEndState
@@ -1473,6 +1474,7 @@ void UHit1State::Execute(IBaseGameEntity* CurState)
 
 void UHit1State::Exit(IBaseGameEntity* CurState)
 {
+	CurState->Irene->GetCapsuleComponent()->SetCollisionProfileName(TEXT("Player"));
 	CurState->bIsEnd = true;
 }
 #pragma endregion UHit1State
