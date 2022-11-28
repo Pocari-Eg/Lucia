@@ -290,7 +290,7 @@ void USTGameInstance::DeleteStackMonster(AMonster* Monster)
 			if (StackMonster[i] == Monster)
 			{
 				StackMonster[i] = nullptr;
-				Monster->StackWidgetOff();
+				//Monster->StackWidgetOff();
 				return;
 			}
 	}
