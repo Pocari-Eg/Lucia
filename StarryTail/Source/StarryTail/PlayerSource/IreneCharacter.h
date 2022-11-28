@@ -286,6 +286,8 @@ public:
 	UFUNCTION(BluePrintCallable)
 	void BossMonsterUIOn();
 
+	UFUNCTION(BlueprintImplementableEvent)
+		void WaveEndEvent();
 
 #pragma endregion UIManager
 

@@ -135,6 +135,11 @@ void AEnemySpawnTrigger::WaveClear()
 			SequenceActor[i]->SequencePlayer->Play();
 		}
 	}
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)
+	{
+		Instance->GetPlayer()->WaveEndEvent();
+	}
 
 	PlayNormalBgm();
 }
