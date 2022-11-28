@@ -229,7 +229,10 @@ void AIreneCharacter::BeginPlay()
 
 	// 컨트롤러 받아오기
 	WorldController = GetWorld()->GetFirstPlayerController();
-	
+
+	CameraLagSpeedDelegate.BindUFunction(this, FName("CameraLagSet"));
+	CameraShakeDelegate.BindUFunction(this, FName("CameraShake"));
+
 	STGameInstance = Cast<USTGameInstance>(GetGameInstance());
 	if (STGameInstance != nullptr)
 		STGameInstance->SetPlayer(this);
@@ -238,7 +241,7 @@ void AIreneCharacter::BeginPlay()
 	{
 		SetActorTransform(STGameInstance->GetSpawnTransform());
 		PetSpringArmComp->CameraLagSpeed = 0;
-		GetWorld()->GetTimerManager().SetTimerForNextTick(FTimerDelegate::CreateLambda([&]{PetSpringArmComp->CameraLagSpeed = 3.0f;}));
+		GetWorld()->GetTimerManager().SetTimerForNextTick(CameraLagSpeedDelegate);
 		const FRotator Rotator = UKismetMathLibrary::FindLookAtRotation(GetActorLocation(), GetActorLocation()+GetActorForwardVector());
 		// 카메라 원점 조정
 		FRotator CameraRotator = FRotator::ZeroRotator;
@@ -263,6 +266,16 @@ void AIreneCharacter::BeginPlay()
 	   }
 	}
 }
+void AIreneCharacter::CameraLagSet()
+{
+	PetSpringArmComp->CameraLagSpeed = 3.0f;
+}
+void AIreneCharacter::CameraShake()
+{
+	const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
+	IreneAttack->SetCameraShakeTime(CameraShakeTime + 0.1f);
+}
+
 
 void AIreneCharacter::PostInitializeComponents()
 {
@@ -367,7 +380,7 @@ void AIreneCharacter::Tick(float DeltaTime)
 			KnockBackTimer = 0.0f;
 			bIsKnockBack = false;
 		}
-	}	
+	}
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -822,11 +835,7 @@ void AIreneCharacter::LastAttackCameraShake(const float DeltaTime)
 		if(!FixedUpdateCameraShakeTimer.IsValid())
 		{
 			constexpr float TimeSpeed = 0.01f;
-			GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraShakeTimer, FTimerDelegate::CreateLambda([&]()
-			{
-				const float CameraShakeTime = IreneAttack->GetCameraShakeTime();
-				IreneAttack->SetCameraShakeTime(CameraShakeTime + 0.1f);
-			}), TimeSpeed, true);
+			GetWorld()->GetTimerManager().SetTimer(FixedUpdateCameraShakeTimer, CameraShakeDelegate, TimeSpeed, true);
 		}
 		const FVector CameraRotate = UseShakeCurve->GetVectorValue(IreneAttack->GetCameraShakeTime());
 		CameraComp->SetRelativeLocation(CameraRotate);
