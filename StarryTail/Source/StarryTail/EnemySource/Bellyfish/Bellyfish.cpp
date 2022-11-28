@@ -350,6 +350,7 @@ void ABellyfish::BeginPlay()
 	BellyfishAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
 		{
+			SetActorHiddenInGame(true);
 			bDeadWait = true;
 			SetActorEnableCollision(false);
 			BellyfishAnimInstance->Montage_Stop(500.f, BellyfishAnimInstance->GetCurrentActiveMontage());

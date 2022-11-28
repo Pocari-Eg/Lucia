@@ -609,6 +609,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
 		{
+			SetActorHiddenInGame(true);
 			bDeadWait = true;
 			SetActorEnableCollision(false);
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
