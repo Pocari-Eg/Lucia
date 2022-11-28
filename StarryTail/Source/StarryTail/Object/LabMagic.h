@@ -106,7 +106,8 @@ public:
 	ALabMagic();
 
 	void StartExplosionSignWait();
-
+	UFUNCTION(BlueprintImplementableEvent)
+		void ApplyDamageEvent();
 
 protected:
 	// Called when the game starts or when spawned

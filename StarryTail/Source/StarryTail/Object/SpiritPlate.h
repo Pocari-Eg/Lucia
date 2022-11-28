@@ -40,6 +40,12 @@ public:
 	void SpiritPlateOff();
 	void InitSpiritPlate(float HP,float Gauge);
 
+
+	UFUNCTION(BlueprintImplementableEvent)
+		void PlateOnEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+		void PlateOffEvent();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

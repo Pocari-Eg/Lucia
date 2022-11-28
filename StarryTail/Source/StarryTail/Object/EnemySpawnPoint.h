@@ -70,7 +70,6 @@ public:
 
 	TArray<AMonster*> GetCurWaveMonster();
 
-
    UPROPERTY(EditAnyWhere, Category = SPAWN, meta = (AllowPrivateAccess = "ture"))
    AMonster* BattleMonster;
 };

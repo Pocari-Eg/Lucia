@@ -181,6 +181,7 @@ void ALabMagic::Explosion(float DeltaTime)
 
 void ALabMagic::AOEAttack()
 {
+	ApplyDamageEvent();
 
 	if (AOEInActor.Num() != 0)
 	{

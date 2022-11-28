@@ -32,7 +32,7 @@ ASpiritPlate::ASpiritPlate()
 void ASpiritPlate::SpiritPlateOn()
 {
 	STARRYLOG(Error, TEXT("Plate Effect On"));
-
+	PlateOnEvent();
 	PlateEffectComponent->SetActive(true, true);
 	SpiritPlateColiision->SetGenerateOverlapEvents(true);
 	SpiritPlateColiision->SetCollisionProfileName("AOEShield");
@@ -43,6 +43,7 @@ void ASpiritPlate::SpiritPlateOff()
 {
 	STARRYLOG(Warning, TEXT("%s"),*GetName());
 	STARRYLOG(Warning, TEXT("Plate Effect Off"));
+	PlateOffEvent();
 	PlateEffectComponent->Deactivate();
 	SpiritPlateColiision->SetRelativeLocation(FVector(SpiritPlateColiision->GetRelativeLocation().X, SpiritPlateColiision->GetRelativeLocation().Y, SpiritPlateColiision->GetRelativeLocation().Z + 3000.0f));
 	SpiritPlateColiision->SetGenerateOverlapEvents(false);
