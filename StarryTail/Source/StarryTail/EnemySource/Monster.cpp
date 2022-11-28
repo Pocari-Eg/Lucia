@@ -540,11 +540,11 @@ void AMonster::MaxStackExplode()
 	}
 	else {
 
-			if(GetIsMonsterShieldActive() && !IsNonShield)
+	/*		if(GetIsMonsterShieldActive() && !IsNonShield)
 				CalcHp(MonsterInfo.StackDamage);
-			else
+			else*/
 				CalcHp(GetMonsterInfo().StackDamage + GetMonsterInfo().StackDamage * 0.2f);
-
+			//	MonsterAIController->Groggy();
 			MonsterInfo.CurStackCount = MonsterInfo.OverStackCount;
 			MonsterInfo.OverStackCount = 0;
 			MonsterInfo.StackCheckTimer = 0.0f;
@@ -1014,7 +1014,7 @@ void AMonster::SetActive()
 	{
 		
 		MonsterWidget->SetHiddenInGame(true);
-		StackWidget->SetHiddenInGame(true);
+		//StackWidget->SetHiddenInGame(true);
 		HitEffectComponent->SetActive(false);
 		GroggyEffectComponent->SetActive(false);
 	}
@@ -1336,7 +1336,7 @@ void AMonster::Tick(float DeltaTime)
 			ShowUITimer = 0.0f;
 			MonsterWidget->SetVisibility(false);
 			bShowUI = false;
-			StackWidgetOff();
+			//StackWidgetOff();
 		}
 	}
 	else
