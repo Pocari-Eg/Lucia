@@ -564,8 +564,8 @@ void AMonster::MaxStackExplode()
 
 void AMonster::InitStackCount()
 {
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+	//auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	//if (Instance != nullptr)Instance->DeleteStackMonster(this);
 
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
@@ -1230,6 +1230,7 @@ void AMonster::DropShieldPoint()
 
 void AMonster::DeathCheck()
 {
+
 	if (bIsDead)
 	{
 		STARRYLOG_S(Error);
@@ -1325,7 +1326,14 @@ void AMonster::Tick(float DeltaTime)
 		{
 			SetActorTickEnabled(false);
 			StackWidget->SetHiddenInGame(true);
-			
+			if (Cast<ABellarus>(this)) {
+				auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+				if (STGameInstance != nullptr)
+				{
+					STGameInstance->GetPlayer()->GameClearEvent();
+				}
+
+			}
 			Destroy();
 			
 		}
@@ -1496,7 +1504,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 
-	if (Cast<AIreneCharacter>(DamageCauser))
+	if (Cast<AIreneCharacter>(DamageCauser)&& !bIsinvincibility)
 	{
 		auto Player = Cast<AIreneCharacter>(DamageCauser);
 		if (Player->bIsRadialBlurOn)
@@ -1535,8 +1543,11 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 						auto Component = Cast<UPrimitiveComponent>(Elem);
 
 						PrintHitEffect(Component->GetComponentLocation(), DamageCauser);
-						HitStopEvent();
-						Player->HitStopEvent();
+
+						if (Player->bIsSpiritStance == true) {
+							HitStopEvent();
+							Player->HitStopEvent();
+						}
 					}
 				}
 			}

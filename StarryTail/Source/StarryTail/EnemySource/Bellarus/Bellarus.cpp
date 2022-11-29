@@ -372,6 +372,39 @@ void ABellarus::TornadoSwirlAttack()
 	RightSwirl->OnSwirlDestroy.AddUObject(this, &ABellarus::TornadoSwirlDestroy);
 }
 
+void ABellarus::RunTelePort()
+{
+	bIsinvincibility = true;
+	CalcTelePort();
+	SetBattleState();
+	Cast<ABellarusAIController>(GetAIController())->SetTelePortKey(true);
+}
+
+void ABellarus::CalcTelePort()
+{
+	int index = -1;
+	float MaxDistance = 0;
+
+	auto instance = Cast<USTGameInstance>(GetGameInstance());
+
+	int size = TeleportPoint.Num();
+	if (size != 0)
+	{
+		for (int i = 0; i < size; i++)
+		{
+			float curDistane = TeleportPoint[i]->GetDistanceTo(instance->GetPlayer());
+			if (curDistane > MaxDistance)
+			{
+				MaxDistance = curDistane;
+				index = i;
+			}
+		}
+	}
+
+	TeleportLocation = TeleportPoint[index]->GetActorLocation();
+	TeleportLocation.Z = this->GetActorLocation().Z;
+}
+
 void ABellarus::PlayFeatherAnim()
 {
 	BellarusAnimInstance->PlayFeatherMontage();
@@ -444,6 +477,7 @@ void ABellarus::PlayTelePortAnim()
 
 void ABellarus::TelePortStart()
 {
+	bIsinvincibility = true;
 	bIsTeleporting = true;
 	 NewSkillData= GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
@@ -460,6 +494,7 @@ void ABellarus::TelePortStart()
 	TelePortTimer = 0.0f;
 	GetMesh()->SetVisibility(false);
 	MonsterWidget->SetVisibility(false);
+	StackWidget->SetVisibility(false);
 	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	SetActorLocation(TeleportLocation);
 
@@ -483,15 +518,27 @@ void ABellarus::TelePortEnd()
 
 	OutSpawnRadiusTimer = 0.0f;
 	AttacekdTeleportTimer = 0.0f;
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+
+	RotationToPlayerDirection();
+
+	//2개의 벡터를 a to b 로 회전 하는 행렬 구하기
+
+
 
 	BellarusAnimInstance->PlayEndTelePortMontage();
+
+
 	GetMesh()->SetVisibility(true);
 	MonsterWidget->SetVisibility(true);
+	StackWidget->SetVisibility(true);
+
+
 	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 
 	if (AttackCheck(NewSkillData->M_Skill_Radius, 300.0f, 360.0f, 0.0f))
 	{
-		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		
 
 		if (Instance != nullptr) {
 			if (bIsDodgeTime)
@@ -517,7 +564,7 @@ void ABellarus::TelePortEnd()
 
 	}
 
-
+	bIsinvincibility = false;
 }
 
 void ABellarus::ShieldRegening()
@@ -624,7 +671,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	TeleportLocation = GetActorLocation();
 
-
+	GroggyEnd.AddUObject(this, &ABellarus::RunTelePort);
 	//Perfect Dodge
 	BellarusAnimInstance->DodgeTimeOn.AddLambda([this]() -> void {
 		DodgeTimeOn.Broadcast();
@@ -890,7 +937,7 @@ void ABellarus::InitAnime()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellarus/BellyfishAnimBluePrint.BellyfishAnimBluePrint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellarus/BellarusAnimBluePrint.BellarusAnimBluePrint_C"));
 	if (FrenoAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);

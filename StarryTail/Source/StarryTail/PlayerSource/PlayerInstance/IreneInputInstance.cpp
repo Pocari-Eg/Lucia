@@ -413,7 +413,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if(Irene->IreneAnim->GetDodgeDir() == 10)
 				{
-					Irene->CustomTimeDilation = 4.0f;
+					Irene->CustomTimeDilation = 1.5f;
 					bPerfectDodgeToAttack = true;
 				}
 				else
@@ -680,8 +680,8 @@ void UIreneInputInstance::DodgeKeyword()
 		Irene->bInputStop = false;
 	}
 	
-	if ((!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() && !Irene->IreneState->IsDodgeState() &&
-		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) || bIsDodgeToDodge) &&
+	if (!Irene->GetMovementComponent()->IsFalling() && !Irene->IreneState->IsDeathState() && !DodgeInputWaitHandle.IsValid() && !PerfectDodgeTimerHandle.IsValid() && !Irene->IreneState->IsDodgeState() &&
+		(Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsAttackState()) && (Irene->IreneAttack->GetCanDodgeJumpSkip()||!Irene->IreneState->IsSkillState()) &&
 		bIsDodgeOn && !bIsDialogOn && !Irene->bInputStop && !bIsStun && Irene->IreneAnim->GetDodgeDir() != 10)
 	{
 		// 잔상 공격 중 회피

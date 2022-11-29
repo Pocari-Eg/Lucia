@@ -80,6 +80,20 @@ UIdleState* UIdleState::GetInstance()
 }
 void UIdleState::Enter(IBaseGameEntity* CurState)
 {
+	if (CurState->Irene != nullptr)
+	{
+		if(CurState->Irene->bIsSpiritStance)
+		{
+			CurState->Irene->ChangeStateAndLog(UBattleIdleState::GetInstance());
+			return;
+		}
+		if (CurState->Irene->Weapon->IsVisible())
+		{
+			CurState->Irene->Weapon->SetVisibility(false);
+			CurState->Irene->WeaponVisible(false);
+		}
+	}
+	
 	CurState->SetStateEnum(EStateEnum::Idle);
 	if(CurState->Irene && CurState->Irene->PetAnim != nullptr)
 		CurState->Irene->PetAnim->SetHeliosStateAnim(EHeliosStateEnum::Idle);
@@ -87,15 +101,7 @@ void UIdleState::Enter(IBaseGameEntity* CurState)
 	CurState->bIsEnd = false;
 	// Irene이 없으면 UI메니저 확인 안함
 	if (CurState->Irene && CurState->Irene->IreneUIManager)
-		CurState->Irene->IreneUIManager->HPRecoveryWaitStart();
-	if (CurState->Irene != nullptr)
-	{
-		if (CurState->Irene->Weapon->IsVisible())
-		{
-			CurState->Irene->Weapon->SetVisibility(false);
-			CurState->Irene->WeaponVisible(false);
-		}
-	}
+		CurState->Irene->IreneUIManager->HPRecoveryWaitStart();	
 }
 
 void UIdleState::Execute(IBaseGameEntity* CurState)
@@ -125,11 +131,17 @@ void UBattleIdleState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::BattleIdle);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 {
-	if (CurState->PlayTime >= 10.0f)
+	if (CurState->PlayTime >= 10.0f && !CurState->Irene->bIsSpiritStance)
 	{
 		CurState->Irene->Weapon->SetVisibility(false);
 		CurState->Irene->WeaponVisible(false);
@@ -521,7 +533,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		// 	CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 		// }
 		// 끝까지 재생
-		if (CurState->PlayTime >= 1.0f)
+		if (CurState->PlayTime >= 1.1f)
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
@@ -532,8 +544,9 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 void UDodgeStartState::Exit(IBaseGameEntity* CurState)
 {
 	CurState->ThrowState(UDodgeEndState::GetInstance());
+	//CurState->Irene->IreneInput->PerfectDodgePlayOver();
 	CurState->bIsEnd = true;
-}
+ }
 #pragma endregion UDodgeStartState
 #pragma region UDodgeEndState
 UDodgeEndState* UDodgeEndState::GetInstance()
@@ -1417,6 +1430,11 @@ void UFormChangeState::Enter(IBaseGameEntity* CurState)
 	CurState->SetStateEnum(EStateEnum::Form_Change);
 	CurState->PlayTime = 0.0f;
 	CurState->bIsEnd = false;
+	if (!CurState->Irene->Weapon->IsVisible())
+	{
+		CurState->Irene->Weapon->SetVisibility(true);
+		CurState->Irene->WeaponVisible(true);
+	}
 }
 
 void UFormChangeState::Execute(IBaseGameEntity* CurState)
