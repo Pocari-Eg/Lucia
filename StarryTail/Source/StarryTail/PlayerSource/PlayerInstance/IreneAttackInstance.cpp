@@ -207,7 +207,7 @@ void UIreneAttackInstance::DoAttack()
 		if(!Irene->bIsSpiritStance)
 			BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
 		else
-			BoxSize = FVector(200, 50, AttackTable->Attack_Distance_1);
+			BoxSize = FVector(50, 50, AttackTable->Attack_Distance_1);
 
 		FVector StartPos = Irene->GetActorLocation() + (Irene->GetActorForwardVector()*(AttackTable->Attack_Distance_1-50.0f));
 		//StartPos.Z -= Irene->GetCapsuleComponent()->GetScaledCapsuleHalfHeight();
