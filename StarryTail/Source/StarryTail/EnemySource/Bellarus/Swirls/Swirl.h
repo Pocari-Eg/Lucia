@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Components/CapsuleComponent.h"
 #include "Particles/ParticleSystemComponent.h"
+#include "../../../Sound/SoundManager.h"
 #include "Swirl.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FSwirlDestroyDelegate);
@@ -107,5 +108,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 private:
-
+	class UFMODEvent* SwirlInEvent;
+	SoundManager* SwirlInSound;
+	class UFMODEvent* SwirlOutEvent;
+	SoundManager* SwirlOutSound;
 };
