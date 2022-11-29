@@ -504,6 +504,7 @@ void ABellarus::TelePortStart()
 
 void ABellarus::TelePortEnd()
 {
+	TelePortEndEvent();
 
 	 NewSkillData = GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
@@ -871,7 +872,7 @@ void ABellarus::Tick(float DeltaTime)
 		TelePortTimer += DeltaTime;
 		if (TelePortTimer >= TelePortTime)
 		{
-			TelePortEndEvent();
+			TelePortEnd();
 		}
 	}
 	if (bIsRegening)
