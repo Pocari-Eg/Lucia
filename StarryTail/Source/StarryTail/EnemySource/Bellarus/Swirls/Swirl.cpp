@@ -228,7 +228,8 @@ void ASwirl::Tick(float DeltaTime)
 		SetActorLocation(GetActorLocation() + (MoveDirection*MoveSpeed * DeltaTime));
 		
 	}
-	SwirlInSound->GetInstance()->SetTransform(GetActorTransform());
+
+	SwirlInSound->SetTransform(GetActorTransform());
 }
 
 float ASwirl::CalcCurPullPower(float CurDistance)

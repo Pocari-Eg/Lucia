@@ -491,7 +491,6 @@ void ABellarus::TelePortStart()
 		NewSkillData= GetMontserSkillData(MonsterInfo.M_Skill_Type_08);
 	}
 
-	TelePortStartEvent();
 	TelePortTime = NewSkillData->M_Skill_Set_Time;
 	TelePortTimer = 0.0f;
 	//GetMesh()->SetVisibility(false);
@@ -670,7 +669,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->WingRAttack.AddUObject(this, &ABellarus::Wing_R);
 	BellarusAnimInstance->SwirlAttack.AddUObject(this, &ABellarus::SwirlAttack);
 	BellarusAnimInstance->FeatherAttack.AddUObject(this, &ABellarus::ProjectileAttack);
-	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStart);
+	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStartEvent);
 	BellarusAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	TeleportLocation = GetActorLocation();
 
@@ -872,7 +871,7 @@ void ABellarus::Tick(float DeltaTime)
 		TelePortTimer += DeltaTime;
 		if (TelePortTimer >= TelePortTime)
 		{
-			TelePortEnd();
+			TelePortEndEvent();
 		}
 	}
 	if (bIsRegening)

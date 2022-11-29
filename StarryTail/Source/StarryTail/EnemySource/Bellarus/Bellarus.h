@@ -44,7 +44,11 @@ public:
 	void ProjectileAttack();
 
 	void PlayTelePortAnim();
+
+
+	UFUNCTION(BluePrintCallable)
 	void TelePortStart();
+	UFUNCTION(BluePrintCallable)
 	void TelePortEnd();
 
 	void ShieldRegening();
