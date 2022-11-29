@@ -61,6 +61,9 @@ public:
 	void TornadoSwirlAttack();
 
 
+	void RunTelePort();
+	void CalcTelePort();
+
 	bool bIsInSpawnRadius;
 
 	float OutSpawnRadiusTimer;
@@ -172,6 +175,9 @@ private:
 	int MeleeAttackCount;
 
 	FMonsterSkillDataTable* NewSkillData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TelePort, Meta = (AllowPrivateAccess = true))
+	TArray<AActor*> TeleportPoint;
 public:
 	UPROPERTY(BluePrintReadOnly)
 	class UBlSoundInstance* BlSoundInstance;

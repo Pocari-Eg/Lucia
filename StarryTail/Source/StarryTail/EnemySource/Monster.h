@@ -30,6 +30,8 @@ DECLARE_MULTICAST_DELEGATE(FOnSwordAttributeChangeDelegate);
 DECLARE_MULTICAST_DELEGATE(FDodgeTimeSwitch);
 
 
+DECLARE_MULTICAST_DELEGATE(FGroggyEndDelegate);
+
 UCLASS()
 class STARRYTAIL_API AMonster : public ACharacter
 {
@@ -126,6 +128,8 @@ public:
 
 	FDodgeTimeSwitch DodgeTimeOn;
 	FDodgeTimeSwitch DodgeTimeOff;
+
+	FGroggyEndDelegate GroggyEnd;
 protected:
 	//Function========================================================
 	void InitAttackedInfo();
@@ -239,6 +243,8 @@ protected:
 	bool bIsCaptin;
 	float FrontMoveTime;
 	float FrontMoveTimer;
+
+	bool bIsinvincibility;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound
