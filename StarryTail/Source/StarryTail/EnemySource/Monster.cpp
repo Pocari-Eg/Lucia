@@ -564,8 +564,8 @@ void AMonster::MaxStackExplode()
 
 void AMonster::InitStackCount()
 {
-	auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+	//auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	//if (Instance != nullptr)Instance->DeleteStackMonster(this);
 
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
