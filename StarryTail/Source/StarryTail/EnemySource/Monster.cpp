@@ -1542,8 +1542,11 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 						auto Component = Cast<UPrimitiveComponent>(Elem);
 
 						PrintHitEffect(Component->GetComponentLocation(), DamageCauser);
-						HitStopEvent();
-						Player->HitStopEvent();
+
+						if (Player->bIsSpiritStance == true) {
+							HitStopEvent();
+							Player->HitStopEvent();
+						}
 					}
 				}
 			}
