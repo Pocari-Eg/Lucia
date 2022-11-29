@@ -1325,7 +1325,14 @@ void AMonster::Tick(float DeltaTime)
 		{
 			SetActorTickEnabled(false);
 			StackWidget->SetHiddenInGame(true);
-			
+			if (Cast<ABellarus>(this)) {
+				auto STGameInstance = Cast<USTGameInstance>(GetGameInstance());
+				if (STGameInstance != nullptr)
+				{
+					STGameInstance->GetPlayer()->GameClearEvent();
+				}
+
+			}
 			Destroy();
 			
 		}

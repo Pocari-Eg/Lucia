@@ -149,6 +149,8 @@ void USTGameInstance::InitData()
 
 	NextWaveCount = 0;
 	StackMonster.Empty();
+
+
 }
 
 void USTGameInstance::AddDetectedMonster()
