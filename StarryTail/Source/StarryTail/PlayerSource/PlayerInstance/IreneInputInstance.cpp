@@ -413,7 +413,7 @@ void UIreneInputInstance::LeftButton(float Rate)
 			{
 				if(Irene->IreneAnim->GetDodgeDir() == 10)
 				{
-					Irene->CustomTimeDilation = 4.0f;
+					Irene->CustomTimeDilation = 1.5f;
 					bPerfectDodgeToAttack = true;
 				}
 				else
