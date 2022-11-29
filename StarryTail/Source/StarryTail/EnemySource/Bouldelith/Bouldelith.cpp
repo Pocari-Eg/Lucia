@@ -1023,6 +1023,7 @@ void ABouldelith::BeginPlay()
 	BdAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
 		{
+			SetActorHiddenInGame(true);
 			bDeadWait = true;
 			SetActorEnableCollision(false);
 			BdAnimInstance->Montage_Stop(500.0f, BdAnimInstance->GetCurrentActiveMontage());

@@ -609,6 +609,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->Death.AddLambda([this]() -> void {
 		if (bIsDead)
 		{
+			SetActorHiddenInGame(true);
 			bDeadWait = true;
 			SetActorEnableCollision(false);
 			BellarusAnimInstance->Montage_Stop(500.f, BellarusAnimInstance->GetCurrentActiveMontage());
@@ -889,7 +890,7 @@ void ABellarus::InitAnime()
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 
 	// 애님 인스턴스 설정
-	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellarus/BellyfishAnimBluePrint.BellyfishAnimBluePrint_C"));
+	static ConstructorHelpers::FClassFinder<UAnimInstance> FrenoAnim(TEXT("/Game/BluePrint/Monster/Bellarus/BellarusAnimBluePrint.BellarusAnimBluePrint_C"));
 	if (FrenoAnim.Succeeded())
 	{
 		GetMesh()->SetAnimInstanceClass(FrenoAnim.Class);

@@ -1234,6 +1234,7 @@ void AMonster::DeathCheck()
 	{
 		STARRYLOG_S(Error);
 		PlayDeathAnim();
+
 	}
 }
 
@@ -1318,12 +1319,15 @@ void AMonster::Tick(float DeltaTime)
 	WidgetPoint->SetWorldRotation(FRotator(0.0f, CameraRot.Yaw, 0.0f));
 	if (bDeadWait)
 	{
+	
 		DeadWaitTimer += DeltaTime;
 		if (DeadWaitTimer >= MonsterInfo.DeadWaitTime)
 		{
 			SetActorTickEnabled(false);
-			SetActorHiddenInGame(true);
+			StackWidget->SetHiddenInGame(true);
+			
 			Destroy();
+			
 		}
 		return;
 	}
