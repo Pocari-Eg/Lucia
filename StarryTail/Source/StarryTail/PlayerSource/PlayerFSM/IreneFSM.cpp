@@ -533,7 +533,7 @@ void UDodgeStartState::Execute(IBaseGameEntity* CurState)
 		// 	CurState->Irene->ChangeStateAndLog(USprintLoopState::GetInstance());
 		// }
 		// 끝까지 재생
-		if (CurState->PlayTime >= 0.9f)
+		if (CurState->PlayTime >= 1.1f)
 		{
 			CurState->Irene->IreneAnim->SetDodgeDir(0);
 			CurState->Irene->ActionEndChangeMoveState(true);
@@ -546,7 +546,7 @@ void UDodgeStartState::Exit(IBaseGameEntity* CurState)
 	CurState->ThrowState(UDodgeEndState::GetInstance());
 	//CurState->Irene->IreneInput->PerfectDodgePlayOver();
 	CurState->bIsEnd = true;
-}
+ }
 #pragma endregion UDodgeStartState
 #pragma region UDodgeEndState
 UDodgeEndState* UDodgeEndState::GetInstance()
