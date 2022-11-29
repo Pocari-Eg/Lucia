@@ -140,6 +140,7 @@ protected:
 
 	void Attacked();
 
+
 	FMonsterDataTable* GetMontserData(int32 num);
 	FMonsterSkillDataTable* GetMontserSkillData(int32 num);
 
@@ -280,8 +281,14 @@ private:
 	bool bIsGroupTriggerEnemy;
 
 	float AttackCoolTimer;
+
+
 	float AttackCoolTime;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = AttackedCool, Meta = (AllowPrivateAccess = true))
+	float AttackedCoolTime;
+	float AttackedCoolTimer;
+	bool bIsAttackedCool;
+
 	bool bIsDodgeOn;
 
 	bool bIsStackOn;
@@ -324,7 +331,7 @@ public:
 
 	float GetMinSupportWalkTime()const;
 	float GetMaxSupportWalkTime()const;
-
+	bool GetIsNonShiled(){ return IsNonShield; }
 
 	//M_Skill_Atk ========================================================
 	float GetAtkAngle() const;

@@ -22,10 +22,6 @@ void UMonsterWidget::BindMonster(class AMonster* NewMonster)
 		CurrentMonster->OnHpChanged.AddUObject(this, &UMonsterWidget::UpdateHpWidget);
 		CurrentMonster->OnBarrierChanged.AddUObject(this, &UMonsterWidget::UpdateDefWidget);
 
-
-
-	OnBarrierUI();
-
 		//if (!CurrentMonster->GetIsMonsterShieldActive())
 		//{
 		//	DefProgressBar->SetVisibility(ESlateVisibility::Hidden);
@@ -53,8 +49,8 @@ void UMonsterWidget::NativeConstruct()
 	HPProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("HPBar")));
 	DefProgressBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("DefBar")));
 	MarkerImage = Cast<UImage>(GetWidgetFromName(TEXT("Marker")));
-     HPLine = Cast<UImage>(GetWidgetFromName(TEXT("HPBar_Line")));
-	 DefLine = Cast<UImage>(GetWidgetFromName(TEXT("DefBar_Line")));
+    HPLine = Cast<UImage>(GetWidgetFromName(TEXT("HPBar_Line")));
+	DefLine = Cast<UImage>(GetWidgetFromName(TEXT("DefBar_Line")));
 }
 
 

@@ -36,6 +36,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void  OnBarrierUI();
+	UFUNCTION(BlueprintImplementableEvent)
+	void ShieldWidgetOff();
 
 	void SetQuillStackCount(const int Num);
 protected:

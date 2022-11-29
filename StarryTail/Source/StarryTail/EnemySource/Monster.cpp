@@ -147,6 +147,11 @@ AMonster::AMonster()
 	FrontMoveTimer = 0.0f;
 
 	bIsCaptin = false;
+
+
+	AttackedCoolTime = 2.0f;
+	AttackedCoolTimer = 0.0f;
+	bIsAttackCool = false;
 }
 #pragma region Init
 
@@ -716,7 +721,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			{
 				PerfectDodgeOff();
 			}
-			Attacked();
 		}
 
 		//MonsterAIController->Attacked(AttackedInfo.AttackedDirection, AttackedInfo.AttackedPower, AttackedInfo.bIsUseMana, IsKnockback);
@@ -733,7 +737,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			{
 				PerfectDodgeOff();
 			}
-			Attacked();
 		}
 
 	}
@@ -749,7 +752,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			{
 				PerfectDodgeOff();
 			}
-			Attacked();
 		}
 
 	}
@@ -771,7 +773,6 @@ float AMonster::CalcNormalAttackDamage(float Damage)
 			{
 				PerfectDodgeOff();
 			}
-			Attacked();
 		}
 
 		//if (AttackedInfo.AttackedPower != EAttackedPower::Halved && AttackedInfo.bIsUseMana)
@@ -1072,6 +1073,8 @@ void AMonster::PrintHitEffect(FVector AttackedPosition, AActor* Actor)
 }
 void AMonster::Attacked()
 {
+
+	STARRYLOG_S(Error);
 	AttackCoolTimer = 0.0f;
 	SetIsAttackCool(false);
 	bIsAttacking = false;
@@ -1283,7 +1286,7 @@ void AMonster::BeginPlay()
 	MonsterShield->AttachToComponent(GetMesh(), FAttachmentTransformRules::SnapToTargetIncludingScale, ShieldSocketName);
 
 
-		
+
 
 }
 void AMonster::PossessedBy(AController* NewController)
@@ -1367,6 +1370,16 @@ void AMonster::Tick(float DeltaTime)
 		{
 			KnockBackTime = 0.0f;
 			bIsAttacked = false;
+		}
+	}
+
+	if (bIsAttackedCool)
+	{
+		AttackedCoolTimer += DeltaTime;
+		if (AttackCoolTimer >= AttackedCoolTime)
+		{
+			AttackCoolTimer = 0.0f;
+			bIsAttackedCool = false;
 		}
 	}
 
@@ -1556,19 +1569,6 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 
-			if (AttackedInfo.AttributeArmor == 10)
-			{
-				AttackedInfo.AttackedPower = EAttackedPower::Halved;
-			}
-			else if (AttackedInfo.AttributeArmor == 100)
-			{
-				AttackedInfo.AttackedPower = EAttackedPower::Normal;
-			}
-			else if (AttackedInfo.AttributeArmor == 200)
-			{
-				AttackedInfo.AttackedPower = EAttackedPower::Critical;
-			}
-
 			//³Ë¹é
 			KnockBackDir = -(Player->GetActorLocation() - GetActorLocation());
 			KnockBackDir.Normalize();
@@ -1639,7 +1639,12 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 				{
 					PerfectDodgeOff();
 				}
-				Attacked();
+
+				if (!bIsAttackCool) {
+					STARRYLOG_S(Error);
+					Attacked();
+					bIsAttackCool = true;
+				}
 			}
 
 
