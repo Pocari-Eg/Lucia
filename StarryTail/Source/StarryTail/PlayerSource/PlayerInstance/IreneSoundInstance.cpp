@@ -21,7 +21,7 @@ UIreneSoundInstance::UIreneSoundInstance()
 	StackBreakSlashEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakSlash");
 	StackBreakMoveEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakMove");
 
-	OptionEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/UI/SFX_Option");
+	OptionEvent = UFMODBlueprintStatics::FindEventByName("event:/UI/SFX_Option");
 }
 
 void UIreneSoundInstance::Init(AIreneCharacter* Value)
@@ -119,6 +119,7 @@ void UIreneSoundInstance::PlayStackBreakMove(FTransform transform)
 
 void UIreneSoundInstance::PlayOptionSound()
 {
+	STARRYLOG_S(Error);
 	OptionSound->SoundPlay2D();
 }
 

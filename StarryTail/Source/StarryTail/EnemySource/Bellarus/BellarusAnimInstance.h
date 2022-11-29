@@ -64,7 +64,16 @@ public:
 	UFUNCTION()
 	void AnimNotify_GroggySound();
 	UFUNCTION()
-	void AnimNotify_WingSound	();
+	void AnimNotify_WingSound();
+	UFUNCTION()
+	void AnimNotify_TailSound();
+	UFUNCTION()
+	void AnimNotify_ShootSound();
+	UFUNCTION()
+	void AnimNotify_TPStartSound();
+	UFUNCTION()
+	void AnimNotify_TPEndSound();
+
 	void Init(class ABellarus* Value);
 private:
 	bool CheckAttackedMontagePlaying() override;

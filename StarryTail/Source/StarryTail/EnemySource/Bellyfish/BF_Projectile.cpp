@@ -64,6 +64,8 @@ void ABF_Projectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 	{
 		auto Player = Cast<AIreneCharacter>(OtherActor);
 		UGameplayStatics::ApplyDamage(Player, Damage, NULL, this, NULL);
+
+		ProjectileHitEvent();
 		Destroy();
 	}
 
@@ -72,6 +74,7 @@ void ABF_Projectile::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 void ABF_Projectile::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit)
 {
 	STARRYLOG_S(Warning);
+	ProjectileHitEvent();
 	Destroy();
 }
 
