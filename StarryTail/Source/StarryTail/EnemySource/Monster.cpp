@@ -1230,6 +1230,7 @@ void AMonster::DropShieldPoint()
 
 void AMonster::DeathCheck()
 {
+
 	if (bIsDead)
 	{
 		STARRYLOG_S(Error);
@@ -1503,7 +1504,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 
-	if (Cast<AIreneCharacter>(DamageCauser))
+	if (Cast<AIreneCharacter>(DamageCauser)&& !bIsinvincibility)
 	{
 		auto Player = Cast<AIreneCharacter>(DamageCauser);
 		if (Player->bIsRadialBlurOn)

@@ -17,8 +17,10 @@ EBTNodeResult::Type UBTTaskMobGroggyEnd::ExecuteTask(UBehaviorTreeComponent& Own
 
 	auto Monster = Cast<AMonster>(OwnerComp.GetAIOwner()->GetPawn());
 
+
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsGroggyKey, false);
 	OwnerComp.GetBlackboardComponent()->SetValueAsBool(AMonsterAIController::IsAttackedKey, false);
 
+	Monster->GroggyEnd.Broadcast();
 	return EBTNodeResult::Succeeded;
 }
