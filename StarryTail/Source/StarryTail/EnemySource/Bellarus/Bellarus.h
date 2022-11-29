@@ -118,6 +118,12 @@ public:
 
 
 	UBlSoundInstance* GetBlSound();
+
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void TelePortStartEvent();
+	UFUNCTION(BlueprintImplementableEvent)
+	void TelePortEndEvent();
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;
