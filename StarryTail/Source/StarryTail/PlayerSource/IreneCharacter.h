@@ -270,6 +270,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void InitComplete();
+	UFUNCTION(BlueprintImplementableEvent)
+	void GameClearEvent();
 
 	void SetIreneDialog();
 
