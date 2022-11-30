@@ -340,6 +340,7 @@ public:
 	bool IsJumpState()const;
 	bool IsAttackState()const;
 	bool IsSkillState()const;
+	UFUNCTION(BlueprintCallable)
 	bool IsUltimateAttackState()const;
 	bool IsFormChangeState()const;
 	bool IsHitState()const;

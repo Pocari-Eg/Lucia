@@ -105,16 +105,9 @@ void UIreneInputInstance::Begin()
 
 	LevelSequenceActor = GetWorld()->SpawnActor<ALevelSequenceActor>(ALevelSequenceActor::StaticClass());
 	PlaybackSettings.bAutoPlay = false;
-	PlaybackSettings.bRandomStartTime = false;
-	PlaybackSettings.bRestoreState = false;
-	PlaybackSettings.bDisableMovementInput = false;
-	PlaybackSettings.bDisableLookAtInput = false;
-	PlaybackSettings.bHidePlayer = false;
-	PlaybackSettings.bHideHud = false;
-	PlaybackSettings.bDisableCameraCuts = false;
-	PlaybackSettings.bPauseAtEnd = false;
+	PlaybackSettings.bDisableMovementInput = true;
+	PlaybackSettings.bDisableLookAtInput = true;
 	PlaybackSettings.PlayRate = 10.0f;
-	PlaybackSettings.StartTime = 0.0f;	
 	LevelSequencePlayer = ULevelSequencePlayer::CreateLevelSequencePlayer(
 		GetWorld(), 
 		UltimateAttackSequence,
@@ -1132,7 +1125,7 @@ void UIreneInputInstance::UltimateAttackKeyword()
 			Irene->CameraComp->PostProcessSettings.MotionBlurMax = 0;
 			
 			SkillCameraMoveStart();
-			LevelSequencePlayer->Play();			
+			LevelSequencePlayer->Play();	
 		}
 	}
 }
@@ -1251,23 +1244,26 @@ void UIreneInputInstance::DialogAction()
 
 void UIreneInputInstance::DialogPlaying()
 {
-	UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
-
-	switch (PlayerHud->GetDialogState())
+	if(!Irene->IreneState->IsUltimateAttackState())
 	{
-	case EDialogState::e_Playing:
-		PlayerHud->PassDialog();
-		break;
-	case EDialogState::e_Complete:
-		if (PlayerHud->ContinueDialog())
-			PlayerHud->PlayDialog();
-		else
-			PlayerHud->ExitDialog();
-		break;
-	case EDialogState::e_Disable:
-		break;
-	default:
-		break;
+		UPlayerHudWidget* PlayerHud = Irene->IreneUIManager->PlayerHud;
+	
+		switch (PlayerHud->GetDialogState())
+		{
+		case EDialogState::e_Playing:
+			PlayerHud->PassDialog();
+			break;
+		case EDialogState::e_Complete:
+			if (PlayerHud->ContinueDialog())
+				PlayerHud->PlayDialog();
+			else
+				PlayerHud->ExitDialog();
+			break;
+		case EDialogState::e_Disable:
+			break;
+		default:
+			break;
+		}
 	}
 }
 
