@@ -294,7 +294,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void WaveEndEvent();
-
+	UFUNCTION(BluePrintCallable)
+	void SetIsPlay();
 #pragma endregion UIManager
 
 

@@ -1372,16 +1372,22 @@ void UIreneInputInstance::MouseCursorKeyword()
 #pragma region UI
 void UIreneInputInstance::PauseWidgetOn()
 {
-	if (Irene->IreneUIManager->GetIsPauseOnScreen())
-	  	Irene->IreneUIManager->PauseWidgetOff();
-	else
-	{
-		Irene->IreneSound->PlayOptionSound();
-		Irene->IreneState->SetState(UIdleState::GetInstance());
-		Irene->IreneUIManager->PauseWidgetOn();
-		
+	auto instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	if (instance != nullptr) {
+		if (instance->GetIsPlaying() == true) {
+
+			if (Irene->IreneUIManager->GetIsPauseOnScreen())
+				Irene->IreneUIManager->PauseWidgetOff();
+			else
+			{
+				Irene->IreneSound->PlayOptionSound();
+				Irene->IreneState->SetState(UIdleState::GetInstance());
+				Irene->IreneUIManager->PauseWidgetOn();
+
+			}
+			Irene->ActionEndChangeMoveState();
+		}
 	}
-	Irene->ActionEndChangeMoveState();
 }
 #pragma endregion UI
 

@@ -49,7 +49,7 @@ void UIreneUIManager::InitMemberVariable()
 }
 void UIreneUIManager::Begin()
 {
-	PauseWidget->AddToViewport();	
+	PauseWidget->AddToViewport(100);	
 
 	PlayerHud->AddToViewport();
 	PlayerHud->BindCharacter(Irene);
