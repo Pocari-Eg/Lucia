@@ -40,6 +40,7 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
 	AIreneCharacter* GetPlayer();
 	EAttributeKeyword GetPlayerAttribute();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
