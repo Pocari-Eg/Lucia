@@ -38,7 +38,7 @@ void AEnemySpawnTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AAc
 	{
 		if(GetName() == FString("EnemySpawnTrigger_1"))
 		{
-			Instance->SetSpawnTransform(FTransform(FRotator(0,220,0), Instance->FourthPosition()));
+			Instance->SetSpawnTransform(FTransform(Instance->FourthRotation(), Instance->FourthPosition()));
 		}
 	}
 	TriggerOff();

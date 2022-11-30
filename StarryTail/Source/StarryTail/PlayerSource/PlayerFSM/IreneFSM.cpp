@@ -57,6 +57,7 @@ FString UIreneFSM::GetStateToString() const
 	case EStateEnum::Sword_Skill_1: return FString("Sword_Skill_1");
 	case EStateEnum::Sword_Skill_2: return FString("Sword_Skill_2");
 	case EStateEnum::Spirit_Skill: return FString("Spirit_Skill");
+	case EStateEnum::Ultimate_Attack: return FString("Ultimate_Attack");
 	case EStateEnum::Form_Change: return FString("Form_Change");
 	case EStateEnum::Hit_1: return FString("Hit_1");
 	case EStateEnum::Hit_2: return FString("Hit_2");

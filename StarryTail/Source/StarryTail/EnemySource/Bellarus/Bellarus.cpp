@@ -477,6 +477,8 @@ void ABellarus::PlayTelePortAnim()
 
 void ABellarus::TelePortStart()
 {
+
+
 	bIsinvincibility = true;
 	bIsTeleporting = true;
 	 NewSkillData= GetMontserSkillData(15);
@@ -489,10 +491,9 @@ void ABellarus::TelePortStart()
 		NewSkillData= GetMontserSkillData(MonsterInfo.M_Skill_Type_08);
 	}
 
-
 	TelePortTime = NewSkillData->M_Skill_Set_Time;
 	TelePortTimer = 0.0f;
-	GetMesh()->SetVisibility(false);
+	//GetMesh()->SetVisibility(false);
 	MonsterWidget->SetVisibility(false);
 	StackWidget->SetVisibility(false);
 	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
@@ -503,6 +504,8 @@ void ABellarus::TelePortStart()
 
 void ABellarus::TelePortEnd()
 {
+	TelePortEndEvent();
+
 	 NewSkillData = GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
 	{
@@ -515,7 +518,7 @@ void ABellarus::TelePortEnd()
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
 	bIsTeleporting = false;
 	TelePortTimer = 0.0f;
-
+	TelePortEndEvent();
 	OutSpawnRadiusTimer = 0.0f;
 	AttacekdTeleportTimer = 0.0f;
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
@@ -529,7 +532,7 @@ void ABellarus::TelePortEnd()
 	BellarusAnimInstance->PlayEndTelePortMontage();
 
 
-	GetMesh()->SetVisibility(true);
+	//GetMesh()->SetVisibility(true);
 	MonsterWidget->SetVisibility(true);
 	StackWidget->SetVisibility(true);
 
@@ -667,7 +670,7 @@ void ABellarus::BeginPlay()
 	BellarusAnimInstance->WingRAttack.AddUObject(this, &ABellarus::Wing_R);
 	BellarusAnimInstance->SwirlAttack.AddUObject(this, &ABellarus::SwirlAttack);
 	BellarusAnimInstance->FeatherAttack.AddUObject(this, &ABellarus::ProjectileAttack);
-	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStart);
+	BellarusAnimInstance->TelePortAttack.AddUObject(this, &ABellarus::TelePortStartEvent);
 	BellarusAnimInstance->OnGroggyEnd.AddUObject(this, &AMonster::DeathCheck);
 	TeleportLocation = GetActorLocation();
 

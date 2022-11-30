@@ -29,6 +29,10 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = Dialog)
 	TArray<FString> DalogIndex;
+
+	UPROPERTY(EditAnyWhere)
+	bool IsExecuteTutorial;
+
 private:
 	UPROPERTY()
 	UDataTable* ScriptData;

@@ -106,16 +106,20 @@ void ADialogTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 				Irene->IreneUIManager->PlayerHud->ActionWidgetOn();
 
-				TArray<UUserWidget*> outWidget;
-				UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), outWidget, UTutorialWidget::StaticClass());
-				for (auto FOR : outWidget)
+				if (IsExecuteTutorial)
 				{
-					auto castWidget = Cast<UTutorialWidget>(FOR);
-					if (castWidget == nullptr) continue;
+					TArray<UUserWidget*> outWidget;
+					UWidgetBlueprintLibrary::GetAllWidgetsOfClass(GetWorld(), outWidget, UTutorialWidget::StaticClass());
+					for (auto FOR : outWidget)
+					{
+						auto castWidget = Cast<UTutorialWidget>(FOR);
+						if (castWidget == nullptr) continue;
 
-					castWidget->trystopPlay(EPlayTutorial::Action);
-					castWidget->tryPlay(EPlayTutorial::Action);
+						castWidget->trystopPlay(EPlayTutorial::Action);
+						castWidget->tryPlay(EPlayTutorial::Action);
+					}
 				}
+				
 			}
 
 

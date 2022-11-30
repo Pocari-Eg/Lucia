@@ -47,6 +47,12 @@ ASwirl::ASwirl()
 	bIsMove = false;
 	MoveDirection = FVector(0.0f, 0.0f, 0.0f);
 
+	//sound
+
+	SwirlInEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/BL/SFX_BL_SwirlAttackIn");
+    SwirlOutEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Enemy/BL/SFX_BL_SwirlAttackOut");
+
+
 }
 
 void ASwirl::InitSwirl(float DamageVal, float SwirlDotDamageVal,float PullForceVal, float CoreSetTimeVal,float KeepSwirlTimeVal ,float MoveSpeedVal,float SwirlRadiusVal)
@@ -81,6 +87,8 @@ void ASwirl::SwirlCoreActive(FVector MoveDirectionVal)
 	bIsOnSwirlCore = true;
 	Swirl_Core->SetCollisionProfileName("Trigger");
 	bIsMove = true;
+
+	SwirlInSound->SoundPlay3D(GetActorTransform());
 }
 
 void ASwirl::SwirlPullRangeActive()
@@ -110,6 +118,13 @@ void ASwirl::BeginPlay()
 	Swirl_Pull_Range->OnComponentBeginOverlap.AddDynamic(this, &ASwirl::SwirlPullRangeBegin);
 	Swirl_Pull_Range->OnComponentEndOverlap.AddDynamic(this, &ASwirl::SwirlPullRangeEnd);
 	InitSwirl(100, 4, 0.7f, 5, 10, 300, 120);
+
+	SwirlInSound = new SoundManager(SwirlInEvent, GetWorld());
+	SwirlInSound->SetVolume(1.0f);
+	SwirlOutSound = new SoundManager(SwirlOutEvent, GetWorld());
+	SwirlOutSound->SetVolume(1.0f);
+
+
 }
 
 void ASwirl::SwirlCoreBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -119,7 +134,6 @@ void ASwirl::SwirlCoreBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherAc
 		Irene = Cast<AIreneCharacter>(OtherActor);
 		UGameplayStatics::ApplyDamage(Irene, Damage, NULL, this, NULL);
 		bIsOnDotDamage = true;
-
 	}
 
 }
@@ -185,6 +199,11 @@ void ASwirl::Tick(float DeltaTime)
 		if (KeepSwirlTimer >= KeepSwirlTime)
 		{
 			OnSwirlDestroy.Broadcast();
+
+			SwirlOutSound->SoundPlay3D(GetActorTransform());
+			SwirlInSound->SoundStop();
+
+			
 			Destroy();
 		}
 
@@ -207,7 +226,10 @@ void ASwirl::Tick(float DeltaTime)
 	if (bIsMove)
 	{
 		SetActorLocation(GetActorLocation() + (MoveDirection*MoveSpeed * DeltaTime));
+		
 	}
+
+	SwirlInSound->SetTransform(GetActorTransform());
 }
 
 float ASwirl::CalcCurPullPower(float CurDistance)

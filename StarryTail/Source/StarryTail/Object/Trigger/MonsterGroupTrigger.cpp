@@ -37,13 +37,13 @@ void AMonsterGroupTrigger::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, A
 		STARRYLOG(Warning,TEXT("%s"),*GetName());
 		if(GetName() == FString("MonsterGroupTrigger3"))//Instance->GetSpawnTransform().GetTranslation() == Instance->FirstPosition())
 		{
-			Instance->SetSpawnTransform(FTransform(FRotator(0,90,0), Instance->SecondPosition()));
+			Instance->SetSpawnTransform(FTransform(Instance->SecondRotation(), Instance->SecondPosition()));
 			STARRYLOG_S(Warning);
 		}
 		if(GetName() == FString("MonsterGroupTrigger_1"))//Instance->GetSpawnTransform().GetTranslation() == Instance->SecondPosition())
 		{
 			STARRYLOG_S(Warning);
-			Instance->SetSpawnTransform(FTransform(FRotator(0,180,0), Instance->ThirdPosition()));
+			Instance->SetSpawnTransform(FTransform(Instance->ThirdRotation(), Instance->ThirdPosition()));
 		}
 	}
 	bIsOn = true;
