@@ -25,13 +25,13 @@ private:
 	class UFMODEvent* DodgeEvent;
 	class UFMODEvent* StanceChangeEvent;
 	class UFMODEvent* UltimateEvent;
-
+	class UFMODEvent* SpiritSkillEvent;
 
 	//voice
 	class UFMODEvent* AttackVoiceEvent;
 	class UFMODEvent* TakeDamageVoiceEvent;
-	class UFMODEvent* SkillVocieEvent;
-	class UFMODEvent* SkillVocie1Event;
+
+	class UFMODEvent* SpiritSkillVoiceEvent;
 
 	class UFMODEvent* DeathVoiceEvent;
 
@@ -52,11 +52,13 @@ private:
 	SoundManager* DodgeSound;
 	SoundManager* StanceChangeSound;
 	SoundManager* UltimateSound;
+	SoundManager* SpiritSkillSound;
 	//voice 
 
 	SoundManager* TakeDamageVoiceSound;
-	SoundManager* SkillVocieSound;
-	SoundManager* SkillVocie1Sound;
+	SoundManager* SpiritSkillVoiceSound;
+
+
 	SoundManager* DeathVoiceSound;
 
 
@@ -71,6 +73,9 @@ private:
 
 	UPROPERTY()
 		class AIreneCharacter* Irene;
+
+	float AttackSoundType;
+	float SpiritSkillSoundType;
 #pragma endregion Sound
 public:
 
@@ -85,14 +90,16 @@ public:
 	void PlayDodgeSound(float Param);
 	void PlayStanceChangeSound(float Param);
 	void PlayUltimateSound();
-	void PlaySkillVoiceSound();
-	void PlaySkillVoice1Sound();
+	void PlaySpiritSkillSound();
 
 	void PlayStackBreakSlash(FTransform transform);
 	void PlayStackBreakMove(FTransform transform);
 
 
 	void PlayOptionSound();
+
+	void SetAttackSoundType(float Type);
+	void SetSpiritSkillSoundType(float Type);
 private:
 	void SetIreneCharacter(AIreneCharacter* Value);
 };
