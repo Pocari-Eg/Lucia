@@ -3,6 +3,7 @@
 
 #include "Bouldelith.h"
 #include"../../STGameInstance.h"
+#include "../../UI/MonsterWidget.h"
 #include "BdAIController.h"
 
 ABouldelith::ABouldelith()
@@ -1074,6 +1075,13 @@ void ABouldelith::BeginPlay()
 
 	MonsterShield->InitShieldEffect(MonsterInfo.MaxStackCount);
 
+
+
+	if (GetIsNonShiled())
+	{
+		auto HPBar = Cast<UMonsterWidget>(MonsterWidget->GetWidget());
+		HPBar->ShieldWidgetOff();
+	}
 }
 void ABouldelith::PossessedBy(AController* NewController)
 {
