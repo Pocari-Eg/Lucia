@@ -257,14 +257,7 @@ void AIreneCharacter::BeginPlay()
 	IreneInput->Begin();
 	
 	InitComplete();
-	auto Instnace = Cast<USTGameInstance>(GetGameInstance());
-	if (Instnace != nullptr)
-	{
-	   if(!Instnace->GetIsPlaying())
-	   {
-		   Instnace->SetIsPlaying(true);
-	   }
-	}
+
 }
 void AIreneCharacter::CameraLagSet()
 {
@@ -925,6 +918,18 @@ void AIreneCharacter::BossMonsterUIOn()
 		instance->GetBoss()->SetStatue(true);
 	}
 
+}
+
+void AIreneCharacter::SetIsPlay()
+{
+	auto Instnace = Cast<USTGameInstance>(GetGameInstance());
+	if (Instnace != nullptr)
+	{
+		if (!Instnace->GetIsPlaying())
+		{
+			Instnace->SetIsPlaying(true);
+		}
+	}
 }
 
 void AIreneCharacter::PlayFadeOutAnimation()

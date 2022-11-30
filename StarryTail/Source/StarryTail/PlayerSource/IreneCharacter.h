@@ -87,7 +87,7 @@ public:
 	FPlayerCharacterDataStruct IreneData;
 	UPROPERTY(BluePrintReadOnly)
 	class UIreneUIManager* IreneUIManager;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	class UIreneFSM* IreneState;
 
 	//회복 구조체
@@ -294,7 +294,8 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 		void WaveEndEvent();
-
+	UFUNCTION(BluePrintCallable)
+	void SetIsPlay();
 #pragma endregion UIManager
 
 

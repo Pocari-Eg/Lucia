@@ -40,6 +40,7 @@ class STARRYTAIL_API USTGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 public:
+	UFUNCTION(BlueprintCallable)
 	AIreneCharacter* GetPlayer();
 	EAttributeKeyword GetPlayerAttribute();
 	void SetPlayer(AIreneCharacter* IreneCharacter);
@@ -54,6 +55,10 @@ public:
 	FVector SecondPosition()const{return FVector(-6800,-36560,-170.7);}
 	FVector ThirdPosition()const{return FVector(-11200,-33760,60);}
 	FVector FourthPosition()const{return FVector(-20050,-42480,70);}
+	FRotator FirstRotation()const{return FRotator(0,270, 0);}
+	FRotator SecondRotation()const{return FRotator(0,90,0);}
+	FRotator ThirdRotation()const{return FRotator(0,180,0);}
+	FRotator FourthRotation()const{return FRotator(0,220,0);}
 
 	void SetLocation(FVector Location) {CurrnetLoaction = Location;}
 	void SetSpawnTransform(const FTransform Location) {SpawnTransform = Location;}
