@@ -135,6 +135,30 @@ void UBellarusAnimInstance::AnimNotify_WingSound()
 	Bellarus->GetBlSound()->PlayWingSound(Bellarus->GetTransform());
 }
 
+void UBellarusAnimInstance::AnimNotify_TailSound()
+{
+	Bellarus->GetBlSound()->PlayTailSound(Bellarus->GetTransform());
+
+}
+
+void UBellarusAnimInstance::AnimNotify_ShootSound()
+{
+	Bellarus->GetBlSound()->PlayShootSound(Bellarus->GetTransform());
+
+}
+
+void UBellarusAnimInstance::AnimNotify_TPStartSound()
+{
+	Bellarus->GetBlSound()->PlayTelePortStartSound(Bellarus->GetTransform());
+
+}
+
+void UBellarusAnimInstance::AnimNotify_TPEndSound()
+{
+	Bellarus->GetBlSound()->PlayTelePortEndSound(Bellarus->GetTransform());
+
+}
+
 void UBellarusAnimInstance::Init(ABellarus* Value)
 {
 	Bellarus = Value;

@@ -1375,9 +1375,10 @@ void UIreneInputInstance::PauseWidgetOn()
 	  	Irene->IreneUIManager->PauseWidgetOff();
 	else
 	{
+		Irene->IreneSound->PlayOptionSound();
 		Irene->IreneState->SetState(UIdleState::GetInstance());
 		Irene->IreneUIManager->PauseWidgetOn();
-		Irene->IreneSound->PlayOptionSound();
+		
 	}
 	Irene->ActionEndChangeMoveState();
 }
