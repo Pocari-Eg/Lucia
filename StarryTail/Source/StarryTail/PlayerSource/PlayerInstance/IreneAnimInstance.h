@@ -29,7 +29,6 @@ public:
 	FOnAttackStopCheckDelegate OnAttackStopCheck;
 	FOnFootStepDelegate OnFootStep;
 	FOnRadialDelegate OnRadialBlur;
-	
 private:
 	UPROPERTY()
 	AIreneCharacter* Irene;
@@ -63,6 +62,8 @@ private:
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadWrite, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	float SprintPlayRate;
 	
+
+
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
 	UAnimMontage* SwordAttackMontage;
 	UPROPERTY(VisibleDefaultsOnly, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = true))
@@ -150,14 +151,20 @@ private:
 	UFUNCTION()
 	void AnimNotify_StanceChangeSound() const;
 	UFUNCTION()
-	void AnimNotify_SkillSound() const;
-	UFUNCTION()
 	void AnimNotify_StackBreakMove() const;
 	UFUNCTION()
 	void AnimNotify_StackBreakSlash() const;
 	UFUNCTION()
-	void AnimNotify_SkillVoice1() const;
+	void AnimNotify_SpiritSkillSound() const;
+
+
 	UFUNCTION()
 	void AnimNotify_AttackSound() const;
+
+	UFUNCTION()
+	void AnimNotify_Strength() const;
+	UFUNCTION()
+	void AnimNotify_Normal() const;
+
 	FName GetAttackMontageSectionName(const int32 Section);
 };

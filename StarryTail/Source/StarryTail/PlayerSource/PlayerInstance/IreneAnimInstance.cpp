@@ -216,10 +216,6 @@ void UIreneAnimInstance::AnimNotify_StanceChangeSound() const
 		Irene->IreneSound->PlayStanceChangeSound(0.0f);
 }
 
-void UIreneAnimInstance::AnimNotify_SkillSound() const
-{
-	Irene->IreneSound->PlaySkillVoiceSound();
-}
 
 void UIreneAnimInstance::AnimNotify_StackBreakMove() const
 {
@@ -233,9 +229,9 @@ void UIreneAnimInstance::AnimNotify_StackBreakSlash() const
 	Irene->IreneSound->PlayStackBreakSlash(Irene->GetTransform());
 }
 
-void UIreneAnimInstance::AnimNotify_SkillVoice1() const
+void UIreneAnimInstance::AnimNotify_SpiritSkillSound() const
 {
-	Irene->IreneSound->PlaySkillVoice1Sound();
+	Irene->IreneSound->PlaySpiritSkillSound();
 }
 
 void UIreneAnimInstance::AnimNotify_AttackSound() const
@@ -246,6 +242,20 @@ void UIreneAnimInstance::AnimNotify_AttackSound() const
 	else {
 		Irene->IreneSound->PlayAttackSound(1.0f);
 	}
+}
+
+void UIreneAnimInstance::AnimNotify_Strength() const
+{
+	Irene->IreneSound->SetAttackSoundType(1.0f);
+	Irene->IreneSound->SetSpiritSkillSoundType(1.0f);
+
+}
+
+void UIreneAnimInstance::AnimNotify_Normal() const
+{
+	Irene->IreneSound->SetAttackSoundType(0.0f);
+	Irene->IreneSound->SetSpiritSkillSoundType(1.0f);
+
 }
 
 FName UIreneAnimInstance::GetAttackMontageSectionName(const int32 Section)

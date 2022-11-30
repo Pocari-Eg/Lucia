@@ -15,8 +15,8 @@ UIreneSoundInstance::UIreneSoundInstance()
 	DodgeEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_Dodge");
 	StanceChangeEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StanceChange");
 	UltimateEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_Ultimate");
-	SkillVocieEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/Voice/SFX_SkillVoice");
-	SkillVocie1Event = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/Voice/SFX_SkillVoice1");
+	SpiritSkillVoiceEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/Voice/SFX_SpiritSkillVoice");
+	SpiritSkillEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_SpiritAttack");
 
 	StackBreakSlashEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakSlash");
 	StackBreakMoveEvent = UFMODBlueprintStatics::FindEventByName("event:/Lucia/Irene/SFX_StackBreakMove");
@@ -37,8 +37,9 @@ void UIreneSoundInstance::Init(AIreneCharacter* Value)
 	DodgeSound = new SoundManager(DodgeEvent, GetWorld());
 	StanceChangeSound = new SoundManager(StanceChangeEvent, GetWorld());
 	UltimateSound = new SoundManager(UltimateEvent, GetWorld());
-	SkillVocieSound = new SoundManager(SkillVocieEvent, GetWorld());
-	SkillVocie1Sound = new SoundManager(SkillVocie1Event, GetWorld());
+
+	SpiritSkillVoiceSound = new SoundManager(SpiritSkillVoiceEvent, GetWorld());
+	SpiritSkillSound = new SoundManager(SpiritSkillEvent, GetWorld());
 
 	StackBreakMoveSound = new SoundManager(StackBreakMoveEvent, GetWorld());
 	StackBreakSlashSound = new SoundManager(StackBreakSlashEvent, GetWorld());
@@ -47,16 +48,18 @@ void UIreneSoundInstance::Init(AIreneCharacter* Value)
 
 
 	//사운드 세팅
-	WalkSound->SetVolume(0.7f);
+	WalkSound->SetVolume(1.0f);
 	WalkSound->SetParameter("Material", 0.0f);
-	AttackSound->SetVolume(0.3f);
-	AttackVoiceSound->SetVolume(0.3f);
-	TakeDamageVoiceSound->SetVolume(0.4f);
-	DodgeSound->SetVolume(0.3f);
-	StanceChangeSound->SetVolume(0.3f);
-	UltimateSound->SetVolume(0.3f);
-	SkillVocieSound->SetVolume(0.3f);
-	SkillVocie1Sound->SetVolume(0.3f);
+	AttackSound->SetVolume(0.5f);
+	AttackVoiceSound->SetVolume(0.4f);
+	TakeDamageVoiceSound->SetVolume(0.5f);
+	DodgeSound->SetVolume(0.5f);
+	StanceChangeSound->SetVolume(0.5f);
+	UltimateSound->SetVolume(0.5f);
+
+	SpiritSkillVoiceSound->SetVolume(0.4f);
+	SpiritSkillSound->SetVolume(0.7f);
+
 	StackBreakMoveSound->SetVolume(1.0f);
 	StackBreakSlashSound->SetVolume(1.0f);
 	OptionSound->SetVolume(1.0f);
@@ -73,6 +76,8 @@ void UIreneSoundInstance::PlayAttackSound(float Param)
 	AttackSound->SetParameter("StanceState", Param);
 
 	AttackSound->SoundPlay2D();
+
+	AttackVoiceSound->SetParameter("AttackType", AttackSoundType);
 	AttackVoiceSound->SoundPlay2D();
 }
 
@@ -99,13 +104,12 @@ void UIreneSoundInstance::PlayUltimateSound()
 	UltimateSound->SoundPlay2D();
 }
 
-void UIreneSoundInstance::PlaySkillVoiceSound()
+void UIreneSoundInstance::PlaySpiritSkillSound()
 {
-	SkillVocieSound->SoundPlay2D();
-}
-void UIreneSoundInstance::PlaySkillVoice1Sound()
-{
-	SkillVocie1Sound->SoundPlay2D();
+	SpiritSkillVoiceSound->SoundPlay2D();
+
+	SpiritSkillSound->SetParameter("AttackType", SpiritSkillSoundType);
+	SpiritSkillSound->SoundPlay2D();
 }
 void UIreneSoundInstance::PlayStackBreakSlash(FTransform transform)
 {
@@ -121,6 +125,16 @@ void UIreneSoundInstance::PlayOptionSound()
 {
 	STARRYLOG_S(Error);
 	OptionSound->SoundPlay2D();
+}
+
+void UIreneSoundInstance::SetAttackSoundType(float Type)
+{
+	AttackSoundType = Type;
+}
+
+void UIreneSoundInstance::SetSpiritSkillSoundType(float Type)
+{
+	SpiritSkillSoundType = Type;
 }
 
 void UIreneSoundInstance::SetIreneCharacter(AIreneCharacter* Value)
