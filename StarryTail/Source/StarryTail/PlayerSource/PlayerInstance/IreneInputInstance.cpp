@@ -1168,6 +1168,8 @@ void UIreneInputInstance::UltimateAttackSetStack()
 }
 void UIreneInputInstance::UltimateAttackStackExplode()
 {
+	Irene->bInputStop = false;
+
 	auto Target = UltimateAttackSettingStackCamera();
 
 	if(!Target.Get<2>())
@@ -1193,7 +1195,6 @@ void UIreneInputInstance::SkillCameraMoveEnd()
 	bSkillCameraMove = false;
 	SkillCameraPlayTime = 0;
 	SkillCameraEndPlayTime = 0;
-	Irene->bInputStop = false;
 
 	UGameplayStatics::SetGlobalTimeDilation(GetWorld(),1);
 	Irene->CustomTimeDilation = 1;
