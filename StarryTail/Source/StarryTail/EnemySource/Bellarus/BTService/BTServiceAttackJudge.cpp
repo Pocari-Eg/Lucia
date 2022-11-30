@@ -40,7 +40,7 @@ void UBTServiceAttackJudge::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* N
 		}
 
 		AttackCheckTimer += Interval;
-		if (AttackCheckTimer >= 0.5)
+		if (AttackCheckTimer >= 0.1f)
 		{
 			AttackCheckTimer = 0.0f;
 
