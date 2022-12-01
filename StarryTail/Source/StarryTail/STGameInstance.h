@@ -123,7 +123,7 @@ public:
 	void InsertStackMonster(AMonster* Monster);
 	void DeleteStackMonster(AMonster* Monster);
 	void InitCurStackMonster();
-
+	void EmptyCurStackMonster();
 #pragma endregion
 
 

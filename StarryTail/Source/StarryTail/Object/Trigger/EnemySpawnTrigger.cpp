@@ -95,7 +95,8 @@ void AEnemySpawnTrigger::WaveStart()
 {
 
 	TArray<AMonster*> SpawnMonsters;
-
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->EmptyCurStackMonster();
 	if (SpawnPoint[0]->getCurrentWave() < SpawnPoint[0]->SpawnWave.Num()) {
 		WaveMonsterCount = 0;
 		OnBattleWall();
@@ -113,7 +114,7 @@ void AEnemySpawnTrigger::WaveStart()
 		SetCurWaveMonsters(SpawnMonsters);
 
 		SetCloseMonster();
-		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		
 		if (Instance != nullptr)
 		{
 			Instance->SetNextWaveCount(WaveMonsterCount * NextWavePercent / 100);
@@ -140,7 +141,7 @@ void AEnemySpawnTrigger::WaveClear()
 	{
 		Instance->GetPlayer()->WaveEndEvent();
 	}
-
+	if (Instance != nullptr)Instance->EmptyCurStackMonster();
 	PlayNormalBgm();
 }
 

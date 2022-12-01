@@ -122,6 +122,8 @@ void AMonsterGroupTrigger::WaveManager()
 void AMonsterGroupTrigger::WaveStart()
 {
 	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->EmptyCurStackMonster();
+
 	if (CurrentWave<WAVE.Num()) {
 		WaveMonsterCount = 0;
 		OnBattleWall();
@@ -170,6 +172,10 @@ void AMonsterGroupTrigger::WaveClear()
 		LabMagic->EndLabMagic();
 	}
 	bIsOn = false;
+
+
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->EmptyCurStackMonster();
 
 	PlayNormalBgm();
 }

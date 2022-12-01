@@ -516,6 +516,8 @@ void AMonster::StackExplode()
 	else {
 
 		InitStackCount();
+		auto Instance = Cast<USTGameInstance>(GetGameInstance());
+		if (Instance != nullptr)Instance->DeleteStackMonster(this);
 	}
 }
 
@@ -565,22 +567,20 @@ void AMonster::MaxStackExplode()
 	}
 	InitStackCount();
 
+	auto Instance = Cast<USTGameInstance>(GetGameInstance());
+	if (Instance != nullptr)Instance->DeleteStackMonster(this);
+
 }
 
 void AMonster::InitStackCount()
 {
-	//auto Instance = Cast<USTGameInstance>(GetGameInstance());
-	//if (Instance != nullptr)Instance->DeleteStackMonster(this);
 
 	MonsterInfo.StackCheckTimer = 0.0f;
 	MonsterInfo.bIsStackCheck = false;
 	MonsterInfo.CurStackCount =0;
 	MonsterInfo.OverStackCount = 0;
-
-
-
-
 	OnStackCountEvent();
+
 }
 
 float AMonster::CalcStackDamage(int StackCount)
@@ -843,6 +843,8 @@ void AMonster::CalcHp(float Damage)
 				Cast<ABellarusAIController>(GetAIController())->SetSecondPhase(true);
 				Bellarus->SetSecondPhase();
 				InitStackCount();
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				if (Instance != nullptr)Instance->DeleteStackMonster(this);
 				OnHpChanged.Broadcast();
 				return;
 			}
@@ -896,6 +898,8 @@ void AMonster::CalcHp(float Damage)
 	
 
 				InitStackCount();
+				auto Instance = Cast<USTGameInstance>(GetGameInstance());
+				if (Instance != nullptr)Instance->DeleteStackMonster(this);
 				MonsterDeadEvent();
 				bIsDead = true;
 				SetActive();
@@ -1425,6 +1429,8 @@ void AMonster::Tick(float DeltaTime)
 		if (MonsterInfo.StackCheckTimer >= MonsterInfo.StackCheckTime)
 		{
 			InitStackCount();
+			auto Instance = Cast<USTGameInstance>(GetGameInstance());
+			if (Instance != nullptr)Instance->DeleteStackMonster(this);
 			return;
 		}
 
@@ -1517,7 +1523,7 @@ float AMonster::TakeDamage(float DamageAmount, struct FDamageEvent const& Damage
 
 
 
-	if (Cast<AIreneCharacter>(DamageCauser)&& !bIsinvincibility)
+	if (Cast<AIreneCharacter>(DamageCauser))
 	{
 		auto Player = Cast<AIreneCharacter>(DamageCauser);
 		if (Player->bIsRadialBlurOn)

@@ -374,7 +374,7 @@ void ABellarus::TornadoSwirlAttack()
 
 void ABellarus::RunTelePort()
 {
-	bIsinvincibility = true;
+	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	CalcTelePort();
 	SetBattleState();
 	Cast<ABellarusAIController>(GetAIController())->SetTelePortKey(true);
@@ -477,9 +477,7 @@ void ABellarus::PlayTelePortAnim()
 
 void ABellarus::TelePortStart()
 {
-
-
-	bIsinvincibility = true;
+	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
 	bIsTeleporting = true;
 	 NewSkillData= GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
@@ -496,7 +494,7 @@ void ABellarus::TelePortStart()
 	//GetMesh()->SetVisibility(false);
 	MonsterWidget->SetVisibility(false);
 	StackWidget->SetVisibility(false);
-	GetCapsuleComponent()->SetCollisionProfileName("NoCollision");
+
 	SetActorLocation(TeleportLocation);
 
 
@@ -506,6 +504,8 @@ void ABellarus::TelePortEnd()
 {
 	TelePortEndEvent();
 
+
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 	 NewSkillData = GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
 	{
@@ -537,7 +537,7 @@ void ABellarus::TelePortEnd()
 	StackWidget->SetVisibility(true);
 
 
-	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+	
 
 	if (AttackCheck(NewSkillData->M_Skill_Radius, 300.0f, 360.0f, 0.0f))
 	{
@@ -567,7 +567,6 @@ void ABellarus::TelePortEnd()
 
 	}
 
-	bIsinvincibility = false;
 }
 
 void ABellarus::ShieldRegening()
