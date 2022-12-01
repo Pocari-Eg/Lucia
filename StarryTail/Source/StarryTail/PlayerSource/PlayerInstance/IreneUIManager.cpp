@@ -118,12 +118,12 @@ void UIreneUIManager::HPRecovering()
 		if (CurRecoverTime > 1)CurRecoverTime--;
 		else
 		{
+			Irene->HPRecoveringEnd();
 			GetWorld()->GetTimerManager().ClearTimer(HpRecoveryTimerHandle);
 			RemainingRecovery = 0;
 			Irene->HpRecoveryData.bIsRecovering = false;
 			IsConsecutiveIdle = true;
-			HPRecoveryWaitStart();
-			
+			HPRecoveryWaitStart();	
 		}
 	}
 }
