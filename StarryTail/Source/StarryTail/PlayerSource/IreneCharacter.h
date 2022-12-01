@@ -163,6 +163,11 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AllTimerClear();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HPRecoveringStart();
+	UFUNCTION(BlueprintImplementableEvent)
+	void HPRecoveringEnd();
 #pragma endregion Setting
 	
 	// Called every frame
