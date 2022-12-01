@@ -128,6 +128,9 @@ public:
 	void TelePortStartEvent();
 	UFUNCTION(BlueprintImplementableEvent)
 	void TelePortEndEvent();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void OnSecondPhaseEvent();
 private:
 	void InitMonsterInfo() override;
 	void InitCollision() override;

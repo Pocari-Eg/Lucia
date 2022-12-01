@@ -1163,7 +1163,7 @@ void ABellarus::SetSecondPhase()
 {
 	MonsterInfo.Monster_Code = 4;
 	InitMonsterInfo();
-
+	OnSecondPhaseEvent();
 	PlayGroggyAnim();
 	MonsterAIController->Groggy();
 	MonsterShield->ShieldRegen();
