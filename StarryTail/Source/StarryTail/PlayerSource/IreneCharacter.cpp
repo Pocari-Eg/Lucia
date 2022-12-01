@@ -237,7 +237,7 @@ void AIreneCharacter::BeginPlay()
 	if (STGameInstance != nullptr)
 		STGameInstance->SetPlayer(this);
 
-	if(STGameInstance->GetSpawnTransform().GetTranslation() != STGameInstance->FirstPosition())
+	if(UGameplayStatics::GetCurrentLevelName(this).Compare(FString("MainFairyLab")) == 0 && STGameInstance->GetSpawnTransform().GetTranslation() != STGameInstance->FirstPosition())
 	{
 		SetActorTransform(STGameInstance->GetSpawnTransform());
 		PetSpringArmComp->CameraLagSpeed = 0;
@@ -374,6 +374,8 @@ void AIreneCharacter::Tick(float DeltaTime)
 			bIsKnockBack = false;
 		}
 	}
+
+	
 }
 
 void AIreneCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
