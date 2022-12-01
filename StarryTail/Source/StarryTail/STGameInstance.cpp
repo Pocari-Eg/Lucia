@@ -46,6 +46,7 @@ void USTGameInstance::Init()
 
 	Super::Init();
 
+	SpawnTransform = FTransform(FirstRotation(), FirstPosition(), FVector::OneVector);
 
 	InitData();
 	InitSoundSetting();
@@ -135,8 +136,6 @@ bool USTGameInstance::IsLastWave()
 
 void USTGameInstance::InitData()
 {
-	SpawnTransform = FTransform(FirstRotation(), FirstPosition(), FVector::OneVector);
-	
 	EnemyCount = 0;
 	UniqueCount = 0;
 	bIsLastWave = false;
