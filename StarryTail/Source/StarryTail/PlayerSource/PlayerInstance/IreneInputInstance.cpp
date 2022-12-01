@@ -1093,7 +1093,7 @@ void UIreneInputInstance::UltimateAttackKeyword()
 {
 	//Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge &&
 	if(Irene->bIsSpiritStance && Irene->IreneData.CurrentUltimateAttackGauge == Irene->IreneData.MaxUltimateAttackGauge &&
-	!Irene->bInputStop && !Irene->IreneState->IsUltimateAttackState())
+	!Irene->bInputStop && !Irene->IreneState->IsUltimateAttackState() && !Irene->IreneState->IsDodgeState())
 	{
 		// 선딜
 		// 카메라 위치를 기반으로 박스를 만들어서 몬스터들을 탐지하는 방법	
