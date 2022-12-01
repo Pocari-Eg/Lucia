@@ -244,8 +244,6 @@ protected:
 	bool bIsCaptin;
 	float FrontMoveTime;
 	float FrontMoveTimer;
-
-	bool bIsinvincibility;
 #pragma region Sound
 	FTransform SoundTransform;
 #pragma endregion Sound

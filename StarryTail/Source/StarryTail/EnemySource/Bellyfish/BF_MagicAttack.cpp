@@ -120,6 +120,8 @@ void ABF_MagicAttack::OnBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		STARRYLOG(Error, TEXT("Magic Player Hit"));
 		UGameplayStatics::ApplyDamage(Irene, Damage, NULL, this, NULL);
 		AttackCollision->SetGenerateOverlapEvents(false);
+		AttackCollision->SetCollisionProfileName("NoCollision");
+
 	}
 
 }

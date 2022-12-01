@@ -291,8 +291,7 @@ void USTGameInstance::DeleteStackMonster(AMonster* Monster)
 		for (int i = 0; i < StackMonster.Num(); i++)
 			if (StackMonster[i] == Monster)
 			{
-				StackMonster[i] = nullptr;
-				//Monster->StackWidgetOff();
+				StackMonster.RemoveAt(i);
 				return;
 			}
 	}
@@ -303,12 +302,18 @@ void USTGameInstance::InitCurStackMonster()
 	if (size != 0) {
 		for (int i = 0; i < size; i++)
 		{
-			if (StackMonster[i] != nullptr)
+			if (StackMonster[i] != nullptr) {
 				StackMonster[i]->InitStackCount();
+			}
 
 		}
 	}
 	StackMonster.Empty();
 }
+void USTGameInstance::EmptyCurStackMonster()
+{
+	StackMonster.Empty();
+}
+
 #pragma endregion
 
