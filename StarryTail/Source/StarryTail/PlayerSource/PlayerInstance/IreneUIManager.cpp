@@ -95,6 +95,7 @@ void UIreneUIManager::HPRecoveryWaitCancel()
 }
 void UIreneUIManager::HPRecoveringStart()
 {
+	Irene->HPRecoveringStart();
 	Irene->HpRecoveryData.bIsRecovering = true;
 	HPRecoveryWaitCancel();
 	CurRecoverTime = Irene->HpRecoveryData.Speed;
@@ -128,6 +129,7 @@ void UIreneUIManager::HPRecovering()
 }
 void UIreneUIManager::HpRecoveringCancel()
 {
+	Irene->HPRecoveringEnd();
 	GetWorld()->GetTimerManager().ClearTimer(HpRecoveryTimerHandle);
 	RemainingRecovery = 0;
 	Irene->HpRecoveryData.bIsRecovering = false;
