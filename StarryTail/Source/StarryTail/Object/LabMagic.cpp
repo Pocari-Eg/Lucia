@@ -95,7 +95,7 @@ void ALabMagic::ExplosionSign()
 		Explosion_SignWait_Timer = 0.0f;
 
 		ExplosionSignEffectComponent->SetActive(true, true);
-		bIsExplosion_Wait_Timer = true;
+	
 
 
 		SignwaitSound->SoundStop();
@@ -116,6 +116,9 @@ void ALabMagic::ExplosionSign()
 
 			
 		}
+
+
+		bIsExplosion_Wait_Timer = true;
 	}
 
 }
@@ -131,10 +134,10 @@ void ALabMagic::StartExplosion()
 	ExplosionSignEffectComponent->Deactivate();
 
 	MagicAOECollision->SetGenerateOverlapEvents(true);
-	bIsExplosion_Timer = true;
 	ExplosionEffectComponent->SetActive(true, true);
 	ShockEffectComponent->SetActive(true, true);
 	ShockWaveSound->SoundPlay2D();
+	bIsExplosion_Timer = true;
 }
 
 void ALabMagic::EndExplosion()
