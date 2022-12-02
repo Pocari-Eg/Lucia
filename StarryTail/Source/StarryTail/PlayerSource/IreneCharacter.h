@@ -208,6 +208,9 @@ public:
 	virtual void NotifyActorEndOverlap(AActor* OtherActor) override;
 	virtual void NotifyHit(UPrimitiveComponent *MyComp, AActor *Other, UPrimitiveComponent *OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult &Hit) override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void HitEffect();
+
 	// ÇÇ°Ý
 	virtual float TakeDamage(float DamageAmount, struct FDamageEvent const& DamageEvent, class AController* EventInstigator, AActor* DamageCauser)override;
 	void SetHP(float DamageAmount);

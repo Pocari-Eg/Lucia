@@ -678,6 +678,7 @@ float AIreneCharacter::TakeDamage(float DamageAmount, struct FDamageEvent const&
 
 				if(!IreneState->IsJumpState() && !Cast<ALabMagic>(DamageCauser)&& !DotDamage && !IreneState->IsUltimateAttackState())
 				{
+					HitEffect();
 					CameraShakeOn = true;
 					IreneAnim->StopAllMontages(0);
 					ChangeStateAndLog(UHit2State::GetInstance());
