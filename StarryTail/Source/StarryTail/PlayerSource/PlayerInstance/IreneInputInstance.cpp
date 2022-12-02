@@ -963,11 +963,11 @@ void UIreneInputInstance::SpiritChangeBlock()
 	//Irene->bIsSpiritStance = false;
 	//Irene->PetMesh->SetVisibility(true,true);
 
-	const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
-	if (Instance != nullptr)
-	{
-		Instance->InitCurStackMonster();
-	}
+	//const auto Instance = Cast<USTGameInstance>(Irene->GetGameInstance());
+	//if (Instance != nullptr)
+	//{
+	//	Instance->InitCurStackMonster();
+	//}
 
 	bIsSpiritChangeEnable = false;
 }
