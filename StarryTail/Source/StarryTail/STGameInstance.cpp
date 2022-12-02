@@ -41,6 +41,16 @@ void USTGameInstance::ResetAttributeEffectMonster()
 #pragma endregion
 
 
+void USTGameInstance::GameInit()
+{
+	SpawnTransform = FTransform(FirstRotation(), FirstPosition(), FVector::OneVector);
+
+	InitData();
+	InitSoundSetting();
+	bIsVideoPlay = false;
+	TutorialInit();
+}
+
 void USTGameInstance::Init()
 {
 

@@ -71,6 +71,10 @@ public:
 	void SetIsPlaying(bool state) {
 		bIsPlaying = state;
 	}
+
+
+	UFUNCTION(blueprintcallable)
+	void GameInit();
 protected:
 	virtual void Init()override;
 
