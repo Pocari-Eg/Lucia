@@ -113,7 +113,7 @@ void UIdleState::Execute(IBaseGameEntity* CurState)
 void UIdleState::Exit(IBaseGameEntity* CurState)
 {
 	if (CurState->Irene->HpRecoveryData.bIsRecovering == true)CurState->Irene->IreneUIManager->HpRecoveringCancel();
-	else CurState->Irene->IreneUIManager->HPRecoveryWaitCancel();
+	CurState->Irene->IreneUIManager->HPRecoveryWaitCancel();
 	CurState->bIsEnd = true;
 }
 #pragma endregion IdleState
@@ -138,6 +138,9 @@ void UBattleIdleState::Enter(IBaseGameEntity* CurState)
 		CurState->Irene->Weapon->SetVisibility(true);
 		CurState->Irene->WeaponVisible(true);
 	}
+	
+	if (CurState->Irene && CurState->Irene->IreneUIManager && CurState->Irene->bIsSpiritStance)
+		CurState->Irene->IreneUIManager->HPRecoveryWaitStart();	
 }
 
 void UBattleIdleState::Execute(IBaseGameEntity* CurState)
@@ -152,6 +155,8 @@ void UBattleIdleState::Execute(IBaseGameEntity* CurState)
 
 void UBattleIdleState::Exit(IBaseGameEntity* CurState)
 {
+	if (CurState->Irene->HpRecoveryData.bIsRecovering == true)CurState->Irene->IreneUIManager->HpRecoveringCancel();
+	CurState->Irene->IreneUIManager->HPRecoveryWaitCancel();
 	CurState->bIsEnd = true;
 }
 #pragma endregion UBattleIdleState
