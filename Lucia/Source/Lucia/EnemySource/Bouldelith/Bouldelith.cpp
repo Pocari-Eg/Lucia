@@ -16,8 +16,8 @@ ABouldelith::ABouldelith()
 	MonsterInfo.Monster_Code = 2;
 
 
-	//InitMonsterInfo();
-	//InitAttack1Data();
+	InitMonsterInfo();
+	InitAttack1Data();
 	InitBouldelithInfo();
 	InitCollision();
 	InitMesh();

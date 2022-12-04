@@ -18,8 +18,8 @@ ABellarus::ABellarus()
 
 
 	MonsterInfo.Monster_Code = 3;
-	//InitMonsterInfo();
-	//InitBellarusInfo();
+	InitMonsterInfo();
+	InitBellarusInfo();
 	InitCollision();
 	InitMesh();
 	InitAnime();
