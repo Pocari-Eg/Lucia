@@ -12,6 +12,7 @@
 #include"../Bellyfish/BF_Projectile.h"
 #include "FBellarusDataStruct.h"
 #include "BlSoundInstance.h"
+#include "TelePortPoint.h"
 #include "Bellarus.generated.h"
 
 /**
@@ -50,6 +51,7 @@ public:
 	void TelePortStart();
 	UFUNCTION(BluePrintCallable)
 	void TelePortEnd();
+	void TelePortAttackCheck();
 
 	void ShieldRegening();
 	void ShieldRegen();
@@ -190,7 +192,8 @@ private:
 	FMonsterSkillDataTable* NewSkillData;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = TelePort, Meta = (AllowPrivateAccess = true))
-	TArray<AActor*> TeleportPoint;
+	TArray<ATelePortPoint*> TeleportPoint;
+	ATelePortPoint* CurTeleportPoint;
 public:
 	UPROPERTY(BluePrintReadOnly)
 	class UBlSoundInstance* BlSoundInstance;

@@ -117,8 +117,15 @@ void UBellarusAnimInstance::AnimNotify_Feather()
 
 void UBellarusAnimInstance::AnimNotify_TelePort()
 {
+	TelePortStart.Broadcast();
+}
+
+void UBellarusAnimInstance::AnimNotify_TelePortAttack()
+{
 	TelePortAttack.Broadcast();
 }
+
+
 
 void UBellarusAnimInstance::AnimNotify_DeathSound()
 {

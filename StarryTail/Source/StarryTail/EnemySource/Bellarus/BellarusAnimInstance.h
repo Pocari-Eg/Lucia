@@ -23,6 +23,8 @@ public:
 	FAttackDelegate FeatherAttack;
 	FAttackDelegate TelePortAttack;
 
+	FAttackDelegate TelePortStart;
+
 	FAttackEndDelegate WingLEnd;
 	FAttackEndDelegate WingREnd;
 	FAttackEndDelegate TailEnd;
@@ -59,6 +61,8 @@ public:
 	void AnimNotify_Feather();
 	UFUNCTION()
 	void AnimNotify_TelePort();
+	UFUNCTION()
+	void AnimNotify_TelePortAttack			();
 	UFUNCTION()
 	void AnimNotify_DeathSound();
 	UFUNCTION()
