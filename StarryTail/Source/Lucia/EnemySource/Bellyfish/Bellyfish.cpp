@@ -18,8 +18,8 @@ ABellyfish::ABellyfish()
 
 
 	MonsterInfo.Monster_Code = 1;
-	//InitMonsterInfo();
-	//InitAttack3Data();
+	InitMonsterInfo();
+	InitAttack3Data();
 	InitCollision();
 	InitMesh();
 	InitAnime();
