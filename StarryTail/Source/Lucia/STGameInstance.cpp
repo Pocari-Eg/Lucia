@@ -37,6 +37,27 @@ void USTGameInstance::ResetAttributeEffectMonster()
 	AttributeEffectMonster = nullptr;
 }
 
+void USTGameInstance::SetFirstSpawnPosition()
+{
+	SetSpawnTransform(FTransform(FirstRotation(), FirstPosition()));
+
+}
+
+void USTGameInstance::SetSecondSpawnPosition()
+{
+	SetSpawnTransform(FTransform(SecondRotation(), SecondPosition()));
+}
+
+void USTGameInstance::SetThirdSpawnPosition()
+{
+	SetSpawnTransform(FTransform(ThirdRotation(), ThirdPosition()));
+}
+
+void USTGameInstance::SetFourthSpawnPosition()
+{
+	SetSpawnTransform(FTransform(FourthRotation(), FourthPosition()));
+}
+
 
 #pragma endregion
 

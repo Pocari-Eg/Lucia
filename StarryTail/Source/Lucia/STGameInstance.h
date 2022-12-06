@@ -48,6 +48,15 @@ public:
 	void SetAttributeEffectMonster(AMonster* Monster);
 	void ResetAttributeEffectMonster();
 
+	UFUNCTION(BlueprintCallable)
+	void SetFirstSpawnPosition();
+	UFUNCTION(BlueprintCallable)
+	void SetSecondSpawnPosition();
+	UFUNCTION(BlueprintCallable)
+	void SetThirdSpawnPosition();
+	UFUNCTION(BlueprintCallable)
+	void SetFourthSpawnPosition();
+
 
 	FSoundSetting* GetSoundSetting();
 	FTransform GetSpawnTransform()const{return SpawnTransform;}
