@@ -62,7 +62,7 @@ public:
 	UFUNCTION()
 	void AnimNotify_TelePort();
 	UFUNCTION()
-	void AnimNotify_TelePortAttack			();
+	void AnimNotify_TelePortAttack();
 	UFUNCTION()
 	void AnimNotify_DeathSound();
 	UFUNCTION()

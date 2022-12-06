@@ -522,6 +522,7 @@ void ABellarus::TelePortEnd()
 	RotationToPlayerDirection();
 	MonsterWidget->SetVisibility(true);
 	StackWidget->SetVisibility(true);
+
 	BellarusAnimInstance->PlayEndTelePortMontage();
 
 
@@ -562,7 +563,7 @@ void ABellarus::TelePortAttackCheck()
 			}
 			else {
 
-
+				CurTeleportPoint->TelePortSignDeactivate();
 				bIsDodgeTime = false;
 				PerfectDodgeOff();
 				UGameplayStatics::ApplyDamage(Instance->GetPlayer(), NewSkillData->M_Skill_Atk, NULL, this, NULL);
@@ -690,7 +691,6 @@ void ABellarus::BeginPlay()
 		});
 	BellarusAnimInstance->DodgeTimeOff.AddLambda([this]() -> void {
 		DodgeTimeOff.Broadcast();
-		CurTeleportPoint->TelePortSignDeactivate();
 		PerfectDodgeOff();
 		});
 
