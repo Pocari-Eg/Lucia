@@ -484,7 +484,7 @@ void ABellarus::TelePortStart()
 
 	CurTeleportPoint->TelePortSignActive();
 
-	bIsTeleporting = true;
+
 	NewSkillData= GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
 	{
@@ -503,10 +503,23 @@ void ABellarus::TelePortStart()
 
 	SetActorLocation(TeleportLocation);
 
+
+	bIsTeleporting = true;
+	
+	STARRYLOG_S(Error);
 }
 
 void ABellarus::TelePortEnd()
 {
+
+	STARRYLOG_S(Error);
+
+	
+	RotationToPlayerDirection();
+	MonsterWidget->SetVisibility(true);
+	StackWidget->SetVisibility(true);
+	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
+
 
 	NewSkillData = GetMontserSkillData(15);
 	if (MonsterInfo.Monster_Code == 3)
@@ -518,21 +531,10 @@ void ABellarus::TelePortEnd()
 		NewSkillData = GetMontserSkillData(MonsterInfo.M_Skill_Type_08);
 	}
 	MonsterInfo.M_Skill_Cool = NewSkillData->M_Skill_Cool;
-	
-	RotationToPlayerDirection();
-	MonsterWidget->SetVisibility(true);
-	StackWidget->SetVisibility(true);
 
 	BellarusAnimInstance->PlayEndTelePortMontage();
-
-
-
 	TelePortEndEvent();
-	bIsTeleporting = false;
-	TelePortTimer = 0.0f;
 
-
-	GetCapsuleComponent()->SetCollisionProfileName("Enemy");
 
 	OutSpawnRadiusTimer = 0.0f;
 	AttacekdTeleportTimer = 0.0f;
@@ -881,6 +883,10 @@ void ABellarus::Tick(float DeltaTime)
 		TelePortTimer += DeltaTime;
 		if (TelePortTimer >= TelePortTime)
 		{
+
+
+			bIsTeleporting = false;
+			TelePortTimer = 0.0f;
 			TelePortEnd();
 		}
 	}
